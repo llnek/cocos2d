@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Impact Game | HyperJump</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <link rel="shortcut icon" type="image/png" href="/public/ig/media/main/logos/favicon.png"/>
+  <link rel="stylesheet" media="screen" href="/public/styles/impact/game.css"/>
+  <link rel="stylesheet" media="screen" href="/public/styles/asteroids/main.css"/>
+
+</head>
+
+<body onload="setTimeout(function(){window.scrollTo(0,0);},1);">
+
+  <div id="game">
+      <div id="game-container">
+          <canvas id="canvas"></canvas>
+          <div id="controls">
+              <div class="button" id="buttonLeft"></div>
+              <div class="button" id="buttonRight"></div>
+              <div class="button" id="buttonJump"></div>
+              <div class="button" id="buttonShoot"></div>
+          </div>
+      </div>
+  </div>
+
+  <script type="text/javascript" src="/public/vendors/underscore/underscore-min.js"></script>
+  <script type="text/javascript" src="/public/vendors/zepto/zepto.min.js"></script>
+  <script type="text/javascript" src="/public/vendors/l10njs/l10n.min.js"></script>
+  <script type="text/javascript" src="/public/vendors/mustache/mustache.js"></script>
+  <script type="text/javascript" src="/public/vendors/modernizr/modernizr.custom.js"></script>
+  <script type="text/javascript" src="/public/vendors/dbg/dbg.js"></script>
+  <script type="text/javascript">ImpactPrefix="/public/ig/"</script>
+  <script type="text/javascript" src="/public/vendors/fsm/state-machine.min.js"></script>
+
+  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/base.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/bus.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/ui.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/asterix.js"></script>
+
+  <!--
+  <script type="text/javascript" src="/public/ig/lib/impact/impact.js"></script>
+  <script type="text/javascript" src="/public/vendors/impactjs/impact-debug.min.js"></script>
+  -->
+  <script type="text/javascript" src="/public/vendors/impactjs/impact.min.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/plugins/deps.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/plugins/layers.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/plugins/font-sugar.js"></script>
+
+  <script type="text/javascript" src="/public/ig/lib/zotohlabs/gui/uiparts.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/zotohlabs/gui/uiaudio.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/zotohlabs/gui/uifacs.js"></script>
+
+  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/xcfgbase.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/xcfg.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/game/asteroids/config.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/zotohlabs/plf/web.js"></script>
+
+  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/xloader.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/xigg.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/xgame.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/xsplash.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/xobject.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/xhud.js"></script>
+
+  <script type="text/javascript" src="/public/ig/lib/game/asteroids/i18n/game_en_US.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/zotohlabs/gui/mainmenu.js"></script>
+
+  <script type="text/javascript" src="/public/ig/lib/game/asteroids/entities/aster.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/game/asteroids/entities/asteroid1.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/game/asteroids/entities/asteroid2.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/game/asteroids/entities/asteroid3.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/game/asteroids/entities/laser.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/game/asteroids/entities/missile.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/game/asteroids/entities/player.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/game/asteroids/entities/ufo.js"></script>
+
+  <script type="text/javascript" src="/public/ig/lib/game/asteroids/levels/blankscreen.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/game/asteroids/levels/mainmenu.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/game/asteroids/levels/arena.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/game/asteroids/levels/startscreen.js"></script>
+
+  <script type="text/javascript" src="/public/ig/lib/game/asteroids/asteroids.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/game/asteroids/splash.js"></script>
+
+  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/xmain.js"></script>
+</body>
+</html>
+

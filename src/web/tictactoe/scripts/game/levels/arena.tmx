@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="40" height="60" tilewidth="8" tileheight="8">
+ <tileset firstgid="1" name="Borders" tilewidth="8" tileheight="8">
+  <image source="cbox-borders_x8.png" trans="ff00ff" width="56" height="8"/>
+ </tileset>
+ <layer name="Grid" width="40" height="60">
+  <data encoding="base64" compression="zlib">
+   eJzt1bEJwDAMAEFD9t85CyTVS7i5A3dCvCqfAwAw41manaKv0dfoa/Q1+v533XyTd2zMTtHX6Gv0Nfoa/1u/Y2N2ir5GX6Ov0dfoAwD49gJKJAGB
+  </data>
+ </layer>
+ <layer name="Front" width="40" height="60">
+  <data encoding="base64" compression="zlib">
+   eJztzrEJADAMwLDk/6d7hJcUJPDunZk93lX+Gn+Nv8Zf46/x1/hr/DX+Gn+Nv8Zf46/x1/hr/DX+Gn+Nv8Zf46/x1/hr/DX+Gn+Nv8Zf88vf5R6C2gDF
+  </data>
+ </layer>
+</map>
