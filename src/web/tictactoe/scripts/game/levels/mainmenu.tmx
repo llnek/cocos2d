@@ -4,7 +4,7 @@
   <image source="cbox-borders_x8.png" trans="ff00ff" width="56" height="8"/>
  </tileset>
  <tileset firstgid="8" name="BG" tilewidth="160" tileheight="160">
-  <image source="bg.png" trans="ff00ff" width="320" height="480"/>
+  <image source="mainmenu.png" trans="ff00ff" width="320" height="480"/>
  </tileset>
  <layer name="Back" width="40" height="60">
   <data encoding="base64" compression="zlib">

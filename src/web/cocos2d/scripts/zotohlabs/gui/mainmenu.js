@@ -40,6 +40,40 @@ var MenuLayer= cc.Layer.extend({
     title.setOpacity(0.9*255);
     this.addChild(title,11, ++tag);
 
+    s1= cc.LabelBMFont.create('Online', sh.xcfg.getFontPath('font.AutoMission'));
+    t1=cc.MenuItemLabel.create(s1,function() {
+      console.log('dude!!!!!!!!!!');
+    }, this);
+    t1.setOpacity(255 * 0.9);
+    t1.setScale(0.33);
+    menu= cc.Menu.create(t1);
+    menu.alignItemsVertically();
+    menu.setPosition(80, wz.height - csts.TILE * 18);
+    this.addChild(menu, 11, ++tag);
+
+    s1= cc.LabelBMFont.create('2 Players', sh.xcfg.getFontPath('font.AutoMission'));
+    t1=cc.MenuItemLabel.create(s1,function() {
+      console.log('dude!!!!!!!!!!');
+    }, this);
+    t1.setOpacity(255 * 0.9);
+    t1.setScale(0.33);
+    menu= cc.Menu.create(t1);
+    menu.alignItemsVertically();
+    menu.setPosition(cw.x + 68, wz.height - csts.TILE * 24);
+    this.addChild(menu, 11, ++tag);
+
+    s1= cc.LabelBMFont.create('1 Player', sh.xcfg.getFontPath('font.AutoMission'));
+    t1=cc.MenuItemLabel.create(s1,function() {
+      console.log('dude!!!!!!!!!!');
+    }, this);
+    t1.setOpacity(255 * 0.9);
+    t1.setScale(0.33);
+    menu= cc.Menu.create(t1);
+    menu.alignItemsVertically();
+    menu.setPosition(cw.x + 0, csts.TILE * 20);
+    this.addChild(menu, 11, ++tag);
+
+    /*
     ssheet = sh.xcfg.assets.sprites['gui.mmenu.modes'];
     w= ssheet[1];
     h= ssheet[2];
@@ -66,7 +100,7 @@ var MenuLayer= cc.Layer.extend({
     menu.alignItemsVerticallyWithPadding(20);
     menu.setPosition(cw.x, wz.height - csts.TILE * 20);
     this.addChild(menu, 11, ++tag);
-
+*/
     audio = sh.xcfg.assets.sprites['gui.audio'];
     w= audio[1];
     h= audio[2];

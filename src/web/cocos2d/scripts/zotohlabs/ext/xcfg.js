@@ -66,7 +66,6 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
 
   assets: {
     sprites: {
-      'gui.mmenu.modes' : [ 'media/cocos2d/btns/{{lang}}/game_modes.png', 260,20, -1 ],
       'gui.audio' : [ 'media/cocos2d/btns/audio_onoff_white.png', 48,48, -1 ]
     },
     tiles: {
@@ -88,6 +87,7 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
       'gui.mmenu.border16': 'media/cocos2d/game/cbox-borders_x16.png',
       'gui.mmenu.border8': 'media/cocos2d/game/cbox-borders_x8.png',
       */
+      'gui.mmenu.menu.bg' : 'game/{{appid}}/levels/mainmenu.png',
       'gui.mmenu.bg' : 'game/{{appid}}/levels/bg.png'
 
     },
@@ -96,6 +96,8 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
     fonts: {
       'font.TinyBoxBB' : [ 'media/cocos2d/fon/{{lang}}/', 'TinyBoxBlackBitA8.png', 'TinyBoxBlackBitA8.fnt' ],
       'font.LaffRiotNF' : [ 'media/cocos2d/fon/{{lang}}/', 'LaffRiotNF.png', 'LaffRiotNF.fnt' ],
+      'font.DigitalDream' : [ 'media/cocos2d/fon/{{lang}}/', 'DigitalDream.png', 'DigitalDream.fnt' ],
+      'font.AutoMission' : [ 'media/cocos2d/fon/{{lang}}/', 'AutoMission.png', 'AutoMission.fnt' ],
       'font.ConvWisdom' : [ 'media/cocos2d/fon/{{lang}}/', 'ConvWisdom.png', 'ConvWisdom.fnt' ],
       'font.Ubuntu' : [ 'media/cocos2d/fon/{{lang}}/', 'Ubuntu.png', 'Ubuntu.fnt' ],
       'font.Downlink' : [ 'media/cocos2d/fon/{{lang}}/', 'Downlink.png', 'Downlink.fnt' ]
