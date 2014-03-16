@@ -34,43 +34,43 @@ var MenuLayer= cc.Layer.extend({
     var ssheet;
 
     this.addChild(map,10, ++tag);
-    title= cc.LabelBMFont.create( sh.l10n('%mmenu'), sh.xcfg.getFontPath('font.TinyBoxBB'));
+    title= cc.LabelBMFont.create( sh.l10n('%mmenu'), sh.xcfg.getFontPath('font.JellyBelly'));
     title.setPosition(cw.x, wz.height - csts.TILE * 8 / 2);
-    title.setScale(0.3333); // font size = 72, want 24
+    title.setScale(0.6666); // font size = 72, want 24
     title.setOpacity(0.9*255);
     this.addChild(title,11, ++tag);
 
-    s1= cc.LabelBMFont.create('Online', sh.xcfg.getFontPath('font.AutoMission'));
+    s1= cc.LabelBMFont.create('Online', sh.xcfg.getFontPath('font.OogieBoogie'));
     t1=cc.MenuItemLabel.create(s1,function() {
       console.log('dude!!!!!!!!!!');
     }, this);
     t1.setOpacity(255 * 0.9);
-    t1.setScale(0.33);
+    t1.setScale(0.5);
     menu= cc.Menu.create(t1);
     menu.alignItemsVertically();
-    menu.setPosition(80, wz.height - csts.TILE * 18);
+    menu.setPosition(114, wz.height - csts.TILE * 18 - 2);
     this.addChild(menu, 11, ++tag);
 
-    s1= cc.LabelBMFont.create('2 Players', sh.xcfg.getFontPath('font.AutoMission'));
+    s1= cc.LabelBMFont.create('2 Players', sh.xcfg.getFontPath('font.OogieBoogie'));
     t1=cc.MenuItemLabel.create(s1,function() {
       console.log('dude!!!!!!!!!!');
     }, this);
     t1.setOpacity(255 * 0.9);
-    t1.setScale(0.33);
+    t1.setScale(0.5);
     menu= cc.Menu.create(t1);
     menu.alignItemsVertically();
-    menu.setPosition(cw.x + 68, wz.height - csts.TILE * 24);
+    menu.setPosition(cw.x + 68, wz.height - csts.TILE * 28 - 4);
     this.addChild(menu, 11, ++tag);
 
-    s1= cc.LabelBMFont.create('1 Player', sh.xcfg.getFontPath('font.AutoMission'));
+    s1= cc.LabelBMFont.create('1 Player', sh.xcfg.getFontPath('font.OogieBoogie'));
     t1=cc.MenuItemLabel.create(s1,function() {
       console.log('dude!!!!!!!!!!');
     }, this);
     t1.setOpacity(255 * 0.9);
-    t1.setScale(0.33);
+    t1.setScale(0.5);
     menu= cc.Menu.create(t1);
     menu.alignItemsVertically();
-    menu.setPosition(cw.x + 0, csts.TILE * 20);
+    menu.setPosition(cw.x + 0, csts.TILE * 19);
     this.addChild(menu, 11, ++tag);
 
     /*
