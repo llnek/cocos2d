@@ -54,7 +54,7 @@ var arenaLayer = cc.Layer.extend({
 
   goMenu: function() {
     var dir= cc.Director.getInstance();
-    dir.pushScene( asterix.MainMenuFactory.create({
+    dir.pushScene( sh.protos['MainMenu'].create({
       onBack: function() {
         dir.popScene();
       }

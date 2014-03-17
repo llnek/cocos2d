@@ -15,7 +15,6 @@ var sh = asterix.Shell;
 var loggr = global.ZotohLabs.logger;
 var echt = global.ZotohLabs.echt;
 
-
 //////////////////////////////////////////////////////////////////////////////
 // splash screen for the game - make it look nice please.
 //////////////////////////////////////////////////////////////////////////////
@@ -45,10 +44,10 @@ var SplashLayer = cc.Layer.extend({
     var dir= cc.Director.getInstance();
     var options= {
       onBack: function() {
-        dir.replaceScene( asterix.StartScreenFactory.create());
+        dir.replaceScene( sh.protos['StartScreen'].create() );
       }
     };
-    dir.replaceScene( asterix.MainMenuFactory.create(options));
+    dir.replaceScene( sh.protos['MainMenu'].create(options));
   },
 
   init: function() {
@@ -58,15 +57,13 @@ var SplashLayer = cc.Layer.extend({
 });
 
 
-asterix.StartScreenFactory = {
-
+sh.protos['StartScreen'] = {
   create: function() {
     var scene = cc.Scene.create();
     var y= new SplashLayer();
     return y.init() ? (function() { scene.addChild(y); return scene; })() : null;
   }
-
-};
+}
 
 
 

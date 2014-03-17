@@ -69,7 +69,7 @@ var YesNoLayer =  cc.Layer.extend({
 });
 
 
-asterix.YesNoFactory = {
+sh.protos['YesNo'] = {
   create: function(options) {
     var scene = cc.Scene.create();
     var y= new YesNoLayer(options);

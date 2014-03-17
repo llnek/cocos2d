@@ -91,40 +91,23 @@ global.ZotohLabs.Asterix = {
   fns: new Funcs(),
   Shell: {
 
+    sanitizeUrl: function(url) { return this.xcfg ? this.xcfg.sanitizeUrl(url) : url; },
+
     l10nInit: function(table) {
       String.defaultLocale="en-US";
       String.toLocaleString(table);
       loggr.info("loaded l10n strings.  locale = " + String.locale);
     },
 
-    currentStage: 1,
-    protos: {},
-    main: null,
     lang: 'en',
-
-    sanitizeUrl: function(url) {
-      // ensure we tell mustache not to escape html
-      var me=this;
-      url = url || '';
-      if (url.match(/^media/)) {
-        url = '{{{media-ref}}}/' + url;
-      }
-      else
-      if (url.match(/^game/)) {
-        url = '{{{gamesource-ref}}}/' + url;
-      }
-      return Mustache.render( url, {
-        'border-tiles' : me.xcfg.game.borderTiles,
-        'gamesource-ref' : '/public/ig/lib',
-        'media-ref' : '/public/ig',
-        'lang' : this.lang,
-        'appid' :  me.xcfg.appid } );
-    },
 
     l10n: function(s,pms) {
       var t= s.toLocaleString();
       return echt(pms) ? Mustache.render(t,pms) : t;
-    }
+    },
+
+    protos: {}
+
   }
 };
 

@@ -14,8 +14,7 @@ var doc= global.document;
 var cfg= {
 
     loadExtension: false,
-
-    chipmunk: false,
+    chipmunk: true,
     box2d: false,
     showFPS: false,
     frameRate: 60,
@@ -29,19 +28,26 @@ var cfg= {
       'zotohlabs/ext/asterix.js',
       'zotohlabs/ext/cs2dx.js',
       'zotohlabs/ext/xcfgbase.js',
-      'zotohlabs/ext/xcfg.js',
-      'game/tictactoe/config.js',
-      'game/tictactoe/i18n/game_en_US.js',
-      'zotohlabs/ext/xloader.js',
-      'zotohlabs/gui/startscreen.js',
-      'zotohlabs/gui/ynbox.js',
-      'zotohlabs/gui/mainmenu.js',
-      'zotohlabs/ext/negamax.js',
-      'game/tictactoe/board.js',
-      'game/tictactoe/game.js',
-      'zotohlabs/ext/application.js',
+      'zotohlabs/ext/xcfg.js'
     ],
 
+    initAppFiles: function(appid,files) {
+      var me=this; files = files || [];
+      if (files.length === 0) {
+        // for release mode.
+        this.appFiles=[];
+        this.engineDir='';
+      } else {
+        this.appFiles.push('game/' + appid + '/config.js');
+        this.appFiles.push('game/' + appid + '/i18n/game_en_US.js');
+        this.appFiles.push('zotohlabs/ext/xloader.js');
+        this.appFiles.push('zotohlabs/gui/startscreen.js');
+        this.appFiles.push('zotohlabs/gui/ynbox.js');
+        this.appFiles.push('zotohlabs/gui/mainmenu.js');
+        _.each(files,function(f) { me.appFiles.push(f); });
+        this.appFiles.push('zotohlabs/ext/application.js');
+      }
+    },
 
     //0 to turn debug off, 1 for basic debug, and 2 for full debug
     debugLevel: 2,
@@ -62,13 +68,12 @@ if ( ! doc.createElement('canvas').getContext) {
 }
 global.addEventListener('DOMContentLoaded', function () {
 
-  var s = doc.createElement('script');
   if (_.isString(cfg.engineDir) && cfg.engineDir.length > 0) {
+    var s = doc.createElement('script');
     s.src = cfg.engineDir + 'jsloader.js';
+    doc.body.appendChild(s);
+    s.id = 'cocos2d-html5';
   }
-
-  doc.body.appendChild(s);
-  s.id = 'cocos2d-html5';
 
 });
 

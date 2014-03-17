@@ -20,7 +20,7 @@ var echt= global.ZotohLabs.echt;
 // main application.
 //////////////////////////////////////////////////////////////////////////////
 
-var Cocos2dApp = cc.Application.extend({
+asterix.Cocos2dApp = cc.Application.extend({
 
   ctor: function (scene) {
     cc.COCOS2D_DEBUG = sh.xcfg.game.debugLevel;
@@ -37,10 +37,9 @@ var Cocos2dApp = cc.Application.extend({
       return false;
     }
 
-    var splash= sh.xcfg.protos[ this.startScene ];
     var director = cc.Director.getInstance();
-    var me=this;
     var eglv= cc.EGLView.getInstance();
+    var me=this;
     var sz = sh.xcfg.game.size;
 
     eglv.adjustViewPort(true);
@@ -53,7 +52,7 @@ var Cocos2dApp = cc.Application.extend({
     }
 
     asterix.XLoader.preload( this.pvGatherPreloads(), function () {
-      director.replaceScene( asterix.StartScreenFactory.create());
+      director.replaceScene( sh.protos[ this.startScene ].create() );
     }, this);
 
     return true;
@@ -125,15 +124,9 @@ var Cocos2dApp = cc.Application.extend({
     return sh.sanitizeUrl(v);
   }
 
-
 });
 
-loggr.info("About to create Cocos2D HTML5 Game");
-var app= new Cocos2dApp('Splash');
-
-loggr.info("register game start state - " + app.startScene);
-loggr.info(sh.xcfg);
-loggr.info("loaded and running. OK");
+sh.xcfg.newApplication().run();
 
 }).call(this);
 

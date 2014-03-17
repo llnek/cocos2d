@@ -127,13 +127,13 @@ var MenuLayer= cc.Layer.extend({
     var options = {
       yes: function() {
         sh.xcfg.sfxPlay('game_quit');
-        dir.replaceRootScene( asterix.StartScreenFactory.create() );
+        dir.replaceRootScene( sh.protos['StartScreen'].create() );
       },
       onBack: function() {
         dir.popScene();
       }
     }
-    dir.pushScene( asterix.YesNoFactory.create(options));
+    dir.pushScene( sh.protos['YesNo'].create(options));
   },
 
   init: function() {
@@ -146,7 +146,7 @@ var MenuLayer= cc.Layer.extend({
 
 });
 
-asterix.MainMenuFactory = {
+sh.protos['MainMenu'] = {
   create: function(options) {
     var scene = cc.Scene.create();
     var y= new MenuLayer(options);

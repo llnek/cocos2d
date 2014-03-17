@@ -274,7 +274,36 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
     }
   },
 
-  protos: {}
+  sanitizeUrl: function(url) {
+    // ensure we tell mustache not to escape html
+    url = url || '';
+    if (url.match(/^media/)) {
+      url = '{{{media-ref}}}/' + url;
+    }
+    else
+    if (url.match(/^game/)) {
+      url = '{{{gamesource-ref}}}/' + url;
+    }
+    return Mustache.render( url, {
+      'border-tiles' : this.game.borderTiles,
+      'gamesource-ref' : '/public/ig/lib',
+      'media-ref' : '/public/ig',
+      'lang' : sh.lang,
+      'appid' :  this.appid } );
+  },
+
+  newApplication: function() {
+    var me=this; return {
+      run: function() {
+        loggr.info("About to create Cocos2D HTML5 Game");
+        var app= new asterix.Cocos2dApp('StartScreen');
+        loggr.info("register game start state - " + app.startScene);
+        loggr.info(this);
+        loggr.info("loaded and running. OK");
+        return app;
+      }
+    };
+  }
 
 });
 
