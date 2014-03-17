@@ -36,7 +36,7 @@ var SplashLayer = cc.Layer.extend({
     var menu = cc.Menu.create(mi);
     menu.alignItemsVerticallyWithPadding(10);
     this.addChild(menu, 11, 2);
-    menu.setPosition(winSize.width / 2, 80);
+    menu.setPosition(winSize.width / 2, 50);
 
     return true;
   },

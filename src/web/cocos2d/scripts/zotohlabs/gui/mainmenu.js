@@ -53,7 +53,9 @@ var MenuLayer= cc.Layer.extend({
 
     s1= cc.LabelBMFont.create('2 Players', sh.xcfg.getFontPath('font.OogieBoogie'));
     t1=cc.MenuItemLabel.create(s1,function() {
-      console.log('dude!!!!!!!!!!');
+      dir.replaceScene( asterix.TicTacToe.Factory.create({
+        mode: 2
+      }) );
     }, this);
     t1.setOpacity(255 * 0.9);
     t1.setScale(0.5);
@@ -64,7 +66,9 @@ var MenuLayer= cc.Layer.extend({
 
     s1= cc.LabelBMFont.create('1 Player', sh.xcfg.getFontPath('font.OogieBoogie'));
     t1=cc.MenuItemLabel.create(s1,function() {
-      console.log('dude!!!!!!!!!!');
+      dir.replaceScene( asterix.TicTacToe.Factory.create({
+        mode: 1
+      }) );
     }, this);
     t1.setOpacity(255 * 0.9);
     t1.setScale(0.5);
@@ -73,34 +77,6 @@ var MenuLayer= cc.Layer.extend({
     menu.setPosition(cw.x + 0, csts.TILE * 19);
     this.addChild(menu, 11, ++tag);
 
-    /*
-    ssheet = sh.xcfg.assets.sprites['gui.mmenu.modes'];
-    w= ssheet[1];
-    h= ssheet[2];
-    p= sh.sanitizeUrl(ssheet[0]);
-    s1= cc.Sprite.create(p, cc.rect(0,0,w,h));
-    s2= cc.Sprite.create(p, cc.rect(0,h,w,h));
-    s3= cc.Sprite.create(p, cc.rect(0,2*h,w,h));
-
-    onep = cc.MenuItemSprite.create(s1, null, null, function() {
-      dir.replaceScene( asterix.TicTacToe.Factory.create({
-        mode: 1
-      }) );
-    }, this);
-    twop = cc.MenuItemSprite.create(s2, null, null, function() {
-      dir.replaceScene( asterix.TicTacToe.Factory.create({
-        mode: 2
-      }) );
-    }, this);
-    //netp = cc.MenuItemSprite.create(s3, null, null, function() {}, this);
-
-    onep.setScale(0.8);
-    twop.setScale(0.8);
-    menu= cc.Menu.create(onep, twop); //, netp);
-    menu.alignItemsVerticallyWithPadding(20);
-    menu.setPosition(cw.x, wz.height - csts.TILE * 20);
-    this.addChild(menu, 11, ++tag);
-*/
     audio = sh.xcfg.assets.sprites['gui.audio'];
     w= audio[1];
     h= audio[2];

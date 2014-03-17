@@ -73,7 +73,7 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
       'gui.mmenu' : 'game/{{appid}}/levels/mainmenu.tmx'
     },
     images: {
-      'splash.play-btn' : 'media/{{appid}}/gui/{{lang}}/play_btn.png',
+      'splash.play-btn' : 'media/cocos2d/btns/play_amber_x64.png',
       'splash.splash' : 'media/{{appid}}/gui/splash.png',
       'gui.mmenu.border': 'media/cocos2d/game/{{border-tiles}}',
 
