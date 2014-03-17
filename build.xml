@@ -94,8 +94,15 @@
   <target name="finz-build">
     <!--
     <concat destfile="${basedir}/public/c/webcommon.js" append="true">
+      <fileset file="${basedir}/public/vendors/underscore/underscore-min.js"/>
+      <fileset file="${basedir}/public/vendors/zepto/zepto.min.js"/>
+      <fileset file="${basedir}/public/vendors/l10njs/l10n.min.js"/>
+      <fileset file="${basedir}/public/vendors/mustache/mustache.js"/>
+      <fileset file="${basedir}/public/vendors/modernizr/modernizr.custom.js"/>
+      <fileset file="${basedir}/public/vendors/dbg/dbg.js"/>
+      <fileset file="${basedir}/public/vendors/fsm/state-machine.min.js"/>
     </concat>
-    -->
+         -->
   </target>
 
   <!-- target: test-build
