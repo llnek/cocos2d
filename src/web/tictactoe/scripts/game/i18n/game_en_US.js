@@ -21,11 +21,7 @@ global.ZotohLabs.klass.merge(global.ZotohLabs.Asterix.Shell.xcfg.l10n, {
   "%whosturn" : "{{who}}'s TURN...",
   "%whodraw" : "Draw!",
   "%whowin" : "{{who}} Wins!",
-  "%computer" : 'Computer',
-  "%player2" : 'Player 2',
-  "%player1" : 'Player 1',
 
-  "%cpu" : "CPU",
   "%p2" : "P2",
   "%p1" : "P1"
 

@@ -20,14 +20,8 @@ var loggr= global.ZotohLabs.logger;
 
 asterix.XLayer = cc.Layer.extend({
 
-  players: [],
-  actor: null,
   lastTag: 0,
   lastZix: 0,
-
-  setGameMode: function(mode) {
-    sh.xcfg.csts.GAME_MODE=mode;
-  },
 
   pkInit: function() {
 
@@ -42,23 +36,6 @@ asterix.XLayer = cc.Layer.extend({
     if (sys.capabilities.hasOwnProperty('touches')) {
       this.setTouchEnabled(true);
       this.setTouchMode(cc.TOUCH_ONE_BY_ONE);
-    }
-
-    this.scheduleUpdate();
-
-    switch (this.options.mode) {
-
-      case 2:
-        this.newGame(2);
-      break;
-
-      case 1:
-        this.newGame(1);
-      break;
-
-      default:
-        return false;
-      break;
     }
 
     return true;

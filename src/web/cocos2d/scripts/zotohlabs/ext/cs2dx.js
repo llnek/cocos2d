@@ -21,6 +21,35 @@ var echt= global.ZotohLabs.echt;
 
 asterix.COCOS2DX = {
 
+  bbox: function(sprite) {
+    return cc.Rect( this.leftPos(sprite), this.bottomPos(sprite), this.realWidth(sprite),
+    this.realHeight(sprite));
+  },
+
+  realHeight: function(sprite) {
+    return sprite.getContentSize().height * sprite.getScaleY();
+  },
+
+  realWidth: function(sprite) {
+    return sprite.getContentSize().width * sprite.getScaleX();
+  },
+
+  leftPos: function(sprite) {
+    return sprite.getPosition().x - this.realWidth(sprite)/2;
+  },
+
+  rightPos: function(sprite) {
+    return sprite.getPosition().x + this.realWidth(sprite)/2;
+  },
+
+  topPos: function(sprite) {
+    return sprite.getPosition().y + this.realHeight(sprite)/2;
+  },
+
+  bottomPos: function(sprite) {
+    return sprite.getPosition().y - this.realHeight(sprite)/2;
+  },
+
   center: function() {
     var winSize = this.screen();
     return cc.p(winSize.width / 2, winSize.height / 2);

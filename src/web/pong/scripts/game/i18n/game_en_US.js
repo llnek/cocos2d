@@ -18,29 +18,10 @@ global.ZotohLabs.klass.merge(global.ZotohLabs.Asterix.Shell.xcfg.l10n, {
 
 "en-US" : {
 
-  "%whosturn" : "{{who}}'s TURN...",
-  "%whodraw" : "Draw!",
   "%whowin" : "{{who}} Wins!",
-  "%computer" : 'Computer',
-  "%player2" : 'Player 2',
-  "%player1" : 'Player 1',
 
-  "%quit!" : 'Quit',
-  "%back" : 'Back',
-  "%ok" : 'OK',
-
-  "%cpu" : "CPU",
   "%p2" : "P2",
-  "%p1" : "P1",
-
-  "%mmenu" : 'Main Menu',
-
-  "%replay" : 'REPLAY',
-  "%play" : 'PLAY',
-
-  "%quit?" : 'Continue to quit game?',
-  "%scores" : '= scores ='
-
+  "%p1" : "P1"
 
 }
 

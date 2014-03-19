@@ -22,6 +22,7 @@ var echt = global.ZotohLabs.echt;
 asterix.XSplashLayer = asterix.XLayer.extend({
 
   pkInit: function() {
+    this._super();
     var imgUrl= sh.xcfg.getImagePath('splash.splash');
     var me=this, cw = ccsx.center();
     var winSize = ccsx.screen();

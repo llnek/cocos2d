@@ -24,11 +24,13 @@ png.EntityBall = png.EntityXXX.extends({
     //sh.main.physics.arcade.collide(this.sprite, this.screen.boundary);
   },
 
-  create: function(screen) {
-    this.parent(screen);
+  create: function() {
+    return this.parent();
+    /*
     this.sprite.body.velocity.x = 100 * asterix.fns.randomSign();
     this.sprite.body.velocity.y = 100 * asterix.fns.randomSign();
     this.sprite.body.bounce.setTo(1, 1);
+    */
   },
 
   ctor: function(x,y,options) {

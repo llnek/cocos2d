@@ -43,7 +43,7 @@ var MainMenu = asterix.XMenuLayer.extend({
 
     s1= cc.LabelBMFont.create(sh.l10n('%2players'), sh.xcfg.getFontPath('font.OogieBoogie'));
     t1=cc.MenuItemLabel.create(s1,function() {
-      dir.replaceScene( asterix.TicTacToe.Factory.create({
+      dir.replaceScene( asterix.Pong.Factory.create({
         mode: 2
       }) );
     }, this);
@@ -56,7 +56,7 @@ var MainMenu = asterix.XMenuLayer.extend({
 
     s1= cc.LabelBMFont.create(sh.l10n('%1player'), sh.xcfg.getFontPath('font.OogieBoogie'));
     t1=cc.MenuItemLabel.create(s1,function() {
-      dir.replaceScene( asterix.TicTacToe.Factory.create({
+      dir.replaceScene( asterix.Pong.Factory.create({
         mode: 1
       }) );
     }, this);

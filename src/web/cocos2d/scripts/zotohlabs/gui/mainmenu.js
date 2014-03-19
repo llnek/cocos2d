@@ -22,6 +22,7 @@ var echt = global.ZotohLabs.echt;
 asterix.XMenuLayer= asterix.XLayer.extend({
 
   pkInit: function() {
+    this._super();
     var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gui.mmenu'));
     var me=this, cw = ccsx.center();
     var csts = sh.xcfg.csts;

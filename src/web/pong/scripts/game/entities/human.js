@@ -22,6 +22,7 @@ var loggr= global.ZotohLabs.logger;
 png.EntityHuman = png.EntityPaddle.extends({
 
   update: function() {
+    /*
     var bottom = this.sprite.y + this.sprite.height/2;
     var top = this.sprite.y - this.sprite.height/2;
     var csts= sh.xcfg.csts;
@@ -41,6 +42,7 @@ png.EntityHuman = png.EntityPaddle.extends({
     if (vy) {
       this.sprite.body.velocity.y = vy;
     }
+    */
   },
 
   ctor: function(x,y,options) {

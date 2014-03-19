@@ -21,7 +21,7 @@ var echt= global.ZotohLabs.echt;
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-var arenaLayer = asterix.XLayer.extend({
+var arenaLayer = asterix.XGameLayer.extend({
 
   scores : { 'O': 0, 'X': 0 },
   MAX_SCORE: 1, //11,
@@ -30,131 +30,133 @@ var arenaLayer = asterix.XLayer.extend({
   keys: [],
 
   play: function() {
-    var paddImg= sh.main.cache.getImage('gamelevel1.images.paddle2');
-    var ballImg= sh.main.cache.getImage('gamelevel1.images.ball');
+    var p2Img= cc.Sprite.create(sh.xcfg.getImagePath('gamelevel1.images.paddle2'));
+    var p1Img= cc.Sprite.create(sh.xcfg.getImagePath('gamelevel1.images.paddle1'));
+    var ballImg= cc.Sprite.create(sh.xcfg.getImagePath('gamelevel1.images.ball'));
     var csts= sh.xcfg.csts;
-    var c= sh.main.getCenter();
-    var z= sh.main.getSize();
+    var cw= ccsx.center();
+    var wz= ccsx.screen();
+    var p1x,p2x;
+
+    this.doLayout();
+
+    p2x = wz.width - csts.TILE - 4 - ballImg.getContentSize().width - p2Img.getContentSize().width/2;
+    p1x = csts.TILE + ballImg.getContentSize().width + 4 + p1Img.getContentSize().width/2;
     this.maybeReset();
 
-    //sprites are always centered internally
-    var p1 = new png.EntityHuman( csts.TILE + ballImg.width + 4 + paddImg.width/2,
-                                  c.y, { color: 'X' });
+    var p1 = new png.EntityHuman( p1x, cw.y, { color: 'X' });
     var p2= null;
     switch (csts.GAME_MODE) {
     case 1:
-    p2 = new png.EntityRobot( z.x - csts.TILE - 4 - ballImg.width - paddImg.width/2,
-                              c.y,
-                              { color: 'O' });
+    p2 = new png.EntityRobot( p2x, cw.y, { color: 'O' });
     break;
     case 2:
-    p2 = new png.EntityHuman( z.x - csts.TILE - 4 - ballImg.width - paddImg.width/2,
-                              c.y,
-                              { color: 'O' });
+    p2 = new png.EntityHuman( p2x, cw.y, { color: 'O' });
+    break;
+
     case 3:
     break;
     };
 
-
     this.players= [ null, p1, p2];
-    this.doLayout();
-
-    p2.create(this);
-    p1.create(this);
+    this.addChild(p1.create(), this.lastZix, ++this.lastTag);
+    this.addChild(p2.create(), this.lastZix, ++this.lastTag);
     this.spawnBall();
+    this.drawScores();
 
-    //this.bindEvents(p1,p2);
+    return true;
   },
 
   spawnBall: function() {
-    var ballImg= sh.main.cache.getImage('gamelevel1.images.ball');
-    var c= sh.main.getCenter();
-    // anchored to center internally
-    this.ball = new png.EntityBall( c.x, c.y, {});
-    this.ball.create(this);
+    var ballImg= cc.Sprite.create(sh.xcfg.getImagePath('gamelevel1.images.ball'));
+    var cw= ccsx.center();
+    this.ball = new png.EntityBall( cw.x, cw.y, {});
+    this.addChild(this.ball.create(), this.lastZix, ++this.lastTag);
   },
 
   doLayout: function() {
-    var ml, c= sh.main.getCenter();
-    var s= sh.main.getSize();
+    var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gamelevel1.tiles.arena'));
     var csts= sh.xcfg.csts;
-    // background
-    this.map = sh.main.add.tilemap('gamelevel1.tiles.arena');
-    this.map.addTilesetImage('Borders', 'gui.mmenu.border');
-    this.map.addTilesetImage('BG', 'gamelevel1.images.arena');
-    ml= this.map.createLayer('Back',undef, undef, this.group);
-    ml = this.map.createLayer('Front',undef, undef, this.group);
-    this.boundary = ml;
-    this.map.setCollisionByExclusion([],true, 'Front');
+    var cw= ccsx.center();
+    var wz= ccsx.screen();
+    var title;
 
-    //sh.phaser.physics.setBoundsToWorld(true,true,true,true);
-    /*
-    sh.main.physics.arcade.bounds.setTo(csts.TILE, s.y - csts.TILE,
-                                s.x - csts.TILE * 2, s.y - csts.TILE * 2);
-                                */
+    this.addChild(map, this.lastZix, ++this.lastTag);
 
-    this.score1 = sh.main.add.bitmapText( 0,0, 'font.OCR', '8', 40, this.group);
-    this.score1.tint= 0xda4848;
-    this.score2 = sh.main.add.bitmapText( 0,0, 'font.OCR', '8', 40, this.group);
-    this.score2.tint= 0x6abe61;
+    title= cc.LabelBMFont.create(this.p1ID + " / " + this.p2ID, sh.xcfg.getFontPath('font.TinyBoxBB'));
+    title.setPosition(cw.x, //wz.height - csts.TILE - 12/2 - 1);
+    wz.height - csts.TILE * 6 /2 );
+    title.setScale(12/72);
+    title.setOpacity(0.9*255);
+    this.addChild(title, this.lastZix, ++this.lastTag);
 
-    this.status = sh.main.add.bitmapText( 0,0, 'font.TinyBoxBB', '', 12, this.group);
-    this.result = sh.main.add.bitmapText( 0,0, 'font.TinyBoxBB', '', 12, this.group);
+    this.score1= cc.LabelBMFont.create('8', sh.xcfg.getFontPath('font.OCR'));
+    this.score1.setScale(36/72);
+    this.score1.setOpacity(0.9*255);
+    this.score1.setColor(new cc.Color3B(255,0,0)); // 0xff0000
+    this.score1.setPosition( cw.x - ccsx.realWidth(title)/2 - ccsx.realWidth(this.score1)/2 - 10, //wz.height - csts.TILE - ccsx.realHeight(this.score1)/2 + 4);
+    wz.height - csts.TILE * 6 /2 - 2);
+    //this.score1.setAnchorPoint(cc.p(0,1));
+    this.addChild(this.score1, this.lastZix, ++this.lastTag);
 
-    this.guiBtns();
+    this.score2= cc.LabelBMFont.create('8', sh.xcfg.getFontPath('font.OCR'));
+    this.score2.setScale(36/72);
+    this.score2.setOpacity(0.9*255);
+    this.score2.setColor(new cc.Color3B(106,190,97)); // 0x6ABE61
+    this.score2.setPosition(
+    cw.x + ccsx.realWidth(title)/2 + ccsx.realWidth(this.score1)/2 + 6,
+    //wz.height - csts.TILE - ccsx.realHeight(this.score1)/2 + 4);
+    wz.height - csts.TILE * 6 /2 - 2);
+    //this.score2.setAnchorPoint(cc.p(1,1));
+    this.addChild(this.score2, this.lastZix, ++this.lastTag);
+
+    this.doCtrlBtns();
   },
 
-  guiBtns: function() {
-    var img2= sh.main.cache.getImage('game.arena.replay');
-    var img1= sh.main.cache.getImage('game.arena.menu');
-    var csts = sh.xcfg.csts;
-    var c= sh.main.getCenter();
-    var x,y;
+  doCtrlBtns: function() {
+    var x, y, csts = sh.xcfg.csts;
+    var wz= ccsx.screen();
+    var cw= ccsx.center();
+    var s1,s2,t1,t2,menu;
 
-    y = csts.TILE + csts.S_OFF;
-    x = c.x - img1.width/2;
-    this.menuBtn = sh.main.add.button( x, y, 'game.arena.menu', function() {
-      sh.xcfg.smac.settings();
-    }, this, 0,0,0,0,this.group);
-    this.btns.push(this.menuBtn);
+    s1= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.menu'));
+    t1 = cc.MenuItemSprite.create(s1, null, null, function() {
+      this.goMenu();
+    }, this);
+    t1.setScale(28/48);
+    menu= cc.Menu.create(t1);
+    menu.setPosition(wz.width - csts.TILE - ccsx.realWidth(t1)/2,
+    wz.height - csts.TILE * 6 /2 );
+      //wz.height - csts.TILE - ccsx.realHeight(t1) / 2);
+    this.addChild(menu, this.lastZix, ++this.lastTag);
 
-    y = (csts.GRID_H - 1) * csts.TILE - csts.S_OFF - img2.height;
-    x = c.x;
-    this.replayBtn = sh.main.add.button( x, y, 'game.arena.replay', function() {
-      sh.xcfg.smac.replay();
-    }, this, 0,0,0,0,this.group);
-    this.replayBtn.visible=false;
-    this.btns.push(this.replayBtn);
-
-    this.drawScores();
+    s2= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.replay'));
+    t2 = cc.MenuItemSprite.create(s2, null, null, function() {
+      this.pkReplay();
+    }, this);
+    this.replayBtn= cc.Menu.create(t2);
+    this.replayBtn.setPosition(cw.x, csts.TILE + csts.S_OFF + s2.getContentSize().height / 2);
+    this.replayBtn.setVisible(false);
+    this.addChild(this.replayBtn, this.lastZix, ++this.lastTag);
   },
 
   drawScores: function() {
     var s2 = this.scores[this.players[2].color];
     var s1 = this.scores[this.players[1].color];
-    var x, y, csts= sh.xcfg.csts;
-    var c = sh.main.getCenter();
+    var csts= sh.xcfg.csts;
+    var wz = ccsx.screen();
     var n2 = global.ZotohLabs.prettyNumber(s2,1);
     var n1 = global.ZotohLabs.prettyNumber(s1,1);
 
-    this.score1.setText(n1);
-    this.score1.updateText();
-    y = csts.TILE + csts.S_OFF;
-    x= c.x - 50 - this.score1.textWidth;
-    this.score1.repos( x,y);
-
-    this.score2.setText(n2);
-    this.score2.updateText();
-    y = csts.TILE + csts.S_OFF;
-    x= c.x + 50;
-    this.score2.repos( x,y);
+    this.score1.setString(n1);
+    this.score2.setString(n2);
   },
 
   newGame: function(mode) {
-    sh.main.sfxPlay('start_game');
+    sh.xcfg.sfxPlay('start_game');
     this.setGameMode(mode);
     this.resetScores();
-    this.play();
+    return this.play();
   },
 
   resetScores: function() {
@@ -163,20 +165,13 @@ var arenaLayer = asterix.XLayer.extend({
 
   maybeReset: function() {
     this.players=[];
-    this.keys=[];
-    this.boundary= null;
+    this.actor=null;
   },
 
   updateEntities: function() {
     this.players[2].update();
     this.players[1].update();
     this.ball.update();
-    /*
-    this.physics.collide(this.players[2], this.ball,
-        this.paddleHitBallHandler, this.paddleHitBallProcess, this);
-    this.physics.collide(this.players[1], this.ball,
-        this.paddleHitBallHandler, this.paddleHitBallProcess, this);
-    */
   },
 
   update: function() {
@@ -210,9 +205,9 @@ var arenaLayer = asterix.XLayer.extend({
   },
 
   onDone: function(p) {
-    //sh.xcfg.sfxPlay(this.sfx.game_end);
     this.replayBtn.visible = true;
     this.lastWinner = p;
+    sh.xcfg.sfxPlay('game_end');
   },
 
   drawGui: function() {

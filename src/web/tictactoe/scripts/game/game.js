@@ -27,7 +27,7 @@ var Cmd= klass.extends({
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-var arenaLayer = asterix.XLayer.extend({
+var arenaLayer = asterix.XGameLayer.extend({
 
   p2Long: sh.l10n('%player2'),
   p1Long: sh.l10n('%player1'),
@@ -48,21 +48,6 @@ var arenaLayer = asterix.XLayer.extend({
 
   resetScores: function() {
     this.scores=  { 'O': 0, 'X': 0 };
-  },
-
-  goMenu: function() {
-    var dir= cc.Director.getInstance();
-    dir.pushScene( sh.protos['MainMenu'].create({
-      onBack: function() {
-        dir.popScene();
-      }
-    }));
-  },
-
-  pkReplay: function() {
-    this.replayBtn.setVisible(false);
-    this.removeAllChildren(true);
-    this.play();
   },
 
   play: function() {
@@ -96,13 +81,15 @@ var arenaLayer = asterix.XLayer.extend({
       this.move( new Cmd(this.actor, asterix.fns.rand(sh.xcfg.csts.CELLS)));
     }
     loggr.debug("game started, initor = " + this.actor.color );
+
+    return true;
   },
 
   newGame: function(mode) {
     sh.xcfg.sfxPlay('start_game');
     this.setGameMode(mode);
     this.resetScores();
-    this.play();
+    return this.play();
   },
 
   maybeReset: function() {
@@ -361,83 +348,54 @@ var arenaLayer = asterix.XLayer.extend({
 
   },
 
-  guiBtns: function(tag) {
-    var x, y, csts = sh.xcfg.csts;
-    var wz= ccsx.screen();
-    var cw= ccsx.center();
-    var s1,s2,t1,t2,menu;
-
-    s1= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.menu'));
-    t1 = cc.MenuItemSprite.create(s1, null, null, function() {
-      this.goMenu();
-    }, this);
-    menu= cc.Menu.create(t1);
-    menu.setPosition(wz.width - csts.TILE - csts.S_OFF -
-      s1.getContentSize().width / 2,
-      csts.TILE + csts.S_OFF + s1.getContentSize().height / 2);
-    this.addChild(menu, 11, ++tag);
-
-    s2= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.replay'));
-    t2 = cc.MenuItemSprite.create(s2, null, null, function() {
-      this.pkReplay();
-    }, this);
-    this.replayBtn= cc.Menu.create(t2);
-    this.replayBtn.setPosition(cw.x, csts.TILE + csts.S_OFF + s2.getContentSize().height / 2);
-    this.replayBtn.setVisible(false);
-    this.addChild(this.replayBtn, 11, ++tag);
-
-    this.drawScores();
-  },
-
   doLayout: function() {
     var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gamelevel1.tiles.arena'));
     var cw= ccsx.center();
     var wz= ccsx.screen();
     var csts= sh.xcfg.csts;
     var title;
-    var tag=0;
 
-    this.addChild(map, 10, ++tag);
+    this.addChild(map, this.lastZix, ++this.lastTag);
 
     title= cc.LabelBMFont.create(this.p1ID + " / " + this.p2ID, sh.xcfg.getFontPath('font.TinyBoxBB'));
     title.setPosition(cw.x, wz.height - csts.TILE - csts.GAP);
-    title.setScale(0.1666); // font size = 72, want 24
+    title.setScale(24/72);
     title.setOpacity(0.9*255);
-    this.addChild(title,11, ++tag);
+    this.addChild(title, this.lastZix, ++this.lastTag);
 
     this.score1= cc.LabelBMFont.create('888', sh.xcfg.getFontPath('font.TinyBoxBB'));
-    this.score1.setScale(0.278); // font size = 72, want 20
+    this.score1.setScale(20/72);
     this.score1.setOpacity(0.9*255);
     this.score1.setColor(new cc.Color3B(253,188,178)); // 0xfdbcb2;
     this.score1.setPosition(csts.TILE + csts.S_OFF + 2, wz.height - csts.TILE - csts.S_OFF);
     this.score1.setAnchorPoint(cc.p(0,1));
-    this.addChild(this.score1, 11, ++tag);
+    this.addChild(this.score1, this.lastZix, ++this.lastTag);
 
     this.score2= cc.LabelBMFont.create('888', sh.xcfg.getFontPath('font.TinyBoxBB'));
-    this.score2.setScale(0.278); // font size = 72, want 20
+    this.score2.setScale(20/72);
     this.score2.setOpacity(0.9*255);
     this.score2.setColor(new cc.Color3B(255,102,0)); // 0xff6600;
     this.score2.setPosition(wz.width - csts.TILE - csts.S_OFF,
       wz.height - csts.TILE - csts.S_OFF);
     this.score2.setAnchorPoint(cc.p(1,1));
-    this.addChild(this.score2, 11, ++tag);
+    this.addChild(this.score2, this.lastZix, ++this.lastTag);
 
     this.status= cc.LabelBMFont.create('', sh.xcfg.getFontPath('font.TinyBoxBB'));
-    this.status.setScale(0.1666); // font size = 72, want 12
+    this.status.setScale(12/72);
     this.status.setOpacity(0.9*255);
     this.status.setPosition(cw.x, csts.TILE * 10);
-    this.addChild(this.status, 11, ++tag);
+    this.addChild(this.status, this.lastZix, ++this.lastTag);
 
     this.result= cc.LabelBMFont.create('', sh.xcfg.getFontPath('font.TinyBoxBB'));
-    this.result.setScale(0.1666); // font size = 72, want 12
+    this.result.setScale(12/72);
     this.result.setOpacity(0.9*255);
     this.result.setPosition(cw.x, csts.TILE * 10);
     this.result.setVisible(false);
-    this.addChild(this.result, 11, ++tag);
+    this.addChild(this.result, this.lastZix, ++this.lastTag);
 
-    this.guiBtns(tag);
+    this.doCtrlBtns();
 
-    this._lastTag= tag;
+    this.drawScores();
   },
 
   setGameMode: function(mode) {

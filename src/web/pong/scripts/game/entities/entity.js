@@ -25,23 +25,18 @@ png.EntityXXX = global.ZotohLabs.klass.extends({
   },
 
   kill: function() {
-    this.sprite.destroy();
     this.sprite=null;
   },
 
-  create: function(screen) {
-    this.sprite = sh.main.add.sprite(this.startPos.x, this.startPos.y, this.key, 0, screen.group);
-    this.screen=screen;
-    this.sprite.anchor.setTo(0.5, 0.5);
-    sh.main.physics.enable(this.sprite);
-    this.sprite.body.velocity.x = 0;
-    this.sprite.body.velocity.y = 0;
-    this.sprite.body.collideWorldBounds = true;
+  create: function() {
+    this.sprite = cc.Sprite.create(sh.xcfg.getImagePath(this.key));
+    this.sprite.setPosition(this.startPos);
+    return this.sprite;
   },
 
   ctor: function(x,y,options) {
-    this.startPos = { x: x, y: y };
     this.picColor= options.color;
+    this.startPos = cc.p(x,y);
     this.key= options.key;
   }
 
@@ -49,12 +44,12 @@ png.EntityXXX = global.ZotohLabs.klass.extends({
 
 Object.defineProperty(png.EntityXXX.prototype, "height", {
   get: function() {
-    return this.sprite ? this.sprite.height : undef;
+    return this.sprite ? this.sprite.getContentSize().height : undef;
   }
 });
 Object.defineProperty(png.EntityXXX.prototype, "width", {
   get: function() {
-    return this.sprite ? this.sprite.width : undef;
+    return this.sprite ? this.sprite.getContentSize().width : undef;
   }
 });
 Object.defineProperty(png.EntityXXX.prototype, "color", {
@@ -71,9 +66,8 @@ png.EntityPaddle = png.EntityXXX.extends({
 
   speed: 200,
 
-  create: function(screen) {
-    this.parent(screen);
-    this.sprite.body.immovable = true;
+  create: function() {
+    return this.parent();
   },
 
   ctor: function(x,y,options) {

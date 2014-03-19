@@ -103,6 +103,7 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
       'font.AutoMission' : [ 'media/cocos2d/fon/{{lang}}/', 'AutoMission.png', 'AutoMission.fnt' ],
       'font.ConvWisdom' : [ 'media/cocos2d/fon/{{lang}}/', 'ConvWisdom.png', 'ConvWisdom.fnt' ],
       'font.Ubuntu' : [ 'media/cocos2d/fon/{{lang}}/', 'Ubuntu.png', 'Ubuntu.fnt' ],
+      'font.OCR' : [ 'media/cocos2d/fon/{{lang}}/', 'OCR.png', 'OCR.fnt' ],
       'font.Downlink' : [ 'media/cocos2d/fon/{{lang}}/', 'Downlink.png', 'Downlink.fnt' ]
     }
   },
@@ -123,6 +124,11 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
     "en-US" : {
       '%mobileStart' : 'Press Anywhere To Start!',
       '%webStart' : 'Press Spacebar To Start!',
+
+      "%player2" : 'Player 2',
+      "%player1" : 'Player 1',
+      "%computer" : 'Computer',
+      "%cpu" : "CPU",
 
       "%2players" : '2 Players',
       "%1player" : '1 Player',
@@ -180,7 +186,10 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
   sfxPlay: function(key) {
     var eng = cc.AudioEngine.getInstance();
     if (this.sound.open) {
-      eng.playEffect( this.getSfxPath(key),false);
+      var url = this.getSfxPath(key);
+      if (url) {
+        eng.playEffect( url, false);
+      }
     }
   },
 
