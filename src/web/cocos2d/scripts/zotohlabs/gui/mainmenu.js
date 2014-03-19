@@ -19,63 +19,32 @@ var echt = global.ZotohLabs.echt;
 //////////////////////////////////////////////////////////////////////////////
 // Main menu.
 //////////////////////////////////////////////////////////////////////////////
-var MenuLayer= cc.Layer.extend({
+asterix.XMenuLayer= asterix.XLayer.extend({
 
   pkInit: function() {
     var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gui.mmenu'));
-    var dir= cc.Director.getInstance();
     var me=this, cw = ccsx.center();
     var csts = sh.xcfg.csts;
     var wz = ccsx.screen();
-    var menu, title, audio;
-    var onep, twop, netp;
-    var w,h, p,s1,s2,s3;
-    var t1,t2,tag=0;
-    var ssheet;
+    var title;
 
-    this.addChild(map,10, ++tag);
+    this.addChild(map, this.lastZix, ++this.lastTag);
     title= cc.LabelBMFont.create( sh.l10n('%mmenu'), sh.xcfg.getFontPath('font.JellyBelly'));
     title.setPosition(cw.x, wz.height - csts.TILE * 8 / 2);
     title.setScale(0.6666); // font size = 72, want 24
     title.setOpacity(0.9*255);
-    this.addChild(title,11, ++tag);
+    this.addChild(title, this.lastZix, ++this.lastTag);
 
-    s1= cc.LabelBMFont.create('Online', sh.xcfg.getFontPath('font.OogieBoogie'));
-    t1=cc.MenuItemLabel.create(s1,function() {
-      console.log('dude!!!!!!!!!!');
-    }, this);
-    t1.setOpacity(255 * 0.9);
-    t1.setScale(0.5);
-    menu= cc.Menu.create(t1);
-    menu.alignItemsVertically();
-    menu.setPosition(114, wz.height - csts.TILE * 18 - 2);
-    this.addChild(menu, 11, ++tag);
+    return this.doLayout();
+  },
 
-    s1= cc.LabelBMFont.create('2 Players', sh.xcfg.getFontPath('font.OogieBoogie'));
-    t1=cc.MenuItemLabel.create(s1,function() {
-      dir.replaceScene( asterix.TicTacToe.Factory.create({
-        mode: 2
-      }) );
-    }, this);
-    t1.setOpacity(255 * 0.9);
-    t1.setScale(0.5);
-    menu= cc.Menu.create(t1);
-    menu.alignItemsVertically();
-    menu.setPosition(cw.x + 68, wz.height - csts.TILE * 28 - 4);
-    this.addChild(menu, 11, ++tag);
-
-    s1= cc.LabelBMFont.create('1 Player', sh.xcfg.getFontPath('font.OogieBoogie'));
-    t1=cc.MenuItemLabel.create(s1,function() {
-      dir.replaceScene( asterix.TicTacToe.Factory.create({
-        mode: 1
-      }) );
-    }, this);
-    t1.setOpacity(255 * 0.9);
-    t1.setScale(0.5);
-    menu= cc.Menu.create(t1);
-    menu.alignItemsVertically();
-    menu.setPosition(cw.x + 0, csts.TILE * 19);
-    this.addChild(menu, 11, ++tag);
+  doCtrlBtns: function() {
+    var me=this, csts = sh.xcfg.csts;
+    var wz = ccsx.screen();
+    var cw = ccsx.center();
+    var p, w, h, audio;
+    var s2, s1, t2,t1;
+    var menu;
 
     audio = sh.xcfg.assets.sprites['gui.audio'];
     w= audio[1];
@@ -101,7 +70,7 @@ var MenuLayer= cc.Layer.extend({
     menu= cc.Menu.create(audio);
     //menu.setAnchorPoint(cc.p(0,0));
     menu.setPosition(csts.TILE + csts.S_OFF, csts.TILE + csts.S_OFF);
-    this.addChild(menu, 11, ++tag);
+    this.addChild(menu, this.lastZix, ++this.lastTag);
 
     s2= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.back'));
     s1= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.quit'));
@@ -117,7 +86,7 @@ var MenuLayer= cc.Layer.extend({
     menu.setPosition(wz.width - csts.TILE - csts.S_OFF -
       (s2.getContentSize().width + s1.getContentSize().width + 10) / 2,
     csts.TILE + csts.S_OFF + s2.getContentSize().height / 2);
-    this.addChild(menu, 11, ++tag);
+    this.addChild(menu, this.lastZix, ++this.lastTag);
 
     return true;
   },
@@ -134,26 +103,9 @@ var MenuLayer= cc.Layer.extend({
       }
     }
     dir.pushScene( sh.protos['YesNo'].create(options));
-  },
-
-  init: function() {
-    return this._super() ? this.pkInit() : false;
-  },
-
-  ctor: function(options) {
-    this.options = options || {};
   }
 
 });
-
-sh.protos['MainMenu'] = {
-  create: function(options) {
-    var scene = cc.Scene.create();
-    var y= new MenuLayer(options);
-    return y.init() ? (function() { scene.addChild(y); return scene; })() : null;
-  }
-};
-
 
 
 }).call(this);

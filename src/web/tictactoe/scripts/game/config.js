@@ -52,6 +52,7 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
     tiles: {
     },
     images: {
+      'splash.play-btn' : 'media/cocos2d/btns/play_blue_x64.png'
     },
     sounds: {
       'game_end' : [ 'media/cocos2d/sfx/MineExplosion.mp3', 'media/cocos2d/sfx/MineExplosion.ogg'],
@@ -69,7 +70,7 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
         'arena' : 'game/{{appid}}/levels/arena.tmx'
       },
       images: {
-        'arena' : 'media/{{appid}}/game/arena.png'
+        'arena' : 'game/{{appid}}/levels/arena.png'
       },
       sprites: {
         'markers' : [ 'media/{{appid}}/game/markers.png', 72,72, -1]

@@ -25,8 +25,7 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
 
   csts: {
     GRID_W: 60,
-    GRID_H: 40,
-    TILE: 8
+    GRID_H: 40
   },
 
   assets: {
@@ -37,7 +36,6 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
     sounds: {
     },
     fonts: {
-      'font.OCR' : [ 'media/phaserio/fon/{{lang}}/', 'OCR.png', 'OCR.xml' ]
     }
   },
 
@@ -51,13 +49,13 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
   levels: {
     "gamelevel1" : {
       'tiles' : {
-        'arena' : 'lib/game/{{appid}}/levels/arena.json'
+        'arena' : 'game/{{appid}}/levels/arena.tmx'
       },
       'images' : {
         'paddle2' : 'media/{{appid}}/game/green_paddle.png',
         'paddle1' : 'media/{{appid}}/game/red_paddle.png',
         'ball' : 'media/{{appid}}/game/coin.png',
-        'arena' : 'media/{{appid}}/game/arena.png'
+        'arena' : 'game/{{appid}}/levels/arena.png'
       },
       'sprites' : {
       }
@@ -95,6 +93,8 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
 
 });
 
+
+sh.xcfg.sfxInit();
 
 
 }).call(this);

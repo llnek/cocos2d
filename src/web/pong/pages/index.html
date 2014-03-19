@@ -1,66 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>ZotohLabs | Pong</title>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="shortcut icon" type="image/png" href="/public/ig/media/main/logos/favicon.png"/>
   <!--
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="user-scalable=no" />
   -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="screen-orientation" content="portrait"/>
+  <meta charset="utf-8">
+  <meta name="full-screen" content="yes"/>
+  <meta name="x5-fullscreen" content="true"/>
+  <meta name="360-fullscreen" content="true"/>
+  <title>ZotohLabs | Pong</title>
 
-  <link rel="shortcut icon" type="image/png" href="/public/ig/media/main/logos/favicon.png"/>
-  <link rel="stylesheet" media="screen" href="/public/styles/phaserio/game.css"/>
+  <link rel="stylesheet" media="screen" href="/public/c/webcommon.css"/>
+  <link rel="stylesheet" media="screen" href="/public/styles/cocos2d/game.css"/>
   <link rel="stylesheet" media="screen" href="/public/styles/pong/main.css"/>
 
 </head>
 
 <body>
+  <canvas id="gameCanvas"></canvas>
 
-  <div id="game">
-      <div id="game-container">
-      </div>
-  </div>
-
-  <script type="text/javascript" src="/public/vendors/underscore/underscore-min.js"></script>
-  <script type="text/javascript" src="/public/vendors/zepto/zepto.min.js"></script>
-  <script type="text/javascript" src="/public/vendors/l10njs/l10n.min.js"></script>
-  <script type="text/javascript" src="/public/vendors/mustache/mustache.js"></script>
-  <script type="text/javascript" src="/public/vendors/modernizr/modernizr.custom.js"></script>
-  <script type="text/javascript" src="/public/vendors/dbg/dbg.js"></script>
-  <script type="text/javascript" src="/public/vendors/fsm/state-machine.min.js"></script>
-
-  <script type="text/javascript" src="/public/vendors/phaserio/phaser.min.js"></script>
+  <script type="text/javascript" src="/public/c/webcommon.js"></script>
+  <!--
+  <script type="text/javascript" src="/public/vendors/cocos2d/Cocos2d-html5-v2.2.2.min.js"></script>
   <script type="text/javascript" src="/public/ig/lib/plugins/deps.js"></script>
-
-  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/base.js"></script>
-  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/asterix.js"></script>
-
-  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/xcfg.js"></script>
-  <script type="text/javascript" src="/public/ig/lib/game/pong/config.js"></script>
-  <script type="text/javascript" src="/public/ig/lib/zotohlabs/plf/web.js"></script>
-
-  <script type="text/javascript" src="/public/ig/lib/game/pong/i18n/game_en_US.js"></script>
-
-  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/xstate.js"></script>
-  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/xgame.js"></script>
-  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/xboot.js"></script>
-  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/xsplash.js"></script>
-  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/xloader.js"></script>
-  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/xigg.js"></script>
-
-  <script type="text/javascript" src="/public/ig/lib/zotohlabs/gui/startscreen.js"></script>
-  <script type="text/javascript" src="/public/ig/lib/zotohlabs/gui/mainmenu.js"></script>
-  <script type="text/javascript" src="/public/ig/lib/zotohlabs/gui/ynbox.js"></script>
-
-  <script type="text/javascript" src="/public/ig/lib/game/pong/entities/entity.js"></script>
-  <script type="text/javascript" src="/public/ig/lib/game/pong/entities/ball.js"></script>
-  <script type="text/javascript" src="/public/ig/lib/game/pong/entities/robot.js"></script>
-  <script type="text/javascript" src="/public/ig/lib/game/pong/entities/human.js"></script>
-
-  <script type="text/javascript" src="/public/ig/lib/game/pong/pong.js"></script>
-  <script type="text/javascript" src="/public/ig/lib/game/pong/game.js"></script>
-  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/xmain.js"></script>
+  -->
+  <script type="text/javascript" src="/public/ig/lib/zotohlabs/ext/cocos2dcfg.js"></script>
+  <script type="text/javascript" src="/public/ig/lib/game/pong/boot.js"></script>
 
 </body>
 </html>

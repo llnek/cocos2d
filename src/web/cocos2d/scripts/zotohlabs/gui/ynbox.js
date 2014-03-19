@@ -19,7 +19,7 @@ var echt = global.ZotohLabs.echt;
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-var YesNoLayer =  cc.Layer.extend({
+var YesNoLayer =  asterix.XLayer.extend({
 
   pkInit: function() {
     var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gui.ynbox'));
@@ -55,28 +55,11 @@ var YesNoLayer =  cc.Layer.extend({
 
 
     return true;
-  },
-
-  init: function() {
-    return this._super() ? this.pkInit() : false;
-  },
-
-  ctor: function(options) {
-    this.options= options || {};
   }
-
 
 });
 
-
-sh.protos['YesNo'] = {
-  create: function(options) {
-    var scene = cc.Scene.create();
-    var y= new YesNoLayer(options);
-    return y.init() ? (function() { scene.addChild(y); return scene; })() : null;
-  }
-};
-
+sh.protos['YesNo'] = new asterix.XSceneFactory(YesNoLayer);
 
 }).call(this);
 

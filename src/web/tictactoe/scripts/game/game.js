@@ -27,7 +27,7 @@ var Cmd= klass.extends({
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-var arenaLayer = cc.Layer.extend({
+var arenaLayer = asterix.XLayer.extend({
 
   p2Long: sh.l10n('%player2'),
   p1Long: sh.l10n('%player1'),
@@ -37,8 +37,6 @@ var arenaLayer = cc.Layer.extend({
 
   actions: [],
   board: null,
-  actor: null,
-  players: [],
 
   scores:  { 'O': 0, 'X': 0 },
 
@@ -443,73 +441,20 @@ var arenaLayer = cc.Layer.extend({
   },
 
   setGameMode: function(mode) {
-    sh.xcfg.csts.GAME_MODE=mode;
     this.p2ID= sh.l10n('%p2');
     this.p1ID= sh.l10n('%p1');
     if (mode === 1) {
       this.p2Long= sh.l10n('%computer');
       this.p2ID= sh.l10n('%cpu');
     }
-  },
-
-  pkInit: function() {
-
-    if (sys.capabilities.hasOwnProperty('keyboard')) {
-      this.setKeyboardEnabled(true);
-    }
-
-    if (sys.capabilities.hasOwnProperty('mouse')) {
-      this.setMouseEnabled(true);
-    }
-
-    if (sys.capabilities.hasOwnProperty('touches')) {
-      this.setTouchEnabled(true);
-      this.setTouchMode(cc.TOUCH_ONE_BY_ONE);
-    }
-
-    this.scheduleUpdate();
-
-    switch (this.options.mode) {
-
-      case 2:
-        this.newGame(2);
-      break;
-
-      case 1:
-        this.newGame(1);
-      break;
-
-      default:
-        return false;
-      break;
-    }
-
-    return true;
-  },
-
-  init: function() {
-    return this._super() ? this.pkInit() : false;
-  },
-
-  ctor: function(options) {
-    this.options = options || {};
+    this._super(mode);
   }
 
 
 });
 
 
-
-asterix.TicTacToe.Factory = {
-  create: function(options) {
-    var scene = cc.Scene.create();
-    var y= new arenaLayer(options);
-    return y.init() ? (function() { scene.addChild(y); return scene; })() : null;
-  }
-};
-
-
-
+asterix.TicTacToe.Factory = new asterix.XSceneFactory(arenaLayer);
 
 }).call(this);
 

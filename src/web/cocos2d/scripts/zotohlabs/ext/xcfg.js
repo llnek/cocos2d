@@ -73,7 +73,6 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
       'gui.mmenu' : 'game/{{appid}}/levels/mainmenu.tmx'
     },
     images: {
-      'splash.play-btn' : 'media/cocos2d/btns/play_amber_x64.png',
       'splash.splash' : 'media/{{appid}}/gui/splash.png',
       'gui.mmenu.border': 'media/cocos2d/game/{{border-tiles}}',
 
@@ -120,8 +119,24 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
   smac: null,
 
   l10n: {
-    '%mobileStart' : 'Press Anywhere To Start!',
-    '%webStart' : 'Press Spacebar To Start!'
+    "en-US" : {
+      '%mobileStart' : 'Press Anywhere To Start!',
+      '%webStart' : 'Press Spacebar To Start!',
+
+      "%2players" : '2 Players',
+      "%1player" : '1 Player',
+      "%online" : 'Online',
+
+      "%quit!" : 'Quit',
+      "%back" : 'Back',
+      "%ok" : 'OK',
+
+      "%mmenu" : 'Main Menu',
+      "%replay" : 'REPLAY',
+      "%play" : 'PLAY',
+
+      "%quit?" : 'Continue to quit game?'
+    }
   },
 
   devices: {

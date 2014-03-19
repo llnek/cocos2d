@@ -9,15 +9,32 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global= this; var _ = global._;
+(function(undef) { "use stricts"; var global = this ; var _ = global._ ;
+var asterix= global.ZotohLabs.Asterix;
+var sh = asterix.Shell;
+var loggr= global.ZotohLabs.logger;
 
-global.document.ccConfig.initAppFiles('tictactoe', [
-      'zotohlabs/ext/negamax.js',
-      'game/tictactoe/board.js',
-      'game/tictactoe/game.js',
-      'game/tictactoe/mmenu.js',
-      'game/tictactoe/splash.js'
-]);
+//////////////////////////////////////////////////////////////////////////////
+// module def
+//////////////////////////////////////////////////////////////////////////////
+
+asterix.XSceneFactory = global.ZotohLabs.klass.extends({
+
+  create: function(options) {
+    var y= new (this.layer)(options);
+    var scene = cc.Scene.create();
+    return y.init() ? (function() { scene.addChild(y); return scene; })() : null;
+  },
+
+  ctor: function(layer) {
+    this.layer=layer;
+  }
+
+});
+
+
 
 
 }).call(this);
+
+

@@ -40,6 +40,8 @@ var cfg= {
       } else {
         this.appFiles.push('game/' + appid + '/config.js');
         this.appFiles.push('game/' + appid + '/i18n/game_en_US.js');
+        this.appFiles.push('zotohlabs/ext/xscene.js');
+        this.appFiles.push('zotohlabs/ext/xlayer.js');
         this.appFiles.push('zotohlabs/ext/xloader.js');
         this.appFiles.push('zotohlabs/gui/startscreen.js');
         this.appFiles.push('zotohlabs/gui/ynbox.js');
