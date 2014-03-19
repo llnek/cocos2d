@@ -22,6 +22,7 @@ asterix.TicTacToe= {};
 sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
 
   appid: 'tictactoe',
+  color: 'sky',
 
   csts: {
     CV_X: 'X'.charCodeAt(0),

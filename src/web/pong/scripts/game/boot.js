@@ -12,11 +12,15 @@
 (function(undef) { "use strict"; var global= this; var _ = global._;
 
 global.document.ccConfig.initAppFiles('pong', [
+/*
       'game/entities/entity.js',
       'game/entities/ball.js',
       'game/entities/human.js',
       'game/entities/robot.js',
-      'game/pong/game.js'
+      'game/pong/game.js',
+      */
+      'game/pong/mmenu.js',
+      'game/pong/splash.js'
 ]);
 
 

@@ -23,6 +23,7 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
 
   urlPrefix: '/public/ig/',
   appid: '',
+  color: '',
 
   getImagePath: function(key) {
     var url = this.assets.images[key] || '';
@@ -66,7 +67,7 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
 
   assets: {
     sprites: {
-      'gui.audio' : [ 'media/cocos2d/btns/audio_onoff_white.png', 48,48, -1 ]
+      'gui.audio' : [ 'media/cocos2d/btns/{{color}}/audio_onoff.png', 48,48, -1 ]
     },
     tiles: {
       'gui.ynbox' : 'game/{{appid}}/levels/blankscreen.tmx',
@@ -74,20 +75,20 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
     },
     images: {
       'splash.splash' : 'media/{{appid}}/gui/splash.png',
-      'gui.mmenu.border': 'media/cocos2d/game/{{border-tiles}}',
 
-      "gui.mmenu.replay" : 'media/cocos2d/btns/replay.png',
-      "gui.mmenu.quit" : 'media/cocos2d/btns/quit.png',
-      "gui.mmenu.back" : 'media/cocos2d/btns/go_back.png',
-      "gui.mmenu.ok" : 'media/cocos2d/btns/go_ok.png',
-      "gui.mmenu.menu" : 'media/cocos2d/btns/go_mmenu.png',
+      "gui.mmenu.replay" : 'media/cocos2d/btns/{{color}}/replay.png',
+      "gui.mmenu.quit" : 'media/cocos2d/btns/{{color}}/quit.png',
+      "gui.mmenu.back" : 'media/cocos2d/btns/{{color}}/go_back.png',
+      "gui.mmenu.ok" : 'media/cocos2d/btns/{{color}}/go_ok.png',
+      "gui.mmenu.menu" : 'media/cocos2d/btns/{{color}}/go_mmenu.png',
 
       /*
       'gui.mmenu.border16': 'media/cocos2d/game/cbox-borders_x16.png',
       'gui.mmenu.border8': 'media/cocos2d/game/cbox-borders_x8.png',
       */
       'gui.mmenu.menu.bg' : 'game/{{appid}}/levels/mainmenu.png',
-      'gui.mmenu.bg' : 'game/{{appid}}/levels/bg.png'
+      'gui.mmenu.bg' : 'game/{{appid}}/levels/bg.png',
+      'gui.mmenu.border': 'game/{{appid}}/levels/{{border-tiles}}'
 
     },
     sounds: {
@@ -304,6 +305,7 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
       'gamesource-ref' : '/public/ig/lib',
       'media-ref' : '/public/ig',
       'lang' : sh.lang,
+      'color' : this.color,
       'appid' :  this.appid } );
   },
 

@@ -22,6 +22,7 @@ asterix.Pong= {};
 sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
 
   appid: 'pong',
+  color: 'green',
 
   csts: {
     GRID_W: 60,
@@ -32,6 +33,7 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
     tiles: {
     },
     images: {
+      'splash.play-btn' : 'media/cocos2d/btns/play_gray_x64.png'
     },
     sounds: {
     },
@@ -46,6 +48,10 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
     default:{height:320, width:480, scale:1}
   },
 
+  game: {
+    size: {height:320, width:480, scale:1}
+  },
+
   levels: {
     "gamelevel1" : {
       'tiles' : {
@@ -54,7 +60,7 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
       'images' : {
         'paddle2' : 'media/{{appid}}/game/green_paddle.png',
         'paddle1' : 'media/{{appid}}/game/red_paddle.png',
-        'ball' : 'media/{{appid}}/game/coin.png',
+        'ball' : 'media/{{appid}}/game/pongball.png',
         'arena' : 'game/{{appid}}/levels/arena.png'
       },
       'sprites' : {
