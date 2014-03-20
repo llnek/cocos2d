@@ -63,9 +63,7 @@ asterix.Cocos2dApp = cc.Application.extend({
     var p, me=this;
     var a1= _.map(sh.xcfg.assets.sprites, function(v,k) { return me.pvLoadSprite(k,v); });
     var a2= _.map(sh.xcfg.assets.images, function(v,k) { return me.pvLoadImage(k,v); });
-    var a3= _.reduce(sh.xcfg.assets.sounds, function(memo, v,k) {
-      return memo.concat( _.map(v, function(u) { return sh.sanitizeUrl(u); }));
-    }, []);
+    var a3= _.map(sh.xcfg.assets.sounds, function(v,k) { return me.pvLoadSound(k,v); });
     var a4= _.reduce(sh.xcfg.assets.fonts, function(memo, v,k) {
       // value is array of [ path, image , xml ]
       p= sh.sanitizeUrl(v[0]);
@@ -118,6 +116,10 @@ asterix.Cocos2dApp = cc.Application.extend({
 
   pvLoadImage: function(k,v) {
     return sh.sanitizeUrl(v);
+  },
+
+  pvLoadSound: function(k,v) {
+    return sh.sanitizeUrl( v + '.' + sh.xcfg.game.sfx );
   },
 
   pvLoadTile: function(k,v) {

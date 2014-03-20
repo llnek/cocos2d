@@ -56,10 +56,10 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
       'splash.play-btn' : 'media/cocos2d/btns/play_blue_x64.png'
     },
     sounds: {
-      'game_end' : [ 'media/cocos2d/sfx/MineExplosion.mp3', 'media/cocos2d/sfx/MineExplosion.ogg'],
-      'x_pick' : [ 'media/cocos2d/sfx/ElevatorBeep.mp3', 'media/cocos2d/sfx/ElevatorBeep.ogg'],
-      'o_pick' : [ 'media/cocos2d/sfx/MineBeep.mp3', 'media/cocos2d/sfx/MineBeep.ogg'],
-      'game_quit' : [ 'media/cocos2d/sfx/PlayerMonsterFall.mp3', 'media/cocos2d/sfx/PlayerMonsterFall.ogg' ]
+      'game_end' : 'media/cocos2d/sfx/MineExplosion',
+      'x_pick' : 'media/cocos2d/sfx/ElevatorBeep',
+      'o_pick' : 'media/cocos2d/sfx/MineBeep',
+      'game_quit' : 'media/cocos2d/sfx/Death'
     },
     fonts: {
     }

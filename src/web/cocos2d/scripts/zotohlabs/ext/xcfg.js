@@ -31,8 +31,8 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
   },
 
   getSfxPath: function(key) {
-    var obj = this.assets.sounds[key];
-    return obj ? sh.sanitizeUrl(obj[0]) : '';
+    var url = this.assets.sounds[key];
+    return url ? sh.sanitizeUrl( url + '.' + this.game.sfx) : '';
   },
 
   getSpritePath: function(key) {
@@ -111,6 +111,7 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
   game: {
     borderTiles: 'cbox-borders_x8.png',
     preloadLevels: true,
+    sfx: 'mp3',
     landscape: false,
     size: null,
     gravity: 0,

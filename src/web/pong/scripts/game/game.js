@@ -207,6 +207,7 @@ var arenaLayer = asterix.XGameLayer.extend({
       } else {
       }
       bs.setPosition(ccsx.getLeft(p2s) - ccsx.getWidth(bs) / 2, bs.getPosition().y);
+      sh.xcfg.sfxPlay('o_hit');
     }
     else
     if ( ccsx.checkCollide(p1s,bs)) {
@@ -215,6 +216,7 @@ var arenaLayer = asterix.XGameLayer.extend({
       } else {
       }
       bs.setPosition(ccsx.getRight(p1s) + ccsx.getWidth(bs) / 2, bs.getPosition().y);
+      sh.xcfg.sfxPlay('x_hit');
     }
   },
 
