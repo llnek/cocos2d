@@ -30,8 +30,16 @@ asterix.COCOS2DX = {
     this.getHeight(sprite));
   },
 
+  getScaledHeight: function(sprite) {
+    return sprite.getContentSize().height * sprite.getScaleY();
+  },
+
   getHeight: function(sprite) {
     return sprite.getContentSize().height;
+  },
+
+  getScaledWidth: function(sprite) {
+    return sprite.getContentSize().width * sprite.getScaleX();
   },
 
   getWidth: function(sprite) {

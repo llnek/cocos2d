@@ -94,8 +94,7 @@ var arenaLayer = asterix.XGameLayer.extend({
     this.addChild(map, this.lastZix, ++this.lastTag);
 
     title= cc.LabelBMFont.create(this.p1ID + " / " + this.p2ID, sh.xcfg.getFontPath('font.TinyBoxBB'));
-    title.setPosition(cw.x, //wz.height - csts.TILE - 12/2 - 1);
-    wz.height - csts.TILE * 6 /2 );
+    title.setPosition(cw.x, wz.height - csts.TILE * 6 /2 );
     title.setScale(12/72);
     title.setOpacity(0.9*255);
     this.addChild(title, this.lastZix, ++this.lastTag);
@@ -104,9 +103,8 @@ var arenaLayer = asterix.XGameLayer.extend({
     this.score1.setScale(36/72);
     this.score1.setOpacity(0.9*255);
     this.score1.setColor(new cc.Color3B(255,0,0)); // 0xff0000
-    this.score1.setPosition( cw.x - ccsx.getWidth(title)/2 - ccsx.getWidth(this.score1)/2 - 10, //wz.height - csts.TILE - ccsx.getHeight(this.score1)/2 + 4);
+    this.score1.setPosition( cw.x - ccsx.getScaledWidth(title)/2 - ccsx.getScaledWidth(this.score1)/2 - 10,
     wz.height - csts.TILE * 6 /2 - 2);
-    //this.score1.setAnchorPoint(cc.p(0,1));
     this.addChild(this.score1, this.lastZix, ++this.lastTag);
 
     this.score2= cc.LabelBMFont.create('8', sh.xcfg.getFontPath('font.OCR'));
@@ -114,10 +112,8 @@ var arenaLayer = asterix.XGameLayer.extend({
     this.score2.setOpacity(0.9*255);
     this.score2.setColor(new cc.Color3B(106,190,97)); // 0x6ABE61
     this.score2.setPosition(
-    cw.x + ccsx.getWidth(title)/2 + ccsx.getWidth(this.score1)/2 + 6,
-    //wz.height - csts.TILE - ccsx.getHeight(this.score1)/2 + 4);
+    cw.x + ccsx.getScaledWidth(title)/2 + ccsx.getScaledWidth(this.score1)/2 + 6,
     wz.height - csts.TILE * 6 /2 - 2);
-    //this.score2.setAnchorPoint(cc.p(1,1));
     this.addChild(this.score2, this.lastZix, ++this.lastTag);
 
     this.doCtrlBtns();
