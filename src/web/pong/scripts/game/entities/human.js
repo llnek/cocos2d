@@ -11,46 +11,50 @@
 
 (function(undef) { "use strict"; var global=this; var _ = global._ ;
 var asterix = global.ZotohLabs.Asterix;
+var ccsx = asterix.COCOS2DX;
 var png = asterix.Pong;
 var sh = asterix.Shell;
-var echt= global.ZotohLabs.echt;
 var loggr= global.ZotohLabs.logger;
+var echt= global.ZotohLabs.echt;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 png.EntityHuman = png.EntityPaddle.extends({
 
-  update: function() {
-    /*
-    var bottom = this.sprite.y + this.sprite.height/2;
-    var top = this.sprite.y - this.sprite.height/2;
-    var csts= sh.xcfg.csts;
-    var vy= undef;
-    var kb= sh.main.input.keyboard;
+  keypressed: function(dt) {
+    var sz = this.sprite.getContentSize().height / 2;
+    var pos = this.sprite.getPosition();
+    var y= pos.y;
+    var csts = sh.xcfg.csts;
+    var wz = ccsx.screen();
+    var keys= sh.main.keys;
 
-    sh.main.physics.arcade.collide(this.sprite, this.screen.boundary);
-    this.sprite.body.velocity.y = 0;
+    var y2 = wz.height - csts.TILE * 6;
+    var y1 = csts.TILE;
+    var ty, delta= dt * this.speed;
 
-    if (kb.isDown(Phaser.Keyboard.DOWN) && ! kb.isDown(Phaser.Keyboard.UP)) {
-      vy = this.speed;
+    if (keys[ this.kcodes[0] ]) {
+        y += delta;
+        ty = y + sz;
+        if (ty > y2) {
+          y = y2 - sz;
+        }
     }
-    if (kb.isDown(Phaser.Keyboard.UP) && ! kb.isDown(Phaser.Keyboard.DOWN)) {
-      vy = - this.speed;
+
+    if (keys[ this.kcodes[1] ] ) {
+        y -= delta;
+        ty = y - sz;
+        if (ty < y1) {
+          y = y1 + sz;
+        }
     }
 
-    if (vy) {
-      this.sprite.body.velocity.y = vy;
+    if (y !== pos.y) {
+      this.sprite.setPosition(pos.x, y);
     }
-    */
-  },
 
-  ctor: function(x,y,options) {
-    options=options || {};
-    options.key = 'gamelevel1.images.paddle1';
-    this.parent(x,y,options);
   }
-
 
 });
 

@@ -21,33 +21,37 @@ var echt= global.ZotohLabs.echt;
 
 asterix.COCOS2DX = {
 
+  checkCollide: function(a,b) {
+    return a && b ? cc.rectIntersectsRect( this.bbox(a), this.bbox(b)) : false;
+  },
+
   bbox: function(sprite) {
-    return cc.Rect( this.leftPos(sprite), this.bottomPos(sprite), this.realWidth(sprite),
-    this.realHeight(sprite));
+    return new cc.Rect( this.getLeft(sprite), this.getBottom(sprite), this.getWidth(sprite),
+    this.getHeight(sprite));
   },
 
-  realHeight: function(sprite) {
-    return sprite.getContentSize().height * sprite.getScaleY();
+  getHeight: function(sprite) {
+    return sprite.getContentSize().height;
   },
 
-  realWidth: function(sprite) {
-    return sprite.getContentSize().width * sprite.getScaleX();
+  getWidth: function(sprite) {
+    return sprite.getContentSize().width;
   },
 
-  leftPos: function(sprite) {
-    return sprite.getPosition().x - this.realWidth(sprite)/2;
+  getLeft: function(sprite) {
+    return sprite.getPosition().x - this.getWidth(sprite)/2;
   },
 
-  rightPos: function(sprite) {
-    return sprite.getPosition().x + this.realWidth(sprite)/2;
+  getRight: function(sprite) {
+    return sprite.getPosition().x + this.getWidth(sprite)/2;
   },
 
-  topPos: function(sprite) {
-    return sprite.getPosition().y + this.realHeight(sprite)/2;
+  getTop: function(sprite) {
+    return sprite.getPosition().y + this.getHeight(sprite)/2;
   },
 
-  bottomPos: function(sprite) {
-    return sprite.getPosition().y - this.realHeight(sprite)/2;
+  getBottom: function(sprite) {
+    return sprite.getPosition().y - this.getHeight(sprite)/2;
   },
 
   center: function() {

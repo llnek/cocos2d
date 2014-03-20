@@ -21,6 +21,7 @@ var loggr= global.ZotohLabs.logger;
 
 asterix.XGameLayer = asterix.XLayer.extend({
 
+  keyboard: [],
   players: [],
   actor: null,
 
@@ -95,9 +96,20 @@ asterix.XGameLayer = asterix.XLayer.extend({
     }
 
     return rc;
+  },
+
+  ctor: function(options) {
+    this._super(options);
+    sh.main = this;
   }
 
 
+});
+
+Object.defineProperty(asterix.XGameLayer.prototype, "keys", {
+  get: function() {
+    return this.keyboard;
+  }
 });
 
 

@@ -25,9 +25,16 @@ var arenaLayer = asterix.XGameLayer.extend({
 
   scores : { 'O': 0, 'X': 0 },
   MAX_SCORE: 1, //11,
-
   ball: null,
-  keys: [],
+
+  onKeyDown:function (e) {
+    this.keyboard[e] = true;
+  },
+
+  onKeyUp:function (e) {
+    this.keyboard[e] = false;
+  },
+
 
   play: function() {
     var p2Img= cc.Sprite.create(sh.xcfg.getImagePath('gamelevel1.images.paddle2'));
@@ -94,7 +101,7 @@ var arenaLayer = asterix.XGameLayer.extend({
     this.score1.setScale(36/72);
     this.score1.setOpacity(0.9*255);
     this.score1.setColor(new cc.Color3B(255,0,0)); // 0xff0000
-    this.score1.setPosition( cw.x - ccsx.realWidth(title)/2 - ccsx.realWidth(this.score1)/2 - 10, //wz.height - csts.TILE - ccsx.realHeight(this.score1)/2 + 4);
+    this.score1.setPosition( cw.x - ccsx.getWidth(title)/2 - ccsx.getWidth(this.score1)/2 - 10, //wz.height - csts.TILE - ccsx.getHeight(this.score1)/2 + 4);
     wz.height - csts.TILE * 6 /2 - 2);
     //this.score1.setAnchorPoint(cc.p(0,1));
     this.addChild(this.score1, this.lastZix, ++this.lastTag);
@@ -104,8 +111,8 @@ var arenaLayer = asterix.XGameLayer.extend({
     this.score2.setOpacity(0.9*255);
     this.score2.setColor(new cc.Color3B(106,190,97)); // 0x6ABE61
     this.score2.setPosition(
-    cw.x + ccsx.realWidth(title)/2 + ccsx.realWidth(this.score1)/2 + 6,
-    //wz.height - csts.TILE - ccsx.realHeight(this.score1)/2 + 4);
+    cw.x + ccsx.getWidth(title)/2 + ccsx.getWidth(this.score1)/2 + 6,
+    //wz.height - csts.TILE - ccsx.getHeight(this.score1)/2 + 4);
     wz.height - csts.TILE * 6 /2 - 2);
     //this.score2.setAnchorPoint(cc.p(1,1));
     this.addChild(this.score2, this.lastZix, ++this.lastTag);
@@ -125,9 +132,9 @@ var arenaLayer = asterix.XGameLayer.extend({
     }, this);
     t1.setScale(28/48);
     menu= cc.Menu.create(t1);
-    menu.setPosition(wz.width - csts.TILE - ccsx.realWidth(t1)/2,
+    menu.setPosition(wz.width - csts.TILE - ccsx.getWidth(t1)/2,
     wz.height - csts.TILE * 6 /2 );
-      //wz.height - csts.TILE - ccsx.realHeight(t1) / 2);
+      //wz.height - csts.TILE - ccsx.getHeight(t1) / 2);
     this.addChild(menu, this.lastZix, ++this.lastTag);
 
     s2= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.replay'));
@@ -168,16 +175,37 @@ var arenaLayer = asterix.XGameLayer.extend({
     this.actor=null;
   },
 
-  updateEntities: function() {
-    this.players[2].update();
-    this.players[1].update();
-    this.ball.update();
+  updateEntities: function(dt) {
+    this.players[2].update(dt);
+    this.players[1].update(dt);
+    this.ball.update(dt);
   },
 
-  update: function() {
+  checkEntities: function() {
+    var p2s = this.players[2].sprite;
+    var p1s = this.players[1].sprite;
+    var bs = this.ball.sprite;
+    if (ccsx.checkCollide(p2s,bs)) {
+      this.ball.vel.x = - this.ball.vel.x;
+      if (this.ball.vel.y < 0) {
+      } else {
+      }
+      bs.setPosition(ccsx.getLeft(p2s) - ccsx.getWidth(bs) / 2, bs.getPosition().y);
+    }
+    else
+    if ( ccsx.checkCollide(p1s,bs)) {
+      this.ball.vel.x = - this.ball.vel.x;
+      if (this.ball.vel.y < 0) {
+      } else {
+      }
+      bs.setPosition(ccsx.getRight(p1s) + ccsx.getWidth(bs) / 2, bs.getPosition().y);
+    }
+  },
+
+  update: function(dt) {
     if (this.ball) {
-      this.updateEntities();
-      this.checkWinner();
+      this.updateEntities(dt);
+      this.checkEntities();
     }
     this.drawGui();
   },

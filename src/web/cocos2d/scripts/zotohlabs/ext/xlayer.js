@@ -47,6 +47,7 @@ asterix.XLayer = cc.Layer.extend({
 
   ctor: function(options) {
     this.options = options || {};
+    this._super();
   }
 
 });

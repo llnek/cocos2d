@@ -27,14 +27,7 @@ png.EntityRobot = png.EntityPaddle.extends({
       this.vel.y = (b.pos.y + b.size.y / 2) > (this.pos.y + this.size.y / 2) ? 150 : -150;
     }
     */
-  },
-
-  ctor: function(x,y,options) {
-    options=options || {};
-    options.key = 'gamelevel1.images.paddle2';
-    this.parent(x,y,options);
   }
-
 
 });
 
