@@ -11,6 +11,7 @@
 
 (function(undef){ "use strict"; var global= this; var _ = global._ ;
 var asterix= global.ZotohLabs.Asterix;
+var ccsx = asterix.COCOS2DX;
 var sh= asterix.Shell;
 var png= asterix.Pong;
 var loggr = global.ZotohLabs.logger;
@@ -69,6 +70,32 @@ png.EntityPaddle = png.EntityXXX.extends({
 
   speed: 200,
   kcodes: [],
+
+  clamp: function() {
+    var pos= this.sprite.getPosition();
+    var csts = sh.xcfg.csts;
+    var y= pos.y;
+    var wz = ccsx.screen();
+    var y2 = wz.height - csts.TILE * 6;
+    var y1 = csts.TILE;
+
+    var h = ccsx.getHeight(this.sprite) / 2;
+    var b= ccsx.getBottom(this.sprite);
+    var t= ccsx.getTop(this.sprite);
+
+    if (t > y2) {
+      y = y2 - h;
+    }
+
+    if (b < y1) {
+      y = y1 + h;
+    }
+
+    if (y !== pos.y) {
+      this.sprite.setPosition(pos.x, y);
+    }
+
+  },
 
   ctor: function(x,y,options) {
     this.parent(x,y,options);

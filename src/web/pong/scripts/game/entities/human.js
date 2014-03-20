@@ -22,6 +22,8 @@ var echt= global.ZotohLabs.echt;
 //////////////////////////////////////////////////////////////////////////////
 png.EntityHuman = png.EntityPaddle.extends({
 
+  isRobot: function() { return false; },
+
   keypressed: function(dt) {
     var sz = this.sprite.getContentSize().height / 2;
     var pos = this.sprite.getPosition();
@@ -36,22 +38,15 @@ png.EntityHuman = png.EntityPaddle.extends({
 
     if (keys[ this.kcodes[0] ]) {
         y += delta;
-        ty = y + sz;
-        if (ty > y2) {
-          y = y2 - sz;
-        }
     }
 
     if (keys[ this.kcodes[1] ] ) {
         y -= delta;
-        ty = y - sz;
-        if (ty < y1) {
-          y = y1 + sz;
-        }
     }
 
     if (y !== pos.y) {
       this.sprite.setPosition(pos.x, y);
+      this.clamp();
     }
 
   }

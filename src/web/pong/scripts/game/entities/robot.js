@@ -20,13 +20,34 @@ var echt= global.ZotohLabs.echt;
 //////////////////////////////////////////////////////////////////////////////
 png.EntityRobot = png.EntityPaddle.extends({
 
-  update: function() {
-  /*
-    var b = ig.game.getEntitiesByType(pg.EntityBall)[0];
-    if (echt(b)) {
-      this.vel.y = (b.pos.y + b.size.y / 2) > (this.pos.y + this.size.y / 2) ? 150 : -150;
+  isRobot: function() { return true; },
+
+  update: function(dt) {
+    var bp= this.ball.sprite.getPosition();
+    var pos = this.sprite.getPosition();
+    var y= pos.y;
+    if (bp.y > pos.y) {
+      if (this.ball.vel.y > 0) {
+        y += dt * this.speed;
+      } else {
+        //y -= dt * this.speed;
+      }
     }
-    */
+    else {
+      if (this.ball.vel.y > 0) {
+        //y += dt * this.speed;
+      } else {
+        y -= dt * this.speed;
+      }
+    }
+    if (y !== pos.y) {
+      this.sprite.setPosition(pos.x, y);
+      this.clamp();
+    }
+  },
+
+  bindBall: function(ball) {
+    this.ball= ball;
   }
 
 });

@@ -78,6 +78,9 @@ var arenaLayer = asterix.XGameLayer.extend({
     var ballImg= cc.Sprite.create(sh.xcfg.getImagePath('gamelevel1.images.ball'));
     var cw= ccsx.center();
     this.ball = new png.EntityBall( cw.x, cw.y, {});
+    if (this.players[2].isRobot()) {
+      this.players[2].bindBall(this.ball);
+    }
     this.addChild(this.ball.create(), this.lastZix, ++this.lastTag);
   },
 
