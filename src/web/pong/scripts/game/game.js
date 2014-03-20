@@ -24,7 +24,7 @@ var echt= global.ZotohLabs.echt;
 var arenaLayer = asterix.XGameLayer.extend({
 
   scores : { 'O': 0, 'X': 0 },
-  MAX_SCORE: 1, //11,
+  MAX_SCORE: 9, //11,
   ball: null,
 
   onKeyDown:function (e) {
@@ -116,6 +116,13 @@ var arenaLayer = asterix.XGameLayer.extend({
     wz.height - csts.TILE * 6 /2 - 2);
     this.addChild(this.score2, this.lastZix, ++this.lastTag);
 
+    this.resultMsg = cc.LabelBMFont.create('', sh.xcfg.getFontPath('font.TinyBoxBB'));
+    this.resultMsg.setPosition(cw.x,  100);
+    this.resultMsg.setScale(24/72);
+    this.resultMsg.setOpacity(0.9*255);
+    this.addChild(this.resultMsg, this.lastZix, ++this.lastTag);
+    this.resultMsg.setVisible(false);
+
     this.doCtrlBtns();
   },
 
@@ -131,17 +138,17 @@ var arenaLayer = asterix.XGameLayer.extend({
     }, this);
     t1.setScale(28/48);
     menu= cc.Menu.create(t1);
-    menu.setPosition(wz.width - csts.TILE - ccsx.getWidth(t1)/2,
+    menu.setPosition(wz.width - csts.TILE - ccsx.getScaledWidth(t1)/2,
     wz.height - csts.TILE * 6 /2 );
-      //wz.height - csts.TILE - ccsx.getHeight(t1) / 2);
     this.addChild(menu, this.lastZix, ++this.lastTag);
 
     s2= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.replay'));
     t2 = cc.MenuItemSprite.create(s2, null, null, function() {
       this.pkReplay();
     }, this);
+    t2.setScale(28/48);
     this.replayBtn= cc.Menu.create(t2);
-    this.replayBtn.setPosition(cw.x, csts.TILE + csts.S_OFF + s2.getContentSize().height / 2);
+    this.replayBtn.setPosition(csts.TILE + ccsx.getScaledWidth(t2)/2, wz.height - csts.TILE * 6 /2 );
     this.replayBtn.setVisible(false);
     this.addChild(this.replayBtn, this.lastZix, ++this.lastTag);
   },
@@ -184,7 +191,17 @@ var arenaLayer = asterix.XGameLayer.extend({
     var p2s = this.players[2].sprite;
     var p1s = this.players[1].sprite;
     var bs = this.ball.sprite;
-    if (ccsx.checkCollide(p2s,bs)) {
+    var bp= bs.getPosition();
+    if ( bp.x < ccsx.getLeft(p1s)) {
+      // p2 scores
+      this.onWinner(this.players[2]);
+    }
+    else
+    if (bp.x > ccsx.getRight(p2s)) {
+      // p1 scores
+      this.onWinner(this.players[1]);
+    }
+    else if (ccsx.checkCollide(p2s,bs)) {
       this.ball.vel.x = - this.ball.vel.x;
       if (this.ball.vel.y < 0) {
       } else {
@@ -209,20 +226,10 @@ var arenaLayer = asterix.XGameLayer.extend({
     this.drawGui();
   },
 
-  checkWinner: function() {
-    if ( this.ball.x + this.ball.width < this.players[1].x) {
-      return this.onWinner(this.players[2]);
-    } else if (this.ball.x > this.players[2].x + this.players[2].x) {
-      return this.onWinner(this.players[1]);
-    } else {
-      return false;
-    }
-  },
-
   onWinner: function(p) {
+    this.removeChild(this.ball.kill(), true);
     var s = this.scores[p.color];
     this.scores[p.color] = s + 1;
-    this.ball.kill();
     this.ball=null;
     if (s+1 >= this.MAX_SCORE) {
       this.onDone(p);
@@ -232,12 +239,32 @@ var arenaLayer = asterix.XGameLayer.extend({
   },
 
   onDone: function(p) {
-    this.replayBtn.visible = true;
+    this.replayBtn.setVisible(true);
     this.lastWinner = p;
+    this.drawResult();
     sh.xcfg.sfxPlay('game_end');
   },
 
+  drawResult: function() {
+  // report game result please.
+    var msg, p1, p2;
+
+    //this.status.setVisible(false);
+
+    p2= this.players[2];
+    p1= this.players[1];
+    switch (this.lastWinner) {
+      case p2: msg= sh.l10n('%whowin', { who: this.p2Long}); break;
+      case p1: msg= sh.l10n('%whowin', { who: this.p1Long}); break;
+      default: msg= sh.l10n('%whodraw'); break;
+    }
+
+    this.resultMsg.setString(msg);
+    this.resultMsg.setVisible(true);
+  },
+
   drawGui: function() {
+    this.drawScores();
   },
 
   setGameMode: function(mode) {

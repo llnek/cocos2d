@@ -31,7 +31,9 @@ png.EntityXXX = global.ZotohLabs.klass.extends({
   keypressed: function(dt) {},
 
   kill: function() {
+    var s= this.sprite;
     this.sprite=null;
+    return s;
   },
 
   create: function() {
