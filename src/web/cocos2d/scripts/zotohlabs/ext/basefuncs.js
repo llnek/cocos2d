@@ -10,7 +10,7 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function (undef) { "use strict"; var global= this; var _ = global._ ;
-var fnTest = /xyz/.test(function(){xyz;}) ? /\bparent\b/ : /.*/;
+var fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
 var ZEROS= "00000000000000000000000000000000";  //32
 function _echt (obj) {
   return typeof obj !== 'undefined' && obj !== null;
@@ -91,10 +91,10 @@ var inject = function(prop) {
       parent[name] = proto[name]; // save original function
       proto[name] = (function(name, fn){
         return function() {
-          var tmp = this.parent;
-          this.parent = parent[name];
+          var tmp = this._super;
+          this._super = parent[name];
           var ret = fn.apply(this, arguments);
-          this.parent = tmp;
+          this._super = tmp;
           return ret;
         };
       })( name, prop[name] );
@@ -137,10 +137,10 @@ ZotohLabs.klass.extends = function (other) {
          fnTest.test(other[name])) {
       prototype[name] = (function(name, fn){
         return function() {
-          var tmp = this.parent;
-          this.parent = parent[name];
+          var tmp = this._super;
+          this._super = parent[name];
           var ret = fn.apply(this, arguments);
-          this.parent = tmp;
+          this._super = tmp;
           return ret;
         };
       })( name, other[name] );

@@ -30,36 +30,46 @@ var arenaLayer = asterix.XGameLayer.extend({
     this.aliens = [];
   },
 
-  preStart: function() {
+  initAliens: function() {
+    var gameAtlas = cc.TextureCache.getInstance().addImage( sh.xcfg.getAtlasPath('game-pics'));
     var csts = sh.xcfg.csts;
     var n, x,y, me = this;
     var row = 0;
+
     this.aliens=[]
+    this.atlasBatch = cc.SpriteBatchNode.createWithTexture(gameAtlas);
+    this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
+
+    var aa, dummy = new ivs.EntityAlien(0,0, { rank: 0, tag: 1, zIndex: 0, frameID: 'green_bug_0.png' });
+    var h= dummy.height;
+    var w= dummy.width;
     for (n=0; n < csts.CELLS; ++n) {
       if (n % csts.COLS === 0) {
-        y = n === 0 ? csts.TOP * csts.TILE : y + iv.EntityAlien.prototype.size.y + csts.OFF_Y;
-        x = csts.LEFT * csts.TILE + iv.EntityAlien.prototype.size.x / 2;
+        y = n === 0 ? csts.TOP * csts.TILE : y + h + csts.OFF_Y;
+        x = csts.LEFT * csts.TILE + w / 2;
         row += 1;
       }
-      this.aliens.push(this.spawnEntity(iv.EntityAlien, x, y, {
+      aa = new ivs.EntityAlien( x + w/2, y - h/2, {
+        frameID: 'blue_bug_1.png',
+        zIndex: this.lastZix,
+        tag: ++this.lastTag,
         rank: row,
         status: false
-      }));
-      x += iv.EntityAlien.prototype.size.x + csts.OFF_X;
+      });
+      this.atlasBatch.addChild(aa.create(), aa.options.zIndex, aa.options.tag);
+      x += w + csts.OFF_X;
     }
+    /*
     x = (ig.system.width - iv.EntityPlayer.prototype.size.x ) / 2;
     y = (csts.GRID_H - 2) * csts.TILE - iv.EntityPlayer.prototype.size.y;
     this.spawnPlayer();
     this.lives.reset();
     this.score=0;
     this.scoreLabel.setText(Number(this.score).toString());
+    */
   },
 
   spawnPlayer: function() {
-    var csts= sh.xcfg.csts;
-    var x = (ig.system.width - iv.EntityPlayer.prototype.size.x ) / 2;
-    var y = (csts.GRID_H - 2) * csts.TILE - iv.EntityPlayer.prototype.size.y;
-    this.player = this.spawnEntity(iv.EntityPlayer, x, y, {});
   },
 
   onStart: function() {
@@ -93,13 +103,14 @@ var arenaLayer = asterix.XGameLayer.extend({
   },
 
   update: function() {
-    this.parent();
+  /*
     if (echt(this.motion) && this.motion.delta() > 0) {
       this.checkMotion();
     }
     if (echt(this.bombs) && this.bombs.delta() > 0) {
       this.checkBombs();
     }
+    */
   },
 
   maybeShuffle: function(stepx) {
@@ -249,7 +260,8 @@ var arenaLayer = asterix.XGameLayer.extend({
 
   play: function() {
     this.maybeReset();
-
+    this.initAliens();
+    return true;
   },
 
   resetScore: function() {
@@ -263,8 +275,8 @@ var arenaLayer = asterix.XGameLayer.extend({
     return this.play();
   }
 
-});
 
+});
 
 asterix.Invaders.Factory = new asterix.XSceneFactory(arenaLayer);
 

@@ -52,6 +52,7 @@ asterix.Cocos2dApp = cc.Application.extend({
     }
 
     asterix.XLoader.preload( this.pvGatherPreloads(), function () {
+      sh.xcfg.runOnce();
       director.replaceScene( sh.protos[ this.startScene ].create() );
     }, this);
 
@@ -69,11 +70,14 @@ asterix.Cocos2dApp = cc.Application.extend({
       p= sh.sanitizeUrl(v[0]);
       return memo.concat([ p + v[1], p + v[2] ]);
     }, []);
+    var a7= _.reduce(sh.xcfg.assets.atlases, function(memo, v,k) {
+      return memo.concat( me.pvLoadAtlas(k,v));
+    }, []);
     var a5= _.map(sh.xcfg.assets.tiles, function(v,k) {
       return me.pvLoadTile(k,v);
     });
     var a6 = sh.xcfg.game.preloadLevels ? this.pvLoadLevels() : [];
-    var rc= [].concat(a1).concat(a2).concat(a3).concat(a4).concat(a5).concat(a6);
+    var rc= [].concat(a1).concat(a2).concat(a3).concat(a4).concat(a5).concat(a6).concat(a7);
     var res=  _.reduce(rc, function(memo,v) {
       loggr.info('Loading ' + v);
       memo.push( { src: v } );
@@ -120,6 +124,10 @@ asterix.Cocos2dApp = cc.Application.extend({
 
   pvLoadSound: function(k,v) {
     return sh.sanitizeUrl( v + '.' + sh.xcfg.game.sfx );
+  },
+
+  pvLoadAtlas: function(k,v) {
+    return [ sh.sanitizeUrl( v + '.plist'), sh.sanitizeUrl( v + '.png') ];
   },
 
   pvLoadTile: function(k,v) {

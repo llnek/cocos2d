@@ -30,6 +30,16 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
     return sh.sanitizeUrl(url);
   },
 
+  getPListPath: function(key) {
+    var url = this.assets.atlases[key] || '';
+    return sh.sanitizeUrl(url + '.plist');
+  },
+
+  getAtlasPath: function(key) {
+    var url = this.assets.atlases[key] || '';
+    return sh.sanitizeUrl(url + '.png');
+  },
+
   getSfxPath: function(key) {
     var url = this.assets.sounds[key];
     return url ? sh.sanitizeUrl( url + '.' + this.game.sfx) : '';
@@ -62,12 +72,16 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
     }
   },
 
+  runOnce: function() {},
+
   levels: {
   },
 
   assets: {
     sprites: {
       'gui.audio' : [ 'media/cocos2d/btns/{{color}}/audio_onoff.png', 48,48, -1 ]
+    },
+    atlases : {
     },
     tiles: {
       'gui.ynbox' : 'game/{{appid}}/levels/blankscreen.tmx',

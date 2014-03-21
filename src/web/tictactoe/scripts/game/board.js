@@ -345,7 +345,7 @@ var Robot = Player.extends({
 
   isMax: function() { return true; },
   ctor: function(idv, pic, color) {
-    this.parent(idv, false, pic, color);
+    this._super(idv, false, pic, color);
   }
 
 });
@@ -355,7 +355,7 @@ asterix.TicTacToe.Human = Player.extends({
   isMax: function() { return false; },
   takeTurn: function() {},
   ctor: function (idv, pic, color) {
-    this.parent(idv, true, pic, color);
+    this._super(idv, true, pic, color);
   }
 
 });
@@ -366,11 +366,11 @@ asterix.TicTacToe.AlgoBot = Robot.extends({
     return this.mmAlgo.eval();
   },
   bindBoard: function(b) {
-    this.parent(b);
+    this._super(b);
     this.mmAlgo = new negax.Algo(b);
   },
   ctor: function ( idv, pic, color) {
-    this.parent( idv, pic, color);
+    this._super( idv, pic, color);
     this.mmAlgo= null;
   }
 

@@ -63,11 +63,11 @@ png.EntityBall = png.EntityXXX.extends({
   create: function() {
     this.vel.y = 200 * asterix.fns.randomSign();
     this.vel.x = 200 * asterix.fns.randomSign();
-    return this.parent();
+    return this._super();
   },
 
   ctor: function(x,y,options) {
-    this.parent(x,y,options);
+    this._super(x,y,options);
     this.resid= 'gamelevel1.images.ball';
   }
 

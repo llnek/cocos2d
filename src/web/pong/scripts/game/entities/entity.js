@@ -20,49 +20,16 @@ var loggr = global.ZotohLabs.logger;
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-png.EntityXXX = global.ZotohLabs.klass.extends({
-
-  update: function(dt) {
-    if (sys.platform === 'browser') {
-      this.keypressed(dt);
-    }
-  },
-
-  keypressed: function(dt) {},
-
-  kill: function() {
-    var s= this.sprite;
-    this.sprite=null;
-    return s;
-  },
+png.EntityXXX = asterix.XEntity.extends({
 
   create: function() {
     this.sprite = cc.Sprite.create(sh.xcfg.getImagePath(this.resid));
-    this.sprite.setPosition(this.startPos);
+    this.sprite.setPosition(this.options._startPos);
     return this.sprite;
-  },
-
-  ctor: function(x,y,options) {
-    this.startPos = cc.p(x,y);
   }
 
 });
 
-Object.defineProperty(png.EntityXXX.prototype, "height", {
-  get: function() {
-    return this.sprite ? this.sprite.getContentSize().height : undef;
-  }
-});
-Object.defineProperty(png.EntityXXX.prototype, "width", {
-  get: function() {
-    return this.sprite ? this.sprite.getContentSize().width : undef;
-  }
-});
-Object.defineProperty(png.EntityXXX.prototype, "color", {
-  get: function() {
-    return this.eColor;
-  }
-});
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -100,8 +67,8 @@ png.EntityPaddle = png.EntityXXX.extends({
   },
 
   ctor: function(x,y,options) {
-    this.parent(x,y,options);
-    switch (options.color) {
+    this._super(x,y,options);
+    switch (this.options.color) {
     case 'X':
       this.resid = 'gamelevel1.images.paddle1';
       this.kcodes = [cc.KEY.up, cc.KEY.down];
@@ -111,12 +78,16 @@ png.EntityPaddle = png.EntityXXX.extends({
       this.kcodes = [cc.KEY.w, cc.KEY.s];
       break;
     }
-    this.eColor= options.color;
+    this.color= this.options.color;
   }
 
 });
 
-
+Object.defineProperty(png.EntityPaddle.prototype, "color", {
+  get: function() {
+    return this.options.color;
+  }
+});
 
 }).call(this);
 

@@ -39,6 +39,9 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
   },
 
   assets: {
+    atlases: {
+      'game-pics' : 'media/{{appid}}/game/sprites'
+    },
     tiles: {
     },
     images: {
@@ -72,14 +75,14 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
         'arena' : 'game/{{appid}}/levels/arena.tmx'
       },
       'images' : {
-        'paddle2' : 'media/{{appid}}/game/green_paddle.png',
-        'paddle1' : 'media/{{appid}}/game/red_paddle.png',
-        'ball' : 'media/{{appid}}/game/pongball.png',
-        'arena' : 'game/{{appid}}/levels/arena.png'
       },
       'sprites' : {
       }
     }
+  },
+
+  runOnce: function() {
+    cc.SpriteFrameCache.getInstance().addSpriteFrames( sh.xcfg.getPListPath('game-pics'));
   },
 
   smac: StateMachine.create({
