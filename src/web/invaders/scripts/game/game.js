@@ -41,23 +41,23 @@ var arenaLayer = asterix.XGameLayer.extend({
     this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
 
     var aa, dummy = new ivs.EntityAlien(0,0, { rank: 0, tag: 1, zIndex: 0, frameID: 'green_bug_0.png' });
-    var h= dummy.height;
-    var w= dummy.width;
+    dummy.create();
     for (n=0; n < csts.CELLS; ++n) {
       if (n % csts.COLS === 0) {
-        y = n === 0 ? csts.TOP * csts.TILE : y + h + csts.OFF_Y;
-        x = csts.LEFT * csts.TILE + w / 2;
+        y = n === 0 ? (csts.GRID_H - csts.TOP) * csts.TILE : y - dummy.height - csts.OFF_Y;
+        x = csts.LEFT * csts.TILE + dummy.width / 2;
         row += 1;
       }
-      aa = new ivs.EntityAlien( x + w/2, y - h/2, {
-        frameID: 'blue_bug_1.png',
+      aa = new ivs.EntityAlien( x + dummy.width / 2, y - dummy.height / 2, {
         zIndex: this.lastZix,
         tag: ++this.lastTag,
+        frameTime: 1,
         rank: row,
         status: false
       });
       this.atlasBatch.addChild(aa.create(), aa.options.zIndex, aa.options.tag);
-      x += w + csts.OFF_X;
+      this.aliens.push(aa);
+      x += dummy.width + csts.OFF_X;
     }
     /*
     x = (ig.system.width - iv.EntityPlayer.prototype.size.x ) / 2;
@@ -103,10 +103,10 @@ var arenaLayer = asterix.XGameLayer.extend({
   },
 
   update: function() {
-  /*
-    if (echt(this.motion) && this.motion.delta() > 0) {
+    if (echt(this.motion) && this.motion.isDone()) {
       this.checkMotion();
     }
+  /*
     if (echt(this.bombs) && this.bombs.delta() > 0) {
       this.checkBombs();
     }
@@ -260,12 +260,22 @@ var arenaLayer = asterix.XGameLayer.extend({
 
   play: function() {
     this.maybeReset();
+    this.doLayout();
     this.initAliens();
     return true;
   },
 
   resetScore: function() {
     this.score=0;
+  },
+
+  doLayout: function() {
+    var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gamelevel1.tiles.arena'));
+    var csts= sh.xcfg.csts;
+    var cw= ccsx.center();
+    var wz= ccsx.screen();
+
+    this.addChild(map, this.lastZix, ++this.lastTag);
   },
 
   newGame: function(mode) {

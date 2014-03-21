@@ -22,10 +22,19 @@ var Alien = cc.Sprite.extend({
   ctor: function(options) {
     this.options= options;
     this._super();
-    this.initWithSpriteFrameName(this.options.frameID);
+    this.initWithSpriteFrameName(this.options.frames[0]);
     this.setZOrder(this.options.zIndex);
     this.setTag(this.options.tag);
     this.setPosition(this.options._startPos);
+
+    var frame0 = cc.SpriteFrameCache.getInstance().getSpriteFrame(this.options.frames[0]);
+    var frame1 = cc.SpriteFrameCache.getInstance().getSpriteFrame(this.options.frames[1]);
+    var animFrames = [];
+    animFrames.push(frame0);
+    animFrames.push(frame1);
+    var animation = cc.Animation.create(animFrames, this.options.frameTime);
+    var animate = cc.Animate.create(animation);
+    this.runAction(cc.RepeatForever.create(animate));
   }
 
 });
@@ -81,8 +90,19 @@ asterix.Invaders.EntityAlien = asterix.XEntity.extends({
     this.maxVel.y = 100;
     this.friction.x = 150;
     this.friction.y = 0;
-    this.score = this.options.rank < 3 ? 100 : this.options.rank < 5 ? 50 : 30;
-    var fs = this.options.rank < 3 ? [4, 5] : this.rank < 5 ? [2,3] : [0, 1];
+    if (this.options.rank < 3) {
+      this.options.frames = [ 'blue_bug_1.png', 'blue_bug_0.png' ];
+      this.score=100;
+    }
+    else
+    if (this.options.rank < 5) {
+      this.options.frames = [ 'green_bug_1.png', 'green_bug_0.png' ];
+      this.score= 50;
+    }
+    else {
+      this.options.frames = [ 'purple_bug_0.png', 'purple_bug_1.png' ];
+      this.score= 30;
+    }
   }
 
 

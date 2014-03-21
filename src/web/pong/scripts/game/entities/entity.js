@@ -78,7 +78,6 @@ png.EntityPaddle = png.EntityXXX.extends({
       this.kcodes = [cc.KEY.w, cc.KEY.s];
       break;
     }
-    this.color= this.options.color;
   }
 
 });
