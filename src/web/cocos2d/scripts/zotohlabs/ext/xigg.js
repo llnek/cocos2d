@@ -25,6 +25,14 @@ asterix.XGameLayer = asterix.XLayer.extend({
   players: [],
   actor: null,
 
+  onKeyDown:function (e) {
+    this.keyboard[e] = true;
+  },
+
+  onKeyUp:function (e) {
+    this.keyboard[e] = false;
+  },
+
   setGameMode: function(mode) {
     sh.xcfg.csts.GAME_MODE=mode;
   },

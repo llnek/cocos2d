@@ -27,15 +27,6 @@ var arenaLayer = asterix.XGameLayer.extend({
   MAX_SCORE: 9, //11,
   ball: null,
 
-  onKeyDown:function (e) {
-    this.keyboard[e] = true;
-  },
-
-  onKeyUp:function (e) {
-    this.keyboard[e] = false;
-  },
-
-
   play: function() {
     var p2Img= cc.Sprite.create(sh.xcfg.getImagePath('gamelevel1.images.paddle2'));
     var p1Img= cc.Sprite.create(sh.xcfg.getImagePath('gamelevel1.images.paddle1'));

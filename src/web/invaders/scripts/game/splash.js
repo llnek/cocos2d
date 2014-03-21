@@ -7,63 +7,37 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function (undef) { "use strict"; var global= this; var _ = global._ ;
 var asterix = global.ZotohLabs.Asterix;
-var inv = asterix.Invaders;
+var ccsx = asterix.COCOS2DX;
 var sh = asterix.Shell;
 var loggr = global.ZotohLabs.logger;
 var echt = global.ZotohLabs.echt;
 
 //////////////////////////////////////////////////////////////////////////////
-// module def
+// splash screen for the game - make it look nice please.
 //////////////////////////////////////////////////////////////////////////////
-asterix.Invaders.MainMenu = asterix.XMainMenu.extend({
-  appObj: inv
-});
+var SplashLayer = asterix.XSplashLayer.extend({
 
-//////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
-var PlayBtnCtor = asterix.XButtonFactory.define({
-  animSheet: new ig.AnimationSheet(sh.imgFile('invaders','gui','play_btn.png'), 194, 58),
-  size: { x: 194, y: 58 },
-  clicker: function() { sh.xcfg.smac.play0(); }
-});
+  doLayout: function() {
+    var imgUrl= sh.xcfg.getImagePath('splash.play-btn');
+    var me=this, cw = ccsx.center();
+    var winSize = ccsx.screen();
+    var btn = cc.Sprite.create(imgUrl);
+    var mi= cc.MenuItemSprite.create(btn, null, null, this.pkPlay, this);
+    var menu = cc.Menu.create(mi);
+    menu.alignItemsVerticallyWithPadding(10);
+    this.addChild(menu, this.lastZix, ++this.lastTag);
+    menu.setPosition(cw.x, 56);
 
-//////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
-sh.xcfg.game.splash = asterix.XScreenFactory.define({
-
-  preStart: function() {
-    var y = (ig.system.height - PlayBtnCtor.prototype.size.y) / 2;
-    var x = (ig.system.width - PlayBtnCtor.prototype.size.x) / 2;
-    this.spawnEntity(PlayBtnCtor, x, y, {});
-  },
-
-  onStart: function() {
-    sh.xcfg.smac.genesis(this);
-  },
-
-  update: function() {
-    this.parent();
-    if (this.pressed('continue')) {
-      sh.xcfg.smac.play0();
-    }
-  },
-
-  init: function() {
-    this.parent();
-    this.start();
-  },
-
-  name: 'startscreen'
+    return true;
+  }
 
 });
 
-
+sh.protos['StartScreen'] = new asterix.XSceneFactory(SplashLayer);
 
 }).call(this);
 

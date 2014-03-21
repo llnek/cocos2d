@@ -11,19 +11,16 @@
 
 (function(undef) { "use strict"; var global = this; var _ = global._ ;
 var asterix = global.ZotohLabs.Asterix;
+var ccsx= asterix.COCOS2DX;
+var ivs= asterix.Invaders;
 var sh = asterix.Shell;
-var iv= asterix.Invaders;
 var loggr = global.ZotohLabs.logger;
 var echt = global.ZotohLabs.echt;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-sh.xcfg.game.proto = asterix.XGame.extend({
-
-  //fontScore: new ig.Font('media/impact/fon/fascinate_white_16_font.png'),
-  fontScore: sh.newFonFile('impact','ocr_white_16_font.png'),
-  //fontHead16: new ig.Font('media/impact/fon/ocr_white_16_font.png'),
+var arenaLayer = asterix.XGameLayer.extend({
 
   maybeReset: function() {
     this.motion = null;
@@ -31,25 +28,6 @@ sh.xcfg.game.proto = asterix.XGame.extend({
     this.player = null;
     this.score = 0;
     this.aliens = [];
-    this.removeEntityTypes(iv.EntityPlayer);
-    this.removeEntityTypes(iv.EntityAlien);
-    this.removeEntityTypes(iv.EntityMissile);
-    this.removeEntityTypes(iv.EntityBomb);
-    this.removeEntityTypes(iv.EntityExplode);
-  },
-
-  name: 'invaders',
-
-  sfx: {
-    missile: new ig.Sound('media/invaders/sfx/missile.*'),
-    march: new ig.Sound('media/invaders/sfx/march.*'),
-    explode: new ig.Sound('media/invaders/sfx/explode.*')
-  },
-
-  unbindEvents: function() {
-  },
-
-  bindEvents: function() {
   },
 
   preStart: function() {
@@ -269,18 +247,26 @@ sh.xcfg.game.proto = asterix.XGame.extend({
     this.guiBtns();
   },
 
-  init: function(mode) {
+  play: function() {
+    this.maybeReset();
+
+  },
+
+  resetScore: function() {
+    this.score=0;
+  },
+
+  newGame: function(mode) {
+    sh.xcfg.sfxPlay('start_game');
     this.setGameMode(mode);
-    this.parent();
-    this.gui();
-    this.start();
+    this.resetScore();
+    return this.play();
   }
-
-
 
 });
 
 
+asterix.Invaders.Factory = new asterix.XSceneFactory(arenaLayer);
 
 }).call(this);
 
