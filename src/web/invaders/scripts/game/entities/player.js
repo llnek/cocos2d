@@ -49,6 +49,7 @@ var Ship = cc.Sprite.extend({
 
 asterix.Invaders.EntityPlayer = asterix.XEntity.extends({
 
+  missiles: {},
   speed: 150,
 
   create: function() {
@@ -61,6 +62,9 @@ asterix.Invaders.EntityPlayer = asterix.XEntity.extends({
       this.coolAmmo= null;
       this.sprite.loadAmmo();
     }
+    _.each(this.missiles, function(z) {
+      z.update(dt);
+    });
     if (sh.main.keyboard[cc.KEY.right]) {
       this.onRight(dt);
     }
@@ -73,11 +77,16 @@ asterix.Invaders.EntityPlayer = asterix.XEntity.extends({
   },
 
   doFire: function() {
-    //ig.game.spawnEntity(iv.EntityMissile, this.pos.x + (this.size.x - iv.EntityMissile.prototype.size.x) / 2, this.pos.y - 4);
-    //this.currentAnim = this.anims.show;
+    var pos= this.sprite.getPosition();
+    var m= new ivs.EntityMissile(pos.x, pos.y + 4, {
+      zIndex: sh.main.lastZix,
+      tag: ++sh.main.lastTag
+    });
+    sh.main.addChild(m.create(), m.options.zIndex, m.options.tag);
     //ig.game.onPlayerFire();
     this.coolAmmo = this.sprite.runAction(cc.DelayTime.create(this.options.coolDown));
     this.sprite.coolDown();
+    this.missiles[ '' + m.options.tag ] = m;
   },
 
   onRight: function(dt) {

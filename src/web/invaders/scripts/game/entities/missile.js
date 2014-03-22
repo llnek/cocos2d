@@ -11,27 +11,41 @@
 
 (function(undef) { "use strict"; var global = this; var _ = global._ ;
 var asterix = global.ZotohLabs.Asterix;
-var iv = asterix.Invaders;
+var ccsx = asterix.COCOS2DX;
+var ivs = asterix.Invaders;
 var sh = asterix.Shell;
 var loggr= global.ZotohLabs.logger;
 var echt= global.ZotohLabs.echt;
 
-asterix.Invaders.EntityMissile = asterix.XEntity.extend({
+var Missile = cc.Sprite.extend({
 
-  animSheet: new ig.AnimationSheet('media/invaders/game/missile.png', 6, 12),
-  OOB: sh.xcfg.csts.TILE * 2,
-  size: { x: 6, y: 12 },
+  ctor: function(x,y,options) {
+    this.options= options || {};
+    this._super();
+    this.initWithSpriteFrameName(this.options.frames[0]);
+    this.setZOrder(this.options.zIndex);
+    this.setTag(this.options.tag);
+    this.setPosition(x,y);
+  }
 
-  collides: ig.Entity.COLLIDES.PASSIVE,
-  checkAgainst: ig.Entity.TYPE.B,
-  type: ig.Entity.TYPE.NONE,
+});
 
-  update: function() {
+asterix.Invaders.EntityMissile = asterix.XEntity.extends({
+
+  speed: 100,
+
+  update: function(dt) {
+    var pos = this.sprite.getPosition();
+    var y = pos.y + dt * this.speed;
+    this.sprite.setPosition(pos.x, y);
+
+    /*
     if (this.pos.y < this.OOB) {
       this.kill();
     } else {
       this.parent();
     }
+    */
   },
 
   check: function(other) {
@@ -43,12 +57,17 @@ asterix.Invaders.EntityMissile = asterix.XEntity.extend({
     }
   },
 
-  init: function(x, y, options) {
-    this.parent(x, y, options);
+  create: function() {
+    this.sprite = new Missile(this.options._startPos.x, this.options._startPos.y,this.options);
+    return this.sprite;
+  },
+
+  ctor: function(x, y, options) {
+    this._super(x, y, options);
     this.maxVel.x = 200;
     this.maxVel.y = 200;
     this.vel.y = -80;
-    this.addAnim('show', 0.2, [0]);
+    this.options.frames= ['missile.png'];
   }
 
 
