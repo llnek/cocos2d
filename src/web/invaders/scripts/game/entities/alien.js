@@ -11,8 +11,8 @@
 
 (function(undef) { "use strict"; var global = this; var _ = global._ ;
 var asterix = global.ZotohLabs.Asterix;
-var ivs= asterix.Invaders;
 var ccsx = asterix.COCOS2DX;
+var ivs= asterix.Invaders;
 var sh= asterix.Shell;
 var loggr= global.ZotohLabs.logger;
 var echt= global.ZotohLabs.echt;
@@ -57,9 +57,12 @@ asterix.Invaders.EntityAlien = asterix.XEntity.extends({
     this.sprite.setPosition(pos.x, pos.y - ccsx.getHeight(this.sprite) - sh.xcfg.csts.OFF_Y);
   },
 
-  update: function() {
+  update: function(dt) {
     if (this.bombCount > 0) {
-      //ig.game.spawnEntity(iv.EntityBomb, this.pos.x + (this.size.x - iv.EntityBomb.prototype.size.x) / 2, this.pos.y + this.size.y);
+      var pos = this.sprite.getPosition();
+      var aa= new ivs.EntityBomb(pos.x, pos.y - 4, { zIndex: sh.main.lastZix, tag: ++sh.main.lastTag });
+      sh.main.addChild(aa.create(), aa.options.zIndex, aa.options.tag);
+      ivs.EntityAlien.BombCache['' + aa.options.tag] = aa;
       this.bombCount = 0;
     }
   },
@@ -108,6 +111,8 @@ asterix.Invaders.EntityAlien = asterix.XEntity.extends({
 
 
 });
+
+ivs.EntityAlien.BombCache= {};
 
 
 

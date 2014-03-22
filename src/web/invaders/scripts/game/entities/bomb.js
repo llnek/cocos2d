@@ -12,52 +12,65 @@
 (function(undef) { "use strict"; var global = this; var _ = global._ ;
 
 var asterix = global.ZotohLabs.Asterix;
-var iv = asterix.Invaders;
+var ccsx = asterix.COCOS2DX;
+var ivs = asterix.Invaders;
 var sh = asterix.Shell;
 var loggr= global.ZotohLabs.logger;
 var echt= global.ZotohLabs.echt;
 
+var Bomb = cc.Sprite.extend({
+  ctor: function(x,y,options) {
+    this.options = options || {};
+    this._super();
+    this.initWithSpriteFrameName(this.options.frames[0]);
+    this.setZOrder(this.options.zIndex);
+    this.setTag(this.options.tag);
+    this.setPosition(x,y);
+  }
+});
 
-asterix.Invaders.EntityBomb = asterix.XEntity.extend({
+asterix.Invaders.EntityBomb = asterix.XEntity.extends({
 
-  animSheet: new ig.AnimationSheet('media/invaders/game/bomb.png', 6, 12),
-  OOB: (sh.xcfg.csts.GRID_H - 2) * sh.xcfg.csts.TILE,
-  collides: ig.Entity.COLLIDES.PASSIVE,
-  checkAgainst: ig.Entity.TYPE.A,
-  type: ig.Entity.TYPE.NONE,
-  size: { x: 6, y: 12 },
-
-  update: function() {
-    if ((this.pos.y + this.size.y) > this.OOB) {
-      this.kill();
-    }
-    else {
-      this.parent();
+  update: function(dt) {
+    if (this.sprite) {
+      var pos = this.sprite.getPosition();
+      var y = pos.y - dt * this.speed;
+      this.sprite.setPosition(pos.x, y);
     }
   },
 
   check: function(other) {
-    if (echt(other)) {
-      other.receiveDamage(10, this);
-    }
-    ig.game.spawnEntity(iv.EntityExplode, this.pos.x, this.pos.y);
+    var pos = other.sprite.getPosition();
+    var aa= new ivs.EntityExplode(pos.x, pos.y, {
+      zIndex: sh.main.lastZix,
+      tag: ++sh.main.lastTag,
+      frameTime: 0.1
+    });
+    other.kill();
     this.kill();
-    ig.game.onPlayerKilled();
+    //ig.game.onPlayerKilled();
+    sh.main.addChild(aa.create(), aa.zIndex, aa.tag);
   },
 
-  init: function(x, y, options) {
-    this.parent(x, y, options);
-    this.maxVel.x = 200;
+  create: function() {
+    var pos= this.options._startPos;
+    this.sprite = new Bomb(pos.x,pos.y, this.options);
+    return this.sprite;
+  },
+
+  speed: 50,
+
+  ctor: function(x, y, options) {
+    this._super(x, y, options);
+    this.maxVel.x = 0;
     this.maxVel.y = 200;
     this.vel.y = 50;
-    this.addAnim('show', 0.2, [0]);
+    this.options.frames= ['bomb.png'];
   }
 
 
 
 });
-
-
 
 
 

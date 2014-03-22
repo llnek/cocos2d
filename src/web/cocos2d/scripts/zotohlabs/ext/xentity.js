@@ -36,9 +36,10 @@ asterix.XEntity = global.ZotohLabs.klass.extends({
   vel: { x: 0, y: 0 },
 
   kill: function() {
-    var s= this.sprite;
+    if (this.sprite) {
+      sh.main.removeChild(this.sprite,true);
+    }
     this.sprite=null;
-    return s;
   },
 
   create: function() {

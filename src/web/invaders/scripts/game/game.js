@@ -105,15 +105,35 @@ var arenaLayer = asterix.XGameLayer.extend({
   },
 
   updateEntities: function(dt) {
+    _.each(ivs.EntityAlien.BombCache, function(z) {
+      z.update(dt);
+    });
     if (echt(this.motion) && this.motion.isDone()) {
-      this.checkMotion();
+      this.checkMotion(dt);
     }
-  /*
-    if (echt(this.bombs) && this.bombs.delta() > 0) {
-      this.checkBombs();
+    if (echt(this.bombs) && this.bombs.isDone()) {
+      this.checkBombs(dt);
     }
-    */
     this.players[0].update(dt);
+  },
+
+  checkEntities: function(dt) {
+    var bbs = ivs.EntityAlien.BombCache;
+    var mss = this.players[0].missiles;
+    var k, w,a,m,b;
+    _.each(_.keys(bbs), function(z) {
+      b= bbs[z];
+      a= _.keys(mss);
+      for (k = 0; k < a.length; ++k) {
+        w = a[k];
+        m = mss[w];
+        if ( ccsx.checkCollide(b.sprite,m.sprite)) {
+          delete bbs.z;
+          delete mss.w;
+          b.check(m);
+        }
+      }
+    });
   },
 
   maybeShuffle: function(stepx) {
@@ -177,13 +197,13 @@ var arenaLayer = asterix.XGameLayer.extend({
     });
   },
 
-  checkMotion: function() {
+  checkMotion: function(dt) {
     this.maybeShuffle(this.stepX);
     this.motion = cc.DelayTime.create(1);
     this.runAction(this.motion);
   },
 
-  checkBombs: function() {
+  checkBombs: function(dt) {
     var rc = [];
     var n;
     for (n=0; n < this.aliens.length; ++n) {
@@ -195,7 +215,10 @@ var arenaLayer = asterix.XGameLayer.extend({
       n = rc.length === 1 ? 0 : asterix.fns.rand( rc.length);
       this.aliens[n].loadBomb();
     }
-    this.bombs.reset();
+    _.each(this.aliens, function(z) {
+        if (z.status) { z.update(dt); }
+    });
+    this.bombs = this.runAction(cc.DelayTime.create(2));
   },
 
   updateScore: function(n) {

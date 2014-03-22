@@ -35,26 +35,18 @@ asterix.Invaders.EntityMissile = asterix.XEntity.extends({
   speed: 100,
 
   update: function(dt) {
-    var pos = this.sprite.getPosition();
-    var y = pos.y + dt * this.speed;
-    this.sprite.setPosition(pos.x, y);
-
-    /*
-    if (this.pos.y < this.OOB) {
-      this.kill();
-    } else {
-      this.parent();
+    if (this.sprite) {
+      var pos = this.sprite.getPosition();
+      var y = pos.y + dt * this.speed;
+      this.sprite.setPosition(pos.x, y);
     }
-    */
   },
 
   check: function(other) {
-    if (echt(other)) {
-      other.receiveDamage(10, this);
-      ig.game.onAlienHit(other);
-      other.status = false;
-      this.kill();
-    }
+    //other.receiveDamage(10, this);
+    //ig.game.onAlienHit(other);
+    //other.status = false;
+    this.kill();
   },
 
   create: function() {

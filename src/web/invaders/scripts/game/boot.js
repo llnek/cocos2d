@@ -12,12 +12,10 @@
 (function(undef) { "use strict"; var global= this; var _ = global._;
 
 global.document.ccConfig.initAppFiles('invaders', [
-/*
-      'game/invaders/entities/entity.js',
-      'game/invaders/entities/bomb.js',
+
       'game/invaders/entities/explode.js',
-      */
       'game/invaders/entities/missile.js',
+      'game/invaders/entities/bomb.js',
       'game/invaders/entities/player.js',
       'game/invaders/entities/alien.js',
       'game/invaders/game.js',

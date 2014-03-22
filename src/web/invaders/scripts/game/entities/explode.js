@@ -12,31 +12,57 @@
 (function(undef) { "use strict"; var global = this; var _ = global._ ;
 
 var asterix = global.ZotohLabs.Asterix;
-var iv = asterix.Invaders;
+var ccsx = asterix.COCOS2DX;
+var ivs = asterix.Invaders;
 var sh = asterix.Shell;
 var loggr= global.ZotohLabs.logger;
 var echt= global.ZotohLabs.echt;
 
+var Boom = cc.Sprite.extend({
 
-asterix.Invaders.EntityExplode = asterix.XEntity.extend({
+  ctor: function(entity,x,y,options) {
+    this.options = options || {};
+    this.entity=entity;
+    this._super();
+    this.initWithSpriteFrameName(this.options.frames[0]);
+    this.setZOrder(this.options.zIndex);
+    this.setTag(this.options.tag);
+    this.setPosition(this.options._startPos);
 
-  animSheet: new ig.AnimationSheet('media/invaders/game/explode.png', 8, 8),
-  size: { x: 8, y: 8 },
-  type: ig.Entity.TYPE.NONE,
-
-  update: function() {
-    if (this.currentAnim.loopCount > 0) {
-      this.kill();
-    } else {
-      this.parent();
-    }
-  },
-
-  init: function(x, y, options) {
-    this.parent(x, y, options);
-    this.addAnim('show', 0.1, [0, 1, 2, 3]);
+    var frame0 = cc.SpriteFrameCache.getInstance().getSpriteFrame(this.options.frames[0]);
+    var frame1 = cc.SpriteFrameCache.getInstance().getSpriteFrame(this.options.frames[1]);
+    var frame2 = cc.SpriteFrameCache.getInstance().getSpriteFrame(this.options.frames[2]);
+    var frame3 = cc.SpriteFrameCache.getInstance().getSpriteFrame(this.options.frames[3]);
+    var animFrames = [];
+    animFrames.push(frame0);
+    animFrames.push(frame1);
+    animFrames.push(frame2);
+    animFrames.push(frame3);
+    var animation = cc.Animation.create(animFrames, this.options.frameTime);
+    this.runAction( cc.Sequence.create(cc.Animate.create(animation),
+      cc.CallFunc.create(function() {
+        this.entity.kill();
+      }, this)
+    ));
   }
 
+});
+
+asterix.Invaders.EntityExplode = asterix.XEntity.extends({
+
+  update: function(dt) {
+  },
+
+  create: function() {
+    var pos = this.options._startPos;
+    this.sprite = new Boom(this,pos.x, pos.y, this.options);
+    return this.sprite;
+  },
+
+  ctor: function(x, y, options) {
+    this._super(x, y, options);
+    this.options.frames= ['boom_0.png','boom_1.png','boom_2.png','boom_3.png'];
+  }
 
 });
 
