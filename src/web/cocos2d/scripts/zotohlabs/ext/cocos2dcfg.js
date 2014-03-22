@@ -43,6 +43,7 @@ var cfg= {
         this.appFiles.push('zotohlabs/ext/xscene.js');
         this.appFiles.push('zotohlabs/ext/xlayer.js');
         this.appFiles.push('zotohlabs/ext/xentity.js');
+        this.appFiles.push('zotohlabs/ext/xlives.js');
         this.appFiles.push('zotohlabs/ext/xigg.js');
         this.appFiles.push('zotohlabs/ext/xloader.js');
         this.appFiles.push('zotohlabs/gui/startscreen.js');

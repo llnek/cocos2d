@@ -12,69 +12,109 @@
 (function(undef) { "use strict"; var global = this; var _ = global._ ;
 
 var asterix = global.ZotohLabs.Asterix;
-var iv = asterix.Invaders;
+var ccsx = asterix.COCOS2DX;
+var ivs = asterix.Invaders;
 var sh = asterix.Shell;
 var loggr = global.ZotohLabs.logger;
 var echt = global.ZotohLabs.echt;
 
+var Ship = cc.Sprite.extend({
 
-asterix.Invaders.EntityPlayer = asterix.XEntity.extend({
-
-  animSheet: new ig.AnimationSheet('media/invaders/game/player.png', 36, 24),
-  collides: ig.Entity.COLLIDES.PASSIVE,
-  checkAgainst: ig.Entity.TYPE.NONE,
-  type: ig.Entity.TYPE.A,
-  size: { x: 36, y: 24 },
   ammoCount: 0,
 
-  update: function() {
-    if (ig.input.state('right')) {
-      this.onRight();
+  coolDown: function() {
+    this.initWithSpriteFrameName(this.options.frames[0]);
+    this.ammoCount= 0;
+  },
+
+  loadAmmo: function() {
+    this.initWithSpriteFrameName(this.options.frames[1]);
+    this.ammoCount= 1;
+  },
+
+  hasAmmo: function() {
+    return this.ammoCount > 0;
+  },
+
+  ctor: function(options) {
+    this.options= options;
+    this._super();
+    this.loadAmmo();
+    this.setZOrder(this.options.zIndex);
+    this.setTag(this.options.tag);
+    this.setPosition(this.options._startPos);
+  }
+
+});
+
+asterix.Invaders.EntityPlayer = asterix.XEntity.extends({
+
+  speed: 150,
+
+  create: function() {
+    this.sprite = new Ship(this.options);
+    return this.sprite;
+  },
+
+  update: function(dt) {
+    if (this.coolAmmo && this.coolAmmo.isDone()) {
+      this.coolAmmo= null;
+      this.sprite.loadAmmo();
     }
-    if (ig.input.state('left')) {
-      this.onLeft();
+    if (sh.main.keyboard[cc.KEY.right]) {
+      this.onRight(dt);
     }
-    if (this.loadAmmo.delta() > 0) {
-      this.currentAnim = this.anims.load;
-      this.ammoCount = 1;
+    if (sh.main.keyboard[cc.KEY.left]) {
+      this.onLeft(dt);
     }
-    if (ig.input.pressed('shoot') && this.ammoCount > 0) {
+    if (sh.main.keyboard[cc.KEY.space] && this.sprite.hasAmmo()) {
       this.doFire();
     }
-    this.parent();
   },
 
   doFire: function() {
-    ig.game.spawnEntity(iv.EntityMissile, this.pos.x + (this.size.x - iv.EntityMissile.prototype.size.x) / 2, this.pos.y - 4);
-    this.currentAnim = this.anims.show;
-    this.ammoCount = 0;
-    ig.game.onPlayerFire();
-    this.loadAmmo.reset();
+    //ig.game.spawnEntity(iv.EntityMissile, this.pos.x + (this.size.x - iv.EntityMissile.prototype.size.x) / 2, this.pos.y - 4);
+    //this.currentAnim = this.anims.show;
+    //ig.game.onPlayerFire();
+    this.coolAmmo = this.sprite.runAction(cc.DelayTime.create(this.options.coolDown));
+    this.sprite.coolDown();
   },
 
-  onRight: function() {
-    var px = (this.pos.x + this.size.x) - ig.game.screen.x;
-    if (px < ig.system.width) {
-      this.vel.x = 60;
+  onRight: function(dt) {
+    var pos= this.sprite.getPosition();
+    var x = pos.x + dt * this.speed;
+    this.sprite.setPosition(x, pos.y);
+    this.clamp();
+  },
+
+  onLeft: function(dt) {
+    var pos= this.sprite.getPosition();
+    var x = pos.x - dt * this.speed;
+    this.sprite.setPosition(x, pos.y);
+    this.clamp();
+  },
+
+  clamp: function() {
+    var sz= this.sprite.getContentSize();
+    var csts = sh.xcfg.csts;
+    var pos= this.sprite.getPosition();
+    var wz = ccsx.screen();
+    if (ccsx.getRight(this.sprite) > wz.width - csts.TILE) {
+      this.sprite.setPosition(wz.width - csts.TILE - sz.width/2, pos.y);
+    }
+    if (ccsx.getLeft(this.sprite) < csts.TILE) {
+      this.sprite.setPosition( csts.TILE + sz.width/2, pos.y);
     }
   },
 
-  onLeft: function() {
-    var px = this.pos.x - ig.game.screen.x;
-    if (px > 0) {
-      this.vel.x = -60;
-    }
-  },
-
-  init: function(x, y, options) {
-    this.parent(x, y, options);
+  ctor: function(x, y, options) {
+    this._super(x, y, options);
     this.maxVel.y = 200;
     this.maxVelx = 100;
     this.friction.x = 150;
     this.friction.y = 0;
-    this.addAnim('show', 1, [0]);
-    this.addAnim('load', 1, [1]);
-    this.loadAmmo = new ig.Timer(1);
+    //this.coolAmmo = this.runAction(cc.DelayTime.create(this.options.coolDown));
+    this.options.frames= [ 'ship_0.png', 'ship_1.png' ];
   }
 
 

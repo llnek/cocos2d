@@ -54,7 +54,7 @@ asterix.Invaders.EntityAlien = asterix.XEntity.extends({
 
   forward: function() {
     var pos= this.sprite.getPosition();
-    this.sprite.setPosition(pos.x, pos.y + ccsx.getHeight(this.sprite) + sh.xcfg.csts.OFF_Y);
+    this.sprite.setPosition(pos.x, pos.y - ccsx.getHeight(this.sprite) - sh.xcfg.csts.OFF_Y);
   },
 
   update: function() {

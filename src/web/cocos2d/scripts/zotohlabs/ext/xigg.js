@@ -37,28 +37,36 @@ asterix.XGameLayer = asterix.XLayer.extend({
     sh.xcfg.csts.GAME_MODE=mode;
   },
 
-  doCtrlBtns: function() {
+  doCtrlBtns: function(scale) {
     var x, y, csts = sh.xcfg.csts;
     var wz= ccsx.screen();
     var cw= ccsx.center();
     var s1,s2,t1,t2,menu;
 
+    scale = scale || 1;
+
     s1= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.menu'));
     t1 = cc.MenuItemSprite.create(s1, null, null, function() {
       this.goMenu();
     }, this);
+    if (scale !== 1) {
+      t1.setScale(scale);
+    }
     menu= cc.Menu.create(t1);
     menu.setPosition(wz.width - csts.TILE - csts.S_OFF -
-      s1.getContentSize().width / 2,
-      csts.TILE + csts.S_OFF + s1.getContentSize().height / 2);
+      ccsx.getScaledWidth(t1) / 2,
+      csts.TILE + csts.S_OFF + ccsx.getScaledHeight(t1) / 2);
     this.addChild(menu, this.lastZix, ++this.lastTag);
 
     s2= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.replay'));
     t2 = cc.MenuItemSprite.create(s2, null, null, function() {
       this.pkReplay();
     }, this);
+    if (scale !== 1) {
+      t2.setScale(scale);
+    }
     this.replayBtn= cc.Menu.create(t2);
-    this.replayBtn.setPosition(cw.x, csts.TILE + csts.S_OFF + s2.getContentSize().height / 2);
+    this.replayBtn.setPosition(cw.x, csts.TILE + csts.S_OFF + ccsx.getScaledHeight(t2) / 2);
     this.replayBtn.setVisible(false);
     this.addChild(this.replayBtn, this.lastZix, ++this.lastTag);
   },
@@ -104,6 +112,21 @@ asterix.XGameLayer = asterix.XLayer.extend({
     }
 
     return rc;
+  },
+
+  updateEntities: function(dt) {},
+
+  checkEntities: function(dt) {},
+
+  operational: function() {
+    return true;
+  },
+
+  update: function(dt) {
+    if (this.operational() ) {
+      this.updateEntities(dt);
+      this.checkEntities(dt);
+    }
   },
 
   ctor: function(options) {

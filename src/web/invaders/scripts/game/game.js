@@ -25,7 +25,6 @@ var arenaLayer = asterix.XGameLayer.extend({
   maybeReset: function() {
     this.motion = null;
     this.bombs = null;
-    this.player = null;
     this.score = 0;
     this.aliens = [];
   },
@@ -33,6 +32,7 @@ var arenaLayer = asterix.XGameLayer.extend({
   initAliens: function() {
     var gameAtlas = cc.TextureCache.getInstance().addImage( sh.xcfg.getAtlasPath('game-pics'));
     var csts = sh.xcfg.csts;
+    var cw= ccsx.center();
     var n, x,y, me = this;
     var row = 0;
 
@@ -42,6 +42,8 @@ var arenaLayer = asterix.XGameLayer.extend({
 
     var aa, dummy = new ivs.EntityAlien(0,0, { rank: 0, tag: 1, zIndex: 0, frameID: 'green_bug_0.png' });
     dummy.create();
+    this.alienSize= dummy.sprite.getContentSize();
+
     for (n=0; n < csts.CELLS; ++n) {
       if (n % csts.COLS === 0) {
         y = n === 0 ? (csts.GRID_H - csts.TOP) * csts.TILE : y - dummy.height - csts.OFF_Y;
@@ -59,27 +61,27 @@ var arenaLayer = asterix.XGameLayer.extend({
       this.aliens.push(aa);
       x += dummy.width + csts.OFF_X;
     }
-    /*
-    x = (ig.system.width - iv.EntityPlayer.prototype.size.x ) / 2;
-    y = (csts.GRID_H - 2) * csts.TILE - iv.EntityPlayer.prototype.size.y;
-    this.spawnPlayer();
-    this.lives.reset();
-    this.score=0;
-    this.scoreLabel.setText(Number(this.score).toString());
-    */
+
+    dummy = new ivs.EntityPlayer(0,0, { tag: 1, zIndex: 0, frameID: 'ship_0.png' });
+    dummy.create();
+    this.shipSize= dummy.sprite.getContentSize();
+
+    y =  5 * csts.TILE + dummy.height;
+    x = cw.x;
+    aa= new ivs.EntityPlayer(x,y, { tag: ++this.lastTag, zIndex: this.lastZix , coolDown: 0.5});
+    this.addChild(aa.create(), aa.options.tag, aa.options.zIndex);
+    this.players.push( aa);
   },
 
-  spawnPlayer: function() {
-  },
-
-  onStart: function() {
-    var n;
-    this.stepX = iv.EntityAlien.prototype.size.x / 3;
-    for (n=0; n < sh.xcfg.csts.CELLS; ++n) {
+  initMotionTimers: function() {
+    this.stepX = this.alienSize.width / 3;
+    for (var n=0; n < sh.xcfg.csts.CELLS; ++n) {
       this.aliens[n].status = true;
     }
-    this.motion = new ig.Timer(1);
-    this.bombs = new ig.Timer(2);
+    this.motion = cc.DelayTime.create(1);
+    this.bombs = cc.DelayTime.create(2);
+    this.runAction(this.motion);
+    this.runAction(this.bombs);
   },
 
   onPlayerKilled: function() {
@@ -102,7 +104,7 @@ var arenaLayer = asterix.XGameLayer.extend({
     //this.marchSnd.play();
   },
 
-  update: function() {
+  updateEntities: function(dt) {
     if (echt(this.motion) && this.motion.isDone()) {
       this.checkMotion();
     }
@@ -111,6 +113,7 @@ var arenaLayer = asterix.XGameLayer.extend({
       this.checkBombs();
     }
     */
+    this.players[0].update(dt);
   },
 
   maybeShuffle: function(stepx) {
@@ -146,17 +149,18 @@ var arenaLayer = asterix.XGameLayer.extend({
 
   testDirX: function(b, stepx) {
     var csts = sh.xcfg.csts;
+    var sp= b.sprite;
     if (stepx > 0) {
-      return b.pos.x + b.size.x + stepx < (csts.GRID_W - 2) * csts.TILE;
+      return ccsx.getRight(sp) + stepx < (csts.GRID_W - 2) * csts.TILE;
     } else {
-      return (b.pos.x - 0) + stepx > csts.LEFT * csts.TILE;
+      return ccsx.getLeft(sp) + stepx > csts.LEFT * csts.TILE;
     }
   },
 
   findMinX: function() {
     return _.min(this.aliens, function(a) {
       if (a.status) {
-        return a.pos.x;
+        return ccsx.getLeft(a.sprite);
       } else {
         return Number.MAX_VALUE;
       }
@@ -166,7 +170,7 @@ var arenaLayer = asterix.XGameLayer.extend({
   findMaxX: function() {
     return _.max(this.aliens, function(a) {
       if (a.status) {
-        return a.pos.x;
+        return ccsx.getLeft(a.sprite);
       } else {
         return 0;
       }
@@ -175,7 +179,8 @@ var arenaLayer = asterix.XGameLayer.extend({
 
   checkMotion: function() {
     this.maybeShuffle(this.stepX);
-    this.motion.reset();
+    this.motion = cc.DelayTime.create(1);
+    this.runAction(this.motion);
   },
 
   checkBombs: function() {
@@ -195,7 +200,7 @@ var arenaLayer = asterix.XGameLayer.extend({
 
   updateScore: function(n) {
     this.score += n;
-    this.scoreLabel.setText(Number(this.score).toString());
+    this.scoreLabel.setString(Number(this.score).toString());
   },
 
   onDone: function() {
@@ -211,62 +216,35 @@ var arenaLayer = asterix.XGameLayer.extend({
     }
   },
 
-  guiBtns: function() {
-    var me=this, gid= 'gui-btns';
-    var csts= sh.xcfg.csts;
-    var x, y, itm;
-
-    this.createLayerEx(gid);
-
-    itm= asterix.XButtonFactory.define({
-      animSheet: new ig.AnimationSheet(sh.imgFile('impact','btns','settings-x32.png'), 32, 32),
-      size: { x: 32, y: 32 },
-      _layer: gid,
-      clicker: function() { sh.xcfg.smac.settings(); }
-    });
-    x= (ig.system.width - csts.BTN_SIZE ) / 2;
-    y= csts.TILE + csts.S_OFF;
-    this.spawnEntity(itm, x , y, {});
-  },
-
   gui: function() {
     var me=this, csts = sh.xcfg.csts;
-    var hdr, itm, gid='gui';
+    var wz = ccsx.screen();
+    var hdr, itm;
     var mi, msg;
-    this.createLayer(gid);
 
-    // the score
-    msg= '0';
-    this.scoreLabel = new ig.XLabel(gid, this.fontScore, msg);
-      //hdr.getPos()[1] + hdr.getSize()[1] + 10
-    this.scoreLabel.update=function() {
-      this.x = ig.system.width - csts.TILE - this.getSize()[0] - 10;
-      this.y = csts.TILE + 10;
-    };
-    this.addItem(this.scoreLabel);
+    this.scoreLabel = cc.LabelBMFont.create('0', sh.xcfg.getFontPath('font.TinyBoxBB'));
+    this.scoreLabel.setAnchorPoint(1,0);
+    this.scoreLabel.setScale(12/72);
+    this.scoreLabel.setOpacity(0.9*255);
+    this.scoreLabel.setPosition( wz.width - csts.TILE - csts.S_OFF, 
+    wz.height - csts.TILE - csts.S_OFF - ccsx.getScaledHeight(this.scoreLabel));
+    this.addChild(this.scoreLabel, this.lastZix, ++this.lastTag);
 
-    // hud lives
-    this.lives = asterix.XHUDLivesFactory.create({
-      icon: new ig.Image('media/invaders/gui/health.png'),
-      _layer: gid,
-      x: csts.TILE + 10,
-      y: csts.TILE + 10,
+    this.lives = new asterix.XHUDLives(this,
+      csts.TILE + csts.S_OFF,
+      wz.height - csts.TILE - csts.S_OFF, {
+      frames: ['health.png'],
       totalLives: 3
     });
-    this.addItem( this.lives);
-
-    this.guiBtns();
+    this.lives.create();
   },
 
   play: function() {
     this.maybeReset();
     this.doLayout();
     this.initAliens();
+    this.initMotionTimers();
     return true;
-  },
-
-  resetScore: function() {
-    this.score=0;
   },
 
   doLayout: function() {
@@ -276,12 +254,13 @@ var arenaLayer = asterix.XGameLayer.extend({
     var wz= ccsx.screen();
 
     this.addChild(map, this.lastZix, ++this.lastTag);
+    this.gui();
+    this.doCtrlBtns(32/48);
   },
 
   newGame: function(mode) {
     sh.xcfg.sfxPlay('start_game');
     this.setGameMode(mode);
-    this.resetScore();
     return this.play();
   }
 
