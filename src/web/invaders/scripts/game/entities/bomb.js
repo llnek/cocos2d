@@ -19,6 +19,7 @@ var loggr= global.ZotohLabs.logger;
 var echt= global.ZotohLabs.echt;
 
 var Bomb = cc.Sprite.extend({
+
   ctor: function(x,y,options) {
     this.options = options || {};
     this._super();
@@ -32,11 +33,21 @@ var Bomb = cc.Sprite.extend({
 asterix.Invaders.EntityBomb = asterix.XEntity.extends({
 
   update: function(dt) {
+    var csts = sh.xcfg.csts;
+    var wz = ccsx.screen();
     if (this.sprite) {
       var pos = this.sprite.getPosition();
       var y = pos.y - dt * this.speed;
       this.sprite.setPosition(pos.x, y);
+      if (ccsx.getBottom(this.sprite) <= csts.TILE) {
+        this.kill();
+      }
     }
+  },
+
+  kill: function() {
+    delete sh.pools['live-bombs'][ this.options.tag];
+    sh.pools['bombs'].add(this);
   },
 
   check: function(other) {

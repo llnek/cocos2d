@@ -35,11 +35,21 @@ asterix.Invaders.EntityMissile = asterix.XEntity.extends({
   speed: 100,
 
   update: function(dt) {
+    var csts= sh.xcfg.csts;
+    var wz= ccsx.screen();
     if (this.sprite) {
       var pos = this.sprite.getPosition();
       var y = pos.y + dt * this.speed;
       this.sprite.setPosition(pos.x, y);
+      if (ccsx.getTop(this.sprite) >= wz.height - csts.TILE) {
+        this.kill();
+      }
     }
+  },
+
+  kill: function() {
+    delete sh.pools['live-missiles'][this.options.tag];
+    sh.pools['missiles'].add(this);
   },
 
   check: function(other) {

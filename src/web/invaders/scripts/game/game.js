@@ -20,6 +20,11 @@ var echt = global.ZotohLabs.echt;
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
+sh.pools['missiles'] = new asterix.XEntityPool({ entityProto: ivs.EntityMissile });
+sh.pools['bombs'] = new asterix.XEntityPool({ entityProto: ivs.EntityBomb });
+sh.pools['live-missiles'] = {};
+sh.pools['live-bombs'] = {};
+
 var arenaLayer = asterix.XGameLayer.extend({
 
   maybeReset: function() {
@@ -75,9 +80,9 @@ var arenaLayer = asterix.XGameLayer.extend({
 
   initMotionTimers: function() {
     this.stepX = this.alienSize.width / 3;
-    for (var n=0; n < sh.xcfg.csts.CELLS; ++n) {
-      this.aliens[n].status = true;
-    }
+    _.each(this.aliens, function(z) {
+      z.status = true;
+    });
     this.motion = cc.DelayTime.create(1);
     this.bombs = cc.DelayTime.create(2);
     this.runAction(this.motion);
@@ -105,21 +110,24 @@ var arenaLayer = asterix.XGameLayer.extend({
   },
 
   updateEntities: function(dt) {
-    _.each(ivs.EntityAlien.BombCache, function(z) {
-      z.update(dt);
-    });
     if (echt(this.motion) && this.motion.isDone()) {
       this.checkMotion(dt);
     }
     if (echt(this.bombs) && this.bombs.isDone()) {
       this.checkBombs(dt);
     }
+    _.each(sh.pools['live-bombs'], function(z) {
+      z.update(dt);
+    });
     this.players[0].update(dt);
+    _.each(sh.pools['live-missiles'], function(z) {
+      z.update(dt);
+    });
   },
 
   checkEntities: function(dt) {
-    var bbs = ivs.EntityAlien.BombCache;
-    var mss = this.players[0].missiles;
+    var mss = sh.pools['live-missiles'];
+    var bbs = sh.pools['live-bombs'];
     var k, w,a,m,b;
     _.each(_.keys(bbs), function(z) {
       b= bbs[z];
@@ -128,8 +136,6 @@ var arenaLayer = asterix.XGameLayer.extend({
         w = a[k];
         m = mss[w];
         if ( ccsx.checkCollide(b.sprite,m.sprite)) {
-          delete bbs.z;
-          delete mss.w;
           b.check(m);
         }
       }

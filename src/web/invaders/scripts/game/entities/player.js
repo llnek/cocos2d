@@ -49,7 +49,6 @@ var Ship = cc.Sprite.extend({
 
 asterix.Invaders.EntityPlayer = asterix.XEntity.extends({
 
-  missiles: {},
   speed: 150,
 
   create: function() {
@@ -62,9 +61,10 @@ asterix.Invaders.EntityPlayer = asterix.XEntity.extends({
       this.coolAmmo= null;
       this.sprite.loadAmmo();
     }
-    _.each(this.missiles, function(z) {
-      z.update(dt);
-    });
+    this._super(dt);
+  },
+
+  keypressed: function(dt) {
     if (sh.main.keyboard[cc.KEY.right]) {
       this.onRight(dt);
     }
@@ -78,15 +78,20 @@ asterix.Invaders.EntityPlayer = asterix.XEntity.extends({
 
   doFire: function() {
     var pos= this.sprite.getPosition();
-    var m= new ivs.EntityMissile(pos.x, pos.y + 4, {
-      zIndex: sh.main.lastZix,
-      tag: ++sh.main.lastTag
-    });
-    sh.main.addChild(m.create(), m.options.zIndex, m.options.tag);
+    var m = sh.pools['missiles'].get();
+    if (m) {
+      m.resurrect(pos.x, pos.y + 4);
+    } else {
+      m= new ivs.EntityMissile(pos.x, pos.y + 4, {
+        zIndex: sh.main.lastZix,
+        tag: ++sh.main.lastTag
+      });
+      sh.main.addChild(m.create(), m.options.zIndex, m.options.tag);
+    }
     //ig.game.onPlayerFire();
     this.coolAmmo = this.sprite.runAction(cc.DelayTime.create(this.options.coolDown));
     this.sprite.coolDown();
-    this.missiles[ '' + m.options.tag ] = m;
+    sh.pools['live-missiles'][ m.options.tag ] = m;
   },
 
   onRight: function(dt) {

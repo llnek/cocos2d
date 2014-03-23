@@ -106,7 +106,9 @@ global.ZotohLabs.Asterix = {
       return echt(pms) ? Mustache.render(t,pms) : t;
     },
 
-    protos: {}
+    protos: {},
+
+    pools: {}
 
   }
 };

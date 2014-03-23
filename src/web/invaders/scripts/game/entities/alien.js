@@ -60,9 +60,14 @@ asterix.Invaders.EntityAlien = asterix.XEntity.extends({
   update: function(dt) {
     if (this.bombCount > 0) {
       var pos = this.sprite.getPosition();
-      var aa= new ivs.EntityBomb(pos.x, pos.y - 4, { zIndex: sh.main.lastZix, tag: ++sh.main.lastTag });
-      sh.main.addChild(aa.create(), aa.options.zIndex, aa.options.tag);
-      ivs.EntityAlien.BombCache['' + aa.options.tag] = aa;
+      var aa= sh.pools['bombs'].get();
+      if (aa) {
+        aa.resurrect(pos.x, pos.y - 4);
+      } else {
+        aa= new ivs.EntityBomb(pos.x, pos.y - 4, { zIndex: sh.main.lastZix, tag: ++sh.main.lastTag });
+        sh.main.addChild(aa.create(), aa.options.zIndex, aa.options.tag);
+      }
+      sh.pools['live-bombs'][aa.options.tag] = aa;
       this.bombCount = 0;
     }
   },
@@ -75,7 +80,7 @@ asterix.Invaders.EntityAlien = asterix.XEntity.extends({
 
   receiveDamage: function(num, from) {
     //ig.game.spawnEntity(iv.EntityExplode, this.pos.x, this.pos.y);
-    this.kill();
+    //sh.pools['bombs'].add(this);
     //ig.game.onAlienKilled();
   },
 
@@ -111,9 +116,6 @@ asterix.Invaders.EntityAlien = asterix.XEntity.extends({
 
 
 });
-
-ivs.EntityAlien.BombCache= {};
-
 
 
 
