@@ -9,10 +9,10 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this; var _ = global._ ; var Mustache=global.Mustache;
-var loggr= global.ZotohLabs.logger;
-var klass= global.ZotohLabs.klass;
-var echt= global.ZotohLabs.echt;
+(function (undef) { "use strict"; var global= this, _ = global._, Mustache=global.Mustache,
+klass= global.ZotohLabs.klass,
+echt= global.ZotohLabs.echt,
+loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////
 // common functions
@@ -88,7 +88,7 @@ var Funcs= klass.extends({
 });
 
 global.ZotohLabs.Asterix = {
-  fns: new Funcs(),
+
   Shell: {
 
     sanitizeUrl: function(url) { return this.xcfg ? this.xcfg.sanitizeUrl(url) : url; },
@@ -108,9 +108,13 @@ global.ZotohLabs.Asterix = {
 
     protos: {},
 
-    pools: {}
+    pools: {},
 
-  }
+    xcfg: undef
+  },
+
+  fns: new Funcs()
+
 };
 
 

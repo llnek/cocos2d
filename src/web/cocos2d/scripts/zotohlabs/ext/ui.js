@@ -9,10 +9,10 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this; var _ = global._ ;
-var loggr= global.ZotohLabs.logger;
-var klass= global.ZotohLabs.klass;
-var echt= global.ZotohLabs.echt;
+(function(undef) { "use strict"; var global = this, _ = global._ ,
+klass= global.ZotohLabs.klass,
+echt= global.ZotohLabs.echt,
+loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////
 // classes

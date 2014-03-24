@@ -9,7 +9,8 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this; var _ = global._ ;
+(function (undef) { "use strict"; var global= this, _ = global._ ;
+
 var fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
 var ZEROS= "00000000000000000000000000000000";  //32
 function _echt (obj) {
@@ -82,12 +83,13 @@ var ZotohLabs = {
 //----------------------------------------------------------------------------
 // js inheritance - lifted from impact.js
 var inject = function(prop) {
-  var name, proto = this.prototype;
-  var parent = {};
+  var proto = this.prototype,
+  name,
+  parent = {};
   for ( name in prop ) {
     if ( typeof(prop[name]) == "function" &&
-        typeof(proto[name]) == "function" &&
-        fnTest.test(prop[name])) {
+         typeof(proto[name]) == "function" &&
+         fnTest.test(prop[name])) {
       parent[name] = proto[name]; // save original function
       proto[name] = (function(name, fn){
         return function() {
@@ -187,6 +189,4 @@ if (typeof exports !== 'undefined') {
 }
 
 }).call(this);
-
-
 

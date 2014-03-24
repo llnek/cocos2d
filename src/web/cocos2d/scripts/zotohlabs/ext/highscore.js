@@ -9,12 +9,12 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global=this; var _ = global._ ;
-var asterix= global.ZotohLabs.Asterix;
-var loggr= global.ZotohLabs.logger;
-var klass= global.ZotohLabs.klass;
-var echt= global.ZotohLabs.echt;
-var CKS= global.Cookies;
+(function (undef) { "use strict"; var global=this, _ = global._ ,
+asterix= global.ZotohLabs.Asterix,
+klass= global.ZotohLabs.klass,
+echt= global.ZotohLabs.echt,
+CKS= global.Cookies,
+loggr= global.ZotohLabs.logger;
 
 ////////////////////////////////////////////////////////////////////
 //// score class
@@ -34,8 +34,9 @@ asterix.HighScores= klass.extends({
   },
 
   read: function() {
-    var s = CKS.get(this.KEY) || '';
-    var a, tkns = s.split('|');
+    var s = CKS.get(this.KEY) || '',
+    a,
+    tkns = s.split('|');
     //this.reset();
     this.scores= _.reduce(tkns, function(memo,z) {
       a = z.split(':');
@@ -64,15 +65,17 @@ asterix.HighScores= klass.extends({
   },
 
   insert: function(name, score) {
-    var s= new Score( (name || '').trim(), score);
-    var i, len= this.scores.length;
+    var s= new Score( (name || '').trim(), score),
+    i,
+    len= this.scores.length;
 
-    if (! this.hasSlots()) for (i = len - 1; i >= 0; --i) {
-      if (this.scores[i].value < score) {
-        this.scores.splice(i,1);
-        break;
-      }
-    };
+    if (! this.hasSlots()) {
+      for (i = len - 1; i >= 0; --i) {
+        if (this.scores[i].value < score) {
+          this.scores.splice(i,1);
+          break;
+        }
+    }};
 
     if (this.hasSlots()) {
       this.scores.push( s);
@@ -86,14 +89,17 @@ asterix.HighScores= klass.extends({
   },
 
   sort: function() {
-    var len = this.scores.length;
-    var tmp = this.scores;
-    var last,ptr;
+    var len = this.scores.length,
+    tmp = this.scores,
+    i,
+    last,
+    ptr;
+
     this.scores = [];
     while (tmp.length > 0) {
       last= undef;
       ptr= -1;
-      for (var i=0; i < tmp.length; ++i) {
+      for (i=0; i < tmp.length; ++i) {
         if (!last || (tmp[i].value > last.value)) {
           last = tmp[i];
           ptr = i;

@@ -9,11 +9,10 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this; var _ = global._ ;
-var asterix= global.ZotohLabs.Asterix;
-var sh= asterix.Shell;
-var loggr= global.ZotohLabs.logger;
-var echt= global.ZotohLabs.echt;
+(function(undef) { "use strict"; var global = this, _ = global._ ,
+asterix= global.ZotohLabs.Asterix,
+sh= asterix.Shell,
+loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -69,7 +68,17 @@ asterix.COCOS2DX = {
 
   screen: function() {
     return cc.Director.getInstance().getWinSize();
-  }
+  },
+
+  AnchorPointCenter: new cc.Point(0.5, 0.5),
+  AnchorPointTop: new cc.Point(0.5, 1),
+  AnchorPointTopRight: new cc.Point(1, 1),
+  AnchorPointRight: new cc.Point(1, 0.5),
+  AnchorPointBottomRight: new cc.Point(1, 0),
+  AnchorPointBottom: new cc.Point(0.5, 0),
+  AnchorPointBottomLeft: new cc.Point(0, 0),
+  AnchorPointLeft: new cc.Point(0, 0.5),
+  AnchorPointTopLeft: new cc.Point(0, 1)
 
 };
 

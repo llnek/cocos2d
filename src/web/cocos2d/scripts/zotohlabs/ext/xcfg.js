@@ -9,11 +9,11 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global= this; var _ = global._;
-var asterix = global.ZotohLabs.Asterix;
-var sh= asterix.Shell;
-var loggr = global.ZotohLabs.logger;
-var echt = global.ZotohLabs.echt;
+(function(undef) { "use strict"; var global= this, _ = global._ ,
+asterix = global.ZotohLabs.Asterix,
+sh= asterix.Shell,
+echt = global.ZotohLabs.echt,
+loggr = global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -177,7 +177,6 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
     S_OFF: 4
   },
 
-
   sound: {
     volume: 0.5,
     open: true,
@@ -205,104 +204,6 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
       if (url) {
         eng.playEffect( url, false);
       }
-    }
-  },
-
-  AnchorPointCenter: new cc.Point(0.5, 0.5),
-  AnchorPointTop: new cc.Point(0.5, 1),
-  AnchorPointTopRight: new cc.Point(1, 1),
-  AnchorPointRight: new cc.Point(1, 0.5),
-  AnchorPointBottomRight: new cc.Point(1, 0),
-  AnchorPointBottom: new cc.Point(0.5, 0),
-  AnchorPointBottomLeft: new cc.Point(0, 0),
-  AnchorPointLeft: new cc.Point(0, 0.5),
-  AnchorPointTopLeft: new cc.Point(0, 1),
-
-  s_rcVisible: cc.RectZero(),
-  s_ptCenter: cc.PointZero(),
-  s_ptTop: cc.PointZero(),
-  s_ptTopRight: cc.PointZero(),
-  s_ptRight: cc.PointZero(),
-  s_ptBottomRight: cc.PointZero(),
-  s_ptBottom: cc.PointZero(),
-  s_ptLeft: cc.PointZero(),
-  s_ptTopLeft: cc.PointZero(),
-  s_ptBottomLeft: cc.PointZero(),
-
-  VisibleRect: {
-    rect: function () {
-      if (sh.xcfg.s_rcVisible.width === 0) {
-        var s = cc.Director.getInstance().getWinSize();
-        sh.xcfg.s_rcVisible = cc.rect(0, 0, s.width, s.height);
-      }
-      return sh.xcfg.s_rcVisible;
-    },
-    center: function () {
-      if (sh.xcfg.s_ptCenter.x === 0) {
-        var rc = this.rect();
-        sh.xcfg.s_ptCenter.y = rc.y + rc.height / 2;
-        sh.xcfg.s_ptCenter.x = rc.x + rc.width / 2;
-      }
-      return sh.xcfg.s_ptCenter;
-    },
-    top: function () {
-      if (sh.xcfg.s_ptTop.x === 0) {
-        var rc = this.rect();
-        sh.xcfg.s_ptTop.x = rc.x + rc.width / 2;
-        sh.xcfg.s_ptTop.y = rc.y + rc.height;
-      }
-      return sh.xcfg.s_ptTop;
-    },
-    topRight: function () {
-      if (sh.xcfg.s_ptTopRight.x === 0) {
-        var rc = this.rect();
-        sh.xcfg.s_ptTopRight.y = rc.y + rc.height;
-        sh.xcfg.s_ptTopRight.x = rc.x + rc.width;
-      }
-      return sh.xcfg.s_ptTopRight;
-    },
-    right: function () {
-      if (sh.xcfg.s_ptRight.x === 0) {
-        var rc = this.rect();
-        sh.xcfg.s_ptRight.y = rc.y + rc.height / 2;
-        sh.xcfg.s_ptRight.x = rc.x + rc.width;
-      }
-      return sh.xcfg.s_ptRight;
-    },
-    bottomRight: function () {
-      if (sh.xcfg.s_ptBottomRight.x === 0) {
-        var rc = this.rect();
-        sh.xcfg.s_ptBottomRight.x = rc.x + rc.width;
-        sh.xcfg.s_ptBottomRight.y = rc.y;
-      }
-      return sh.xcfg.s_ptBottomRight;
-    },
-    bottom: function () {
-      if (sh.xcfg.s_ptBottom.x === 0) {
-        var rc = this.rect();
-        sh.xcfg.s_ptBottom.x = rc.x + rc.width / 2;
-        sh.xcfg.s_ptBottom.y = rc.y;
-      }
-      return sh.xcfg.s_ptBottom;
-    },
-    bottomLeft: function () {
-      return sh.xcfg.s_ptBottomLeft;
-    },
-    left: function () {
-      if (sh.xcfg.s_ptLeft.x === 0) {
-        var rc = this.rect();
-        sh.xcfg.s_ptLeft.y = rc.y + rc.height / 2;
-        sh.xcfg.s_ptLeft.x = rc.x;
-      }
-      return sh.xcfg.s_ptLeft;
-    },
-    topLeft: function () {
-      if (sh.xcfg.s_ptTopLeft.x === 0) {
-        var rc = this.rect();
-        sh.xcfg.s_ptTopLeft.y = rc.y + rc.height;
-        sh.xcfg.s_ptTopLeft.x = rc.x;
-      }
-      return sh.xcfg.s_ptTopLeft;
     }
   },
 
@@ -339,7 +240,7 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
         loggr.info("About to create Cocos2D HTML5 Game");
         var app= new asterix.Cocos2dApp('StartScreen');
         loggr.info("register game start state - " + app.startScene);
-        loggr.info(this);
+        loggr.debug(JSON.stringify(me.game));
         loggr.info("loaded and running. OK");
         return app;
       }

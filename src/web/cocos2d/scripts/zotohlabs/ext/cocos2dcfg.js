@@ -10,6 +10,7 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use strict"; var global= this; var _ = global._;
+
 var doc= global.document;
 var cfg= {
 
@@ -62,26 +63,31 @@ var cfg= {
     engineDir: '/public/vendors/cocos2d_html5/cocos2d/'
 };
 
-global.document['ccConfig'] = cfg;
 
 if ( ! doc.createElement('canvas').getContext) {
   var s = doc.createElement('div');
   s.innerHTML = '<h2>Your browser does not support HTML5 canvas!</h2>' +
         '<p>Google Chrome is a browser that combines a minimal design with sophisticated technology to make the web faster, safer, and easier.Click the logo to download.</p>' +
-        '<a href="http://www.google.com/chrome" target="_blank"><img src="http://www.google.com/intl/zh-CN/chrome/assets/common/images/chrome_logo_2x.png" border="0"/></a>';
+        '<a href="http://www.google.com/chrome" target="_blank"><img src="http://www.google.com/intl/en-US/chrome/assets/common/images/chrome_logo_2x.png" border="0"/></a>';
   doc.getElementById(cfg.tag).parentNode.insertBefore(s);
 }
-global.addEventListener('DOMContentLoaded', function () {
+else {
 
-  if (_.isString(cfg.engineDir) && cfg.engineDir.length > 0) {
-    var s = doc.createElement('script');
-    s.src = cfg.engineDir + 'jsloader.js';
-    doc.body.appendChild(s);
-    s.id = 'cocos2d-html5';
-  }
+  global.addEventListener('DOMContentLoaded', function () {
 
-});
+    if (_.isString(cfg.engineDir) && cfg.engineDir.length > 0) {
+      var s = doc.createElement('script');
+      s.src = cfg.engineDir + 'jsloader.js';
+      doc.body.appendChild(s);
+      s.id = 'cocos2d-html5';
+    }
 
+  });
+
+  global.document['ccConfig'] = cfg;
+
+}
 
 
 }).call(this);
+

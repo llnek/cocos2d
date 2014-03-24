@@ -9,12 +9,11 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global= this; var _ = global._ ;
-var asterix= global.ZotohLabs.Asterix;
-var doc= global.document;
-var sh= asterix.Shell;
-var loggr= global.ZotohLabs.logger;
-var echt= global.ZotohLabs.echt;
+(function(undef) { "use strict"; var global= this, _ = global._,
+asterix= global.ZotohLabs.Asterix,
+doc= global.document,
+sh= asterix.Shell,
+loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // main application.
@@ -32,15 +31,16 @@ asterix.Cocos2dApp = cc.Application.extend({
   },
 
   applicationDidFinishLaunching: function () {
+
     if (cc.RenderDoesnotSupport()) {
       alert("Browser doesn't support WebGL");
       return false;
     }
 
-    var director = cc.Director.getInstance();
-    var eglv= cc.EGLView.getInstance();
-    var me=this;
-    var sz = sh.xcfg.game.size;
+    var director = cc.Director.getInstance(),
+    eglv= cc.EGLView.getInstance(),
+    me=this,
+    sz = sh.xcfg.game.size;
 
     eglv.adjustViewPort(true);
     eglv.setDesignResolutionSize(sz.width, sz.height, cc.RESOLUTION_POLICY.SHOW_ALL);
@@ -59,37 +59,43 @@ asterix.Cocos2dApp = cc.Application.extend({
     return true;
   },
 
-
   pvGatherPreloads: function() {
-    var p, me=this;
-    var a1= _.map(sh.xcfg.assets.sprites, function(v,k) { return me.pvLoadSprite(k,v); });
-    var a2= _.map(sh.xcfg.assets.images, function(v,k) { return me.pvLoadImage(k,v); });
-    var a3= _.map(sh.xcfg.assets.sounds, function(v,k) { return me.pvLoadSound(k,v); });
-    var a4= _.reduce(sh.xcfg.assets.fonts, function(memo, v,k) {
+    var assets= sh.xcfg.assets,
+    me=this,
+    p,
+
+    rc= [
+    _.map(assets.sprites, function(v,k) { return me.pvLoadSprite(k,v); }),
+    _.map(assets.images, function(v,k) { return me.pvLoadImage(k,v); }),
+    _.map(assets.sounds, function(v,k) { return me.pvLoadSound(k,v); }),
+    _.reduce(assets.fonts, function(memo, v,k) {
       // value is array of [ path, image , xml ]
       p= sh.sanitizeUrl(v[0]);
       return memo.concat([ p + v[1], p + v[2] ]);
-    }, []);
-    var a7= _.reduce(sh.xcfg.assets.atlases, function(memo, v,k) {
+    }, []),
+    _.reduce(assets.atlases, function(memo, v,k) {
       return memo.concat( me.pvLoadAtlas(k,v));
-    }, []);
-    var a5= _.map(sh.xcfg.assets.tiles, function(v,k) {
+    }, []),
+    _.map(assets.tiles, function(v,k) {
       return me.pvLoadTile(k,v);
-    });
-    var a6 = sh.xcfg.game.preloadLevels ? this.pvLoadLevels() : [];
-    var rc= [].concat(a1).concat(a2).concat(a3).concat(a4).concat(a5).concat(a6).concat(a7);
-    var res=  _.reduce(rc, function(memo,v) {
+    }),
+    sh.xcfg.game.preloadLevels ? this.pvLoadLevels() : []
+    ];
+
+    return _.reduce(_.flatten(rc), function(memo,v) {
       loggr.info('Loading ' + v);
       memo.push( { src: v } );
       return memo;
     }, []);
-    return res;
   },
 
   pvLoadLevels: function() {
-    var rc=[], arr, z, me=this;
+    var rc=[],
+    arr,
+    z,
+    me=this;
     _.each(sh.xcfg.levels, function(v,k) {
-      _.each(v,function(obj,n){
+      _.each(v, function(obj,n){
         rc = rc.concat( _.reduce(obj, function(memo, item, x) {
           z=  k + '.' + n + '.' + x;
           arr=undef;
@@ -127,7 +133,8 @@ asterix.Cocos2dApp = cc.Application.extend({
   },
 
   pvLoadAtlas: function(k,v) {
-    return [ sh.sanitizeUrl( v + '.plist'), sh.sanitizeUrl( v + '.png') ];
+    return [ sh.sanitizeUrl( v + '.plist'),
+             sh.sanitizeUrl( v + '.png') ];
   },
 
   pvLoadTile: function(k,v) {
@@ -139,5 +146,4 @@ asterix.Cocos2dApp = cc.Application.extend({
 sh.xcfg.newApplication().run();
 
 }).call(this);
-
 
