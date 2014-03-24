@@ -29,17 +29,17 @@ asterix.XEntity = global.ZotohLabs.klass.extends({
 
   keypressed: function(dt) {},
 
-  resurrectSprite: function() {
+  reviveSprite: function() {
     if (this.sprite) {
       this.sprite.setPosition(this.options._startPos.x, this.options._startPos.y);
       this.sprite.setVisible(true);
     }
   },
 
-  resurrect: function(x,y,options) {
+  revive: function(x,y,options) {
     if (options) { this.options = options; }
     this.options._startPos = cc.p(x,y);
-    this.resurrectSprite();
+    this.reviveSprite();
   },
 
   hibernate: function() {
@@ -50,6 +50,10 @@ asterix.XEntity = global.ZotohLabs.klass.extends({
   },
 
   sprite: null,
+
+  rtti: function() {
+    return 'no-rtti-defined';
+  },
 
   friction: { x: 0, y: 0 },
   maxVel: { x: 0, y: 0 },
@@ -94,10 +98,13 @@ Object.defineProperty(asterix.XEntity.prototype, "OID", {
 asterix.XEntityPool = global.ZotohLabs.klass.extends({
 
   checkEntity: function(ent) {
-    return this.entType ? ent instanceof this.entType : false;
+    if (ent instanceof this.entType) {
+      return true;
+    }
+    throw new Error("Cannot add type : " + ent.rtti() + " into pool.  Wrong type.");
   },
 
-  drainPool: function() {
+  drain: function() {
     this.pool = [];
   },
 
@@ -106,18 +113,18 @@ asterix.XEntityPool = global.ZotohLabs.klass.extends({
     if (this.curSize > 0) {
       rc = this.pool.pop();
       --this.curSize;
-      loggr.debug('getting object from pool: ' + rc.OID);
+      loggr.debug('getting object "' + rc.rtti() + '" from pool: oid = ' + rc.OID);
     }
     return rc;
   },
 
   add: function(ent) {
     if (this.checkEntity(ent) && this.curSize < this.maxSize) {
-      loggr.debug('putting object into pool: ' + ent.OID);
+      loggr.debug('putting object "' + ent.rtti() + '" into pool: oid = ' + ent.OID);
       this.pool.push(ent);
-      ent.sprite.setVisible(false);
-      ent.sprite.setPosition(0,0);
+      ent.hibernate();
       ++this.curSize;
+      return true;
     } else {
       return false;
     }

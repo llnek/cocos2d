@@ -24,8 +24,8 @@ var Bomb = cc.Sprite.extend({
     this.options = options || {};
     this._super();
     this.initWithSpriteFrameName(this.options.frames[0]);
-    this.setZOrder(this.options.zIndex);
-    this.setTag(this.options.tag);
+    //this.setZOrder(this.options.zIndex);
+    //this.setTag(this.options.tag);
     this.setPosition(x,y);
   }
 });
@@ -46,21 +46,16 @@ asterix.Invaders.EntityBomb = asterix.XEntity.extends({
   },
 
   kill: function() {
-    delete sh.pools['live-bombs'][ this.options.tag];
-    sh.pools['bombs'].add(this);
+    sh.main.killBomb(this);
   },
 
   check: function(other) {
-    var pos = other.sprite.getPosition();
-    var aa= new ivs.EntityExplode(pos.x, pos.y, {
-      zIndex: sh.main.lastZix,
-      tag: ++sh.main.lastTag,
-      frameTime: 0.1
-    });
+    var pos = this.sprite.getPosition();
+    var x= pos.x, y = pos.y;
     other.kill();
     this.kill();
+    sh.main.addExplosion(x, y, { frameTime: 0.1 });
     //ig.game.onPlayerKilled();
-    sh.main.addChild(aa.create(), aa.zIndex, aa.tag);
   },
 
   create: function() {
@@ -70,6 +65,7 @@ asterix.Invaders.EntityBomb = asterix.XEntity.extends({
   },
 
   speed: 50,
+  rtti: function() { return 'EntityBomb'; },
 
   ctor: function(x, y, options) {
     this._super(x, y, options);

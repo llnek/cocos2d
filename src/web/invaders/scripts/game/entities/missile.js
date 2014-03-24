@@ -23,14 +23,16 @@ var Missile = cc.Sprite.extend({
     this.options= options || {};
     this._super();
     this.initWithSpriteFrameName(this.options.frames[0]);
-    this.setZOrder(this.options.zIndex);
-    this.setTag(this.options.tag);
+    //this.setZOrder(this.options.zIndex);
+    //this.setTag(this.options.tag);
     this.setPosition(x,y);
   }
 
 });
 
 asterix.Invaders.EntityMissile = asterix.XEntity.extends({
+
+  rtti: function() { return 'EntityMissile'; },
 
   speed: 100,
 
@@ -48,14 +50,12 @@ asterix.Invaders.EntityMissile = asterix.XEntity.extends({
   },
 
   kill: function() {
-    delete sh.pools['live-missiles'][this.options.tag];
-    sh.pools['missiles'].add(this);
+    sh.main.killMissile(this);
   },
 
   check: function(other) {
-    //other.receiveDamage(10, this);
+    other.receiveDamage(666, this);
     //ig.game.onAlienHit(other);
-    //other.status = false;
     this.kill();
   },
 

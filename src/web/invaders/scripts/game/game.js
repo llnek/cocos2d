@@ -28,6 +28,10 @@ sh.pools['live-bombs'] = {};
 var arenaLayer = asterix.XGameLayer.extend({
 
   maybeReset: function() {
+    sh.pools['missiles'].drain();
+    sh.pools['bombs'].drain();
+    sh.pools['live-missiles'] = {};
+    sh.pools['live-bombs'] = {};
     this.motion = null;
     this.bombs = null;
     this.score = 0;
@@ -35,16 +39,10 @@ var arenaLayer = asterix.XGameLayer.extend({
   },
 
   initAliens: function() {
-    var gameAtlas = cc.TextureCache.getInstance().addImage( sh.xcfg.getAtlasPath('game-pics'));
     var csts = sh.xcfg.csts;
     var cw= ccsx.center();
     var n, x,y, me = this;
     var row = 0;
-
-    this.aliens=[]
-    this.atlasBatch = cc.SpriteBatchNode.createWithTexture(gameAtlas);
-    this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
-
     var aa, dummy = new ivs.EntityAlien(0,0, { rank: 0, tag: 1, zIndex: 0, frameID: 'green_bug_0.png' });
     dummy.create();
     this.alienSize= dummy.sprite.getContentSize();
@@ -56,13 +54,11 @@ var arenaLayer = asterix.XGameLayer.extend({
         row += 1;
       }
       aa = new ivs.EntityAlien( x + dummy.width / 2, y - dummy.height / 2, {
-        zIndex: this.lastZix,
-        tag: ++this.lastTag,
         frameTime: 1,
         rank: row,
         status: false
       });
-      this.atlasBatch.addChild(aa.create(), aa.options.zIndex, aa.options.tag);
+      this.atlasBatch.addChild(aa.create(), this.lastZix, ++this.lastTag);
       this.aliens.push(aa);
       x += dummy.width + csts.OFF_X;
     }
@@ -73,9 +69,74 @@ var arenaLayer = asterix.XGameLayer.extend({
 
     y =  5 * csts.TILE + dummy.height;
     x = cw.x;
-    aa= new ivs.EntityPlayer(x,y, { tag: ++this.lastTag, zIndex: this.lastZix , coolDown: 0.5});
-    this.addChild(aa.create(), aa.options.tag, aa.options.zIndex);
+    aa= new ivs.EntityPlayer(x,y, { coolDown: 0.8});
+    this.atlasBatch.addChild(aa.create(), this.lastZix, ++this.lastTag);
+
     this.players.push( aa);
+  },
+
+  killPlayer: function() {
+    this.atlasBatch.removeChild(this.players[0].sprite,true);
+    this.reduceLife(1);
+  },
+
+  killMissile: function(m) {
+    var obj = sh.pools['live-missiles'];
+    var tag= m.sprite.getTag();
+    delete obj[tag];
+    sh.pools['missiles'].add(m);
+  },
+
+  killBomb: function(b) {
+    var obj = sh.pools['live-bombs'];
+    var tag= b.sprite.getTag();
+    delete obj[tag];
+    sh.pools['bombs'].add(b);
+  },
+
+  killExplosion: function(e) {
+    this.atlasBatch.removeChild(e.sprite);
+    e.sprite=null;
+  },
+
+  addExplosion: function(x,y, options) {
+    var aa= new ivs.EntityExplode(x,y, options);
+    var tag = ++this.lastTag;
+    this.atlasBatch.addChild(aa.create(), this.lastZix, tag);
+  },
+
+  addMissile: function(x,y,options) {
+    var aa = new ivs.EntityMissile(x,y, options);
+    var tag = ++this.lastTag;
+    this.atlasBatch.addChild(aa.create(), this.lastZix, tag);
+    sh.pools['live-missiles'][tag] = aa;
+  },
+
+  addBomb: function(x,y,options) {
+    var aa= new ivs.EntityBomb(x, y, options);
+    var tag= ++this.lastTag;
+    this.atlasBatch.addChild(aa.create(), this.lastZix, tag);
+    sh.pools['live-bombs'][tag] = aa;
+  },
+
+  reviveMissile: function(x,y,options) {
+    var tag = -1, ent = sh.pools['missiles'].get();
+    if (ent) {
+      ent.revive(x,y,options);
+      tag= ent.sprite.getTag();
+      sh.pools['live-missiles'][tag] = ent;
+    }
+    return tag > 0;
+  },
+
+  reviveBomb: function(x,y,options) {
+    var tag = -1, ent = sh.pools['bombs'].get();
+    if (ent) {
+      ent.revive(x,y,options);
+      tag= ent.sprite.getTag();
+      sh.pools['live-bombs'][tag] = ent;
+    }
+    return tag > 0;
   },
 
   initMotionTimers: function() {
@@ -116,16 +177,53 @@ var arenaLayer = asterix.XGameLayer.extend({
     if (echt(this.bombs) && this.bombs.isDone()) {
       this.checkBombs(dt);
     }
-    _.each(sh.pools['live-bombs'], function(z) {
-      z.update(dt);
+    var obj= sh.pools['live-bombs'];
+    _.each(_.keys(obj), function(k) {
+      obj[k].update(dt);
     });
     this.players[0].update(dt);
-    _.each(sh.pools['live-missiles'], function(z) {
-      z.update(dt);
+    obj = sh.pools['live-missiles'];
+    _.each(_.keys(obj), function(k) {
+      obj[k].update(dt);
     });
   },
 
   checkEntities: function(dt) {
+    this.checkMissilesBombs(dt);
+    this.checkMissilesAliens(dt);
+    this.checkShipBombs(dt);
+  },
+
+  checkMissilesAliens: function(dt) {
+    var mss = sh.pools['live-missiles'];
+    var ass= this.aliens;
+    var m, n;
+    _.each(_.keys(mss), function(z) {
+      m = mss[z];
+      for (n=0; n < ass.length; ++n) {
+        if (ass[n].status !== true) { continue; }
+        if (ccsx.checkCollide(m.sprite, ass[n].sprite)) {
+          m.check(ass[n]);
+          break;
+        }
+      }
+    });
+  },
+
+  checkShipBombs: function(dt) {
+    var bss = sh.pools['live-bombs'];
+    var a= _.keys(bss);
+    var b, n, p = this.players[0];
+    for (n=0; n < a.length; ++n) {
+      b = bss[ a[n] ];
+      if (ccsx.checkCollide(b.sprite, p.sprite)) {
+        p.check(b);
+        break;
+      }
+    }
+  },
+
+  checkMissilesBombs: function(dt) {
     var mss = sh.pools['live-missiles'];
     var bbs = sh.pools['live-bombs'];
     var k, w,a,m,b;
@@ -137,6 +235,7 @@ var arenaLayer = asterix.XGameLayer.extend({
         m = mss[w];
         if ( ccsx.checkCollide(b.sprite,m.sprite)) {
           b.check(m);
+          break;
         }
       }
     });
@@ -233,7 +332,15 @@ var arenaLayer = asterix.XGameLayer.extend({
   },
 
   onDone: function() {
-    this.stop();
+    //this.stop();
+  },
+
+  killHUDItem: function(h) {
+    this.atlasBatch.removeChild(h,true);
+  },
+
+  addHUDItem: function(h) {
+    this.atlasBatch.addChild(h, this.lastZix, ++this.lastTag);
   },
 
   reduceLife: function(n) {
@@ -245,11 +352,26 @@ var arenaLayer = asterix.XGameLayer.extend({
     }
   },
 
+  spawnPlayer: function() {
+    var csts= sh.xcfg.csts;
+    var y =  5 * csts.TILE + this.shipSize.height;
+    var cw= ccsx.center();
+    var x = cw.x;
+    var aa= new ivs.EntityPlayer(x,y, { coolDown: 0.8});
+    this.atlasBatch.addChild(aa.create(), this.lastZix, ++this.lastTag);
+    this.players=[];
+    this.players.push( aa);
+  },
+
   gui: function() {
     var me=this, csts = sh.xcfg.csts;
     var wz = ccsx.screen();
     var hdr, itm;
     var mi, msg;
+
+    var gameAtlas = cc.TextureCache.getInstance().addImage( sh.xcfg.getAtlasPath('game-pics'));
+    this.atlasBatch = cc.SpriteBatchNode.createWithTexture(gameAtlas);
+    this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
 
     this.scoreLabel = cc.LabelBMFont.create('0', sh.xcfg.getFontPath('font.TinyBoxBB'));
     this.scoreLabel.setAnchorPoint(1,0);
@@ -259,7 +381,7 @@ var arenaLayer = asterix.XGameLayer.extend({
     wz.height - csts.TILE - csts.S_OFF - ccsx.getScaledHeight(this.scoreLabel));
     this.addChild(this.scoreLabel, this.lastZix, ++this.lastTag);
 
-    this.lives = new asterix.XHUDLives(this,
+    this.lives = new asterix.XHUDLives(
       csts.TILE + csts.S_OFF,
       wz.height - csts.TILE - csts.S_OFF, {
       frames: ['health.png'],

@@ -36,13 +36,13 @@ var Ship = cc.Sprite.extend({
     return this.ammoCount > 0;
   },
 
-  ctor: function(options) {
+  ctor: function(x,y,options) {
     this.options= options;
     this._super();
     this.loadAmmo();
-    this.setZOrder(this.options.zIndex);
-    this.setTag(this.options.tag);
-    this.setPosition(this.options._startPos);
+    //this.setZOrder(this.options.zIndex);
+    //this.setTag(this.options.tag);
+    this.setPosition(x,y);
   }
 
 });
@@ -52,16 +52,18 @@ asterix.Invaders.EntityPlayer = asterix.XEntity.extends({
   speed: 150,
 
   create: function() {
-    this.sprite = new Ship(this.options);
+    this.sprite = new Ship(this.options._startPos.x, this.options._startPos.y, this.options);
     return this.sprite;
   },
 
   update: function(dt) {
-    if (this.coolAmmo && this.coolAmmo.isDone()) {
-      this.coolAmmo= null;
-      this.sprite.loadAmmo();
+    if (this.sprite) {
+      if (this.coolAmmo && this.coolAmmo.isDone()) {
+        this.coolAmmo= null;
+        this.sprite.loadAmmo();
+      }
+      this._super(dt);
     }
-    this._super(dt);
   },
 
   keypressed: function(dt) {
@@ -78,20 +80,13 @@ asterix.Invaders.EntityPlayer = asterix.XEntity.extends({
 
   doFire: function() {
     var pos= this.sprite.getPosition();
-    var m = sh.pools['missiles'].get();
-    if (m) {
-      m.resurrect(pos.x, pos.y + 4);
-    } else {
-      m= new ivs.EntityMissile(pos.x, pos.y + 4, {
-        zIndex: sh.main.lastZix,
-        tag: ++sh.main.lastTag
-      });
-      sh.main.addChild(m.create(), m.options.zIndex, m.options.tag);
+    loggr.debug("player about to fire another missile! pos = [" + pos.x + "," + pos.y + "]");
+    if ( ! sh.main.reviveMissile(pos.x, pos.y + 4)) {
+      sh.main.addMissile(pos.x, pos.y + 4);
     }
     //ig.game.onPlayerFire();
-    this.coolAmmo = this.sprite.runAction(cc.DelayTime.create(this.options.coolDown));
     this.sprite.coolDown();
-    sh.pools['live-missiles'][ m.options.tag ] = m;
+    this.coolAmmo = this.sprite.runAction(cc.DelayTime.create(this.options.coolDown));
   },
 
   onRight: function(dt) {
@@ -119,6 +114,26 @@ asterix.Invaders.EntityPlayer = asterix.XEntity.extends({
     if (ccsx.getLeft(this.sprite) < csts.TILE) {
       this.sprite.setPosition( csts.TILE + sz.width/2, pos.y);
     }
+  },
+
+  check: function(other) {
+    if (other instanceof ivs.EntityAlien) {
+      //other.receiveDamage(666,this);
+      this.takeHit(666,other);
+    }
+    else
+    if (other instanceof ivs.EntityBomb) {
+      other.kill();
+      this.takeHit(other);
+    }
+  },
+
+  takeHit: function() {
+    this.kill();
+  },
+
+  kill: function() {
+    sh.main.killPlayer();
   },
 
   ctor: function(x, y, options) {

@@ -25,9 +25,9 @@ var Boom = cc.Sprite.extend({
     this.entity=entity;
     this._super();
     this.initWithSpriteFrameName(this.options.frames[0]);
-    this.setZOrder(this.options.zIndex);
-    this.setTag(this.options.tag);
-    this.setPosition(this.options._startPos);
+    //this.setZOrder(this.options.zIndex);
+    //this.setTag(this.options.tag);
+    this.setPosition(x,y);
 
     var frame0 = cc.SpriteFrameCache.getInstance().getSpriteFrame(this.options.frames[0]);
     var frame1 = cc.SpriteFrameCache.getInstance().getSpriteFrame(this.options.frames[1]);
@@ -39,6 +39,7 @@ var Boom = cc.Sprite.extend({
     animFrames.push(frame2);
     animFrames.push(frame3);
     var animation = cc.Animation.create(animFrames, this.options.frameTime);
+    //this.runAction( cc.Sequence.create(cc.Animate.create(animation)));
     this.runAction( cc.Sequence.create(cc.Animate.create(animation),
       cc.CallFunc.create(function() {
         this.entity.kill();
@@ -51,6 +52,10 @@ var Boom = cc.Sprite.extend({
 asterix.Invaders.EntityExplode = asterix.XEntity.extends({
 
   update: function(dt) {
+  },
+
+  kill: function() {
+    sh.main.killExplosion(this);
   },
 
   create: function() {

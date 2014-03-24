@@ -19,13 +19,13 @@ var echt= global.ZotohLabs.echt;
 
 var Alien = cc.Sprite.extend({
 
-  ctor: function(options) {
+  ctor: function(x,y,options) {
     this.options= options;
     this._super();
     this.initWithSpriteFrameName(this.options.frames[0]);
-    this.setZOrder(this.options.zIndex);
-    this.setTag(this.options.tag);
-    this.setPosition(this.options._startPos);
+    //this.setZOrder(this.options.zIndex);
+    //this.setTag(this.options.tag);
+    this.setPosition(x,y);
 
     var frame0 = cc.SpriteFrameCache.getInstance().getSpriteFrame(this.options.frames[0]);
     var frame1 = cc.SpriteFrameCache.getInstance().getSpriteFrame(this.options.frames[1]);
@@ -60,14 +60,9 @@ asterix.Invaders.EntityAlien = asterix.XEntity.extends({
   update: function(dt) {
     if (this.bombCount > 0) {
       var pos = this.sprite.getPosition();
-      var aa= sh.pools['bombs'].get();
-      if (aa) {
-        aa.resurrect(pos.x, pos.y - 4);
-      } else {
-        aa= new ivs.EntityBomb(pos.x, pos.y - 4, { zIndex: sh.main.lastZix, tag: ++sh.main.lastTag });
-        sh.main.addChild(aa.create(), aa.options.zIndex, aa.options.tag);
+      if ( ! sh.main.reviveBomb(pos.x, pos.y - 4)) {
+        sh.main.addBomb(pos.x, pos.y - 4);
       }
-      sh.pools['live-bombs'][aa.options.tag] = aa;
       this.bombCount = 0;
     }
   },
@@ -82,10 +77,13 @@ asterix.Invaders.EntityAlien = asterix.XEntity.extends({
     //ig.game.spawnEntity(iv.EntityExplode, this.pos.x, this.pos.y);
     //sh.pools['bombs'].add(this);
     //ig.game.onAlienKilled();
+    this.sprite.setVisible(false);
+    this.status= false;
   },
 
   create: function() {
-    this.sprite = new Alien(this.options);
+    var pos= this.options._startPos;
+    this.sprite = new Alien(pos.x, pos.y, this.options);
     return this.sprite;
   },
 

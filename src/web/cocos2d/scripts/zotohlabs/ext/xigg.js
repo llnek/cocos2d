@@ -26,10 +26,12 @@ asterix.XGameLayer = asterix.XLayer.extend({
   actor: null,
 
   onKeyDown:function (e) {
+    loggr.debug('onKeyDown: e = ' + e);
     this.keyboard[e] = true;
   },
 
   onKeyUp:function (e) {
+    loggr.debug('onKeyUp: e = ' + e);
     this.keyboard[e] = false;
   },
 
