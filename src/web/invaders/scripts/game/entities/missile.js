@@ -54,7 +54,7 @@ asterix.Invaders.EntityMissile = asterix.XEntity.extends({
   },
 
   check: function(other) {
-    other.receiveDamage(666, this);
+    other.takeHit(666, this);
     //ig.game.onAlienHit(other);
     this.kill();
   },

@@ -29,6 +29,12 @@ asterix.XEntity = global.ZotohLabs.klass.extends({
 
   keypressed: function(dt) {},
 
+  takeHit: function(damage,from) {
+  },
+
+  takeWin: function(score) {
+  },
+
   reviveSprite: function() {
     if (this.sprite) {
       this.sprite.setPosition(this.options._startPos.x, this.options._startPos.y);
@@ -105,6 +111,7 @@ asterix.XEntityPool = global.ZotohLabs.klass.extends({
   },
 
   drain: function() {
+    this.curSize = 0;
     this.pool = [];
   },
 

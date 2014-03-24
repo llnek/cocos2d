@@ -52,6 +52,9 @@ asterix.Invaders.EntityBomb = asterix.XEntity.extends({
   check: function(other) {
     var pos = this.sprite.getPosition();
     var x= pos.x, y = pos.y;
+    if (other instanceof ivs.EntityMissile) {
+      sh.main.actor.takeWin(10);
+    }
     other.kill();
     this.kill();
     sh.main.addExplosion(x, y, { frameTime: 0.1 });

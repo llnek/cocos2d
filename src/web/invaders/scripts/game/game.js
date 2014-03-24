@@ -36,6 +36,8 @@ var arenaLayer = asterix.XGameLayer.extend({
     this.bombs = null;
     this.score = 0;
     this.aliens = [];
+    this.players=[];
+    this.actor=null;
   },
 
   initAliens: function() {
@@ -73,10 +75,11 @@ var arenaLayer = asterix.XGameLayer.extend({
     this.atlasBatch.addChild(aa.create(), this.lastZix, ++this.lastTag);
 
     this.players.push( aa);
+    this.actor=aa;
   },
 
   killPlayer: function() {
-    this.atlasBatch.removeChild(this.players[0].sprite,true);
+    this.atlasBatch.removeChild(this.actor.sprite,true);
     this.reduceLife(1);
   },
 
@@ -181,7 +184,7 @@ var arenaLayer = asterix.XGameLayer.extend({
     _.each(_.keys(obj), function(k) {
       obj[k].update(dt);
     });
-    this.players[0].update(dt);
+    this.actor.update(dt);
     obj = sh.pools['live-missiles'];
     _.each(_.keys(obj), function(k) {
       obj[k].update(dt);
@@ -213,7 +216,7 @@ var arenaLayer = asterix.XGameLayer.extend({
   checkShipBombs: function(dt) {
     var bss = sh.pools['live-bombs'];
     var a= _.keys(bss);
-    var b, n, p = this.players[0];
+    var b, n, p = this.actor;
     for (n=0; n < a.length; ++n) {
       b = bss[ a[n] ];
       if (ccsx.checkCollide(b.sprite, p.sprite)) {
@@ -326,13 +329,29 @@ var arenaLayer = asterix.XGameLayer.extend({
     this.bombs = this.runAction(cc.DelayTime.create(2));
   },
 
-  updateScore: function(n) {
-    this.score += n;
+  updateScore: function(num) {
+    this.score += num;
     this.scoreLabel.setString(Number(this.score).toString());
   },
 
+  operational: function() {
+    return this.players.length > 0;
+  },
+
+  pkReplay: function() {
+    sh.pools['missiles'].drain();
+    sh.pools['bombs'].drain();
+    this._super();
+  },
+
   onDone: function() {
-    //this.stop();
+    this.motion=null;
+    this.bombs=null;
+    this.actor=null;
+    this.players=[];
+    sh.pools['live-missiles'] = {};
+    sh.pools['live-bombs'] = {};
+    this.replayBtn.setVisible(true);
   },
 
   killHUDItem: function(h) {
@@ -361,6 +380,7 @@ var arenaLayer = asterix.XGameLayer.extend({
     this.atlasBatch.addChild(aa.create(), this.lastZix, ++this.lastTag);
     this.players=[];
     this.players.push( aa);
+    this.actor=aa;
   },
 
   gui: function() {

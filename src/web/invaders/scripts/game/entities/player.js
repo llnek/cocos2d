@@ -116,9 +116,13 @@ asterix.Invaders.EntityPlayer = asterix.XEntity.extends({
     }
   },
 
+  takeWin: function(num) {
+    sh.main.updateScore(num);
+  },
+
   check: function(other) {
     if (other instanceof ivs.EntityAlien) {
-      //other.receiveDamage(666,this);
+      //other.takeHit(666,this);
       this.takeHit(666,other);
     }
     else
@@ -142,6 +146,7 @@ asterix.Invaders.EntityPlayer = asterix.XEntity.extends({
     this.maxVelx = 100;
     this.friction.x = 150;
     this.friction.y = 0;
+    this.score=0;
     //this.coolAmmo = this.runAction(cc.DelayTime.create(this.options.coolDown));
     this.options.frames= [ 'ship_0.png', 'ship_1.png' ];
   }

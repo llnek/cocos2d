@@ -69,16 +69,17 @@ asterix.Invaders.EntityAlien = asterix.XEntity.extends({
 
   check: function(other) {
     if (echt(other)) {
-      other.receiveDamage(10, this);
+      other.takeHit(10, this);
     }
   },
 
-  receiveDamage: function(num, from) {
+  takeHit: function(num, from) {
     //ig.game.spawnEntity(iv.EntityExplode, this.pos.x, this.pos.y);
     //sh.pools['bombs'].add(this);
     //ig.game.onAlienKilled();
     this.sprite.setVisible(false);
     this.status= false;
+    sh.main.actor.takeWin(this.score);
   },
 
   create: function() {
