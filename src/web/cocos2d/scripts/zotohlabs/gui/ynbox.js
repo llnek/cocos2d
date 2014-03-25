@@ -19,22 +19,28 @@ loggr = global.ZotohLabs.logger;
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-var YesNoLayer =  asterix.XLayer.extend({
+var BGLayer = asterix.XLayer.extend({
+  pkInit: function() {
+    var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gui.ynbox'));
+    this.addItem(map);
+    this.options.interaction=false;
+    return this._super();
+  }
+});
+
+var UILayer =  asterix.XLayer.extend({
 
   pkInit: function() {
-    var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gui.ynbox')),
+    var qn= cc.LabelBMFont.create( sh.l10n('%quit?'), sh.xcfg.getFontPath('font.TinyBoxBB')),
     csts = sh.xcfg.csts,
     cw= ccsx.center(),
     wz= ccsx.screen(),
-    qn, s1, s2, t1, t2, menu;
+    s1, s2, t1, t2, menu;
 
-    this.addChild(map, this.lastZix, ++this.lastTag);
-
-    qn= cc.LabelBMFont.create( sh.l10n('%quit?'), sh.xcfg.getFontPath('font.TinyBoxBB'));
     qn.setPosition(cw.x, wz.height * 0.75);
     qn.setScale(18/72);
     qn.setOpacity(0.9*255);
-    this.addChild(qn, this.lastZix, ++this.lastTag);
+    this.addItem(qn);
 
     s2= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.back'));
     s1= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.ok'));
@@ -49,28 +55,24 @@ var YesNoLayer =  asterix.XLayer.extend({
     menu.alignItemsHorizontally(10);
     menu.setPosition(wz.width - csts.TILE - csts.S_OFF - (s2.getContentSize().width + s1.getContentSize().width + 10) / 2,
       csts.TILE + csts.S_OFF + s2.getContentSize().height / 2);
-    this.addChild(menu, this.lastZix, ++this.lastTag);
+    this.addItem(menu);
 
-    return true;
+    return this._super();
   }
 
 });
 
-var SFac = asterix.XSceneFactory.extends({
+sh.protos['YesNo'] = {
 
-  createLayers: function(scene, options) {
-    var y = new YesNoLayer(options);
-    if (y.init()) {
-      scene.addChild(y);
-      return true;
-    } else {
-      return false;
-    }
+  create: function(options) {
+    var fac = new asterix.XSceneFactory({
+      layers: [ BGLayer, UILayer ]
+    });
+    return fac.create(options);
   }
 
-});
+};
 
-sh.protos['YesNo'] = new SFac();
 
 }).call(this);
 

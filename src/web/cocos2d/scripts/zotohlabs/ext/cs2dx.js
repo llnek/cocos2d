@@ -21,8 +21,8 @@ loggr= global.ZotohLabs.logger;
 
 asterix.COCOS2DX = {
 
-  checkCollide: function(a,b) {
-    return a && b ? cc.rectIntersectsRect( this.bbox(a), this.bbox(b)) : false;
+  collide: function(a,b) {
+    return a && b ? cc.rectIntersectsRect( this.bbox(a.sprite), this.bbox(b.sprite)) : false;
   },
 
   createTimer: function(par, tm) {

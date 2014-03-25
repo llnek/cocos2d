@@ -9,43 +9,49 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this; var _ = global._ ;
-var asterix = global.ZotohLabs.Asterix;
-var ccsx = asterix.COCOS2DX;
-var ivs= asterix.Invaders;
-var sh= asterix.Shell;
-var loggr= global.ZotohLabs.logger;
-var echt= global.ZotohLabs.echt;
+(function(undef) { "use strict"; var global = this, _ = global._ ,
+asterix = global.ZotohLabs.Asterix,
+ccsx = asterix.COCOS2DX,
+ivs= asterix.Invaders,
+sh= asterix.Shell,
+echt= global.ZotohLabs.echt,
+loggr= global.ZotohLabs.logger;
+
+//////////////////////////////////////////////////////////////////////////////
+// module def
+//////////////////////////////////////////////////////////////////////////////
 
 var Alien = cc.Sprite.extend({
 
   ctor: function(x,y,options) {
-    this.options= options;
     this._super();
-    this.initWithSpriteFrameName(this.options.frames[0]);
-    //this.setZOrder(this.options.zIndex);
-    //this.setTag(this.options.tag);
+
+    this.initWithSpriteFrameName(options.frames[0]);
     this.setPosition(x,y);
 
-    var frame0 = cc.SpriteFrameCache.getInstance().getSpriteFrame(this.options.frames[0]);
-    var frame1 = cc.SpriteFrameCache.getInstance().getSpriteFrame(this.options.frames[1]);
-    var animFrames = [];
-    animFrames.push(frame0);
-    animFrames.push(frame1);
-    var animation = cc.Animation.create(animFrames, this.options.frameTime);
-    var animate = cc.Animate.create(animation);
+    var ccc = cc.SpriteFrameCache.getInstance(),
+    f0 = ccc.getSpriteFrame(options.frames[0]),
+    f1 = ccc.getSpriteFrame(options.frames[1]),
+    animFrames = [ f0, f1 ],
+    animation = cc.Animation.create(animFrames, options.frameTime),
+    animate = cc.Animate.create(animation);
+
     this.runAction(cc.RepeatForever.create(animate));
   }
 
 });
 
-asterix.Invaders.EntityAlien = asterix.XEntity.extends({
+//////////////////////////////////////////////////////////////////////////////
+// module def
+//////////////////////////////////////////////////////////////////////////////
 
-  bombCount: 0,
+asterix.Invaders.EntityAlien = asterix.XEntity.extends({
 
   loadBomb: function() {
     this.bombCount = 1;
   },
+
+  bombCount: 0,
 
   shuffle: function(x) {
     var pos= this.sprite.getPosition();
@@ -59,33 +65,34 @@ asterix.Invaders.EntityAlien = asterix.XEntity.extends({
 
   update: function(dt) {
     if (this.bombCount > 0) {
-      var pos = this.sprite.getPosition();
-      if ( ! sh.main.reviveBomb(pos.x, pos.y - 4)) {
-        sh.main.addBomb(pos.x, pos.y - 4);
+      var pos = this.sprite.getPosition(),
+      x= pos.x,
+      y= pos.y - 4;
+      if ( ! sh.main.reviveBomb(x, y)) {
+        sh.main.addBomb(x, y);
       }
       this.bombCount = 0;
     }
   },
 
   check: function(other) {
-    if (echt(other)) {
-      other.takeHit(10, this);
+    if (other instanceof ivs.EntityMissile) {
+      this.takeHit();
+    }
+    else
+    if (other instanceof ivs.EntityPlayer) {
+      other.takeHit();
     }
   },
 
-  takeHit: function(num, from) {
-    //ig.game.spawnEntity(iv.EntityExplode, this.pos.x, this.pos.y);
-    //sh.pools['bombs'].add(this);
-    //ig.game.onAlienKilled();
+  takeHit: function() {
+    sh.main.onAlienKilled(this.score);
     this.sprite.setVisible(false);
     this.status= false;
-    sh.main.actor.takeWin(this.score);
   },
 
   create: function() {
-    var pos= this.options._startPos;
-    this.sprite = new Alien(pos.x, pos.y, this.options);
-    return this.sprite;
+    return this.sprite = new Alien(this.startPos.x, this.startPos.y, this.options);
   },
 
   friction: {},
@@ -93,10 +100,12 @@ asterix.Invaders.EntityAlien = asterix.XEntity.extends({
 
   ctor: function(x, y, options) {
     this._super(x, y, options);
+    /*
     this.maxVel.x = 100;
     this.maxVel.y = 100;
     this.friction.x = 150;
     this.friction.y = 0;
+    */
     if (this.options.rank < 3) {
       this.options.frames = [ 'blue_bug_1.png', 'blue_bug_0.png' ];
       this.score=100;
@@ -120,5 +129,4 @@ asterix.Invaders.EntityAlien = asterix.XEntity.extends({
 
 
 }).call(this);
-
 

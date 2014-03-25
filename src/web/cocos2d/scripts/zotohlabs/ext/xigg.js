@@ -39,56 +39,6 @@ asterix.XGameLayer = asterix.XLayer.extend({
     sh.xcfg.csts.GAME_MODE=mode;
   },
 
-  doCtrlBtns: function(scale) {
-    var csts = sh.xcfg.csts,
-    wz= ccsx.screen(),
-    cw= ccsx.center(),
-    x,y, menu,
-    s1,s2,t1,t2;
-
-    scale = scale || 1;
-
-    s1 = cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.menu'));
-    t1 = cc.MenuItemSprite.create(s1, null, null, function() {
-      this.goMenu();
-    }, this);
-    if (scale !== 1) {
-      t1.setScale(scale);
-    }
-    menu= cc.Menu.create(t1);
-    menu.setPosition(wz.width - csts.TILE - csts.S_OFF -
-      ccsx.getScaledWidth(t1) / 2,
-      csts.TILE + csts.S_OFF + ccsx.getScaledHeight(t1) / 2);
-    this.addChild(menu, this.lastZix, ++this.lastTag);
-
-    s2= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.replay'));
-    t2 = cc.MenuItemSprite.create(s2, null, null, function() {
-      this.pkReplay();
-    }, this);
-    if (scale !== 1) {
-      t2.setScale(scale);
-    }
-    this.replayBtn= cc.Menu.create(t2);
-    this.replayBtn.setPosition(cw.x, csts.TILE + csts.S_OFF + ccsx.getScaledHeight(t2) / 2);
-    this.replayBtn.setVisible(false);
-    this.addChild(this.replayBtn, this.lastZix, ++this.lastTag);
-  },
-
-  goMenu: function() {
-    var dir= cc.Director.getInstance();
-    dir.pushScene( sh.protos['MainMenu'].create({
-      onBack: function() {
-        dir.popScene();
-      }
-    }));
-  },
-
-  pkReplay: function() {
-    this.replayBtn.setVisible(false);
-    this.removeAllChildren(true);
-    this.play();
-  },
-
   pkInit: function() {
 
     var rc= this._super();

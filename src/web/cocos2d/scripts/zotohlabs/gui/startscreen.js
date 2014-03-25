@@ -20,34 +20,21 @@ loggr = global.ZotohLabs.logger;
 //////////////////////////////////////////////////////////////////////////////
 asterix.XSplashLayer = asterix.XLayer.extend({
 
-  doLayout: function() {
-    throw new Error("missing implementation.");
-  },
-
   pkInit: function() {
     var imgUrl= sh.xcfg.getImagePath('splash.splash'),
     wz = ccsx.screen(),
     cw = ccsx.center();
 
+    this.options.interaction=false;
     this._super();
 
     if (imgUrl) {
       var s= cc.Sprite.create( imgUrl);
       s.setPosition(cw);
-      this.addChild(s, this.lastZix, ++this.lastTag);
+      this.addItem(s);
     }
 
-    this.doLayout();
     return true;
-  },
-
-  pkPlay: function() {
-    var dir= cc.Director.getInstance(),
-    ss= sh.protos['StartScreen'],
-    mm= sh.protos['MainMenu'];
-    dir.replaceScene( mm.create({
-      onBack: function() { dir.replaceScene( ss.create() ); }
-    }));
   }
 
 

@@ -21,7 +21,6 @@ loggr= global.ZotohLabs.logger;
 
 asterix.XLive = cc.Sprite.extend({
   ctor: function(x, y, options) {
-    this.options= options || {};
     this._super();
     this.initWithSpriteFrameName(this.options.frames[0]);
     this.setPosition(x,y);
@@ -32,10 +31,10 @@ asterix.XHUDLives = global.ZotohLabs.klass.extends({
 
   curLives: 0,
 
-  reduceLives: function(howmany) {
+  reduce: function(howmany) {
     this.curLives = Math.max( 0, this.curLives - howmany);
-    for (var n=0; n < howmany; n++) {
-      this.layer.removeItem(this.icons.pop());
+    for (var n=0; n < howmany; ++n) {
+      this.hud.removeItem(this.icons.pop());
     }
   },
 
@@ -48,10 +47,7 @@ asterix.XHUDLives = global.ZotohLabs.klass.extends({
   },
 
   reset:function() {
-    var me=this;
-    _.each(this.icons, function(z) {
-      me.layer.removeItem(z);
-    });
+    _.each(this.icons, function(z) { this.hud.removeItem(z); }, this);
     this.curLives = this.options.totalLives;
     this.icons=[];
   },
@@ -68,7 +64,7 @@ asterix.XHUDLives = global.ZotohLabs.klass.extends({
     v;
     for (n = 0; n < this.curLives; ++n) {
       v= new asterix.XLive(x,y,this.options);
-      this.layer.addItem(v);
+      this.hud.addItem(v);
       this.icons.push(v);
       if (this.options.direction > 0) {
         x += this.lifeSize.width + gap;
@@ -83,9 +79,9 @@ asterix.XHUDLives = global.ZotohLabs.klass.extends({
     this.drawLives();
   },
 
-  ctor: function(layer, x, y, options) {
+  ctor: function(hud, x, y, options) {
     this.options = options || {};
-    this.layer= layer;
+    this.hud= hud;
     this.topLeft= cc.p(x,y);
     this.reset();
     if ( !echt(this.options.direction)) {

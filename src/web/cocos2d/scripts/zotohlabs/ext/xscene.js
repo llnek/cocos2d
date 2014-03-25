@@ -12,6 +12,7 @@
 (function(undef) { "use stricts"; var global = this, _ = global._ ,
 asterix= global.ZotohLabs.Asterix,
 sh = asterix.Shell,
+klass= global.ZotohLabs.klass,
 loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -20,17 +21,34 @@ loggr= global.ZotohLabs.logger;
 
 asterix.XSceneFactory = global.ZotohLabs.klass.extends({
 
-  createLayers: function(scene, options) {
-  // scene.addChild(...)
-  return false;
+  createLayers: function(scene) {
+    var a = options.layers || [],
+    x=[],
+    w={},
+    rc,
+    obj;
+    _.each(a, function(proto) {
+      obj= new (proto)(options);
+      w[ obj.rtti() ] = obj;
+      x.push(obj);
+    });
+    _.each(x, function(z) {
+      z.setSiblings(w);
+    });
+    rc= _.some(x, function(z) {
+      return ! z.init();
+    });
+    return a.length > 0 && rc===false;
   },
 
   create: function(options) {
+    this.options = klass.merge(this.options, options || {} );
     var scene = cc.Scene.create();
-    return this.createLayer(scene, options || {}) ? scene : null;
+    return this.createLayers(scene) ? scene : null;
   },
 
-  ctor: function() {
+  ctor: function(options) {
+    this.options= options || {};
   }
 
 });

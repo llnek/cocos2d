@@ -18,9 +18,9 @@ loggr = global.ZotohLabs.logger;
 //////////////////////////////////////////////////////////////////////////////
 // splash screen for the game - make it look nice please.
 //////////////////////////////////////////////////////////////////////////////
-var SplashLayer = asterix.XSplashLayer.extend({
+var UILayer = asterix.XLayer.extend({
 
-  doLayout: function() {
+  pkInit: function() {
     var imgUrl= sh.xcfg.getImagePath('splash.play-btn'),
     btn = cc.Sprite.create(imgUrl),
     cw = ccsx.center(),
@@ -28,28 +28,36 @@ var SplashLayer = asterix.XSplashLayer.extend({
     mi= cc.MenuItemSprite.create(btn, null, null, this.pkPlay, this),
     menu = cc.Menu.create(mi);
 
+    this._super();
+
     menu.alignItemsVerticallyWithPadding(10);
     menu.setPosition(cw.x, 56);
-    this.addChild(menu, this.lastZix, ++this.lastTag);
+    this.addItem(menu);
+
+    return true;
+  },
+
+  pkPlay: function() {
+    var dir= cc.Director.getInstance(),
+    ss= sh.protos['StartScreen'],
+    mm= sh.protos['MainMenu'];
+    dir.replaceScene( mm.create({
+      onBack: function() { dir.replaceScene( ss.create() ); }
+    }));
   }
+
 
 });
 
-var SFac = asterix.XSceneFactory.extends({
-
-  createLayers: function(scene, options) {
-    var y = new SplashLayer(options);
-    if ( y.init()) {
-      scene.addChild(y);
-      return true;
-    } else {
-      return false;
-    }
+sh.protos['StartScreen'] = {
+  create: function(options) {
+    var fac = new asterix.XSceneFactory({
+      layers: [ asterix.XSplashLayer, UILayer ]
+    });
+    return fac.create(options);
   }
+};
 
-});
-
-sh.protos['StartScreen'] = new SFac();
 
 }).call(this);
 

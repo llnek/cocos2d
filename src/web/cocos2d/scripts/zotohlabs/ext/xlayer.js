@@ -25,32 +25,39 @@ asterix.XLayer = cc.Layer.extend({
 
   pkInit: function() {
 
-    if (_.has(sys.capabilities, 'keyboard')) {
-      this.setKeyboardEnabled(true);
-    }
-
-    if (_.has(sys.capabilities, 'mouse')) {
-      this.setMouseEnabled(true);
-    }
-
-    if (_.has(sys.capabilities, 'touches')) {
-      this.setTouchEnabled(true);
-      this.setTouchMode(cc.TOUCH_ONE_BY_ONE);
+    if (this.options.iteraction === false) {} else {
+      if (_.has(sys.capabilities, 'keyboard')) {
+        this.setKeyboardEnabled(true);
+      }
+      if (_.has(sys.capabilities, 'mouse')) {
+        this.setMouseEnabled(true);
+      }
+      if (_.has(sys.capabilities, 'touches')) {
+        this.setTouchEnabled(true);
+        this.setTouchMode(cc.TOUCH_ONE_BY_ONE);
+      }
     }
 
     return true;
   },
 
-  getLayer: function() {
-    throw new Error("missing implementation.");
+  setSiblings: function(ss) {
+  },
+
+  rtti: function() {
+    return "";
+  },
+
+  getNode: function() {
+    return this;
   },
 
   removeItem: function(n,c) {
-    this.getLayer().removeChild(n,c || true);
+    this.getNode().removeChild(n,c || true);
   },
 
   addItem: function(n) {
-    this.getLayer().addChild(n, this.lastZix, ++this.lastTag);
+    this.getNode().addChild(n, this.lastZix, ++this.lastTag);
   },
 
   init: function() {

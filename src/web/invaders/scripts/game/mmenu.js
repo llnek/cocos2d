@@ -21,7 +21,7 @@ loggr = global.ZotohLabs.logger;
 
 var MainMenuLayer = asterix.XMenuLayer.extend({
 
-  doLayout: function() {
+  pkInit: function() {
     var dir= cc.Director.getInstance(),
     csts = sh.xcfg.csts,
     cw = ccsx.center(),
@@ -39,7 +39,7 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
     menu= cc.Menu.create(t1);
     menu.alignItemsVertically();
     menu.setPosition(114, wz.height - csts.TILE * 18 - 2);
-    this.addChild(menu, this.lastZix, ++this.lastTag);
+    this.addItem(menu);
 
     s1= cc.LabelBMFont.create( sh.l10n('%2players'), sh.xcfg.getFontPath('font.OogieBoogie'));
     t1= cc.MenuItemLabel.create(s1,function() {
@@ -53,7 +53,7 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
     menu= cc.Menu.create(t1);
     menu.alignItemsVertically();
     menu.setPosition(cw.x + 68, wz.height - csts.TILE * 28 - 4);
-    this.addChild(menu, this.lastZix, ++this.lastTag);
+    this.addItem(menu);
 
     s1= cc.LabelBMFont.create(sh.l10n('%1player'), sh.xcfg.getFontPath('font.OogieBoogie'));
     t1= cc.MenuItemLabel.create(s1,function() {
@@ -67,29 +67,25 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
     menu= cc.Menu.create(t1);
     menu.alignItemsVertically();
     menu.setPosition(cw.x, csts.TILE * 19);
-    this.addChild(menu, this.lastZix, ++this.lastTag);
+    this.addItem(menu);
 
     this.doCtrlBtns();
+
+    return this._super();
   }
 
 });
 
-var SFac = asterix.XSceneFactory.extends({
+sh.protos['MainMenu'] = {
 
-  createLayers: function(scene, options) {
-    var mm= new MainMenuLayer(options);
-    if (mm.init()) {
-      scene.addChild(mm);
-      return true;
-    } else {
-      return false;
-    }
+  create: function(options) {
+    var fac = new asterix.XSceneFactory({
+      layers: [ asterix.XMenuBackLayer, MainMenuLayer ]
+    });
+    return fac.create(options);
   }
 
-});
-
-sh.protos['MainMenu'] = new SFac();
+};
 
 }).call(this);
-
 

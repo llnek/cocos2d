@@ -19,31 +19,28 @@ loggr = global.ZotohLabs.logger;
 // Main menu.
 //////////////////////////////////////////////////////////////////////////////
 
-asterix.XMenuLayer= asterix.XLayer.extend({
-
+asterix.XMenuBackLayer = asterix.XLayer.extend({
   pkInit: function() {
     var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gui.mmenu')),
-    title,
-    cw = ccsx.center(),
+    csts = sh.xcfg.csts,
     wz = ccsx.screen(),
-    csts = sh.xcfg.csts;
-
-    this._super();
-
-    if (map) {
-      this.addChild(map, this.lastZix, ++this.lastTag);
-    }
-
+    cw= ccsx.center(),
     title = cc.LabelBMFont.create( sh.l10n('%mmenu'), sh.xcfg.getFontPath('font.JellyBelly'));
+
     title.setPosition(cw.x, wz.height - csts.TILE * 8 / 2);
     title.setScale(24/72);
     title.setOpacity(0.9*255);
-    this.addChild(title, this.lastZix, ++this.lastTag);
 
-    this.doLayout();
+    this.addItem(map);
+    this.addItem(title);
 
-    return true;
-  },
+    this.options.interaction=false;
+
+    return this._super();
+  }
+});
+
+asterix.XMenuLayer= asterix.XLayer.extend({
 
   doCtrlBtns: function() {
     var audio = sh.xcfg.assets.sprites['gui.audio'],
@@ -75,7 +72,7 @@ asterix.XMenuLayer= asterix.XLayer.extend({
 
     menu= cc.Menu.create(audio);
     menu.setPosition(csts.TILE + csts.S_OFF, csts.TILE + csts.S_OFF);
-    this.addChild(menu, this.lastZix, ++this.lastTag);
+    this.addItem(menu);
 
     s2= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.back'));
     s1= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.quit'));
@@ -90,9 +87,7 @@ asterix.XMenuLayer= asterix.XLayer.extend({
     menu.alignItemsHorizontally(10);
     menu.setPosition(wz.width - csts.TILE - csts.S_OFF - (s2.getContentSize().width + s1.getContentSize().width + 10) / 2,
       csts.TILE + csts.S_OFF + s2.getContentSize().height / 2);
-    this.addChild(menu, this.lastZix, ++this.lastTag);
-
-    return true;
+    this.addItem(menu);
   },
 
   pkQuit: function() {
@@ -107,7 +102,6 @@ asterix.XMenuLayer= asterix.XLayer.extend({
         dir.replaceRootScene( ss.create() );
       }
     }));
-
   }
 
 });

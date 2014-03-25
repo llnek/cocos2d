@@ -20,25 +20,27 @@ loggr= global.ZotohLabs.logger;
 
 asterix.XGameHUDLayer = asterix.XLayer.extend({
 
-  maybeReset: function() {
+  pkInit: function() {
+    this.initNode();
+    this.initScore();
+    this.initLives();
+    this.initCtrlBtns();
+    return this._super();
+  },
+
+  scoreLabel: null,
+  lives: null,
+  score: 0,
+  replayBtn: null,
+
+  reset: function() {
     this.disableReplay();
     this.score= 0;
     this.lives.resurrect();
   },
 
-  lives: null,
-  score: 0,
-
-  pkInit: function() {
-    this.initLayer();
-    this.initScore();
-    this.initLives();
-    this.initCtrlBtns();
-    return true;
-  },
-
   reduceLives: function(n) {
-    this.lives.reduceLives(n);
+    this.lives.reduce(n);
     return this.lives.isDead();
   },
 
@@ -79,7 +81,7 @@ asterix.XGameHUDLayer = asterix.XLayer.extend({
 
     s2= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.replay'));
     t2 = cc.MenuItemSprite.create(s2, null, null, function() {
-      this.pkReplay();
+      sh.main.replay();
     }, this);
     if (scale !== 1) {
       t2.setScale(scale);
@@ -97,12 +99,6 @@ asterix.XGameHUDLayer = asterix.XLayer.extend({
         dir.popScene();
       }
     }));
-  },
-
-  pkReplay: function() {
-    //this.replayBtn.setVisible(false);
-    this.getLayer().removeAllChildren(true);
-    this.play();
   }
 
 });

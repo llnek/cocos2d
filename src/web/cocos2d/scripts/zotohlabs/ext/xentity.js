@@ -78,7 +78,7 @@ asterix.XEntity = global.ZotohLabs.klass.extends({
 
   ctor: function(x,y,options) {
     this.options= options || {};
-    this.options._startPos = cc.p(x,y);
+    this.startPos = cc.p(x,y);
   }
 
 });
