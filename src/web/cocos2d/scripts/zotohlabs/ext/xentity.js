@@ -9,11 +9,11 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef){ "use strict"; var global= this; var _ = global._ ;
-var asterix= global.ZotohLabs.Asterix;
-var ccsx = asterix.COCOS2DX;
-var sh= asterix.Shell;
-var loggr = global.ZotohLabs.logger;
+(function(undef){ "use strict"; var global= this,  _ = global._ ,
+asterix= global.ZotohLabs.Asterix,
+ccsx = asterix.COCOS2DX,
+sh= asterix.Shell,
+loggr = global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -152,5 +152,4 @@ asterix.XEntityPool = global.ZotohLabs.klass.extends({
 
 
 }).call(this);
-
 

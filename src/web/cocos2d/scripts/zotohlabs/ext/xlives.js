@@ -9,22 +9,21 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this; var _ = global._ ;
-var asterix = global.ZotohLabs.Asterix;
-var sh = asterix.Shell;
-var loggr= global.ZotohLabs.logger;
-var echt= global.ZotohLabs.echt;
+(function (undef){ "use strict"; var global = this,  _ = global._  ,
+asterix = global.ZotohLabs.Asterix,
+sh = asterix.Shell,
+echt= global.ZotohLabs.echt,
+loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
+
 asterix.XLive = cc.Sprite.extend({
   ctor: function(x, y, options) {
     this.options= options || {};
     this._super();
     this.initWithSpriteFrameName(this.options.frames[0]);
-    //this.setZOrder(this.options.zIndex);
-    //this.setTag(this.options.tag);
     this.setPosition(x,y);
   }
 });
@@ -36,7 +35,7 @@ asterix.XHUDLives = global.ZotohLabs.klass.extends({
   reduceLives: function(howmany) {
     this.curLives = Math.max( 0, this.curLives - howmany);
     for (var n=0; n < howmany; n++) {
-      sh.main.killHUDItem(this.icons.pop());
+      this.layer.removeItem(this.icons.pop());
     }
   },
 
@@ -49,44 +48,44 @@ asterix.XHUDLives = global.ZotohLabs.klass.extends({
   },
 
   reset:function() {
+    var me=this;
+    _.each(this.icons, function(z) {
+      me.layer.removeItem(z);
+    });
     this.curLives = this.options.totalLives;
     this.icons=[];
   },
 
-  update: function() {
+  resurrect: function() {
+    this.reset();
+    this.drawLives();
   },
 
-  moveTo: function(newx, newy) {
-    this.x= newx;
-    this.y= newy;
-  },
-
-  getPos: function() {
-    return [this.x, this.y];
-  },
-
-  create: function() {
-    var ops = global.ZotohLabs.klass.merge({ tag: 0, zIndex: 0}, this.options);
-    var n, gap = 2;
-    var v= new asterix.XLive(0,0,ops);
-    var z = v.getContentSize();
-    var y= this.topLeft.y - z.height/2;
-    var x= this.topLeft.x + z.width/2;
-
+  drawLives: function() {
+    var n, gap= 2,
+    y= this.topLeft.y - this.lifeSize.height/2,
+    x= this.topLeft.x + this.lifeSizez.width/2;
+    v;
     for (n = 0; n < this.curLives; ++n) {
-      v= new asterix.XLive(x,y,ops);
-      sh.main.addHUDItem(v);
+      v= new asterix.XLive(x,y,this.options);
+      this.layer.addItem(v);
       this.icons.push(v);
       if (this.options.direction > 0) {
-        x += z.width + gap;
+        x += this.lifeSize.width + gap;
       } else {
-        x -= z.width - gap;
+        x -= this.lifeSize.width - gap;
       }
     }
   },
 
-  ctor: function(x, y, options) {
+  create: function() {
+    this.lifeSize = new asterix.XLive(0,0,this.options).getContentSize();
+    this.drawLives();
+  },
+
+  ctor: function(layer, x, y, options) {
     this.options = options || {};
+    this.layer= layer;
     this.topLeft= cc.p(x,y);
     this.reset();
     if ( !echt(this.options.direction)) {

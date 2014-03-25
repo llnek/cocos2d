@@ -9,12 +9,11 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this; var _ = global._ ;
-var asterix = global.ZotohLabs.Asterix;
-var ccsx = asterix.COCOS2DX;
-var sh = asterix.Shell;
-var loggr = global.ZotohLabs.logger;
-var echt = global.ZotohLabs.echt;
+(function (undef) { "use strict"; var global= this,  _ = global._ ,
+asterix = global.ZotohLabs.Asterix,
+ccsx = asterix.COCOS2DX,
+sh = asterix.Shell,
+loggr = global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // splash screen for the game - make it look nice please.
@@ -22,22 +21,35 @@ var echt = global.ZotohLabs.echt;
 var SplashLayer = asterix.XSplashLayer.extend({
 
   doLayout: function() {
-    var imgUrl= sh.xcfg.getImagePath('splash.play-btn');
-    var me=this, cw = ccsx.center();
-    var winSize = ccsx.screen();
-    var btn = cc.Sprite.create(imgUrl);
-    var mi= cc.MenuItemSprite.create(btn, null, null, this.pkPlay, this);
-    var menu = cc.Menu.create(mi);
-    menu.alignItemsVerticallyWithPadding(10);
-    this.addChild(menu, this.lastZix, ++this.lastTag);
-    menu.setPosition(cw.x, 56);
+    var imgUrl= sh.xcfg.getImagePath('splash.play-btn'),
+    btn = cc.Sprite.create(imgUrl),
+    cw = ccsx.center(),
+    wz = ccsx.screen(),
+    mi= cc.MenuItemSprite.create(btn, null, null, this.pkPlay, this),
+    menu = cc.Menu.create(mi);
 
-    return true;
+    menu.alignItemsVerticallyWithPadding(10);
+    menu.setPosition(cw.x, 56);
+    this.addChild(menu, this.lastZix, ++this.lastTag);
   }
 
 });
 
-sh.protos['StartScreen'] = new asterix.XSceneFactory(SplashLayer);
+var SFac = asterix.XSceneFactory.extends({
+
+  createLayers: function(scene, options) {
+    var y = new SplashLayer(options);
+    if ( y.init()) {
+      scene.addChild(y);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+});
+
+sh.protos['StartScreen'] = new SFac();
 
 }).call(this);
 

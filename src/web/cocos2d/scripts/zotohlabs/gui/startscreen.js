@@ -9,38 +9,45 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this; var _ = global._ ;
-var asterix = global.ZotohLabs.Asterix;
-var ccsx= asterix.COCOS2DX;
-var sh = asterix.Shell;
-var loggr = global.ZotohLabs.logger;
-var echt = global.ZotohLabs.echt;
+(function (undef) { "use strict"; var global= this, _ = global._  ,
+asterix = global.ZotohLabs.Asterix,
+ccsx= asterix.COCOS2DX,
+sh = asterix.Shell,
+loggr = global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // splash screen for the game - make it look nice please.
 //////////////////////////////////////////////////////////////////////////////
 asterix.XSplashLayer = asterix.XLayer.extend({
 
-  pkInit: function() {
-    this._super();
-    var imgUrl= sh.xcfg.getImagePath('splash.splash');
-    var me=this, cw = ccsx.center();
-    var winSize = ccsx.screen();
-    var s= cc.Sprite.create( imgUrl);
-    s.setPosition(cw);
-    this.addChild(s, this.lastZix, ++this.lastTag);
+  doLayout: function() {
+    throw new Error("missing implementation.");
+  },
 
-    return this.doLayout();
+  pkInit: function() {
+    var imgUrl= sh.xcfg.getImagePath('splash.splash'),
+    wz = ccsx.screen(),
+    cw = ccsx.center();
+
+    this._super();
+
+    if (imgUrl) {
+      var s= cc.Sprite.create( imgUrl);
+      s.setPosition(cw);
+      this.addChild(s, this.lastZix, ++this.lastTag);
+    }
+
+    this.doLayout();
+    return true;
   },
 
   pkPlay: function() {
-    var dir= cc.Director.getInstance();
-    var options= {
-      onBack: function() {
-        dir.replaceScene( sh.protos['StartScreen'].create() );
-      }
-    };
-    dir.replaceScene( sh.protos['MainMenu'].create(options));
+    var dir= cc.Director.getInstance(),
+    ss= sh.protos['StartScreen'],
+    mm= sh.protos['MainMenu'];
+    dir.replaceScene( mm.create({
+      onBack: function() { dir.replaceScene( ss.create() ); }
+    }));
   }
 
 
@@ -49,5 +56,4 @@ asterix.XSplashLayer = asterix.XLayer.extend({
 
 
 }).call(this);
-
 

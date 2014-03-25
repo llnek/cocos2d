@@ -12,6 +12,7 @@
 (function(undef) { "use strict"; var global = this, _ = global._ ,
 asterix= global.ZotohLabs.Asterix,
 sh= asterix.Shell,
+echt= global.ZotohLabs.echt,
 loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -22,6 +23,14 @@ asterix.COCOS2DX = {
 
   checkCollide: function(a,b) {
     return a && b ? cc.rectIntersectsRect( this.bbox(a), this.bbox(b)) : false;
+  },
+
+  createTimer: function(par, tm) {
+    return par.runAction(cc.DelayTime.create(tm));
+  },
+
+  timerDone: function(t) {
+    return echt(t) && t.isDone();
   },
 
   bbox: function(sprite) {

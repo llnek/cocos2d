@@ -9,50 +9,54 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this; var _ = global._ ;
-var asterix = global.ZotohLabs.Asterix;
-var ccsx = asterix.COCOS2DX;
-var sh = asterix.Shell;
-var loggr = global.ZotohLabs.logger;
-var echt = global.ZotohLabs.echt;
+(function (undef) { "use strict"; var global= this, _ = global._ ,
+asterix = global.ZotohLabs.Asterix,
+ccsx = asterix.COCOS2DX,
+sh = asterix.Shell,
+loggr = global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // Main menu.
 //////////////////////////////////////////////////////////////////////////////
+
 asterix.XMenuLayer= asterix.XLayer.extend({
 
   pkInit: function() {
-    this._super();
-    var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gui.mmenu'));
-    var me=this, cw = ccsx.center();
-    var csts = sh.xcfg.csts;
-    var wz = ccsx.screen();
-    var title;
+    var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gui.mmenu')),
+    title,
+    cw = ccsx.center(),
+    wz = ccsx.screen(),
+    csts = sh.xcfg.csts;
 
-    this.addChild(map, this.lastZix, ++this.lastTag);
-    title= cc.LabelBMFont.create( sh.l10n('%mmenu'), sh.xcfg.getFontPath('font.JellyBelly'));
+    this._super();
+
+    if (map) {
+      this.addChild(map, this.lastZix, ++this.lastTag);
+    }
+
+    title = cc.LabelBMFont.create( sh.l10n('%mmenu'), sh.xcfg.getFontPath('font.JellyBelly'));
     title.setPosition(cw.x, wz.height - csts.TILE * 8 / 2);
-    title.setScale(0.6666); // font size = 72, want 24
+    title.setScale(24/72);
     title.setOpacity(0.9*255);
     this.addChild(title, this.lastZix, ++this.lastTag);
 
-    return this.doLayout();
+    this.doLayout();
+
+    return true;
   },
 
   doCtrlBtns: function() {
-    var me=this, csts = sh.xcfg.csts;
-    var wz = ccsx.screen();
-    var cw = ccsx.center();
-    var p, w, h, audio;
-    var s2, s1, t2,t1;
-    var menu;
-
-    audio = sh.xcfg.assets.sprites['gui.audio'];
-    w= audio[1];
-    h= audio[2];
-    p= sh.sanitizeUrl(audio[0]);
-    s1= cc.Sprite.create(p, cc.rect(w,0,w,h));
+    var audio = sh.xcfg.assets.sprites['gui.audio'],
+    csts = sh.xcfg.csts,
+    wz = ccsx.screen(),
+    cw = ccsx.center(),
+    menu, t2,t1,
+    w= audio[1],
+    h= audio[2],
+    p= sh.sanitizeUrl(audio[0]),
+    s1= cc.Sprite.create(p, cc.rect(w,0,w,h)),
     s2= cc.Sprite.create(p, cc.rect(0,0,w,h));
+
     audio= cc.MenuItemToggle.create( cc.MenuItemSprite.create(s1),
                                      cc.MenuItemSprite.create(s2),
            function(sender) {
@@ -68,8 +72,8 @@ asterix.XMenuLayer= asterix.XLayer.extend({
     } else {
       audio.setSelectedIndex(1);
     }
+
     menu= cc.Menu.create(audio);
-    //menu.setAnchorPoint(cc.p(0,0));
     menu.setPosition(csts.TILE + csts.S_OFF, csts.TILE + csts.S_OFF);
     this.addChild(menu, this.lastZix, ++this.lastTag);
 
@@ -84,26 +88,26 @@ asterix.XMenuLayer= asterix.XLayer.extend({
 
     menu= cc.Menu.create(t1,t2);
     menu.alignItemsHorizontally(10);
-    menu.setPosition(wz.width - csts.TILE - csts.S_OFF -
-      (s2.getContentSize().width + s1.getContentSize().width + 10) / 2,
-    csts.TILE + csts.S_OFF + s2.getContentSize().height / 2);
+    menu.setPosition(wz.width - csts.TILE - csts.S_OFF - (s2.getContentSize().width + s1.getContentSize().width + 10) / 2,
+      csts.TILE + csts.S_OFF + s2.getContentSize().height / 2);
     this.addChild(menu, this.lastZix, ++this.lastTag);
 
     return true;
   },
 
   pkQuit: function() {
-    var dir= cc.Director.getInstance();
-    var options = {
+    var dir= cc.Director.getInstance(),
+    ss= sh.protos['StartScreen'],
+    yn= sh.protos['YesNo'];
+
+    dir.pushScene( yn.create({
+      onBack: function() { dir.popScene(); },
       yes: function() {
         sh.xcfg.sfxPlay('game_quit');
-        dir.replaceRootScene( sh.protos['StartScreen'].create() );
-      },
-      onBack: function() {
-        dir.popScene();
+        dir.replaceRootScene( ss.create() );
       }
-    }
-    dir.pushScene( sh.protos['YesNo'].create(options));
+    }));
+
   }
 
 });

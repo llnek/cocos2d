@@ -11,7 +11,6 @@
 
 (function(undef) { "use stricts"; var global = this, _ = global._ ,
 asterix= global.ZotohLabs.Asterix,
-ccsx = asterix.COCOS2DX,
 sh = asterix.Shell,
 loggr= global.ZotohLabs.logger;
 
@@ -19,27 +18,44 @@ loggr= global.ZotohLabs.logger;
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-asterix.XGameLayer = asterix.XLayer.extend({
+asterix.XGameHUDLayer = asterix.XLayer.extend({
 
-  keyboard: [],
-  players: [],
-  actor: null,
-
-  onKeyDown:function (e) {
-    //loggr.debug('onKeyDown: e = ' + e);
-    this.keyboard[e] = true;
+  maybeReset: function() {
+    this.disableReplay();
+    this.score= 0;
+    this.lives.resurrect();
   },
 
-  onKeyUp:function (e) {
-    //loggr.debug('onKeyUp: e = ' + e);
-    this.keyboard[e] = false;
+  lives: null,
+  score: 0,
+
+  pkInit: function() {
+    this.initLayer();
+    this.initScore();
+    this.initLives();
+    this.initCtrlBtns();
+    return true;
   },
 
-  setGameMode: function(mode) {
-    sh.xcfg.csts.GAME_MODE=mode;
+  reduceLives: function(n) {
+    this.lives.reduceLives(n);
+    return this.lives.isDead();
   },
 
-  doCtrlBtns: function(scale) {
+  updateScore: function(num) {
+    this.score += num;
+    this.scoreLabel.setString(Number(this.score).toString());
+  },
+
+  disableReplay: function() {
+    this.replayBtn.setVisible(false);
+  },
+
+  enableReplay: function() {
+    this.replayBtn.setVisible(true);
+  },
+
+  initCtrlBtns: function(scale) {
     var csts = sh.xcfg.csts,
     wz= ccsx.screen(),
     cw= ccsx.center(),
@@ -59,7 +75,7 @@ asterix.XGameLayer = asterix.XLayer.extend({
     menu.setPosition(wz.width - csts.TILE - csts.S_OFF -
       ccsx.getScaledWidth(t1) / 2,
       csts.TILE + csts.S_OFF + ccsx.getScaledHeight(t1) / 2);
-    this.addChild(menu, this.lastZix, ++this.lastTag);
+    this.addItem(menu);
 
     s2= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.replay'));
     t2 = cc.MenuItemSprite.create(s2, null, null, function() {
@@ -71,7 +87,7 @@ asterix.XGameLayer = asterix.XLayer.extend({
     this.replayBtn= cc.Menu.create(t2);
     this.replayBtn.setPosition(cw.x, csts.TILE + csts.S_OFF + ccsx.getScaledHeight(t2) / 2);
     this.replayBtn.setVisible(false);
-    this.addChild(this.replayBtn, this.lastZix, ++this.lastTag);
+    this.addItem(this.replayBtn);
   },
 
   goMenu: function() {
@@ -84,68 +100,15 @@ asterix.XGameLayer = asterix.XLayer.extend({
   },
 
   pkReplay: function() {
-    this.replayBtn.setVisible(false);
-    this.removeAllChildren(true);
+    //this.replayBtn.setVisible(false);
+    this.getLayer().removeAllChildren(true);
     this.play();
-  },
-
-  pkInit: function() {
-
-    var rc= this._super();
-
-    if (rc) {
-      switch (this.options.mode) {
-
-        case 2:
-          rc= this.newGame(2);
-        break;
-
-        case 1:
-          rc= this.newGame(1);
-        break;
-
-        default:
-          rc= false;
-        break;
-      }
-
-      if (rc) {
-        this.scheduleUpdate();
-      }
-    }
-
-    return rc;
-  },
-
-  updateEntities: function(dt) {},
-
-  checkEntities: function(dt) {},
-
-  operational: function() {
-    return true;
-  },
-
-  update: function(dt) {
-    if (this.operational() ) {
-      this.updateEntities(dt);
-      this.checkEntities(dt);
-    }
-  },
-
-  ctor: function(options) {
-    this._super(options);
-    sh.main = this;
   }
-
 
 });
 
-Object.defineProperty(asterix.XGameLayer.prototype, "keys", {
-  get: function() {
-    return this.keyboard;
-  }
-});
 
 
 }).call(this);
+
 

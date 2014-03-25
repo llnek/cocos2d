@@ -9,10 +9,10 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use stricts"; var global = this ; var _ = global._ ;
-var asterix= global.ZotohLabs.Asterix;
-var sh = asterix.Shell;
-var loggr= global.ZotohLabs.logger;
+(function(undef) { "use stricts"; var global = this, _ = global._ ,
+asterix= global.ZotohLabs.Asterix,
+sh = asterix.Shell,
+loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -20,62 +20,65 @@ var loggr= global.ZotohLabs.logger;
 
 asterix.XLoader = cc.Scene.extend({
 
-  _logo: null,
-  _bar: null,
-  _bgLayer: null,
-  _label: null,
-  _winSize: null,
+  logoSprite: null,
+  bgLayer: null,
+  winsz: null,
+  logo: null,
+
+  _instance: null,
 
   ctor: function () {
-    cc.Scene.prototype.ctor.call(this);
-    this._winSize = cc.Director.getInstance().getWinSize();
+    this.winsz = cc.Director.getInstance().getWinSize();
+    this._super();
   },
 
   init: function() {
-    cc.Scene.prototype.init.call(this);
+    this.bgLayer = cc.LayerColor.create(cc.c4(0,0,0, 255));
+    this.bgLayer.setPosition(0, 0);
+    this._super();
     this.pkLoad();
-    this._bgLayer = cc.LayerColor.create(cc.c4(0,0,0, 255));
-    this._bgLayer.setPosition(0, 0);
-    this.addChild(this._bgLayer, 0);
+    this.addChild(this.bgLayer, 0);
   },
 
   pkLoad: function() {
+    this.logo= new Image();
     var me=this;
-    this._logo= new Image();
-    this._logo.onload = function() { me.pkInitStage(); };
-    this._logo.src = '/public/ig/media/main/logos/ZotohLabs_x200.png';
+    this.logo.onload = function() { me.pkInitStage(); };
+    this.logo.src = '/public/ig/media/main/logos/ZotohLabs_x200.png';
   },
 
   pkInitStage: function () {
-    var me=this, centerPos = cc.p(this._winSize.width / 2, this._winSize.height / 2);
-    var s1,s2, texture2d;
+    var cw = cc.p(this.winsz.width / 2, this.winsz.height / 2),
+    texture2d = new cc.Texture2D(),
+    me= this,
+    s1,s2;
 
-    texture2d = new cc.Texture2D();
-    texture2d.initWithElement(this._logo);
+    texture2d.initWithElement(this.logo);
     texture2d.handleLoadedTexture();
 
-    this._logoSprite = cc.Sprite.createWithTexture(texture2d);
-    this._logoSprite.setScale(cc.CONTENT_SCALE_FACTOR());
-    this._logoSprite.setPosition(centerPos);
-    this._bgLayer.addChild(this._logoSprite, 10);
+    this.logoSprite = cc.Sprite.createWithTexture(texture2d);
+    this.logoSprite.setScale(cc.CONTENT_SCALE_FACTOR());
+    this.logoSprite.setPosition(cw);
+    this.bgLayer.addChild(this.logoSprite);
 
-    s2= cc.Sprite.create( '/public/ig/media/cocos2d/game/preloader_bar.png');
-    this._progress = cc.ProgressTimer.create(s2);
-    this._progress.setType(cc.PROGRESS_TIMER_TYPE_BAR);
-    this._progress.setScaleX(0.5);
-    this._progress.setPosition( this._logoSprite.getPosition().x - 0.5 * this._logo.width / 2 , centerPos.y - this._logo.height / 2 - 10);
-    this._bgLayer.addChild(this._progress, 20);
-
+    s2 = cc.Sprite.create( '/public/ig/media/cocos2d/game/preloader_bar.png');
+    this.progress = cc.ProgressTimer.create(s2);
+    this.progress.setType(cc.PROGRESS_TIMER_TYPE_BAR);
+    this.progress.setScaleX(0.5);
+    this.progress.setScaleY(0.3);
+    this.progress.setPosition( this.logoSprite.getPosition().x - 0.5 * this.logo.width / 2 , cw.y - this.logo.height / 2 - 10);
+    this.bgLayer.addChild(this.progress);
   },
 
   onEnter: function () {
-    cc.Node.prototype.onEnter.call(this);
+    this._super();
     this.schedule(this.pkStartLoading, 0.3);
   },
 
+  /*
   onExit: function () {
-    cc.Node.prototype.onExit.call(this);
   },
+  */
 
   initWithResources: function (resources, selector, target) {
     this.resources = resources;
@@ -84,7 +87,7 @@ asterix.XLoader = cc.Scene.extend({
   },
 
   niceFadeOut: function() {
-    this._logoSprite.runAction( cc.Sequence.create(
+    this.logoSprite.runAction( cc.Sequence.create(
                                       cc.FadeOut.create(1.2),
                                       cc.CallFunc.create(this.selector, this.target)));
   },
@@ -99,7 +102,7 @@ asterix.XLoader = cc.Scene.extend({
 
   pkUpdatePercent: function () {
     var percent = cc.Loader.getInstance().getPercentage();
-    this._progress.setPercentage(percent);
+    this.progress.setPercentage(percent);
     if (percent >= 100) {
       this.unschedule(this.pkUpdatePercent);
     }
@@ -108,8 +111,8 @@ asterix.XLoader = cc.Scene.extend({
 });
 
 asterix.XLoader.preload = function (resources, selector, target) {
-
   var director = cc.Director.getInstance();
+
   if (!this._instance) {
     this._instance = new asterix.XLoader();
     this._instance.init();
@@ -128,5 +131,4 @@ asterix.XLoader.preload = function (resources, selector, target) {
 
 
 }).call(this);
-
 

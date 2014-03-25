@@ -9,33 +9,32 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this; var _ = global._ ;
-var asterix = global.ZotohLabs.Asterix;
-var ccsx = asterix.COCOS2DX;
-var sh = asterix.Shell;
-var loggr = global.ZotohLabs.logger;
-var echt = global.ZotohLabs.echt;
+(function (undef) { "use strict"; var global= this, _ = global._ ,
+asterix = global.ZotohLabs.Asterix,
+ccsx = asterix.COCOS2DX,
+sh = asterix.Shell,
+loggr = global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
+
 var YesNoLayer =  asterix.XLayer.extend({
 
   pkInit: function() {
-    var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gui.ynbox'));
-    var csts = sh.xcfg.csts;
-    var cw= ccsx.center();
-    var wz= ccsx.screen();
-    var qn, s1, s2, t1, t2, menu;
-    var tag=0;
+    var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gui.ynbox')),
+    csts = sh.xcfg.csts,
+    cw= ccsx.center(),
+    wz= ccsx.screen(),
+    qn, s1, s2, t1, t2, menu;
 
-    this.addChild(map, 10, ++tag);
+    this.addChild(map, this.lastZix, ++this.lastTag);
 
     qn= cc.LabelBMFont.create( sh.l10n('%quit?'), sh.xcfg.getFontPath('font.TinyBoxBB'));
     qn.setPosition(cw.x, wz.height * 0.75);
-    qn.setScale(0.15); // font size = 72, want 18
+    qn.setScale(18/72);
     qn.setOpacity(0.9*255);
-    this.addChild(qn,11, ++tag);
+    this.addChild(qn, this.lastZix, ++this.lastTag);
 
     s2= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.back'));
     s1= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.ok'));
@@ -48,19 +47,30 @@ var YesNoLayer =  asterix.XLayer.extend({
 
     menu= cc.Menu.create(t1,t2);
     menu.alignItemsHorizontally(10);
-    menu.setPosition(wz.width - csts.TILE - csts.S_OFF -
-      (s2.getContentSize().width + s1.getContentSize().width + 10) / 2,
-    csts.TILE + csts.S_OFF + s2.getContentSize().height / 2);
-    this.addChild(menu, 11, ++tag);
-
+    menu.setPosition(wz.width - csts.TILE - csts.S_OFF - (s2.getContentSize().width + s1.getContentSize().width + 10) / 2,
+      csts.TILE + csts.S_OFF + s2.getContentSize().height / 2);
+    this.addChild(menu, this.lastZix, ++this.lastTag);
 
     return true;
   }
 
 });
 
-sh.protos['YesNo'] = new asterix.XSceneFactory(YesNoLayer);
+var SFac = asterix.XSceneFactory.extends({
+
+  createLayers: function(scene, options) {
+    var y = new YesNoLayer(options);
+    if (y.init()) {
+      scene.addChild(y);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+});
+
+sh.protos['YesNo'] = new SFac();
 
 }).call(this);
-
 

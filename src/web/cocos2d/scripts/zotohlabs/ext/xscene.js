@@ -9,10 +9,10 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use stricts"; var global = this ; var _ = global._ ;
-var asterix= global.ZotohLabs.Asterix;
-var sh = asterix.Shell;
-var loggr= global.ZotohLabs.logger;
+(function(undef) { "use stricts"; var global = this, _ = global._ ,
+asterix= global.ZotohLabs.Asterix,
+sh = asterix.Shell,
+loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -20,21 +20,22 @@ var loggr= global.ZotohLabs.logger;
 
 asterix.XSceneFactory = global.ZotohLabs.klass.extends({
 
-  create: function(options) {
-    var y= new (this.layer)(options);
-    var scene = cc.Scene.create();
-    return y.init() ? (function() { scene.addChild(y); return scene; })() : null;
+  createLayers: function(scene, options) {
+  // scene.addChild(...)
+  return false;
   },
 
-  ctor: function(layer) {
-    this.layer=layer;
+  create: function(options) {
+    var scene = cc.Scene.create();
+    return this.createLayer(scene, options || {}) ? scene : null;
+  },
+
+  ctor: function() {
   }
 
 });
 
 
 
-
 }).call(this);
-
 

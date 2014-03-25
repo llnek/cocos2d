@@ -9,10 +9,10 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use stricts"; var global = this ; var _ = global._ ;
-var asterix= global.ZotohLabs.Asterix;
-var sh = asterix.Shell;
-var loggr= global.ZotohLabs.logger;
+(function(undef) { "use stricts"; var global = this, _ = global._ ,
+asterix= global.ZotohLabs.Asterix,
+sh = asterix.Shell,
+loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -25,20 +25,32 @@ asterix.XLayer = cc.Layer.extend({
 
   pkInit: function() {
 
-    if (sys.capabilities.hasOwnProperty('keyboard')) {
+    if (_.has(sys.capabilities, 'keyboard')) {
       this.setKeyboardEnabled(true);
     }
 
-    if (sys.capabilities.hasOwnProperty('mouse')) {
+    if (_.has(sys.capabilities, 'mouse')) {
       this.setMouseEnabled(true);
     }
 
-    if (sys.capabilities.hasOwnProperty('touches')) {
+    if (_.has(sys.capabilities, 'touches')) {
       this.setTouchEnabled(true);
       this.setTouchMode(cc.TOUCH_ONE_BY_ONE);
     }
 
     return true;
+  },
+
+  getLayer: function() {
+    throw new Error("missing implementation.");
+  },
+
+  removeItem: function(n,c) {
+    this.getLayer().removeChild(n,c || true);
+  },
+
+  addItem: function(n) {
+    this.getLayer().addChild(n, this.lastZix, ++this.lastTag);
   },
 
   init: function() {
