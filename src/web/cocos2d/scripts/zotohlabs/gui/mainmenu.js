@@ -27,9 +27,9 @@ asterix.XMenuBackLayer = asterix.XLayer.extend({
     cw= ccsx.center(),
     title = cc.LabelBMFont.create( sh.l10n('%mmenu'), sh.xcfg.getFontPath('font.JellyBelly'));
 
-    title.setPosition(cw.x, wz.height - csts.TILE * 8 / 2);
-    title.setScale(24/72);
     title.setOpacity(0.9*255);
+    title.setScale(0.6);
+    title.setPosition(cw.x, wz.height - csts.TILE * 8 / 2);
 
     this.addItem(map);
     this.addItem(title);

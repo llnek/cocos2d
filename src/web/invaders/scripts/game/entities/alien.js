@@ -76,9 +76,10 @@ asterix.Invaders.EntityAlien = asterix.XEntity.extends({
   injured: function(num, from) {
     // only a missile can hhurt this guy!
     if (from instanceof ivs.EntityMissile) {
+      var pos= this.sprite.getPosition();
       this.sprite.setVisible(false);
       this.status= false;
-      sh.fireEvent('/game/objects/aliens/killed');
+      sh.fireEvent('/game/objects/aliens/killed', {x: pos.x, y: pos.y});
       sh.fireEvent('/game/objects/players/earnscore', { score: this.value });
     }
   },

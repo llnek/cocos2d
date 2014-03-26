@@ -52,7 +52,7 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
       'game_quit' : 'media/cocos2d/sfx/Death',
       'ship-missile' : 'media/{{appid}}/sfx/missile',
       'bugs-march' : 'media/{{appid}}/sfx/march',
-      'ship-explode' : 'media/{{appid}}/sfx/explode'
+      'xxx-explode' : 'media/{{appid}}/sfx/explode'
     },
     fonts: {
     }

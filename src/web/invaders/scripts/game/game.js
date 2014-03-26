@@ -265,7 +265,7 @@ var GameLayer = asterix.XGameLayer.extend({
     if (echt(b) && b.status) {
       ok = this.testDirX(b, stepx) ? this.doShuffle(stepx) : this.doForward(stepx);
       if (ok) {
-        sh.xcfg.sfxPlay('');
+        sh.xcfg.sfxPlay('bugs-march');
       }
     }
   },
@@ -399,12 +399,13 @@ var GameLayer = asterix.XGameLayer.extend({
       this.addItem(ent.create());
     }
     sh.pools['live-missiles'][ent.OID] = ent;
-    sh.xcfg.sfxPlay('');
+    sh.xcfg.sfxPlay('ship-missile');
   },
 
   onAlienKilled: function(msg) {
-    // explosion?
-    sh.xcfg.sfxPlay('');
+    var obj= new ivs.EntityExplode(msg.x, msg.y, msg);
+    this.addItem(obj.create());
+    sh.xcfg.sfxPlay('xxx-explode');
   },
 
   onBombKilled: function(msg) {
@@ -417,6 +418,7 @@ var GameLayer = asterix.XGameLayer.extend({
     if (msg.explode === true) {
       obj= new ivs.EntityExplode(msg.x, msg.y, msg);
       this.addItem(obj.create());
+      sh.xcfg.sfxPlay('xxx-explode');
     }
   },
 
@@ -429,6 +431,7 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   onPlayerKilled: function(msg) {
+    sh.xcfg.sfxPlay('xxx-explode');
     if ( this.getHUD().reduceLives(1)) {
       this.onDone();
     } else {
