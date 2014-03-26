@@ -43,9 +43,7 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
 
     s1= cc.LabelBMFont.create( sh.l10n('%2players'), sh.xcfg.getFontPath('font.OogieBoogie'));
     t1= cc.MenuItemLabel.create(s1,function() {
-      dir.replaceScene( asterix.Invaders.Factory.create({
-        mode: 2
-      }) );
+      sh.fireEvent('/mmenu/controls/newgame', { mode: 2});
     }, this);
     t1.setOpacity(255 * 0.9);
     t1.setScale(0.5);
@@ -57,9 +55,7 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
 
     s1= cc.LabelBMFont.create(sh.l10n('%1player'), sh.xcfg.getFontPath('font.OogieBoogie'));
     t1= cc.MenuItemLabel.create(s1,function() {
-      dir.replaceScene( asterix.Invaders.Factory.create({
-        mode: 1
-      }) );
+      sh.fireEvent('/mmenu/controls/newgame', { mode: 1});
     }, this);
     t1.setOpacity(255 * 0.9);
     t1.setScale(0.5);
@@ -82,7 +78,13 @@ sh.protos['MainMenu'] = {
     var fac = new asterix.XSceneFactory({
       layers: [ asterix.XMenuBackLayer, MainMenuLayer ]
     });
-    return fac.create(options);
+    var scene =  fac.create(options);
+    if (scene) {
+      scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
+        cc.Director.getInstance().replaceScene( asterix.Invaders.Factory.create(msg));
+      });
+    }
+    return scene;
   }
 
 };

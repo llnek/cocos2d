@@ -31,7 +31,7 @@ function negamax(board, game, maxDepth, depth, alpha, beta) {
   rc,
   n,
   move,
-  bestMove = openMoves[0],
+  bestMove = openMoves[0];
 
   if (depth === maxDepth) {
     game.lastBestMove = openMoves[0];   // this will change overtime, most likely

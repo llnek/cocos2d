@@ -19,7 +19,8 @@ loggr = global.ZotohLabs.logger;
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
+//asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
+asterix.XConfig = {
 
   urlPrefix: '/public/ig/',
   appid: '',
@@ -61,8 +62,6 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
   },
 
   setGameSize: function(sz) {
-    this.screenHeight = this.VisibleRect.rect().height;
-    this.screenWidth = this.VisibleRect.rect().width;
     if (_.isString(sz)) {
       this.game.size = this.devices[sz];
     }
@@ -198,9 +197,10 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
   },
 
   sfxPlay: function(key) {
-    var eng = cc.AudioEngine.getInstance();
+    var eng = cc.AudioEngine.getInstance(),
+    url;
     if (this.sound.open) {
-      var url = this.getSfxPath(key);
+      url = this.getSfxPath(key);
       if (url) {
         eng.playEffect( url, false);
       }
@@ -210,7 +210,7 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
   sfxInit: function() {
     var eng= cc.AudioEngine.getInstance();
     eng.setMusicVolume(this.sound.volume);
-    if (!cc.AudioEngine.getInstance()._soundSupported) {
+    if (!eng._soundSupported) {
       this.sound.open=false;
     }
   },
@@ -247,7 +247,7 @@ asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
     };
   }
 
-});
+};
 
 global.ZotohLabs.klass.merge(asterix.XConfig.game, global.document.ccConfig);
 

@@ -25,27 +25,17 @@ var UILayer = asterix.XLayer.extend({
     btn = cc.Sprite.create(imgUrl),
     cw = ccsx.center(),
     wz = ccsx.screen(),
-    mi= cc.MenuItemSprite.create(btn, null, null, this.pkPlay, this),
+    mi= cc.MenuItemSprite.create(btn, null, null, function() {
+      sh.fireEvent('/splash/controls/playgame');
+    }, this),
     menu = cc.Menu.create(mi);
-
-    this._super();
 
     menu.alignItemsVerticallyWithPadding(10);
     menu.setPosition(cw.x, 56);
     this.addItem(menu);
 
-    return true;
-  },
-
-  pkPlay: function() {
-    var dir= cc.Director.getInstance(),
-    ss= sh.protos['StartScreen'],
-    mm= sh.protos['MainMenu'];
-    dir.replaceScene( mm.create({
-      onBack: function() { dir.replaceScene( ss.create() ); }
-    }));
+    return this._super();
   }
-
 
 });
 
@@ -54,7 +44,18 @@ sh.protos['StartScreen'] = {
     var fac = new asterix.XSceneFactory({
       layers: [ asterix.XSplashLayer, UILayer ]
     });
-    return fac.create(options);
+    var scene = fac.create(options);
+    if (scene) {
+      scene.ebus.on('/splash/controls/playgame', function() {
+          var dir= cc.Director.getInstance(),
+          ss= sh.protos['StartScreen'],
+          mm= sh.protos['MainMenu'];
+          dir.replaceScene( mm.create({
+            onBack: function() { dir.replaceScene( ss.create() ); }
+          }));
+      });
+    }
+    return scene;
   }
 };
 

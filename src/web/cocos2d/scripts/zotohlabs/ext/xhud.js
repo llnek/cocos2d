@@ -11,6 +11,7 @@
 
 (function(undef) { "use stricts"; var global = this, _ = global._ ,
 asterix= global.ZotohLabs.Asterix,
+ccsx= asterix.COCOS2DX,
 sh = asterix.Shell,
 loggr= global.ZotohLabs.logger;
 
@@ -32,6 +33,10 @@ asterix.XGameHUDLayer = asterix.XLayer.extend({
   lives: null,
   score: 0,
   replayBtn: null,
+
+  getScore: function() {
+    return this.score;
+  },
 
   reset: function() {
     this.disableReplay();
@@ -68,7 +73,7 @@ asterix.XGameHUDLayer = asterix.XLayer.extend({
 
     s1 = cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.menu'));
     t1 = cc.MenuItemSprite.create(s1, null, null, function() {
-      this.goMenu();
+      sh.fireEvent('/game/hud/controls/showmenu');
     }, this);
     if (scale !== 1) {
       t1.setScale(scale);
@@ -77,11 +82,11 @@ asterix.XGameHUDLayer = asterix.XLayer.extend({
     menu.setPosition(wz.width - csts.TILE - csts.S_OFF -
       ccsx.getScaledWidth(t1) / 2,
       csts.TILE + csts.S_OFF + ccsx.getScaledHeight(t1) / 2);
-    this.addItem(menu);
+    this.addChild(menu, this.lastZix, ++this.lastTag);
 
     s2= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.replay'));
     t2 = cc.MenuItemSprite.create(s2, null, null, function() {
-      sh.main.replay();
+      sh.fireEvent('/game/hud/controls/replay');
     }, this);
     if (scale !== 1) {
       t2.setScale(scale);
@@ -89,16 +94,7 @@ asterix.XGameHUDLayer = asterix.XLayer.extend({
     this.replayBtn= cc.Menu.create(t2);
     this.replayBtn.setPosition(cw.x, csts.TILE + csts.S_OFF + ccsx.getScaledHeight(t2) / 2);
     this.replayBtn.setVisible(false);
-    this.addItem(this.replayBtn);
-  },
-
-  goMenu: function() {
-    var dir= cc.Director.getInstance();
-    dir.pushScene( sh.protos['MainMenu'].create({
-      onBack: function() {
-        dir.popScene();
-      }
-    }));
+    this.addChild(this.replayBtn, this.lastZix, ++this.lastTag);
   }
 
 });

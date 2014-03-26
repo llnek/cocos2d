@@ -9,14 +9,15 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._ ;
+(function (undef) { "use strict"; var global= this, _ = global._ ,
+fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/,
+initing = false,
+ZEROS= "00000000000000000000000000000000";  //32
 
-var fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
-var ZEROS= "00000000000000000000000000000000";  //32
 function _echt (obj) {
   return typeof obj !== 'undefined' && obj !== null;
 };
-var initing = false;
+
 var ZotohLabs = {
 
   padstr: function(str, len, s) {
@@ -36,34 +37,13 @@ var ZotohLabs = {
   xmod: function(m, n) { return ((m % n) + n) % n; },
 
   makeArray: function(len, value) {
-    var arr=[];
-    for (var n=0; n < len; ++n) { arr.push(value); }
+    var n, arr=[];
+    for (n=0; n < len; ++n) { arr.push(value); }
     return arr;
   },
 
   klass: function() {},
   echt: _echt,
-
-  merge: function( original, extended ) {
-    for( var key in extended ) {
-      var ext = extended[key];
-      if(
-        typeof(ext) != 'object' ||
-        ext instanceof ZotohLabs.klass ||
-        ext instanceof HTMLElement ||
-        ext === null
-      ) {
-        original[key] = ext;
-      }
-      else {
-        if( !original[key] || typeof(original[key]) != 'object' ) {
-          original[key] = (ext instanceof Array) ? [] : {};
-        }
-        ZotohLabs.klass.merge( original[key], ext );
-      }
-    }
-    return original;
-  },
 
   prettyNumber: function (num, digits) {
     var len= Number(num).toString().length;
@@ -87,8 +67,8 @@ var inject = function(prop) {
   name,
   parent = {};
   for ( name in prop ) {
-    if ( typeof(prop[name]) == "function" &&
-         typeof(proto[name]) == "function" &&
+    if ( typeof(proto[name]) == "function" &&
+         typeof(prop[name]) == "function" &&
          fnTest.test(prop[name])) {
       parent[name] = proto[name]; // save original function
       proto[name] = (function(name, fn){
@@ -134,8 +114,8 @@ ZotohLabs.klass.extends = function (other) {
   var prototype = new this();
   initing = false;
   for (name in other ) {
-    if ( typeof(other[name]) === "function" &&
-         typeof(parent[name]) === "function" &&
+    if ( typeof(parent[name]) === "function" &&
+         typeof(other[name]) === "function" &&
          fnTest.test(other[name])) {
       prototype[name] = (function(name, fn){
         return function() {

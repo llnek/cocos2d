@@ -32,11 +32,12 @@ sh.pools['live-bombs'] = {};
 
 var BackLayer = asterix.XLayer.extend({
   pkInit: function() {
-    var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gamelevel1.tiles.arena')),
+    var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gamelevel1.tiles.arena'));
     this.addItem(map);
-    this.options.interaction=false;
     return this._super();
   },
+
+  pkInput: function() {},
 
   rtti: function() {
     return 'BackLayer';
@@ -52,6 +53,7 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
 
   initNode: function() {
     this.atlasBatch = cc.SpriteBatchNode.createWithTexture( cc.TextureCache.getInstance().addImage( sh.xcfg.getAtlasPath('game-pics')));
+    this.addChild(this.atlasBatch, this.lastZix, ++this.lastTag);
   },
 
   getNode: function() { return this.atlasBatch; },
@@ -67,11 +69,11 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
     this.scoreLabel.setPosition( wz.width - csts.TILE - csts.S_OFF,
       wz.height - csts.TILE - csts.S_OFF - ccsx.getScaledHeight(this.scoreLabel));
 
-    this.addItem(this.scoreLabel);
+    this.addChild(this.scoreLabel, this.lastZix, ++this.lastTag);
   },
 
   initLives: function() {
-    var csts = xh.xcfg.csts,
+    var csts = sh.xcfg.csts,
     wz = ccsx.screen();
 
     this.lives = new asterix.XHUDLives( this, csts.TILE + csts.S_OFF,
@@ -99,10 +101,6 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
 
 var GameLayer = asterix.XGameLayer.extend({
 
-  setSiblings: function(sibs) {
-    this.hud = sibs['HUD'];
-  },
-
   reset: function() {
     if (this.atlasBatch) { this.atlasBatch.removeAllChildren(); } else {
       var img = cc.TextureCache.getInstance().addImage( sh.xcfg.getAtlasPath('game-pics'));
@@ -118,7 +116,11 @@ var GameLayer = asterix.XGameLayer.extend({
     this.aliens = [];
     this.players=[];
     this.actor=null;
-    this.hud.reset();
+    this.getHUD().reset();
+  },
+
+  getHUD: function() {
+    return cc.Director.getInstance().getRunningScene().layers['HUD'];
   },
 
   initAlienSize: function() {
@@ -164,71 +166,6 @@ var GameLayer = asterix.XGameLayer.extend({
     this.actor=aa;
   },
 
-  killPlayer: function() {
-    this.removeItem(this.actor.sprite);
-    if ( this.hud.reduceLives(1)) {
-      this.onDone();
-    } else {
-      this.spawnPlayer();
-    }
-  },
-
-  killMissile: function(m) {
-    var obj = sh.pools['live-missiles'],
-    tag= m.sprite.getTag();
-    delete obj[tag];
-    sh.pools['missiles'].add(m);
-  },
-
-  killBomb: function(b) {
-    var obj = sh.pools['live-bombs'],
-    tag= b.sprite.getTag();
-    delete obj[tag];
-    sh.pools['bombs'].add(b);
-  },
-
-  killExplosion: function(e) {
-    this.removeItem(e.sprite);
-    e.sprite=null;
-  },
-
-  addExplosion: function(x,y, options) {
-    var aa= new ivs.EntityExplode(x,y, options);
-    this.addItem(aa.create());
-  },
-
-  addMissile: function(x,y,options) {
-    var aa = new ivs.EntityMissile(x,y, options);
-    this.addItem(aa.create());
-    sh.pools['live-missiles'][aa.OID] = aa;
-  },
-
-  addBomb: function(x,y,options) {
-    var aa= new ivs.EntityBomb(x, y, options);
-    this.addItem(aa.create());
-    sh.pools['live-bombs'][aa.OID] = aa;
-  },
-
-  reviveMissile: function(x,y,options) {
-    var tag = -1, ent = sh.pools['missiles'].get();
-    if (ent) {
-      ent.revive(x,y,options);
-      tag= ent.OID;
-      sh.pools['live-missiles'][tag] = ent;
-    }
-    return tag > 0;
-  },
-
-  reviveBomb: function(x,y,options) {
-    var tag = -1, ent = sh.pools['bombs'].get();
-    if (ent) {
-      ent.revive(x,y,options);
-      tag= ent.OID;
-      sh.pools['live-bombs'][tag] = ent;
-    }
-    return tag > 0;
-  },
-
   initMotionTimers: function() {
     _.each(this.aliens, function(z) { z.status = true; });
     this.stepX = this.alienSize.width / 3;
@@ -260,8 +197,8 @@ var GameLayer = asterix.XGameLayer.extend({
     this.checkMissilesAliens(dt);
     // 3. ship ok?
     this.checkShipBombs(dt);
-    // 4. overrun by aliens ?
-    //this.checkShipAliens(dt);
+    // 4. overruned by aliens ?
+    this.checkShipAliens(dt);
   },
 
   checkMissilesAliens: function(dt) {
@@ -274,6 +211,23 @@ var GameLayer = asterix.XGameLayer.extend({
         if (ass[n].status !== true) { continue; }
         if (ccsx.collide(m, ass[n])) {
           m.check(ass[n]);
+          break;
+        }
+      }
+    });
+  },
+
+  checkMissilesBombs: function(dt) {
+    var mss = sh.pools['live-missiles'],
+    bbs = sh.pools['live-bombs'],
+    k, a,m,b;
+    _.each(_.keys(bbs), function(z) {
+      a= _.keys(mss);
+      b= bbs[z];
+      for (k = 0; k < a.length; ++k) {
+        m = mss[ a[k] ];
+        if ( ccsx.collide(m, b)) {
+          m.check(b);
           break;
         }
       }
@@ -293,21 +247,17 @@ var GameLayer = asterix.XGameLayer.extend({
     }
   },
 
-  checkMissilesBombs: function(dt) {
-    var mss = sh.pools['live-missiles'],
-    bbs = sh.pools['live-bombs'],
-    k, a,m,b;
-    _.each(_.keys(bbs), function(z) {
-      a= _.keys(mss);
-      b= bbs[z];
-      for (k = 0; k < a.length; ++k) {
-        m = mss[ a[k] ];
-        if ( ccsx.collide(b,m)) {
-          b.check(m);
-          break;
-        }
+  checkShipAliens: function(dt) {
+    var ass= this.aliens,
+    p= this.actor,
+    n;
+    for (n=0; n < ass.length; ++n) {
+      if (ass[n].status !== true) { continue; }
+      if (ccsx.collide(p, ass[n])) {
+        p.check(ass[n]);
+        break;
       }
-    });
+    }
   },
 
   maybeShuffle: function(stepx) {
@@ -315,7 +265,7 @@ var GameLayer = asterix.XGameLayer.extend({
     if (echt(b) && b.status) {
       ok = this.testDirX(b, stepx) ? this.doShuffle(stepx) : this.doForward(stepx);
       if (ok) {
-        this.onAlienMarch();
+        sh.xcfg.sfxPlay('');
       }
     }
   },
@@ -398,16 +348,6 @@ var GameLayer = asterix.XGameLayer.extend({
     return this.players.length > 0;
   },
 
-  onDone: function() {
-    sh.pools['live-missiles'] = {};
-    sh.pools['live-bombs'] = {};
-    this.motion=null;
-    this.bombs=null;
-    this.actor=null;
-    this.players=[];
-    this.hud.enableReplay();
-  },
-
   spawnPlayer: function() {
     var csts= sh.xcfg.csts,
     y =  5 * csts.TILE + this.shipSize.height,
@@ -421,8 +361,6 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   replay: function() {
-    sh.pools['missiles'].drain();
-    sh.pools['bombs'].drain();
     this.play();
   },
 
@@ -432,26 +370,127 @@ var GameLayer = asterix.XGameLayer.extend({
     this.initMotionTimers();
   },
 
-  onAlienKilled: function(num) {
-    this.hud.updateScore(num);
-    sh.xcfg.sfxPlay('');
-  },
-
   newGame: function(mode) {
     sh.xcfg.sfxPlay('start_game');
     this.setGameMode(mode);
     this.play();
-    return true;
+  },
+
+  dropBombs: function(msg) {
+    var ent = sh.pools['bombs'].get(),
+    tag;
+    if (ent) {
+      ent.revive(msg.x, msg.y, msg);
+      tag= ent.OID;
+    } else {
+      ent= new ivs.EntityBomb(msg.x, msg.y, msg);
+      this.addItem(ent.create());
+      tag= ent.OID;
+    }
+    sh.pools['live-bombs'][tag] = ent;
+  },
+
+  fireMissiles: function(msg) {
+    var ent = sh.pools['missiles'].get();
+    if (ent) {
+      ent.revive(msg.x, msg.y, msg);
+    } else {
+      ent = new ivs.EntityMissile(msg.x, msg.y, msg);
+      this.addItem(ent.create());
+    }
+    sh.pools['live-missiles'][ent.OID] = ent;
+    sh.xcfg.sfxPlay('');
+  },
+
+  onAlienKilled: function(msg) {
+    // explosion?
+    sh.xcfg.sfxPlay('');
+  },
+
+  onBombKilled: function(msg) {
+    var obj = sh.pools['live-bombs'],
+    b= msg.entity,
+    tag= b.sprite.getTag();
+    delete obj[tag];
+    sh.pools['bombs'].add(b);
+    // explosion?
+    if (msg.explode === true) {
+      obj= new ivs.EntityExplode(msg.x, msg.y, msg);
+      this.addItem(obj.create());
+    }
+  },
+
+  onMissileKilled: function(msg) {
+    var obj = sh.pools['live-missiles'],
+    m= msg.entity,
+    tag= m.sprite.getTag();
+    delete obj[tag];
+    sh.pools['missiles'].add(m);
+  },
+
+  onPlayerKilled: function(msg) {
+    if ( this.getHUD().reduceLives(1)) {
+      this.onDone();
+    } else {
+      this.spawnPlayer();
+    }
+  },
+
+  onShowMenu: function() {
+    var dir= cc.Director.getInstance();
+    dir.pushScene( sh.protos['MainMenu'].create({
+      onBack: function() {
+        dir.popScene();
+      }
+    }));
+  },
+
+  onEarnScore: function(msg) {
+    this.getHUD().updateScore( msg.score);
+  },
+
+  onDone: function() {
+    this.reset();
+    this.getHUD().enableReplay();
   }
+
 
 });
 
 asterix.Invaders.Factory = {
   create: function(options) {
-    var fac = new asterix.XSceneFactory({
-      layers: [ BackLayer, GameLayer, HUDLayer ]
+    var fac = new asterix.XSceneFactory({ layers: [ BackLayer, GameLayer, HUDLayer ] });
+    var scene= fac.create(options);
+    if (!scene) { return null; }
+    scene.ebus.on('/game/objects/aliens/dropbombs', function(topic, msg) {
+      sh.main.dropBombs(msg);
     });
-    return fac.create(options);
+    scene.ebus.on('/game/objects/players/shoot', function(topic, msg) {
+      sh.main.fireMissiles(msg);
+    });
+    scene.ebus.on('/game/objects/aliens/killed', function(topic, msg) {
+      sh.main.onAlienKilled(msg);
+    });
+    scene.ebus.on('/game/objects/bombs/killed', function(topic, msg) {
+      sh.main.onBombKilled(msg);
+    });
+    scene.ebus.on('/game/objects/missiles/killed', function(topic, msg) {
+      sh.main.onMissileKilled(msg);
+    });
+    scene.ebus.on('/game/objects/players/killed', function(topic, msg) {
+      sh.main.onPlayerKilled(msg);
+    });
+    scene.ebus.on('/game/objects/players/earnscore', function(topic, msg) {
+      sh.main.onEarnScore(msg);
+    });
+    scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
+      sh.main.onShowMenu();
+    });
+    scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
+      sh.main.replay();
+    });
+
+    return scene;
   }
 }
 

@@ -47,11 +47,11 @@ asterix.XGameLayer = asterix.XLayer.extend({
       switch (this.options.mode) {
 
         case 2:
-          rc= this.newGame(2);
+          this.newGame(2);
         break;
 
         case 1:
-          rc= this.newGame(1);
+          this.newGame(1);
         break;
 
         default:
@@ -67,9 +67,11 @@ asterix.XGameLayer = asterix.XLayer.extend({
     return rc;
   },
 
-  updateEntities: function(dt) {},
+  updateEntities: function(dt) {
+  },
 
-  checkEntities: function(dt) {},
+  checkEntities: function(dt) {
+  },
 
   operational: function() {
     return true;

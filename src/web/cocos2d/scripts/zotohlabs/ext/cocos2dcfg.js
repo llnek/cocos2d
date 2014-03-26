@@ -9,60 +9,63 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global= this; var _ = global._;
+(function(undef) { "use strict"; var global= this,  _ = global._ ,
+doc= global.document,
+cfg= {
 
-var doc= global.document;
-var cfg= {
+  loadExtension: false,
+  chipmunk: true,
+  box2d: false,
+  showFPS: false,
+  frameRate: 60,
 
-    loadExtension: false,
-    chipmunk: true,
-    box2d: false,
-    showFPS: false,
-    frameRate: 60,
-    // 0(default), 1(Canvas only), 2(WebGL only)
-    renderMode: 0,
-    tag: 'gameCanvas',
+  // 0(default), 1(Canvas only), 2(WebGL only)
+  renderMode: 0,
 
-    appFiles: [
-      'plugins/deps.js',
-      'zotohlabs/ext/basefuncs.js',
-      'zotohlabs/ext/asterix.js',
-      'zotohlabs/ext/cs2dx.js',
-      'zotohlabs/ext/xcfgbase.js',
-      'zotohlabs/ext/xcfg.js'
-    ],
+  tag: 'gameCanvas',
 
-    initAppFiles: function(appid,files) {
-      var me=this; files = files || [];
-      if (files.length === 0) {
-        // for release mode.
-        this.appFiles=[];
-        this.engineDir='';
-      } else {
-        this.appFiles.push('game/' + appid + '/config.js');
-        this.appFiles.push('game/' + appid + '/i18n/game_en_US.js');
-        this.appFiles.push('zotohlabs/ext/xscene.js');
-        this.appFiles.push('zotohlabs/ext/xlayer.js');
-        this.appFiles.push('zotohlabs/ext/xentity.js');
-        this.appFiles.push('zotohlabs/ext/xlives.js');
-        this.appFiles.push('zotohlabs/ext/xigg.js');
-        this.appFiles.push('zotohlabs/ext/xloader.js');
-        this.appFiles.push('zotohlabs/gui/startscreen.js');
-        this.appFiles.push('zotohlabs/gui/ynbox.js');
-        this.appFiles.push('zotohlabs/gui/mainmenu.js');
-        _.each(files,function(f) { me.appFiles.push(f); });
-        this.appFiles.push('zotohlabs/ext/application.js');
-      }
-    },
+  appFiles: [
+    'plugins/deps.js',
+    'zotohlabs/ext/basefuncs.js',
+    'zotohlabs/ext/asterix.js',
+    'zotohlabs/ext/bus.js',
+    'zotohlabs/ext/cs2dx.js',
+    'zotohlabs/ext/xcfgbase.js',
+    'zotohlabs/ext/xcfg.js'
+  ],
 
-    //0 to turn debug off, 1 for basic debug, and 2 for full debug
-    debugLevel: 2,
-    debug: true,
+  initAppFiles: function(appid,files) {
+    files = files || [];
+    if (files.length === 0) {
+      // for release mode.
+      this.appFiles=[];
+      this.engineDir='';
+    } else {
+      this.appFiles.push('game/' + appid + '/config.js');
+      this.appFiles.push('game/' + appid + '/i18n/game_en_US.js');
+      this.appFiles.push('zotohlabs/ext/xscene.js');
+      this.appFiles.push('zotohlabs/ext/xlayer.js');
+      this.appFiles.push('zotohlabs/ext/xentity.js');
+      this.appFiles.push('zotohlabs/ext/xlives.js');
+      this.appFiles.push('zotohlabs/ext/xhud.js');
+      this.appFiles.push('zotohlabs/ext/xigg.js');
+      this.appFiles.push('zotohlabs/ext/xloader.js');
+      this.appFiles.push('zotohlabs/gui/startscreen.js');
+      this.appFiles.push('zotohlabs/gui/ynbox.js');
+      this.appFiles.push('zotohlabs/gui/mainmenu.js');
+      _.each(files,function(f) { this.appFiles.push(f); }, this);
+      this.appFiles.push('zotohlabs/ext/application.js');
+    }
+  },
 
-    srcDir: '/public/ig/lib/',
-    engineDir: '/public/vendors/cocos2d_html5/cocos2d/'
+  //0 to turn debug off, 1 for basic debug, and 2 for full debug
+  debugLevel: 2,
+  debug: true,
+
+  srcDir: '/public/ig/lib/',
+  engineDir: '/public/vendors/cocos2d_html5/cocos2d/'
+
 };
-
 
 if ( ! doc.createElement('canvas').getContext) {
   var s = doc.createElement('div');

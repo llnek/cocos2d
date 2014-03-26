@@ -47,9 +47,7 @@ var Alien = cc.Sprite.extend({
 
 asterix.Invaders.EntityAlien = asterix.XEntity.extends({
 
-  loadBomb: function() {
-    this.bombCount = 1;
-  },
+  loadBomb: function() { this.bombCount = 1; },
 
   bombCount: 0,
 
@@ -65,38 +63,29 @@ asterix.Invaders.EntityAlien = asterix.XEntity.extends({
 
   update: function(dt) {
     if (this.bombCount > 0) {
-      var pos = this.sprite.getPosition(),
-      x= pos.x,
-      y= pos.y - 4;
-      if ( ! sh.main.reviveBomb(x, y)) {
-        sh.main.addBomb(x, y);
-      }
+      var pos = this.sprite.getPosition();
+      sh.fireEvent('/game/objects/aliens/dropbombs', { x: pos.x, y: pos.y - 4 });
       this.bombCount = 0;
     }
   },
 
   check: function(other) {
-    if (other instanceof ivs.EntityMissile) {
-      this.takeHit();
-    }
-    else
-    if (other instanceof ivs.EntityPlayer) {
-      other.takeHit();
-    }
+    throw new Error("not implemented.");
   },
 
-  takeHit: function() {
-    sh.main.onAlienKilled(this.score);
-    this.sprite.setVisible(false);
-    this.status= false;
+  injured: function(num, from) {
+    // only a missile can hhurt this guy!
+    if (from instanceof ivs.EntityMissile) {
+      this.sprite.setVisible(false);
+      this.status= false;
+      sh.fireEvent('/game/objects/aliens/killed');
+      sh.fireEvent('/game/objects/players/earnscore', { score: this.value });
+    }
   },
 
   create: function() {
     return this.sprite = new Alien(this.startPos.x, this.startPos.y, this.options);
   },
-
-  friction: {},
-  maxVel: {},
 
   ctor: function(x, y, options) {
     this._super(x, y, options);
@@ -108,20 +97,18 @@ asterix.Invaders.EntityAlien = asterix.XEntity.extends({
     */
     if (this.options.rank < 3) {
       this.options.frames = [ 'blue_bug_1.png', 'blue_bug_0.png' ];
-      this.score=100;
+      this.value=100;
     }
     else
     if (this.options.rank < 5) {
       this.options.frames = [ 'green_bug_1.png', 'green_bug_0.png' ];
-      this.score= 50;
+      this.value= 50;
     }
     else {
       this.options.frames = [ 'purple_bug_0.png', 'purple_bug_1.png' ];
-      this.score= 30;
+      this.value= 30;
     }
   }
-
-
 
 });
 

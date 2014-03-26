@@ -9,14 +9,17 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this; var _ = global._ ;
+(function(undef) { "use strict"; var global = this, _ = global._ ,
+asterix = global.ZotohLabs.Asterix,
+ccsx = asterix.COCOS2DX,
+ivs = asterix.Invaders,
+sh = asterix.Shell,
+echt = global.ZotohLabs.echt,
+loggr = global.ZotohLabs.logger;
 
-var asterix = global.ZotohLabs.Asterix;
-var ccsx = asterix.COCOS2DX;
-var ivs = asterix.Invaders;
-var sh = asterix.Shell;
-var loggr = global.ZotohLabs.logger;
-var echt = global.ZotohLabs.echt;
+//////////////////////////////////////////////////////////////////////////////
+// module def
+//////////////////////////////////////////////////////////////////////////////
 
 var Ship = cc.Sprite.extend({
 
@@ -40,8 +43,6 @@ var Ship = cc.Sprite.extend({
     this.options= options;
     this._super();
     this.loadAmmo();
-    //this.setZOrder(this.options.zIndex);
-    //this.setTag(this.options.tag);
     this.setPosition(x,y);
   }
 
@@ -52,14 +53,12 @@ asterix.Invaders.EntityPlayer = asterix.XEntity.extends({
   speed: 150,
 
   create: function() {
-    this.sprite = new Ship(this.options._startPos.x, this.options._startPos.y, this.options);
-    return this.sprite;
+    return this.sprite = new Ship(this.startPos.x, this.startPos.y, this.options);
   },
 
   update: function(dt) {
     if (this.sprite) {
-      if (this.coolAmmo && this.coolAmmo.isDone()) {
-        this.coolAmmo= null;
+      if (ccsx.timerDone(this.coolAmmo)) {
         this.sprite.loadAmmo();
       }
       this._super(dt);
@@ -79,35 +78,32 @@ asterix.Invaders.EntityPlayer = asterix.XEntity.extends({
   },
 
   doFire: function() {
-    var pos= this.sprite.getPosition();
-    loggr.debug("player about to fire another missile! pos = [" + pos.x + "," + pos.y + "]");
-    if ( ! sh.main.reviveMissile(pos.x, pos.y + 4)) {
-      sh.main.addMissile(pos.x, pos.y + 4);
-    }
-    //ig.game.onPlayerFire();
+    var pos = this.sprite.getPosition();
+    sh.fireEvent('/game/objects/players/shoot', { x: pos.x , y: pos.y + 4 });
     this.sprite.coolDown();
-    this.coolAmmo = this.sprite.runAction(cc.DelayTime.create(this.options.coolDown));
+    this.coolAmmo = ccsx.createTimer(this.sprite, this.options.coolDown);
   },
 
   onRight: function(dt) {
-    var pos= this.sprite.getPosition();
-    var x = pos.x + dt * this.speed;
+    var pos= this.sprite.getPosition(),
+    x = pos.x + dt * this.speed;
     this.sprite.setPosition(x, pos.y);
     this.clamp();
   },
 
   onLeft: function(dt) {
-    var pos= this.sprite.getPosition();
-    var x = pos.x - dt * this.speed;
+    var pos= this.sprite.getPosition(),
+    x = pos.x - dt * this.speed;
     this.sprite.setPosition(x, pos.y);
     this.clamp();
   },
 
   clamp: function() {
-    var sz= this.sprite.getContentSize();
-    var csts = sh.xcfg.csts;
-    var pos= this.sprite.getPosition();
-    var wz = ccsx.screen();
+    var sz= this.sprite.getContentSize(),
+    pos= this.sprite.getPosition(),
+    csts = sh.xcfg.csts,
+    wz = ccsx.screen();
+
     if (ccsx.getRight(this.sprite) > wz.width - csts.TILE) {
       this.sprite.setPosition(wz.width - csts.TILE - sz.width/2, pos.y);
     }
@@ -116,38 +112,24 @@ asterix.Invaders.EntityPlayer = asterix.XEntity.extends({
     }
   },
 
-  takeWin: function(num) {
-    sh.main.updateScore(num);
-  },
-
   check: function(other) {
-    if (other instanceof ivs.EntityAlien) {
-      //other.takeHit(666,this);
-      this.takeHit(666,other);
-    }
-    else
-    if (other instanceof ivs.EntityBomb) {
-      other.kill();
-      this.takeHit(other);
-    }
+    other.injured(0,this);
+    this.injured(0,other);
   },
 
-  takeHit: function() {
-    this.kill();
-  },
-
-  kill: function() {
-    sh.main.killPlayer();
+  injured: function(num, from) {
+    this.dispose();
+    sh.fireEvent('/game/objects/players/killed');
   },
 
   ctor: function(x, y, options) {
     this._super(x, y, options);
+    /*
     this.maxVel.y = 200;
     this.maxVelx = 100;
     this.friction.x = 150;
     this.friction.y = 0;
-    this.score=0;
-    //this.coolAmmo = this.runAction(cc.DelayTime.create(this.options.coolDown));
+    */
     this.options.frames= [ 'ship_0.png', 'ship_1.png' ];
   }
 

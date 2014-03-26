@@ -20,11 +20,11 @@ loggr= global.ZotohLabs.logger;
 //////////////////////////////////////////////////////////////////////////////
 
 var Subcr= klass.extends({
-  ctor: function(topic, callback, context, repeat, args) {
+  ctor: function(topic, selector, target, repeat, args) {
     this.id= "sub-" + Number(++_SEED);
     this.args= args || [];
-    this.context= context
-    this.action= callback;
+    this.target= target
+    this.action= selector;
     this.topic= topic
     this.repeat= repeat;
     this.active=true;
@@ -40,32 +40,31 @@ var TNode= klass.extends({
 
 var EventBus = klass.extends({
 
-  once: function(topic, callback, context /*, more args */) {
+  once: function(topic, selector, target /*, more args */) {
     var rc= this.pkListen(false,
-                         topic,
-                         callback,
-                         context,
-                         (arguments.length > 3) ? Array.prototype.slice(arguments,3) : [] );
-
+                          topic,
+                          selector,
+                          target,
+                          (arguments.length > 3) ? Array.prototype.slice(arguments,3) : [] );
     return echt(rc) ? rc.id : null;
   },
 
-  on: function(topic, callback, context /*, more args */) {
+  on: function(topic, selector, target /*, more args */) {
     var rc= this.pkListen(true,
-                         topic,
-                         callback,
-                         context,
-                         (arguments.length > 3) ? Array.prototype.slice(arguments,3) : [] );
+                          topic,
+                          selector,
+                          target,
+                          (arguments.length > 3) ? Array.prototype.slice(arguments,3) : [] );
     return echt(rc) ? rc.id : null;
   },
 
   fire: function(topic, msg) {
-    var me=this, tokens= topic.split('/');
-    var status= [ false ];
+    var tokens= topic.split('/'),
+    status= [ false ];
 
-    me.pkDoPub(status, topic, me.rootNode, tokens, 0, msg || {} );
+    this.pkDoPub(status, topic, this.rootNode, tokens, 0, msg || {} );
     if (status[0] === true) {
-      ++me.msgCount;
+      ++this.msgCount;
     }
 
     return status[0];
@@ -88,8 +87,7 @@ var EventBus = klass.extends({
   off: function(handle) {
     var sub= this.allSubs[ handle ];
     if (sub) {
-      var tokens= sub.topic.split('/');
-      this.pkUnSub(this.rootNode, tokens, 0, sub);
+      this.pkUnSub(this.rootNode, sub.topic.split('/'), 0, sub);
     }
   },
 
@@ -97,12 +95,11 @@ var EventBus = klass.extends({
     return this.allSubs[ id];
   },
 
-  pkListen: function(repeat, topic, callback, context, more) {
-    var ts= topic.trim().split(/\s+/);
-    var me=this;
-    var rc= _.map(ts, function(z) {
-      me.pkAddSub(repeat,z,callback,context,more);
-    });
+  pkListen: function(repeat, topic, selector, target, more) {
+    var ts= topic.trim().split(/\s+/),
+    rc= _.map(ts, function(z) {
+      this.pkAddSub(repeat,z,selector,target,more);
+    }, this);
     switch (ts.length) {
       case 1: return rc[0];
       case 0: return null;
@@ -110,12 +107,12 @@ var EventBus = klass.extends({
     }
   },
 
-  pkAddSub: function(repeat, topic, callback, context, more) {
-    var rc= new Subcr(topic, callback, context, repeat, more);
-    var me=this, tkns= topic.split('/');
-    var node= _.reduce(tkns, function(memo, z) {
-      return me.pkDoSub(memo,z);
-    }, me.rootNode);
+  pkAddSub: function(repeat, topic, selector, target, more) {
+    var rc= new Subcr(topic, selector, target, repeat, more),
+    tkns= topic.split('/'),
+    node= _.reduce(tkns, function(memo, z) {
+      return this.pkDoSub(memo,z);
+    }, this.rootNode, this);
 
     this.allSubs[rc.id] = rc;
     node.subs.push(rc);
@@ -126,22 +123,21 @@ var EventBus = klass.extends({
   pkUnSub: function(node, tokens, pos, sub) {
     if (! echt(node)) { return; }
     if (pos < tokens.length) {
-      var k= tokens[pos];
-      var cn= node.parts[ k];
+      var k= tokens[pos],
+      cn= node.parts[k];
       this.pkUnSub(cn, tokens, pos+1, sub);
       if (_.isEmpty(cn.parts) && cn.subs.length === 0) {
-        delete node.parts[ k];
+        delete node.parts[k];
       }
     } else {
-      var me=this;
       _.find(node.subs, function(z,n) {
         if (z.id === sub.id) {
-          delete me.allSubs[z.id];
+          delete this.allSubs[z.id];
           node.subs.splice(n,1);
           return true;
         }
         return false;
-      });
+      }, this);
     }
   },
 
@@ -157,20 +153,20 @@ var EventBus = klass.extends({
   },
 
   pkRun: function(status, topic, node, msg) {
-    var cs= node ? node.subs : [];
-    var me=this, purge=false;
+    var cs= node ? node.subs : [],
+    purge=false;
     _.each(cs, function (z) {
       if (z.active && echt(z.action)) {
-        z.action.apply(z.context, [topic, msg].concat(z.args));
+        z.action.apply(z.target, [topic, msg].concat(z.args));
         if (!z.repeat) {
-          delete me.allSubs[z.id];
+          delete this.allSubs[z.id];
           z.active= false;
           z.action= null;
           purge=true;
         }
         status[0]= true;
       }
-    });
+    }, this);
     if (purge && cs.length > 0) {
       node.subs= _.filter(cs,function(z) {
         if (z.action) { return true; } else { return false; }

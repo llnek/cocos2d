@@ -110,7 +110,15 @@ global.ZotohLabs.Asterix = {
 
     pools: {},
 
-    xcfg: undef
+    xcfg: undef,
+
+    fireEvent: function(topic, msg) {
+      var r= cc.Director.getInstance().getRunningScene();
+      if (r) {
+        r.ebus.fire(topic,msg);
+      }
+    }
+
   },
 
   fns: new Funcs()

@@ -13,38 +13,69 @@
 asterix= global.ZotohLabs.Asterix,
 sh = asterix.Shell,
 klass= global.ZotohLabs.klass,
+echt= global.ZotohLabs.echt,
 loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-asterix.XSceneFactory = global.ZotohLabs.klass.extends({
+asterix.XScene = cc.Scene.extend({
 
-  createLayers: function(scene) {
-    var a = options.layers || [],
-    x=[],
-    w={},
-    rc,
-    obj;
-    _.each(a, function(proto) {
-      obj= new (proto)(options);
-      w[ obj.rtti() ] = obj;
-      x.push(obj);
-    });
-    _.each(x, function(z) {
-      z.setSiblings(w);
-    });
-    rc= _.some(x, function(z) {
-      return ! z.init();
-    });
-    return a.length > 0 && rc===false;
+  ebus: new global.ZotohLabs.EventBus(),
+  layers: {},
+
+  init: function() {
+    if ( this._super()) {
+      return this.createLayers();
+    } else {
+      return false;
+    }
   },
 
+  createLayers: function() {
+    var a = this.options.layers || [],
+    glptr = undef,
+    ok,
+    rc,
+    obj;
+    // look for failures, hold off init'ing game layer, leave that as last
+    rc = _.some(a, function(proto) {
+      obj= new (proto)(this.options);
+      if ( obj instanceof asterix.XGameLayer ) {
+        glptr = obj;
+        ok=true
+      } else {
+        ok= obj.init();
+      }
+      if (! ok) { return true; } else {
+        this.layers[ obj.rtti() ] = obj;
+        this.addChild(obj);
+        return false;
+      }
+    }, this);
+    if (a.length > 0 && rc===false ) {
+      return echt(glptr) ? glptr.init() : true;
+    } else {
+      return false;
+    }
+  },
+
+  ctor: function(options) {
+    this.options = options || {};
+    this._super();
+  }
+
+});
+
+asterix.XSceneFactory = klass.extends({
+
   create: function(options) {
-    this.options = klass.merge(this.options, options || {} );
-    var scene = cc.Scene.create();
-    return this.createLayers(scene) ? scene : null;
+    if (_.isObject(options)) {
+      this.options = klass.merge(this.options, options );
+    }
+    var scene = new asterix.XScene(this.options);
+    return scene.init() ? scene : null;
   },
 
   ctor: function(options) {

@@ -23,9 +23,10 @@ var BGLayer = asterix.XLayer.extend({
   pkInit: function() {
     var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gui.ynbox'));
     this.addItem(map);
-    this.options.interaction=false;
     return this._super();
-  }
+  },
+
+  pkInput: function() {}
 });
 
 var UILayer =  asterix.XLayer.extend({

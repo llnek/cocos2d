@@ -25,18 +25,16 @@ asterix.XSplashLayer = asterix.XLayer.extend({
     wz = ccsx.screen(),
     cw = ccsx.center();
 
-    this.options.interaction=false;
-    this._super();
-
     if (imgUrl) {
       var s= cc.Sprite.create( imgUrl);
       s.setPosition(cw);
       this.addItem(s);
     }
 
-    return true;
-  }
+    return this._super();
+  },
 
+  pkInput: function() {}
 
 });
 

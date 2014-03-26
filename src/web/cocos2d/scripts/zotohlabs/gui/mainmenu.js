@@ -34,10 +34,11 @@ asterix.XMenuBackLayer = asterix.XLayer.extend({
     this.addItem(map);
     this.addItem(title);
 
-    this.options.interaction=false;
-
     return this._super();
-  }
+  },
+
+  pkInput: function() {}
+
 });
 
 asterix.XMenuLayer= asterix.XLayer.extend({

@@ -24,24 +24,21 @@ asterix.XLayer = cc.Layer.extend({
   lastZix: 0,
 
   pkInit: function() {
-
-    if (this.options.iteraction === false) {} else {
-      if (_.has(sys.capabilities, 'keyboard')) {
-        this.setKeyboardEnabled(true);
-      }
-      if (_.has(sys.capabilities, 'mouse')) {
-        this.setMouseEnabled(true);
-      }
-      if (_.has(sys.capabilities, 'touches')) {
-        this.setTouchEnabled(true);
-        this.setTouchMode(cc.TOUCH_ONE_BY_ONE);
-      }
-    }
-
+    this.pkInput();
     return true;
   },
 
-  setSiblings: function(ss) {
+  pkInput: function() {
+    if (_.has(sys.capabilities, 'keyboard')) {
+      this.setKeyboardEnabled(true);
+    }
+    if (_.has(sys.capabilities, 'mouse')) {
+      this.setMouseEnabled(true);
+    }
+    if (_.has(sys.capabilities, 'touches')) {
+      this.setTouchEnabled(true);
+      this.setTouchMode(cc.TOUCH_ONE_BY_ONE);
+    }
   },
 
   rtti: function() {

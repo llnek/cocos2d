@@ -9,40 +9,34 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this; var _ = global._ ;
+(function(undef) { "use strict"; var global = this, _ = global._ ,
+asterix = global.ZotohLabs.Asterix,
+ccsx = asterix.COCOS2DX,
+ivs = asterix.Invaders,
+sh = asterix.Shell,
+echt= global.ZotohLabs.echt,
+loggr= global.ZotohLabs.logger;
 
-var asterix = global.ZotohLabs.Asterix;
-var ccsx = asterix.COCOS2DX;
-var ivs = asterix.Invaders;
-var sh = asterix.Shell;
-var loggr= global.ZotohLabs.logger;
-var echt= global.ZotohLabs.echt;
+//////////////////////////////////////////////////////////////////////////////
+// module def
+//////////////////////////////////////////////////////////////////////////////
 
 var Boom = cc.Sprite.extend({
 
   ctor: function(entity,x,y,options) {
-    this.options = options || {};
     this.entity=entity;
     this._super();
-    this.initWithSpriteFrameName(this.options.frames[0]);
-    //this.setZOrder(this.options.zIndex);
-    //this.setTag(this.options.tag);
+    this.initWithSpriteFrameName(options.frames[0]);
     this.setPosition(x,y);
 
-    var frame0 = cc.SpriteFrameCache.getInstance().getSpriteFrame(this.options.frames[0]);
-    var frame1 = cc.SpriteFrameCache.getInstance().getSpriteFrame(this.options.frames[1]);
-    var frame2 = cc.SpriteFrameCache.getInstance().getSpriteFrame(this.options.frames[2]);
-    var frame3 = cc.SpriteFrameCache.getInstance().getSpriteFrame(this.options.frames[3]);
-    var animFrames = [];
-    animFrames.push(frame0);
-    animFrames.push(frame1);
-    animFrames.push(frame2);
-    animFrames.push(frame3);
-    var animation = cc.Animation.create(animFrames, this.options.frameTime);
-    //this.runAction( cc.Sequence.create(cc.Animate.create(animation)));
+    var sfc = cc.SpriteFrameCache.getInstance(),
+    frs = [ sfc.getSpriteFrame(options.frames[0]), sfc.getSpriteFrame(options.frames[1]),
+            sfc.getSpriteFrame(options.frames[2]), sfc.getSpriteFrame(options.frames[3]) ],
+    animation = cc.Animation.create(frs, options.frameTime);
+
     this.runAction( cc.Sequence.create(cc.Animate.create(animation),
       cc.CallFunc.create(function() {
-        this.entity.kill();
+        this.entity.dispose();
       }, this)
     ));
   }
@@ -54,18 +48,13 @@ asterix.Invaders.EntityExplode = asterix.XEntity.extends({
   update: function(dt) {
   },
 
-  kill: function() {
-    sh.main.killExplosion(this);
-  },
-
   create: function() {
-    var pos = this.options._startPos;
-    this.sprite = new Boom(this,pos.x, pos.y, this.options);
-    return this.sprite;
+    return this.sprite = new Boom(this, this.startPos.x, this.startPos.y, this.options);
   },
 
   ctor: function(x, y, options) {
     this._super(x, y, options);
+    this.options.frameTime= 0.1;
     this.options.frames= ['boom_0.png','boom_1.png','boom_2.png','boom_3.png'];
   }
 

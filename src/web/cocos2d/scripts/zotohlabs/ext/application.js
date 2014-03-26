@@ -92,8 +92,8 @@ asterix.Cocos2dApp = cc.Application.extend({
   pvLoadLevels: function() {
     var rc=[],
     arr,
-    z,
-    me=this;
+    z;
+
     _.each(sh.xcfg.levels, function(v,k) {
       _.each(v, function(obj,n){
         rc = rc.concat( _.reduce(obj, function(memo, item, x) {
@@ -101,22 +101,22 @@ asterix.Cocos2dApp = cc.Application.extend({
           arr=undef;
           switch (n) {
             case 'sprites':
-              memo.push( me.pvLoadSprite( z,item));
+              memo.push( this.pvLoadSprite( z,item));
               sh.xcfg.assets.sprites[z] = item;
             break;
             case 'images':
-              memo.push( me.pvLoadImage( z, item));
+              memo.push( this.pvLoadImage( z, item));
               sh.xcfg.assets.images[z] = item;
             break;
             case 'tiles':
-              memo.push( me.pvLoadTile( z, item));
+              memo.push( this.pvLoadTile( z, item));
               sh.xcfg.assets.tiles[z] = item;
             break;
           }
           return memo;
-        },[]));
-      });
-    });
+        },[], this));
+      }, this);
+    }, this);
     return rc;
   },
 

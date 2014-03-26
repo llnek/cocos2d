@@ -11,6 +11,7 @@
 
 (function(undef){ "use strict"; var global= this,  _ = global._ ,
 asterix= global.ZotohLabs.Asterix,
+klass= global.ZotohLabs.klass,
 ccsx = asterix.COCOS2DX,
 sh= asterix.Shell,
 loggr = global.ZotohLabs.logger;
@@ -19,7 +20,7 @@ loggr = global.ZotohLabs.logger;
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-asterix.XEntity = global.ZotohLabs.klass.extends({
+asterix.XEntity = klass.extends({
 
   update: function(dt) {
     if (sys.platform === 'browser') {
@@ -27,24 +28,24 @@ asterix.XEntity = global.ZotohLabs.klass.extends({
     }
   },
 
-  keypressed: function(dt) {},
-
-  takeHit: function(damage,from) {
+  keypressed: function(dt) {
   },
 
-  takeWin: function(score) {
+  injured: function(damage,from) {
   },
 
   reviveSprite: function() {
     if (this.sprite) {
-      this.sprite.setPosition(this.options._startPos.x, this.options._startPos.y);
+      this.sprite.setPosition(this.startPos.x, this.startPos.y);
       this.sprite.setVisible(true);
     }
   },
 
   revive: function(x,y,options) {
-    if (options) { this.options = options; }
-    this.options._startPos = cc.p(x,y);
+    if (_.isObject(options)) {
+      this.options = klass.merge(this.options, options);
+    }
+    this.startPos = cc.p(x,y);
     this.reviveSprite();
   },
 
@@ -55,6 +56,10 @@ asterix.XEntity = global.ZotohLabs.klass.extends({
     }
   },
 
+  startPos: cc.p(0,0),
+  health: 0,
+  speed: 0,
+  value: 0,
   sprite: null,
 
   rtti: function() {
@@ -65,15 +70,16 @@ asterix.XEntity = global.ZotohLabs.klass.extends({
   maxVel: { x: 0, y: 0 },
   vel: { x: 0, y: 0 },
 
-  kill: function() {
+  dispose: function() {
     if (this.sprite) {
-      sh.main.removeChild(this.sprite,true);
+      this.sprite.getParent().removeChild(this.sprite,true);
+      this.sprite=null;
     }
-    this.sprite=null;
   },
 
   create: function() {
-    return this.sprite;
+    throw new Error("missing implementation.");
+    //return this.sprite;
   },
 
   ctor: function(x,y,options) {
@@ -101,7 +107,7 @@ Object.defineProperty(asterix.XEntity.prototype, "OID", {
 
 
 
-asterix.XEntityPool = global.ZotohLabs.klass.extends({
+asterix.XEntityPool = klass.extends({
 
   checkEntity: function(ent) {
     if (ent instanceof this.entType) {
@@ -143,9 +149,9 @@ asterix.XEntityPool = global.ZotohLabs.klass.extends({
   pool: [],
 
   ctor: function(options) {
-    options = options || {};
-    this.maxSize = options.maxSize || 1000;
-    this.entType= options.entityProto;
+    this.options = options || {};
+    this.maxSize = this.options.maxSize || 1000;
+    this.entType = this.options.entityProto;
   }
 
 });

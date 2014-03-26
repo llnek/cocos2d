@@ -11,6 +11,7 @@
 
 (function (undef){ "use strict"; var global = this,  _ = global._  ,
 asterix = global.ZotohLabs.Asterix,
+klass = global.ZotohLabs.klass,
 sh = asterix.Shell,
 echt= global.ZotohLabs.echt,
 loggr= global.ZotohLabs.logger;
@@ -22,12 +23,12 @@ loggr= global.ZotohLabs.logger;
 asterix.XLive = cc.Sprite.extend({
   ctor: function(x, y, options) {
     this._super();
-    this.initWithSpriteFrameName(this.options.frames[0]);
+    this.initWithSpriteFrameName(options.frames[0]);
     this.setPosition(x,y);
   }
 });
 
-asterix.XHUDLives = global.ZotohLabs.klass.extends({
+asterix.XHUDLives = klass.extends({
 
   curLives: 0,
 
@@ -60,7 +61,7 @@ asterix.XHUDLives = global.ZotohLabs.klass.extends({
   drawLives: function() {
     var n, gap= 2,
     y= this.topLeft.y - this.lifeSize.height/2,
-    x= this.topLeft.x + this.lifeSizez.width/2;
+    x= this.topLeft.x + this.lifeSize.width/2,
     v;
     for (n = 0; n < this.curLives; ++n) {
       v= new asterix.XLive(x,y,this.options);
