@@ -9,35 +9,59 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this; var _ = global._ ;
-var asterix = global.ZotohLabs.Asterix;
-var ccsx = asterix.COCOS2DX;
-var sh = asterix.Shell;
-var loggr = global.ZotohLabs.logger;
-var echt = global.ZotohLabs.echt;
+(function (undef) { "use strict"; var global= this, _ = global._ ,
+asterix = global.ZotohLabs.Asterix,
+ccsx = asterix.COCOS2DX,
+sh = asterix.Shell,
+echt = global.ZotohLabs.echt,
+loggr = global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // splash screen for the game - make it look nice please.
 //////////////////////////////////////////////////////////////////////////////
-var SplashLayer = asterix.XSplashLayer.extend({
 
-  doLayout: function() {
-    var imgUrl= sh.xcfg.getImagePath('splash.play-btn');
-    var me=this, cw = ccsx.center();
-    var winSize = ccsx.screen();
-    var btn = cc.Sprite.create(imgUrl);
-    var mi= cc.MenuItemSprite.create(btn, null, null, this.pkPlay, this);
-    var menu = cc.Menu.create(mi);
+var UILayer = asterix.XLayer.extend({
+
+  pkInit: function() {
+    var imgUrl= sh.xcfg.getImagePath('splash.play-btn'),
+    btn = cc.Sprite.create(imgUrl),
+    cw = ccsx.center(),
+    wz = ccsx.screen(),
+    mi= cc.MenuItemSprite.create(btn, null, null, function() {
+      sh.fireEvent('/splash/controls/playgame');
+    }),
+    menu = cc.Menu.create(mi);
+
     menu.alignItemsVerticallyWithPadding(10);
-    this.addChild(menu, this.lastZix, ++this.lastTag);
     menu.setPosition(cw.x, 56);
+    this.addItem(menu);
 
-    return true;
+    return this._super();
   }
 
 });
 
-sh.protos['StartScreen'] = new asterix.XSceneFactory(SplashLayer);
+sh.protos['StartScreen'] = {
+  create: function(options) {
+    var fac = new asterix.XSceneFactory({
+      layers: [ asterix.XSplashLayer, UILayer ]
+    });
+    var scene = fac.create(options);
+    if (scene) {
+      scene.ebus.on('/splash/controls/playgame', function() {
+          var dir= cc.Director.getInstance(),
+          ss= sh.protos['StartScreen'],
+          mm= sh.protos['MainMenu'];
+          dir.replaceScene( mm.create({
+            onBack: function() { dir.replaceScene( ss.create() ); }
+          }));
+      });
+    }
+    return scene;
+  }
+};
+
+
 
 }).call(this);
 

@@ -9,24 +9,25 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this; var _ = global._ ;
-var asterix = global.ZotohLabs.Asterix;
-var klass = global.ZotohLabs.klass;
-var loggr= global.ZotohLabs.logger;
-var echt= global.ZotohLabs.echt;
-var ttt= asterix.TicTacToe;
-var ccsx = asterix.COCOS2DX;
-var sh = asterix.Shell;
-var Cmd= klass.extends({
+(function (undef){ "use strict"; var global = this, _ = global._ ,
+asterix = global.ZotohLabs.Asterix,
+klass = global.ZotohLabs.klass,
+ttt= asterix.TicTacToe,
+ccsx = asterix.COCOS2DX,
+sh = asterix.Shell,
+Cmd= klass.extends({
   ctor: function(a,pos) {
     this.cell=pos;
     this.actor=a;
   }
-});
+}),
+echt= global.ZotohLabs.echt,
+loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
+
 var arenaLayer = asterix.XGameLayer.extend({
 
   p2Long: sh.l10n('%player2'),

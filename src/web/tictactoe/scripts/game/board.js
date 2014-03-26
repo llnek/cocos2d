@@ -9,12 +9,12 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this; var _ = global._ ;
-var asterix = global.ZotohLabs.Asterix;
-var loggr = global.ZotohLabs.logger;
-var klass= global.ZotohLabs.klass;
-var echt = global.ZotohLabs.echt;
-var negax= global.ZotohLabs.NegaMax;
+(function(undef) { "use strict"; var global = this, _ = global._ ,
+asterix = global.ZotohLabs.Asterix,
+loggr = global.ZotohLabs.logger,
+klass= global.ZotohLabs.klass,
+echt = global.ZotohLabs.echt,
+negax= global.ZotohLabs.NegaMax;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -109,32 +109,32 @@ asterix.TicTacToe.Board= klass.extends({
   },
 
   isStalemate: function(game) {
-    game = game || this.grid;
-    var me = this; return ! _.some(game, function(n) {
-      return n === me.CV_Z;
-    });
+    return ! _.some(game || this.grid, function(n) {
+      return n === this.CV_Z;
+    }, this);
   },
 
   checkWinner: function() {
-    var w, me=this, rc = undef;
+    var rc = undef,
+    w;
     _.find(this.actors, function(actor,n) {
       switch (n) {
         case 0: return false;
         default:
-          w= me.isWinner(actor);
+          w= this.isWinner(actor);
           if (w[0]) {
             rc=actor; return true;
           } else {
             return false;
           }
       }
-    });
+    }, this);
     return echt(rc) ? [rc, w[1]] : [undef, null] ;
   },
 
   isWinner: function(actor, game) {
-    var rc, combo, me=this;
     game= game || this.grid;
+    var rc, combo;
     rc= _.some(this.GOALSPACE, function(r) {
       combo=r;
       return _.every(_.map(r, function(i) {
@@ -147,72 +147,57 @@ asterix.TicTacToe.Board= klass.extends({
   },
 
   nextFreeCell: function(actor) {
-    var me=this, fr= _.reduce(this.grid, function(memo, z, n) {
-      if (z === me.CV_Z) { memo.push(n); }
+    var fr= _.reduce(this.grid, function(memo, z, n) {
+      if (z === this.CV_Z) { memo.push(n); }
       return memo;
-    }, []);
-    if (fr.length === 0) {
-      return -1;
-    } else {
-      return fr[ asterix.fns.rand( fr.length) ];
-    }
+    }, [], this);
+    return (fr.length === 0) ? -1 : fr[ asterix.fns.rand( fr.length) ];
   },
 
   poiseToWin: function(actor,game) {
-    var sum = this.getBoardSize() - 1;
-    var lastFree = -1;
-    var me = this;
+    var sum = this.getBoardSize() - 1,
+    m, rc,
+    lastFree = -1;
     game= game || this.grid;
-    var rc = _.some(this.GOALSPACE, function(r) {
-      var m = _.foldl(r, function(memo, n) {
+    rc = _.some(this.GOALSPACE, function(r) {
+      m = _.foldl(r, function(memo, n) {
         if (actor.isValue( game[n])) {
           memo.used += 1;
         }
-        if (game[n] === me.CV_Z) {
+        if (game[n] === this.CV_Z) {
           memo.last = n;
           memo.free += 1;
         }
         return memo;
-      }, {
-        used: 0,
-        free: 0,
-        last: -1
-      });
+      }, { used: 0, free: 0, last: -1 }, this);
       lastFree = m.last;
       return m.used === sum && m.free === 1;
-    });
-    if (rc) {
-      return lastFree;
-    } else {
-      return -1;
-    }
+    }, this);
+    return rc ? lastFree : -1;
   },
 
   freeMove: function(actor,game) {
-    var sum = this.getBoardSize() - 1;
-    var me = this;
+    var sum = this.getBoardSize() - 1,
+    m, rc;
     game= game || this.grid;
-    var rc = _.some(this.GOALSPACE, function(r) {
-      var m = _.foldl(r, function(memo, n) {
+    rc = _.some(this.GOALSPACE, function(r) {
+      m = _.foldl(r, function(memo, n) {
         if (actor.isValue(game[n])) {
           memo.used += 1;
         }
-        if (game[n] === me.CV_Z) {
+        if (game[n] === this.CV_Z) {
           memo.free += 1;
         }
         return memo;
-      }, {
-        used: 0,
-        free: 0
-      });
+      }, { used: 0, free: 0 }, this);
       return m.free === sum && m.used === 1;
-    });
+    }, this);
     return rc;
   },
 
   getNextMoves: function(snapshot) {
-    var n, g = snapshot.state;
-    var rc = [];
+    var n, g = snapshot.state,
+    rc = [];
     for (n=0; n < g.length; ++n) {
       if (this.isNil(g[n])) {
         rc.push(n);
@@ -278,13 +263,13 @@ asterix.TicTacToe.Board= klass.extends({
     this.ROWSPACE = [];
     this.size = size;
     this.COLSPACE = [];
-    var h,v;
-    var dx = [];
-    var dy = [];
-    for (var r=0; r < this.size; ++r) {
+    var dx = [],
+    dy = [],
+    c, r, h, v;
+    for (r=0; r < this.size; ++r) {
       h = [];
       v = [];
-      for (var c=0; c < this.size; ++c) {
+      for (c=0; c < this.size; ++c) {
         h.push(r * this.size + c);
         v.push(c * this.size + r);
       }
@@ -309,8 +294,8 @@ asterix.TicTacToe.Board= klass.extends({
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-var negax= global.ZotohLabs.NegaMax;
-var Player = klass.extends({
+var negax= global.ZotohLabs.NegaMax,
+Player = klass.extends({
 
   takeTurn: function() { throw new Error("Abstract call"); },
   isRobot: function() { return !this.isHuman(); },
