@@ -22,9 +22,9 @@ loggr= global.ZotohLabs.logger;
 asterix.XGameHUDLayer = asterix.XLayer.extend({
 
   pkInit: function() {
-    this.initNode();
-    this.initScore();
-    this.initLives();
+    this.initParentNode();
+    this.initLabels();
+    this.initIcons();
     this.initCtrlBtns();
     return this._super();
   },

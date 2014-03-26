@@ -35,6 +35,20 @@ asterix.XGameLayer = asterix.XLayer.extend({
     this.keyboard[e] = false;
   },
 
+  onMouseUp: function(evt) {
+    var pt= evt.getLocation();
+    //loggr.debug("mouse location [" + pt.x + "," + pt.y + "]");
+    this.onclicked(pt.x, pt.y);
+  },
+
+  onTouchesEnded: function (touches, event) {
+    loggr.debug("touch event = " + event);
+    loggr.debug("touch = " + touches);
+  },
+
+  onclicked: function(x,y) {
+  },
+
   setGameMode: function(mode) {
     sh.xcfg.csts.GAME_MODE=mode;
   },

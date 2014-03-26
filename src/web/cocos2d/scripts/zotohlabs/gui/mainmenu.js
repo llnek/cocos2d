@@ -107,6 +107,14 @@ asterix.XMenuLayer= asterix.XLayer.extend({
 
 });
 
+asterix.XMenuLayer.onShowMenu = function() {
+  var dir= cc.Director.getInstance();
+  dir.pushScene( sh.protos['MainMenu'].create({
+    onBack: function() {
+      dir.popScene();
+    }
+  }));
+};
 
 }).call(this);
 

@@ -51,14 +51,14 @@ var BackLayer = asterix.XLayer.extend({
 
 var HUDLayer = asterix.XGameHUDLayer.extend({
 
-  initNode: function() {
+  initParentNode: function() {
     this.atlasBatch = cc.SpriteBatchNode.createWithTexture( cc.TextureCache.getInstance().addImage( sh.xcfg.getAtlasPath('game-pics')));
     this.addChild(this.atlasBatch, this.lastZix, ++this.lastTag);
   },
 
   getNode: function() { return this.atlasBatch; },
 
-  initScore: function() {
+  initLabels: function() {
     var csts = sh.xcfg.csts,
     wz = ccsx.screen();
 
@@ -72,7 +72,7 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
     this.addChild(this.scoreLabel, this.lastZix, ++this.lastTag);
   },
 
-  initLives: function() {
+  initIcons: function() {
     var csts = sh.xcfg.csts,
     wz = ccsx.screen();
 
@@ -439,15 +439,6 @@ var GameLayer = asterix.XGameLayer.extend({
     }
   },
 
-  onShowMenu: function() {
-    var dir= cc.Director.getInstance();
-    dir.pushScene( sh.protos['MainMenu'].create({
-      onBack: function() {
-        dir.popScene();
-      }
-    }));
-  },
-
   onEarnScore: function(msg) {
     this.getHUD().updateScore( msg.score);
   },
@@ -487,7 +478,7 @@ asterix.Invaders.Factory = {
       sh.main.onEarnScore(msg);
     });
     scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
-      sh.main.onShowMenu();
+      asterix.XMenuLayer.onShowMenu();
     });
     scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
       sh.main.replay();

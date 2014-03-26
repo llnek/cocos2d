@@ -79,15 +79,15 @@ asterix.COCOS2DX = {
     return cc.Director.getInstance().getWinSize();
   },
 
-  AnchorPointCenter: new cc.Point(0.5, 0.5),
-  AnchorPointTop: new cc.Point(0.5, 1),
-  AnchorPointTopRight: new cc.Point(1, 1),
-  AnchorPointRight: new cc.Point(1, 0.5),
-  AnchorPointBottomRight: new cc.Point(1, 0),
-  AnchorPointBottom: new cc.Point(0.5, 0),
-  AnchorPointBottomLeft: new cc.Point(0, 0),
-  AnchorPointLeft: new cc.Point(0, 0.5),
-  AnchorPointTopLeft: new cc.Point(0, 1)
+  AnchorCenter: cc.p(0.5, 0.5),
+  AnchorTop: cc.p(0.5, 1),
+  AnchorTopRight: cc.p(1, 1),
+  AnchorRight: cc.p(1, 0.5),
+  AnchorBottomRight: cc.p(1, 0),
+  AnchorBottom: cc.p(0.5, 0),
+  AnchorBottomLeft: cc.p(0, 0),
+  AnchorLeft: cc.p(0, 0.5),
+  AnchorTopLeft: cc.p(0, 1)
 
 };
 
