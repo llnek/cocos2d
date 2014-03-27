@@ -138,7 +138,7 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
   },
 
   initCtrlBtns: function() {
-    this._super(28/48);
+    this._super(28/48, cc.ALIGN_TOP);
   },
 
   initIcons: function() {

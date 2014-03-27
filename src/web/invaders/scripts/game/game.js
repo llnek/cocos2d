@@ -85,6 +85,18 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
     this.lives.create();
   },
 
+  removeItem: function(n) {
+    if (n instanceof cc.Sprite) { this._super(n); } else {
+      this.removeChild(n);
+    }
+  },
+
+  addItem: function(n) {
+    if (n instanceof cc.Sprite) { this._super(n); } else {
+      this.addChild(n, this.lastZix, ++this.lastTag);
+    }
+  },
+
   initCtrlBtns: function(s) {
     this._super(32/48);
   },

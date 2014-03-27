@@ -41,7 +41,7 @@ asterix.XGameHUDLayer = asterix.XLayer.extend({
   reset: function() {
     this.disableReplay();
     this.score= 0;
-    this.lives.resurrect();
+    if (this.lives) { this.lives.resurrect(); }
   },
 
   reduceLives: function(n) {
@@ -62,12 +62,13 @@ asterix.XGameHUDLayer = asterix.XLayer.extend({
     this.replayBtn.setVisible(true);
   },
 
-  initCtrlBtns: function(scale) {
+  initCtrlBtns: function(scale, where) {
     var csts = sh.xcfg.csts,
     wz= ccsx.screen(),
     cw= ccsx.center(),
-    c, menu;
+    y, c, menu;
 
+    where = where || cc.ALIGN_BOTTOM;
     scale = scale || 1;
 
     menu= ccsx.pmenu1({
@@ -77,8 +78,12 @@ asterix.XGameHUDLayer = asterix.XLayer.extend({
         sh.fireEvent('/game/hud/controls/showmenu'); }
     });
     c= menu.getChildByTag(1);
-    menu.setPosition(wz.width - csts.TILE - ccsx.getScaledWidth(c)/2,
-                     wz.height - csts.TILE * 6 /2 );
+    if (where === cc.ALIGN_TOP) {
+      y = wz.height - csts.TILE  - ccsx.getScaledHeight(c) / 2
+    } else {
+      y = csts.TILE  + ccsx.getScaledHeight(c) / 2
+    }
+    menu.setPosition(wz.width - csts.TILE - ccsx.getScaledWidth(c)/2, y);
     this.addItem(menu);
 
     menu = ccsx.pmenu1({
@@ -89,8 +94,12 @@ asterix.XGameHUDLayer = asterix.XLayer.extend({
         sh.fireEvent('/game/hud/controls/replay'); }
     });
     c= menu.getChildByTag(1);
-    menu.setPosition(csts.TILE + ccsx.getScaledWidth(c)/2,
-                     wz.height - csts.TILE * 6 /2 );
+    if (where === cc.ALIGN_TOP) {
+      y = wz.height - csts.TILE  - ccsx.getScaledHeight(c) / 2
+    } else {
+      y = csts.TILE  + ccsx.getScaledHeight(c) / 2
+    }
+    menu.setPosition(csts.TILE + ccsx.getScaledWidth(c)/2, y);
     this.replayBtn=menu;
     this.addItem(menu);
   }
