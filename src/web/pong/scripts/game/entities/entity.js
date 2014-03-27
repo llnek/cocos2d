@@ -9,12 +9,12 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef){ "use strict"; var global= this; var _ = global._ ;
-var asterix= global.ZotohLabs.Asterix;
-var ccsx = asterix.COCOS2DX;
-var sh= asterix.Shell;
-var png= asterix.Pong;
-var loggr = global.ZotohLabs.logger;
+(function(undef){ "use strict"; var global= this, _ = global._ ,
+asterix= global.ZotohLabs.Asterix,
+ccsx = asterix.COCOS2DX,
+sh= asterix.Shell,
+png= asterix.Pong,
+loggr = global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -24,7 +24,7 @@ png.EntityXXX = asterix.XEntity.extends({
 
   create: function() {
     this.sprite = cc.Sprite.create(sh.xcfg.getImagePath(this.resid));
-    this.sprite.setPosition(this.options._startPos);
+    this.sprite.setPosition(this.startPos);
     return this.sprite;
   }
 
@@ -41,16 +41,15 @@ png.EntityPaddle = png.EntityXXX.extends({
   kcodes: [],
 
   clamp: function() {
-    var pos= this.sprite.getPosition();
-    var csts = sh.xcfg.csts;
-    var y= pos.y;
-    var wz = ccsx.screen();
-    var y2 = wz.height - csts.TILE * 6;
-    var y1 = csts.TILE;
-
-    var h = ccsx.getHeight(this.sprite) / 2;
-    var b= ccsx.getBottom(this.sprite);
-    var t= ccsx.getTop(this.sprite);
+    var pos= this.sprite.getPosition(),
+    csts = sh.xcfg.csts,
+    y= pos.y,
+    wz = ccsx.screen(),
+    y2 = wz.height - csts.TILE * 6,
+    y1 = csts.TILE,
+    h = ccsx.getHeight(this.sprite) / 2,
+    b= ccsx.getBottom(this.sprite),
+    t= ccsx.getTop(this.sprite);
 
     if (t > y2) {
       y = y2 - h;

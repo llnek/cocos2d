@@ -9,32 +9,33 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this; var _ = global._ ;
-var asterix= global.ZotohLabs.Asterix;
-var ccsx = asterix.COCOS2DX;
-var sh= asterix.Shell;
-var png= asterix.Pong;
-var loggr= global.ZotohLabs.logger;
+(function(undef) { "use strict"; var global = this, _ = global._ ,
+asterix= global.ZotohLabs.Asterix,
+ccsx = asterix.COCOS2DX,
+sh= asterix.Shell,
+png= asterix.Pong,
+loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
+
 png.EntityBall = png.EntityXXX.extends({
 
   vel: { x: 0, y: 0 },
 
   update: function(dt) {
-    var sz= this.sprite.getContentSize().height / 2;
-    var sw= this.sprite.getContentSize().width / 2;
-    var pos = this.sprite.getPosition();
-    var csts = sh.xcfg.csts;
-    var wz = ccsx.screen();
-    var y = pos.y + dt * this.vel.y;
-    var x = pos.x + dt * this.vel.x;
-    var b_y1= csts.TILE;
-    var b_y2 = wz.height - csts.TILE * 6;
-    var b_x1= csts.TILE;
-    var b_x2 = wz.width - csts.TILE;
+    var sz= this.sprite.getContentSize().height / 2,
+    sw= this.sprite.getContentSize().width / 2,
+    pos = this.sprite.getPosition(),
+    csts = sh.xcfg.csts,
+    wz = ccsx.screen(),
+    y = pos.y + dt * this.vel.y,
+    x = pos.x + dt * this.vel.x,
+    b_y1= csts.TILE,
+    b_y2 = wz.height - csts.TILE * 6,
+    b_x1= csts.TILE,
+    b_x2 = wz.width - csts.TILE;
 
     // hitting top wall ?
     if (y + sz > b_y2) {

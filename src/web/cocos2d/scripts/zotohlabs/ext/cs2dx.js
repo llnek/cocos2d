@@ -92,24 +92,38 @@ asterix.COCOS2DX = {
   tmenu1: function(options) {
     var s1= cc.LabelBMFont.create(options.text, options.fontPath),
     menu,
-    t1= cc.MenuItemLabel.create(s1, options.selector, options.target);
+    t1= cc.MenuItemLabel.create(s1, options.selector, echt(options.target) ? options.target : undef);
     t1.setOpacity(255 * 0.9);
     t1.setScale(options.scale || 1);
+    t1.setTag(1);
     menu= cc.Menu.create(t1);
     menu.alignItemsVertically();
-    menu.setPosition(optons.pos);
+    if (options.pos) { menu.setPosition(options.pos); }
+    if (options.visible === false) { menu.setVisible(false); }
     return menu;
   },
 
   pmenu1: function(options) {
     var btn = cc.Sprite.create(options.imgPath),
     menu,
-    mi= cc.MenuItemSprite.create(btn, null, null, options.selector, options.target);
+    mi= cc.MenuItemSprite.create(btn, null, null, options.selector, echt(options.target) ? options.target : undef);
     mi.setScale(options.scale || 1);
+    mi.setTag(1);
     menu = cc.Menu.create(mi);
     menu.alignItemsVertically();
-    menu.setPosition(options.pos);
+    if (options.pos) { menu.setPosition(options.pos); }
+    if (options.visible === false) { menu.setVisible(false); }
     return menu;
+  },
+
+  bmfLabel: function(options) {
+    var f= cc.LabelBMFont.create(options.text, options.fontPath);
+    f.setScale( options.scale || 1);
+    if (options.color) { f.setColor(options.color); }
+    if (options.pos) { f.setPosition(options.pos); }
+    if (options.visible === false) { f.setVisible(false); }
+    f.setOpacity(0.9*255);
+    return f;
   }
 
 };

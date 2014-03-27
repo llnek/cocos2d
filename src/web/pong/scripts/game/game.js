@@ -9,167 +9,268 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global=this; var _ = global._;
-var asterix = global.ZotohLabs.Asterix;
-var ccsx= asterix.COCOS2DX;
-var sh= asterix.Shell;
-var png= asterix.Pong;
-var loggr= global.ZotohLabs.logger;
-var echt= global.ZotohLabs.echt;
+(function(undef) { "use strict"; var global=this, _ = global._ ,
+asterix = global.ZotohLabs.Asterix,
+ccsx= asterix.COCOS2DX,
+sh= asterix.Shell,
+png= asterix.Pong,
+echt= global.ZotohLabs.echt,
+loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
-// module def
+// back layer
 //////////////////////////////////////////////////////////////////////////////
 
-var arenaLayer = asterix.XGameLayer.extend({
+var BackLayer = asterix.XLayer.extend({
+  pkInit: function() {
+    var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gamelevel1.tiles.arena'));
+    this.addItem(map);
+    return this._super();
+  },
 
-  scores : { 'O': 0, 'X': 0 },
-  MAX_SCORE: 9, //11,
+  pkInput: function() {},
+
+  rtti: function() {
+    return 'BackLayer';
+  }
+
+});
+
+//////////////////////////////////////////////////////////////////////////////
+// HUD layer
+//////////////////////////////////////////////////////////////////////////////
+
+var HUDLayer = asterix.XGameHUDLayer.extend({
+
+  scores:  { 'O': 0, 'X': 0 },
+  mode: 0,
+  MAX_SCORE: 3, //11,
+
+  p2Long: sh.l10n('%player2'),
+  p1Long: sh.l10n('%player1'),
+
+  p2ID: '',
+  p1ID: '',
+
+  setGameMode: function(mode) {
+    var csts = sh.xcfg.csts,
+    cw= ccsx.center(),
+    wz= ccsx.screen();
+
+    this.p2ID= sh.l10n('%p2');
+    this.p1ID= sh.l10n('%p1');
+    if (mode === 1) {
+      this.p2Long= sh.l10n('%computer');
+      this.p2ID= sh.l10n('%cpu');
+    }
+    this.mode= mode;
+    this.title.setString(this.p1ID + " / " + this.p2ID);
+    this.score1.setPosition( cw.x - ccsx.getScaledWidth(this.title)/2 -
+                             ccsx.getScaledWidth(this.score1)/2 - 10,
+                             wz.height - csts.TILE * 6 /2 - 2);
+    this.score2.setPosition( cw.x + ccsx.getScaledWidth(this.title)/2 +
+                             ccsx.getScaledWidth(this.score2)/2 + 6,
+                             wz.height - csts.TILE * 6 /2 - 2);
+  },
+
+  initParentNode: function() {},
+
+  regoPlayers: function(p1,p2) {
+    this.play2= p2;
+    this.play1= p1;
+  },
+
+  resetAsNew: function() {
+    //this.scores=  { 'O': 0, 'X': 0 };
+    this.reset();
+  },
+
+  reset: function() {
+    this.scores=  { 'O': 0, 'X': 0 };
+    this.replayBtn.setVisible(false);
+    this.resultMsg.setVisible(false);
+    this.drawScores();
+  },
+
+  endGame: function() {
+    this.replayBtn.setVisible(true);
+    this.resultMsg.setVisible(true);
+  },
+
+  initLabels: function() {
+    var csts = sh.xcfg.csts,
+    cw= ccsx.center(),
+    wz = ccsx.screen();
+
+    this.title= ccsx.bmfLabel({
+      fontPath: sh.xcfg.getFontPath('font.TinyBoxBB'),
+      text: '',
+      scale: 12/72,
+      pos: cc.p( cw.x, wz.height - csts.TILE * 6 /2 )
+    });
+    this.addItem(this.title);
+
+    this.score1= ccsx.bmfLabel({
+      fontPath: sh.xcfg.getFontPath('font.OCR'),
+      text: '8',
+      scale: 36/72,
+      color: cc.c3b(255,0,0)
+    });
+    this.addItem(this.score1);
+
+    this.score2= ccsx.bmfLabel({
+      fontPath: sh.xcfg.getFontPath('font.OCR'),
+      text: '8',
+      scale: 36/72,
+      color: cc.c3b(106, 190, 97) //#6abe61
+    });
+    this.addItem(this.score2);
+
+    this.resultMsg = ccsx.bmfLabel({
+      fontPath: sh.xcfg.getFontPath('font.TinyBoxBB'),
+      text: '',
+      visible: false,
+      pos: cc.p(cw.x,  100),
+      scale: 24/72
+    });
+    this.addItem(this.resultMsg);
+
+  },
+
+  initCtrlBtns: function() {
+    this._super(28/48);
+  },
+
+  initIcons: function() {
+  },
+
+  rtti: function() {
+    return 'HUD';
+  },
+
+  isDone: function() {
+    var s2= this.scores[this.play2.color],
+    s1= this.scores[this.play1.color],
+    rc= [false, null];
+
+    if (s2 >= this.MAX_SCORE) { rc = [ true, this.play2]; }
+    if (s1 >= this.MAX_SCORE) { rc = [ true, this.play1]; }
+    return rc;
+  },
+
+  updateScore: function(actor,value) {
+    this.scores[actor.color] = this.scores[actor.color] + value;
+    this.drawScores();
+  },
+
+  drawScores: function() {
+    var s2 = this.play2 ? this.scores[this.play2.color] : 0,
+    s1 = this.play1 ? this.scores[this.play1.color] : 0,
+    n2 = global.ZotohLabs.prettyNumber(s2,1),
+    n1 = global.ZotohLabs.prettyNumber(s1,1);
+    this.score1.setString(n1);
+    this.score2.setString(n2);
+  },
+
+  drawResult: function(winner) {
+    var msg="";
+    switch (winner.color) {
+      case 'O': msg= sh.l10n('%whowin', { who: this.p2Long}); break;
+      case 'X': msg= sh.l10n('%whowin', { who: this.p1Long}); break;
+    }
+    this.resultMsg.setString(msg);
+  }
+
+
+});
+
+//////////////////////////////////////////////////////////////////////////////
+// game layer
+//////////////////////////////////////////////////////////////////////////////
+
+var GameLayer = asterix.XGameLayer.extend({
+
+  getHUD: function() {
+    return cc.Director.getInstance().getRunningScene().layers['HUD'];
+  },
+
+  players: [],
   ball: null,
 
-  play: function() {
-    var p2Img= cc.Sprite.create(sh.xcfg.getImagePath('gamelevel1.images.paddle2'));
-    var p1Img= cc.Sprite.create(sh.xcfg.getImagePath('gamelevel1.images.paddle1'));
-    var ballImg= cc.Sprite.create(sh.xcfg.getImagePath('gamelevel1.images.ball'));
-    var csts= sh.xcfg.csts;
-    var cw= ccsx.center();
-    var wz= ccsx.screen();
-    var p1x,p2x;
+  initPaddleSize: function() {
+    var dummy= cc.Sprite.create(sh.xcfg.getImagePath('gamelevel1.images.paddle1'));
+    return this.paddleSize = dummy.getContentSize();
+  },
 
-    this.doLayout();
+  initBallSize: function() {
+    var dummy= cc.Sprite.create(sh.xcfg.getImagePath('gamelevel1.images.ball'));
+    return this.ballSize = dummy.getContentSize();
+  },
 
-    p2x = wz.width - csts.TILE - 4 - ballImg.getContentSize().width - p2Img.getContentSize().width/2;
-    p1x = csts.TILE + ballImg.getContentSize().width + 4 + p1Img.getContentSize().width/2;
-    this.maybeReset();
+  replay: function() {
+    this.play(false);
+  },
 
-    var p1 = new png.EntityHuman( p1x, cw.y, { color: 'X' });
-    var p2= null;
+  play: function(newFlag) {
+    var ps = this.initPaddleSize(),
+    bs = this.initBallSize(),
+    csts= sh.xcfg.csts,
+    cw= ccsx.center(),
+    wz= ccsx.screen(),
+    p2,p1,
+    p1x,p2x;
+
+    p2x = wz.width - csts.TILE - 4 - bs.width - ps.width/2;
+    p1x = csts.TILE + bs.width + 4 + ps.width/2;
+    this.reset(newFlag);
+
+    p1 = new png.EntityHuman( p1x, cw.y, { color: 'X' });
+    p2= null;
     switch (csts.GAME_MODE) {
-    case 1:
-    p2 = new png.EntityRobot( p2x, cw.y, { color: 'O' });
-    break;
-    case 2:
-    p2 = new png.EntityHuman( p2x, cw.y, { color: 'O' });
-    break;
-
-    case 3:
-    break;
+      case 1:
+      p2 = new png.EntityRobot( p2x, cw.y, { color: 'O' });
+      break;
+      case 2:
+      p2 = new png.EntityHuman( p2x, cw.y, { color: 'O' });
+      break;
+      case 3:
+      break;
     };
 
+    this.getHUD().regoPlayers(p1,p2);
     this.players= [ null, p1, p2];
-    this.addChild(p1.create(), this.lastZix, ++this.lastTag);
-    this.addChild(p2.create(), this.lastZix, ++this.lastTag);
+    this.addItem(p1.create());
+    this.addItem(p2.create());
     this.spawnBall();
-    this.drawScores();
-
-    return true;
   },
 
   spawnBall: function() {
-    var ballImg= cc.Sprite.create(sh.xcfg.getImagePath('gamelevel1.images.ball'));
     var cw= ccsx.center();
     this.ball = new png.EntityBall( cw.x, cw.y, {});
     if (this.players[2].isRobot()) {
       this.players[2].bindBall(this.ball);
     }
-    this.addChild(this.ball.create(), this.lastZix, ++this.lastTag);
-  },
-
-  doLayout: function() {
-    var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gamelevel1.tiles.arena'));
-    var csts= sh.xcfg.csts;
-    var cw= ccsx.center();
-    var wz= ccsx.screen();
-    var title;
-
-    this.addChild(map, this.lastZix, ++this.lastTag);
-
-    title= cc.LabelBMFont.create(this.p1ID + " / " + this.p2ID, sh.xcfg.getFontPath('font.TinyBoxBB'));
-    title.setPosition(cw.x, wz.height - csts.TILE * 6 /2 );
-    title.setScale(12/72);
-    title.setOpacity(0.9*255);
-    this.addChild(title, this.lastZix, ++this.lastTag);
-
-    this.score1= cc.LabelBMFont.create('8', sh.xcfg.getFontPath('font.OCR'));
-    this.score1.setScale(36/72);
-    this.score1.setOpacity(0.9*255);
-    this.score1.setColor(new cc.Color3B(255,0,0)); // 0xff0000
-    this.score1.setPosition( cw.x - ccsx.getScaledWidth(title)/2 - ccsx.getScaledWidth(this.score1)/2 - 10,
-    wz.height - csts.TILE * 6 /2 - 2);
-    this.addChild(this.score1, this.lastZix, ++this.lastTag);
-
-    this.score2= cc.LabelBMFont.create('8', sh.xcfg.getFontPath('font.OCR'));
-    this.score2.setScale(36/72);
-    this.score2.setOpacity(0.9*255);
-    this.score2.setColor(new cc.Color3B(106,190,97)); // 0x6ABE61
-    this.score2.setPosition(
-    cw.x + ccsx.getScaledWidth(title)/2 + ccsx.getScaledWidth(this.score1)/2 + 6,
-    wz.height - csts.TILE * 6 /2 - 2);
-    this.addChild(this.score2, this.lastZix, ++this.lastTag);
-
-    this.resultMsg = cc.LabelBMFont.create('', sh.xcfg.getFontPath('font.TinyBoxBB'));
-    this.resultMsg.setPosition(cw.x,  100);
-    this.resultMsg.setScale(24/72);
-    this.resultMsg.setOpacity(0.9*255);
-    this.addChild(this.resultMsg, this.lastZix, ++this.lastTag);
-    this.resultMsg.setVisible(false);
-
-    this.doCtrlBtns();
-  },
-
-  doCtrlBtns: function() {
-    var x, y, csts = sh.xcfg.csts;
-    var wz= ccsx.screen();
-    var cw= ccsx.center();
-    var s1,s2,t1,t2,menu;
-
-    s1= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.menu'));
-    t1 = cc.MenuItemSprite.create(s1, null, null, function() {
-      this.goMenu();
-    }, this);
-    t1.setScale(28/48);
-    menu= cc.Menu.create(t1);
-    menu.setPosition(wz.width - csts.TILE - ccsx.getScaledWidth(t1)/2,
-    wz.height - csts.TILE * 6 /2 );
-    this.addChild(menu, this.lastZix, ++this.lastTag);
-
-    s2= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.replay'));
-    t2 = cc.MenuItemSprite.create(s2, null, null, function() {
-      this.pkReplay();
-    }, this);
-    t2.setScale(28/48);
-    this.replayBtn= cc.Menu.create(t2);
-    this.replayBtn.setPosition(csts.TILE + ccsx.getScaledWidth(t2)/2, wz.height - csts.TILE * 6 /2 );
-    this.replayBtn.setVisible(false);
-    this.addChild(this.replayBtn, this.lastZix, ++this.lastTag);
-  },
-
-  drawScores: function() {
-    var s2 = this.scores[this.players[2].color];
-    var s1 = this.scores[this.players[1].color];
-    var csts= sh.xcfg.csts;
-    var wz = ccsx.screen();
-    var n2 = global.ZotohLabs.prettyNumber(s2,1);
-    var n1 = global.ZotohLabs.prettyNumber(s1,1);
-
-    this.score1.setString(n1);
-    this.score2.setString(n2);
+    this.addItem(this.ball.create());
   },
 
   newGame: function(mode) {
-    sh.xcfg.sfxPlay('start_game');
+    //sh.xcfg.sfxPlay('start_game');
     this.setGameMode(mode);
-    this.resetScores();
-    return this.play();
+    this.play(true);
   },
 
-  resetScores: function() {
-    this.scores= { 'X' : 0, 'O' : 0 };
-  },
-
-  maybeReset: function() {
-    this.players=[];
+  reset: function(newFlag) {
+    _.each(this.players,function(z) {
+      if (z) { z.dispose(); }
+    });
+    if (newFlag) {
+      this.getHUD().resetAsNew();
+    } else {
+      this.getHUD().reset();
+    }
     this.actor=null;
+    this.ball=null;
+    this.players=[];
   },
 
   updateEntities: function(dt) {
@@ -179,100 +280,86 @@ var arenaLayer = asterix.XGameLayer.extend({
   },
 
   checkEntities: function() {
-    var p2s = this.players[2].sprite;
-    var p1s = this.players[1].sprite;
-    var bs = this.ball.sprite;
-    var bp= bs.getPosition();
-    if ( bp.x < ccsx.getLeft(p1s)) {
+    var p2 = this.players[2],
+    p1 = this.players[1],
+    bs = this.ball.sprite,
+    bp= bs.getPosition();
+
+    if ( bp.x < ccsx.getLeft(p1.sprite)) {
       // p2 scores
-      this.onWinner(this.players[2]);
+      this.onWinner(p2);
     }
     else
-    if (bp.x > ccsx.getRight(p2s)) {
+    if (bp.x > ccsx.getRight(p2.sprite)) {
       // p1 scores
-      this.onWinner(this.players[1]);
+      this.onWinner(p1);
     }
-    else if (ccsx.checkCollide(p2s,bs)) {
+    else if (ccsx.collide(p2,this.ball)) {
       this.ball.vel.x = - this.ball.vel.x;
       if (this.ball.vel.y < 0) {
       } else {
       }
-      bs.setPosition(ccsx.getLeft(p2s) - ccsx.getWidth(bs) / 2, bs.getPosition().y);
+      bs.setPosition(ccsx.getLeft(p2.sprite) - ccsx.getWidth(bs) / 2, bp.y);
       sh.xcfg.sfxPlay('o_hit');
     }
     else
-    if ( ccsx.checkCollide(p1s,bs)) {
+    if ( ccsx.collide(p1,this.ball)) {
       this.ball.vel.x = - this.ball.vel.x;
       if (this.ball.vel.y < 0) {
       } else {
       }
-      bs.setPosition(ccsx.getRight(p1s) + ccsx.getWidth(bs) / 2, bs.getPosition().y);
+      bs.setPosition(ccsx.getRight(p1.sprite) + ccsx.getWidth(bs) / 2, bp.y);
       sh.xcfg.sfxPlay('x_hit');
     }
   },
 
-  update: function(dt) {
-    if (this.ball) {
-      this.updateEntities(dt);
-      this.checkEntities();
-    }
-    this.drawGui();
+  operational: function() {
+    return echt(this.ball);
   },
 
   onWinner: function(p) {
-    this.removeChild(this.ball.kill(), true);
-    var s = this.scores[p.color];
-    this.scores[p.color] = s + 1;
+    this.getHUD().updateScore(p,1);
+    this.ball.dispose();
     this.ball=null;
-    if (s+1 >= this.MAX_SCORE) {
-      this.onDone(p);
+    var rc= this.getHUD().isDone();
+    if (rc[0]) {
+      this.doDone( rc[1] );
     } else {
       this.spawnBall();
     }
   },
 
-  onDone: function(p) {
-    this.replayBtn.setVisible(true);
-    this.lastWinner = p;
-    this.drawResult();
+  doDone: function(p) {
+    this.getHUD().drawResult(p);
+    this.getHUD().endGame();
     sh.xcfg.sfxPlay('game_end');
   },
 
-  drawResult: function() {
-  // report game result please.
-    var msg, p1, p2;
-
-    //this.status.setVisible(false);
-
-    p2= this.players[2];
-    p1= this.players[1];
-    switch (this.lastWinner) {
-      case p2: msg= sh.l10n('%whowin', { who: this.p2Long}); break;
-      case p1: msg= sh.l10n('%whowin', { who: this.p1Long}); break;
-      default: msg= sh.l10n('%whodraw'); break;
-    }
-
-    this.resultMsg.setString(msg);
-    this.resultMsg.setVisible(true);
-  },
-
-  drawGui: function() {
-    this.drawScores();
-  },
-
   setGameMode: function(mode) {
-    this.p2ID= sh.l10n("%p2");
-    this.p1ID= sh.l10n("%p1");
-    if (mode === 1) {
-      this.p2Long= sh.l10n('%computer');
-      this.p2ID= sh.l10n('%cpu');
-    }
+    this.getHUD().setGameMode(mode);
     this._super(mode);
   }
 
 });
 
-asterix.Pong.Factory = new asterix.XSceneFactory(arenaLayer);
+asterix.Pong.Factory = {
+
+  create: function(options) {
+    var fac = new asterix.XSceneFactory({ layers: [ BackLayer, GameLayer, HUDLayer ] });
+    var scene= fac.create(options);
+    if (!scene) { return null; }
+    scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
+      asterix.XMenuLayer.onShowMenu();
+    });
+    scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
+      sh.main.replay();
+    });
+
+    return scene;
+  }
+
+};
+
 
 }).call(this);
 

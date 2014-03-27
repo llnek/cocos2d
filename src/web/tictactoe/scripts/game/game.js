@@ -379,8 +379,8 @@ var GameLayer = asterix.XGameLayer.extend({
 
   doDone: function(p,combo) {
     this.showWinningIcons(combo);
-    this.getHUD().endGame();
     sh.xcfg.sfxPlay('game_end');
+    this.getHUD().endGame();
     this.lastWinner = p;
     this.board.finz();
     this.board=null;

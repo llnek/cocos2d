@@ -46,7 +46,7 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
       selector: function() {
         sh.fireEvent('/mmenu/controls/newgame', { mode: 2});
       },
-      target: this
+      target: this,
       pos: cc.p(cw.x + 68, wz.height - csts.TILE * 28 - 4)
     }));
 
@@ -75,7 +75,7 @@ sh.protos['MainMenu'] = {
     var scene =  fac.create(options);
     if (scene) {
       scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
-        cc.Director.getInstance().replaceScene( asterix.Invaders.Factory.create(msg));
+        cc.Director.getInstance().replaceScene( asterix.Pong.Factory.create(msg));
       });
     }
     return scene;

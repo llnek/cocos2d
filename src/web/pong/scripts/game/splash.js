@@ -30,7 +30,7 @@ var UILayer = asterix.XLayer.extend({
       selector: function() {
         sh.fireEvent('/splash/controls/playgame');
       },
-      target: this
+      target: this,
       pos: cc.p(cw.x, 56)
     }));
 

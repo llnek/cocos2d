@@ -9,32 +9,32 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global=this; var _ = global._ ;
-var asterix = global.ZotohLabs.Asterix;
-var ccsx = asterix.COCOS2DX;
-var png = asterix.Pong;
-var sh = asterix.Shell;
-var loggr= global.ZotohLabs.logger;
-var echt= global.ZotohLabs.echt;
+(function(undef) { "use strict"; var global=this, _ = global._ ,
+asterix = global.ZotohLabs.Asterix,
+ccsx = asterix.COCOS2DX,
+png = asterix.Pong,
+sh = asterix.Shell,
+echt= global.ZotohLabs.echt,
+loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
+
 png.EntityHuman = png.EntityPaddle.extends({
 
   isRobot: function() { return false; },
 
   keypressed: function(dt) {
-    var sz = this.sprite.getContentSize().height / 2;
-    var pos = this.sprite.getPosition();
-    var y= pos.y;
-    var csts = sh.xcfg.csts;
-    var wz = ccsx.screen();
-    var keys= sh.main.keys;
-
-    var y2 = wz.height - csts.TILE * 6;
-    var y1 = csts.TILE;
-    var ty, delta= dt * this.speed;
+    var sz = this.sprite.getContentSize().height / 2,
+    pos = this.sprite.getPosition(),
+    y= pos.y,
+    csts = sh.xcfg.csts,
+    wz = ccsx.screen(),
+    keys= sh.main.keys,
+    y2 = wz.height - csts.TILE * 6,
+    y1 = csts.TILE,
+    ty, delta= dt * this.speed;
 
     if (keys[ this.kcodes[0] ]) {
         y += delta;

@@ -9,23 +9,25 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global= this; var _ = global._ ;
-var asterix= global.ZotohLabs.Asterix;
-var sh= asterix.Shell;
-var png= asterix.Pong;
-var echt= global.ZotohLabs.echt;
+(function(undef) { "use strict"; var global= this, _ = global._ ,
+asterix= global.ZotohLabs.Asterix,
+sh= asterix.Shell,
+png= asterix.Pong,
+echt= global.ZotohLabs.echt;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
+
 png.EntityRobot = png.EntityPaddle.extends({
 
   isRobot: function() { return true; },
 
   update: function(dt) {
-    var bp= this.ball.sprite.getPosition();
-    var pos = this.sprite.getPosition();
-    var y= pos.y;
+    var bp= this.ball.sprite.getPosition(),
+    pos = this.sprite.getPosition(),
+    y= pos.y;
+
     if (bp.y > pos.y) {
       if (this.ball.vel.y > 0) {
         y += dt * this.speed;

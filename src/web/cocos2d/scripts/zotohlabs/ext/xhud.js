@@ -66,35 +66,33 @@ asterix.XGameHUDLayer = asterix.XLayer.extend({
     var csts = sh.xcfg.csts,
     wz= ccsx.screen(),
     cw= ccsx.center(),
-    x,y, menu,
-    s1,s2,t1,t2;
+    c, menu;
 
     scale = scale || 1;
 
-    s1 = cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.menu'));
-    t1 = cc.MenuItemSprite.create(s1, null, null, function() {
-      sh.fireEvent('/game/hud/controls/showmenu');
-    }, this);
-    if (scale !== 1) {
-      t1.setScale(scale);
-    }
-    menu= cc.Menu.create(t1);
-    menu.setPosition(wz.width - csts.TILE - csts.S_OFF -
-      ccsx.getScaledWidth(t1) / 2,
-      csts.TILE + csts.S_OFF + ccsx.getScaledHeight(t1) / 2);
-    this.addChild(menu, this.lastZix, ++this.lastTag);
+    menu= ccsx.pmenu1({
+      imgPath: sh.xcfg.getImagePath('gui.mmenu.menu'),
+      scale: scale,
+      selector: function() {
+        sh.fireEvent('/game/hud/controls/showmenu'); }
+    });
+    c= menu.getChildByTag(1);
+    menu.setPosition(wz.width - csts.TILE - ccsx.getScaledWidth(c)/2,
+                     wz.height - csts.TILE * 6 /2 );
+    this.addItem(menu);
 
-    s2= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.replay'));
-    t2 = cc.MenuItemSprite.create(s2, null, null, function() {
-      sh.fireEvent('/game/hud/controls/replay');
-    }, this);
-    if (scale !== 1) {
-      t2.setScale(scale);
-    }
-    this.replayBtn= cc.Menu.create(t2);
-    this.replayBtn.setPosition(cw.x, csts.TILE + csts.S_OFF + ccsx.getScaledHeight(t2) / 2);
-    this.replayBtn.setVisible(false);
-    this.addChild(this.replayBtn, this.lastZix, ++this.lastTag);
+    menu = ccsx.pmenu1({
+      imgPath: sh.xcfg.getImagePath('gui.mmenu.replay'),
+      scale : scale,
+      visible: false,
+      selector: function() {
+        sh.fireEvent('/game/hud/controls/replay'); }
+    });
+    c= menu.getChildByTag(1);
+    menu.setPosition(csts.TILE + ccsx.getScaledWidth(c)/2,
+                     wz.height - csts.TILE * 6 /2 );
+    this.replayBtn=menu;
+    this.addItem(menu);
   }
 
 });
