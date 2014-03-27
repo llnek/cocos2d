@@ -43,9 +43,7 @@ var UILayer = asterix.XLayer.extend({
 
 sh.protos['StartScreen'] = {
   create: function(options) {
-    var fac = new asterix.XSceneFactory({
-      layers: [ asterix.XSplashLayer, UILayer ]
-    });
+    var fac = new asterix.XSceneFactory({ layers: [ asterix.XSplashLayer, UILayer ] });
     var scene = fac.create(options);
     if (scene) {
       scene.ebus.on('/splash/controls/playgame', function() {

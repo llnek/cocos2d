@@ -87,7 +87,30 @@ asterix.COCOS2DX = {
   AnchorBottom: cc.p(0.5, 0),
   AnchorBottomLeft: cc.p(0, 0),
   AnchorLeft: cc.p(0, 0.5),
-  AnchorTopLeft: cc.p(0, 1)
+  AnchorTopLeft: cc.p(0, 1),
+
+  tmenu1: function(options) {
+    var s1= cc.LabelBMFont.create(options.text, options.fontPath),
+    menu,
+    t1= cc.MenuItemLabel.create(s1, options.selector, options.target);
+    t1.setOpacity(255 * 0.9);
+    t1.setScale(options.scale || 1);
+    menu= cc.Menu.create(t1);
+    menu.alignItemsVertically();
+    menu.setPosition(optons.pos);
+    return menu;
+  },
+
+  pmenu1: function(options) {
+    var btn = cc.Sprite.create(options.imgPath),
+    menu,
+    mi= cc.MenuItemSprite.create(btn, null, null, options.selector, options.target);
+    mi.setScale(options.scale || 1);
+    menu = cc.Menu.create(mi);
+    menu.alignItemsVertically();
+    menu.setPosition(options.pos);
+    return menu;
+  }
 
 };
 

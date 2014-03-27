@@ -9,70 +9,80 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this; var _ = global._ ;
-var asterix = global.ZotohLabs.Asterix;
-var ccsx = asterix.COCOS2DX;
-var sh = asterix.Shell;
-var loggr = global.ZotohLabs.logger;
-var echt = global.ZotohLabs.echt;
+(function (undef) { "use strict"; var global= this, _ = global._  ,
+asterix = global.ZotohLabs.Asterix,
+ccsx = asterix.COCOS2DX,
+sh = asterix.Shell,
+echt = global.ZotohLabs.echt,
+loggr = global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // Main menu.
 //////////////////////////////////////////////////////////////////////////////
-var MainMenu = asterix.XMenuLayer.extend({
 
-  doLayout: function() {
-    var dir= cc.Director.getInstance();
-    var me=this, cw = ccsx.center();
-    var csts = sh.xcfg.csts;
-    var wz = ccsx.screen();
-    var w,h, p,s1,s2,s3;
-    var menu;
-    var t1,t2;
+var MainMenuLayer = asterix.XMenuLayer.extend({
 
-    s1= cc.LabelBMFont.create(sh.l10n('%online'), sh.xcfg.getFontPath('font.OogieBoogie'));
-    t1=cc.MenuItemLabel.create(s1,function() {
-      console.log('dude!!!!!!!!!!');
-    }, this);
-    t1.setOpacity(255 * 0.9);
-    t1.setScale(0.5);
-    menu= cc.Menu.create(t1);
-    menu.alignItemsVertically();
-    menu.setPosition(114, wz.height - csts.TILE * 18 - 2);
-    this.addChild(menu, this.lastZix, ++this.lastTag);
+  pkInit: function() {
+    var dir= cc.Director.getInstance(),
+    csts = sh.xcfg.csts,
+    cw = ccsx.center(),
+    wz = ccsx.screen();
 
-    s1= cc.LabelBMFont.create(sh.l10n('%2players'), sh.xcfg.getFontPath('font.OogieBoogie'));
-    t1=cc.MenuItemLabel.create(s1,function() {
-      dir.replaceScene( asterix.Pong.Factory.create({
-        mode: 2
-      }) );
-    }, this);
-    t1.setOpacity(255 * 0.9);
-    t1.setScale(0.5);
-    menu= cc.Menu.create(t1);
-    menu.alignItemsVertically();
-    menu.setPosition(cw.x + 68, wz.height - csts.TILE * 28 - 4);
-    this.addChild(menu, this.lastZix, ++this.lastTag);
+    this.addItem( ccsx.tmenu1({
+      fontPath: sh.xcfg.getFontPath('font.OogieBoogie'),
+      text: sh.l10n('%online'),
+      selector: function() {
+        sh.fireEvent('/mmenu/controls/newgame', { mode: 3});
+      },
+      target: this,
+      scale: 0.5,
+      pos: cc.p(114, wz.height - csts.TILE * 18 - 2)
+    }));
 
-    s1= cc.LabelBMFont.create(sh.l10n('%1player'), sh.xcfg.getFontPath('font.OogieBoogie'));
-    t1=cc.MenuItemLabel.create(s1,function() {
-      dir.replaceScene( asterix.Pong.Factory.create({
-        mode: 1
-      }) );
-    }, this);
-    t1.setOpacity(255 * 0.9);
-    t1.setScale(0.5);
-    menu= cc.Menu.create(t1);
-    menu.alignItemsVertically();
-    menu.setPosition(cw.x + 0, csts.TILE * 19);
-    this.addChild(menu, this.lastZix, ++this.lastTag);
+    this.addItem(ccsx.tmenu1({
+      fontPath: sh.xcfg.getFontPath('font.OogieBoogie'),
+      text: sh.l10n('%2players'),
+      scale: 0.5,
+      selector: function() {
+        sh.fireEvent('/mmenu/controls/newgame', { mode: 2});
+      },
+      target: this
+      pos: cc.p(cw.x + 68, wz.height - csts.TILE * 28 - 4)
+    }));
 
-    return this.doCtrlBtns();
+    this.addItem(ccsx.tmenu1({
+      fontPath: sh.xcfg.getFontPath('font.OogieBoogie'),
+      text: sh.l10n('%1player'),
+      scale: 0.5,
+      selector: function() {
+        sh.fireEvent('/mmenu/controls/newgame', { mode: 1});
+      },
+      target: this,
+      pos: cc.p(cw.x, csts.TILE * 19)
+    }));
+
+    this.doCtrlBtns();
+
+    return this._super();
   }
 
 });
 
-sh.protos['MainMenu'] = new asterix.XSceneFactory(MainMenu);
+sh.protos['MainMenu'] = {
+
+  create: function(options) {
+    var fac = new asterix.XSceneFactory({ layers: [ asterix.XMenuBackLayer, MainMenuLayer ] });
+    var scene =  fac.create(options);
+    if (scene) {
+      scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
+        cc.Director.getInstance().replaceScene( asterix.Invaders.Factory.create(msg));
+      });
+    }
+    return scene;
+  }
+
+};
+
 
 
 }).call(this);
