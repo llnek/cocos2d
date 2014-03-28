@@ -28,8 +28,11 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
     GRID_W: 40,
     GRID_H: 60,
 
+    CANDIES: ['red_candy','amber_candy','white_candy','green_candy','yellow_candy','blue_candy',
+              'purple_plus_candy', 'purple_minus_candy'],
+
     LEVELS: {
-      "1": [ 0, 1, 3, 2 , 2]
+      "1": [ 0, 1, 5, 3, 4]
     },
 
     ROWS: 5,

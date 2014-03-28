@@ -50,6 +50,12 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
 
   getNode: function() { return this.atlasBatch; },
 
+  resetAsNew: function() {
+  },
+
+  reset: function() {
+  },
+
   initLabels: function() {
   },
 
@@ -96,7 +102,10 @@ var GameLayer = asterix.XGameLayer.extend({
       this.atlasBatch = cc.SpriteBatchNode.createWithTexture(img);
       this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
     }
+    this.players=[];
     this.bricks=[];
+    this.actor=null;
+    this.ball=null;
     if (newFlag) {
       this.getHUD().resetAsNew();
     } else {
@@ -104,34 +113,108 @@ var GameLayer = asterix.XGameLayer.extend({
     }
   },
 
-  preStart: function() {
-    var csts= sh.xcfg.csts;
-    var p = this.spawnEntity(bo.EntityPlayer,
-      (ig.system.width - bo.EntityPlayer.prototype.size.x )/2,
-      (csts.GRID_H -1) * csts.TILE -
-      bo.EntityPlayer.prototype.size.y - csts.PADDLE_OFF -
-      bo.EntityBall.prototype.size.y,
-      {});
-    this.genBricks();
-    this.spawnEntity(bo.EntityBall, 100,100,{ paddle: p});
+  operational: function() {
+    return this.players.length > 0;
+  },
+
+  spawnPlayer: function() {
+    var csts= sh.xcfg.csts,
+    cw= ccsx.center(),
+    aa = new bko.EntityPlayer(cw.x, 56, {});
+    this.addItem(aa.create());
+    this.players.push(aa);
+    this.actor= aa;
+  },
+
+  spawnBall: function() {
+    var csts = sh.xcfg.csts,
+    cw= ccsx.center(),
+    aa= new bko.EntityBall(cw.x, 250, {});
+    this.addItem(aa.create());
+    this.ball=aa;
+  },
+
+  initBrickSize: function() {
+    if (this.candySize) {} else {
+      var dummy = new bko.EntityBrick(0,0, { color: 'red_candy' });
+      this.candySize= dummy.create().getContentSize();
+    }
+  },
+
+  initBallSize: function() {
+    if (this.ballSize) {} else {
+      var dummy = new bko.EntityBall(0,0, {});
+      this.ballSize= dummy.create().getContentSize();
+    }
   },
 
   initBricks: function() {
     var csts = sh.xcfg.csts,
+    wz = ccsx.screen(),
+    cw= ccsx.center(),
+    candies= csts.CANDIES,
+    cs= csts.LEVELS["1"],
     b, w, r, c,
-    x, y= csts.TILE + 10,
-    cs= csts.LEVELS["1"];
+    x,
+    y= wz.height - csts.TILE - 56;
 
     for (r=0; r < csts.ROWS; ++r) {
-      x= csts.TILE + csts.LEFT_OFF;
+      x= csts.TILE + csts.LEFT_OFF + this.candySize.width/2;
       for (c=0; c < csts.COLS; ++c) {
-        b= this.spawnEntity(bo.EntityBrick, x, y, { color: cs[r] });
-        b.status=true;
+        b= new bko.EntityBrick(x,y, {
+          color: candies[cs[r]]
+        });
+        this.addItem(b.create());
         this.bricks.push(b);
-        x += bo.EntityBrick.prototype.size.x + 1;
+        x += this.candySize.width + 1;
       }
-      y += bo.EntityBrick.prototype.size.y + 2;
+      y -= this.candySize.height - 2;
     }
+  },
+
+  updateEntities: function(dt) {
+    this.actor.update(dt);
+    this.ball.update(dt);
+  },
+
+  checkEntities: function(dt) {
+    var bs = this.ball.sprite,
+    bp= bs.getPosition();
+
+    // 1. check if ball is lost
+    if (bp.y < ccsx.getBottom(this.actor.sprite)) {
+      this.onBallLost();
+    }
+    else if (ccsx.collide(this.ball, this.actor)) {
+    // 2. check if ball is hitting paddle
+      this.ball.vel.y = - this.ball.vel.y;
+      if (this.ball.vel.x < 0) {
+      } else {
+      }
+      bs.setPosition(bp.x, ccsx.getTop(this.actor.sprite) + ccsx.getHeight(bs) / 2);
+    }
+    else {
+    // 3. check if ball hits brick
+      this.checkBallBricks();
+    }
+  },
+
+  checkBallBricks: function(dt) {
+    var bss = this.bricks,
+    n,
+    m= this.ball;
+
+    for (n=0; n < bss.length; ++n) {
+      if (bss[n].status !== true) { continue; }
+      if (ccsx.collide(m, bss[n])) {
+        m.check(bss[n]);
+        break;
+      }
+    }
+  },
+
+  onBallLost: function() {
+    console.log('poo');
   },
 
   replay: function() {
@@ -140,7 +223,11 @@ var GameLayer = asterix.XGameLayer.extend({
 
   play: function(newFlag) {
     this.reset(newFlag);
+    //this.initPlayerSize();
+    this.initBrickSize();
     this.initBricks();
+    this.spawnPlayer();
+    this.spawnBall();
   },
 
   newGame: function(mode) {
@@ -150,6 +237,39 @@ var GameLayer = asterix.XGameLayer.extend({
   }
 
 });
+
+
+
+
+asterix.BreakOut.Factory = {
+  create: function(options) {
+    var scene = new asterix.XSceneFactory({
+      layers: [
+        BackLayer, GameLayer, HUDLayer
+      ]
+    }).create(options);
+    if (scene) {
+      scene.ebus.on('/game/objects/bricks/killed', function(topic, msg) {
+        sh.main.onAlienKilled(msg);
+      });
+      scene.ebus.on('/game/objects/players/killed', function(topic, msg) {
+        sh.main.onPlayerKilled(msg);
+      });
+      scene.ebus.on('/game/objects/players/earnscore', function(topic, msg) {
+        sh.main.onEarnScore(msg);
+      });
+      scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
+        asterix.XMenuLayer.onShowMenu();
+      });
+      scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
+        sh.main.replay();
+      });
+    }
+
+    return scene;
+  }
+}
+
 
 
 

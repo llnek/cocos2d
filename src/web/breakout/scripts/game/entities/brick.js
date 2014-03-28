@@ -9,35 +9,41 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this; var _ = global._ ;
-var asterix = global.ZotohLabs.Asterix;
-var sh= asterix.Shell;
-var bo= asterix.BreakOut;
-var echt= global.ZotohLabs.echt;
-var loggr= global.ZotohLabs.logger;
+(function(undef) { "use strict"; var global = this, _ = global._  ,
+asterix = global.ZotohLabs.Asterix,
+ccsx = asterix.COCOS2DX,
+bko= asterix.BreakOut,
+sh= asterix.Shell,
+echt= global.ZotohLabs.echt,
+loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-asterix.BreakOut.EntityBrick = asterix.XEntity.extend({
 
-  animSheet: new ig.AnimationSheet('media/breakout/game/bricks.png', 32,16),
-  collides: ig.Entity.COLLIDES.FIXED,
-  type: ig.Entity.TYPE.B,
-  size: { x: 32, y: 16 },
+var Candy = cc.Sprite.extend({
+  ctor: function(x,y,options) {
+    this._super();
+    this.initWithSpriteFrameName(options.frames[0]);
+    this.setPosition(x,y);
+  }
+});
 
-  update: function() {
-    this.parent();
+bko.EntityBrick = asterix.XEntity.extends({
+
+  create: function() {
+    return this.sprite = new Candy(this.startPos.x, this.startPos.y, this.options);
   },
 
-  collideWith: function(other, axis) {
-    this.kill();
-  },
-
-  init: function(x, y, options) {
-    this.parent(x, y, options);
+  injured: function(num, from) {
+    this.sprite.setVisible(false);
     this.status=false;
-    this.addAnim('show', 1, [ this.color]);
+  },
+
+  ctor: function(x, y, options) {
+    this._super(x, y, options);
+    this.status=true;
+    this.options.frames= [ options.color + '.png' ];
   }
 
 

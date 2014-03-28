@@ -9,63 +9,85 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this ; var _ = global._ ;
-var asterix=global.ZotohLabs.Asterix;
-var sh= asterix.Shell;
-var bo= asterix.BreakOut;
-var echt= global.ZotohLabs.echt;
-var loggr= global.ZotohLabs.logger;
+(function(undef) { "use strict"; var global = this, _ = global._  ,
+asterix=global.ZotohLabs.Asterix,
+ccsx= asterix.COCOS2DX,
+bko= asterix.BreakOut,
+sh= asterix.Shell,
+echt= global.ZotohLabs.echt,
+loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-asterix.BreakOut.EntityBall = asterix.XEntity.extend({
 
-  animSheet: new ig.AnimationSheet('media/breakout/game/ball.png', 18, 18),
-  collides: ig.Entity.COLLIDES.ACTIVE,
-  size: { x: 18, y: 18 },
-  bounciness: 1,
-  speed: 180,
-  type: ig.Entity.TYPE.B,
-
-  update: function() {
-    this.parent();
-    if (echt(this.paddle)) {
-      if (this.pos.y > this.paddle.pos.y) {
-        this.paddle.kill();
-        this.paddle= null;
-      }
-    }
-  },
-
-  collideWith: function(other, axis) {
-    switch (axis) {
-    case 'y':
-      if (other.isPaddle === true) {
-        this.vel.x = this.findRightBounce(other);
-      }
-    }
-  },
-
-  findRightBounce: function(paddle) {
-    var magnitude = (this.distanceTo(paddle) - this.size.y / 2 - paddle.size.y / 2);
-    // using ratio allows us to account for if the paddle changes sizes with powerups
-    var ratio = magnitude / (paddle.size.x / 2) * 2.5;
-    if (this.pos.x + this.size.x / 2 < paddle.pos.x + paddle.size.x / 2) {
-      // send the ball to the left if hit on the left side of the paddle, and vice versa
-      ratio = -ratio;
-    }
-    return this.speed * ratio;
-  },
-
-  init: function(x, y, options) {
-    this.parent(x, y, options);
-    this.addAnim('show', 1, [0]);
-    this.maxVel.y = 300;
-    this.vel.y = 100 * asterix.fns.randomSign();
-    this.vel.x = 100 * asterix.fns.randomSign();
+var Ball = cc.Sprite.extend({
+  ctor: function(x,y,options) {
+    this._super();
+    this.initWithSpriteFrameName(options.frames[0]);
+    this.setPosition(x,y);
   }
+});
 
+
+bko.EntityBall = asterix.XEntity.extends({
+
+  speed: 180,
+
+  update: function(dt) {
+    var sz= this.sprite.getContentSize().height / 2,
+    sw= this.sprite.getContentSize().width / 2,
+    pos = this.sprite.getPosition(),
+    csts = sh.xcfg.csts,
+    wz = ccsx.screen(),
+    y = pos.y + dt * this.vel.y,
+    x = pos.x + dt * this.vel.x,
+    b_y1= csts.TILE,
+    b_y2 = wz.height - csts.TILE,
+    b_x1= csts.TILE,
+    b_x2 = wz.width - csts.TILE;
+
+    // hitting top wall ?
+    if (y + sz > b_y2) {
+      y = b_y2 - sz;
+      this.vel.y = - this.vel.y
+    }
+    // hitting bottom wall ?
+    if (y - sz < b_y1) {
+      y = b_y1 + sz;
+      this.vel.y = - this.vel.y
+    }
+
+    if (x + sw > b_x2) {
+      x = b_x2 - sw;
+      this.vel.x = - this.vel.x;
+    }
+
+    if (x - sw < b_x1) {
+      x = b_x1 + sw;
+      this.vel.x = - this.vel.x;
+    }
+
+    this.lastPos = this.sprite.getPosition();
+    this.sprite.setPosition(x, y);
+  },
+
+  create: function() {
+    this.vel.y = 200 * asterix.fns.randomSign();
+    this.vel.x = 200 * asterix.fns.randomSign();
+    return this.sprite= new Ball(this.startPos.x, this.startPos.y, this.options);
+  },
+
+  check: function(other) {
+    if (other instanceof bko.EntityBrick) {
+      other.injured(0,this);
+    }
+  },
+
+  ctor: function(x, y, options) {
+    this._super(x, y, options);
+    this.options.frames= ['ball.png'];
+  }
 
 });
 

@@ -13,16 +13,12 @@
 
 global.document.ccConfig.initAppFiles('breakout', [
 
-/*
-      'game/invaders/entities/explode.js',
-      'game/invaders/entities/missile.js',
-      'game/invaders/entities/bomb.js',
-      'game/invaders/entities/player.js',
-      'game/invaders/entities/alien.js',
-      'game/invaders/game.js',
-      */
-      'game/invaders/mmenu.js',
-      'game/invaders/splash.js'
+  'game/breakout/entities/player.js',
+  'game/breakout/entities/ball.js',
+  'game/breakout/entities/brick.js',
+  'game/breakout/game.js',
+  'game/breakout/mmenu.js',
+  'game/breakout/splash.js'
 ]);
 
 

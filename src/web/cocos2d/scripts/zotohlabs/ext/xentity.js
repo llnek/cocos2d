@@ -57,6 +57,7 @@ asterix.XEntity = klass.extends({
   },
 
   startPos: cc.p(0,0),
+  lastPos: null,
   health: 0,
   speed: 0,
   value: 0,
