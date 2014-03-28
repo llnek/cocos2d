@@ -29,6 +29,7 @@ loggr= global.ZotohLabs.logger;
 //////////////////////////////////////////////////////////////////////////////
 
 var BackLayer = asterix.XLayer.extend({
+
   pkInit: function() {
     var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gamelevel1.tiles.arena'));
     this.addItem(map);
@@ -76,41 +77,52 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
     cw= ccsx.center(),
     wz= ccsx.screen();
 
-    this.title= cc.LabelBMFont.create('', sh.xcfg.getFontPath('font.TinyBoxBB'));
-    this.title.setAnchorPoint(ccsx.AnchorTop);
-    this.title.setPosition(cw.x, wz.height - csts.TILE - csts.GAP);
-    this.title.setScale(12/72);
-    this.title.setOpacity(0.9*255);
+    this.title = ccsx.bmfLabel({
+      fontPath: sh.xcfg.getFontPath('font.TinyBoxBB'),
+      text: '',
+      anchor: ccsx.AnchorTop,
+      scale: 12/72,
+      pos: cc.p(cw.x, wz.height - csts.TILE - csts.GAP)
+    });
     this.addItem(this.title);
 
-    this.score1= cc.LabelBMFont.create('888', sh.xcfg.getFontPath('font.TinyBoxBB'));
-    this.score1.setScale(20/72);
-    this.score1.setOpacity(0.9*255);
-    this.score1.setColor(new cc.Color3B(253,188,178)); // 0xfdbcb2;
-    this.score1.setPosition(csts.TILE + csts.S_OFF + 2, wz.height - csts.TILE - csts.S_OFF);
-    this.score1.setAnchorPoint(cc.p(0,1));
+    this.score1= ccsx.bmfLabel({
+      fontPath: sh.xcfg.getFontPath('font.TinyBoxBB'),
+      text: '888',
+      scale: 20/72,
+      color: cc.c3b(253,188,178), // 0xfdbcb2;
+      pos: cc.p(csts.TILE + csts.S_OFF + 2,
+                wz.height - csts.TILE - csts.S_OFF),
+      anchor: ccsx.AnchorTopLeft
+    });
     this.addItem(this.score1);
 
-    this.score2= cc.LabelBMFont.create('888', sh.xcfg.getFontPath('font.TinyBoxBB'));
-    this.score2.setScale(20/72);
-    this.score2.setOpacity(0.9*255);
-    this.score2.setColor(new cc.Color3B(255,102,0)); // 0xff6600;
-    this.score2.setPosition(wz.width - csts.TILE - csts.S_OFF,
-      wz.height - csts.TILE - csts.S_OFF);
-    this.score2.setAnchorPoint(cc.p(1,1));
+    this.score2= ccsx.bmfLabel({
+      fontPath: sh.xcfg.getFontPath('font.TinyBoxBB'),
+      text: '888',
+      scale: 20/72,
+      color: cc.c3b(255,102,0), // 0xff6600;
+      pos: cc.p(wz.width - csts.TILE - csts.S_OFF,
+                wz.height - csts.TILE - csts.S_OFF),
+      anchor: ccsx.AnchorTopRight
+    });
     this.addItem(this.score2);
 
-    this.status= cc.LabelBMFont.create('', sh.xcfg.getFontPath('font.TinyBoxBB'));
-    this.status.setScale(12/72);
-    this.status.setOpacity(0.9*255);
-    this.status.setPosition(cw.x, csts.TILE * 10);
+    this.status= ccsx.bmfLabel({
+      fontPath: sh.xcfg.getFontPath('font.TinyBoxBB'),
+      text: '',
+      scale: 12/72,
+      pos: cc.p(cw.x, csts.TILE * 10)
+    });
     this.addItem(this.status);
 
-    this.result= cc.LabelBMFont.create('', sh.xcfg.getFontPath('font.TinyBoxBB'));
-    this.result.setScale(12/72);
-    this.result.setOpacity(0.9*255);
-    this.result.setPosition(cw.x, csts.TILE * 10);
-    this.result.setVisible(false);
+    this.result= ccsx.bmfLabel({
+      fontPath: sh.xcfg.getFontPath('font.TinyBoxBB'),
+      text: '',
+      scale: 12/72,
+      pos: cc.p(cw.x, csts.TILE * 10),
+      visible: false
+    });
     this.addItem(this.result);
   },
 
@@ -467,16 +479,21 @@ var GameLayer = asterix.XGameLayer.extend({
 asterix.TicTacToe.Factory = {
 
   create: function(options) {
-    var fac = new asterix.XSceneFactory({ layers: [ BackLayer, GameLayer, HUDLayer ] });
-    var scene= fac.create(options);
-    if (!scene) { return null; }
-    scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
-      asterix.XMenuLayer.onShowMenu();
-    });
-    scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
-      sh.main.replay();
-    });
-
+    var scene = new asterix.XSceneFactory({
+      layers: [
+        BackLayer,
+        GameLayer,
+        HUDLayer
+      ]
+    }).create(options);
+    if (scene) {
+      scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
+        asterix.XMenuLayer.onShowMenu();
+      });
+      scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
+        sh.main.replay();
+      });
+    }
     return scene;
   }
 

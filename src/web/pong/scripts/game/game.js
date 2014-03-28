@@ -22,6 +22,7 @@ loggr= global.ZotohLabs.logger;
 //////////////////////////////////////////////////////////////////////////////
 
 var BackLayer = asterix.XLayer.extend({
+
   pkInit: function() {
     var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gamelevel1.tiles.arena'));
     this.addItem(map);
@@ -345,16 +346,21 @@ var GameLayer = asterix.XGameLayer.extend({
 asterix.Pong.Factory = {
 
   create: function(options) {
-    var fac = new asterix.XSceneFactory({ layers: [ BackLayer, GameLayer, HUDLayer ] });
-    var scene= fac.create(options);
-    if (!scene) { return null; }
-    scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
-      asterix.XMenuLayer.onShowMenu();
-    });
-    scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
-      sh.main.replay();
-    });
-
+    var scene = new asterix.XSceneFactory({
+      layers: [
+        BackLayer,
+        GameLayer,
+        HUDLayer
+      ]
+    }).create(options);
+    if (scene) {
+      scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
+        asterix.XMenuLayer.onShowMenu();
+      });
+      scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
+        sh.main.replay();
+      });
+    }
     return scene;
   }
 

@@ -31,6 +31,7 @@ sh.pools['live-bombs'] = {};
 //////////////////////////////////////////////////////////////////////////////
 
 var BackLayer = asterix.XLayer.extend({
+
   pkInit: function() {
     var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gamelevel1.tiles.arena'));
     this.addItem(map);
@@ -62,10 +63,12 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
     var csts = sh.xcfg.csts,
     wz = ccsx.screen();
 
-    this.scoreLabel = cc.LabelBMFont.create('0', sh.xcfg.getFontPath('font.TinyBoxBB'));
-    this.scoreLabel.setAnchorPoint(1,0);
-    this.scoreLabel.setScale(12/72);
-    this.scoreLabel.setOpacity(0.9*255);
+    this.scoreLabel = ccsx.bmfLabel({
+      fontPath: sh.xcfg.getFontPath('font.TinyBoxBB'),
+      text: '0',
+      anchor: ccsx.AnchorBottomRight,
+      scale: 12/72
+    });
     this.scoreLabel.setPosition( wz.width - csts.TILE - csts.S_OFF,
       wz.height - csts.TILE - csts.S_OFF - ccsx.getScaledHeight(this.scoreLabel));
 

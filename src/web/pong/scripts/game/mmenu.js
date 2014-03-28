@@ -71,8 +71,12 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
 sh.protos['MainMenu'] = {
 
   create: function(options) {
-    var fac = new asterix.XSceneFactory({ layers: [ asterix.XMenuBackLayer, MainMenuLayer ] });
-    var scene =  fac.create(options);
+    var scene = new asterix.XSceneFactory({
+      layers: [
+        asterix.XMenuBackLayer,
+        MainMenuLayer
+      ]
+    }).create(options);
     if (scene) {
       scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
         cc.Director.getInstance().replaceScene( asterix.Pong.Factory.create(msg));

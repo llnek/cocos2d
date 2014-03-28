@@ -98,6 +98,7 @@ asterix.COCOS2DX = {
     t1.setTag(1);
     menu= cc.Menu.create(t1);
     menu.alignItemsVertically();
+    if (options.anchor) { menu.setAnchorPoint(options.anchor); }
     if (options.pos) { menu.setPosition(options.pos); }
     if (options.visible === false) { menu.setVisible(false); }
     return menu;
@@ -111,6 +112,7 @@ asterix.COCOS2DX = {
     mi.setTag(1);
     menu = cc.Menu.create(mi);
     menu.alignItemsVertically();
+    if (options.anchor) { menu.setAnchorPoint(options.anchor); }
     if (options.pos) { menu.setPosition(options.pos); }
     if (options.visible === false) { menu.setVisible(false); }
     return menu;
@@ -121,6 +123,7 @@ asterix.COCOS2DX = {
     f.setScale( options.scale || 1);
     if (options.color) { f.setColor(options.color); }
     if (options.pos) { f.setPosition(options.pos); }
+    if (options.anchor) { f.setAnchorPoint(options.anchor); }
     if (options.visible === false) { f.setVisible(false); }
     f.setOpacity(0.9*255);
     return f;

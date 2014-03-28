@@ -21,18 +21,17 @@ loggr = global.ZotohLabs.logger;
 var UILayer = asterix.XLayer.extend({
 
   pkInit: function() {
-    var imgUrl= sh.xcfg.getImagePath('splash.play-btn'),
-    btn = cc.Sprite.create(imgUrl),
-    cw = ccsx.center(),
-    wz = ccsx.screen(),
-    mi= cc.MenuItemSprite.create(btn, null, null, function() {
-      sh.fireEvent('/splash/controls/playgame');
-    }, this),
-    menu = cc.Menu.create(mi);
+    var cw = ccsx.center(),
+    wz = ccsx.screen();
 
-    menu.alignItemsVerticallyWithPadding(10);
-    menu.setPosition(cw.x, 56);
-    this.addItem(menu);
+    this.addItem( ccsx.pmenu1({
+      imgPath: sh.xcfg.getImagePath('splash.play-btn'),
+      pos: cc.p(cw.x, 56),
+      selector: function() {
+        sh.fireEvent('/splash/controls/playgame');
+      },
+      target: this
+    }));
 
     return this._super();
   }
@@ -41,8 +40,12 @@ var UILayer = asterix.XLayer.extend({
 
 sh.protos['StartScreen'] = {
   create: function(options) {
-    var fac = new asterix.XSceneFactory({ layers: [ asterix.XSplashLayer, UILayer ] });
-    var scene = fac.create(options);
+    var scene = new asterix.XSceneFactory({
+      layers: [
+        asterix.XSplashLayer,
+        UILayer
+      ]
+    }).create(options);
     if (scene) {
       scene.ebus.on('/splash/controls/playgame', function() {
           var dir= cc.Director.getInstance(),
