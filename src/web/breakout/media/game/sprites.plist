@@ -69,6 +69,58 @@
                 <key>sourceSize</key>
                 <string>{32,16}</string>
             </dict>
+            <key>boom_0.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{124,20},{2,2}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{3,3},{2,2}}</string>
+                <key>sourceSize</key>
+                <string>{8,8}</string>
+            </dict>
+            <key>boom_1.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{118,20},{4,4}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{2,2},{4,4}}</string>
+                <key>sourceSize</key>
+                <string>{8,8}</string>
+            </dict>
+            <key>boom_2.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{118,12},{6,6}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{1,1},{6,6}}</string>
+                <key>sourceSize</key>
+                <string>{8,8}</string>
+            </dict>
+            <key>boom_3.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{118,2},{8,8}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{8,8}}</string>
+                <key>sourceSize</key>
+                <string>{8,8}</string>
+            </dict>
             <key>green_candy.png</key>
             <dict>
                 <key>frame</key>
@@ -222,7 +274,7 @@
             <key>size</key>
             <string>{128,128}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:ca0fcaacd3ac6365353f506a64303dd7:c70be5b0ca1dfd1854ae5029fd5e39c7:db71e206b3c010bfb176561963c50b15$</string>
+            <string>$TexturePacker:SmartUpdate:947387ca237772888b1deb474d4f8897:3e5d84c3753cf679f4983996bac3281f:db71e206b3c010bfb176561963c50b15$</string>
             <key>textureFileName</key>
             <string>sprites.png</string>
         </dict>

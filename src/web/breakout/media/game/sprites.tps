@@ -4,7 +4,7 @@
         <key>fileFormatVersion</key>
         <int>3</int>
         <key>texturePackerVersion</key>
-        <string>3.3.1</string>
+        <string>3.3.2</string>
         <key>fileName</key>
         <string>/wdrive/mygithub/cocos2d/src/web/breakout/media/game/sprites.tps</string>
         <key>autoSDSettings</key>
@@ -167,6 +167,8 @@
             <enum type="SpriteSettings::TrimMode">Trim</enum>
             <key>heuristicMask</key>
             <false/>
+            <key>pivotPoint</key>
+            <enum type="SpriteSettings::PivotPoint">Center</enum>
         </struct>
         <key>fileList</key>
         <array>
