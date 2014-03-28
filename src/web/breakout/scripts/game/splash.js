@@ -7,62 +7,58 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this; var _ = global._ ;
-var asterix = global.ZotohLabs.Asterix;
-var bout = asterix.BreakOut;
-var sh = asterix.Shell;
-var loggr = global.ZotohLabs.logger;
-var echt = global.ZotohLabs.echt;
+(function (undef) { "use strict"; var global= this,  _ = global._ ,
+asterix = global.ZotohLabs.Asterix,
+ccsx = asterix.COCOS2DX,
+sh = asterix.Shell,
+loggr = global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
-// module def
+// splash screen for the game - make it look nice please.
 //////////////////////////////////////////////////////////////////////////////
-asterix.BreakOut.MainMenu = asterix.XMainMenu.extend({
-  appObj: bout
+var UILayer = asterix.XLayer.extend({
+
+  pkInit: function() {
+    var cw = ccsx.center(),
+    wz = ccsx.screen();
+
+    this.addItem( ccsx.pmenu1({
+      imgPath: sh.xcfg.getImagePath('splash.play-btn'),
+      pos: cc.p(cw.x, 56),
+      selector: function() {
+        sh.fireEvent('/splash/controls/playgame');
+      },
+      target: this
+    }));
+
+    return this._super();
+  }
+
 });
 
-//////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
-var PlayBtnCtor = asterix.XButtonFactory.define({
-  animSheet: new ig.AnimationSheet(sh.imgFile('breakout','gui','play_btn.png'), 194, 58),
-  size: { x: 194, y: 58 },
-  clicker: function() { sh.xcfg.smac.play0(); }
-});
-
-//////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
-sh.xcfg.game.splash = asterix.XScreenFactory.define({
-
-  preStart: function() {
-    var y = ig.system.height - PlayBtnCtor.prototype.size.y - 20;
-    var x = (ig.system.width - PlayBtnCtor.prototype.size.x) / 2;
-    this.spawnEntity(PlayBtnCtor, x, y, {});
-  },
-
-  onStart: function() {
-    sh.xcfg.smac.genesis(this);
-  },
-
-  update: function() {
-    this.parent();
-    if (this.pressed('continue')) {
-      sh.xcfg.smac.play0();
+sh.protos['StartScreen'] = {
+  create: function(options) {
+    var scene = new asterix.XSceneFactory({
+      layers: [
+        asterix.XSplashLayer,
+        UILayer
+      ]
+    }).create(options);
+    if (scene) {
+      scene.ebus.on('/splash/controls/playgame', function() {
+          var dir= cc.Director.getInstance(),
+          ss= sh.protos['StartScreen'],
+          mm= sh.protos['MainMenu'];
+          dir.replaceScene( mm.create({
+            onBack: function() { dir.replaceScene( ss.create() ); }
+          }));
+      });
     }
-  },
-
-  init: function() {
-    this.parent();
-    this.start();
-  },
-
-  name: 'startscreen'
-
-});
-
+    return scene;
+  }
+};
 
 
 }).call(this);

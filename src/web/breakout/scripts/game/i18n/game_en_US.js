@@ -9,12 +9,12 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this; var _ = global._ ;
-var asterix= global.ZotohLabs.Asterix;
-var sh= asterix.Shell;
-var loggr= global.ZotohLabs.logger;
+(function(undef) { "use strict"; var global = this, _ = global._ ,
+asterix= global.ZotohLabs.Asterix,
+sh= asterix.Shell,
+loggr= global.ZotohLabs.logger;
 
-ig.merge(global.ZotohLabs.Asterix.Shell.xcfg.l10n, {
+global.ZotohLabs.klass.merge(global.ZotohLabs.Asterix.Shell.xcfg.l10n, {
 
 "en-US" : {
 
@@ -55,4 +55,5 @@ loggr.info("Loading resource bundle");
 sh.l10nInit(sh.xcfg.l10n);
 
 }).call(this);
+
 
