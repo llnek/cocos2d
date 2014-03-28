@@ -80,7 +80,42 @@ bko.EntityBall = asterix.XEntity.extends({
 
   check: function(other) {
     if (other instanceof bko.EntityBrick) {
-      other.injured(0,this);
+      this.onBrick(other);
+    }
+    other.injured(0,this);
+  },
+
+  onBrick: function(brick) {
+    var kz= brick.sprite.getContentSize(),
+    bz = this.sprite.getContentSize(),
+    ks= brick.sprite,
+    bs= this.sprite,
+    ka = { L: ccsx.getLeft(ks), T: ccsx.getTop(ks),
+           R: ccsx.getRight(ks), B: ccsx.getBottom(ks) },
+    ba = { L : ccsx.getLeft(bs), T: ccsx.getTop(bs),
+           R: ccsx.getRight(bs), B: ccsx.getBottom(bs) };
+
+    // ball coming down from top?
+    if (ba.T > ka.T &&  ka.T > ba.B) {
+      this.vel.y = - this.vel.y;
+    }
+    else
+    // ball coming from bottom?
+    if (ba.T > ka.B &&  ka.B > ba.B) {
+      this.vel.y = - this.vel.y;
+    }
+    else
+    // ball coming from left?
+    if (ka.L > ba.L && ba.R > ka.L) {
+      this.vel.x = - this.vel.x;
+    }
+    else
+    // ball coming from right?
+    if (ka.R > ba.L && ba.R > ka.R) {
+      this.vel.x = - this.vel.x;
+    }
+    else {
+      loggr.error("Failed to determine the collision of ball and brick.");
     }
   },
 
