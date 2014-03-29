@@ -50,6 +50,11 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
 
   getNode: function() { return this.atlasBatch; },
 
+  updateScore: function(n) {
+    this.score += n;
+    this.drawScore();
+  },
+
   resetAsNew: function() {
     this.score = 0;
     this.reset();
@@ -88,6 +93,10 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
     });
 
     this.lives.create();
+  },
+
+  drawScore: function() {
+    this.scoreLabel.setString(Number(this.score).toString());
   },
 
   removeItem: function(n) {
@@ -277,6 +286,10 @@ var GameLayer = asterix.XGameLayer.extend({
     var obj= new bko.EntityExplode(msg.x, msg.y, msg);
     this.addItem(obj.create());
     sh.xcfg.sfxPlay('ball-brick');
+  },
+
+  onEarnScore: function(msg) {
+    this.getHUD().updateScore(msg.value);
   },
 
   newGame: function(mode) {

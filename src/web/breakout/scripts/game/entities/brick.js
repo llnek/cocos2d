@@ -42,11 +42,15 @@ bko.EntityBrick = asterix.XEntity.extends({
     sh.fireEvent('/game/objects/bricks/killed', {
       x: pos.x, y: pos.y
     });
+    sh.fireEvent('/game/objects/players/earnscore', {
+      value: this.value
+    });
   },
 
   ctor: function(x, y, options) {
     this._super(x, y, options);
     this.status=true;
+    this.value= 10;
     this.options.frames= [ options.color + '.png' ];
   }
 
