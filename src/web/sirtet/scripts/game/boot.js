@@ -9,32 +9,20 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this; var _ = global._ ;
-var asterix= global.ZotohLabs.Asterix;
-var sh= asterix.Shell;
-var loggr= global.ZotohLabs.logger;
+(function(undef) { "use strict"; var global= this; var _ = global._;
 
-global.ZotohLabs.klass.merge(global.ZotohLabs.Asterix.Shell.xcfg.l10n, {
+global.document.ccConfig.initAppFiles('sirtet', [
 
-"en-US" : {
+      /*
+      'game/sirtet/entities/entity.js',
+      'game/sirtet/entities/ball.js',
+      'game/sirtet/entities/human.js',
+      'game/sirtet/entities/robot.js',
+      'game/sirtet/game.js',
+      */
+      'game/sirtet/mmenu.js',
+      'game/sirtet/splash.js'
+]);
 
-  "%whowin" : "{{who}} Wins!",
-
-  "%p2" : "P2",
-  "%p1" : "P1"
-
-}
-
-
-
-
-
-
-});
-
-loggr.info("Loading resource bundle");
-sh.l10nInit(sh.xcfg.l10n);
 
 }).call(this);
-
-

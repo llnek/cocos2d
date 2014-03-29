@@ -9,37 +9,26 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this; var _ = global._ ;
-var asterix= global.ZotohLabs.Asterix;
-var sh= asterix.Shell;
-var br= asterix.Bricks;
-var loggr= global.ZotohLabs.logger;
-var echt= global.ZotohLabs.echt;
+(function (undef) { "use strict"; var global= this, _ = global._  ,
+asterix= global.ZotohLabs.Asterix,
+ccsx= asterix.COCOS2DX,
+bks= asterix.Bricks,
+sh= asterix.Shell,
+echt= global.ZotohLabs.echt,
+loggr= global.ZotohLabs.logger;
 
-asterix.Bricks.EntityBlock= asterix.XEntity.extend({
+//////////////////////////////////////////////////////////////////////////////
+// module def
+//////////////////////////////////////////////////////////////////////////////
 
-  collides: ig.Entity.COLLIDES.PASSIVE,
-  type: ig.Entity.TYPE.A,
-  checkAgainst: ig.Entity.TYPE.NONE,
+asterix.Bricks.EntityBlock= asterix.XEntity.extends({
 
   blink: function() {
-    this.currentAnim= this.anims.blink;
+    //this.currentAnim= this.anims.blink;
   },
 
-  update: function() {
-    this.parent();
-  },
-
-  draw: function() {
-    this.parent();
-  },
-
-  init: function(x,y,settings) {
-    this.parent(x,y,settings);
-    this.animSheet= new ig.AnimationSheet( 'media/bricks/game/'+this.animID+ '.png', 16, 16 );
-    this.addAnim( 'blink', 0.1, [1,0]);
-    this.addAnim( 'show', 1, [0]);
-    this.currentAnim= this.anims.show;
+  ctor: function(x,y,options) {
+    this._super(x,y,options);
   }
 
 });

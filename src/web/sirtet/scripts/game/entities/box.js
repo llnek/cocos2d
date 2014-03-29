@@ -9,14 +9,18 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this; var _ = global._ ;
-var asterix= global.ZotohLabs.Asterix;
-var sh= asterix.Shell;
-var br= asterix.Bricks;
-var loggr= global.ZotohLabs.logger;
-var echt= global.ZotohLabs.echt;
+(function (undef) { "use strict"; var global= this, _ = global._ ,
+asterix= global.ZotohLabs.Asterix,
+echt= global.ZotohLabs.echt,
+bks= asterix.Bricks,
+sh= asterix.Shell,
+loggr= global.ZotohLabs.logger;
 
-asterix.Bricks.EntityBox= br.EntityShape.extend({
+//////////////////////////////////////////////////////////////////////////////
+// module def
+//////////////////////////////////////////////////////////////////////////////
+
+asterix.Bricks.EntityBox= bks.EntityShape.extends({
 
   manifest: [
     [ [1,1],
@@ -28,20 +32,7 @@ asterix.Bricks.EntityBox= br.EntityShape.extend({
     [ [1,1],
       [1,1] ]
   ],
-  matrix: 2,
-
-  update: function() {
-    this.parent();
-  },
-
-  draw: function() {
-    this.parent();
-  },
-
-  init: function(x,y,settings) {
-    this.parent(x,y,settings);
-  }
-
+  matrix: 2
 
 });
 

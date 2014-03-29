@@ -9,16 +9,20 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this; var _ = global._;
-var asterix= global.ZotohLabs.Asterix;
-var sh= asterix.Shell;
-var br= asterix.Bricks;
-var loggr= global.ZotohLabs.logger;
-var echt= global.ZotohLabs.echt;
+(function (undef) { "use strict"; var global= this, _ = global._ ,
+asterix= global.ZotohLabs.Asterix,
+ccsx= asterix.COCOS2DX,
+bks= asterix.Bricks,
+sh= asterix.Shell,
+echt= global.ZotohLabs.echt,
+loggr= global.ZotohLabs.logger;
 
-asterix.Bricks.EntityShape= asterix.XEntity.extend({
+//////////////////////////////////////////////////////////////////////////////
+// module def
+//////////////////////////////////////////////////////////////////////////////
 
-  //rotations: [0,1,2,3],
+asterix.Bricks.EntityShape= asterix.XEntity.extends({
+
   manifest: [],
   blocks: [],
   matrix: 3,
@@ -27,9 +31,7 @@ asterix.Bricks.EntityShape= asterix.XEntity.extend({
   paint: false,
 
   clear: function() {
-    _.each(this.blocks, function(z) {
-      z.kill();
-    });
+    _.each(this.blocks, function(z) { z.dispose(); });
     this.blocks=[];
   },
 
@@ -93,12 +95,6 @@ asterix.Bricks.EntityShape= asterix.XEntity.extend({
       this.draw();
     }
     return bs.length > 0;
-  },
-
-  update: function() {
-  },
-
-  draw: function() {
   },
 
   numRotates: function() {
@@ -166,7 +162,8 @@ asterix.Bricks.EntityShape= asterix.XEntity.extend({
   },
 
   reify: function() {
-    this.reifyBlocks( this.pos.x, this.pos.y, this.formID, this.findBBox(this.pos.x, this.pos.y, this.formID));
+    this.reifyBlocks( this.startPos.x, this.startPos.y, this.formID,
+                      this.findBBox(this.startPos.x, this.startPos.y, this.formID));
   },
 
   regoBlockInMap: function(z) {
@@ -186,8 +183,8 @@ asterix.Bricks.EntityShape= asterix.XEntity.extend({
     _.map(this.blocks,function(z) { me.regoBlockInMap(z); });
   },
 
-  init: function(x,y,settings) {
-    this.parent(x,y,settings);
+  ctor: function(x,y,options) {
+    this._super(x,y,options);
     // start with random rotation.
     this.formID= asterix.fns.rand(this.numRotates());
     this.png = '' + this.randPng();
