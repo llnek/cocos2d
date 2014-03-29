@@ -9,11 +9,11 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this, _ = global._  ,
+(function(undef) { "use strict"; var global = this, _ = global._ ,
 asterix = global.ZotohLabs.Asterix,
 ccsx = asterix.COCOS2DX,
-bko= asterix.BreakOut,
-sh= asterix.Shell,
+ivs = asterix.BreakOut,
+sh = asterix.Shell,
 echt= global.ZotohLabs.echt,
 loggr= global.ZotohLabs.logger;
 
@@ -21,42 +21,51 @@ loggr= global.ZotohLabs.logger;
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-var Candy = cc.Sprite.extend({
-  ctor: function(x,y,options) {
+var Boom = cc.Sprite.extend({
+
+  ctor: function(entity,x,y,options) {
+    this.entity=entity;
     this._super();
     this.initWithSpriteFrameName(options.frames[0]);
     this.setPosition(x,y);
+
+    var sfc = cc.SpriteFrameCache.getInstance(),
+    frs = [ sfc.getSpriteFrame(options.frames[0]), sfc.getSpriteFrame(options.frames[1]),
+            sfc.getSpriteFrame(options.frames[2]), sfc.getSpriteFrame(options.frames[3]) ],
+    animation = cc.Animation.create(frs, options.frameTime);
+
+    this.runAction( cc.Sequence.create(cc.Animate.create(animation),
+      cc.CallFunc.create(function() {
+        this.entity.dispose();
+      }, this)
+    ));
   }
+
 });
 
-bko.EntityBrick = asterix.XEntity.extends({
+asterix.BreakOut.EntityExplode = asterix.XEntity.extends({
 
-  create: function() {
-    return this.sprite = new Candy(this.startPos.x, this.startPos.y, this.options);
+  update: function(dt) {
   },
 
-  injured: function(num, from) {
-    var pos = this.sprite.getPosition();
-    this.sprite.setVisible(false);
-    this.status=false;
-    sh.fireEvent('/game/objects/bricks/killed', {
-      x: pos.x, y: pos.y
-    });
+  create: function() {
+    return this.sprite = new Boom(this, this.startPos.x, this.startPos.y, this.options);
   },
 
   ctor: function(x, y, options) {
     this._super(x, y, options);
-    this.status=true;
-    this.options.frames= [ options.color + '.png' ];
+    this.options.frameTime= 0.1;
+    this.options.frames= ['boom_0.png','boom_1.png','boom_2.png','boom_3.png'];
   }
 
-
 });
+
+
+
 
 
 
 
 }).call(this);
-
 
 

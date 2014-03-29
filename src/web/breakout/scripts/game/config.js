@@ -37,6 +37,9 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
 
     ROWS: 5,
     COLS: 9,
+    TOP: 6,
+
+    TOP_ROW: 10,
 
     PADDLE_OFF: 4,
     LEFT_OFF: 4
@@ -53,7 +56,9 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
     },
     sounds: {
       'game_end' : 'media/cocos2d/sfx/MineExplosion',
-      'game_quit' : 'media/cocos2d/sfx/Death'
+      'game_quit' : 'media/cocos2d/sfx/Death',
+      'ball-paddle' : 'media/cocos2d/sfx/ElevatorBeep',
+      'ball-brick' : 'media/cocos2d/sfx/MineBeep'
     },
     fonts: {
     }

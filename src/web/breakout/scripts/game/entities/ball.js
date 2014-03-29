@@ -43,7 +43,7 @@ bko.EntityBall = asterix.XEntity.extends({
     y = pos.y + dt * this.vel.y,
     x = pos.x + dt * this.vel.x,
     b_y1= csts.TILE,
-    b_y2 = wz.height - csts.TILE,
+    b_y2 = wz.height - csts.TOP * csts.TILE,
     b_x1= csts.TILE,
     b_x2 = wz.width - csts.TILE;
 

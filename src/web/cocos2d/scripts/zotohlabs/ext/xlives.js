@@ -12,6 +12,7 @@
 (function (undef){ "use strict"; var global = this,  _ = global._  ,
 asterix = global.ZotohLabs.Asterix,
 klass = global.ZotohLabs.klass,
+ccsx = asterix.COCOS2DX,
 sh = asterix.Shell,
 echt= global.ZotohLabs.echt,
 loggr= global.ZotohLabs.logger;
@@ -24,16 +25,19 @@ asterix.XLive = cc.Sprite.extend({
   ctor: function(x, y, options) {
     this._super();
     this.initWithSpriteFrameName(options.frames[0]);
+    if ( echt(options.scale)) {
+      this.setScale(options.scale);
+    }
     this.setPosition(x,y);
   }
 });
 
 asterix.XHUDLives = klass.extends({
 
-  curLives: 0,
+  curLives: -1,
 
   reduce: function(howmany) {
-    this.curLives = Math.max( 0, this.curLives - howmany);
+    this.curLives = this.curLives - howmany;
     for (var n=0; n < howmany; ++n) {
       this.hud.removeItem(this.icons.pop());
     }
@@ -44,7 +48,7 @@ asterix.XHUDLives = klass.extends({
   },
 
   isDead: function() {
-    return this.curLives <= 0;
+    return this.curLives < 0;
   },
 
   reset:function() {
@@ -76,7 +80,8 @@ asterix.XHUDLives = klass.extends({
   },
 
   create: function() {
-    this.lifeSize = new asterix.XLive(0,0,this.options).getContentSize();
+    var dummy = new asterix.XLive(0,0,this.options);
+    this.lifeSize = { width: ccsx.getScaledWidth(dummy), height: ccsx.getScaledHeight(dummy) } ;
     this.drawLives();
   },
 

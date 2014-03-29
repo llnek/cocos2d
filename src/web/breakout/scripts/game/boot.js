@@ -13,6 +13,7 @@
 
 global.document.ccConfig.initAppFiles('breakout', [
 
+  'game/breakout/entities/explode.js',
   'game/breakout/entities/player.js',
   'game/breakout/entities/ball.js',
   'game/breakout/entities/brick.js',
