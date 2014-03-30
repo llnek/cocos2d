@@ -21,16 +21,113 @@ var EntityList = [ bks.EntityLine, bks.EntityBox, bks.EntitySt,
                    bks.EntityElx, bks.EntityNub, bks.EntityStx, bks.EntityElx ];
 
 //////////////////////////////////////////////////////////////////////////////
+// background layer
+//////////////////////////////////////////////////////////////////////////////
+
+var BackLayer = asterix.XLayer.extend({
+
+  pkInit: function() {
+    var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gamelevel1.tiles.arena'));
+    this.addItem(map);
+    return this._super();
+  },
+
+  pkInput: function() {},
+
+  rtti: function() {
+    return 'BackLayer';
+  }
+
+});
+
+//////////////////////////////////////////////////////////////////////////////
+// HUD
+//////////////////////////////////////////////////////////////////////////////
+
+var HUDLayer = asterix.XGameHUDLayer.extend({
+
+  initParentNode: function() {
+    this.atlasBatch = cc.SpriteBatchNode.createWithTexture( cc.TextureCache.getInstance().addImage( sh.xcfg.getAtlasPath('game-pics')));
+    this.addChild(this.atlasBatch, this.lastZix, ++this.lastTag);
+  },
+
+  getNode: function() { return this.atlasBatch; },
+
+  initLabels: function() {
+  },
+
+  initIcons: function() {
+  },
+
+  resetAsNew: function() {
+  },
+
+  reset: function() {
+  },
+
+  removeItem: function(n) {
+    if (n instanceof cc.Sprite) { this._super(n); } else {
+      this.removeChild(n);
+    }
+  },
+
+  addItem: function(n) {
+    if (n instanceof cc.Sprite) { this._super(n); } else {
+      this.addChild(n, this.lastZix, ++this.lastTag);
+    }
+  },
+
+  initCtrlBtns: function(s) {
+    //this._super(32/48);
+  },
+
+  rtti: function() {
+    return 'HUD';
+  }
+
+});
+
+//////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
 var GameLayer = asterix.XGameLayer.extend({
 
-  initCMapRow: function() {
-    var r, hlen = csts.GRID_H,
+  reset: function(newFlag) {
+    if (this.atlasBatch) { this.atlasBatch.removeAllChildren(); } else {
+      var img = cc.TextureCache.getInstance().addImage( sh.xcfg.getAtlasPath('game-pics'));
+      this.atlasBatch = cc.SpriteBatchNode.createWithTexture(img);
+      this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
+    }
+    if (newFlag) {
+      this.getHUD().resetAsNew();
+      this.initCMap();
+    } else {
+      this.getHUD().reset();
+    }
+    this.pauseToClear=false;
+  },
+
+  getHUD: function() {
+    return cc.Director.getInstance().getRunningScene().layers['HUD'];
+  },
+
+  getNode: function() { return this.atlasBatch; },
+
+  initCMap: function() {
+    var r, rc, csts= sh.xcfg.csts,
+    hlen = csts.GRID_H,
     wlen = csts.GRID_W;
+    this.collisionMap=[];
     for (r = 0; r < hlen; ++r) {
-      this.collisionMap[r] = global.ZotohLabs.makeArray(wlen, 0);
+      if (r === 0 || r === hlen-1) {
+        rc = global.ZotohLabs.makeArray(wlen, 1);
+      } else {
+        rc = global.ZotohLabs.makeArray(wlen, 0);
+        rc[0] = 1;
+        rc[csts.FIELD_W + 1] = 1;
+      }
+      this.collisionMap[r] = rc;
     }
   },
 
@@ -40,7 +137,7 @@ var GameLayer = asterix.XGameLayer.extend({
     this.pauseToClear=b;
     this.flines=[];
     if (b) {
-      this.pauseTimer= ccsx.createTimer(delay);
+      this.pauseTimer= ccsx.createTimer(this, delay);
     } else {
       this.pauseTimer= null;
     }
@@ -83,7 +180,7 @@ var GameLayer = asterix.XGameLayer.extend({
     var c,row= this.collisionMap[r],
     csts = sh.xcfg.csts,
     h= csts.FIELD_SIDE,
-    len= csts.FIELD_W,
+    len= csts.FIELD_W;
     for (c=0; c < len; ++c) {
       row[h+c]= 0;
     }
@@ -231,24 +328,21 @@ var GameLayer = asterix.XGameLayer.extend({
 
   spawnNext: function() {
     var n= asterix.fns.rand( EntityList.length),
+    wz = ccsx.screen(),
     csts= sh.xcfg.csts,
     c= 5;
-    this.curShape= new (EntityList[n])(  c * csts.TILE, csts.FIELD_TOP * csts.TILE, {});
-    this.addItem(this.curShape.create());
+    this.curShape= new (EntityList[n])(  c * csts.TILE, wz.height - csts.FIELD_TOP * csts.TILE, {});
+    this.curShape.create(this);
+    this.dropSpeed=1000;
     this.initDropper();
   },
 
-  initDropper: function(scale) {
-    this.dropRate= 80 + 700/1;
-    scale= scale || 1000;
-    this.dropper= ccsx.createTimer(this.dropRate / scale);
+  initDropper: function() {
+    this.dropper= ccsx.createTimer(this, this.dropRate / this.dropSpeed);
   },
 
-  preStart: function() {
-    this.pauseToClear=false;
-    this.newEntityMap();
-    this.spawnNext();
-  },
+  dropRate: 80 + 700/1,
+  dropSpeed: 1000,
 
   updateEntities: function(dt) {
     if (this.pauseToClear) {
@@ -265,47 +359,24 @@ var GameLayer = asterix.XGameLayer.extend({
       this.doFall();
       if (this.dropper) { this.initDropper(); }
     }
-    if (ig.input.pressed('right')) {
-      this.onRight();
+
+    if (this.curShape) {
+      this.curShape.update(dt);
     }
-    if (ig.input.pressed('left')) {
-      this.onLeft();
-    }
-    if (ig.input.pressed('down')) {
-      this.onDown();
-    }
-    if (ig.input.pressed('up')) {
-      this.onUp();
-    }
-    if (ig.input.pressed('space')) {
+
+    if (sh.main.keyboard[cc.KEY.space]) {
       this.onSpace();
     }
-  },
 
-  updateScore: function(n) {
-    this.score += n;
-  },
-
-  onRight: function() {
-    if(this.curShape) { this.curShape.shiftRight(); }
-  },
-
-  onLeft: function() {
-    if (this.curShape) { this.curShape.shiftLeft(); }
-  },
-
-  onDown: function() {
-    if (this.curShape) { this.curShape.rotateRight(); }
-  },
-
-  onUp: function() {
-    if (this.curShape) { this.curShape.rotateLeft();}
   },
 
   onSpace: function() {
     if (this.curShape && this.dropper) {
       this.doFall();
-      if (this.dropper) { this.initDropper(5000); }
+      if (this.dropper) {
+        this.dropSpeed=5000;
+        this.initDropper();
+      }
     }
   },
 
@@ -329,11 +400,63 @@ var GameLayer = asterix.XGameLayer.extend({
         this.curShape=null;
       }
     }
+  },
+
+  replay: function() {
+    this.play(false);
+  },
+
+  play: function(newFlag) {
+    this.reset(newFlag);
+    this.newEntityMap();
+    this.spawnNext();
+  },
+
+  newGame: function(mode) {
+    //sh.xcfg.sfxPlay('start_game');
+    this.setGameMode(mode);
+    this.play(true);
   }
 
 });
 
 
+asterix.Bricks.Factory = {
+  create: function(options) {
+    var fac = new asterix.XSceneFactory({ layers: [ BackLayer, GameLayer, HUDLayer ] });
+    var scene= fac.create(options);
+    if (!scene) { return null; }
+    scene.ebus.on('/game/objects/aliens/dropbombs', function(topic, msg) {
+      sh.main.dropBombs(msg);
+    });
+    scene.ebus.on('/game/objects/players/shoot', function(topic, msg) {
+      sh.main.fireMissiles(msg);
+    });
+    scene.ebus.on('/game/objects/aliens/killed', function(topic, msg) {
+      sh.main.onAlienKilled(msg);
+    });
+    scene.ebus.on('/game/objects/bombs/killed', function(topic, msg) {
+      sh.main.onBombKilled(msg);
+    });
+    scene.ebus.on('/game/objects/missiles/killed', function(topic, msg) {
+      sh.main.onMissileKilled(msg);
+    });
+    scene.ebus.on('/game/objects/players/killed', function(topic, msg) {
+      sh.main.onPlayerKilled(msg);
+    });
+    scene.ebus.on('/game/objects/players/earnscore', function(topic, msg) {
+      sh.main.onEarnScore(msg);
+    });
+    scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
+      asterix.XMenuLayer.onShowMenu();
+    });
+    scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
+      sh.main.replay();
+    });
+
+    return scene;
+  }
+}
 
 }).call(this);
 

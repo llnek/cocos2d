@@ -29,6 +29,7 @@ cfg= {
     'zotohlabs/ext/basefuncs.js',
     'zotohlabs/ext/asterix.js',
     'zotohlabs/ext/bus.js',
+    'zotohlabs/ext/ui.js',
     'zotohlabs/ext/cs2dx.js',
     'zotohlabs/ext/xcfgbase.js',
     'zotohlabs/ext/xcfg.js'

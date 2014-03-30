@@ -13,13 +13,16 @@
 
 global.document.ccConfig.initAppFiles('sirtet', [
 
-      /*
-      'game/sirtet/entities/entity.js',
-      'game/sirtet/entities/ball.js',
-      'game/sirtet/entities/human.js',
-      'game/sirtet/entities/robot.js',
+      'game/sirtet/entities/block.js',
+      'game/sirtet/entities/shape.js',
+      'game/sirtet/entities/box.js',
+      'game/sirtet/entities/line.js',
+      'game/sirtet/entities/nub.js',
+      'game/sirtet/entities/elx.js',
+      'game/sirtet/entities/el.js',
+      'game/sirtet/entities/stx.js',
+      'game/sirtet/entities/st.js',
       'game/sirtet/game.js',
-      */
       'game/sirtet/mmenu.js',
       'game/sirtet/splash.js'
 ]);

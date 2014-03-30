@@ -21,10 +21,37 @@ loggr= global.ZotohLabs.logger;
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
+var Block = cc.Sprite.extend({
+  blink: function() {
+    this.initWithSpriteFrameName(this.options.frames[1]);
+  },
+  show: function() {
+    this.initWithSpriteFrameName(this.options.frames[0]);
+  },
+  ctor: function(x,y,options) {
+    this.options = options;
+    this._super();
+    this.show();
+    this.setAnchorPoint(ccsx.AnchorTopLeft);
+    this.setPosition(x,y);
+  }
+});
+
 asterix.Bricks.EntityBlock= asterix.XEntity.extends({
 
   blink: function() {
-    //this.currentAnim= this.anims.blink;
+    if (this.sprite) {
+      this.sprite.blink();
+    }
+  },
+
+  create: function() {
+    return this.sprite = new Block(this.startPos.x, this.startPos.y, this.options);
+  },
+
+  ctor: function(x,y,options) {
+    this._super(x,y,options);
+    this.options.frames= [ options.frame,'0.png']
   }
 
 

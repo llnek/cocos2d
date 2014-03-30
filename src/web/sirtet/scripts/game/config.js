@@ -37,6 +37,9 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
   },
 
   assets: {
+    atlases: {
+      'game-pics' : 'media/{{appid}}/game/sprites'
+    },
     tiles: {
     },
     images: {
@@ -76,6 +79,7 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
   },
 
   runOnce: function() {
+    cc.SpriteFrameCache.getInstance().addSpriteFrames( sh.xcfg.getPListPath('game-pics'));
   }
 
 });
