@@ -25,11 +25,8 @@ asterix.Bricks.EntityBlock= asterix.XEntity.extends({
 
   blink: function() {
     //this.currentAnim= this.anims.blink;
-  },
-
-  ctor: function(x,y,options) {
-    this._super(x,y,options);
   }
+
 
 });
 

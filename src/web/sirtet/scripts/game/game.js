@@ -9,67 +9,81 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this; var _ = global._ ;
-var asterix = global.ZotohLabs.Asterix;
-var sh= asterix.Shell;
-var br= asterix.Bricks;
-var loggr= global.ZotohLabs.logger;
-var echt= global.ZotohLabs.echt;
-var EntityList = [ br.EntityLine, br.EntityBox, br.EntitySt,
-                   br.EntityElx, br.EntityNub, br.EntityStx, br.EntityElx ];
+(function(undef) { "use strict"; var global = this, _ = global._ ,
+asterix = global.ZotohLabs.Asterix,
+echt= global.ZotohLabs.echt,
+ccsx= asterix.COCOS2DX,
+sh= asterix.Shell,
+bks= asterix.Bricks,
+loggr= global.ZotohLabs.logger;
+
+var EntityList = [ bks.EntityLine, bks.EntityBox, bks.EntitySt,
+                   bks.EntityElx, bks.EntityNub, bks.EntityStx, bks.EntityElx ];
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-sh.xcfg.game.proto = asterix.XGame.extend({
 
-  name: 'bricks',
-  score: 0,
+var GameLayer = asterix.XGameLayer.extend({
 
-  pauseForClearance: function(b) {
+  initCMapRow: function() {
+    var r, hlen = csts.GRID_H,
+    wlen = csts.GRID_W;
+    for (r = 0; r < hlen; ++r) {
+      this.collisionMap[r] = global.ZotohLabs.makeArray(wlen, 0);
+    }
+  },
+
+  collisionMap: [],
+
+  pauseForClearance: function(b, delay) {
     this.pauseToClear=b;
-    this.pauseTimer=new ig.Timer();
     this.flines=[];
+    if (b) {
+      this.pauseTimer= ccsx.createTimer(delay);
+    } else {
+      this.pauseTimer= null;
+    }
   },
 
   clearFilled: function() {
-    var me=this;
     _.each(this.flines,function(z) {
-      me.clearOneRow(z);
-      me.resetOneRow(z);
-    });
+      this.clearOneRow(z);
+      this.resetOneRow(z);
+    }, this);
     this.shiftDownLines();
   },
 
   flashFilled: function(lines) {
-    var c,row,me=this;
-    _.each(lines,function(z) {
-      row= me.entityGrid[z];
+    var c,row;
+    _.each(lines, function(z) {
+      row= this.entityGrid[z];
       for (c=0; c < row.length; ++c) {
         if (row[c]) {
           row[c].blink();
         }
       }
-    });
+    }, this);
     this.flines=lines;
-    this.pauseTimer.set(0.5);
+    //this.pauseTimer = ccsx.createTimer(0.5);
   },
 
   clearOneRow: function(r) {
-    var c, row= this.entityGrid[r];
+    var row= this.entityGrid[r],
+    c;
     for (c=0; c < row.length; ++c) {
       if (row[c]) {
-        row[c].kill();
+        row[c].dispose();
         row[c]=undef;
       }
     }
   },
 
   resetOneRow: function(r) {
-    var c,row= this.collisionMap.data[r];
-    var csts = sh.xcfg.csts;
-    var h= csts.FIELD_SIDE;
-    var len= csts.FIELD_W;
+    var c,row= this.collisionMap[r],
+    csts = sh.xcfg.csts,
+    h= csts.FIELD_SIDE,
+    len= csts.FIELD_W,
     for (c=0; c < len; ++c) {
       row[h+c]= 0;
     }
@@ -77,25 +91,27 @@ sh.xcfg.game.proto = asterix.XGame.extend({
 
   postLockCheckLine: function() {
     // search bottom up until top.
-    var r, rows= this.collisionMap.data.length;
-    var csts = sh.xcfg.csts;
-    var b= rows - csts.FIELD_BOTTOM  - 1;
-    var t= csts.FIELD_TOP ;
-    var rc=[];
+    var rows= this.collisionMap.length,
+    csts = sh.xcfg.csts,
+    b= rows - csts.FIELD_BOTTOM  - 1,
+    t= csts.FIELD_TOP,
+    r, rc=[];
+
     for (r = b; r >= t; --r) {
       if (this.testRow(r)) { rc.push(r); }
     }
     if (rc.length > 0) {
-      this.pauseForClearance(true);
+      this.pauseForClearance(true, 0.5);
       this.flashFilled(rc);
     }
   },
 
   testRow: function(r) {
-    var c,row= this.collisionMap.data[r];
-    var csts = sh.xcfg.csts;
-    var h= csts.FIELD_SIDE;
-    var len= csts.FIELD_W;
+    var c, row= this.collisionMap[r],
+    csts = sh.xcfg.csts,
+    h= csts.FIELD_SIDE,
+    len= csts.FIELD_W;
+
     for (c=0; c < len; ++c) {
       if (row[h+c] !== 1) { return false; }
     }
@@ -103,10 +119,11 @@ sh.xcfg.game.proto = asterix.XGame.extend({
   },
 
   isEmptyRow: function(r) {
-    var c, row= this.collisionMap.data[r];
-    var csts= sh.xcfg.csts;
-    var h= csts.FIELD_SIDE;
-    var len= csts.FIELD_W;
+    var c, row= this.collisionMap[r],
+    csts= sh.xcfg.csts,
+    h= csts.FIELD_SIDE,
+    len= csts.FIELD_W;
+
     for (c=0; c < len; ++c) {
       if (row[h+c] !== 0) { return false; }
     }
@@ -114,11 +131,13 @@ sh.xcfg.game.proto = asterix.XGame.extend({
   },
 
   copyLine: function(from,to) {
-    var line_f = this.collisionMap.data[from];
-    var line_t = this.collisionMap.data[to];
-    var csts = sh.xcfg.csts;
-    var c,h= csts.FIELD_SIDE;
-    var len= csts.FIELD_W;
+    var line_f = this.collisionMap[from],
+    line_t = this.collisionMap[to],
+    pos,
+    csts = sh.xcfg.csts,
+    c,h= csts.FIELD_SIDE,
+    len= csts.FIELD_W;
+
     for (c=0; c < len; ++c) {
       line_t[h+c] = line_f[h+c];
       line_f[h+c]= 0;
@@ -126,24 +145,30 @@ sh.xcfg.game.proto = asterix.XGame.extend({
     line_f = this.entityGrid[from];
     line_t = this.entityGrid[to];
     for (c=0; c < line_f.length; ++c) {
-      if (line_f[c]) { line_f[c].pos.y = to * csts.TILE; }
+      if (line_f[c]) {
+        pos = line_f[c].sprite.getPosition();
+        line_f[c].sprite.setPosition(pos.x, to * csts.TILE);
+      }
       line_t[c] = line_f[c];
       line_f[c] = undef;
     }
   },
 
   findFirstDirty: function() {
-    var r, csts= sh.xcfg.csts;
-    var last= this.collisionMap.data.length - csts.FIELD_BOTTOM;
+    var r, csts= sh.xcfg.csts,
+    last= this.collisionMap.length - csts.FIELD_BOTTOM;
+
     for (r= csts.FIELD_TOP; r < last; ++r) {
       if (!this.isEmptyRow(r)) { return r; }
     }
+
     return 0;
   },
 
   findLastDirty: function(empty) {
-    var r, csts= sh.xcfg.csts;
-    var last= this.collisionMap.data.length - csts.FIELD_BOTTOM - 1;
+    var r, csts= sh.xcfg.csts,
+    last= this.collisionMap.length - csts.FIELD_BOTTOM - 1;
+
     for (r= empty-1; r >= csts.FIELD_TOP; --r) {
       if (!this.isEmptyRow(r)) { return r; }
     }
@@ -151,17 +176,20 @@ sh.xcfg.game.proto = asterix.XGame.extend({
   },
 
   findLastEmpty: function() {
-    var r, csts= sh.xcfg.csts;
-    var last= this.collisionMap.data.length - csts.FIELD_BOTTOM - 1;
+    var r, csts= sh.xcfg.csts,
+    last= this.collisionMap.length - csts.FIELD_BOTTOM - 1;
+
     for (r= last; r >= csts.FIELD_TOP; --r) {
       if (this.isEmptyRow(r)) { return r; }
     }
+
     return 0;
   },
 
   shiftDownLines: function() {
-    var r, csts= sh.xcfg.csts;
-    var f, e, d;
+    var r, csts= sh.xcfg.csts,
+    f, e, d;
+
     while (true) {
       f= this.findFirstDirty();
       if (f==0) { return; } // no lines are touched.
@@ -177,43 +205,43 @@ sh.xcfg.game.proto = asterix.XGame.extend({
   },
 
   undoCMapRow: function(r) {
-    var row= this.collisionMap.data[r];
-    var csts= sh.xcfg.csts;
-    var c, h=  csts.FIELD_SIDE;
-    var len= csts.FIELD_W ;
+    var row= this.collisionMap[r],
+    csts= sh.xcfg.csts,
+    c, h=  csts.FIELD_SIDE,
+    len= csts.FIELD_W ;
+
     for (c=0; c < len; ++c) {
       row[h+c] = 0;
     }
   },
 
   undoCMapCell: function(r,c) {
-    this.collisionMap.data[r][c] = 0;
+    this.collisionMap[r][c] = 0;
   },
 
   newEntityMap: function() {
-    var r,c,data= this.collisionMap.data;
-    var rc,row;
+    var data= this.collisionMap,
+    rc,r;
     this.entityGrid=[];
-    for (r= 0; r < data.length; ++r) {
-      row= data[r];
-      rc=[];
-      for (c= 0; c < row.length; ++c) {
-        rc.push(undef);
-      }
+    for (r= 0; r < this.collisionMap.length; ++r) {
+      rc= global.ZotohLabs.makeArray(this.collisionMap[r].length, undef);
       this.entityGrid.push(rc);
     }
   },
 
   spawnNext: function() {
-    var me=this, n= asterix.fns.rand( EntityList.length);
-    var csts= sh.xcfg.csts;
-    var c= 5;
+    var n= asterix.fns.rand( EntityList.length),
+    csts= sh.xcfg.csts,
+    c= 5;
     this.curShape= new (EntityList[n])(  c * csts.TILE, csts.FIELD_TOP * csts.TILE, {});
-    this.curShape.update();
-    this.curShape.draw();
-    this.dropper= new ig.Timer();
+    this.addItem(this.curShape.create());
+    this.initDropper();
+  },
+
+  initDropper: function(scale) {
     this.dropRate= 80 + 700/1;
-    this.dropper.set(this.dropRate / 1000);
+    scale= scale || 1000;
+    this.dropper= ccsx.createTimer(this.dropRate / scale);
   },
 
   preStart: function() {
@@ -222,17 +250,9 @@ sh.xcfg.game.proto = asterix.XGame.extend({
     this.spawnNext();
   },
 
-  onStart: function() {
-  },
-
-  maybeReset: function() {
-  },
-
-  update: function() {
-    this.parent();
+  updateEntities: function(dt) {
     if (this.pauseToClear) {
-      if (this.pauseTimer && this.pauseTimer.delta() >= 0) {
-        this.pauseTimer.pause();
+      if (ccsx.timerDone(this.pauseTimer)) {
         this.pauseTimer=null;
         this.clearFilled();
         this.spawnNext();
@@ -241,9 +261,9 @@ sh.xcfg.game.proto = asterix.XGame.extend({
       return;
     }
 
-    if (this.dropper && this.dropper.delta() >= 0) {
+    if (ccsx.timerDone(this.dropper)) {
       this.doFall();
-      if (this.dropper) { this.dropper.reset(); }
+      if (this.dropper) { this.initDropper(); }
     }
     if (ig.input.pressed('right')) {
       this.onRight();
@@ -285,7 +305,7 @@ sh.xcfg.game.proto = asterix.XGame.extend({
   onSpace: function() {
     if (this.curShape && this.dropper) {
       this.doFall();
-      if (this.dropper) { this.dropper.set( this.dropRate / 5 / 1000); }
+      if (this.dropper) { this.initDropper(5000); }
     }
   },
 
@@ -297,7 +317,7 @@ sh.xcfg.game.proto = asterix.XGame.extend({
       return;
     }
     if (!ok) {
-      if (this.dropper) { this.dropper.pause(); }
+      //if (this.dropper) { this.dropper.pause(); }
       this.dropper= null;
       // lock shape in place
       this.curShape.lock();
@@ -309,11 +329,6 @@ sh.xcfg.game.proto = asterix.XGame.extend({
         this.curShape=null;
       }
     }
-  },
-
-  init: function() {
-    this.parent();
-    this.start();
   }
 
 });
