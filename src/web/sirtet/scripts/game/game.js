@@ -192,12 +192,11 @@ var GameLayer = asterix.XGameLayer.extend({
     // search bottom up until top.
     var rows= this.collisionMap.length,
     csts = sh.xcfg.csts,
-    b= rows - csts.FIELD_BOTTOM  - 1,
-    t= csts.GRID_H - csts.FIELD_TOP,
+    top= rows - csts.FIELD_TOP,
     r, rc=[];
 
-    for (r = csts.FIELD_BOTTOM; r < t; ++r) {
-      if (this.testRow(r)) { rc.push(r); }
+    for (r = csts.FIELD_BOTTOM; r < top; ++r) {
+      if (this.testFilledRow(r)) { rc.push(r); }
     }
     if (rc.length > 0) {
       this.pauseForClearance(true, 0.5);
@@ -205,15 +204,18 @@ var GameLayer = asterix.XGameLayer.extend({
     }
   },
 
-  testRow: function(r) {
+  testFilledRow: function(r) {
     var c, row= this.collisionMap[r],
     csts = sh.xcfg.csts,
     h= csts.FIELD_SIDE,
     len= csts.FIELD_W;
 
+    // negative if any holes in the row
     for (c=0; c < len; ++c) {
       if (row[h+c] !== 1) { return false; }
     }
+
+    // entire row msut be filled.
     return true;
   },
 
@@ -246,7 +248,8 @@ var GameLayer = asterix.XGameLayer.extend({
     for (c=0; c < line_f.length; ++c) {
       if (line_f[c]) {
         pos = line_f[c].sprite.getPosition();
-        line_f[c].sprite.setPosition(pos.x, to * csts.TILE);
+        //line_f[c].sprite.setPosition(pos.x, to * csts.TILE);
+        line_f[c].sprite.setPosition(pos.x, pos.y - csts.TILE);
       }
       line_t[c] = line_f[c];
       line_f[c] = undef;
@@ -288,17 +291,18 @@ var GameLayer = asterix.XGameLayer.extend({
 
   shiftDownLines: function() {
     var r, csts= sh.xcfg.csts,
-    f, e, d,
-    t = csts.GRID_H - csts.FIELD_TOP;
+    top = csts.GRID_H - csts.FIELD_TOP,
+    f, e, d;
 
     while (true) {
       f= this.findFirstDirty();
       if (f===0) { return; } // no lines are touched.
       e= this.findLastEmpty();
       if (e > f) { return; }
-      d= this.findLastDirty(e);
-      if (d===0) { return; }
-      for (r=d; r < t; ++r) {
+      d=e+1;
+      //d= this.findLastDirty(e); // should always find something here since first-dirty was positive
+      //if (d===0) { return; }
+      for (r=d; r < top; ++r) {
         this.copyLine(r,e);
         ++e;
       }

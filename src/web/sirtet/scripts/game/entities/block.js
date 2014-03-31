@@ -24,15 +24,16 @@ loggr= global.ZotohLabs.logger;
 var Block = cc.Sprite.extend({
   blink: function() {
     this.initWithSpriteFrameName(this.options.frames[1]);
+    this.setAnchorPoint(ccsx.AnchorTopLeft);
   },
   show: function() {
     this.initWithSpriteFrameName(this.options.frames[0]);
+    this.setAnchorPoint(ccsx.AnchorTopLeft);
   },
   ctor: function(x,y,options) {
     this.options = options;
     this._super();
     this.show();
-    this.setAnchorPoint(ccsx.AnchorTopLeft);
     this.setPosition(x,y);
   }
 });
