@@ -7,120 +7,86 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this; var _ = global._ ;
-var asterix = global.ZotohLabs.Asterix;
-var sh= asterix.Shell;
-var loggr = global.ZotohLabs.logger;
-asterix.Asteroids= {
-};
-var smac = StateMachine.create({
-  //initial: 'none',
-  events: [
-    { name: 'genesis',  from: 'none',  to: 'start_screen' },
-
-    { name: 'play0',  from: 'start_screen',  to: 'main_menu' },
-    { name: 'quit',  from: 'main_menu',  to: 'start_screen' },
-
-    { name: 'play1',  from: 'main_menu',  to: 'play_game' },
-    { name: 'play2',  from: 'main_menu',  to: 'play_game' },
-    { name: 'play3',  from: 'main_menu',  to: 'play_game' },
-
-    { name: 'settings',  from: 'play_game',  to: 'main_menu' },
-    { name: 'back',  from: 'main_menu',  to: 'play_game' },
-
-    { name: 'replay',  from: 'play_game',  to: 'replay_game' },
-    { name: 'resetplay',  from: 'replay_game',  to: 'play_game' }
-  ],
-  callbacks: {
-    ongenesis: function(ev,fr,to,start_screen) {
-      loggr.debug("ongenesis() called.");
-      asterix.Asteroids.startScreen= start_screen;
-    },
-    onplay0: function(ev,fr,to) {
-      asterix.Asteroids.mainMenu = new (asterix.Asteroids.MainMenu)();
-      ig.system.setDelegateEx(asterix.Asteroids.mainMenu);
-    },
-    onquit: function(ev,fr,to) {
-      ig.system.setDelegateEx(asterix.Asteroids.startScreen);
-    },
-    onplay1: function(ev,fr,to) {
-      asterix.Asteroids.mainGame = new (sh.xcfg.game.proto)(1);
-      ig.system.setDelegateEx(asterix.Asteroids.mainGame);
-    },
-    onplay2: function(ev,fr,to) {
-      asterix.Asteroids.mainGame = new (sh.xcfg.game.proto)(2);
-      ig.system.setDelegateEx(asterix.Asteroids.mainGame);
-    },
-    onplay3: function(ev,fr,to) {
-    },
-    onsettings: function(ev,fr,to) {
-      ig.system.setDelegateEx(asterix.Asteroids.mainMenu);
-    },
-    onback: function(ev,fr,to) {
-      ig.system.setDelegateEx(asterix.Asteroids.mainGame);
-    },
-    onreplay: function(ev,fr,to) {
-      asterix.Asteroids.mainGame.restart();
-    },
-    onresetplay: function(ev,fr,to) {
-      loggr.debug("onresetplay() called.");
-    }
-  }
-});
+(function (undef) { "use strict"; var global= this, _ = global._ ,
+asterix = global.ZotohLabs.Asterix,
+sh= asterix.Shell,
+loggr = global.ZotohLabs.logger;
+asterix.Asteroids= {};
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.xcfg = ig.merge( asterix.XConfig, {
+sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
+
+  appid: 'asteroids',
+  color: 'red',
 
   csts: {
+    GRID_W: 60,
+    GRID_H: 40
+  },
 
-    BTN_SIZE: 32,
-    GRID_W: 80,
-    GRID_H: 60,
-    TILE: 8,
-    SIDE: 1
+  assets: {
+    atlases: {
+      'game-pics' : 'media/{{appid}}/game/sprites'
+    },
+    tiles: {
+    },
+    images: {
+      'splash.play-btn' : 'media/cocos2d/btns/play_gray_x64.png'
+    },
+    sounds: {
+      'game_end' : 'media/cocos2d/sfx/MineExplosion',
+      'game_quit' : 'media/cocos2d/sfx/Death'
+    },
+    fonts: {
+    }
   },
 
   devices: {
-    iphone:{width:640, height:480, scale:1},
-    android:{width:640, height:480, scale:1},
-    ipad:{width:640, height:480, scale:1},
-    default:{width:640, height:480, scale:1}
+    iphone:{height:320, width:480, scale:1},
+    android:{height:320, width:480, scale:1},
+    ipad:{height:320, width:480, scale:2},
+    default:{height:320, width:480, scale:1}
+  },
+
+  game: {
+    size: {height:320, width:480, scale:1}
   },
 
   levels: {
-    startscreen : {
-      main: 'startscreen.js'
-    },
-    confirmbox : {
-      main: 'blankscreen.js'
-    },
-    mainmenu : {
-      main: 'mainmenu.js'
-    },
-    asteroids : {
-      main: 'arena.js'
+    "gamelevel1" : {
+      tiles : {
+        'arena' : 'game/{{appid}}/levels/arena.tmx'
+      },
+      images : {
+        'arena' : 'game/{{appid}}/levels/arena.png'
+      },
+      sprites : {
+      },
+      fixtures: {
+        BOULDERS: 5,
+        ROCKS: 3,
+        STONES: 5
+      }
     }
   },
 
-  stages: {
-    "1" : {
-      BOULDERS: 5,
-      ROCKS: 3,
-      STONES: 5
-    }
-  },
+  runOnce: function() {
+    cc.SpriteFrameCache.getInstance().addSpriteFrames( sh.xcfg.getPListPath('game-pics'));
+  }
 
-  smac: smac
 
 });
 
 
+sh.xcfg.sfxInit();
+
 
 }).call(this);
+
 
 

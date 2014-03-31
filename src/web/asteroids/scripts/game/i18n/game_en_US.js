@@ -14,7 +14,7 @@ var asterix= global.ZotohLabs.Asterix;
 var sh= asterix.Shell;
 var loggr= global.ZotohLabs.logger;
 
-ig.merge(global.ZotohLabs.Asterix.Shell.xcfg.l10n, {
+global.ZotohLabs.klass.merge(global.ZotohLabs.Asterix.Shell.xcfg.l10n, {
 
 "en-US" : {
 
@@ -55,4 +55,5 @@ loggr.info("Loading resource bundle");
 sh.l10nInit(sh.xcfg.l10n);
 
 }).call(this);
+
 

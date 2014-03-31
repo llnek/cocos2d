@@ -9,45 +9,52 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global= this; var _ = global._ ;
-
-var asterix = global.ZotohLabs.Asterix;
-var sh = asterix.Shell;
-var ao = asterix.Asteroids;
-var loggr= global.ZotohLabs.logger;
-var echt= global.ZotohLabs.echt;
+(function(undef) { "use strict"; var global= this, _ = global._ ,
+asterix = global.ZotohLabs.Asterix,
+echt= global.ZotohLabs.echt,
+ast = asterix.Asteroids,
+ccsx = asterix.COCOS2DX,
+sh = asterix.Shell,
+loggr= global.ZotohLabs.logger;
 
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-asterix.Asteroids.EntityAsteroid1 = ao.EntityAster.extend({
 
-  animSheet: new ig.AnimationSheet('media/asteroids/game/rock_large.png', 100,103),
-  size: { x: 100, y: 103 },
+var Astro1 = cc.Sprite.extend({
 
-  kill: function() {
+  ctor: function(x,y,options) {
+    this._super();
+    this.initWithSpriteFrameName(options.frames[0]);
+    this.setPosition(x,y);
+  }
+
+});
+
+ast.EntityAsteroid1 = ast.EntityAster.extends({
+
+  explode: function() {
     // explode into smaller ones
+    /*
     var cfg= sh.xcfg.stages[ Number(sh.currentStage).toString() ];
     var n, csts= sh.xcfg.csts;
     var c= this.getCenter();
     for (n=0; n < cfg.ROCKS; ++n) {
-      ig.game.spawnEntity(ao.EntityAsteroid2, c.x, c.y, {});
+      //ig.game.spawnEntity(ao.EntityAsteroid2, c.x, c.y, {});
     }
     this.parent();
+    */
   },
 
-  update: function() {
-    this.parent();
+  create: function() {
+    return this.sprite = new Astro1(this.startPos.x, this.startPos.y, this.options);
   },
 
-  check: function(other) {
-  },
-
-  init: function(x,y,settings) {
-    this.parent(x,y,settings);
+  ctor: function(x,y,options) {
+    this._super(x,y,options);
     this.initVel(30);
-    this.addAnim('show', 1, [0]);
+    this.options.frames= ['rock_large.png'];
   }
 
 

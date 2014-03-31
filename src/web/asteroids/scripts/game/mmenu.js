@@ -17,49 +17,76 @@ echt = global.ZotohLabs.echt,
 loggr = global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
-// splash screen for the game - make it look nice please.
+// Main menu.
 //////////////////////////////////////////////////////////////////////////////
 
-var UILayer = asterix.XLayer.extend({
+var MainMenuLayer = asterix.XMenuLayer.extend({
 
   pkInit: function() {
-    var cw = ccsx.center();
+    var dir= cc.Director.getInstance(),
+    csts = sh.xcfg.csts,
+    cw = ccsx.center(),
+    wz = ccsx.screen();
 
-    this.addItem(ccsx.pmenu1({
-      imgPath: sh.xcfg.getImagePath('splash.play-btn'),
+    this.addItem( ccsx.tmenu1({
+      fontPath: sh.xcfg.getFontPath('font.OogieBoogie'),
+      text: sh.l10n('%online'),
       selector: function() {
-        sh.fireEvent('/splash/controls/playgame');
+        sh.fireEvent('/mmenu/controls/newgame', { mode: 3});
       },
       target: this,
-      pos: cc.p(cw.x, 56)
+      scale: 0.5,
+      pos: cc.p(114, wz.height - csts.TILE * 18 - 2)
     }));
+
+    this.addItem(ccsx.tmenu1({
+      fontPath: sh.xcfg.getFontPath('font.OogieBoogie'),
+      text: sh.l10n('%2players'),
+      scale: 0.5,
+      selector: function() {
+        sh.fireEvent('/mmenu/controls/newgame', { mode: 2});
+      },
+      target: this,
+      pos: cc.p(cw.x + 68, wz.height - csts.TILE * 28 - 4)
+    }));
+
+    this.addItem(ccsx.tmenu1({
+      fontPath: sh.xcfg.getFontPath('font.OogieBoogie'),
+      text: sh.l10n('%1player'),
+      scale: 0.5,
+      selector: function() {
+        sh.fireEvent('/mmenu/controls/newgame', { mode: 1});
+      },
+      target: this,
+      pos: cc.p(cw.x, csts.TILE * 19)
+    }));
+
+    this.doCtrlBtns();
 
     return this._super();
   }
 
 });
 
-sh.protos['StartScreen'] = {
+sh.protos['MainMenu'] = {
+
   create: function(options) {
     var scene = new asterix.XSceneFactory({
       layers: [
-        asterix.XSplashLayer,
-        UILayer
+        asterix.XMenuBackLayer,
+        MainMenuLayer
       ]
     }).create(options);
     if (scene) {
-      scene.ebus.on('/splash/controls/playgame', function() {
-          var dir= cc.Director.getInstance(),
-          ss= sh.protos['StartScreen'],
-          mm= sh.protos['MainMenu'];
-          dir.replaceScene( mm.create({
-            onBack: function() { dir.replaceScene( ss.create() ); }
-          }));
+      scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
+        cc.Director.getInstance().replaceScene( asterix.Asteroids.Factory.create(msg));
       });
     }
     return scene;
   }
+
 };
+
 
 
 }).call(this);

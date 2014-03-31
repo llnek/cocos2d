@@ -21,11 +21,11 @@ var Funcs= klass.extends({
 
   // tests if 2 rectangles intersect.
   isIntersect: function(a1,a2) {
-    return ! (a1.left > a2.right  || a2.left > a1.right || a1.top > a2.bottom || a2.top > a1.bottom);
+    return ! (a1.left > a2.right  || a2.left > a1.right || a1.top < a2.bottom || a2.top < a1.bottom);
   },
 
   outOfBound: function(a,B) {
-    return a.right > B.right || a.bottom > B.bottom || a.left < 0 || a.top < 0;
+    return a.right > B.right || a.bottom < B.bottom || a.left < 0 || a.top > B.top;
   },
 
   randomSign: function() {

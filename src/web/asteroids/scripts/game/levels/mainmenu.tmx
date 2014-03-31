@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="60" height="40" tilewidth="8" tileheight="8">
+ <tileset firstgid="1" name="Borders" tilewidth="8" tileheight="8">
+  <image source="cbox-borders_x8.png" width="56" height="8"/>
+ </tileset>
+ <tileset firstgid="8" name="BG" tilewidth="160" tileheight="160">
+  <image source="mainmenu.png" width="480" height="320"/>
+ </tileset>
+ <layer name="Back" width="60" height="40">
+  <data encoding="base64" compression="zlib">
+   eJztzDkNADAMBLCMffnTDYlbItkAXAUAAADAJCv87fB3wh8AAAAAs9zw98LfD38NRf4AQA==
+  </data>
+ </layer>
+ <layer name="Front" width="60" height="40">
+  <data encoding="base64" compression="zlib">
+   eJztz0ENADAQw7B7jT/k8XBjKQDy7u6NtaJfW7+2fm392vq19Wvr19avrV9bv7Z+bf3a+rX1a+vX1q+tX1u/ttXfpT5VugSZ
+  </data>
+ </layer>
+</map>

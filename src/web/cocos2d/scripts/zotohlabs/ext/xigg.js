@@ -23,6 +23,7 @@ asterix.XGameLayer = asterix.XLayer.extend({
 
   keyboard: [],
   players: [],
+  level: 1,
   actor: null,
 
   onKeyDown:function (e) {

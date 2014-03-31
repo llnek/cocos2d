@@ -9,34 +9,27 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global=this; var _ = global._ ;
-
-var asterix = global.ZotohLabs.Asterix;
-var sh = asterix.Shell;
-var ao = asterix.Asteroids;
-var loggr= global.ZotohLabs.logger;
-var echt= global.ZotohLabs.echt;
+(function(undef) { "use strict"; var global=this, _ = global._ ,
+asterix = global.ZotohLabs.Asterix,
+echt= global.ZotohLabs.echt,
+ast = asterix.Asteroids,
+ccsx= asterix.COCOS2DX,
+sh = asterix.Shell,
+loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-asterix.Asteroids.EntityAster = asterix.XEntity.extend({
 
-  collides: ig.Entity.COLLIDES.ACTIVE,
-  //collides: ig.Entity.COLLIDES.PASSIVE,
-  checkAgainst: ig.Entity.TYPE.A,
-  type: ig.Entity.TYPE.B,
-  bounciness: 1,
+ast.EntityAster = asterix.XEntity.extends({
 
   initVel: function(v) {
     this.vel.y= asterix.fns.randomSign() * v;
     this.vel.x= asterix.fns.randomSign() * v;
   },
 
-  update: function() {
-    this.parent();
-    this.maybeWrapOOB();
-    this.maybeRotate();
+  update: function(dt) {
+    //this.maybeRotate();
   },
 
   maybeRotate: function() {
@@ -45,8 +38,8 @@ asterix.Asteroids.EntityAster = asterix.XEntity.extend({
     if (this.angle > 360) { this.angle -= 360; }
   },
 
-  init: function(x,y,settings) {
-    this.parent(x,y,settings);
+  ctor: function(x,y,options) {
+    this._super(x,y,options);
     this.angle = asterix.fns.rand(360);
   }
 
