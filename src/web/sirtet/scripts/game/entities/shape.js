@@ -23,24 +23,33 @@ loggr= global.ZotohLabs.logger;
 
 asterix.Bricks.EntityShape= asterix.XEntity.extends({
 
+  throttleWait: 100,
+  ops: {},
   manifest: [],
   blocks: [],
   matrix: 3,
   formID: 0,
   png: 1,
 
+  initKeyOps: function() {
+    this.ops.sftRight = _.throttle(this.shiftRight.bind(this), this.throttleWait,{ trailing:false});
+    this.ops.sftLeft= _.throttle(this.shiftLeft.bind(this), this.throttleWait, {trailing:false});
+    this.ops.rotRight = _.throttle(this.rotateRight.bind(this), this.throttleWait, {trailing:false});
+    this.ops.rotLeft = _.throttle(this.rotateLeft.bind(this), this.throttleWait, {trailing:false});
+  },
+
   keypressed: function(dt) {
     if (sh.main.keyboard[cc.KEY.right]) {
-      this.shiftRight();
+      this.ops.sftRight();
     }
     if (sh.main.keyboard[cc.KEY.left]) {
-      this.shiftLeft();
+      this.ops.sftLeft();
     }
     if (sh.main.keyboard[cc.KEY.down]) {
-      this.rotateRight();
+      this.ops.rotRight();
     }
     if (sh.main.keyboard[cc.KEY.up]) {
-      this.rotateLeft();
+      this.ops.rotLeft();
     }
   },
 
@@ -189,6 +198,7 @@ asterix.Bricks.EntityShape= asterix.XEntity.extends({
     this.formID= asterix.fns.rand(this.numRotates());
     // pick a random color png.
     this.png = '' + this.randPng() + '.png';
+    this.initKeyOps();
     this._super(x,y,options);
   }
 

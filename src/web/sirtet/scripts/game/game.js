@@ -105,6 +105,7 @@ var GameLayer = asterix.XGameLayer.extend({
     } else {
       this.getHUD().reset();
     }
+    this.ops.onspace = _.throttle(this.onSpace.bind(this), 100);
     this.pauseToClear=false;
   },
 
@@ -113,6 +114,8 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   getNode: function() { return this.atlasBatch; },
+
+  ops: {},
 
   initCMap: function() {
     var r, rc, csts= sh.xcfg.csts,
@@ -162,7 +165,6 @@ var GameLayer = asterix.XGameLayer.extend({
       }
     }, this);
     this.flines=lines;
-    //this.pauseTimer = ccsx.createTimer(0.5);
   },
 
   clearOneRow: function(r) {
@@ -191,10 +193,10 @@ var GameLayer = asterix.XGameLayer.extend({
     var rows= this.collisionMap.length,
     csts = sh.xcfg.csts,
     b= rows - csts.FIELD_BOTTOM  - 1,
-    t= csts.FIELD_TOP,
+    t= csts.GRID_H - csts.FIELD_TOP,
     r, rc=[];
 
-    for (r = b; r >= t; --r) {
+    for (r = csts.FIELD_BOTTOM; r < t; ++r) {
       if (this.testRow(r)) { rc.push(r); }
     }
     if (rc.length > 0) {
@@ -253,9 +255,9 @@ var GameLayer = asterix.XGameLayer.extend({
 
   findFirstDirty: function() {
     var r, csts= sh.xcfg.csts,
-    last= this.collisionMap.length - csts.FIELD_BOTTOM;
+    t = csts.GRID_H - csts.FIELD_TOP - 1;
 
-    for (r= csts.FIELD_TOP; r < last; ++r) {
+    for (r = t; r > 0; --r) {
       if (!this.isEmptyRow(r)) { return r; }
     }
 
@@ -264,19 +266,20 @@ var GameLayer = asterix.XGameLayer.extend({
 
   findLastDirty: function(empty) {
     var r, csts= sh.xcfg.csts,
-    last= this.collisionMap.length - csts.FIELD_BOTTOM - 1;
+    t = csts.GRID_H - csts.FIELD_TOP;
 
-    for (r= empty-1; r >= csts.FIELD_TOP; --r) {
+    for (r = empty+1; r < t; ++r) {
       if (!this.isEmptyRow(r)) { return r; }
     }
+
     return 0;
   },
 
   findLastEmpty: function() {
     var r, csts= sh.xcfg.csts,
-    last= this.collisionMap.length - csts.FIELD_BOTTOM - 1;
+    t = csts.GRID_H - csts.FIELD_TOP;
 
-    for (r= last; r >= csts.FIELD_TOP; --r) {
+    for (r=1; r < t;++r) {
       if (this.isEmptyRow(r)) { return r; }
     }
 
@@ -285,18 +288,19 @@ var GameLayer = asterix.XGameLayer.extend({
 
   shiftDownLines: function() {
     var r, csts= sh.xcfg.csts,
-    f, e, d;
+    f, e, d,
+    t = csts.GRID_H - csts.FIELD_TOP;
 
     while (true) {
       f= this.findFirstDirty();
-      if (f==0) { return; } // no lines are touched.
+      if (f===0) { return; } // no lines are touched.
       e= this.findLastEmpty();
-      if (e < f) { return; }
+      if (e > f) { return; }
       d= this.findLastDirty(e);
       if (d===0) { return; }
-      for (r=d; r >= csts.FIELD_TOP; --r) {
+      for (r=d; r < t; ++r) {
         this.copyLine(r,e);
-        --e;
+        ++e;
       }
     }
   },
@@ -365,7 +369,7 @@ var GameLayer = asterix.XGameLayer.extend({
     }
 
     if (sh.main.keyboard[cc.KEY.space]) {
-      this.onSpace();
+      this.ops.onspace();
     }
 
   },
@@ -374,7 +378,7 @@ var GameLayer = asterix.XGameLayer.extend({
     if (this.curShape && this.dropper) {
       this.doFall();
       if (this.dropper) {
-        this.dropSpeed=5000;
+        this.dropSpeed=8000;
         this.initDropper();
       }
     }
@@ -388,7 +392,6 @@ var GameLayer = asterix.XGameLayer.extend({
       return;
     }
     if (!ok) {
-      //if (this.dropper) { this.dropper.pause(); }
       this.dropper= null;
       // lock shape in place
       this.curShape.lock();
