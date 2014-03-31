@@ -54,6 +54,19 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
   getNode: function() { return this.atlasBatch; },
 
   initLabels: function() {
+    var csts = sh.xcfg.csts,
+    wz = ccsx.screen();
+
+    this.scoreLabel = ccsx.bmfLabel({
+      fontPath: sh.xcfg.getFontPath('font.TinyBoxBB'),
+      text: '0',
+      anchor: ccsx.AnchorBottomRight,
+      scale: 12/72
+    });
+    this.scoreLabel.setPosition( wz.width - csts.TILE - csts.S_OFF,
+      wz.height - csts.TILE - csts.S_OFF - ccsx.getScaledHeight(this.scoreLabel));
+
+    this.addChild(this.scoreLabel, this.lastZix, ++this.lastTag);
   },
 
   initIcons: function() {
@@ -63,6 +76,33 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
   },
 
   reset: function() {
+  },
+
+  showNext: function() {
+    var n= asterix.fns.rand( EntityList.length),
+    proto= EntityList[n],
+    csts= sh.xcfg.csts,
+    wz = ccsx.screen(),
+    cw= ccsx.center(),
+    sz = proto.prototype.matrix * csts.TILE,
+    left= (csts.FIELD_W + 2) * csts.TILE,
+    x= left + (wz.width - left - csts.TILE) / 2,
+    y = cw.y;
+
+    if (this.nextShape) { this.nextShape.dispose(); }
+    x -= sz/2;
+    y += sz/2;
+    this.nextShape= new (proto)( x, y, { wantKeys: false });
+    this.nextShape.createAsOutline(this);
+    this.nextShapeInfo= {
+      formID: this.nextShape.formID,
+      png: this.nextShape.png,
+      model: proto
+    };
+  },
+
+  getNextShapeInfo: function() {
+    return this.nextShapeInfo;
   },
 
   removeItem: function(n) {
@@ -78,7 +118,7 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
   },
 
   initCtrlBtns: function(s) {
-    //this._super(32/48);
+    this._super(32/48);
   },
 
   rtti: function() {
@@ -336,13 +376,26 @@ var GameLayer = asterix.XGameLayer.extend({
 
   spawnNext: function() {
     var n= asterix.fns.rand( EntityList.length),
+    info = this.getHUD().getNextShapeInfo(),
+    proto, png, formID,
     wz = ccsx.screen(),
     csts= sh.xcfg.csts,
     c= 5;
-    this.curShape= new (EntityList[n])(  c * csts.TILE, wz.height - csts.FIELD_TOP * csts.TILE, {});
+    if (info) {
+      formID = info.formID;
+      png = info.png;
+      proto= info.model;
+    } else {
+      proto = EntityList[n];
+    }
+    this.curShape= new (proto)(  c * csts.TILE, wz.height - csts.FIELD_TOP * csts.TILE, {
+      formID: formID,
+      png: png
+    });
     this.curShape.create(this);
     this.dropSpeed=1000;
     this.initDropper();
+    this.getHUD().showNext();
   },
 
   initDropper: function() {

@@ -24,7 +24,6 @@ loggr= global.ZotohLabs.logger;
 asterix.Bricks.EntityShape= asterix.XEntity.extends({
 
   throttleWait: 100,
-  ops: {},
   manifest: [],
   blocks: [],
   matrix: 3,
@@ -51,6 +50,10 @@ asterix.Bricks.EntityShape= asterix.XEntity.extends({
     if (sh.main.keyboard[cc.KEY.up]) {
       this.ops.rotLeft();
     }
+  },
+
+  dispose: function() {
+    this.clear();
   },
 
   clear: function() {
@@ -132,6 +135,8 @@ asterix.Bricks.EntityShape= asterix.XEntity.extends({
     r,c, cm= this.layer.collisionMap,
     csts= sh.xcfg.csts;
 
+    loggr.debug("tile = " + tile.row + ", " + tile.col);
+
     if ( cm[tile.row][tile.col] !== 0)  {
       loggr.debug("collide! tile = " + tile.row + ", " + tile.col);
       return true;
@@ -140,18 +145,19 @@ asterix.Bricks.EntityShape= asterix.XEntity.extends({
     }
   },
 
-  findBBox: function(left,top,rID) {
+  findBBox: function(left,top,rID, skipCollide) {
     var x, y, form= this.manifest[rID],
     ui= global.ZotohLabs.UI,
     csts= sh.xcfg.csts,
     r,c, pt,bs=[];
+    skipCollide = skipCollide || false;
     for (r=0; r < this.matrix; ++r) {
       y = top - csts.TILE * r;
       for (c=0; c < this.matrix; ++c) {
         x = left + csts.TILE * c;
         if (form[r][c] === 1) {
           pt= new ui.Point(x,y);
-          if ( this.maybeCollide(pt, new ui.Point(x + csts.TILE, y - csts.TILE))) {
+          if ( !skipCollide && this.maybeCollide(pt, new ui.Point(x + csts.TILE, y - csts.TILE))) {
             return [];
           }
           bs.push(pt);
@@ -176,6 +182,12 @@ asterix.Bricks.EntityShape= asterix.XEntity.extends({
     }
   },
 
+  createAsOutline: function(layer) {
+    this.layer= layer;
+    this.reifyBlocks( this.startPos.x, this.startPos.y, this.formID,
+                      this.findBBox(this.startPos.x, this.startPos.y, this.formID, true));
+  },
+
   create: function(layer) {
     this.layer= layer;
     this.reifyBlocks( this.startPos.x, this.startPos.y, this.formID,
@@ -195,10 +207,21 @@ asterix.Bricks.EntityShape= asterix.XEntity.extends({
 
   ctor: function(x,y,options) {
     // start with random rotation.
-    this.formID= asterix.fns.rand(this.numRotates());
-    // pick a random color png.
-    this.png = '' + this.randPng() + '.png';
-    this.initKeyOps();
+    if (options.formID) {
+      this.formID = options.formID;
+    } else {
+      this.formID= asterix.fns.rand(this.numRotates());
+    }
+    if (options.png) {
+      this.png = options.png;
+    } else {
+      // pick a random color png.
+      this.png = '' + this.randPng() + '.png';
+    }
+    this.ops= {};
+    if (options.wantKeys !== false) {
+      this.initKeyOps();
+    }
     this._super(x,y,options);
   }
 
