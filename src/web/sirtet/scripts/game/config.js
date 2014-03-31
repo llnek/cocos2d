@@ -25,7 +25,7 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
   color: 'silver',
 
   csts: {
-    BLOCK_COLORS: 7,
+    BLOCK_COLORS: 8,
     FIELD_SIDE: 1,
     FIELD_TOP: 1,
     FIELD_W: 12,
