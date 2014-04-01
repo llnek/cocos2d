@@ -33,9 +33,27 @@ asterix.COCOS2DX = {
     return echt(t) && t.isDone();
   },
 
+  bbox2: function(sprite) {
+    return {
+      top: this.getTop(sprite),
+      left: this.getLeft(sprite),
+      bottom: this.getBottom(sprite),
+      right: this.getRight(sprite)
+    };
+  },
+
   bbox: function(sprite) {
     return new cc.Rect( this.getLeft(sprite), this.getBottom(sprite), this.getWidth(sprite),
     this.getHeight(sprite));
+  },
+
+  bboxb4: function(ent) {
+    return {
+      top: this.getLastTop(ent),
+      left: this.getLastLeft(ent),
+      bottom: this.getLastBottom(ent),
+      right: this.getLastRight(ent)
+    };
   },
 
   getScaledHeight: function(sprite) {
@@ -70,6 +88,22 @@ asterix.COCOS2DX = {
     return sprite.getPosition().y - this.getHeight(sprite)/2;
   },
 
+  getLastLeft: function(ent) {
+    return ent.lastPos.x - this.getWidth(ent.sprite)/2;
+  },
+
+  getLastRight: function(ent) {
+    return ent.lastPos.x + this.getWidth(ent.sprite)/2;
+  },
+
+  getLastTop: function(ent) {
+    return ent.lastPos.y + this.getHeight(ent.sprite)/2;
+  },
+
+  getLastBottom: function(ent) {
+    return ent.lastPos.y - this.getHeight(ent.sprite)/2;
+  },
+
   center: function() {
     var winSize = this.screen();
     return cc.p(winSize.width / 2, winSize.height / 2);
@@ -88,6 +122,81 @@ asterix.COCOS2DX = {
   AnchorBottomLeft: cc.p(0, 0),
   AnchorLeft: cc.p(0, 0.5),
   AnchorTopLeft: cc.p(0, 1),
+
+  checkPair: function(dt,a,b) {
+    this.solveCollision(dt, a, b );
+  },
+
+  solveCollision: function(dt,a,b) {
+    // Did they already overlap on the X-axis in the last frame? If so,
+    // this must be a vertical collision!
+    var az = this.bboxb4(a),
+    weak=null,
+    bz = this.bboxb4(b);
+    if (az.right > bz.left && az.left < bz.right) {
+      // Which one is on top?
+      if ( az.top > bz.top) {
+        this.seperateOnYAxis(dt, a, b, weak );
+      } else {
+        this.seperateOnYAxis(dt, b, a, weak );
+      }
+      //a.collideWith( b, 'y' );
+      //b.collideWith( a, 'y' );
+    }
+    // Horizontal collision
+    else if( az.bottom < bz.top && az.top > bz.bottom) {
+      // Which one is on the left?
+      if( az.left < bz.left) { 
+        this.seperateOnXAxis(dt, a, b, weak );
+      } else {
+        this.seperateOnXAxis(dt, b, a, weak );
+      }
+      //a.collideWith( b, 'x' );
+      //b.collideWith( a, 'x' );
+    }
+  },
+
+  seperateOnYAxis: function(dt,top, bottom, weak) {
+    var tx = this.bbox2(top.sprite),
+    bx = this.bbox2(bottom.sprite),
+    nudge = - (tx.bottom - bx.top),
+    tp= top.sprite.getPosition(),
+    bp= bottom.sprite.getPosition();
+
+    // We have a weak entity, so just move this one
+    if( weak ) {
+    }
+    // Normal collision - both move
+    else {
+      var v2 = (top.vel.y - bottom.vel.y)/2;
+      top.vel.y = -v2;
+      bottom.vel.y = v2;
+      var nudgeX = bottom.vel.x * dt;
+      top.updatePosition( tp.x + nudgeX, tp.y - nudge/2);
+      bottom.updatePosition(bp.x, bp.y + nudge/2);
+    }
+  },
+
+  seperateOnXAxis: function( dt,left,right,weak) {
+    var lx = this.bbox2(left.sprite),
+    rx = this.bbox2(right,sprite),
+    nudge = lx.right - rx.left,
+    lp= left.sprite.getPosition(),
+    rp= right.sprite.getPosition();
+
+    // We have a weak entity, so just move this one
+    if( weak ) {
+    }
+    // Normal collision - both move
+    else {
+      var v2 = (left.vel.x - right.vel.x)/2;
+      left.vel.x = -v2;
+      right.vel.x = v2;
+      left.updatePosition( Math.floor( lp.x - nudge/2), lp.y);
+      right.updatePosition(Math.ceil(rp.x + nudge/2), rp.y);
+    }
+  },
+
 
   tmenu1: function(options) {
     var s1= cc.LabelBMFont.create(options.text, options.fontPath),

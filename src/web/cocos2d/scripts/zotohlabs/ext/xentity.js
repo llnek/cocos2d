@@ -14,6 +14,7 @@ asterix= global.ZotohLabs.Asterix,
 klass= global.ZotohLabs.klass,
 ccsx = asterix.COCOS2DX,
 sh= asterix.Shell,
+GID_SEED = 0,
 loggr = global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -29,7 +30,7 @@ asterix.XEntity = klass.extends({
   },
 
   updatePosition: function(x,y) {
-    this.last= this.sprite.getPosition();
+    this.lastPos= this.sprite.getPosition();
     this.sprite.setPosition(x,y);
   },
 
@@ -173,7 +174,7 @@ asterix.XEntity = klass.extends({
   ctor: function(x,y,options) {
     this.options= options || {};
     this.startPos = cc.p(x,y);
-    this.lastPos= null;
+    this.lastPos= cc.p(x,y);
     this.health= 0;
     this.speed= 0;
     this.bounce=0;
@@ -183,11 +184,17 @@ asterix.XEntity = klass.extends({
     this.friction= { x: 0, y: 0 };
     this.maxVel= { x: 0, y: 0 };
     this.vel= { x: 0, y: 0 };
+    this.guid = ++GID_SEED;
     this.status=true;
   }
 
 });
 
+Object.defineProperty(asterix.XEntity.prototype, "gid", {
+  get: function() {
+    return this.guid;
+  }
+});
 Object.defineProperty(asterix.XEntity.prototype, "height", {
   get: function() {
     return this.sprite ? this.sprite.getContentSize().height : undef;

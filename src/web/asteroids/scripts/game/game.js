@@ -118,6 +118,55 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   checkEntities: function(dt) {
+    var e, entity, entities = this.rocks,
+    cellSize = 64,
+    checked,
+    pos, esz,
+    xmin,ymin,xmax,ymax,
+    x,y,c, cell,
+    hash = {};
+
+    for (e = 0; e < entities.length; ++e ) {
+      entity = entities[e];
+      if (!entity.status) { continue; }
+      esz= entity.sprite.getContentSize();
+      pos= entity.sprite.getPosition();
+      checked = {};
+      xmin = Math.floor( ccsx.getLeft(entity.sprite) / cellSize );
+      ymax = Math.floor( ccsx.getTop(entity.sprite) / cellSize ) + 1;
+      ymin = Math.floor( ccsx.getBottom(entity.sprite) / cellSize );
+      xmax = Math.floor( ccsx.getRight(entity.sprite) / cellSize ) + 1;
+
+      for (x = xmin; x < xmax; ++x ) {
+        for(y = ymin; y < ymax; ++y ) {
+
+          // Current cell is empty - create it and insert!
+          if( !hash[x] ) {
+            hash[x] = {};
+            hash[x][y] = [entity];
+          }
+          else
+          if( !hash[x][y] ) {
+            hash[x][y] = [entity];
+          }
+          // Check against each entity in this cell, then insert
+          else {
+            cell = hash[x][y];
+            for(c = 0; c < cell.length; ++c ) {
+              // Intersects and wasn't already checkd?
+              if ( ccsx.collide(entity, cell[c]) && !checked[cell[c].gid] ) {
+                checked[cell[c].gid] = true;
+                ccsx.checkPair( dt, entity, cell[c] );
+              }
+            }
+            cell.push(entity);
+          }
+        }
+      }
+    }
+  },
+
+  XXcheckEntities: function(dt) {
     var hits = {},
     m,t,
     r1,r2, i,j;
