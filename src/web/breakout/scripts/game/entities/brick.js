@@ -51,6 +51,7 @@ bko.EntityBrick = asterix.XEntity.extends({
     this._super(x, y, options);
     this.status=true;
     this.value= 10;
+    this.fixed=true;
     this.options.frames= [ options.color + '.png' ];
   }
 

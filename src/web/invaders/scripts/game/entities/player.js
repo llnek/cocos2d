@@ -50,8 +50,6 @@ var Ship = cc.Sprite.extend({
 
 asterix.Invaders.EntityPlayer = asterix.XEntity.extends({
 
-  speed: 150,
-
   create: function() {
     return this.sprite = new Ship(this.startPos.x, this.startPos.y, this.options);
   },
@@ -85,16 +83,14 @@ asterix.Invaders.EntityPlayer = asterix.XEntity.extends({
   },
 
   onRight: function(dt) {
-    var pos= this.sprite.getPosition(),
-    x = pos.x + dt * this.speed;
-    this.sprite.setPosition(x, pos.y);
+    this.vel.x = 150;
+    this.move(dt);
     this.clamp();
   },
 
   onLeft: function(dt) {
-    var pos= this.sprite.getPosition(),
-    x = pos.x - dt * this.speed;
-    this.sprite.setPosition(x, pos.y);
+    this.vel.x = -150;
+    this.move(dt);
     this.clamp();
   },
 
@@ -124,12 +120,7 @@ asterix.Invaders.EntityPlayer = asterix.XEntity.extends({
 
   ctor: function(x, y, options) {
     this._super(x, y, options);
-    /*
-    this.maxVel.y = 200;
-    this.maxVelx = 100;
-    this.friction.x = 150;
-    this.friction.y = 0;
-    */
+    this.vel.x = 150;
     this.options.frames= [ 'ship_0.png', 'ship_1.png' ];
   }
 

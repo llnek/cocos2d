@@ -51,9 +51,16 @@ ast.EntityAsteroid1 = ast.EntityAster.extends({
     return this.sprite = new Astro1(this.startPos.x, this.startPos.y, this.options);
   },
 
+  check: function(other) {
+    if (other instanceof ast.EntityAsteroid1) {
+      //loggr.debug("rock collided");
+      this.checkPair(other);
+    }
+  },
+
   ctor: function(x,y,options) {
     this._super(x,y,options);
-    this.initVel(30);
+    this.initVel(50);
     this.options.frames= ['rock_large.png'];
   }
 

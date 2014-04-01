@@ -287,30 +287,19 @@ var GameLayer = asterix.XGameLayer.extend({
     bp= bs.getPosition();
 
     if ( bp.x < ccsx.getLeft(p1.sprite)) {
-      // p2 scores
       this.onWinner(p2);
     }
     else
     if (bp.x > ccsx.getRight(p2.sprite)) {
-      // p1 scores
       this.onWinner(p1);
     }
-    else if (ccsx.collide(p2,this.ball)) {
-      this.ball.vel.x = - this.ball.vel.x;
-      if (this.ball.vel.y < 0) {
-      } else {
-      }
-      bs.setPosition(ccsx.getLeft(p2.sprite) - ccsx.getWidth(bs) / 2, bp.y);
-      sh.xcfg.sfxPlay('o_hit');
+    else
+    if (ccsx.collide(p2,this.ball)) {
+      p2.check(this.ball);
     }
     else
     if ( ccsx.collide(p1,this.ball)) {
-      this.ball.vel.x = - this.ball.vel.x;
-      if (this.ball.vel.y < 0) {
-      } else {
-      }
-      bs.setPosition(ccsx.getRight(p1.sprite) + ccsx.getWidth(bs) / 2, bp.y);
-      sh.xcfg.sfxPlay('x_hit');
+      p1.check(this.ball);
     }
   },
 
@@ -339,6 +328,15 @@ var GameLayer = asterix.XGameLayer.extend({
   setGameMode: function(mode) {
     this.getHUD().setGameMode(mode);
     this._super(mode);
+  },
+
+  getEnclosureRect: function() {
+    var csts = sh.xcfg.csts,
+    wz = ccsx.screen();
+    return { top: wz.height - 6 * csts.TILE,
+             left: csts.TILE,
+             bottom: csts.TILE,
+             right: wz.width - csts.TILE };
   }
 
 });

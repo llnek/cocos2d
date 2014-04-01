@@ -35,15 +35,12 @@ asterix.Invaders.EntityMissile = asterix.XEntity.extends({
 
   rtti: function() { return 'EntityMissile'; },
 
-  speed: 100,
-
   update: function(dt) {
     if (this.sprite) {
       var pos = this.sprite.getPosition(),
       csts= sh.xcfg.csts,
-      wz= ccsx.screen(),
-      y = pos.y + dt * this.speed;
-      this.sprite.setPosition(pos.x, y);
+      wz= ccsx.screen();
+      this.move(dt);
       if (ccsx.getTop(this.sprite) >= wz.height - csts.TILE) {
         this.injured(-1);
       }
@@ -65,11 +62,7 @@ asterix.Invaders.EntityMissile = asterix.XEntity.extends({
 
   ctor: function(x, y, options) {
     this._super(x, y, options);
-    /*
-    this.maxVel.x = 200;
-    this.maxVel.y = 200;
-    this.vel.y = -80;
-    */
+    this.vel.y = 100;
     this.options.frames= ['missile.png'];
   }
 

@@ -37,16 +37,12 @@ asterix.Invaders.EntityBomb = asterix.XEntity.extends({
     var csts = sh.xcfg.csts,
     wz = ccsx.screen();
     if (this.sprite) {
-      var pos = this.sprite.getPosition(),
-      y = pos.y - dt * this.speed;
-      this.sprite.setPosition(pos.x, y);
+      this.move(dt);
       if (ccsx.getBottom(this.sprite) <= csts.TILE) {
         this.injured(-1);
       }
     }
   },
-
-  value: 10,
 
   injured: function(num,from) {
     var points = from instanceof ivs.EntityMissile,
@@ -65,16 +61,12 @@ asterix.Invaders.EntityBomb = asterix.XEntity.extends({
     return this.sprite = new Bomb(this.startPos.x, this.startPos.y, this.options);
   },
 
-  speed: 50,
   rtti: function() { return 'EntityBomb'; },
 
   ctor: function(x, y, options) {
     this._super(x, y, options);
-    /*
-    this.maxVel.x = 0;
-    this.maxVel.y = 200;
-    this.vel.y = 50;
-    */
+    this.vel.y = -50;
+    this.value=10;
     this.options.frames= ['bomb.png'];
   }
 

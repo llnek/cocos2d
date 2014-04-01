@@ -28,6 +28,11 @@ asterix.XEntity = klass.extends({
     }
   },
 
+  updatePosition: function(x,y) {
+    this.last= this.sprite.getPosition();
+    this.sprite.setPosition(x,y);
+  },
+
   keypressed: function(dt) {
   },
 
@@ -56,20 +61,102 @@ asterix.XEntity = klass.extends({
     }
   },
 
-  startPos: cc.p(0,0),
-  lastPos: null,
-  health: 0,
-  speed: 0,
-  value: 0,
-  sprite: null,
+  traceEnclosure: function(dt) {
+    var sz= this.sprite.getContentSize().height / 2,
+    sw= this.sprite.getContentSize().width / 2,
+    pos = this.sprite.getPosition(),
+    csts = sh.xcfg.csts,
+    hit=false,
+    wz = ccsx.screen(),
+    y = pos.y + dt * this.vel.y,
+    x = pos.x + dt * this.vel.x,
+    bbox = sh.main.getEnclosureRect();
+
+    if (this.fixed) { return false; }
+
+    // hitting top wall ?
+    if (y + sz > bbox.top) {
+      this.vel.y = - this.vel.y
+      y = bbox.top - sz;
+      hit=true;
+    }
+
+    // hitting bottom wall ?
+    if (y - sz < bbox.bottom) {
+      this.vel.y = - this.vel.y
+      y = bbox.bottom + sz;
+      hit=true;
+    }
+
+    if (x + sw > bbox.right) {
+      this.vel.x = - this.vel.x;
+      x = bbox.right - sw;
+      hit=true;
+    }
+
+    if (x - sw < bbox.left) {
+      this.vel.x = - this.vel.x;
+      x = bbox.left + sw;
+      hit=true;
+    }
+
+    //this.lastPos = this.sprite.getPosition();
+    // no need to update the last pos
+    if (hit) {
+      this.sprite.setPosition(x, y);
+    }
+
+    return hit;
+  },
+
+  move: function(dt) {
+    var pos = this.sprite.getPosition(),
+    y = pos.y + dt * this.vel.y,
+    x = pos.x + dt * this.vel.x;
+    this.updatePosition(x, y);
+  },
 
   rtti: function() {
     return 'no-rtti-defined';
   },
 
-  friction: { x: 0, y: 0 },
-  maxVel: { x: 0, y: 0 },
-  vel: { x: 0, y: 0 },
+  checkPair: function(other) {
+    var kz= other.sprite.getContentSize(),
+    bz = this.sprite.getContentSize(),
+    ks= other.sprite,
+    bs= this.sprite,
+    ka = { L: ccsx.getLeft(ks), T: ccsx.getTop(ks),
+           R: ccsx.getRight(ks), B: ccsx.getBottom(ks) },
+    ba = { L : ccsx.getLeft(bs), T: ccsx.getTop(bs),
+           R: ccsx.getRight(bs), B: ccsx.getBottom(bs) };
+
+    // coming down from top?
+    if (ba.T > ka.T &&  ka.T > ba.B) {
+      if (!other.fixed) { other.vel.y = - other.vel.y; }
+      if (!this.fixed) { this.vel.y = - this.vel.y; }
+    }
+    else
+    // coming from bottom?
+    if (ba.T > ka.B &&  ka.B > ba.B) {
+      if (!other.fixed) { other.vel.y = - other.vel.y; }
+      if (!this.fixed) { this.vel.y = - this.vel.y; }
+    }
+    else
+    // coming from left?
+    if (ka.L > ba.L && ba.R > ka.L) {
+      if (!other.fixed) { other.vel.x = - other.vel.x; }
+      if (!this.fixed) { this.vel.x = - this.vel.x; }
+    }
+    else
+    // coming from right?
+    if (ka.R > ba.L && ba.R > ka.R) {
+      if (!other.fixed) { other.vel.x = - other.vel.x; }
+      if (!this.fixed) { this.vel.x = - this.vel.x; }
+    }
+    else {
+      loggr.error("Failed to determine the collision of these 2 objects.");
+    }
+  },
 
   dispose: function() {
     if (this.sprite) {
@@ -86,6 +173,17 @@ asterix.XEntity = klass.extends({
   ctor: function(x,y,options) {
     this.options= options || {};
     this.startPos = cc.p(x,y);
+    this.lastPos= null;
+    this.health= 0;
+    this.speed= 0;
+    this.bounce=0;
+    this.value= 0;
+    this.fixed=false;
+    this.sprite= null;
+    this.friction= { x: 0, y: 0 };
+    this.maxVel= { x: 0, y: 0 };
+    this.vel= { x: 0, y: 0 };
+    this.status=true;
   }
 
 });

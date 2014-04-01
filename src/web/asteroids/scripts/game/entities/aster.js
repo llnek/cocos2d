@@ -29,17 +29,21 @@ ast.EntityAster = asterix.XEntity.extends({
   },
 
   update: function(dt) {
-    //this.maybeRotate();
+    var b=false;
+    if (this.bounce > 0) { b= this.traceEnclosure(dt); }
+    this.maybeRotate(dt);
+    if (!b) { this.move(dt); }
   },
 
-  maybeRotate: function() {
-    this.currentAnim.angle = asterix.fns.degToRad(this.angle);
+  maybeRotate: function(dt) {
+    this.sprite.setRotation( this.angle);
     this.angle += 0.05;
     if (this.angle > 360) { this.angle -= 360; }
   },
 
   ctor: function(x,y,options) {
     this._super(x,y,options);
+    this.bounce=1;
     this.angle = asterix.fns.rand(360);
   }
 

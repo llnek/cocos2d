@@ -22,43 +22,10 @@ loggr= global.ZotohLabs.logger;
 
 png.EntityBall = png.EntityXXX.extends({
 
-  vel: { x: 0, y: 0 },
-
   update: function(dt) {
-    var sz= this.sprite.getContentSize().height / 2,
-    sw= this.sprite.getContentSize().width / 2,
-    pos = this.sprite.getPosition(),
-    csts = sh.xcfg.csts,
-    wz = ccsx.screen(),
-    y = pos.y + dt * this.vel.y,
-    x = pos.x + dt * this.vel.x,
-    b_y1= csts.TILE,
-    b_y2 = wz.height - csts.TILE * 6,
-    b_x1= csts.TILE,
-    b_x2 = wz.width - csts.TILE;
-
-    // hitting top wall ?
-    if (y + sz > b_y2) {
-      y = b_y2 - sz;
-      this.vel.y = - this.vel.y
-    }
-    // hitting bottom wall ?
-    if (y - sz < b_y1) {
-      y = b_y1 + sz;
-      this.vel.y = - this.vel.y
-    }
-
-    if (x + sw > b_x2) {
-      x = b_x2 - sw;
-      this.vel.x = - this.vel.x;
-    }
-
-    if (x - sw < b_x1) {
-      x = b_x1 + sw;
-      this.vel.x = - this.vel.x;
-    }
-
-    this.sprite.setPosition(x, y);
+    var b=false;
+    if (this.bounce > 0) { b= this.traceEnclosure(dt); }
+    if (!b) { this.move(dt); }
   },
 
   create: function() {
@@ -69,6 +36,7 @@ png.EntityBall = png.EntityXXX.extends({
 
   ctor: function(x,y,options) {
     this._super(x,y,options);
+    this.bounce=1;
     this.resid= 'gamelevel1.images.ball';
   }
 

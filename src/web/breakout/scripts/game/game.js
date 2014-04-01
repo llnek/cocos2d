@@ -210,6 +210,15 @@ var GameLayer = asterix.XGameLayer.extend({
     }
   },
 
+  getEnclosureRect: function() {
+    var csts= sh.xcfg.csts,
+    wz= ccsx.screen();
+    return { bottom: csts.TILE,
+             top: wz.height - csts.TOP * csts.TILE,
+             left: csts.TILE,
+             right: wz.width - csts.TILE };
+  },
+
   updateEntities: function(dt) {
     this.actor.update(dt);
     this.ball.update(dt);

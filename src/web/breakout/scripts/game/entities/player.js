@@ -40,23 +40,19 @@ bko.EntityPlayer = asterix.XEntity.extends({
     }
   },
 
-  speed: 150,
-
   create: function() {
     return this.sprite = new Paddle(this.startPos.x, this.startPos.y, this.options);
   },
 
   onRight: function(dt) {
-    var pos= this.sprite.getPosition(),
-    x = pos.x + dt * this.speed;
-    this.sprite.setPosition(x, pos.y);
+    this.vel.x = 150;
+    this.move(dt);
     this.clamp();
   },
 
   onLeft: function(dt) {
-    var pos= this.sprite.getPosition(),
-    x = pos.x - dt * this.speed;
-    this.sprite.setPosition(x, pos.y);
+    this.vel.x = -150;
+    this.move(dt);
     this.clamp();
   },
 
@@ -77,14 +73,8 @@ bko.EntityPlayer = asterix.XEntity.extends({
 
   ctor: function(x, y, options) {
     this._super(x, y, options);
+    this.vel.x = 150;
     this.options.frames= ['paddle.png'];
-    /*
-    this.maxVel.x = 200;
-    this.maxVel.y = 200;
-    this.maxVelx = 100;
-    this.friction.x = 150;
-    this.friction.y = 0;
-    */
   }
 
 });

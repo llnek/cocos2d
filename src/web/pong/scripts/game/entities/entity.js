@@ -37,9 +37,6 @@ png.EntityXXX = asterix.XEntity.extends({
 
 png.EntityPaddle = png.EntityXXX.extends({
 
-  speed: 200,
-  kcodes: [],
-
   clamp: function() {
     var pos= this.sprite.getPosition(),
     csts = sh.xcfg.csts,
@@ -60,21 +57,41 @@ png.EntityPaddle = png.EntityXXX.extends({
     }
 
     if (y !== pos.y) {
+    // no need to update last pos
       this.sprite.setPosition(pos.x, y);
     }
 
   },
 
+  check: function(other) {
+    var pos = other.sprite.getPosition();
+    other.vel.x = - other.vel.x;
+    switch (this.options.color) {
+    case 'X':
+      other.sprite.setPosition(ccsx.getRight(this.sprite) + ccsx.getWidth(other.sprite) / 2, pos.y);
+      sh.xcfg.sfxPlay(this.snd);
+      break;
+    case 'O':
+      other.sprite.setPosition(ccsx.getLeft(this.sprite) - ccsx.getWidth(other.sprite) / 2, pos.y);
+      sh.xcfg.sfxPlay(this.snd);
+      break;
+    }
+  },
+
   ctor: function(x,y,options) {
     this._super(x,y,options);
+    this.speed= 200;
+    this.kcodes= [];
     switch (this.options.color) {
     case 'X':
       this.resid = 'gamelevel1.images.paddle1';
       this.kcodes = [cc.KEY.up, cc.KEY.down];
+      this.snd= 'x_hit';
       break;
     case 'O':
       this.resid = 'gamelevel1.images.paddle2';
       this.kcodes = [cc.KEY.w, cc.KEY.s];
+      this.snd= 'o_hit';
       break;
     }
   }

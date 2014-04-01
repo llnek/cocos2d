@@ -108,6 +108,35 @@ var GameLayer = asterix.XGameLayer.extend({
     this.actor=null;
   },
 
+  updateEntities: function(dt) {
+    _.each(this.rocks,function(z) {
+      if (z && z.status) {
+        z.update(dt);
+      }
+    });
+    //this.actor.update(dt);
+  },
+
+  checkEntities: function(dt) {
+    var hits = {},
+    m,t,
+    r1,r2, i,j;
+    for (i=0; i < this.rocks.length; ++i) {
+      r1= this.rocks[i];
+      if (! r1.status) { continue; }
+      m = hits[''+i] = {};
+      for (j = i+1; j < this.rocks.length; ++j) {
+        r2 = this.rocks[j];
+        t = hits[''+j];
+        if (t && t[''+i]) { continue; }
+        if (r2.status && ccsx.collide(r1,r2)) {
+          m[''+j] = 1;
+          r1.check(r2);
+        }
+      }
+    }
+  },
+
   initAsteroidSizes: function() {
   /*
     var dummy = new ast.EntityAsteroid3(0,0,{});

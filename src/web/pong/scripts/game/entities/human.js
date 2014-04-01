@@ -45,7 +45,7 @@ png.EntityHuman = png.EntityPaddle.extends({
     }
 
     if (y !== pos.y) {
-      this.sprite.setPosition(pos.x, y);
+      this.updatePosition(pos.x, y);
       this.clamp();
     }
 

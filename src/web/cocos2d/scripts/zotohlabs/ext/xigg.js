@@ -50,6 +50,15 @@ asterix.XGameLayer = asterix.XLayer.extend({
   onclicked: function(x,y) {
   },
 
+  getEnclosureRect: function() {
+    var csts = sh.xcfg.csts,
+    wz = ccsx.screen();
+    return { top: wz.height - csts.TILE,
+             left: csts.TILE,
+             bottom: csts.TILE,
+             right: wz.width - csts.TILE };
+  },
+
   setGameMode: function(mode) {
     sh.xcfg.csts.GAME_MODE=mode;
   },
