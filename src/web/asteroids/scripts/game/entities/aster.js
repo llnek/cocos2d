@@ -29,10 +29,9 @@ ast.EntityAster = asterix.XEntity.extends({
   },
 
   update: function(dt) {
-    var b=false;
-    if (this.bounce > 0) { b= this.traceEnclosure(dt); }
+    if (this.bounce > 0) { this.traceEnclosure(dt); }
     this.maybeRotate(dt);
-    if (!b) { this.move(dt); }
+    this.move(dt);
   },
 
   maybeRotate: function(dt) {

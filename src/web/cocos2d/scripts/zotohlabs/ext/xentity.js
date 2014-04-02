@@ -30,8 +30,37 @@ asterix.XEntity = klass.extends({
   },
 
   updatePosition: function(x,y) {
+    var box = sh.main.getEnclosureRect(),
+    sz = this.sprite.getContentSize(),
+    hh= sz.height/2,
+    hw= sz.width/2,
+    pos, x, y, b2;
+
     this.lastPos= this.sprite.getPosition();
     this.sprite.setPosition(x,y);
+
+    pos = this.sprite.getPosition();
+    b2= ccsx.bbox2(this.sprite);
+
+    if (b2.right > box.right) {
+      x= box.right - hw;
+    }
+    else
+    if (b2.left < box.left) {
+      x = box.left + hw;
+    }
+    else
+    if (b2.top > box.top) {
+      y = box.top - hh;
+    }
+    else
+    if (b2.bottom < box.bottom) {
+      y = box.bottom + hh;
+    }
+
+    if (pos.x !== x || pos.y !== y) {
+      this.sprite.setPosition(x,y);
+    }
   },
 
   keypressed: function(dt) {
