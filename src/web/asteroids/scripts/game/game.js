@@ -104,6 +104,7 @@ var GameLayer = asterix.XGameLayer.extend({
     }
 
     this.initAsteroidSizes();
+    this.initPlayerSize();
     this.players=[];
     this.actor=null;
   },
@@ -114,11 +115,13 @@ var GameLayer = asterix.XGameLayer.extend({
         z.update(dt);
       }
     });
-    //this.actor.update(dt);
+    this.actor.update(dt);
   },
 
   checkEntities: function(dt) {
-    this.checkRocks(dt);
+    for (var n=0; n< 5; ++n) {
+      this.checkRocks(dt);
+    }
   },
 
   checkRocks: function(dt) {
@@ -151,7 +154,7 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   initPlayerSize: function() {
-    var dummy = new ast.EntityPlayer(0,0,{});
+    var dummy = new ast.EntityPlayer(0,0,{}),
     s= dummy.create();
     this.playerSize = s.getContentSize();
   },
@@ -165,17 +168,15 @@ var GameLayer = asterix.XGameLayer.extend({
     cw = ccsx.center(),
     aa, n, r,
     x,y, deg,
-    B= {left: csts.TILE, top: wz.height-csts.TILE,
-            right: wz.width - csts.TILE, bottom: csts.TILE };
+    B= this.getEnclosureRect();
     this.rocks= [];
     while (this.rocks.length < cfg.BOULDERS) {
-      r= {};
-      r.left = Math.floor( Math.random() * wz.width);
-      r.top = Math.floor( Math.random() * wz.height);
+      r= { left: asterix.fns.randPercentage() * wz.width,
+           top: asterix.fns.randPercentage() * wz.height };
       r.bottom = r.top - h;
       r.right = r.left + w;
       if (!this.maybeOverlap(r) && !asterix.fns.outOfBound(r,B)) {
-        deg = Math.floor(Math.random() * 360);
+        deg = asterix.fns.randPercentage() * 360;
         x = r.left + w/2;
         y = r.top - h/2;
         aa = new ast.EntityAsteroid1( x, y, {angle: deg});
@@ -186,6 +187,30 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   spawnPlayer: function() {
+    var h = this.playerSize.height,
+    w = this.playerSize.width,
+    B= this.getEnclosureRect(),
+    wz = ccsx.screen(),
+    cw = ccsx.center(),
+    test=true,
+    aa,x,y,r;
+
+    while (test) {
+      r= { left: asterix.fns.randPercentage() * wz.width,
+           top: asterix.fns.randPercentage() * wz.height };
+      r.bottom = r.top - h;
+      r.right = r.left + w;
+      if (!this.maybeOverlap(r) && !asterix.fns.outOfBound(r,B)) {
+        x = r.left + w/2;
+        y = r.top - h/2;
+        aa = new ast.EntityPlayer( x, y, {});
+        this.addItem(aa.create());
+        this.players=[];
+        this.players.push(aa);
+        this.actor=aa;
+        test=false;
+      }
+    }
   },
 
   maybeOverlap: function (a) {

@@ -210,6 +210,7 @@ asterix.XEntity = klass.extends({
     this.fixed=false;
     this.sprite= null;
     this.friction= { x: 0, y: 0 };
+    this.accel= { x: 0, y: 0 };
     this.maxVel= { x: 0, y: 0 };
     this.vel= { x: 0, y: 0 };
     this.guid = ++GID_SEED;

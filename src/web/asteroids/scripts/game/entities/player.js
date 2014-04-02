@@ -9,41 +9,70 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this; _ = global._ ;
-
-var asterix = global.ZotohLabs.Asterix;
-var sh = asterix.Shell;
-var ao = asterix.Asteroids;
-var loggr = global.ZotohLabs.logger;
-var echt = global.ZotohLabs.echt;
+(function(undef) { "use strict"; var global = this, _ = global._ ,
+asterix = global.ZotohLabs.Asterix,
+echt = global.ZotohLabs.echt,
+ccsx = asterix.COCOS2DX,
+ast = asterix.Asteroids,
+sh = asterix.Shell,
+loggr = global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-asterix.Asteroids.EntityPlayer = asterix.XEntity.extend({
 
-  animSheet: new ig.AnimationSheet('media/asteroids/game/player_ship.png', 24,15),
-  collides: ig.Entity.COLLIDES.PASSIVE,
-  checkAgainst: ig.Entity.TYPE.B,
-  type: ig.Entity.TYPE.A,
-  size: { x: 24, y: 15 },
+var Ship = cc.Sprite.extend({
 
-  update: function() {
-    this.maybeMoveShip();
-    this.maybeWrapOOB();
-    this.parent();
+  onThrust: function(deg) {
+    this.initWithSpriteFrameName(this.options.frames[1]);
+    this.setRotation(deg);
   },
 
-  maybeMoveShip: function() {
-    if (ig.input.state('right')) { this.onRight(); }
-    if (ig.input.state('left')) { this.onLeft(); }
-    //if (ig.input.state('down')) { this.onDown(); }
-    if (ig.input.state('up')) {
-      this.onUp();
-    } else {
-      this.onDown();
+  onIdle: function(deg) {
+    this.initWithSpriteFrameName(this.options.frames[0]);
+    this.setRotation(deg);
+  },
+
+  ctor: function(x,y,options) {
+    this.options= options;
+    this._super();
+    this.onIdle();
+    this.setPosition(x,y);
+  }
+
+});
+
+ast.EntityPlayer = asterix.XEntity.extends({
+
+  initKeyOps: function() {
+    this.throttleWait=300;
+    this.ops={};
+    this.ops.onRight = _.throttle(this.onRight.bind(this), this.throttleWait,{ trailing:false});
+    this.ops.onLeft= _.throttle(this.onLeft.bind(this), this.throttleWait, {trailing:false});
+    this.ops.onDown = _.throttle(this.onDown.bind(this), this.throttleWait, {trailing:false});
+    this.ops.onUp = _.throttle(this.onUp.bind(this), this.throttleWait, {trailing:false});
+    this.ops.onFire = _.throttle(this.onFire.bind(this), this.throttleWait, {trailing:false});
+  },
+
+  update: function(dt) {
+    this._super(dt);
+    this.vel.y = this.vel.y + dt * this.accel.y;
+    this.vel.x = this.vel.x + dt * this.accel.x;
+    if (this.vel.y > this.maxVel.y) {
+      this.vel.y = this.maxVel.y;
     }
-    if (ig.input.state('shoot')) { this.onFire(); }
+    if (this.vel.x > this.maxVel.x) {
+      this.vel.x = this.maxVel.x;
+    }
+    this.move(dt);
+  },
+
+  keypressed: function() {
+    if (sh.main.keyboard[cc.KEY.right]) { this.onRight(); }
+    if (sh.main.keyboard[cc.KEY.left]) { this.onLeft(); }
+    if (sh.main.keyboard[cc.KEY.down]) { this.onDown(); }
+    if (sh.main.keyboard[cc.KEY.up]) { this.onUp(); }
+    if (sh.main.keyboard[cc.KEY.space]) { this.onFire(); }
   },
 
   onRight: function() {
@@ -57,7 +86,7 @@ asterix.Asteroids.EntityPlayer = asterix.XEntity.extend({
   },
 
   onDown: function() {
-      //this.player.idle();
+    this.idle();
   },
 
   onUp: function() {
@@ -76,28 +105,24 @@ asterix.Asteroids.EntityPlayer = asterix.XEntity.extend({
     if (this.angle < 0) {
       this.angle = 360 + this.angle;
     }
-    this.currentAnim.angle = this.radian();
-    //console.log("angle ========== " + this.angle);
+    this.sprite.setRotation(this.degrees());
   },
 
   thrust: function() {
     var rc= asterix.fns.calcXY(this.angle, this.thrustValue);
-
     this.accel.y = rc[1];
     this.accel.x = rc[0];
-
-    this.currentAnim.angle = this.radian();
-    this.currentAnim = this.anims.thrust;
+    this.sprite.onThrust(this.degrees());
   },
 
   idle: function() {
     this.accel.x = 0;
     this.accel.y = 0;
-    this.currentAnim = this.anims.show;
-    this.currentAnim.angle = this.radian();
+    this.sprite.onIdle(this.degrees());
   },
 
   fire: function() {
+  /*
     // we want to find the ship's nose to fire the missile
     var rc= asterix.fns.calcXY(this.angle, this.size.x/2);
     var mw= ao.EntityMissile.prototype.size.y/2;
@@ -107,26 +132,29 @@ asterix.Asteroids.EntityPlayer = asterix.XEntity.extend({
     var x= c.x + rc[0];
     // adjust a bit to allow for the missile's width/height
     ig.game.spawnEntity(ao.EntityMissile, x-mw,y-mw, {angle: me.angle});
+  */
   },
 
-  radian: function(deg) {
-    return asterix.fns.degToRad(deg || this.angle);
+  create: function() {
+    return this.sprite = new Ship(this.startPos.x, this.startPos.y, this.options);
+  },
+
+  degrees: function(deg) {
+    return deg || this.angle;
   },
 
   check: function(other) {
-    this.kill();
+    //this.kill();
   },
 
-  init: function(x,y,settings) {
-    this.addAnim('thrust', 1, [0]);
-    this.addAnim('show', 1, [1]);
+  ctor: function(x,y,options) {
+    this._super(x,y,options);
+    this.initKeyOps();
     this.angle=0;
     this.thrustValue=30;//250;
     this.maxVel.y= 300;
     this.maxVel.x= 300;
-    this.vel.x=0;
-    this.vel.y=0;
-    this.parent(x,y,settings);
+    this.options.frames= ['rship_0.png', 'rship_1.png'];
   }
 
 });

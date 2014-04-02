@@ -36,6 +36,15 @@ var Funcs= klass.extends({
     }
   },
 
+  randArrayItem: function(arr) {
+    return arr.length === 0 ? null : arr.length === 1 ? arr[0] : arr[ Math.floor(Math.random() * arr.length) ];
+  },
+
+  randPercentage: function() {
+    var pc = [0.1,0.9,0.3,0.7,0.6,0.5,0.4,0.8,0.2];
+    return this.randArrayItem(pc);
+  },
+
   rand: function(limit) {
     return Math.floor(Math.random() * limit);
   },

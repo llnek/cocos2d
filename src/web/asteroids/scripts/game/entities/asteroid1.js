@@ -59,7 +59,7 @@ ast.EntityAsteroid1 = ast.EntityAster.extends({
 
   ctor: function(x,y,options) {
     this._super(x,y,options);
-    this.initVel(50);
+    this.initVel(30);
     this.options.frames= ['rock_large.png'];
   }
 
