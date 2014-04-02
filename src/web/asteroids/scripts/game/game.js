@@ -118,69 +118,19 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   checkEntities: function(dt) {
-    var e, entity, entities = this.rocks,
-    cellSize = 64,
-    checked,
-    pos, esz,
-    xmin,ymin,xmax,ymax,
-    x,y,c, cell,
-    hash = {};
-
-    for (e = 0; e < entities.length; ++e ) {
-      entity = entities[e];
-      if (!entity.status) { continue; }
-      esz= entity.sprite.getContentSize();
-      pos= entity.sprite.getPosition();
-      checked = {};
-      xmin = Math.floor( ccsx.getLeft(entity.sprite) / cellSize );
-      ymax = Math.floor( ccsx.getTop(entity.sprite) / cellSize ) + 1;
-      ymin = Math.floor( ccsx.getBottom(entity.sprite) / cellSize );
-      xmax = Math.floor( ccsx.getRight(entity.sprite) / cellSize ) + 1;
-
-      for (x = xmin; x < xmax; ++x ) {
-        for(y = ymin; y < ymax; ++y ) {
-
-          // Current cell is empty - create it and insert!
-          if( !hash[x] ) {
-            hash[x] = {};
-            hash[x][y] = [entity];
-          }
-          else
-          if( !hash[x][y] ) {
-            hash[x][y] = [entity];
-          }
-          // Check against each entity in this cell, then insert
-          else {
-            cell = hash[x][y];
-            for(c = 0; c < cell.length; ++c ) {
-              // Intersects and wasn't already checkd?
-              if ( ccsx.collide(entity, cell[c]) && !checked[cell[c].gid] ) {
-                checked[cell[c].gid] = true;
-                ccsx.checkPair( dt, entity, cell[c] );
-              }
-            }
-            cell.push(entity);
-          }
-        }
-      }
-    }
+    this.checkRocks(dt);
   },
 
-  XXcheckEntities: function(dt) {
-    var hits = {},
-    m,t,
-    r1,r2, i,j;
-    for (i=0; i < this.rocks.length; ++i) {
+  checkRocks: function(dt) {
+    var r1,r2, i, j;
+    for (i =0; i < this.rocks.length; ++i) {
       r1= this.rocks[i];
-      if (! r1.status) { continue; }
-      m = hits[''+i] = {};
-      for (j = i+1; j < this.rocks.length; ++j) {
+      if (!r1.status) { continue; }
+      for (j= i+1; j < this.rocks.length; ++j) {
         r2 = this.rocks[j];
-        t = hits[''+j];
-        if (t && t[''+i]) { continue; }
-        if (r2.status && ccsx.collide(r1,r2)) {
-          m[''+j] = 1;
-          r1.check(r2);
+        if (!r2.status) { continue; }
+        if (ccsx.collide2(r1,r2)) {
+          ccsx.resolveElastic(r1,r2);
         }
       }
     }

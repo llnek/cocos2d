@@ -54,7 +54,6 @@ ast.EntityAsteroid1 = ast.EntityAster.extends({
   check: function(other) {
     if (other instanceof ast.EntityAsteroid1) {
       //loggr.debug("rock collided");
-      this.checkPair(other);
     }
   },
 

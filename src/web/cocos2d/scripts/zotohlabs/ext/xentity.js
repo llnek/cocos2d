@@ -121,7 +121,7 @@ asterix.XEntity = klass.extends({
     return 'no-rtti-defined';
   },
 
-  checkPair: function(other) {
+  crap: function(other) {
     var kz= other.sprite.getContentSize(),
     bz = this.sprite.getContentSize(),
     ks= other.sprite,
@@ -168,7 +168,6 @@ asterix.XEntity = klass.extends({
 
   create: function() {
     throw new Error("missing implementation.");
-    //return this.sprite;
   },
 
   ctor: function(x,y,options) {
