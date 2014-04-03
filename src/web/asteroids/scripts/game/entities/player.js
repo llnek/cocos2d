@@ -64,6 +64,7 @@ ast.EntityPlayer = asterix.XEntity.extends({
     if (this.vel.x > this.maxVel.x) {
       this.vel.x = this.maxVel.x;
     }
+    this.wrapEnclosure();
     this.move(dt);
   },
 
@@ -150,6 +151,7 @@ ast.EntityPlayer = asterix.XEntity.extends({
   ctor: function(x,y,options) {
     this._super(x,y,options);
     this.initKeyOps();
+    this.wrappable=true;
     this.angle=0;
     this.thrustValue=30;//250;
     this.maxVel.y= 300;
