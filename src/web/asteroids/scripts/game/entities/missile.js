@@ -12,7 +12,7 @@
 (function(undef) { "use strict"; var global = this, _ = global._  ,
 asterix = global.ZotohLabs.Asterix,
 ast = asterix.Asteroids,
-ccsx= asterix.COCOs2DX,
+ccsx= asterix.COCOS2DX,
 sh = asterix.Shell,
 echt= global.ZotohLabs.echt,
 loggr= global.ZotohLabs.logger;
@@ -34,24 +34,49 @@ var Missile = cc.Sprite.extend({
 
 ast.EntityMissile = asterix.XEntity.extends({
 
-  ctor: function(x, y, options) {
-    var rc= asterix.fns.calcXY(options.angle, 150);
-    this._super(x, y, options);
-    this.vel.x = rc[0];
-    this.vel.y = rc[1];
-    this.options.frames= ['laserGreen.png'];
+  update: function(dt) {
+    if (this.sprite) {
+      var pos = this.sprite.getPosition(),
+      csts= sh.xcfg.csts,
+      wz= ccsx.screen();
+      this.move(dt);
+      if (ccsx.getTop(this.sprite) >= wz.height - csts.TILE) {
+        this.injured(-1);
+      }
+    }
   },
 
-  update: function(dt) {
-    this.move(dt);
+  reviveSprite: function() {
+    if (this.sprite) {
+      var rc= asterix.fns.calcXY(this.options.angle, this.speed);
+      this.vel.x = rc[0];
+      this.vel.y = rc[1];
+      this.sprite.setPosition(this.startPos.x, this.startPos.y);
+      this.sprite.setRotation(this.options.angle);
+      this.sprite.setVisible(true);
+    }
   },
 
   create: function() {
     return this.sprite = new Missile(this.startPos.x, this.startPos.y, this.options);
   },
 
+  injured: function(num, from) {
+    sh.fireEvent('/game/objects/missiles/killed', { entity: this } );
+  },
+
   check: function(other) {
+  },
+
+  ctor: function(x, y, options) {
+    this._super(x, y, options);
+    this.speed= 150;
+    var rc= asterix.fns.calcXY(options.angle, this.speed);
+    this.vel.x = rc[0];
+    this.vel.y = rc[1];
+    this.options.frames= ['laserGreen.png'];
   }
+
 
 });
 

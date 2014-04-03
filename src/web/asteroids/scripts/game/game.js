@@ -74,6 +74,14 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
 //////////////////////////////////////////////////////////////////////////////
 // game layer
 //////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+// object pools
+//////////////////////////////////////////////////////////////////////////////
+
+sh.pools['missiles'] = new asterix.XEntityPool({ entityProto: ast.EntityMissile });
+sh.pools['lasers'] = new asterix.XEntityPool({ entityProto: ast.EntityLaser });
+sh.pools['live-missiles'] = {};
+sh.pools['live-lasers'] = {};
 
 var GameLayer = asterix.XGameLayer.extend({
 
@@ -99,16 +107,19 @@ var GameLayer = asterix.XGameLayer.extend({
       this.atlasBatch = cc.SpriteBatchNode.createWithTexture(img);
       this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
     }
+    sh.pools['missiles'].drain();
+    sh.pools['lasers'].drain();
+    sh.pools['live-missiles'] = {};
+    sh.pools['live-lasers'] = {};
+    this.initAsteroidSizes();
+    this.initPlayerSize();
+    this.players=[];
+    this.actor=null;
     if (newFlag) {
       this.getHUD().resetAsNew();
     } else {
       this.getHUD().reset();
     }
-
-    this.initAsteroidSizes();
-    this.initPlayerSize();
-    this.players=[];
-    this.actor=null;
   },
 
   updateEntities: function(dt) {
@@ -117,10 +128,19 @@ var GameLayer = asterix.XGameLayer.extend({
         z.update(dt);
       }
     });
+
+    var obj= sh.pools['live-lasers'];
+    _.each(_.keys(obj), function(k) {
+      obj[k].update(dt);
+    });
+
     this.actor.update(dt);
-    if (this.missile) {
-    this.missile.update(dt);
-    }
+
+    obj = sh.pools['live-missiles'];
+    _.each(_.keys(obj), function(k) {
+      obj[k].update(dt);
+    });
+
   },
 
   checkEntities: function(dt) {
@@ -230,9 +250,23 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   onFireMissile: function(msg) {
-    var m= new ast.EntityMissile(msg.x, msg.y, msg);
-    this.addItem(m.create());
-    this.missile=m;
+    var ent = sh.pools['missiles'].get();
+    if (ent) {
+      ent.revive(msg.x, msg.y, msg);
+    } else {
+      ent = new ast.EntityMissile(msg.x, msg.y, msg);
+      this.addItem(ent.create());
+    }
+    sh.pools['live-missiles'][ent.OID] = ent;
+    //sh.xcfg.sfxPlay('ship-missile');
+  },
+
+  onMissileKilled: function(msg) {
+    var obj = sh.pools['live-missiles'],
+    m= msg.entity,
+    tag= m.sprite.getTag();
+    delete obj[tag];
+    sh.pools['missiles'].add(m);
   },
 
   newGame: function(mode) {
@@ -256,6 +290,9 @@ asterix.Asteroids.Factory = {
       ]
     }).create(options);
     if (scene) {
+      scene.ebus.on('/game/objects/missiles/killed', function(topic, msg) {
+        sh.main.onMissileKilled(msg);
+      });
       scene.ebus.on('/game/objects/players/shoot',function(t,msg) {
         sh.main.onFireMissile(msg);
       });
