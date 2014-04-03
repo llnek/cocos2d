@@ -23,6 +23,36 @@ loggr = global.ZotohLabs.logger;
 
 asterix.XEntity = klass.extends({
 
+  wrapEnclosure: function() {
+    var pos = this.sprite.getPosition(),
+    sz = this.sprite.getContentSize(),
+    B= sh.main.getEnclosureRect(),
+    hh = sz.height / 2,
+    hw = sz.width / 2 ,
+    x = pos.x,
+    y = pos.y,
+    bx= ccsx.bbox2(this.sprite);
+    if (bx.bottom >= B.top) {
+      y = 0 - hh;
+    }
+    else
+    if (bx.top <= B.bottom) {
+      y = B.top + hh;
+    }
+    else
+    if (bx.right <= B.left) {
+      x = B.right + hw;
+    }
+    else
+    if (bx.left >= B.right) {
+      x = B.left - hw;
+    }
+
+    if (x !== pos.x || y !== pos.y) {
+      this.updatePosition(x,y);
+    }
+  },
+
   update: function(dt) {
     if (sys.platform === 'browser') {
       this.keypressed(dt);
@@ -39,8 +69,12 @@ asterix.XEntity = klass.extends({
     this.lastPos= this.sprite.getPosition();
     this.sprite.setPosition(x,y);
 
+    if (this.wrappable) { return; }
+
     pos = this.sprite.getPosition();
     b2= ccsx.bbox2(this.sprite);
+    x= pos.x;
+    y= pos.y;
 
     if (b2.right > box.right) {
       x= box.right - hw;
@@ -203,11 +237,12 @@ asterix.XEntity = klass.extends({
     this.options= options || {};
     this.startPos = cc.p(x,y);
     this.lastPos= cc.p(x,y);
+    this.wrappable=false;
+    this.fixed=false;
     this.health= 0;
     this.speed= 0;
     this.bounce=0;
     this.value= 0;
-    this.fixed=false;
     this.sprite= null;
     this.friction= { x: 0, y: 0 };
     this.accel= { x: 0, y: 0 };

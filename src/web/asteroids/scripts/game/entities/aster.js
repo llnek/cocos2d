@@ -29,7 +29,8 @@ ast.EntityAster = asterix.XEntity.extends({
   },
 
   update: function(dt) {
-    if (this.bounce > 0) { this.traceEnclosure(dt); }
+    //if (this.bounce > 0) { this.traceEnclosure(dt); }
+    this.wrapEnclosure();
     this.maybeRotate(dt);
     this.move(dt);
   },
@@ -42,6 +43,7 @@ ast.EntityAster = asterix.XEntity.extends({
 
   ctor: function(x,y,options) {
     this._super(x,y,options);
+    this.wrappable=true;
     this.bounce=1;
     this.angle = asterix.fns.rand(360);
   }
