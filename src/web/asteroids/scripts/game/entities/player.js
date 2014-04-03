@@ -130,18 +130,17 @@ ast.EntityPlayer = asterix.XEntity.extends({
     this.sprite.onIdle(this.degrees());
   },
 
+  initMissileSize: function() {
+    var dummy = new ast.EntityMissile(0,0,{}),
+    s= dummy.create();
+    this.missileSize=s.getContentSize();
+  },
+
   fire: function() {
-  /*
     // we want to find the ship's nose to fire the missile
-    var rc= asterix.fns.calcXY(this.angle, this.size.x/2);
-    var mw= ao.EntityMissile.prototype.size.y/2;
-    var c= this.getCenter();
-    var me=this;
-    var y = c.y + rc[1];
-    var x= c.x + rc[0];
-    // adjust a bit to allow for the missile's width/height
-    ig.game.spawnEntity(ao.EntityMissile, x-mw,y-mw, {angle: me.angle});
-  */
+    var rc= asterix.fns.calcXY(this.angle, this.sprite.getContentSize().height/2),
+    pos = this.sprite.getPosition();
+    sh.fireEvent('/game/objects/players/shoot', { x: pos.x + rc[0] , y: pos.y + rc[1] , angle: this.angle });
   },
 
   create: function() {
@@ -158,6 +157,7 @@ ast.EntityPlayer = asterix.XEntity.extends({
 
   ctor: function(x,y,options) {
     this._super(x,y,options);
+    this.initMissileSize();
     this.initKeyOps();
     this.wrappable=true;
     this.angle=0;

@@ -118,6 +118,9 @@ var GameLayer = asterix.XGameLayer.extend({
       }
     });
     this.actor.update(dt);
+    if (this.missile) {
+    this.missile.update(dt);
+    }
   },
 
   checkEntities: function(dt) {
@@ -226,6 +229,12 @@ var GameLayer = asterix.XGameLayer.extend({
     });
   },
 
+  onFireMissile: function(msg) {
+    var m= new ast.EntityMissile(msg.x, msg.y, msg);
+    this.addItem(m.create());
+    this.missile=m;
+  },
+
   newGame: function(mode) {
     //sh.xcfg.sfxPlay('start_game');
     this.setGameMode(mode);
@@ -247,6 +256,9 @@ asterix.Asteroids.Factory = {
       ]
     }).create(options);
     if (scene) {
+      scene.ebus.on('/game/objects/players/shoot',function(t,msg) {
+        sh.main.onFireMissile(msg);
+      });
       scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
         asterix.XMenuLayer.onShowMenu();
       });

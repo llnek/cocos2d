@@ -9,46 +9,49 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this; _ = global._ ;
-var asterix = global.ZotohLabs.Asterix;
-var sh = asterix.Shell;
-var ao = asterix.Asteroids;
-var loggr= global.ZotohLabs.logger;
-var echt= global.ZotohLabs.echt;
-
+(function(undef) { "use strict"; var global = this, _ = global._  ,
+asterix = global.ZotohLabs.Asterix,
+ast = asterix.Asteroids,
+ccsx= asterix.COCOs2DX,
+sh = asterix.Shell,
+echt= global.ZotohLabs.echt,
+loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-asterix.Asteroids.EntityMissile = asterix.XEntity.extend({
 
-  animSheet: new ig.AnimationSheet('media/asteroids/game/laser_green.png', 10,5),
-  size: { x: 10, y: 5 },
+var Missile = cc.Sprite.extend({
 
-  collides: ig.Entity.COLLIDES.PASSIVE,
-  checkAgainst: ig.Entity.TYPE.B,
-  type: ig.Entity.TYPE.A,
+  ctor: function(x,y,options) {
+    this._super();
+    this.initWithSpriteFrameName(options.frames[0]);
+    this.setRotation(options.angle);
+    this.setPosition(x,y);
+  }
 
-  init: function(x, y, settings) {
-    this.parent(x, y, settings);
-    this.maxVel.x = 200;
-    this.maxVel.y = 200;
-    this.addAnim('show', 1, [0]);
-    var rc= asterix.fns.calcXY(this.angle, 100);
+});
+
+ast.EntityMissile = asterix.XEntity.extends({
+
+  ctor: function(x, y, options) {
+    var rc= asterix.fns.calcXY(options.angle, 150);
+    this._super(x, y, options);
     this.vel.x = rc[0];
     this.vel.y = rc[1];
-    this.currentAnim.angle = asterix.fns.degToRad(this.angle);
+    this.options.frames= ['laserGreen.png'];
+  },
+
+  update: function(dt) {
+    this.move(dt);
+  },
+
+  create: function() {
+    return this.sprite = new Missile(this.startPos.x, this.startPos.y, this.options);
   },
 
   check: function(other) {
-    other.kill();
-    this.kill();
-  },
-
-  update: function() {
-    this.parent();
   }
-
 
 });
 
