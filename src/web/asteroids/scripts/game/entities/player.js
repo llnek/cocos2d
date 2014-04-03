@@ -60,9 +60,13 @@ ast.EntityPlayer = asterix.XEntity.extends({
     this.vel.x = this.vel.x + dt * this.accel.x;
     if (this.vel.y > this.maxVel.y) {
       this.vel.y = this.maxVel.y;
+    } else if (this.vel.y < -this.maxVel.y) {
+      this.vel.y = -this.maxVel.y;
     }
     if (this.vel.x > this.maxVel.x) {
       this.vel.x = this.maxVel.x;
+    } else if (this.vel.x < -this.maxVel.x) {
+      this.vel.x = -this.maxVel.x;
     }
     this.wrapEnclosure();
     this.move(dt);
@@ -72,7 +76,11 @@ ast.EntityPlayer = asterix.XEntity.extends({
     if (sh.main.keyboard[cc.KEY.right]) { this.onRight(); }
     if (sh.main.keyboard[cc.KEY.left]) { this.onLeft(); }
     if (sh.main.keyboard[cc.KEY.down]) { this.onDown(); }
-    if (sh.main.keyboard[cc.KEY.up]) { this.onUp(); }
+    if (sh.main.keyboard[cc.KEY.up]) {
+      this.onUp();
+    } else {
+      this.onDown();
+    }
     if (sh.main.keyboard[cc.KEY.space]) { this.onFire(); }
   },
 
@@ -154,8 +162,8 @@ ast.EntityPlayer = asterix.XEntity.extends({
     this.wrappable=true;
     this.angle=0;
     this.thrustValue=30;//250;
-    this.maxVel.y= 300;
-    this.maxVel.x= 300;
+    this.maxVel.y= 180; //300;
+    this.maxVel.x= 180; //300;
     this.options.frames= ['rship_0.png', 'rship_1.png'];
   }
 

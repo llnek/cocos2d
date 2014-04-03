@@ -24,28 +24,34 @@ loggr = global.ZotohLabs.logger;
 asterix.XEntity = klass.extends({
 
   wrapEnclosure: function() {
-    var pos = this.sprite.getPosition(),
+    var wz = ccsx.screen(), B = { left: 0, bottom: 0, right: wz.width-1, top: wz.height-1 },
+    csts = sh.xcfg.csts,
     sz = this.sprite.getContentSize(),
-    B= sh.main.getEnclosureRect(),
+    pos = this.sprite.getPosition(),
+    //B= sh.main.getEnclosureRect(),
     hh = sz.height / 2,
     hw = sz.width / 2 ,
     x = pos.x,
     y = pos.y,
     bx= ccsx.bbox2(this.sprite);
     if (bx.bottom >= B.top) {
-      y = 0 - hh;
+      //y = 0 - hh;
+      y = hh + csts.TILE;
     }
     else
     if (bx.top <= B.bottom) {
-      y = B.top + hh;
+      //y = B.top + hh;
+      y = B.top - hh - csts.TILE;
     }
     else
     if (bx.right <= B.left) {
-      x = B.right + hw;
+      //x = B.right + hw;
+      x = B.right - hw - csts.TILE;
     }
     else
     if (bx.left >= B.right) {
-      x = B.left - hw;
+      //x = B.left - hw;
+      x = B.left + hw + csts.TILE;
     }
 
     if (x !== pos.x || y !== pos.y) {

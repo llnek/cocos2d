@@ -60,6 +60,7 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
   levels: {
     "gamelevel1" : {
       tiles : {
+        'hudwall' : 'game/{{appid}}/levels/hudwall.tmx',
         'arena' : 'game/{{appid}}/levels/arena.tmx'
       },
       images : {

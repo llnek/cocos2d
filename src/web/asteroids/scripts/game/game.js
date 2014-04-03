@@ -51,6 +51,8 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
   },
 
   initParentNode: function() {
+    var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gamelevel1.tiles.hudwall'));
+    this.addChild(map,++this.lastZix, ++this.lastTag);
   },
 
   initLabels: function() {
