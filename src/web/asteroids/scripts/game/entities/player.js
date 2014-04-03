@@ -36,7 +36,7 @@ var Ship = cc.Sprite.extend({
   ctor: function(x,y,options) {
     this.options= options;
     this._super();
-    this.onIdle();
+    this.onIdle(0);
     this.setPosition(x,y);
   }
 
