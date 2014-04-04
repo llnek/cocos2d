@@ -34,6 +34,45 @@ ast.EntityUfo = asterix.XEntity.extends({
 
   update: function(dt) {
     var pp= this.options.player.sprite.getPosition(),
+    dx,dy,
+    deg,
+    x,y,
+    mp= this.sprite.getPosition();
+
+    if (mp.x < pp.x) {
+      if (pp.y > mp.y) {  //q1
+        dx= pp.x - mp.x;
+        dy= pp.y - mp.y;
+        deg = 90- asterix.fns.radToDeg(Math.atan(dy/dx)) ;
+      } else {
+        // q2
+        dx= pp.x - mp.x;
+        dy= mp.y - pp.y;
+        deg = asterix.fns.radToDeg(Math.atan(dy/dx)) + 90;
+      }
+    } else {
+      if (pp.y > mp.y) {  // q4
+        dx= mp.x - pp.x;
+        dy= pp.y - mp.y;
+        deg = asterix.fns.radToDeg(Math.atan(dy/dx)) + 270;
+      } else {
+        // q3
+        dx= mp.x - pp.x;
+        dy= mp.y - pp.y;
+        deg = 270 - asterix.fns.radToDeg(Math.atan(dy/dx));
+      }
+    }
+
+    if (ccsx.timerDone(this.shooter)) {
+      sh.fireEvent('/game/objects/ufo/shoot', {
+        x: mp.x, y: mp.y, angle: deg
+      });
+      this.shooter = ccsx.createTimer(this.sprite,this.fireIntv);
+    }
+  },
+
+  XXupdate: function(dt) {
+    var pp= this.options.player.sprite.getPosition(),
     x,y,
     mp= this.sprite.getPosition();
     if (pp.x > mp.x) {
@@ -49,13 +88,22 @@ ast.EntityUfo = asterix.XEntity.extends({
     this.move(dt);
   },
 
+  initTimer: function() {
+    if (!this.shooter) {
+      this.shooter = ccsx.createTimer(this.sprite,this.fireIntv);
+    }
+  },
+
   create: function() {
-    return this.sprite = new Ufo(this.startPos.x, this.startPos.y, this.options);
+    this.sprite = new Ufo(this.startPos.x, this.startPos.y, this.options);
+    this.initTimer();
+    return this.sprite;
   },
 
   ctor: function(x,y,options) {
     this._super(x,y,options);
     this.speed=20;
+    this.fireIntv= 1.5;
     this.options.frames= ['ufo.png'];
   }
 

@@ -126,6 +126,10 @@ var Funcs= klass.extends({
     else { return deg; }
   },
 
+  radToDeg: function(rad) {
+    return 180 * rad / Math.PI;
+  },
+
   degToRad: function(deg) {
     return deg * Math.PI / 180;
   },

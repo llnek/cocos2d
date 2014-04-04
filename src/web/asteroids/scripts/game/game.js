@@ -360,6 +360,9 @@ asterix.Asteroids.Factory = {
       scene.ebus.on('/game/objects/players/shoot',function(t,msg) {
         sh.main.onFireMissile(msg);
       });
+      scene.ebus.on('/game/objects/ufo/shoot',function(t,msg) {
+        sh.main.onFireLaser(msg);
+      });
       scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
         asterix.XMenuLayer.onShowMenu();
       });
