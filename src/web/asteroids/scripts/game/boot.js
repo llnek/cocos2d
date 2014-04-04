@@ -17,6 +17,8 @@ global.document.ccConfig.initAppFiles('asteroids', [
       'game/asteroids/entities/asteroid1.js',
       'game/asteroids/entities/missile.js',
       'game/asteroids/entities/player.js',
+      'game/asteroids/entities/laser.js',
+      'game/asteroids/entities/ufo.js',
       'game/asteroids/game.js',
       'game/asteroids/mmenu.js',
       'game/asteroids/splash.js'

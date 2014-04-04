@@ -40,7 +40,7 @@ ast.EntityMissile = asterix.XEntity.extends({
       csts= sh.xcfg.csts,
       wz= ccsx.screen();
       this.move(dt);
-      if (ccsx.getTop(this.sprite) >= wz.height - csts.TILE) {
+      if (ccsx.outOfBound(this)) {
         this.injured(-1);
       }
     }
@@ -70,6 +70,7 @@ ast.EntityMissile = asterix.XEntity.extends({
 
   ctor: function(x, y, options) {
     this._super(x, y, options);
+    this.wrappable=true;
     this.speed= 150;
     var rc= asterix.fns.calcXY(options.angle, this.speed);
     this.vel.x = rc[0];

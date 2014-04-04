@@ -53,6 +53,15 @@ asterix.COCOS2DX = {
     return a && b ? cc.rectIntersectsRect( this.bbox(a.sprite), this.bbox(b.sprite)) : false;
   },
 
+  outOfBound: function(ent) {
+    var bx= this.bbox2(ent.sprite),
+    wz = this.screen();
+    return (bx.bottom > wz.height-1 ||
+        bx.top < 0 ||
+        bx.right < 0 ||
+        bx.left > wz.width -1);
+  },
+
   createTimer: function(par, tm) {
     return par.runAction(cc.DelayTime.create(tm));
   },

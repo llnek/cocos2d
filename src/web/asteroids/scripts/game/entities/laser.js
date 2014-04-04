@@ -9,32 +9,84 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this; _ = global._ ;
-var asterix = global.ZotohLabs.Asterix;
-var sh = asterix.Shell;
-var ao = asterix.Asteroids;
-var loggr = global.ZotohLabs.logger;
-var echt = global.ZotohLabs.echt;
-
+(function(undef) { "use strict"; var global = this, _ = global._  ,
+asterix = global.ZotohLabs.Asterix,
+ast = asterix.Asteroids,
+ccsx= asterix.COCOS2DX,
+sh = asterix.Shell,
+echt= global.ZotohLabs.echt,
+loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-asterix.Asteroids.EntityLaser = asterix.XEntity.extend({
 
-  collides: ig.Entity.COLLIDES.PASSIVE,
-  checkAgainst: ig.Entity.TYPE.B,
-  type: ig.Entity.TYPE.A,
+var Laser = cc.Sprite.extend({
 
-  init: function(x,y,settings) {
-    this.parent(x,y,settings);
+  ctor: function(x,y,options) {
+    this._super();
+    this.initWithSpriteFrameName(options.frames[0]);
+    this.setRotation(options.angle);
+    this.setPosition(x,y);
   }
+
+});
+
+ast.EntityLaser = asterix.XEntity.extends({
+
+  update: function(dt) {
+    if (this.sprite) {
+      var pos = this.sprite.getPosition(),
+      csts= sh.xcfg.csts,
+      wz= ccsx.screen();
+      this.move(dt);
+      if (ccsx.outOfBound(this)) {
+        this.injured(-1);
+      }
+    }
+  },
+
+  reviveSprite: function() {
+    if (this.sprite) {
+      var rc= asterix.fns.calcXY(this.options.angle, this.speed);
+      this.vel.x = rc[0];
+      this.vel.y = rc[1];
+      this.sprite.setPosition(this.startPos.x, this.startPos.y);
+      this.sprite.setRotation(this.options.angle);
+      this.sprite.setVisible(true);
+    }
+  },
+
+  create: function() {
+    return this.sprite = new Laser(this.startPos.x, this.startPos.y, this.options);
+  },
+
+  injured: function(num, from) {
+    sh.fireEvent('/game/objects/lasers/killed', { entity: this } );
+  },
+
+  check: function(other) {
+  },
+
+  ctor: function(x, y, options) {
+    this._super(x, y, options);
+    this.wrappable=true;
+    this.speed= 150;
+    var rc= asterix.fns.calcXY(options.angle, this.speed);
+    this.vel.x = rc[0];
+    this.vel.y = rc[1];
+    this.options.frames= ['laserRed.png'];
+  }
+
 
 });
 
 
 
+
+
 }).call(this);
+
 
 
 

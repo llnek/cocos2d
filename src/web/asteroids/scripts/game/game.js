@@ -113,8 +113,10 @@ var GameLayer = asterix.XGameLayer.extend({
     sh.pools['live-lasers'] = {};
     this.initAsteroidSizes();
     this.initPlayerSize();
+    this.initUfoSize();
     this.players=[];
     this.actor=null;
+    this.ufo=null;
     if (newFlag) {
       this.getHUD().resetAsNew();
     } else {
@@ -123,11 +125,16 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   updateEntities: function(dt) {
+
     _.each(this.rocks,function(z) {
       if (z && z.status) {
         z.update(dt);
       }
     });
+
+    if (!this.ufo) {
+      this.spawnUfo();
+    }
 
     var obj= sh.pools['live-lasers'];
     _.each(_.keys(obj), function(k) {
@@ -135,8 +142,14 @@ var GameLayer = asterix.XGameLayer.extend({
     });
 
     this.actor.update(dt);
+    this.ufo.update(dt);
 
     obj = sh.pools['live-missiles'];
+    _.each(_.keys(obj), function(k) {
+      obj[k].update(dt);
+    });
+
+    obj = sh.pools['live-lasers'];
     _.each(_.keys(obj), function(k) {
       obj[k].update(dt);
     });
@@ -182,6 +195,12 @@ var GameLayer = asterix.XGameLayer.extend({
     var dummy = new ast.EntityPlayer(0,0,{}),
     s= dummy.create();
     this.playerSize = s.getContentSize();
+  },
+
+  initUfoSize: function() {
+    var dummy = new ast.EntityUfo(0,0,{}),
+    s= dummy.create();
+    this.ufoSize = s.getContentSize();
   },
 
   initRocks: function() {
@@ -238,6 +257,31 @@ var GameLayer = asterix.XGameLayer.extend({
     }
   },
 
+  spawnUfo: function() {
+    var h = this.ufoSize.height,
+    w = this.ufoSize.width,
+    B= this.getEnclosureRect(),
+    wz = ccsx.screen(),
+    cw = ccsx.center(),
+    test=true,
+    aa,x,y,r;
+
+    while (test) {
+      r= { left: asterix.fns.randPercentage() * wz.width,
+           top: asterix.fns.randPercentage() * wz.height };
+      r.bottom = r.top - h;
+      r.right = r.left + w;
+      if (!this.maybeOverlap(r) && !asterix.fns.outOfBound(r,B)) {
+        x = r.left + w/2;
+        y = r.top - h/2;
+        aa = new ast.EntityUfo( x, y, { player: this.actor });
+        this.addItem(aa.create());
+        this.ufo=aa;
+        test=false;
+      }
+    }
+  },
+
   maybeOverlap: function (a) {
     return _.some(this.rocks, function(z) {
       var r={};
@@ -261,12 +305,32 @@ var GameLayer = asterix.XGameLayer.extend({
     //sh.xcfg.sfxPlay('ship-missile');
   },
 
+  onFireLaser: function(msg) {
+    var ent = sh.pools['lasers'].get();
+    if (ent) {
+      ent.revive(msg.x, msg.y, msg);
+    } else {
+      ent = new ast.EntityLaser(msg.x, msg.y, msg);
+      this.addItem(ent.create());
+    }
+    sh.pools['live-lasers'][ent.OID] = ent;
+    //sh.xcfg.sfxPlay('ship-missile');
+  },
+
   onMissileKilled: function(msg) {
     var obj = sh.pools['live-missiles'],
     m= msg.entity,
     tag= m.sprite.getTag();
     delete obj[tag];
     sh.pools['missiles'].add(m);
+  },
+
+  onLaserKilled: function(msg) {
+    var obj = sh.pools['live-lasers'],
+    m= msg.entity,
+    tag= m.sprite.getTag();
+    delete obj[tag];
+    sh.pools['lasers'].add(m);
   },
 
   newGame: function(mode) {

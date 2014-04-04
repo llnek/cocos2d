@@ -9,28 +9,54 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this; var _ = global._ ;
-var asterix = global.ZotohLabs.Asterix;
-var sh = asterix.Shell;
-var ao = asterix.Asteroids;
-var loggr = global.ZotohLabs.logger;
-var echt = global.ZotohLabs.echt;
-
+(function(undef) { "use strict"; var global = this, _ = global._ ,
+asterix = global.ZotohLabs.Asterix,
+echt = global.ZotohLabs.echt,
+ast = asterix.Asteroids,
+ccsx = asterix.COCOS2DX,
+sh = asterix.Shell,
+loggr = global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-asterix.Asteroids.EntityUfo = asterix.XEntity.extend({
+var Ufo = cc.Sprite.extend({
 
-  animSheet: new ig.AnimationSheet('media/asteroids/game/ufo.png', 36, 15),
-  collides: ig.Entity.COLLIDES.ACTIVE,
-  checkAgainst: ig.Entity.TYPE.BOTH,
-  type: ig.Entity.TYPE.B,
-  size: { x: 36, y: 15 },
+  ctor: function(x,y,options) {
+    this._super();
+    this.initWithSpriteFrameName(options.frames[0]);
+    this.setPosition(x,y);
+  }
 
-  init: function(x,y,settings) {
-    this.addAnim('show', 1, [0]);
-    this.parent(x,y,settings);
+});
+
+ast.EntityUfo = asterix.XEntity.extends({
+
+  update: function(dt) {
+    var pp= this.options.player.sprite.getPosition(),
+    x,y,
+    mp= this.sprite.getPosition();
+    if (pp.x > mp.x) {
+      this.vel.x = this.speed;
+    } else {
+      this.vel.x = - this.speed;
+    }
+    if (pp.y > mp.y) {
+      this.vel.y = this.speed;
+    } else {
+      this.vel.y = - this.speed;
+    }
+    this.move(dt);
+  },
+
+  create: function() {
+    return this.sprite = new Ufo(this.startPos.x, this.startPos.y, this.options);
+  },
+
+  ctor: function(x,y,options) {
+    this._super(x,y,options);
+    this.speed=20;
+    this.options.frames= ['ufo.png'];
   }
 
 });
