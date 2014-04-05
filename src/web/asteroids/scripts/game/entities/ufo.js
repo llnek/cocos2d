@@ -100,6 +100,12 @@ ast.EntityUfo = asterix.XEntity.extends({
     return this.sprite;
   },
 
+  injured: function(num,from) {
+  },
+
+  check: function(other) {
+  },
+
   ctor: function(x,y,options) {
     this._super(x,y,options);
     this.speed=20;

@@ -13,7 +13,10 @@
 
 global.document.ccConfig.initAppFiles('asteroids', [
 
+      'game/asteroids/entities/explode.js',
       'game/asteroids/entities/aster.js',
+      'game/asteroids/entities/asteroid3.js',
+      'game/asteroids/entities/asteroid2.js',
       'game/asteroids/entities/asteroid1.js',
       'game/asteroids/entities/missile.js',
       'game/asteroids/entities/player.js',

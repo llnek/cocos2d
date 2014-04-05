@@ -66,6 +66,17 @@ ast.EntityMissile = asterix.XEntity.extends({
   },
 
   check: function(other) {
+    if (other instanceof ast.EntityAsteroid3) {
+      other.injured();
+    }
+    else
+    if (other instanceof ast.EntityAsteroid2) {
+      other.explode();
+    }
+    else
+    if (other instanceof ast.EntityAsteroid1) {
+      other.explode();
+    }
   },
 
   ctor: function(x, y, options) {

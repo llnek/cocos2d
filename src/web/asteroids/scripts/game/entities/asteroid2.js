@@ -9,24 +9,38 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this; _ = global._ ;
-
-var asterix = global.ZotohLabs.Asterix;
-var sh = asterix.Shell;
-var ao = asterix.Asteroids;
-var loggr= global.ZotohLabs.logger;
-var echt = global.ZotohLabs.echt;
+(function(undef) { "use strict"; var global = this, _ = global._ ,
+asterix = global.ZotohLabs.Asterix,
+echt = global.ZotohLabs.echt,
+ccsx = asterix.COCOS2DX,
+sh = asterix.Shell,
+ast = asterix.Asteroids,
+loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-asterix.Asteroids.EntityAsteroid2 = ao.EntityAster.extend({
 
-  animSheet: new ig.AnimationSheet('media/asteroids/game/rock_med.png', 39,41),
-  size: { x: 39, y: 41 },
+var Astro2 = cc.Sprite.extend({
 
-  kill: function() {
+  ctor: function(x,y,options) {
+    this._super();
+    this.initWithSpriteFrameName(options.frames[0]);
+    this.setPosition(x,y);
+  }
+
+});
+
+
+ast.EntityAsteroid2 = ast.EntityAster.extends({
+
+  create: function() {
+    return this.sprite = new Astro2(this.startPos.x, this.startPos.y, this.options);
+  },
+
+  explode: function() {
     // explode into smaller ones
+    /*
     var cfg= sh.xcfg.stages[ Number(sh.currentStage).toString() ];
     var n, csts= sh.xcfg.csts;
     var c= this.getCenter();
@@ -34,13 +48,19 @@ asterix.Asteroids.EntityAsteroid2 = ao.EntityAster.extend({
       ig.game.spawnEntity(ao.EntityAsteroid3, c.x, c.y, {});
     }
     this.parent();
+    */
   },
 
-  init: function(x,y,settings) {
-    this.addAnim('show', 1, [0]);
-    this.parent(x,y,settings);
-    this.vel.x=asterix.fns.randomSign() * asterix.fns.rand(100);
-    this.vel.y=asterix.fns.randomSign() * asterix.fns.rand(100);
+  check: function(other) {
+  },
+
+  injured: function(num,from) {
+  },
+
+  ctor: function(x,y,options) {
+    this._super(x,y, options);
+    this.initVel(50);
+    this.options.frames= ['rock_med.png'];
   }
 
 });

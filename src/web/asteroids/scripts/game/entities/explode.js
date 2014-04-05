@@ -11,52 +11,57 @@
 
 (function(undef) { "use strict"; var global = this, _ = global._ ,
 asterix = global.ZotohLabs.Asterix,
-echt= global.ZotohLabs.echt,
 ccsx = asterix.COCOS2DX,
 ast = asterix.Asteroids,
 sh = asterix.Shell,
+echt= global.ZotohLabs.echt,
 loggr= global.ZotohLabs.logger;
-
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-var Astro3 = cc.Sprite.extend({
+var Boom = cc.Sprite.extend({
 
-  ctor: function(x,y,options) {
+  ctor: function(entity,x,y,options) {
+    this.entity=entity;
     this._super();
     this.initWithSpriteFrameName(options.frames[0]);
     this.setPosition(x,y);
+
+    this.runAction( cc.ScaleTo.create(options.frameTime, options.frameScale),
+      cc.CallFunc.create(function() {
+        this.entity.dispose();
+      }, this)
+    );
   }
 
 });
 
+asterix.Asteroids.EntityExplode = asterix.XEntity.extends({
 
-ast.EntityAsteroid3 = ast.EntityAster.extends({
+  update: function(dt) {
+  },
 
   create: function() {
-    return this.sprite = new Astro3(this.startPos.x, this.startPos.y, this.options);
+    return this.sprite = new Boom(this, this.startPos.x, this.startPos.y, this.options);
   },
 
-  check: function(other) {
-  },
-
-  injured: function(num,from) {
-  },
-
-  ctor: function(x,y,options) {
-    this._super(x,y, options);
-    this.initVel(50);
-    this.options.frames= ['rock_small.png'];
+  ctor: function(x, y, options) {
+    this._super(x, y, options);
+    this.options.frameScale= 5;
+    this.options.frameTime= 0.5;
+    this.options.frames= [ options.png ];
   }
 
 });
+
+
+
 
 
 
 
 }).call(this);
-
 
 

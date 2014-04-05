@@ -43,25 +43,79 @@ var BackLayer = asterix.XLayer.extend({
 
 var HUDLayer = asterix.XGameHUDLayer.extend({
 
+  updateScore: function(n) {
+    this.score += n;
+    this.drawScore();
+  },
+
   resetAsNew: function() {
+    this.score = 0;
     this.reset();
   },
 
   reset: function() {
+    this.replayBtn.setVisible(false);
+    this.lives.resurrect();
   },
 
   initParentNode: function() {
+    this.atlasBatch = cc.SpriteBatchNode.createWithTexture( cc.TextureCache.getInstance().addImage( sh.xcfg.getAtlasPath('game-pics')));
+    this.addChild(this.atlasBatch, this.lastZix, ++this.lastTag);
+
     var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gamelevel1.tiles.hudwall'));
     this.addChild(map,++this.lastZix, ++this.lastTag);
   },
 
+  getNode: function() { return this.atlasBatch; },
+
+  drawScore: function() {
+    this.scoreLabel.setString(Number(this.score).toString());
+  },
+
   initLabels: function() {
+    var csts = sh.xcfg.csts,
+    wz = ccsx.screen();
+
+    this.scoreLabel = ccsx.bmfLabel({
+      fontPath: sh.xcfg.getFontPath('font.TinyBoxBB'),
+      text: '0',
+      anchor: ccsx.AnchorBottomRight,
+      scale: 12/72
+    });
+    this.scoreLabel.setPosition( wz.width - csts.TILE - csts.S_OFF,
+      wz.height - csts.TILE - csts.S_OFF - ccsx.getScaledHeight(this.scoreLabel));
+
+    this.addChild(this.scoreLabel, this.lastZix, ++this.lastTag);
   },
 
   initCtrlBtns: function() {
+    this._super(32/48);
   },
 
   initIcons: function() {
+    var csts = sh.xcfg.csts,
+    wz = ccsx.screen();
+
+    this.lives = new asterix.XHUDLives( this, csts.TILE + csts.S_OFF,
+      wz.height - csts.TILE - csts.S_OFF, {
+      frames: ['rship_1.png'],
+      scale: 0.5,
+      totalLives: 3
+    });
+
+    this.lives.create();
+  },
+
+  removeItem: function(n) {
+    if (n instanceof cc.Sprite) { this._super(n); } else {
+      this.removeChild(n);
+    }
+  },
+
+  addItem: function(n) {
+    if (n instanceof cc.Sprite) { this._super(n); } else {
+      this.addChild(n, this.lastZix, ++this.lastTag);
+    }
   },
 
   rtti: function() {
@@ -115,8 +169,8 @@ var GameLayer = asterix.XGameLayer.extend({
     this.initPlayerSize();
     this.initUfoSize();
     this.players=[];
+    this.ufos=[];
     this.actor=null;
-    this.ufo=null;
     if (newFlag) {
       this.getHUD().resetAsNew();
     } else {
@@ -132,7 +186,7 @@ var GameLayer = asterix.XGameLayer.extend({
       }
     });
 
-    if (!this.ufo) {
+    if (this.ufos.length === 0) {
       this.spawnUfo();
     }
 
@@ -142,7 +196,10 @@ var GameLayer = asterix.XGameLayer.extend({
     });
 
     this.actor.update(dt);
-    this.ufo.update(dt);
+
+    _.each(this.ufos, function(z) {
+      z.update(dt);
+    });
 
     obj = sh.pools['live-missiles'];
     _.each(_.keys(obj), function(k) {
@@ -157,11 +214,106 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   checkEntities: function(dt) {
+
+    this.checkMissilesAstros(dt);
+
+    /*
+    this.checkMissilesLasers(dt);
+    this.checkMissilesUfos(dt);
+    */
+
     for (var n=0; n< 5; ++n) {
       this.checkRocks(dt);
     }
   },
 
+  checkShipLasers: function(dt) {
+    var bss = sh.pools['live-lasers'],
+    a= _.keys(bss),
+    b, n, p = this.actor;
+    for (n=0; n < a.length; ++n) {
+      b = bss[ a[n] ];
+      if (ccsx.collide(b, p)) {
+        p.check(b);
+        break;
+      }
+    }
+  },
+
+  checkShipAstros: function(dt) {
+    var ass= this.rocks,
+    p= this.actor,
+    n;
+    for (n=0; n < ass.length; ++n) {
+      if (ass[n].status !== true) { continue; }
+      if (ccsx.collide(p, ass[n])) {
+        p.check(ass[n]);
+        break;
+      }
+    }
+  },
+
+  checkShipUfos: function(dt) {
+    var ass= this.ufos,
+    p= this.actor,
+    n;
+    for (n=0; n < ass.length; ++n) {
+      if (ass[n].status !== true) { continue; }
+      if (ccsx.collide(p, ass[n])) {
+        p.check(ass[n]);
+        break;
+      }
+    }
+  },
+
+  checkMissilesAstros: function(dt) {
+    var mss = sh.pools['live-missiles'],
+    ass= this.rocks,
+    m, n;
+    _.each(_.keys(mss), function(z) {
+      m = mss[z];
+      for (n=0; n < ass.length; ++n) {
+        if (ass[n].status !== true) { continue; }
+        if (ccsx.collide(m, ass[n])) {
+          m.check(ass[n]);
+          break;
+        }
+      }
+    });
+  },
+
+  checkMissilesUfos: function(dt) {
+    var mss = sh.pools['live-missiles'],
+    ass= this.ufos,
+    m, n;
+    _.each(_.keys(mss), function(z) {
+      m = mss[z];
+      for (n=0; n < ass.length; ++n) {
+        if (ass[n].status !== true) { continue; }
+        if (ccsx.collide(m, ass[n])) {
+          m.check(ass[n]);
+          break;
+        }
+      }
+    });
+  },
+
+  checkMissilesLasers: function(dt) {
+    var mss = sh.pools['live-missiles'],
+    bbs = sh.pools['live-lasers'],
+    k, a,m,b;
+    _.each(_.keys(bbs), function(z) {
+      a= _.keys(mss);
+      b= bbs[z];
+      for (k = 0; k < a.length; ++k) {
+        m = mss[ a[k] ];
+        if ( ccsx.collide(m, b)) {
+          m.check(b);
+          break;
+        }
+      }
+    });
+  },
   checkRocks: function(dt) {
     var r1,r2, i, j;
     for (i =0; i < this.rocks.length; ++i) {
@@ -178,15 +330,15 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   initAsteroidSizes: function() {
-  /*
-    var dummy = new ast.EntityAsteroid3(0,0,{});
+    var dummy = new ast.EntityAsteroid3(0,0,{}),
     s= dummy.create();
     this.astro3 = s.getContentSize();
+
     dummy = new ast.EntityAsteroid2(0,0,{});
     s= dummy.create();
     this.astro2 = s.getContentSize();
-    */
-    var s, dummy = new ast.EntityAsteroid1(0,0,{});
+
+    dummy = new ast.EntityAsteroid1(0,0,{});
     s= dummy.create();
     this.astro1 = s.getContentSize();
   },
@@ -266,6 +418,7 @@ var GameLayer = asterix.XGameLayer.extend({
     test=true,
     aa,x,y,r;
 
+    this.ufos=[];
     while (test) {
       r= { left: asterix.fns.randPercentage() * wz.width,
            top: asterix.fns.randPercentage() * wz.height };
@@ -276,7 +429,7 @@ var GameLayer = asterix.XGameLayer.extend({
         y = r.top - h/2;
         aa = new ast.EntityUfo( x, y, { player: this.actor });
         this.addItem(aa.create());
-        this.ufo=aa;
+        this.ufos.push(aa);
         test=false;
       }
     }

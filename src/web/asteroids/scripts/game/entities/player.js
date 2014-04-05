@@ -137,23 +137,30 @@ ast.EntityPlayer = asterix.XEntity.extends({
   },
 
   fire: function() {
+    if (! ccsx.timerDone(this.coolDown)) { return; }
     // we want to find the ship's nose to fire the missile
     var rc= asterix.fns.calcXY(this.angle, this.sprite.getContentSize().height/2),
     pos = this.sprite.getPosition();
     sh.fireEvent('/game/objects/players/shoot', { x: pos.x + rc[0] , y: pos.y + rc[1] , angle: this.angle });
+    this.coolDown= ccsx.createTimer(this.sprite, 0.8);
   },
 
   create: function() {
-    return this.sprite = new Ship(this.startPos.x, this.startPos.y, this.options);
+    this.sprite = new Ship(this.startPos.x, this.startPos.y, this.options);
+    this.coolDown= ccsx.createTimer(this.sprite, 0.8);
+    return this.sprite;
   },
 
   degrees: function(deg) {
     return deg || this.angle;
   },
 
-  check: function(other) {
-    //this.kill();
+  injured: function(num,from) {
   },
+
+  check: function(other) {
+  },
+
 
   ctor: function(x,y,options) {
     this._super(x,y,options);
