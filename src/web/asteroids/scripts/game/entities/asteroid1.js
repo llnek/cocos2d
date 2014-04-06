@@ -35,15 +35,14 @@ var Astro1 = cc.Sprite.extend({
 ast.EntityAsteroid1 = ast.EntityAster.extends({
 
   explode: function() {
-    /*
-    this.dispose();
-    var cfg= sh.xcfg.stages[ Number(sh.currentStage).toString() ];
-    var n, csts= sh.xcfg.csts;
-    var c= this.getCenter();
+    var cfg = sh.xcfg.levels.gamelevel1.fixtures,
+    n, csts= sh.xcfg.csts,
+    pos= this.sprite.getPosition();
     for (n=0; n < cfg.ROCKS; ++n) {
-      //ig.game.spawnEntity(ao.EntityAsteroid2, c.x, c.y, {});
+      sh.fireEvent('/game/objects/rocks/create', {
+        x: pos.x, y: pos.y
+      });
     }
-    */
   },
 
   create: function() {
@@ -51,6 +50,7 @@ ast.EntityAsteroid1 = ast.EntityAster.extends({
   },
 
   injured: function(num,from) {
+    this.status=false;
   },
 
   check: function(other) {

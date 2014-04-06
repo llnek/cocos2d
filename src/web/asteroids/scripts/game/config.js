@@ -70,8 +70,8 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
       },
       fixtures: {
         BOULDERS: 5,
-        ROCKS: 3,
-        STONES: 5
+        ROCKS: 5,
+        STONES: 10
       }
     }
   },

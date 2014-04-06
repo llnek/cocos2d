@@ -39,16 +39,14 @@ ast.EntityAsteroid2 = ast.EntityAster.extends({
   },
 
   explode: function() {
-    // explode into smaller ones
-    /*
-    var cfg= sh.xcfg.stages[ Number(sh.currentStage).toString() ];
-    var n, csts= sh.xcfg.csts;
-    var c= this.getCenter();
+    var cfg = sh.xcfg.levels.gamelevel1.fixtures,
+    n, csts= sh.xcfg.csts,
+    pos= this.sprite.getPosition();
     for (n=0; n < cfg.STONES; ++n) {
-      ig.game.spawnEntity(ao.EntityAsteroid3, c.x, c.y, {});
+      sh.fireEvent('/game/objects/stones/create', {
+        x: pos.x, y: pos.y
+      });
     }
-    this.parent();
-    */
   },
 
   check: function(other) {

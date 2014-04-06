@@ -486,6 +486,18 @@ var GameLayer = asterix.XGameLayer.extend({
     sh.pools['lasers'].add(m);
   },
 
+  onCreateStones: function(msg) {
+    var aa= new ast.EntityAsteroid3(msg.x, msg.y, msg);
+    this.addItem(aa.create());
+    this.rocks.push(aa);
+  },
+
+  onCreateRocks: function(msg) {
+    var aa= new ast.EntityAsteroid2(msg.x, msg.y, msg);
+    this.addItem(aa.create());
+    this.rocks.push(aa);
+  },
+
   newGame: function(mode) {
     //sh.xcfg.sfxPlay('start_game');
     this.setGameMode(mode);
@@ -515,6 +527,12 @@ asterix.Asteroids.Factory = {
       });
       scene.ebus.on('/game/objects/ufo/shoot',function(t,msg) {
         sh.main.onFireLaser(msg);
+      });
+      scene.ebus.on('/game/objects/stones/create',function(t,msg) {
+        sh.main.onCreateStones(msg);
+      });
+      scene.ebus.on('/game/objects/rocks/create',function(t,msg) {
+        sh.main.onCreateRocks(msg);
       });
       scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
         asterix.XMenuLayer.onShowMenu();
