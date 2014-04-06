@@ -41,6 +41,15 @@ ast.EntityAster = asterix.XEntity.extends({
     if (this.angle > 360) { this.angle -= 360; }
   },
 
+  injured: function(num,from) {
+    if (from instanceof ast.EntityMissile) {
+      sh.fireEvent('/game/objects/players/earnscore', { score: this.value } );
+    }
+    this.sprite.setVisible(false);
+    this.status=false;
+  },
+
+
   ctor: function(x,y,options) {
     this._super(x,y,options);
     this.wrappable=true;

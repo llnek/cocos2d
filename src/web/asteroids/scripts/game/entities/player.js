@@ -156,9 +156,22 @@ ast.EntityPlayer = asterix.XEntity.extends({
   },
 
   injured: function(num,from) {
+    this.dispose();
+    sh.fireEvent('/game/objects/players/killed');
   },
 
   check: function(other) {
+    if (other instanceof ast.EntityAster) {
+    }
+    else
+    if (other instanceof ast.EntityUfo) {
+      other.injured();
+    }
+    else
+    if (other instanceof ast.EntityLaser) {
+      other.injured();
+    }
+    this.injured();
   },
 
 

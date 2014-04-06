@@ -62,6 +62,9 @@ ast.EntityLaser = asterix.XEntity.extends({
   },
 
   injured: function(num, from) {
+    if (from instanceof ast.EntityMissile) {
+      sh.fireEvent('/game/objects/players/earnscore', { score: this.value } );
+    }
     sh.fireEvent('/game/objects/lasers/killed', { entity: this } );
   },
 
@@ -71,7 +74,8 @@ ast.EntityLaser = asterix.XEntity.extends({
   ctor: function(x, y, options) {
     this._super(x, y, options);
     this.wrappable=true;
-    this.speed= 150;
+    this.speed= 100;
+    this.value= 10;
     var rc= asterix.fns.calcXY(options.angle, this.speed);
     this.vel.x = rc[0];
     this.vel.y = rc[1];

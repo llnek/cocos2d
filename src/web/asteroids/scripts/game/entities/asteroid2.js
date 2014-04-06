@@ -53,11 +53,14 @@ ast.EntityAsteroid2 = ast.EntityAster.extends({
   },
 
   injured: function(num,from) {
+    this._super(num,from);
+    this.explode();
   },
 
   ctor: function(x,y,options) {
     this._super(x,y, options);
     this.initVel(50);
+    this.value=50;
     this.options.frames= ['rock_med.png'];
   }
 

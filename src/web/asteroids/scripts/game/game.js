@@ -178,6 +178,10 @@ var GameLayer = asterix.XGameLayer.extend({
     }
   },
 
+  operational: function() {
+    return this.players.length > 0;
+  },
+
   updateEntities: function(dt) {
 
     _.each(this.rocks,function(z) {
@@ -215,12 +219,13 @@ var GameLayer = asterix.XGameLayer.extend({
 
   checkEntities: function(dt) {
 
-    this.checkMissilesAstros(dt);
-
-    /*
     this.checkMissilesLasers(dt);
+    this.checkMissilesAstros(dt);
     this.checkMissilesUfos(dt);
-    */
+
+    this.checkShipLasers(dt);
+    this.checkShipAstros(dt);
+    this.checkShipUfos(dt);
 
     for (var n=0; n< 5; ++n) {
       this.checkRocks(dt);
@@ -470,12 +475,33 @@ var GameLayer = asterix.XGameLayer.extend({
     //sh.xcfg.sfxPlay('ship-missile');
   },
 
+  onPlayerKilled: function(msg) {
+    this.players=[];
+    this.actor=null;
+    if ( this.getHUD().reduceLives(1)) {
+      this.onDone();
+    } else {
+      this.spawnPlayer();
+    }
+  },
+
+  onDone: function() {
+    this.reset();
+    this.getHUD().enableReplay();
+  },
+
   onMissileKilled: function(msg) {
     var obj = sh.pools['live-missiles'],
     m= msg.entity,
     tag= m.sprite.getTag();
     delete obj[tag];
     sh.pools['missiles'].add(m);
+  },
+
+  onUfoKilled: function(msg) {
+    var x= this.ufos.pop();
+    x.dispose();
+    this.ufos=[];
   },
 
   onLaserKilled: function(msg) {
@@ -496,6 +522,10 @@ var GameLayer = asterix.XGameLayer.extend({
     var aa= new ast.EntityAsteroid2(msg.x, msg.y, msg);
     this.addItem(aa.create());
     this.rocks.push(aa);
+  },
+
+  onEarnScore: function(msg) {
+    this.getHUD().updateScore(msg.score);
   },
 
   newGame: function(mode) {
@@ -522,10 +552,16 @@ asterix.Asteroids.Factory = {
       scene.ebus.on('/game/objects/missiles/killed', function(topic, msg) {
         sh.main.onMissileKilled(msg);
       });
+      scene.ebus.on('/game/objects/ufos/killed', function(topic, msg) {
+        sh.main.onUfoKilled(msg);
+      });
       scene.ebus.on('/game/objects/players/shoot',function(t,msg) {
         sh.main.onFireMissile(msg);
       });
-      scene.ebus.on('/game/objects/ufo/shoot',function(t,msg) {
+      scene.ebus.on('/game/objects/players/killed',function(t,msg) {
+        sh.main.onPlayerKilled(msg);
+      });
+      scene.ebus.on('/game/objects/ufos/shoot',function(t,msg) {
         sh.main.onFireLaser(msg);
       });
       scene.ebus.on('/game/objects/stones/create',function(t,msg) {
@@ -533,6 +569,9 @@ asterix.Asteroids.Factory = {
       });
       scene.ebus.on('/game/objects/rocks/create',function(t,msg) {
         sh.main.onCreateRocks(msg);
+      });
+      scene.ebus.on('/game/objects/players/earnscore', function(topic, msg) {
+        sh.main.onEarnScore(msg);
       });
       scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
         asterix.XMenuLayer.onShowMenu();

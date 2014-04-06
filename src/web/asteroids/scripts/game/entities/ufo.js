@@ -33,7 +33,8 @@ var Ufo = cc.Sprite.extend({
 ast.EntityUfo = asterix.XEntity.extends({
 
   update: function(dt) {
-    var pp= this.options.player.sprite.getPosition(),
+    if (! sh.main.actor) { return; }
+    var pp= sh.main.actor.sprite.getPosition(),
     dx,dy,
     deg,
     x,y,
@@ -64,7 +65,7 @@ ast.EntityUfo = asterix.XEntity.extends({
     }
 
     if (ccsx.timerDone(this.shooter)) {
-      sh.fireEvent('/game/objects/ufo/shoot', {
+      sh.fireEvent('/game/objects/ufos/shoot', {
         x: mp.x, y: mp.y, angle: deg
       });
       this.shooter = ccsx.createTimer(this.sprite,this.fireIntv);
@@ -101,6 +102,12 @@ ast.EntityUfo = asterix.XEntity.extends({
   },
 
   injured: function(num,from) {
+    this.sprite.setVisible(false);
+    this.status=false;
+    if (from instanceof ast.EntityMissile) {
+      sh.fireEvent('/game/objects/players/earnscore', { score: this.value } );
+    }
+    sh.fireEvent('/game/objects/ufos/killed', { entity: this} );
   },
 
   check: function(other) {
@@ -109,6 +116,7 @@ ast.EntityUfo = asterix.XEntity.extends({
   ctor: function(x,y,options) {
     this._super(x,y,options);
     this.speed=20;
+    this.value= 250;
     this.fireIntv= 1.5;
     this.options.frames= ['ufo.png'];
   }

@@ -50,7 +50,8 @@ ast.EntityAsteroid1 = ast.EntityAster.extends({
   },
 
   injured: function(num,from) {
-    this.status=false;
+    this._super(num,from);
+    this.explode();
   },
 
   check: function(other) {
@@ -59,6 +60,7 @@ ast.EntityAsteroid1 = ast.EntityAster.extends({
   ctor: function(x,y,options) {
     this._super(x,y,options);
     this.initVel(30);
+    this.value=25;
     this.options.frames= ['rock_large.png'];
   }
 
