@@ -34,7 +34,14 @@ var ZotohLabs = {
     return Math.floor(Math.random() * (to - from + 1) + from);
   },
 
-  xmod: function(m, n) { return ((m % n) + n) % n; },
+  //xmod: function(m, n) { return ((m % n) + n) % n; },
+  xmod: function(x, N) {
+    if (x < 0) {
+     return x - (-1 * (Math.floor(-x / N) * N + N));
+    } else {
+      return x % N;
+    }
+  },
 
   makeArray: function(len, value) {
     var n, arr=[];
