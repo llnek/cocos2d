@@ -13,41 +13,44 @@
 (ns  ^{ :doc ""
         :author "kenl" }
 
-  comzotohlabs.cocos2d.site.core )
+  comzotohlabs.cocos2d.site.core
 
-(import '( com.zotohlabs.wflow
-  FlowPoint Activity Pipeline PipelineDelegate PTask Work))
-(import '(com.zotohlabs.gallifrey.io HTTPEvent HTTPResult))
-(import '(com.zotohlabs.wflow.core Job))
-(import '(java.util HashMap Map))
+  (:require [clojure.tools.logging :as log :only (info warn error debug)])
+  (:require [clojure.string :as cstr])
+  (:use [comzotohlabscljc.tardis.core.constants])
+  (:use [comzotohlabscljc.tardis.core.wfs])
 
-(use '[clojure.tools.logging :only (info warn error debug)])
-(use '[comzotohlabscljc.tardis.core.constants])
-(use '[comzotohlabscljc.tardis.core.wfs])
+  (:import ( com.zotohlabs.wflow FlowPoint Activity
+                                 Pipeline PipelineDelegate PTask Work))
+  (:import (com.zotohlabs.gallifrey.io HTTPEvent HTTPResult))
+  (:import (com.zotohlabs.wflow.core Job))
+  (:import (java.util HashMap Map)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(deftype MyAppMain []
-  comzotohlabscljc.tardis.impl.ext.CljAppMain
+(deftype MyAppMain [] comzotohlabscljc.tardis.impl.ext.CljAppMain
+
   (contextualize [_ container]
-    (info "My AppMain contextualized by container " container))
+    (log/info "My AppMain contextualized by container " container))
   (configure [_ options]
-    (info "My AppMain configured with options " options))
+    (log/info "My AppMain configured with options " options))
   (initialize [_]
-    (info "My AppMain initialized!"))
+    (log/info "My AppMain initialized!"))
   (start [_]
-    (info "My AppMain started"))
+    (log/info "My AppMain started"))
   (stop [_]
-    (info "My AppMain stopped"))
+    (log/info "My AppMain stopped"))
   (dispose [_]
-    (info "My AppMain finz'ed"))
-)
-
+    (log/info "My AppMain finz'ed")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- doShowLandingPage "" 
+  
+  ^PTask 
+  []
 
-(defn- doShowLandingPage "" ^PTask []
   (DefWFTask
     (perform [_ fw job arg]
       (let [ ^HTTPEvent evt (.event job)
@@ -59,8 +62,11 @@
         (.setStatus res 200)
         (.setContent res rdata)
         (.setHeader res "content-type" ct)
-        (.replyResult evt)))))
+        (.replyResult evt)))
+  ))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 (deftype LandingHandler [] PipelineDelegate
 
   (getStartActivity [_  pipe]
@@ -68,14 +74,12 @@
     (doShowLandingPage))
 
   (onStop [_ pipe]
-    (info "nothing to be done here, just stop please."))
+    (log/info "nothing to be done here, just stop please."))
 
   (onError [ _ err curPt]
-    (info "Oops, I got an error!")))
-
+    (log/info "Oops, I got an error!")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
+;;
 (def ^:private core-eof nil)
 
