@@ -13,12 +13,12 @@
 (ns  ^{ :doc ""
         :author "kenl" }
 
-  comzotohlabs.cocos2d.site.core
+  cmzlabs.cocos2d.site.core
 
   (:require [clojure.tools.logging :as log :only (info warn error debug)])
   (:require [clojure.string :as cstr])
-  (:use [comzotohlabscljc.tardis.core.constants])
-  (:use [comzotohlabscljc.tardis.core.wfs])
+  (:use [cmzlabsclj.tardis.core.constants])
+  (:use [cmzlabsclj.tardis.core.wfs])
 
   (:import ( com.zotohlabs.wflow FlowPoint Activity
                                  Pipeline PipelineDelegate PTask Work))
@@ -29,7 +29,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(deftype MyAppMain [] comzotohlabscljc.tardis.impl.ext.CljAppMain
+(deftype MyAppMain [] cmzlabsclj.tardis.impl.ext.CljAppMain
 
   (contextualize [_ container]
     (log/info "My AppMain contextualized by container " container))
@@ -56,7 +56,7 @@
       (let [ ^HTTPEvent evt (.event job)
              ^HTTPResult res (.getResultObj evt)
              ^com.zotohlabs.gallifrey.io.Emitter src (.emitter evt)
-             ^comzotohlabscljc.tardis.impl.ext.ContainerAPI co (.container src)
+             ^cmzlabsclj.tardis.impl.ext.ContainerAPI co (.container src)
              ^String tpl (:template (.getv job EV_OPTS))
              [rdata ct] (.loadTemplate co tpl (HashMap.)) ]
         (.setStatus res 200)
@@ -70,7 +70,7 @@
 (deftype LandingHandler [] PipelineDelegate
 
   (getStartActivity [_  pipe]
-    (require 'comzotohlabs.cocos2d.site.core)
+    (require 'cmzlabs.cocos2d.site.core)
     (doShowLandingPage))
 
   (onStop [_ pipe]

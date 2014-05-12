@@ -13,12 +13,12 @@
 (ns  ^{ :doc ""
         :author "kenl" }
 
-  comzotohlabs.cocos2d.users.accounts
+  cmzlabs.cocos2d.users.accounts
 
   (:require [clojure.tools.logging :as log :only (info warn error debug)])
   (:require [clojure.string :as cstr])
-  (:use [comzotohlabscljc.tardis.core.wfs])
-  (:use [comzotohlabscljc.tardis.auth.core :only [MaybeSignupTest
+  (:use [cmzlabsclj.tardis.core.wfs])
+  (:use [cmzlabsclj.tardis.auth.core :only [MaybeSignupTest
                                               MaybeLoginTest] ])
 
   (:import ( com.zotohlabs.wflow If FlowPoint Activity
@@ -63,7 +63,7 @@
 (deftype SignupHandler [] PipelineDelegate
 
   (getStartActivity [_  pipe]
-    (require 'comzotohlabs.cocos2d.users.accounts)
+    (require 'cmzlabs.cocos2d.users.accounts)
     (log/debug "signup pipe-line - called.")
     (If. (MaybeSignupTest) (doSignupOK) (doSignupFail)))
 
@@ -98,7 +98,7 @@
   (DefWFTask
     (perform [_ fw job arg]
       (let [ ^HTTPEvent evt (.event job)
-             ^comzotohlabscljc.tardis.io.webss.WebSession
+             ^cmzlabsclj.tardis.io.webss.WebSession
              mvs (.getSession evt)
              ^HTTPResult res (.getResultObj evt) ]
         (.setStatus res 200)
@@ -112,7 +112,7 @@
 (deftype LoginHandler [] PipelineDelegate
 
   (getStartActivity [_  pipe]
-    (require 'comzotohlabs.cocos2d.users.accounts)
+    (require 'cmzlabs.cocos2d.users.accounts)
     (log/debug "login pipe-line - called.")
     (If. (MaybeLoginTest) (doLoginOK) (doLoginFail)))
 
