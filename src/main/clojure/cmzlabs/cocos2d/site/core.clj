@@ -22,7 +22,7 @@
 
   (:import ( com.zotohlabs.wflow FlowPoint Activity
                                  Pipeline PipelineDelegate PTask Work))
-  (:import (com.zotohlabs.gallifrey.io HTTPEvent HTTPResult))
+  (:import (com.zotohlabs.gallifrey.io HTTPEvent HTTPResult Emitter))
   (:import (com.zotohlabs.wflow.core Job))
   (:import (java.util HashMap Map)))
 
@@ -46,22 +46,23 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- doShowLandingPage "" 
-  
-  ^PTask 
+(defn- doShowLandingPage ""
+
+  ^PTask
   []
 
   (DefWFTask
-    (perform [_ fw job arg]
-      (let [ ^HTTPEvent evt (.event job)
-             ^HTTPResult res (.getResultObj evt)
-             ^com.zotohlabs.gallifrey.io.Emitter src (.emitter evt)
-             ^cmzlabsclj.tardis.impl.ext.ContainerAPI co (.container src)
-             ^String tpl (:template (.getv job EV_OPTS))
-             [rdata ct] (.loadTemplate co tpl (HashMap.)) ]
-        (.setStatus res 200)
-        (.setContent res rdata)
+    (fn [fw ^Job job arg]
+      (let [ ^String tpl (:template (.getv job EV_OPTS))
+             ^HTTPEvent evt (.event job)
+             ^Emitter src (.emitter evt)
+             ^cmzlabsclj.tardis.impl.ext.ContainerAPI
+             co (.container src)
+             [rdata ct] (.loadTemplate co tpl (HashMap.))
+             ^HTTPResult res (.getResultObj evt) ]
         (.setHeader res "content-type" ct)
+        (.setContent res rdata)
+        (.setStatus res 200)
         (.replyResult evt)))
   ))
 

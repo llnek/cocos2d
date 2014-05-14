@@ -19,7 +19,7 @@
   (:require [clojure.string :as cstr])
   (:use [cmzlabsclj.tardis.core.wfs])
   (:use [cmzlabsclj.tardis.auth.core :only [MaybeSignupTest
-                                              MaybeLoginTest] ])
+                                            MaybeLoginTest] ])
 
   (:import ( com.zotohlabs.wflow If FlowPoint Activity
                                  Pipeline PipelineDelegate PTask Work))
@@ -34,7 +34,7 @@
   []
 
   (DefWFTask
-    (perform [_ fw job arg]
+    (fn [fw ^Job job arg]
       (let [ ^HTTPEvent evt (.event job)
              ^HTTPResult res (.getResultObj evt) ]
         (.setStatus res 500)
@@ -49,7 +49,7 @@
   []
 
   (DefWFTask
-    (perform [_ fw job arg]
+    (fn [ fw ^Job job arg]
       (let [ ^HTTPEvent evt (.event job)
              ^HTTPResult res (.getResultObj evt) ]
         (.setStatus res 200)
@@ -81,7 +81,7 @@
   []
 
   (DefWFTask
-    (perform [_ fw job arg]
+    (fn [ fw ^Job job arg]
       (let [ ^HTTPEvent evt (.event job)
              ^HTTPResult res (.getResultObj evt) ]
         (.setStatus res 500)
@@ -96,7 +96,7 @@
   []
 
   (DefWFTask
-    (perform [_ fw job arg]
+    (fn [ fw ^Job job arg]
       (let [ ^HTTPEvent evt (.event job)
              ^cmzlabsclj.tardis.io.webss.WebSession
              mvs (.getSession evt)
