@@ -92,16 +92,20 @@
 
   <target name="finz-build">
     <!--
+      <fileset file="${basedir}/public/vendors/zepto/zepto.min.js"/>
+      <fileset file="${basedir}/public/vendors/modernizr/modernizr.custom.js"/>
+      -->
+<!--
+    <delete file="${basedir}/public/c/webcommon.js" quiet="true"/>
     <concat destfile="${basedir}/public/c/webcommon.js" append="true">
       <fileset file="${basedir}/public/vendors/underscore/underscore-min.js"/>
-      <fileset file="${basedir}/public/vendors/zepto/zepto.min.js"/>
+      <fileset file="${basedir}/public/vendors/jquery/jquery-2.1.1.min.js"/>
       <fileset file="${basedir}/public/vendors/l10njs/l10n.min.js"/>
       <fileset file="${basedir}/public/vendors/mustache/mustache.js"/>
-      <fileset file="${basedir}/public/vendors/modernizr/modernizr.custom.js"/>
       <fileset file="${basedir}/public/vendors/dbg/dbg.js"/>
       <fileset file="${basedir}/public/vendors/fsm/state-machine.min.js"/>
     </concat>
-         -->
+-->
   </target>
 
   <!-- target: test-build
@@ -127,6 +131,7 @@
     <delete includeemptydirs="true">
       <fileset erroronmissingdir="false" dir="${basedir}/public/scripts" includes="**/*"/>
       <fileset erroronmissingdir="false" dir="${basedir}/public/styles" includes="**/*"/>
+      <fileset erroronmissingdir="false" dir="${basedir}/public/pages" includes="**/*"/>
       <fileset erroronmissingdir="false" dir="${basedir}/public/ig" includes="**/*"/>
     </delete>
     <mkdir dir="${basedir}/public/ig"/>

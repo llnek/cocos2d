@@ -8,7 +8,7 @@ build.dir=${basedir}/build.output.folder
 report.dir=${build.dir}/reports
 pod.dir=${basedir}/POD-INF
 
-build.version=0.0.1-SNAPSHOT
+build.version=1.0.0
 build.debug=true
 build.type=web
 
