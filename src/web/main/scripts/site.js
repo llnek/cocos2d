@@ -34,6 +34,9 @@ $(function() {
     alert('aa');
   });
   */
+    $('.carousel').carousel({
+        interval: 5000 //changes the speed
+    })
 
   var ss= ['amber', 'magenta', 'red', 'blue', 'green', 'purple' ];
   var p=0;

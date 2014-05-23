@@ -54,17 +54,49 @@
     </div><!-- end container -->
   </nav>
 
-  <section class="intro">
-    <div class="intro-body">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8 col-md-offset-2">
-                  <p class="intro-text">
-                  POO POO HEAD
-                  </p>
-                </div>
-            </div>
-        </div>
+  <section id="games-list-s" class="">
+    <div class="container">
+      <div class="row">
+      <div id="games-list" class="Xcol-md-8 Xcol-md-offset-2 carousel slide">
+      <!-- Indicators -->
+      <ol class="carousel-indicators">
+          <li data-target="#games-list" data-slide-to="0" class="active"></li>
+          <li data-target="#games-list" data-slide-to="1"></li>
+          <li data-target="#games-list" data-slide-to="2"></li>
+      </ol>
+
+      <!-- Wrapper for slides -->
+      <div class="carousel-inner">
+          <div class="item active">
+              <div class="fill" style="background-image:url('/public/ig/media/asteroids/gui/splash_big.png');"></div>
+              <div class="carousel-caption">
+                  <h1>A Full-Width Image Slider Template</h1>
+              </div>
+          </div>
+          <div class="item">
+            <div class="fill" style="background-image:url('/public/ig/media/asteroids/gui/splash_big.png');"></div>
+              <div class="carousel-caption">
+                  <h1>Caption 2</h1>
+              </div>
+          </div>
+          <div class="item">
+              <div class="fill" style="background-image:url('/public/ig/media/asteroids/gui/splash_big.png');"></div>
+              <div class="carousel-caption">
+                  <h1>Caption 3</h1>
+              </div>
+          </div>
+      </div>
+
+      <!-- Controls -->
+      <a class="left carousel-control" href="#games-list" data-slide="prev">
+          <span class="icon-prev"></span>
+      </a>
+      <a class="right carousel-control" href="#games-list" data-slide="next">
+          <span class="icon-next"></span>
+      </a>
+
+      </div>
+    </div>
     </div>
   </section>
 

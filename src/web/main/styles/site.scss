@@ -158,6 +158,43 @@ a {
 
 }
 
+#games-list-s {
+
+  text-align: center;
+  display: table;
+  width: 100%;
+  height: 100%;
+  padding: 100px 0;
+  color: #fff;
+
+  .container {
+  vertical-align: middle;
+  display: table-cell;
+  }
+
+
+
+}
+
+  .carousel,
+  .item,
+  .active {
+    height:100%;
+  }
+
+  .carousel-inner {
+    height:100%;
+  }
+
+  .fill {
+    background-color: #fff;
+    width:100%;
+    height:100%;
+    height: 640px;
+    background-position: center;
+    background-size: cover;
+  }
+
 .intro {
   background: url(/public/ig/media/main/doors/red_door.png) no-repeat center center scroll;
   //background-size: cover;
