@@ -173,6 +173,7 @@
       <sysproperty key="clojure.compile.path" value="${build.dir}" />
       <arg value="cmzlabs.cocos2d.users.accounts"/>
       <arg value="cmzlabs.cocos2d.site.core"/>
+      <arg value="cmzlabs.cocos2d.games.core"/>
     </java>
     <copy todir="${out.jar.dir}">
       <fileset dir="${build.dir}">

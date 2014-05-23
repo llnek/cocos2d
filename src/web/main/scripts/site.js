@@ -20,6 +20,7 @@ $(window).scroll(function() {
 });
 
 $(function() {
+
   $('.page-scroll a').bind('click', function(event) {
     var $anchor = $(this);
     $('html, body').stop().animate({
@@ -27,6 +28,20 @@ $(function() {
     }, 1500, 'easeInOutExpo');
     event.preventDefault();
   });
+
+  /*
+  $('.intro .intro-text a').bind('click', function() {
+    alert('aa');
+  });
+  */
+
+  var ss= ['amber', 'magenta', 'red', 'blue', 'green', 'purple' ];
+  var p=0;
+  window.setInterval(function() {
+    p=p+1;
+    if (p > 5) {p=0;}
+    $('.intro').css("background", "url('/public/ig/media/main/doors/" + ss[p] + "_door.png') no-repeat center center scroll");
+  }, 1000);
 });
 
 
