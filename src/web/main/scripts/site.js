@@ -8,45 +8,69 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
  ??*/
+(function(undef){ "use strict"; var global = this, _ = global._ , $ = global.jQuery;
+var skaro = global.SkaroJS;
 
-$(window).scroll(function() {
-  if ($(".navbar").offset().top > 50) {
-    $(".navbar-fixed-top").addClass("top-nav-collapse");
+function boot() {
+
+  var em = $('html');
+  if (skaro.isSafari() ) {
+    em.addClass('is-safari');
   } else {
-    $(".navbar-fixed-top").removeClass("top-nav-collapse");
-  }
-});
+    em.removeClass('is-safari');
+  };
 
-$(function() {
-
-  $('.page-scroll a').bind('click', function(event) {
-    var $anchor = $(this);
-    $('html, body').stop().animate({
-        scrollTop: $($anchor.attr('href')).offset().top
-    }, 1500, 'easeInOutExpo');
-    event.preventDefault();
+  $('.navbar-toggle').on('click', function(){
+    var em2= $('.navbar-collapse');
+    var em = $('.navbar');
+    if ( ! em2.hasClass("in")) {
+      em.addClass('darken-menu');
+    }
+    else if ( em2.hasClass("in")) {
+      em.removeClass('darken-menu');
+    }
   });
 
-  /*
-  $('.intro .intro-text a').bind('click', function() {
-    alert('aa');
+  $('.nav a').on('click', function () {
+    $('#main-nav').removeClass('in').addClass('collapse');
   });
-  */
-    $('.carousel').carousel({
-        interval: 5000 //changes the speed
-    })
 
-  var ss= ['amber', 'magenta', 'red', 'blue', 'green', 'purple' ];
-  var p=0;
-  window.setInterval(function() {
-    p=p+1;
-    if (p > 5) {p=0;}
-    $('.intro').css("background", "url('/public/ig/media/main/doors/" + ss[p] + "_door.png') no-repeat center center scroll");
-  }, 1000);
-});
+  $('.navbar-nav li a').on('click', function(evt) {
+    var place = $(this).attr('href');
+    var off = $(place).offset().top;
+    $('html, body').animate({ scrollTop: off }, 1200, 'easeInOutCubic');
+    skaro.pde(evt);
+  });
 
+  // minimize and darken the menu bar
+  $('body').waypoint( function (dir) {
+    $('.navbar').toggleClass('minified dark-menu');
+  }, { offset: '-200px' });
 
+  // show "back to top" button
+  $(document).scroll( function () {
+    var headerHt = $('#intro').outerHeight();
+    var pos = $(document).scrollTop();
+    var em= $('.scrolltotop');
+    if (pos >= headerHt - 100){
+      em.addClass('show-to-top');
+    } else {
+      em.removeClass('show-to-top');
+    }
+  });
+
+  // scroll on top
+  $('.scrolltotop, .navbar-brand').on('click', function(e) {
+    $('html, body').animate({scrollTop: '0'}, 1200, 'easeInOutCubic');
+    skaro.pde(e);
+  });
+
+}
+
+$(document).ready(boot);
+
+}).call(this);
 
 

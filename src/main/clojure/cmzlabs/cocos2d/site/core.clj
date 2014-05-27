@@ -17,12 +17,15 @@
 
   (:require [clojure.tools.logging :as log :only (info warn error debug)])
   (:require [clojure.string :as cstr])
+  (:use [cmzlabsclj.nucleus.util.str :only [strim] ])
   (:use [cmzlabsclj.tardis.core.constants])
   (:use [cmzlabsclj.tardis.core.wfs])
 
   (:import ( com.zotohlabs.wflow FlowPoint Activity
                                  Pipeline PipelineDelegate PTask Work))
   (:import (com.zotohlabs.gallifrey.io HTTPEvent HTTPResult Emitter))
+  (:import (com.zotohlabs.frwk.net ULFormItems ULFileItem))
+  (:import (com.zotohlabs.frwk.io XData))
   (:import (com.zotohlabs.wflow.core Job))
   (:import (java.util HashMap Map)))
 
@@ -83,4 +86,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (def ^:private core-eof nil)
+
 
