@@ -4,11 +4,12 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta charset="UTF-8" />
-<meta name="keywords" content="" />
-<meta name="description" content=""/>
 
-<title>ZotohLabs | Fun &amp; Games.</title>
+<meta charset="${encoding}" />
+<meta name="description" content="${description}"/>
+<meta name="keywords" content="${keywords}" />
+
+<title>${title}</title>
 
 <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,600,700,800,300' rel='stylesheet' />
 <link href='//fonts.googleapis.com/css?family=Titillium+Web:400,400italic,600,600italic,700,700italic,300italic,300,200italic,200' rel='stylesheet' />
@@ -23,7 +24,9 @@
 <link rel="stylesheet" href="/public/vendors/bootstrap/css/bootstrap.min.css"/>
 <link rel="stylesheet" href="/public/vendors/font-awesome/css/font-awesome.min.css"/>
 
-<link rel="stylesheet" href="/public/styles/main/site.css"/>
+<#list stylesheets as csspath>
+<link rel="stylesheet" href="${csspath}"/>
+</#list>
 
 <script src="/public/vendors/modernizr/modernizr.custom.js"></script>
 
@@ -47,15 +50,13 @@
 
 </head>
 
-
 <body data-spy="scroll" data-target="#main-nav">
-
 
 <div class="navbar navbar-fixed-top">
   <div class="container">
 
     <div class="navbar-header">
-      <a class="navbar-brand" href="#"><img src="/public/ig/media/main/ZotohLabs_x100.png" alt="logo"/></a>
+      <a class="navbar-brand" href="/"><img src="/public/ig/media/main/ZotohLabs_x100.png" alt="logo"/></a>
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -73,17 +74,7 @@
   </div>
 </div>
 
-
-<section id="intro" class="intro-section">
-  <div class="container">
-    <div class="content-wrapper">
-      <div class="intro-content">
-        <a href="/games"><img src="/public/ig/media/main/doors/magenta_door.png" alt="entry"/></a>
-      </div>
-    </div>
-  </div>
-</section>
-
+<#include "${body.content}">
 
 <!-- Footer -->
 <footer class="footer">
@@ -113,6 +104,7 @@
 <script src="/public/vendors/modernizr/modernizr-ie.js"></script>
 <script src="/public/vendors/helpers/waypoints.min.js"></script>
 <script src="/public/vendors/jquery_plugins/jquery.nicescroll.min.js"></script>
+<script src="/public/vendors/slick/slick.min.js"></script>
 
 <script src="/public/vendors/cherimoia/skaro.js"></script>
 <script src="/public/scripts/site.js"></script>

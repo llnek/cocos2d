@@ -110,7 +110,7 @@ function boot() {
   });
 
   // scroll on top
-  $('.scrolltotop, .navbar-brand').on('click', function(e) {
+  $('.scrolltotop, .XXXnavbar-brand').on('click', function(e) {
     $('html, body').animate({scrollTop: '0'}, 1200, 'easeInOutCubic');
     skaro.pde(e);
   });
