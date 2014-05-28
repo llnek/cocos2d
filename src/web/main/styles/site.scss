@@ -513,6 +513,44 @@ a {
 }
 
 /* ==========================================================================
+   Games Section
+   ========================================================================== */
+.carousel {
+  //border: solid 1px #fff;
+}
+.games-list-section {
+  background: #000;
+  width: 100%;
+  min-width: 100%;
+  text-align: center;
+  padding: 80px 0 100px;
+  position: relative;
+}
+.games-list-section .bg-overlay {
+  opacity: 0.6;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";
+}
+.games-list-section .box-heading {
+  margin-bottom: 70px;
+}
+
+.game-logo {
+  padding: 20px 50px;
+  display: inline-block;
+  //line-height: 100px;
+
+  a {
+    display: block;
+  }
+
+  img {
+    vertical-align: middle;
+    display: inline;
+  }
+
+}
+
+/* ==========================================================================
    Services Section
    ========================================================================== */
 
