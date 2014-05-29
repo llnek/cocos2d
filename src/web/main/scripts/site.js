@@ -13,6 +13,18 @@
 (function(undef){ "use strict"; var global = this, _ = global._ , $ = global.jQuery;
 var skaro = global.SkaroJS;
 
+function paintDoors() {
+  var intro= $('#intro');
+  var len= 6, ptr=1;
+  if (intro && intro.length > 0) {} else { return; }
+  global.setInterval(function() {
+    $('#intro img').removeClass('open-door');
+    ++ptr;
+    if (ptr > len) { ptr=1; }
+    $('#intro #door' + ptr).addClass('open-door');
+  }, 1500);
+}
+
 function initCarousel() {
   // games list carousel
   $('.carousel').slick({
@@ -61,9 +73,7 @@ function initCarousel() {
 function boot() {
 
   var em = $('html');
-  if (skaro.isSafari() ) {
-    em.addClass('is-safari');
-  } else {
+  if (skaro.isSafari() ) { em.addClass('is-safari'); } else {
     em.removeClass('is-safari');
   };
 
@@ -73,7 +83,8 @@ function boot() {
     if ( ! em2.hasClass("in")) {
       em.addClass('darken-menu');
     }
-    else if ( em2.hasClass("in")) {
+    else
+    if ( em2.hasClass("in")) {
       em.removeClass('darken-menu');
     }
   });
@@ -82,7 +93,7 @@ function boot() {
     $('#main-nav').removeClass('in').addClass('collapse');
   });
 
-  $('.navbar-nav li a').on('click', function(evt) {
+  $('.XXXnavbar-nav li a').on('click', function(evt) {
     var place = $(this).attr('href');
     var off = $(place).offset().top;
     $('html, body').animate({ scrollTop: off }, 1200, 'easeInOutCubic');
@@ -96,10 +107,11 @@ function boot() {
 
 
   initCarousel();
+  paintDoors();
 
   // show "back to top" button
   $(document).scroll( function () {
-    var headerHt = $('#intro').outerHeight();
+    var headerHt = $('#welcome').outerHeight();
     var pos = $(document).scrollTop();
     var em= $('.scrolltotop');
     if (pos >= headerHt - 100){

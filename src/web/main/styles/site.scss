@@ -496,6 +496,15 @@ a {
       background-color: rgba(0, 0, 0, 0.1);
       font-size: 2.25em;
     }
+
+    .main-door {
+      display: none;
+    }
+
+    .main-door.open-door {
+      display: block;
+    }
+
   }
 
 }
