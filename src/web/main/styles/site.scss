@@ -280,6 +280,23 @@ a {
     display: inline-block;
     border: 1px solid transparent;
   }
+
+  .fa-twitter:hover {
+    color:#00a0d1;
+  }
+
+  .fa-linkedin:hover {
+    color:#5BA8CF;
+  }
+
+  .fa-facebook:hover {
+    color:#3b5998;
+  }
+
+  .fa-google-plus:hover {
+    color:#DD4B39;
+  }
+
 }
 
 .light-icons {
@@ -660,6 +677,7 @@ a {
    ========================================================================== */
 
 .footer {
+  border-top: solid 1px #ccc;
   position: relative;
   width: 100%;
   min-width: 100%;
@@ -676,7 +694,7 @@ a {
 
   p {
     margin-bottom: 0;
-    font-size: 0.875em;
+    font-size: 0.575em;
     font-weight: 300;
   }
 
