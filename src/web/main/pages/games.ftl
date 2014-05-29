@@ -1,7 +1,7 @@
 
 <section id="games-list" class="games-list-section">
   <div class="container">
-    <h1 class="box-heading">My games</h1>
+    <h1 class="box-heading">Top Picks</h1>
 
       <div class="carousel">
 
