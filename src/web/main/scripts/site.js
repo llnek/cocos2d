@@ -13,6 +13,11 @@
 (function(undef){ "use strict"; var global = this, _ = global._ , $ = global.jQuery;
 var skaro = global.SkaroJS;
 
+/////////////////////////////////////////////
+
+
+///////////////////////////////////////////
+//
 function paintDoors() {
   var intro= $('#intro');
   var len= 6, ptr=1;
@@ -126,6 +131,8 @@ function boot() {
     $('html, body').animate({scrollTop: '0'}, 1200, 'easeInOutCubic');
     skaro.pde(e);
   });
+
+
 
 }
 
