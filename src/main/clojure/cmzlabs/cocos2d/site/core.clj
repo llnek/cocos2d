@@ -88,7 +88,8 @@
   (let [ dm (dftModel)
          ^Map bd (.get dm "body")
          ^List ls (.get dm "stylesheets") ]
-    (.add ls "/public/styles/main/slick.css")
+    (.add ls "/public/vendors/owl-carousel/owl.carousel.css")
+    (.add ls "/public/vendors/owl-carousel/owl.theme.css")
     (.add ls "/public/styles/main/site.css")
     (.put bd "content" "/main/games.ftl")
     dm

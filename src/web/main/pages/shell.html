@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
 <meta charset="${encoding}" />
-<meta name="description" content="${description}"/>
+<meta name="description" content="${description}" />
 <meta name="keywords" content="${keywords}" />
 
 <title>${title}</title>
@@ -16,13 +16,13 @@
 <link href='//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' />
 <link href='//fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' />
 
-<link rel="shortcut icon" type="image/png" href="/public/ig/media/main/favicon.png"/>
+<link rel="shortcut icon" type="image/png" href="/public/ig/media/main/favicon.png" />
 <!--
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
-<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet"/>
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" />
 -->
-<link rel="stylesheet" href="/public/vendors/bootstrap/css/bootstrap.journal.min.css"/>
-<link rel="stylesheet" href="/public/vendors/font-awesome/css/font-awesome.min.css"/>
+<link rel="stylesheet" href="/public/vendors/bootstrap/css/bootstrap.journal.min.css" />
+<link rel="stylesheet" href="/public/vendors/font-awesome/css/font-awesome.min.css" />
 
 <#list stylesheets as csspath>
 <link rel="stylesheet" href="${csspath}"/>
@@ -49,56 +49,25 @@
 </script>
 
 </head>
-
-<body data-spy="scroll" data-target="#main-nav">
-
-<div class="navbar navbar-fixed-top">
-  <div class="container">
-
-    <div class="navbar-header">
-      <a class="navbar-brand" href="/"><img src="/public/ig/media/main/ZotohLabs_x100.png" alt="logo"/></a>
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-    </div>
-
-    <nav id="main-nav" class="navbar-collapse collapse" role="navigation">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="#welcome">Home</a></li>
-        <li><a href="/login.php">Login</a></li>
-        <li><a href="/register.php">Register</a></li>
-      </ul>
-    </nav>
-
-  </div>
-</div>
-<section id="welcome" class="welcome-section">
-  <div class="container">
-    <p></p>
-  </div>
-</section>
+<body>
+<div class="container">
 
 <#include "${body.content}">
 
 <!-- Footer -->
 <footer class="footer">
+  <!-- 
   <div class="bg-overlay"></div>
+  -->
   <div class="container">
     <div class="social-icons light-icons">
-      <a href="#"><i class="fa fa-facebook"></i></a>
-      <a href="#"><i class="fa fa-twitter"></i></a>
-      <a href="#"><i class="fa fa-google-plus"></i></a>
+      <img src="/public/ig/media/main/ZotohLabs_x100.png" alt="logo"/>
     </div>
     <p>Copyright &copy; 2013-2014 Cherimoia, LLC.  All rights reserved.</p>
   </div>
 </footer>
 
-<div class="scrolltotop">
-  <i class="fa fa-chevron-up"></i>
 </div>
-
 <!-- JS SCRIPTS -->
 
 <script src="/public/c/webcommon.js"></script>
@@ -109,8 +78,9 @@
 <script src="/public/vendors/jquery_plugins/jquery.easing.min.js"></script>
 <script src="/public/vendors/modernizr/modernizr-ie.js"></script>
 <script src="/public/vendors/helpers/waypoints.min.js"></script>
+<script src="/public/vendors/helpers/classie.js"></script>
 <script src="/public/vendors/jquery_plugins/jquery.nicescroll.min.js"></script>
-<script src="/public/vendors/slick/slick.min.js"></script>
+<script src="/public/vendors/owl-carousel/owl.carousel.min.js"></script>
 
 <script src="/public/vendors/cherimoia/skaro.js"></script>
 <script src="/public/scripts/site.js"></script>
