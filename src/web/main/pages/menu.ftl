@@ -12,8 +12,8 @@
 <nav id="bt-menu" class="bt-menu">
   <a href="#" class="bt-menu-trigger"><span>Menu</span></a>
   <ul>
-    <li><a href="#">Login</a></li>
-    <li><a href="#">Register</a></li>
+    <li><a href="/users/login">Login</a></li>
+    <li><a href="/users/register">Register</a></li>
   </ul>
   <@btmenu_social />
 </nav>
@@ -25,8 +25,8 @@
 <nav id="bt-menu" class="bt-menu">
   <a href="#" class="bt-menu-trigger"><span>Menu</span></a>
   <ul>
-    <li><a href="#">Top Picks</a></li>
-    <li><a href="#">Latest</a></li>
+    <li><a href="/games/toppicks">Top Picks</a></li>
+    <li><a href="/games/latest">Latest</a></li>
     <li><a href="/">Home</a></li>
   </ul>
   <@btmenu_social />
