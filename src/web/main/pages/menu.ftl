@@ -10,9 +10,9 @@
     <li><a href="#">Contact</a></li>
   </ul>
   <ul>
-    <li><a href="http://www.twitter.com/codrops" class="bt-icon icon-twitter">Twitter</a></li>
-    <li><a href="https://plus.google.com/101095823814290637419" class="bt-icon icon-gplus">Google+</a></li>
-    <li><a href="http://www.facebook.com/pages/Codrops/159107397912" class="bt-icon icon-facebook">Facebook</a></li>
+    <li><a href="http://www.twitter.com/zotohlabs" class="bt-icon fa fa-twitter ">Twitter</a></li>
+    <li><a href="https://plus.google.com/zotohlabs" class="bt-icon fa fa-google-plus ">Google+</a></li>
+    <li><a href="http://www.facebook.com/pages/zotohlabs/1" class="bt-icon fa fa-facebook ">Facebook</a></li>
   </ul>
 </nav>
 

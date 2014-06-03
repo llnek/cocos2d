@@ -1,0 +1,305 @@
+/*??
+// This library is distributed in  the hope that it will be useful but without
+// any  warranty; without  even  the  implied  warranty of  merchantability or
+// fitness for a particular purpose.
+// The use and distribution terms for this software are covered by the Eclipse
+// Public License 1.0  (http://opensource.org/licenses/eclipse-1.0.php)  which
+// can be found in the file epl-v10.html at the root of this distribution.
+// By using this software in any  fashion, you are agreeing to be bound by the
+// terms of this license. You  must not remove this notice, or any other, from
+// this software.
+// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
+ ??*/
+
+.bt-menu {
+  background-color: rgba(0,0,0,0);
+  border: solid 0px #333;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  -webkit-backface-visibility: hidden;
+  -webkit-transition: border-width 0.3s, background-color 0.3s, height 0s 0.3s;
+  transition: border-width 0.3s, background-color 0.3s, height 0s 0.3s;
+
+
+  &.bt-menu-open {
+    -webkit-transition: border-width 0.3s, background-color 0.3s;
+    transition: border-width 0.3s, background-color 0.3s;
+    height: 100%;
+    border-width: 0px 0px 50px 150px;
+    background-color: rgba(0,0,0,0.3);
+
+    ul {
+
+      &:first-of-type {
+
+        li {
+          -webkit-transform: translate3d(0,0,0);
+          transform: translate3d(0,0,0);
+        }
+
+      }
+
+      &:nth-of-type(2) {
+
+        li {
+
+          -webkit-transform: scale(1);
+          transform: scale(1);
+
+          &:first-child {
+            -webkit-transition-delay: 0.1s;
+            transition-delay: 0.1s;
+          }
+
+          &:nth-child(2) {
+            -webkit-transition-delay: 0.2s;
+            transition-delay: 0.2s;
+          }
+
+          &:nth-child(3) {
+            -webkit-transition-delay: 0.3s;
+            transition-delay: 0.3s;
+          }
+
+          &:nth-child(4) {
+            -webkit-transition-delay: 0.4s;
+            transition-delay: 0.4s;
+          }
+
+        }
+
+      }
+
+      &:first-of-type li, &:nth-of-type(2) li {
+        -webkit-transition: -webkit-transform 0.3s, opacity 0.3s 0.1s;
+        transition: transform 0.3s, opacity 0.3s;
+        visibility: visible;
+        opacity: 1;
+      }
+
+    }
+
+  }
+
+  ul {
+    list-style: none;
+    position: fixed;
+    margin: 0;
+    padding: 0;
+
+    &:first-of-type {
+      top: 75px;
+      left: 0;
+
+      li {
+        -webkit-transform: translate3d(-100%,50%,0);
+        transform: translate3d(-100%,50%,0);
+        width: 150px;
+        height: 50px;
+        line-height: 50px;
+
+        a {
+          padding: 0 20px;
+          box-shadow: inset 0 1px rgba(0,0,0,0.2);
+          color: #fff;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          font-size: 1em;
+          -webkit-transition: color 0.2s;
+          transition: color 0.2s;
+
+          &:hover, &:focus {
+            color: #1abc9c;
+          }
+        }
+
+        &:last-child  {
+          a {
+            box-shadow: inset 0 1px rgba(0,0,0,0.2), inset 0 -1px rgba(0,0,0,0.2);
+          }
+        }
+
+      }
+
+    }
+
+    &:nth-of-type(2) {
+      right: 0;
+      bottom: 0;
+
+      li {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+        width: 60px;
+        height: 50px;
+        line-height: 50px;
+        font-size: 0px;
+        float: left;
+
+        a {
+          color: transparent;
+          text-align: center;
+          font-size: 0px;
+        }
+
+      }
+
+    }
+
+    li {
+      -webkit-transition: -webkit-transform 0.3s, opacity 0.2s, visibility 0s 0.3s;
+      transition: transform 0.3s, opacity 0.2s, visibility 0s 0.3s;
+      display: block;
+      visibility: hidden;
+      opacity: 0;
+
+      a {
+        text-decoration: none;
+        display: block;
+        outline: none;
+
+        &:hover:before, &:focus:before {
+          color: #1abc9c;
+        }
+
+        &:before {
+          color: #fff;
+          font-size: 24px;
+          -webkit-transition: color 0.2s;
+          transition: color 0.2s;
+        }
+
+      }
+
+    }
+
+  }
+
+
+
+}
+
+.bt-overlay {
+  position: absolute;
+  width: 100%;
+}
+
+.bt-menu-trigger {
+  position: fixed;
+  top: 10px;
+  left: 20px;
+  z-index: 100;
+  display: block;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+
+  span {
+    -webkit-transition: background-color 0.3s;
+    transition: background-color 0.3s;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 8%;
+    background-color: #fff;
+    font-size: 0px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    &:before, &:after {
+      -webkit-transition: -webkit-transform 0.3s;
+      transition: transform 0.3s;
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      content: '';
+    }
+
+    &:before {
+      -webkit-transform: translateY(-250%);
+      transform: translateY(-250%);
+    }
+
+    &:after {
+      -webkit-transform: translateY(250%);
+      transform: translateY(250%);
+    }
+
+  }
+
+}
+
+.bt-menu-open {
+
+  .bt-overlay {
+    height: 100%;
+  }
+
+  .bt-menu-trigger {
+
+    span{
+
+      &:before {
+        -webkit-transform: translateY(-300%);
+        transform: translateY(-300%);
+      }
+
+      &:after {
+        -webkit-transform: translateY(300%);
+        transform: translateY(300%);
+      }
+
+    }
+  }
+
+}
+
+// icons
+@mixin iconstyle() {
+  -webkit-font-smoothing: antialiased;
+  font-family: "FontAwesome";
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none !important;
+  speak: none;
+  display: inline-block;
+  text-decoration: none;
+  width: 1em;
+  line-height: inherit;
+}
+
+.bt-icon {
+
+  line-height: inherit !important;
+
+  &:before {
+    //@include iconstyle();
+  }
+
+}
+
+.bt-icon-alt {
+
+  &:before {
+    @include iconstyle();
+  }
+
+}
+
+
+
+
+
+
