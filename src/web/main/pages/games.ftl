@@ -41,5 +41,5 @@
 </section>
 
 <#import "/main/menu.ftl" as my>
-<@my.btmenu />
+<@my.btmenu_games />
 
