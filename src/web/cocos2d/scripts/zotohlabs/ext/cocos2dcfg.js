@@ -26,13 +26,13 @@ cfg= {
 
   appFiles: [
     'plugins/deps.js',
-    'zotohlabs/ext/basefuncs.js',
-    'zotohlabs/ext/asterix.js',
-    'zotohlabs/ext/bus.js',
-    'zotohlabs/ext/ui.js',
-    'zotohlabs/ext/cs2dx.js',
-    'zotohlabs/ext/xcfgbase.js',
-    'zotohlabs/ext/xcfg.js'
+    'zotohlab/ext/basefuncs.js',
+    'zotohlab/ext/asterix.js',
+    'zotohlab/ext/bus.js',
+    'zotohlab/ext/ui.js',
+    'zotohlab/ext/cs2dx.js',
+    'zotohlab/ext/xcfgbase.js',
+    'zotohlab/ext/xcfg.js'
   ],
 
   initAppFiles: function(appid,files) {
@@ -44,18 +44,18 @@ cfg= {
     } else {
       this.appFiles.push('game/' + appid + '/config.js');
       this.appFiles.push('game/' + appid + '/i18n/game_en_US.js');
-      this.appFiles.push('zotohlabs/ext/xscene.js');
-      this.appFiles.push('zotohlabs/ext/xlayer.js');
-      this.appFiles.push('zotohlabs/ext/xentity.js');
-      this.appFiles.push('zotohlabs/ext/xlives.js');
-      this.appFiles.push('zotohlabs/ext/xhud.js');
-      this.appFiles.push('zotohlabs/ext/xigg.js');
-      this.appFiles.push('zotohlabs/ext/xloader.js');
-      this.appFiles.push('zotohlabs/gui/startscreen.js');
-      this.appFiles.push('zotohlabs/gui/ynbox.js');
-      this.appFiles.push('zotohlabs/gui/mainmenu.js');
+      this.appFiles.push('zotohlab/ext/xscene.js');
+      this.appFiles.push('zotohlab/ext/xlayer.js');
+      this.appFiles.push('zotohlab/ext/xentity.js');
+      this.appFiles.push('zotohlab/ext/xlives.js');
+      this.appFiles.push('zotohlab/ext/xhud.js');
+      this.appFiles.push('zotohlab/ext/xigg.js');
+      this.appFiles.push('zotohlab/ext/xloader.js');
+      this.appFiles.push('zotohlab/gui/startscreen.js');
+      this.appFiles.push('zotohlab/gui/ynbox.js');
+      this.appFiles.push('zotohlab/gui/mainmenu.js');
       _.each(files,function(f) { this.appFiles.push(f); }, this);
-      this.appFiles.push('zotohlabs/ext/application.js');
+      this.appFiles.push('zotohlab/ext/application.js');
     }
   },
 

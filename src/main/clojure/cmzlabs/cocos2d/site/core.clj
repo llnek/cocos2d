@@ -21,12 +21,12 @@
   (:use [cmzlabsclj.tardis.core.constants])
   (:use [cmzlabsclj.tardis.core.wfs])
 
-  (:import ( com.zotohlabs.wflow FlowPoint Activity
+  (:import ( com.zotohlab.wflow FlowPoint Activity
                                  Pipeline PipelineDelegate PTask Work))
-  (:import (com.zotohlabs.gallifrey.io HTTPEvent HTTPResult Emitter))
-  (:import (com.zotohlabs.frwk.net ULFormItems ULFileItem))
-  (:import (com.zotohlabs.frwk.io XData))
-  (:import (com.zotohlabs.wflow.core Job))
+  (:import (com.zotohlab.gallifrey.io HTTPEvent HTTPResult Emitter))
+  (:import (com.zotohlab.frwk.net ULFormItems ULFileItem))
+  (:import (com.zotohlab.frwk.io XData))
+  (:import (com.zotohlab.wflow.core Job))
   (:import (java.util ArrayList List HashMap Map)))
 
 
@@ -55,7 +55,7 @@
 
   (let [ dm (HashMap.) ]
     (doto dm
-      (.put "title" "ZotohLabs | Fun &amp; Games.")
+      (.put "title" "zotohlab | Fun &amp; Games.")
       (.put "encoding" "UTF-8")
       (.put "description" "Hello World!")
       (.put "stylesheets" (ArrayList.))

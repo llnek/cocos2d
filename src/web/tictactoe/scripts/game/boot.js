@@ -12,7 +12,7 @@
 (function(undef) { "use strict"; var global= this; var _ = global._ ;
 
 global.document.ccConfig.initAppFiles('tictactoe', [
-      'zotohlabs/ext/negamax.js',
+      'zotohlab/ext/negamax.js',
       'game/tictactoe/board.js',
       'game/tictactoe/game.js',
       'game/tictactoe/mmenu.js',

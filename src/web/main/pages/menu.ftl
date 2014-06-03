@@ -1,9 +1,9 @@
 
 <#macro btmenu_social>
   <ul>
-    <li><a href="http://www.twitter.com/zotohlabs" class="bt-icon fa fa-twitter ">Twitter</a></li>
-    <li><a href="https://plus.google.com/zotohlabs" class="bt-icon fa fa-google-plus ">Google+</a></li>
-    <li><a href="http://www.facebook.com/pages/zotohlabs/1" class="bt-icon fa fa-facebook ">Facebook</a></li>
+    <li><a href="http://www.twitter.com/zotohlab" class="bt-icon fa fa-twitter ">Twitter</a></li>
+    <li><a href="https://plus.google.com/zotohlab" class="bt-icon fa fa-google-plus ">Google+</a></li>
+    <li><a href="http://www.facebook.com/pages/zotohlab/1" class="bt-icon fa fa-facebook ">Facebook</a></li>
   </ul>
 </#macro>
 
