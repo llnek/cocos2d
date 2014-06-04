@@ -1,0 +1,9 @@
+{
+  "pubdate" : "2014/06/03",
+  "author" : "llnek",
+  "name" : "Space Critters",
+  "desc" : "Like Space Invaders, only better!",
+  "status" : true,
+  "image" : "gui/catalog.png"
+}
+

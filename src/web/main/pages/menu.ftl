@@ -26,7 +26,7 @@
   <a href="#" class="bt-menu-trigger"><span>Menu</span></a>
   <ul>
     <li><a href="/games/toppicks">Top Picks</a></li>
-    <li><a href="/games/latest">Latest</a></li>
+    <li><a href="/games">Latest</a></li>
     <li><a href="/">Home</a></li>
   </ul>
   <@btmenu_social />

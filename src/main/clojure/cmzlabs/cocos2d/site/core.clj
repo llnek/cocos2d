@@ -17,33 +17,77 @@
 
   (:require [clojure.tools.logging :as log :only (info warn error debug)])
   (:require [clojure.string :as cstr])
+  (:require [clojure.data.json :as json])
+
+  (:use [cmzlabsclj.nucleus.util.dates :only [ParseDate] ])
   (:use [cmzlabsclj.nucleus.util.str :only [strim] ])
   (:use [cmzlabsclj.tardis.core.constants])
   (:use [cmzlabsclj.tardis.core.wfs])
+
+  (:import (com.zotohlab.gallifrey.core Container ConfigError ))
+  (:import (org.apache.commons.io FileUtils))
 
   (:import ( com.zotohlab.wflow FlowPoint Activity
                                  Pipeline PipelineDelegate PTask Work))
   (:import (com.zotohlab.gallifrey.io HTTPEvent HTTPResult Emitter))
   (:import (com.zotohlab.frwk.net ULFormItems ULFileItem))
-  (:import (com.zotohlab.frwk.io XData))
+  (:import (com.zotohlab.frwk.io IOUtils XData))
   (:import (com.zotohlab.wflow.core Job))
-  (:import (java.util ArrayList List HashMap Map)))
+  (:import (java.io File))
+  (:import (java.util Date ArrayList List HashMap Map)))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(def ^:private GAMES-MNFS (atom []))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- scanGameManifests ""
+
+  [^File appDir]
+
+  (with-local-vars [ rc (transient []) ]
+    (let [ fs (IOUtils/listFiles (File. appDir "public/ig/info")
+                                 "manifest"
+                                 true) ]
+      (doseq [ ^File f (seq fs) ]
+        (let [ json (json/read-str (FileUtils/readFileToString f "utf-8"))
+               gid (-> (.getParentFile f)(.getName))
+               pdt (ParseDate (-> (strim (get json "pubdate"))
+                                  (.replace \/ \-))
+                              "yyyy-MM-dd")
+               info (-> json
+                        (assoc "pubdate" pdt)
+                        (assoc "gamedir" gid)) ]
+          (var-set rc (conj! @rc info)))))
+    (vec (sort #(compare (.getTime ^Date (get %1 "pubdate"))
+                         (.getTime ^Date (get %2 "pubdate")))
+               (persistent! @rc)))
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (deftype MyAppMain [] cmzlabsclj.tardis.impl.ext.CljAppMain
 
-  (contextualize [_ container]
-    (log/info "My AppMain contextualized by container " container))
+  (contextualize [_ ctr]
+    (require 'cmzlabs.cocos2d.site.core)
+    (reset! GAMES-MNFS
+            (scanGameManifests (.getAppDir ^Container ctr)))
+    (log/info "My AppMain contextualized by container " ctr))
+
   (configure [_ options]
     (log/info "My AppMain configured with options " options))
+
   (initialize [_]
     (log/info "My AppMain initialized!"))
+
   (start [_]
     (log/info "My AppMain started"))
+
   (stop [_]
     (log/info "My AppMain stopped"))
+
   (dispose [_]
     (log/info "My AppMain finz'ed")))
 
@@ -51,6 +95,7 @@
 ;;
 (defn- dftModel ""
 
+  ^Map
   []
 
   (let [ dm (HashMap.) ]
@@ -89,11 +134,28 @@
   (let [ dm (dftModel)
          ^Map bd (.get dm "body")
          ^List ls (.get dm "stylesheets") ]
+    (.add ls "/public/styles/main/btmenu.css")
+    (.add ls "/public/styles/main/site.css")
+    (.put bd "content" "/main/games.ftl")
+    dm
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- interpolatePicksPage ""
+
+  ^Map
+  []
+
+  (let [ dm (dftModel)
+         ^Map bd (.get dm "body")
+         ^List ls (.get dm "stylesheets") ]
     (.add ls "/public/vendors/owl-carousel/owl.carousel.css")
     (.add ls "/public/vendors/owl-carousel/owl.theme.css")
     (.add ls "/public/styles/main/btmenu.css")
     (.add ls "/public/styles/main/site.css")
-    (.put bd "content" "/main/games.ftl")
+    (.put bd "picks" @GAMES-MNFS)
+    (.put bd "content" "/main/picks.ftl")
     dm
   ))
 
@@ -135,11 +197,25 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype GamesPage [] PipelineDelegate
+(deftype AllGamesPage [] PipelineDelegate
 
   (getStartActivity [_  pipe]
     (require 'cmzlabs.cocos2d.site.core)
     (doShowPage interpolateGamesPage))
+
+  (onStop [_ pipe]
+    (log/info "nothing to be done here, just stop please."))
+
+  (onError [ _ err curPt]
+    (log/info "Oops, I got an error!")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(deftype TopPicksPage [] PipelineDelegate
+
+  (getStartActivity [_  pipe]
+    (require 'cmzlabs.cocos2d.site.core)
+    (doShowPage interpolatePicksPage))
 
   (onStop [_ pipe]
     (log/info "nothing to be done here, just stop please."))

@@ -3,7 +3,7 @@
   <div class="container">
     <div class="content-wrapper">
       <div class="intro-content">
-        <a href="/games">
+        <a href="/games/toppicks">
           <img class= "main-door open-door" id="door1" src="/public/ig/media/main/doors/magenta_door.png" alt="entry"/>
           <img class= "main-door" id="door2" src="/public/ig/media/main/doors/amber_door.png" alt="entry"/>
           <img class= "main-door" id="door3" src="/public/ig/media/main/doors/blue_door.png" alt="entry"/>

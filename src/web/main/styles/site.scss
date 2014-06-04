@@ -593,12 +593,17 @@ a {
   padding: 80px 0 100px;
   position: relative;
 
-  .carousel {
-    //border: solid 1px #fff;
-    //width: 90%;
-    //margin: 0 auto;
+  .owl-item {
+    img {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+    }
   }
+
 }
+
 .games-list-section .bg-overlay {
   opacity: 0.6;
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";

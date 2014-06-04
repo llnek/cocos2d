@@ -87,6 +87,7 @@
       </case>
     </switch>
     <antcall target="compile-media"/>
+    <antcall target="compile-info"/>
     <antcall target="compile-pages"/>
   </target>
 
@@ -346,6 +347,19 @@
     <copy todir="${basedir}/public/ig/media/${wappid}">
       <fileset dir="${web.dir}/${wappid}/media"><include name="**/*"/></fileset>
     </copy>
+  </target>
+
+  <target name="compile-info">
+    <switch value="${wappid}">
+    <case value="cocos2d"></case>
+    <case value="main"></case>
+    <default>
+      <mkdir dir="${basedir}/public/ig/info/${wappid}"/>
+      <copy todir="${basedir}/public/ig/info/${wappid}">
+        <fileset dir="${web.dir}/${wappid}/info"><include name="**/*"/></fileset>
+      </copy>
+    </default>
+    </switch>
   </target>
 
   <target name="compile-pages">
