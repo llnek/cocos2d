@@ -4,7 +4,7 @@
   "name" : "Falling Bricks",
   "desc" : "Like Tetris, only better!",
   "status" : true,
-  "url" : "/arena/fallingbricks",
+  "url" : "/arena/tetris",
   "image" : "gui/catalog.png"
 }
 

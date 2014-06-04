@@ -4,7 +4,7 @@
   "name" : "Space Critters",
   "desc" : "Like Space Invaders, only better!",
   "status" : true,
-  "url" : "/arena/spacecritters",
+  "url" : "/arena/invaders",
   "image" : "gui/catalog.png"
 }
 
