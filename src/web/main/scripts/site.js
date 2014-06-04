@@ -70,7 +70,7 @@ function paintDoors() {
 }
 
 function initCarousel() {
-  $("#games-list .owl-carousel").owlCarousel({
+  $("#picks-list .owl-carousel").owlCarousel({
     singleItem: true,
     items: 1,
     navigation: true,

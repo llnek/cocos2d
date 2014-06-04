@@ -552,11 +552,14 @@ a {
 
 }
 
+
 /* ==========================================================================
    Games Section
    ========================================================================== */
 
-.games-tabs-section {
+.picks-list-section,
+.games-list-section {
+
   background: #000;
   width: 100%;
   min-width: 100%;
@@ -564,34 +567,19 @@ a {
   padding: 80px 0 100px;
   position: relative;
 
-  .tab-content {
-    padding-top: 8px;
+  .box-heading {
+    margin-bottom: 70px;
+    color: #fff;
   }
 
-  ul {
-
-    li {
-
-      a {
-        //border-bottom: solid 1px #000 !important;
-      }
-
-    }
-
+  .bg-overlay {
+    opacity: 0.6;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";
   }
 
 }
 
-/* ==========================================================================
-   Games Section
-   ========================================================================== */
-.games-list-section {
-  background: #000;
-  width: 100%;
-  min-width: 100%;
-  text-align: center;
-  padding: 80px 0 100px;
-  position: relative;
+.picks-list-section {
 
   .owl-item {
     img {
@@ -602,30 +590,34 @@ a {
     }
   }
 
-}
+  .game-logo {
+    padding: 20px 50px;
+    display: inline-block;
+    //line-height: 100px;
+    border: solid 1px #DD4B39;
 
-.games-list-section .bg-overlay {
-  opacity: 0.6;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";
-}
-.games-list-section .box-heading {
-  margin-bottom: 70px;
-  color: #fff;
-}
+    a {
+      display: block;
+    }
 
-.game-logo {
-  padding: 20px 50px;
-  display: inline-block;
-  //line-height: 100px;
-  border: solid 1px #DD4B39;
+    img {
+      vertical-align: middle;
+      display: inline;
+    }
 
-  a {
-    display: block;
   }
 
-  img {
-    vertical-align: middle;
-    display: inline;
+}
+
+.games-list-section {
+
+  h3 {
+    color: #fff;
+  }
+
+  .game-item {
+      padding-bottom: 24px;
+      border: solid 1px #fff;
   }
 
 }

@@ -4,6 +4,7 @@
   "name" : "HyperJump",
   "desc" : "Like Asteroids, only better!",
   "status" : true,
+  "url" : "/arena/hyperjump",
   "image" : "gui/catalog.png"
 }
 

@@ -136,6 +136,7 @@
          ^List ls (.get dm "stylesheets") ]
     (.add ls "/public/styles/main/btmenu.css")
     (.add ls "/public/styles/main/site.css")
+    (.put bd "games" @GAMES-MNFS)
     (.put bd "content" "/main/games.ftl")
     dm
   ))

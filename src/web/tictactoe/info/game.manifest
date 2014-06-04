@@ -4,6 +4,7 @@
   "name" : "Tic Tac Toe",
   "desc" : "Like Tic Tac Toe, only better!",
   "status" : true,
+  "url" : "/arena/tictactoe",
   "image" : "gui/catalog.png"
 }
 

@@ -4,6 +4,7 @@
   "name" : "Pong",
   "desc" : "Like Pong, only better!",
   "status" : true,
+  "url" : "/arena/pong",
   "image" : "gui/catalog.png"
 }
 

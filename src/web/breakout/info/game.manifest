@@ -4,6 +4,7 @@
   "name" : "Break!",
   "desc" : "Like Break Out, only better!",
   "status" : true,
+  "url" : "/arena/break",
   "image" : "gui/catalog.png"
 }
 
