@@ -3,10 +3,13 @@
   <div class="container">
     <h1 class="box-heading">Latest</h1>
 
+    <ul>
+
     <#list body.games as gg >
     <#if gg.status = true >
+    <li class="game-item">
 
-      <div class="row game-item">
+      <div class="row">
         <div class="col-lg-7 col-md-7">
           <a href="${gg.uri}">
             <img class="img-responsive"
@@ -25,8 +28,11 @@
         </div>
       </div>
 
+    </li>
     </#if>
     </#list>
+
+    </ul>
 
   </div>
 </section>
