@@ -11,20 +11,20 @@
 
 (function(undef) { "use strict"; var global= this; var _ = global._;
 
-global.document.ccConfig.initAppFiles('sirtet', [
+global.document.ccConfig.initAppFiles('tetris', [
 
-      'game/sirtet/entities/block.js',
-      'game/sirtet/entities/shape.js',
-      'game/sirtet/entities/box.js',
-      'game/sirtet/entities/line.js',
-      'game/sirtet/entities/nub.js',
-      'game/sirtet/entities/elx.js',
-      'game/sirtet/entities/el.js',
-      'game/sirtet/entities/stx.js',
-      'game/sirtet/entities/st.js',
-      'game/sirtet/game.js',
-      'game/sirtet/mmenu.js',
-      'game/sirtet/splash.js'
+      'game/tetris/entities/block.js',
+      'game/tetris/entities/shape.js',
+      'game/tetris/entities/box.js',
+      'game/tetris/entities/line.js',
+      'game/tetris/entities/nub.js',
+      'game/tetris/entities/elx.js',
+      'game/tetris/entities/el.js',
+      'game/tetris/entities/stx.js',
+      'game/tetris/entities/st.js',
+      'game/tetris/game.js',
+      'game/tetris/mmenu.js',
+      'game/tetris/splash.js'
 ]);
 
 

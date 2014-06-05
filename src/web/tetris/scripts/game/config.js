@@ -21,7 +21,7 @@ asterix.Bricks= {};
 
 sh.xcfg = global.ZotohLab.klass.merge( asterix.XConfig, {
 
-  appid: 'sirtet',
+  appid: 'tetris',
   color: 'silver',
 
   csts: {

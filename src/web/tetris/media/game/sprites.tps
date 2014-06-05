@@ -6,7 +6,7 @@
         <key>texturePackerVersion</key>
         <string>3.3.2</string>
         <key>fileName</key>
-        <string>/wdrive/mygithub/cocos2d/src/web/sirtet/media/game/sprites.tps</string>
+        <string>/wdrive/mygithub/cocos2d/src/web/tetris/media/game/sprites.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
