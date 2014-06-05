@@ -1,9 +1,5 @@
 
-<section id="game-arena" class="game-arena-section">
-  <div class="container">
-    <canvas id="gameCanvas"></canvas>
-  </div>
-</section>
+<canvas id="gameCanvas"></canvas>
 
 <#include "/main/footer.ftl" >
 

@@ -44,7 +44,7 @@ asterix.XLoader = cc.Scene.extend({
     this.logo= new Image();
     var me=this;
     this.logo.onload = function() { me.pkInitStage(); };
-    this.logo.src = '/public/ig/media/main/logos/ZotohLab_x200.png';
+    this.logo.src = '/public/ig/media/main/ZotohLab_x200.png';
   },
 
   pkInitStage: function () {
