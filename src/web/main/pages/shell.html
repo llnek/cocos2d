@@ -23,10 +23,11 @@
 -->
 <link rel="stylesheet" href="/public/vendors/bootstrap/css/bootstrap.journal.min.css" />
 <link rel="stylesheet" href="/public/vendors/font-awesome/css/font-awesome.min.css" />
-
 <#list stylesheets as csspath>
 <link rel="stylesheet" href="${csspath}"/>
 </#list>
+<link rel="stylesheet" href="/public/vendors/btmenu/btmenu.css"/>
+<link rel="stylesheet" href="/public/styles/main/site.css"/>
 
 <script src="/public/vendors/modernizr/modernizr.custom.js"></script>
 
@@ -65,11 +66,13 @@
 <script src="/public/vendors/jquery_plugins/jquery.easing.min.js"></script>
 <script src="/public/vendors/modernizr/modernizr-ie.js"></script>
 <script src="/public/vendors/helpers/waypoints.min.js"></script>
-<script src="/public/vendors/helpers/classie.js"></script>
 <script src="/public/vendors/jquery_plugins/jquery.nicescroll.min.js"></script>
-<script src="/public/vendors/owl-carousel/owl.carousel.min.js"></script>
-
+<script src="/public/vendors/helpers/classie.js"></script>
+<#list scripts as jsspath>
+<script src="${jsspath}"></script>
+</#list>
 <script src="/public/vendors/cherimoia/skaro.js"></script>
+<script src="/public/vendors/btmenu/btmenu.js"></script>
 <script src="/public/scripts/site.js"></script>
 
 

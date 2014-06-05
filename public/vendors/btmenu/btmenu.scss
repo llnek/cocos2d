@@ -21,78 +21,27 @@ $linkOtherColor: #4aa1db;
 #1abc9c;
 */
 
+$menuOpenBgColor: rgba(0,0,0,0.3);
+$menuBgColor: rgba(0,0,0,0);
+$menuBorderColor: #333;
+$menuItemWidth: 200px; // 150px;
+$menuItemHeight: 50px;
+$socialIconWidth: 60px;
+
+$menuTriggerHeight: 50px;
+$menuTriggerWidth: 50px;
+
 .bt-menu {
-  background-color: rgba(0,0,0,0);
-  border: solid 0px #333;
+  -webkit-transition: border-width 0.3s, background-color 0.3s, height 0s 0.3s;
+  transition: border-width 0.3s, background-color 0.3s, height 0s 0.3s;
+  -webkit-backface-visibility: hidden;
+  border: solid 0px $menuBorderColor;
+  background-color: $menuBgColor;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 0;
-  -webkit-backface-visibility: hidden;
-  -webkit-transition: border-width 0.3s, background-color 0.3s, height 0s 0.3s;
-  transition: border-width 0.3s, background-color 0.3s, height 0s 0.3s;
-
-
-  &.bt-menu-open {
-    -webkit-transition: border-width 0.3s, background-color 0.3s;
-    transition: border-width 0.3s, background-color 0.3s;
-    height: 100%;
-    border-width: 0px 0px 50px 150px;
-    background-color: rgba(0,0,0,0.3);
-
-    ul {
-
-      &:first-of-type {
-
-        li {
-          -webkit-transform: translate3d(0,0,0);
-          transform: translate3d(0,0,0);
-        }
-
-      }
-
-      &:nth-of-type(2) {
-
-        li {
-
-          -webkit-transform: scale(1);
-          transform: scale(1);
-
-          &:first-child {
-            -webkit-transition-delay: 0.1s;
-            transition-delay: 0.1s;
-          }
-
-          &:nth-child(2) {
-            -webkit-transition-delay: 0.2s;
-            transition-delay: 0.2s;
-          }
-
-          &:nth-child(3) {
-            -webkit-transition-delay: 0.3s;
-            transition-delay: 0.3s;
-          }
-
-          &:nth-child(4) {
-            -webkit-transition-delay: 0.4s;
-            transition-delay: 0.4s;
-          }
-
-        }
-
-      }
-
-      &:first-of-type li, &:nth-of-type(2) li {
-        -webkit-transition: -webkit-transform 0.3s, opacity 0.3s 0.1s;
-        transition: transform 0.3s, opacity 0.3s;
-        visibility: visible;
-        opacity: 1;
-      }
-
-    }
-
-  }
 
   ul {
     list-style: none;
@@ -107,14 +56,13 @@ $linkOtherColor: #4aa1db;
       li {
         -webkit-transform: translate3d(-100%,50%,0);
         transform: translate3d(-100%,50%,0);
-        //width: 150px;
-        width: 200px;
-        height: 50px;
-        line-height: 50px;
+        width: $menuItemWidth;
+        height: $menuItemHeight;
+        line-height: $menuItemHeight;
 
         a {
-          padding: 0 20px;
           box-shadow: inset 0 1px rgba(0,0,0,0.2);
+          padding: 0 20px;
           color: $linkColor;
           text-transform: uppercase;
           letter-spacing: 1px;
@@ -138,15 +86,15 @@ $linkOtherColor: #4aa1db;
     }
 
     &:nth-of-type(2) {
-      right: 0;
       bottom: 0;
+      right: 0;
 
       li {
         -webkit-transform: scale(0);
         transform: scale(0);
-        width: 60px;
-        height: 50px;
-        line-height: 50px;
+        width: $socialIconWidth;
+        height: $menuItemHeight;
+        line-height: $menuItemHeight;
         font-size: 0px;
         float: left;
 
@@ -189,6 +137,56 @@ $linkOtherColor: #4aa1db;
 
   }
 
+  &.bt-menu-open {
+    -webkit-transition: border-width 0.3s, background-color 0.3s;
+    transition: border-width 0.3s, background-color 0.3s;
+    background-color: $menuOpenBgColor;
+    border-width: 0px 0px 50px 150px;
+    height: 100%;
+
+    ul {
+
+      li {
+        -webkit-transition: -webkit-transform 0.3s, opacity 0.3s 0.1s;
+        transition: transform 0.3s, opacity 0.3s;
+        visibility: visible;
+        opacity: 1;
+      }
+
+      &:first-of-type {
+        li {
+          -webkit-transform: translate3d(0,0,0);
+          transform: translate3d(0,0,0);
+        }
+      }
+
+      &:nth-of-type(2) {
+        li {
+          -webkit-transform: scale(1);
+          transform: scale(1);
+
+          &:first-child {
+            -webkit-transition-delay: 0.1s;
+            transition-delay: 0.1s;
+          }
+          &:nth-child(2) {
+            -webkit-transition-delay: 0.2s;
+            transition-delay: 0.2s;
+          }
+          &:nth-child(3) {
+            -webkit-transition-delay: 0.3s;
+            transition-delay: 0.3s;
+          }
+          &:nth-child(4) {
+            -webkit-transition-delay: 0.4s;
+            transition-delay: 0.4s;
+          }
+        }
+      }
+
+    }
+
+  }
 
 
 }
@@ -204,8 +202,8 @@ $linkOtherColor: #4aa1db;
   left: 20px;
   z-index: 100;
   display: block;
-  width: 50px;
-  height: 50px;
+  height: $menuTriggerHeight;
+  width: $menuTriggerWidth;
   cursor: pointer;
 
   span {

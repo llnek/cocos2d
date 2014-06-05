@@ -104,6 +104,7 @@
       (.put "encoding" "UTF-8")
       (.put "description" "Hello World!")
       (.put "stylesheets" (ArrayList.))
+      (.put "scripts" (ArrayList.))
       (.put "body" (HashMap.))
       (.put "keywords" "web browser games mobile ios android windows phone"))
   ))
@@ -117,9 +118,8 @@
 
   (let [ dm (dftModel)
          ^Map bd (.get dm "body")
-         ^List ls (.get dm "stylesheets") ]
-    (.add ls "/public/styles/main/btmenu.css")
-    (.add ls "/public/styles/main/site.css")
+         ^List jss (.get dm "scripts")
+         ^List css (.get dm "stylesheets") ]
     (.put bd "content" "/main/index.ftl")
     dm
   ))
@@ -133,9 +133,8 @@
 
   (let [ dm (dftModel)
          ^Map bd (.get dm "body")
-         ^List ls (.get dm "stylesheets") ]
-    (.add ls "/public/styles/main/btmenu.css")
-    (.add ls "/public/styles/main/site.css")
+         ^List jss (.get dm "scripts")
+         ^List css (.get dm "stylesheets") ]
     (.put bd "games" @GAMES-MNFS)
     (.put bd "content" "/main/games.ftl")
     dm
@@ -150,11 +149,11 @@
 
   (let [ dm (dftModel)
          ^Map bd (.get dm "body")
-         ^List ls (.get dm "stylesheets") ]
-    (.add ls "/public/vendors/owl-carousel/owl.carousel.css")
-    (.add ls "/public/vendors/owl-carousel/owl.theme.css")
-    (.add ls "/public/styles/main/btmenu.css")
-    (.add ls "/public/styles/main/site.css")
+         ^List jss (.get dm "scripts")
+         ^List css (.get dm "stylesheets") ]
+    (.add css "/public/vendors/owl-carousel/owl.carousel.css")
+    (.add css "/public/vendors/owl-carousel/owl.theme.css")
+    (.add jss "/public/vendors/owl-carousel/owl.carousel.min.js")
     (.put bd "picks" @GAMES-MNFS)
     (.put bd "content" "/main/picks.ftl")
     dm

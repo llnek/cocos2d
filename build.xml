@@ -93,6 +93,7 @@
 
   <target name="finz-build">
     <!--
+      <fileset file="${basedir}/public/vendors/fsm/state-machine.min.js"/>
       <fileset file="${basedir}/public/vendors/zepto/zepto.min.js"/>
       <fileset file="${basedir}/public/vendors/modernizr/modernizr.custom.js"/>
       -->
@@ -103,8 +104,8 @@
       <fileset file="${basedir}/public/vendors/jquery/jquery-2.1.1.min.js"/>
       <fileset file="${basedir}/public/vendors/l10njs/l10n.min.js"/>
       <fileset file="${basedir}/public/vendors/mustache/mustache.js"/>
-      <fileset file="${basedir}/public/vendors/dbg/dbg.js"/>
-      <fileset file="${basedir}/public/vendors/fsm/state-machine.min.js"/>
+      <fileset file="${basedir}/public/vendors/helpers/dbg.js"/>
+      <fileset file="${basedir}/public/vendors/jquery_plugins/detectmobilebrowser.js"/>
     </concat>
 -->
   </target>
