@@ -1,10 +1,11 @@
 {
   "pubdate" : "2014/06/03",
+  "orientation" : "portrait",
   "author" : "llnek",
   "name" : "Space Critters",
   "desc" : "Like Space Invaders, only better!",
   "status" : true,
-  "url" : "/arena/invaders",
+  "uri" : "/arena/invaders",
   "image" : "gui/catalog.png"
 }
 

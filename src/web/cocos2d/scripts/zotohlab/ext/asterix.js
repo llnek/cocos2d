@@ -10,9 +10,9 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function (undef) { "use strict"; var global= this, _ = global._, Mustache=global.Mustache,
-klass= global.ZotohLabs.klass,
-echt= global.ZotohLabs.echt,
-loggr= global.ZotohLabs.logger;
+klass= global.ZotohLab.klass,
+echt= global.ZotohLab.echt,
+loggr= global.ZotohLab.logger;
 
 //////////////////////////////////////////////////
 // common functions
@@ -138,7 +138,7 @@ var Funcs= klass.extends({
 
 });
 
-global.ZotohLabs.Asterix = {
+global.ZotohLab.Asterix = {
 
   Shell: {
 

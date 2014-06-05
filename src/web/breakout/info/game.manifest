@@ -1,10 +1,11 @@
 {
   "pubdate" : "2014/06/03",
+  "orientation" : "portrait",
   "author" : "llnek",
   "name" : "Break!",
   "desc" : "Like Break Out, only better!",
   "status" : true,
-  "url" : "/arena/breakout",
+  "uri" : "/arena/breakout",
   "image" : "gui/catalog.png"
 }
 

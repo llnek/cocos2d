@@ -1,10 +1,11 @@
 {
   "pubdate" : "2014/06/03",
+  "orientation" : "landscape",
   "author" : "llnek",
   "name" : "HyperJump",
   "desc" : "Like Asteroids, only better!",
   "status" : true,
-  "url" : "/arena/asteroids",
+  "uri" : "/arena/asteroids",
   "image" : "gui/catalog.png"
 }
 

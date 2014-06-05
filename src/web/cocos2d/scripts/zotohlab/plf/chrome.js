@@ -7,38 +7,26 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._  ,
-asterix = global.ZotohLabs.Asterix,
-ccsx= asterix.COCOS2DX,
-sh = asterix.Shell,
-loggr = global.ZotohLabs.logger;
+(function (document, undef) { "use strict"; var global = this; _ = global._ ;
+var asterix= global.ZotohLab.Asterix;
+var sh = asterix.Shell;
+var loggr= global.ZotohLab.logger;
 
 //////////////////////////////////////////////////////////////////////////////
-// splash screen for the game - make it look nice please.
+// module def
 //////////////////////////////////////////////////////////////////////////////
-asterix.XSplashLayer = asterix.XLayer.extend({
+var controls = document.getElementById("controls");
+if (controls) {
+  document.getElementById('game-container').removeChild(controls);
+}
 
-  pkInit: function() {
-    var imgUrl= sh.xcfg.getImagePath('splash.splash'),
-    wz = ccsx.screen(),
-    cw = ccsx.center();
-
-    if (imgUrl) {
-      var s= cc.Sprite.create( imgUrl);
-      s.setPosition(cw);
-      this.addItem(s);
-    }
-
-    return this._super();
-  },
-
-  pkInput: function() {}
-
-});
+sh.xcfg.setGameSize('default');
 
 
 
-}).call(this);
+}).call(this, document);
+
+
 

@@ -10,12 +10,12 @@
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use strict"; var global=this, _ = global._ ,
-asterix = global.ZotohLabs.Asterix,
-echt= global.ZotohLabs.echt,
+asterix = global.ZotohLab.Asterix,
+echt= global.ZotohLab.echt,
 ast = asterix.Asteroids,
 ccsx= asterix.COCOS2DX,
 sh = asterix.Shell,
-loggr= global.ZotohLabs.logger;
+loggr= global.ZotohLab.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def

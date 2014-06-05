@@ -7,26 +7,19 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function (document, undef) { "use strict"; var global = this; _ = global._ ;
-var asterix= global.ZotohLabs.Asterix;
+var asterix= global.ZotohLab.Asterix;
 var sh = asterix.Shell;
-var loggr= global.ZotohLabs.logger;
+var loggr= global.ZotohLab.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-var controls = document.getElementById("controls");
-if (controls) {
-  document.getElementById('game-container').removeChild(controls);
-}
 
-sh.xcfg.setGameSize('default');
-
-
+//sh.xcfg.setGameSize('default');
 
 }).call(this, document);
-
 
 

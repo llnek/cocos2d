@@ -20,7 +20,8 @@
   (:require [clojure.data.json :as json])
 
   (:use [cmzlabsclj.nucleus.util.dates :only [ParseDate] ])
-  (:use [cmzlabsclj.nucleus.util.str :only [strim] ])
+  (:use [cmzlabsclj.nucleus.util.str :only [hgl? strim] ])
+
   (:use [cmzlabsclj.tardis.core.constants])
   (:use [cmzlabsclj.tardis.core.wfs])
 
@@ -40,6 +41,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (def ^:private GAMES-MNFS (atom []))
+(def ^:private GAMES-HASH (atom {}))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -47,23 +49,26 @@
 
   [^File appDir]
 
-  (with-local-vars [ rc (transient []) ]
+  (with-local-vars [ rc (transient []) mc (transient {}) ]
     (let [ fs (IOUtils/listFiles (File. appDir "public/ig/info")
                                  "manifest"
                                  true) ]
       (doseq [ ^File f (seq fs) ]
         (let [ json (json/read-str (FileUtils/readFileToString f "utf-8"))
                gid (-> (.getParentFile f)(.getName))
+               uri (get json "uri")
                pdt (ParseDate (-> (strim (get json "pubdate"))
                                   (.replace \/ \-))
                               "yyyy-MM-dd")
                info (-> json
                         (assoc "pubdate" pdt)
                         (assoc "gamedir" gid)) ]
+          (var-set mc (assoc! @mc uri info))
           (var-set rc (conj! @rc info)))))
-    (vec (sort #(compare (.getTime ^Date (get %1 "pubdate"))
-                         (.getTime ^Date (get %2 "pubdate")))
-               (persistent! @rc)))
+    (reset! GAMES-MNFS (vec (sort #(compare (.getTime ^Date (get %1 "pubdate"))
+                                            (.getTime ^Date (get %2 "pubdate")))
+                                  (persistent! @rc))))
+    (reset! GAMES-HASH (persistent! @mc))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -72,8 +77,7 @@
 
   (contextualize [_ ctr]
     (require 'cmzlabs.cocos2d.site.core)
-    (reset! GAMES-MNFS
-            (scanGameManifests (.getAppDir ^Container ctr)))
+    (scanGameManifests (.getAppDir ^Container ctr))
     (log/info "My AppMain contextualized by container " ctr))
 
   (configure [_ options]
@@ -98,15 +102,20 @@
   ^Map
   []
 
-  (let [ dm (HashMap.) ]
+  (let [ tags (HashMap.)
+         dm (HashMap.) ]
     (doto dm
-      (.put "title" "zotohlab | Fun &amp; Games.")
+      (.put "title" "ZotohLab | Fun &amp; Games.")
       (.put "encoding" "UTF-8")
       (.put "description" "Hello World!")
       (.put "stylesheets" (ArrayList.))
       (.put "scripts" (ArrayList.))
-      (.put "body" (HashMap.))
-      (.put "keywords" "web browser games mobile ios android windows phone"))
+      (.put "metatags" tags)
+      (.put "body" (HashMap.)))
+    (.put tags "keywords" "web browser games mobile ios android windows phone")
+    (.put tags "description" "Hello World!")
+    (.put tags "viewport" "width=device-width, initial-scale=1.0")
+    dm
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -114,7 +123,7 @@
 (defn- interpolateIndexPage ""
 
   ^Map
-  []
+  [^HTTPEvent evt]
 
   (let [ dm (dftModel)
          ^Map bd (.get dm "body")
@@ -126,10 +135,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- interpolateGamesPage ""
+(defn- interpolateBrowsePage ""
 
   ^Map
-  []
+  [^HTTPEvent evt]
 
   (let [ dm (dftModel)
          ^Map bd (.get dm "body")
@@ -142,10 +151,36 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+(defn- interpolateArenaPage ""
+
+  ^Map
+  [^HTTPEvent evt]
+
+  (let [ uri (.getUri evt)
+         ^Map mf (get @GAMES-HASH (.getUri evt))
+         dm (dftModel)
+         ^Map tags (.get dm "metatags")
+         ^Map bd (.get dm "body")
+         ^List jss (.get dm "scripts")
+         ^List css (.get dm "stylesheets") ]
+    (.put tags "viewport" "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no")
+    (.put tags "apple-mobile-web-app-capable" "yes")
+    (when-not (nil? mf)
+        (.put tags "screen-orientation" (.get mf "orientation")))
+    (.put tags "full-screen" "yes")
+    (.put tags "x5-fullscreen" "true")
+    (.put tags "360-fullscreen" "true")
+    (.put bd "games" @GAMES-MNFS)
+    (.put bd "content" "/main/arena.ftl")
+    dm
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 (defn- interpolatePicksPage ""
 
   ^Map
-  []
+  [^HTTPEvent evt]
 
   (let [ dm (dftModel)
          ^Map bd (.get dm "body")
@@ -173,7 +208,7 @@
              ^Emitter src (.emitter evt)
              ^cmzlabsclj.tardis.impl.ext.ContainerAPI
              co (.container src)
-             [rdata ct] (.loadTemplate co tpl (interpolateFunc))
+             [rdata ct] (.loadTemplate co tpl (interpolateFunc evt))
              ^HTTPResult res (.getResultObj evt) ]
         (.setHeader res "content-type" ct)
         (.setContent res rdata)
@@ -201,7 +236,7 @@
 
   (getStartActivity [_  pipe]
     (require 'cmzlabs.cocos2d.site.core)
-    (doShowPage interpolateGamesPage))
+    (doShowPage interpolateBrowsePage))
 
   (onStop [_ pipe]
     (log/info "nothing to be done here, just stop please."))
@@ -216,6 +251,20 @@
   (getStartActivity [_  pipe]
     (require 'cmzlabs.cocos2d.site.core)
     (doShowPage interpolatePicksPage))
+
+  (onStop [_ pipe]
+    (log/info "nothing to be done here, just stop please."))
+
+  (onError [ _ err curPt]
+    (log/info "Oops, I got an error!")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(deftype GameArenaPage [] PipelineDelegate
+
+  (getStartActivity [_  pipe]
+    (require 'cmzlabs.cocos2d.site.core)
+    (doShowPage interpolateArenaPage))
 
   (onStop [_ pipe]
     (log/info "nothing to be done here, just stop please."))

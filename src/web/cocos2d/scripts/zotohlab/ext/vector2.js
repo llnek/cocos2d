@@ -10,9 +10,9 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use strict"; var global= this, _ = global._ ,
-asterix= global.ZotohLabs.Asterix,
-klass= global.ZotohLabs.klass,
-loggr= global.ZotohLabs.logger,
+asterix= global.ZotohLab.Asterix,
+klass= global.ZotohLab.klass,
+loggr= global.ZotohLab.logger,
 Vector2 = klass.extends({
 
   mult: function (n) {

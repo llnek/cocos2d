@@ -1,10 +1,11 @@
 {
   "pubdate" : "2014/06/03",
+  "orientation" : "landscape",
   "author" : "llnek",
   "name" : "Falling Bricks",
   "desc" : "Like Tetris, only better!",
   "status" : true,
-  "url" : "/arena/tetris",
+  "uri" : "/arena/tetris",
   "image" : "gui/catalog.png"
 }
 

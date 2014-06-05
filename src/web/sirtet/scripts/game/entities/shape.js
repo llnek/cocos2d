@@ -10,12 +10,12 @@
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
 (function (undef) { "use strict"; var global= this, _ = global._ ,
-asterix= global.ZotohLabs.Asterix,
+asterix= global.ZotohLab.Asterix,
 ccsx= asterix.COCOS2DX,
 bks= asterix.Bricks,
 sh= asterix.Shell,
-echt= global.ZotohLabs.echt,
-loggr= global.ZotohLabs.logger;
+echt= global.ZotohLab.echt,
+loggr= global.ZotohLab.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -86,7 +86,7 @@ asterix.Bricks.EntityShape= asterix.XEntity.extends({
   },
 
   rotateRight: function() {
-    var nF = global.ZotohLabs.xmod(this.formID+1, this.numRotates()),
+    var nF = global.ZotohLab.xmod(this.formID+1, this.numRotates()),
     bs= this.findBBox(this.startPos.x, this.startPos.y, nF);
     if (bs.length > 0) {
       this.reifyBlocks(this.startPos.x, this.startPos.y, nF, bs);
@@ -95,7 +95,7 @@ asterix.Bricks.EntityShape= asterix.XEntity.extends({
   },
 
   rotateLeft: function() {
-    var nF = global.ZotohLabs.xmod(this.formID-1, this.numRotates()),
+    var nF = global.ZotohLab.xmod(this.formID-1, this.numRotates()),
     bs= this.findBBox(this.startPos.x, this.startPos.y, nF);
     if (bs.length > 0) {
       this.reifyBlocks(this.startPos.x, this.startPos.y, nF, bs);
@@ -147,7 +147,7 @@ asterix.Bricks.EntityShape= asterix.XEntity.extends({
 
   findBBox: function(left,top,rID, skipCollide) {
     var x, y, form= this.manifest[rID],
-    ui= global.ZotohLabs.UI,
+    ui= global.ZotohLab.UI,
     csts= sh.xcfg.csts,
     r,c, pt,bs=[];
     skipCollide = skipCollide || false;

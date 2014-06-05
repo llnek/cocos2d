@@ -10,9 +10,9 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use stricts"; var global = this, _ = global._ ,
-asterix= global.ZotohLabs.Asterix,
+asterix= global.ZotohLab.Asterix,
 sh = asterix.Shell,
-loggr= global.ZotohLabs.logger;
+loggr= global.ZotohLab.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -44,7 +44,7 @@ asterix.XLoader = cc.Scene.extend({
     this.logo= new Image();
     var me=this;
     this.logo.onload = function() { me.pkInitStage(); };
-    this.logo.src = '/public/ig/media/main/logos/ZotohLabs_x200.png';
+    this.logo.src = '/public/ig/media/main/logos/ZotohLab_x200.png';
   },
 
   pkInitStage: function () {

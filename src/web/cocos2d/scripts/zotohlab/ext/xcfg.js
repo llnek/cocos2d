@@ -10,16 +10,16 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use strict"; var global= this, _ = global._ ,
-asterix = global.ZotohLabs.Asterix,
+asterix = global.ZotohLab.Asterix,
 sh= asterix.Shell,
-echt = global.ZotohLabs.echt,
-loggr = global.ZotohLabs.logger;
+echt = global.ZotohLab.echt,
+loggr = global.ZotohLab.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-//asterix.XConfig = global.ZotohLabs.klass.merge(asterix.XCfgBase, {
+//asterix.XConfig = global.ZotohLab.klass.merge(asterix.XCfgBase, {
 asterix.XConfig = {
 
   urlPrefix: '/public/ig/',
@@ -249,7 +249,7 @@ asterix.XConfig = {
 
 };
 
-global.ZotohLabs.klass.merge(asterix.XConfig.game, global.document.ccConfig);
+global.ZotohLab.klass.merge(asterix.XConfig.game, global.document.ccConfig);
 
 
 }).call(this);

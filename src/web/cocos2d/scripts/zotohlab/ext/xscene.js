@@ -10,11 +10,11 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use stricts"; var global = this, _ = global._ ,
-asterix= global.ZotohLabs.Asterix,
+asterix= global.ZotohLab.Asterix,
 sh = asterix.Shell,
-klass= global.ZotohLabs.klass,
-echt= global.ZotohLabs.echt,
-loggr= global.ZotohLabs.logger;
+klass= global.ZotohLab.klass,
+echt= global.ZotohLab.echt,
+loggr= global.ZotohLab.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -22,7 +22,7 @@ loggr= global.ZotohLabs.logger;
 
 asterix.XScene = cc.Scene.extend({
 
-  ebus: new global.ZotohLabs.EventBus(),
+  ebus: new global.ZotohLab.EventBus(),
   layers: {},
 
   init: function() {

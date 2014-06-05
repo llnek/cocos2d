@@ -10,9 +10,9 @@
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
 (function (undef) { "use strict"; var global = this; _ = global._ ;
-var asterix= global.ZotohLabs.Asterix;
+var asterix= global.ZotohLab.Asterix;
 var sh = asterix.Shell;
-var loggr= global.ZotohLabs.logger;
+var loggr= global.ZotohLab.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def

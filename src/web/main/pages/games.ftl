@@ -8,7 +8,7 @@
 
       <div class="row game-item">
         <div class="col-lg-7 col-md-7">
-          <a href="${gg.url}">
+          <a href="${gg.uri}">
             <img class="img-responsive"
                  src="/public/ig/media/${gg.gamedir}/${gg.image}"
                  <#if gg.image_alt?? >
@@ -21,7 +21,7 @@
         <div class="col-lg-5 col-md-5">
           <h3>${gg.name}</h3>
           <p>${gg.desc}</p>
-          <a class="btn btn-primary" href="${gg.url}"><i class="fa fa-play"></i>&nbsp; Play</a>
+          <a class="btn btn-primary" href="${gg.uri}"><i class="fa fa-play"></i>&nbsp; Play</a>
         </div>
       </div>
 

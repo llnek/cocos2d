@@ -1,10 +1,11 @@
 {
   "pubdate" : "2014/06/03",
+  "orientation" : "portrait",
   "author" : "llnek",
   "name" : "Tic Tac Toe",
   "desc" : "Like Tic Tac Toe, only better!",
   "status" : true,
-  "url" : "/arena/tictactoe",
+  "uri" : "/arena/tictactoe",
   "image" : "gui/catalog.png"
 }
 

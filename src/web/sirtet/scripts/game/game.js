@@ -10,12 +10,12 @@
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use strict"; var global = this, _ = global._ ,
-asterix = global.ZotohLabs.Asterix,
-echt= global.ZotohLabs.echt,
+asterix = global.ZotohLab.Asterix,
+echt= global.ZotohLab.echt,
 ccsx= asterix.COCOS2DX,
 sh= asterix.Shell,
 bks= asterix.Bricks,
-loggr= global.ZotohLabs.logger;
+loggr= global.ZotohLab.logger;
 
 var EntityList = [ bks.EntityLine, bks.EntityBox, bks.EntitySt,
                    bks.EntityElx, bks.EntityNub, bks.EntityStx, bks.EntityElx ];
@@ -164,9 +164,9 @@ var GameLayer = asterix.XGameLayer.extend({
     this.collisionMap=[];
     for (r = 0; r < hlen; ++r) {
       if (r === 0 || r === hlen-1) {
-        rc = global.ZotohLabs.makeArray(wlen, 1);
+        rc = global.ZotohLab.makeArray(wlen, 1);
       } else {
-        rc = global.ZotohLabs.makeArray(wlen, 0);
+        rc = global.ZotohLab.makeArray(wlen, 0);
         rc[0] = 1;
         rc[csts.FIELD_W + 1] = 1;
       }
@@ -369,7 +369,7 @@ var GameLayer = asterix.XGameLayer.extend({
     rc,r;
     this.entityGrid=[];
     for (r= 0; r < this.collisionMap.length; ++r) {
-      rc= global.ZotohLabs.makeArray(this.collisionMap[r].length, undef);
+      rc= global.ZotohLab.makeArray(this.collisionMap[r].length, undef);
       this.entityGrid.push(rc);
     }
   },

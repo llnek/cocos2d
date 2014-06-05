@@ -1,10 +1,11 @@
 {
   "pubdate" : "2014/06/03",
+  "orientation" : "landscape",
   "author" : "llnek",
   "name" : "Pong",
   "desc" : "Like Pong, only better!",
   "status" : true,
-  "url" : "/arena/pong",
+  "uri" : "/arena/pong",
   "image" : "gui/catalog.png"
 }
 

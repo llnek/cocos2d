@@ -10,11 +10,11 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function (undef) { "use strict"; var global=this, _ = global._ ,
-asterix= global.ZotohLabs.Asterix,
-klass= global.ZotohLabs.klass,
-echt= global.ZotohLabs.echt,
+asterix= global.ZotohLab.Asterix,
+klass= global.ZotohLab.klass,
+echt= global.ZotohLab.echt,
 CKS= global.Cookies,
-loggr= global.ZotohLabs.logger;
+loggr= global.ZotohLab.logger;
 
 ////////////////////////////////////////////////////////////////////
 //// score class

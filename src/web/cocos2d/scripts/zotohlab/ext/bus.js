@@ -10,10 +10,10 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use strict"; var global = this, _ = global._  ,
-klass= global.ZotohLabs.klass,
-echt= global.ZotohLabs.echt,
+klass= global.ZotohLab.klass,
+echt= global.ZotohLab.echt,
 _SEED=0,
-loggr= global.ZotohLabs.logger;
+loggr= global.ZotohLab.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -189,7 +189,7 @@ var EventBus = klass.extends({
 
 });
 
-global.ZotohLabs.EventBus = EventBus;
+global.ZotohLab.EventBus = EventBus;
 
 }).call(this);
 

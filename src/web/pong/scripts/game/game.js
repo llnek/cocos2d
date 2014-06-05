@@ -10,12 +10,12 @@
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use strict"; var global=this, _ = global._ ,
-asterix = global.ZotohLabs.Asterix,
+asterix = global.ZotohLab.Asterix,
 ccsx= asterix.COCOS2DX,
 sh= asterix.Shell,
 png= asterix.Pong,
-echt= global.ZotohLabs.echt,
-loggr= global.ZotohLabs.logger;
+echt= global.ZotohLab.echt,
+loggr= global.ZotohLab.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // back layer
@@ -167,8 +167,8 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
   drawScores: function() {
     var s2 = this.play2 ? this.scores[this.play2.color] : 0,
     s1 = this.play1 ? this.scores[this.play1.color] : 0,
-    n2 = global.ZotohLabs.prettyNumber(s2,1),
-    n1 = global.ZotohLabs.prettyNumber(s1,1);
+    n2 = global.ZotohLab.prettyNumber(s2,1),
+    n1 = global.ZotohLab.prettyNumber(s1,1);
     this.score1.setString(n1);
     this.score2.setString(n2);
   },

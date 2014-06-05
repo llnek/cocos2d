@@ -10,11 +10,11 @@
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use strict"; var global = this; var _ = global._ ;
-var asterix= global.ZotohLabs.Asterix;
+var asterix= global.ZotohLab.Asterix;
 var sh= asterix.Shell;
-var loggr= global.ZotohLabs.logger;
+var loggr= global.ZotohLab.logger;
 
-global.ZotohLabs.klass.merge(global.ZotohLabs.Asterix.Shell.xcfg.l10n, {
+global.ZotohLab.klass.merge(global.ZotohLab.Asterix.Shell.xcfg.l10n, {
 
 "en-US" : {
 

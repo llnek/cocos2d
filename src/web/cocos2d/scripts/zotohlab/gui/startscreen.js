@@ -9,17 +9,36 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (document, undef) { "use strict"; var global = this; _ = global._ ;
-var asterix= global.ZotohLabs.Asterix;
-var sh = asterix.Shell;
-var loggr= global.ZotohLabs.logger;
+(function (undef) { "use strict"; var global= this, _ = global._  ,
+asterix = global.ZotohLab.Asterix,
+ccsx= asterix.COCOS2DX,
+sh = asterix.Shell,
+loggr = global.ZotohLab.logger;
 
 //////////////////////////////////////////////////////////////////////////////
-// module def
+// splash screen for the game - make it look nice please.
 //////////////////////////////////////////////////////////////////////////////
+asterix.XSplashLayer = asterix.XLayer.extend({
 
-//sh.xcfg.setGameSize('default');
+  pkInit: function() {
+    var imgUrl= sh.xcfg.getImagePath('splash.splash'),
+    wz = ccsx.screen(),
+    cw = ccsx.center();
 
-}).call(this, document);
+    if (imgUrl) {
+      var s= cc.Sprite.create( imgUrl);
+      s.setPosition(cw);
+      this.addItem(s);
+    }
 
+    return this._super();
+  },
+
+  pkInput: function() {}
+
+});
+
+
+
+}).call(this);
 

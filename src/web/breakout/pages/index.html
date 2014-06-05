@@ -1,31 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <link rel="shortcut icon" type="image/png" href="/public/ig/media/main/logos/favicon.png"/>
-  <!--
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="viewport" content="user-scalable=no" />
-  -->
-  <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="screen-orientation" content="portrait"/>
-  <meta charset="utf-8">
-  <meta name="full-screen" content="yes"/>
-  <meta name="x5-fullscreen" content="true"/>
-  <meta name="360-fullscreen" content="true"/>
-  <title>ZotohLab | Break Out! </title>
 
-  <link rel="stylesheet" media="screen" href="/public/c/webcommon.css"/>
+<#include "/main/head.ftl">
+
   <link rel="stylesheet" media="screen" href="/public/styles/cocos2d/game.css"/>
   <link rel="stylesheet" media="screen" href="/public/styles/breakout/main.css"/>
 
 </head>
 
 <body>
-  <canvas id="gameCanvas"></canvas>
 
-  <script type="text/javascript" src="/public/c/webcommon.js"></script>
+
+<div class="container">
+        <#include "${body.content}">
+</div>
+
+<#include "/main/scripts.ftl" >
+
   <!--
   <script type="text/javascript" src="/public/vendors/cocos2d/Cocos2d-html5-v2.2.2.min.js"></script>
   <script type="text/javascript" src="/public/ig/lib/plugins/deps.js"></script>

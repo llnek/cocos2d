@@ -10,9 +10,9 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use strict"; var global = this, _ = global._ ,
-klass= global.ZotohLabs.klass,
-echt= global.ZotohLabs.echt,
-loggr= global.ZotohLabs.logger;
+klass= global.ZotohLab.klass,
+echt= global.ZotohLab.echt,
+loggr= global.ZotohLab.logger;
 
 //////////////////////////////////////////////////////////////////////
 // classes
@@ -85,7 +85,7 @@ var TextStyle = klass.extends({
 
 });
 
-global.ZotohLabs.UI = {
+global.ZotohLab.UI = {
   Circle: Circle,
   Line: Line,
   Point: Point,

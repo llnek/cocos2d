@@ -10,16 +10,16 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function (undef) { "use strict"; var global= this, _ = global._ ,
-asterix = global.ZotohLabs.Asterix,
+asterix = global.ZotohLab.Asterix,
 sh= asterix.Shell,
-loggr = global.ZotohLabs.logger;
+loggr = global.ZotohLab.logger;
 asterix.Asteroids= {};
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
+sh.xcfg = global.ZotohLab.klass.merge( asterix.XConfig, {
 
   appid: 'asteroids',
   color: 'red',

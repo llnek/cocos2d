@@ -10,10 +10,10 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function (undef) { "use strict"; var global = this, _ = global._ ,
-klass= global.ZotohLabs.klass,
+klass= global.ZotohLab.klass,
 PINF = 1000000;
 
-global.ZotohLabs.NegaMax= {
+global.ZotohLab.NegaMax= {
   INF: PINF
 };
 
@@ -58,7 +58,7 @@ function negamax(board, game, maxDepth, depth, alpha, beta) {
   return bestValue;
 };
 
-global.ZotohLabs.NegaMax.Algo = klass.extends({
+global.ZotohLab.NegaMax.Algo = klass.extends({
 
   ctor: function(board) {
     this.board= board;
@@ -72,7 +72,7 @@ global.ZotohLabs.NegaMax.Algo = klass.extends({
 
 });
 
-global.ZotohLabs.NegaMax.Snapshot = klass.extends({
+global.ZotohLab.NegaMax.Snapshot = klass.extends({
 
   lastBestMove: null,
   other: null,

@@ -10,8 +10,8 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function (undef){ "use strict"; var global = this, _ = global._ ,
-asterix = global.ZotohLabs.Asterix,
-klass = global.ZotohLabs.klass,
+asterix = global.ZotohLab.Asterix,
+klass = global.ZotohLab.klass,
 ttt= asterix.TicTacToe,
 ccsx = asterix.COCOS2DX,
 sh = asterix.Shell,
@@ -21,8 +21,8 @@ Cmd= klass.extends({
     this.actor=a;
   }
 }),
-echt= global.ZotohLabs.echt,
-loggr= global.ZotohLabs.logger;
+echt= global.ZotohLab.echt,
+loggr= global.ZotohLab.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // back layer
@@ -146,8 +146,8 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
     s1 = this.scores[this.play1.color],
     csts= sh.xcfg.csts,
     wz = ccsx.screen(),
-    n2 = global.ZotohLabs.prettyNumber(s2,3),
-    n1 = global.ZotohLabs.prettyNumber(s1,3);
+    n2 = global.ZotohLab.prettyNumber(s2,3),
+    n1 = global.ZotohLab.prettyNumber(s1,3);
 
     this.score1.setString(n1);
     this.score2.setString(n2);
@@ -251,7 +251,7 @@ var GameLayer = asterix.XGameLayer.extend({
     this.players= [null,p1,p2];
     this.actions = [];
 
-    this.cells= global.ZotohLabs.makeArray( this.board.getBoardSize() * this.board.getBoardSize(), null);
+    this.cells= global.ZotohLab.makeArray( this.board.getBoardSize() * this.board.getBoardSize(), null);
     this.actor = this.board.getCurActor();
     if (this.actor.isRobot()) {
       this.move( new Cmd(this.actor, asterix.fns.rand(sh.xcfg.csts.CELLS)));

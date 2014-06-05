@@ -18,7 +18,7 @@ function _echt (obj) {
   return typeof obj !== 'undefined' && obj !== null;
 };
 
-var ZotohLabs = {
+var ZotohLab = {
 
   padstr: function(str, len, s) {
     return (len -= str.length) > 0
@@ -99,7 +99,7 @@ var merge= function( original, extended ) {
     var ext = extended[key];
     if(
       typeof(ext) !== 'object' ||
-      ext instanceof ZotohLabs.klass ||
+      ext instanceof ZotohLab.klass ||
       ext instanceof HTMLElement ||
       ext === null
     ) {
@@ -115,7 +115,7 @@ var merge= function( original, extended ) {
   return original;
 };
 
-ZotohLabs.klass.extends = function (other) {
+ZotohLab.klass.extends = function (other) {
   var name, parent = this.prototype;
   initing = true;
   var prototype = new this();
@@ -154,25 +154,25 @@ ZotohLabs.klass.extends = function (other) {
     return this;
   }
 
-  Class.extends = ZotohLabs.klass.extends;
+  Class.extends = ZotohLab.klass.extends;
   Class.prototype = prototype;
   Class.prototype.constructor = Class;
   return Class;
 };
 
-ZotohLabs.klass.patch= inject;
-ZotohLabs.klass.merge= merge;
+ZotohLab.klass.patch= inject;
+ZotohLab.klass.merge= merge;
 
 /////////////////////////////////////////////////////////
 //// export your stuff
 /////////////////////////////////////////////////////////
 if (typeof exports !== 'undefined') {
   if (typeof module !== 'undefined' &&  module.exports) {
-    exports = module.exports = ZotohLabs;
+    exports = module.exports = ZotohLab;
   }
-  exports.ZotohLabs= ZotohLabs;
+  exports.ZotohLab= ZotohLab;
 } else {
-  global.ZotohLabs= ZotohLabs;
+  global.ZotohLab= ZotohLab;
 }
 
 }).call(this);

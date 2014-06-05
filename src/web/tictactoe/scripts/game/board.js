@@ -10,11 +10,11 @@
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use strict"; var global = this, _ = global._ ,
-asterix = global.ZotohLabs.Asterix,
-loggr = global.ZotohLabs.logger,
-klass= global.ZotohLabs.klass,
-echt = global.ZotohLabs.echt,
-negax= global.ZotohLabs.NegaMax;
+asterix = global.ZotohLab.Asterix,
+loggr = global.ZotohLab.logger,
+klass= global.ZotohLab.klass,
+echt = global.ZotohLab.echt,
+negax= global.ZotohLab.NegaMax;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -105,7 +105,7 @@ asterix.TicTacToe.Board= klass.extends({
   },
 
   initBoard: function() {
-    this.grid= global.ZotohLabs.makeArray( this.size * this.size, this.CV_Z);
+    this.grid= global.ZotohLab.makeArray( this.size * this.size, this.CV_Z);
   },
 
   isStalemate: function(game) {
@@ -294,7 +294,7 @@ asterix.TicTacToe.Board= klass.extends({
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-var negax= global.ZotohLabs.NegaMax,
+var negax= global.ZotohLab.NegaMax,
 Player = klass.extends({
 
   takeTurn: function() { throw new Error("Abstract call"); },
