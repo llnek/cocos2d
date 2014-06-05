@@ -22,9 +22,21 @@
             ></a>
         </div>
         <div class="col-lg-5 col-md-5">
-          <h3>${gg.name}</h3>
-          <p>${gg.desc}</p>
-          <a class="btn btn-primary" href="${gg.uri}"><i class="fa fa-play"></i>&nbsp; Play</a>
+          <div class="ratings">
+              <p class="pull-right">15 reviews</p>
+              <p>
+                  <span class="glyphicon glyphicon-star"></span>
+                  <span class="glyphicon glyphicon-star"></span>
+                  <span class="glyphicon glyphicon-star"></span>
+                  <span class="glyphicon glyphicon-star"></span>
+                  <span class="glyphicon glyphicon-star"></span>
+              </p>
+          </div>
+          <div class="caption">
+            <h3>${gg.name}</h3>
+            <p>${gg.desc}</p>
+            <a class="btn btn-primary" href="${gg.uri}"><i class="fa fa-play"></i>&nbsp; Play</a>
+          </div>
         </div>
       </div>
 

@@ -616,15 +616,27 @@ a {
     list-style: none;
     color: #000;
     li {
-
-      padding: 20px 20px;
       background-color: #fff;
+      padding: 20px 20px;
     }
 
   }
 
-  h3 {
-    color: #000;;
+  .caption {
+    //height: 100%;
+    //overflow: hidden;
+    text-align: left;
+    h3 {
+      white-space: nowrap;
+      color: #000;;
+    }
+  }
+
+  .ratings {
+    text-align: left;
+    color: #d17581;
+    //padding-left: 10px;
+    padding-right: 10px;
   }
 
 }
