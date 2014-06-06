@@ -4,7 +4,6 @@ target/
 #lib/
 classes/
 checkouts/
-extlibs/
 
 POD-INF/classes/
 POD-INF/lib/
@@ -13,6 +12,7 @@ public/ig/
 public/styles/
 public/media/
 public/pages/
+public/extlibs/
 
 *.class
 *.asc
