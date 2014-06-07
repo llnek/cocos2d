@@ -17,7 +17,7 @@ loggr= global.ZotohLab.logger;
 //////////////////////////////////////////////////
 // common functions
 //////////////////////////////////////////////////
-var Funcs= klass.extends({
+var Funcs= klass.xtends({
 
   // tests if 2 rectangles intersect.
   isIntersect: function(a1,a2) {

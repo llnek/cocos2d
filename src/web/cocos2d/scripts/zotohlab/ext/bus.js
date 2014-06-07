@@ -19,7 +19,7 @@ loggr= global.ZotohLab.logger;
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-var Subcr= klass.extends({
+var Subcr= klass.xtends({
   ctor: function(topic, selector, target, repeat, args) {
     this.id= "sub-" + Number(++_SEED);
     this.args= args || [];
@@ -31,14 +31,14 @@ var Subcr= klass.extends({
   }
 });
 
-var TNode= klass.extends({
+var TNode= klass.xtends({
   ctor: function() {
     this.parts= {};
     this.subs=[];
   }
 });
 
-var EventBus = klass.extends({
+var EventBus = klass.xtends({
 
   once: function(topic, selector, target /*, more args */) {
     var rc= this.pkListen(false,

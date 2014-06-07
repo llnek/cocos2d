@@ -13,7 +13,7 @@
 asterix= global.ZotohLab.Asterix,
 klass= global.ZotohLab.klass,
 loggr= global.ZotohLab.logger,
-Vector2 = klass.extends({
+Vector2 = klass.xtends({
 
   mult: function (n) {
     var rc = new Vector2(0,0,this.x,this.y);

@@ -19,7 +19,7 @@ negax= global.ZotohLab.NegaMax;
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-asterix.TicTacToe.Board= klass.extends({
+asterix.TicTacToe.Board= klass.xtends({
 
   gameInProgress: false,
   actors: null,
@@ -295,7 +295,7 @@ asterix.TicTacToe.Board= klass.extends({
 // module def
 //////////////////////////////////////////////////////////////////////////////
 var negax= global.ZotohLab.NegaMax,
-Player = klass.extends({
+Player = klass.xtends({
 
   takeTurn: function() { throw new Error("Abstract call"); },
   isRobot: function() { return !this.isHuman(); },

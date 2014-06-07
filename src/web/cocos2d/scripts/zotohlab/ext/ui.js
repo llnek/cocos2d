@@ -18,7 +18,7 @@ loggr= global.ZotohLab.logger;
 // classes
 //////////////////////////////////////////////////////////////////////
 
-var Circle = klass.extends({
+var Circle = klass.xtends({
 
   draw: function(ctx, styleObj) {
     ctx.beginPath();
@@ -36,7 +36,7 @@ var Circle = klass.extends({
 
 });
 
-var Line = klass.extends({
+var Line = klass.xtends({
 
   draw: function(ctx, styleObj) {
     ctx.beginPath();
@@ -59,14 +59,14 @@ var Line = klass.extends({
 
 });
 
-var Point = klass.extends({
+var Point = klass.xtends({
   ctor: function(x,y) {
     this.y=y;
     this.x=x;
   }
 });
 
-var Area = klass.extends({
+var Area = klass.xtends({
   ctor: function(x,y,w,h) {
     this.pos= new Point(x,y);
     this.height=h;
@@ -74,7 +74,7 @@ var Area = klass.extends({
   }
 });
 
-var TextStyle = klass.extends({
+var TextStyle = klass.xtends({
 
   ctor: function() {
     this.font = "14px 'Architects Daughter'";

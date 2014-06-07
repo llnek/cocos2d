@@ -68,7 +68,7 @@ asterix.XScene = cc.Scene.extend({
 
 });
 
-asterix.XSceneFactory = klass.extends({
+asterix.XSceneFactory = klass.xtends({
 
   create: function(options) {
     if (_.isObject(options)) {

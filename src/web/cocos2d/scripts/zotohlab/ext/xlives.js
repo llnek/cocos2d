@@ -32,7 +32,7 @@ asterix.XLive = cc.Sprite.extend({
   }
 });
 
-asterix.XHUDLives = klass.extends({
+asterix.XHUDLives = klass.xtends({
 
   curLives: -1,
 

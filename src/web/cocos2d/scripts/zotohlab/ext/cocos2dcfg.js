@@ -25,6 +25,7 @@ cfg= {
   tag: 'gameCanvas',
 
   appFiles: [
+    /*
     'plugins/deps.js',
     'zotohlab/ext/basefuncs.js',
     'zotohlab/ext/asterix.js',
@@ -33,6 +34,7 @@ cfg= {
     'zotohlab/ext/cs2dx.js',
     'zotohlab/ext/xcfgbase.js',
     'zotohlab/ext/xcfg.js'
+    */
   ],
 
   initAppFiles: function(appid,files) {
@@ -40,10 +42,13 @@ cfg= {
     if (files.length === 0) {
       // for release mode.
       this.appFiles=[];
+      this.jsList= [];
       this.engineDir='';
     } else {
+      /*
       this.appFiles.push('game/' + appid + '/config.js');
       this.appFiles.push('game/' + appid + '/i18n/game_en_US.js');
+      */
       this.appFiles.push('zotohlab/ext/xscene.js');
       this.appFiles.push('zotohlab/ext/xlayer.js');
       this.appFiles.push('zotohlab/ext/xentity.js');
@@ -57,14 +62,25 @@ cfg= {
       _.each(files,function(f) { this.appFiles.push(f); }, this);
       this.appFiles.push('zotohlab/ext/application.js');
     }
+
+    _.each(this.appFiles, function(f, idx) {
+      if (idx===0) {
+        this.jsList.push('/public/vendors/cherimoia/skaro.js');
+      } else {
+        this.jsList.push( this.srcDir + f);
+      }
+    }, this);
   },
 
   //0 to turn debug off, 1 for basic debug, and 2 for full debug
   debugLevel: 2,
   debug: true,
 
+  modules: [ 'cocos2d' ],
+  jsList: [],
+
   srcDir: '/public/ig/lib/',
-  engineDir: '/public/vendors/cocos2d_html5/cocos2d/'
+  engineDir: '/public/extlibs/cocos2d-html5'
 
 };
 
@@ -76,17 +92,6 @@ if ( ! doc.createElement('canvas').getContext) {
   doc.getElementById(cfg.tag).parentNode.insertBefore(s);
 }
 else {
-
-  global.addEventListener('DOMContentLoaded', function () {
-
-    if (_.isString(cfg.engineDir) && cfg.engineDir.length > 0) {
-      var s = doc.createElement('script');
-      s.src = cfg.engineDir + 'jsloader.js';
-      doc.body.appendChild(s);
-      s.id = 'cocos2d-html5';
-    }
-
-  });
 
   global.document['ccConfig'] = cfg;
 

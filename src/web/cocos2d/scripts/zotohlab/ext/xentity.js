@@ -21,7 +21,7 @@ loggr = global.ZotohLab.logger;
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-asterix.XEntity = klass.extends({
+asterix.XEntity = klass.xtends({
 
   wrapEnclosure: function() {
     var wz = ccsx.screen(), B = { left: 0, bottom: 0, right: wz.width-1, top: wz.height-1 },
@@ -283,7 +283,7 @@ Object.defineProperty(asterix.XEntity.prototype, "OID", {
 
 
 
-asterix.XEntityPool = klass.extends({
+asterix.XEntityPool = klass.xtends({
 
   checkEntity: function(ent) {
     if (ent instanceof this.entType) {

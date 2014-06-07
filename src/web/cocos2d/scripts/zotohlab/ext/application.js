@@ -19,41 +19,34 @@ loggr= global.ZotohLab.logger;
 // main application.
 //////////////////////////////////////////////////////////////////////////////
 
-asterix.Cocos2dApp = cc.Application.extend({
+asterix.Cocos2dApp = global.ZotohLab.xtends({
 
   ctor: function (scene) {
-    cc.COCOS2D_DEBUG = sh.xcfg.game.debugLevel;
+    //cc.COCOS2D_DEBUG = sh.xcfg.game.debugLevel;
     this.startScene= scene;
-    this._super();
-    cc.initDebugSetting();
-    cc.setup(sh.xcfg.game.tag);
-    cc.AppController.shareAppController().didFinishLaunchingWithOptions();
+    this.didFinishLaunchingWithOptions();
   },
 
   applicationDidFinishLaunching: function () {
 
-    if (cc.RenderDoesnotSupport()) {
-      alert("Browser doesn't support WebGL");
-      return false;
-    }
+    var sz = sh.xcfg.game.size,
+    dirc = cc.director,
+    eglv = cc.view,
+    me = this;
 
-    var director = cc.Director.getInstance(),
-    eglv= cc.EGLView.getInstance(),
-    me=this,
-    sz = sh.xcfg.game.size;
-
-    eglv.adjustViewPort(true);
-    eglv.setDesignResolutionSize(sz.width, sz.height, cc.RESOLUTION_POLICY.SHOW_ALL);
+    eglv.setDesignResolutionSize(sz.width, sz.height,
+                                 cc.RESOLUTION_POLICY.SHOW_ALL);
     eglv.resizeWithBrowserSize(true);
+    eglv.adjustViewPort(true);
 
-    director.setAnimationInterval(1 / sh.xcfg.game.frameRate);
+    //dirc.setAnimationInterval(1 / sh.xcfg.game.frameRate);
     if (sh.xcfg.game.debug) {
-      director.setDisplayStats(sh.xcfg.game.showFPS);
+      dirc.setDisplayStats(sh.xcfg.game.showFPS);
     }
 
     asterix.XLoader.preload( this.pvGatherPreloads(), function () {
       sh.xcfg.runOnce();
-      director.replaceScene( sh.protos[ this.startScene ].create() );
+      dirc.replaceScene( sh.protos[ this.startScene ].create() );
     }, this);
 
     return true;
@@ -143,7 +136,7 @@ asterix.Cocos2dApp = cc.Application.extend({
 
 });
 
-sh.xcfg.newApplication().run();
+//sh.xcfg.newApplication().run();
 
 }).call(this);
 

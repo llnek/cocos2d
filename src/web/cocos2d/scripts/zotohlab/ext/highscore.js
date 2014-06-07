@@ -20,14 +20,14 @@ loggr= global.ZotohLab.logger;
 //// score class
 ///////////////////////////////////////////////////////////////////
 
-asterix.Score= klass.extends({
+asterix.Score= klass.xtends({
   ctor: function(name,value) {
     this.value=value;
     this.name= name;
   }
 });
 
-asterix.HighScores= klass.extends({
+asterix.HighScores= klass.xtends({
 
   reset: function() {
     this.scores=[];

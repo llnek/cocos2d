@@ -28,8 +28,9 @@ asterix.XLoader = cc.Scene.extend({
   _instance: null,
 
   ctor: function () {
-    this.winsz = cc.Director.getInstance().getWinSize();
+    this.winsz = cc.director.getWinSize();
     this._super();
+    this.init();
   },
 
   init: function() {
@@ -111,7 +112,7 @@ asterix.XLoader = cc.Scene.extend({
 });
 
 asterix.XLoader.preload = function (resources, selector, target) {
-  var director = cc.Director.getInstance();
+  var director = cc.director;
 
   if (!this._instance) {
     this._instance = new asterix.XLoader();

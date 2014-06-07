@@ -15,7 +15,7 @@ klass = global.ZotohLab.klass,
 ttt= asterix.TicTacToe,
 ccsx = asterix.COCOS2DX,
 sh = asterix.Shell,
-Cmd= klass.extends({
+Cmd= klass.xtends({
   ctor: function(a,pos) {
     this.cell=pos;
     this.actor=a;

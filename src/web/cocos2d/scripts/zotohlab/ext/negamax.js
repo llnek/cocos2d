@@ -58,7 +58,7 @@ function negamax(board, game, maxDepth, depth, alpha, beta) {
   return bestValue;
 };
 
-global.ZotohLab.NegaMax.Algo = klass.extends({
+global.ZotohLab.NegaMax.Algo = klass.xtends({
 
   ctor: function(board) {
     this.board= board;
@@ -72,7 +72,7 @@ global.ZotohLab.NegaMax.Algo = klass.extends({
 
 });
 
-global.ZotohLab.NegaMax.Snapshot = klass.extends({
+global.ZotohLab.NegaMax.Snapshot = klass.xtends({
 
   lastBestMove: null,
   other: null,

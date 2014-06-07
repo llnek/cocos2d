@@ -237,12 +237,14 @@ asterix.XConfig = {
   newApplication: function() {
     var me=this; return {
       run: function() {
-        loggr.info("About to create Cocos2D HTML5 Game");
-        var app= new asterix.Cocos2dApp('StartScreen');
-        loggr.info("register game start state - " + app.startScene);
-        loggr.debug(JSON.stringify(me.game));
-        loggr.info("loaded and running. OK");
-        return app;
+        cc.game.onStart= function() {
+          loggr.info("About to create Cocos2D HTML5 Game");
+          var app= new asterix.Cocos2dApp('StartScreen');
+          loggr.info("registered game start state - " + app.startScene);
+          loggr.debug(JSON.stringify(me.game));
+          loggr.info("loaded and running. OK");
+        };
+        cc.game.run();
       }
     };
   }
