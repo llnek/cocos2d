@@ -11,7 +11,7 @@
 
 (function (undef){ "use strict"; var global = this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
-klass = global.ZotohLab.klass,
+klass = global.SkaroJS.klass,
 ttt= asterix.TicTacToe,
 ccsx = asterix.COCOS2DX,
 sh = asterix.Shell,
@@ -21,8 +21,8 @@ Cmd= klass.xtends({
     this.actor=a;
   }
 }),
-echt= global.ZotohLab.echt,
-loggr= global.ZotohLab.logger;
+echt= global.SkaroJS.echt,
+loggr= global.SkaroJS.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // back layer

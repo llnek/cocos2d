@@ -10,7 +10,7 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function (undef) { "use strict"; var global = this, _ = global._ ,
-klass= global.ZotohLab.klass,
+klass= global.SkaroJS.klass,
 PINF = 1000000;
 
 global.ZotohLab.NegaMax= {

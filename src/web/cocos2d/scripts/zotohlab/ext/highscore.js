@@ -11,10 +11,10 @@
 
 (function (undef) { "use strict"; var global=this, _ = global._ ,
 asterix= global.ZotohLab.Asterix,
-klass= global.ZotohLab.klass,
-echt= global.ZotohLab.echt,
+klass= global.SkaroJS.klass,
+echt= global.SkaroJS.echt,
 CKS= global.Cookies,
-loggr= global.ZotohLab.logger;
+loggr= global.SkaroJS.logger;
 
 ////////////////////////////////////////////////////////////////////
 //// score class

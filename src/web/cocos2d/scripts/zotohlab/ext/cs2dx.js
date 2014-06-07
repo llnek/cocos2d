@@ -13,8 +13,8 @@
 asterix= global.ZotohLab.Asterix,
 STICKY_THRESHOLD= 0.0004,
 sh= asterix.Shell,
-echt= global.ZotohLab.echt,
-loggr= global.ZotohLab.logger;
+echt= global.SkaroJS.echt,
+loggr= global.SkaroJS.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def

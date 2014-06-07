@@ -11,9 +11,9 @@
 
 (function (undef) { "use strict"; var global= this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
-klass = global.ZotohLab.klass,
+klass = global.SkaroJS.klass,
 sh= asterix.Shell,
-loggr = global.ZotohLab.logger;
+loggr = global.SkaroJS.logger;
 
 asterix.TicTacToe= {};
 
@@ -87,7 +87,6 @@ sh.xcfg = klass.merge( asterix.XConfig, {
 });
 
 
-sh.xcfg.sfxInit();
 
 
 

@@ -10,9 +10,9 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use strict"; var global = this, _ = global._ ,
-klass= global.ZotohLab.klass,
-echt= global.ZotohLab.echt,
-loggr= global.ZotohLab.logger;
+klass= global.SkaroJS.klass,
+echt= global.SkaroJS.echt,
+loggr= global.SkaroJS.logger;
 
 //////////////////////////////////////////////////////////////////////
 // classes

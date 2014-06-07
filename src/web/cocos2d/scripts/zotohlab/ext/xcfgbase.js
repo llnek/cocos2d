@@ -11,7 +11,7 @@
 
 (function(undef) { "use strict"; var global= this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
-loggr = global.ZotohLab.logger;
+loggr = global.SkaroJS.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def

@@ -13,7 +13,7 @@
 asterix= global.ZotohLab.Asterix,
 ccsx= asterix.COCOS2DX,
 sh = asterix.Shell,
-loggr= global.ZotohLab.logger;
+loggr= global.SkaroJS.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def

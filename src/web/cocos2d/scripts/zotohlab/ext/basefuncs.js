@@ -9,32 +9,23 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this; var _ = global._ ;
-var asterix= global.ZotohLab.Asterix;
-var sh= asterix.Shell;
-var loggr= global.SkaroJS.logger;
+(function (undef) { "use strict"; var global= this, _ = global._ ;
 
-global.SkaroJS.klass.merge(global.ZotohLab.Asterix.Shell.xcfg.l10n, {
+var ZotohLab = {
+};
 
-"en-US" : {
 
-  "%whosturn" : "{{who}}'s TURN...",
-  "%whodraw" : "Draw!",
-  "%whowin" : "{{who}} Wins!",
-
-  "%p2" : "P2",
-  "%p1" : "P1"
-
+/////////////////////////////////////////////////////////
+//// export your stuff
+/////////////////////////////////////////////////////////
+if (typeof exports !== 'undefined') {
+  if (typeof module !== 'undefined' &&  module.exports) {
+    exports = module.exports = ZotohLab;
+  }
+  exports.ZotohLab= ZotohLab;
+} else {
+  global.ZotohLab= ZotohLab;
 }
-
-
-
-
-
-
-});
-
-//loggr.info("Loading resource bundle");
 
 }).call(this);
 

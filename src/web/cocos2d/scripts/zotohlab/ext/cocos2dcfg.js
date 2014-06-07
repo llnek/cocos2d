@@ -22,16 +22,16 @@ cfg= {
   // 0(default), 1(Canvas only), 2(WebGL only)
   renderMode: 0,
 
-  tag: 'gameCanvas',
+  id: 'gameCanvas',
 
   appFiles: [
-    /*
     'plugins/deps.js',
+    'zotohlab/ext/cs2dx.js'
+    /*
     'zotohlab/ext/basefuncs.js',
     'zotohlab/ext/asterix.js',
     'zotohlab/ext/bus.js',
     'zotohlab/ext/ui.js',
-    'zotohlab/ext/cs2dx.js',
     'zotohlab/ext/xcfgbase.js',
     'zotohlab/ext/xcfg.js'
     */
@@ -64,11 +64,7 @@ cfg= {
     }
 
     _.each(this.appFiles, function(f, idx) {
-      if (idx===0) {
-        this.jsList.push('/public/vendors/cherimoia/skaro.js');
-      } else {
-        this.jsList.push( this.srcDir + f);
-      }
+      this.jsList.push( this.srcDir + f);
     }, this);
   },
 

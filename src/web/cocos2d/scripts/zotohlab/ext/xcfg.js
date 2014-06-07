@@ -12,14 +12,14 @@
 (function(undef) { "use strict"; var global= this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
 sh= asterix.Shell,
-echt = global.ZotohLab.echt,
-loggr = global.ZotohLab.logger;
+echt = global.SkaroJS.echt,
+loggr = global.SkaroJS.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-//asterix.XConfig = global.ZotohLab.klass.merge(asterix.XCfgBase, {
+//asterix.XConfig = global.SkaroJS.klass.merge(asterix.XCfgBase, {
 asterix.XConfig = {
 
   urlPrefix: '/public/ig/',
@@ -240,6 +240,8 @@ asterix.XConfig = {
         cc.game.onStart= function() {
           loggr.info("About to create Cocos2D HTML5 Game");
           var app= new asterix.Cocos2dApp('StartScreen');
+          sh.l10nInit(me.l10n);
+          me.sfxInit();
           loggr.info("registered game start state - " + app.startScene);
           loggr.debug(JSON.stringify(me.game));
           loggr.info("loaded and running. OK");
@@ -251,7 +253,7 @@ asterix.XConfig = {
 
 };
 
-global.ZotohLab.klass.merge(asterix.XConfig.game, global.document.ccConfig);
+global.SkaroJS.klass.merge(asterix.XConfig.game, global.document.ccConfig);
 
 
 }).call(this);

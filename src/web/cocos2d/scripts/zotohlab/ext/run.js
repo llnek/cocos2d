@@ -13,7 +13,7 @@
 asterix= global.ZotohLab.Asterix,
 doc= global.document,
 sh= asterix.Shell,
-loggr= global.ZotohLab.logger;
+loggr= global.SkaroJS.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // run the application.

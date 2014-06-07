@@ -11,9 +11,9 @@
 
 (function(undef) { "use strict"; var global = this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
-loggr = global.ZotohLab.logger,
-klass= global.ZotohLab.klass,
-echt = global.ZotohLab.echt,
+loggr = global.SkaroJS.logger,
+klass= global.SkaroJS.klass,
+echt = global.SkaroJS.echt,
 negax= global.ZotohLab.NegaMax;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -326,7 +326,7 @@ Object.defineProperty(Player.prototype, "board", {
   get: function() { return this.arena; },
 });
 
-var Robot = Player.extends({
+var Robot = Player.xtends({
 
   isMax: function() { return true; },
   ctor: function(idv, pic, color) {
@@ -335,7 +335,7 @@ var Robot = Player.extends({
 
 });
 
-asterix.TicTacToe.Human = Player.extends({
+asterix.TicTacToe.Human = Player.xtends({
 
   isMax: function() { return false; },
   takeTurn: function() {},
@@ -345,7 +345,7 @@ asterix.TicTacToe.Human = Player.extends({
 
 });
 
-asterix.TicTacToe.AlgoBot = Robot.extends({
+asterix.TicTacToe.AlgoBot = Robot.xtends({
 
   takeTurn: function() {
     return this.mmAlgo.eval();

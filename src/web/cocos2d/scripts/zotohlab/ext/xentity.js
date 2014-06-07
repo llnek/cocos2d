@@ -11,11 +11,11 @@
 
 (function(undef){ "use strict"; var global= this,  _ = global._ ,
 asterix= global.ZotohLab.Asterix,
-klass= global.ZotohLab.klass,
+klass= global.SkaroJS.klass,
 ccsx = asterix.COCOS2DX,
 sh= asterix.Shell,
 GID_SEED = 0,
-loggr = global.ZotohLab.logger;
+loggr = global.SkaroJS.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def

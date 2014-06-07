@@ -13,18 +13,19 @@
 asterix= global.ZotohLab.Asterix,
 doc= global.document,
 sh= asterix.Shell,
-loggr= global.ZotohLab.logger;
+klass= global.SkaroJS.klass,
+loggr= global.SkaroJS.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // main application.
 //////////////////////////////////////////////////////////////////////////////
 
-asterix.Cocos2dApp = global.ZotohLab.xtends({
+asterix.Cocos2dApp = klass.xtends({
 
   ctor: function (scene) {
     //cc.COCOS2D_DEBUG = sh.xcfg.game.debugLevel;
     this.startScene= scene;
-    this.didFinishLaunchingWithOptions();
+    this.applicationDidFinishLaunching();
   },
 
   applicationDidFinishLaunching: function () {
@@ -35,7 +36,7 @@ asterix.Cocos2dApp = global.ZotohLab.xtends({
     me = this;
 
     eglv.setDesignResolutionSize(sz.width, sz.height,
-                                 cc.RESOLUTION_POLICY.SHOW_ALL);
+                                 cc.ResolutionPolicy.SHOW_ALL);
     eglv.resizeWithBrowserSize(true);
     eglv.adjustViewPort(true);
 

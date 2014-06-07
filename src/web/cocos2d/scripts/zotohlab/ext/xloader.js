@@ -12,7 +12,7 @@
 (function(undef) { "use stricts"; var global = this, _ = global._ ,
 asterix= global.ZotohLab.Asterix,
 sh = asterix.Shell,
-loggr= global.ZotohLab.logger;
+loggr= global.SkaroJS.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -34,7 +34,7 @@ asterix.XLoader = cc.Scene.extend({
   },
 
   init: function() {
-    this.bgLayer = cc.LayerColor.create(cc.c4(0,0,0, 255));
+    this.bgLayer = cc.LayerColor.create(cc.color(0,0,0, 255));
     this.bgLayer.setPosition(0, 0);
     this._super();
     this.pkLoad();

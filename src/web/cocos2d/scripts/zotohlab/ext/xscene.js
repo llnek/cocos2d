@@ -12,9 +12,9 @@
 (function(undef) { "use stricts"; var global = this, _ = global._ ,
 asterix= global.ZotohLab.Asterix,
 sh = asterix.Shell,
-klass= global.ZotohLab.klass,
-echt= global.ZotohLab.echt,
-loggr= global.ZotohLab.logger;
+klass= global.SkaroJS.klass,
+echt= global.SkaroJS.echt,
+loggr= global.SkaroJS.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def

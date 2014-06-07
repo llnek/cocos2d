@@ -10,9 +10,9 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function (undef) { "use strict"; var global= this, _ = global._, Mustache=global.Mustache,
-klass= global.ZotohLab.klass,
-echt= global.ZotohLab.echt,
-loggr= global.ZotohLab.logger;
+klass= global.SkaroJS.klass,
+echt= global.SkaroJS.echt,
+loggr= global.SkaroJS.logger;
 
 //////////////////////////////////////////////////
 // common functions
@@ -164,7 +164,7 @@ global.ZotohLab.Asterix = {
     xcfg: undef,
 
     fireEvent: function(topic, msg) {
-      var r= cc.Director.getInstance().getRunningScene();
+      var r= cc.director.getRunningScene();
       if (r) {
         r.ebus.fire(topic,msg);
       }

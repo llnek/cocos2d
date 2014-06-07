@@ -11,8 +11,8 @@
 
 (function(undef) { "use strict"; var global= this, _ = global._ ,
 asterix= global.ZotohLab.Asterix,
-klass= global.ZotohLab.klass,
-loggr= global.ZotohLab.logger,
+klass= global.SkaroJS.klass,
+loggr= global.SkaroJS.logger,
 Vector2 = klass.xtends({
 
   mult: function (n) {
