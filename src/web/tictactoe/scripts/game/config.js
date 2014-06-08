@@ -11,9 +11,8 @@
 
 (function (undef) { "use strict"; var global= this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
-klass = global.SkaroJS.klass,
-sh= asterix.Shell,
-loggr = global.SkaroJS.logger;
+sh = global.ZotohLab.Asterix,
+SkaroJS= global.SkaroJS;
 
 asterix.TicTacToe= {};
 
@@ -21,7 +20,7 @@ asterix.TicTacToe= {};
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.xcfg = klass.merge( asterix.XConfig, {
+sh.xcfg = SkaroJS.merge( asterix.XConfig, {
 
   appid: 'tictactoe',
   color: 'sky',
@@ -79,14 +78,19 @@ sh.xcfg = klass.merge( asterix.XConfig, {
         'markers' : [ 'media/{{appid}}/game/markers.png', 72,72, -1]
       }
     }
-  },
-
-  runOnce: function() {
   }
 
 });
 
-
+//////////////////////////////////////////////////////////////////////////////
+//
+global.document['ccConfig'].initAppFiles(sh.xcfg.appid, [
+      'zotohlab/ext/negamax.js',
+      'game/tictactoe/board.js',
+      'game/tictactoe/game.js',
+      'game/tictactoe/mmenu.js',
+      'game/tictactoe/splash.js'
+]);
 
 
 

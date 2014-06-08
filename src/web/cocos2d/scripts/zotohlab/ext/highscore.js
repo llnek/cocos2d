@@ -11,23 +11,21 @@
 
 (function (undef) { "use strict"; var global=this, _ = global._ ,
 asterix= global.ZotohLab.Asterix,
-klass= global.SkaroJS.klass,
-echt= global.SkaroJS.echt,
-CKS= global.Cookies,
-loggr= global.SkaroJS.logger;
+SkaroJS= global.SkaroJS,
+CKS= global.Cookies;
 
 ////////////////////////////////////////////////////////////////////
 //// score class
 ///////////////////////////////////////////////////////////////////
 
-asterix.Score= klass.xtends({
+asterix.Score= Skaro.Class.xtends({
   ctor: function(name,value) {
     this.value=value;
     this.name= name;
   }
 });
 
-asterix.HighScores= klass.xtends({
+asterix.HighScores= Skaro.Class.xtends({
 
   reset: function() {
     this.scores=[];

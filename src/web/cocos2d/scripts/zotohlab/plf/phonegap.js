@@ -9,15 +9,15 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global = this; _ = global._ ;
-var asterix= global.ZotohLab.Asterix;
-var loggr= global.ZotohLab.logger;
+(function (undef) { "use strict"; var global = this; _ = global._ ,
+asterix= global.ZotohLab.Asterix,
+sh= global.ZotohLab.Asterix;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-  //TODO Need to handle resize of game along with special plugin 
+  //TODO Need to handle resize of game along with special plugin
   // to use native audio via phonegap wrapper and also load up phonegap js
 
 

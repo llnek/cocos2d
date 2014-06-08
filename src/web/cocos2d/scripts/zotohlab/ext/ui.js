@@ -10,15 +10,13 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use strict"; var global = this, _ = global._ ,
-klass= global.SkaroJS.klass,
-echt= global.SkaroJS.echt,
-loggr= global.SkaroJS.logger;
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////
 // classes
 //////////////////////////////////////////////////////////////////////
 
-var Circle = klass.xtends({
+var Circle = SkaroJS.Class.xtends({
 
   draw: function(ctx, styleObj) {
     ctx.beginPath();
@@ -36,7 +34,7 @@ var Circle = klass.xtends({
 
 });
 
-var Line = klass.xtends({
+var Line = SkaroJS.Class.xtends({
 
   draw: function(ctx, styleObj) {
     ctx.beginPath();
@@ -59,14 +57,14 @@ var Line = klass.xtends({
 
 });
 
-var Point = klass.xtends({
+var Point = SkaroJS.Class.xtends({
   ctor: function(x,y) {
     this.y=y;
     this.x=x;
   }
 });
 
-var Area = klass.xtends({
+var Area = SkaroJS.Class.xtends({
   ctor: function(x,y,w,h) {
     this.pos= new Point(x,y);
     this.height=h;
@@ -74,7 +72,7 @@ var Area = klass.xtends({
   }
 });
 
-var TextStyle = klass.xtends({
+var TextStyle = SkaroJS.Class.xtends({
 
   ctor: function() {
     this.font = "14px 'Architects Daughter'";

@@ -11,9 +11,9 @@
 
 (function(undef) { "use stricts"; var global = this, _ = global._ ,
 asterix= global.ZotohLab.Asterix,
-ccsx= asterix.COCOS2DX,
-sh = asterix.Shell,
-loggr= global.SkaroJS.logger;
+sh= global.ZotohLab.Asterix,
+SkaroJS=global.SkaroJS,
+ccsx= asterix.COCOS2DX;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -72,7 +72,7 @@ asterix.XGameHUDLayer = asterix.XLayer.extend({
     scale = scale || 1;
 
     menu= ccsx.pmenu1({
-      imgPath: sh.xcfg.getImagePath('gui.mmenu.menu'),
+      imgPath: sh.getImagePath('gui.mmenu.menu'),
       scale: scale,
       selector: function() {
         sh.fireEvent('/game/hud/controls/showmenu'); }
@@ -87,7 +87,7 @@ asterix.XGameHUDLayer = asterix.XLayer.extend({
     this.addItem(menu);
 
     menu = ccsx.pmenu1({
-      imgPath: sh.xcfg.getImagePath('gui.mmenu.replay'),
+      imgPath: sh.getImagePath('gui.mmenu.replay'),
       scale : scale,
       visible: false,
       selector: function() {

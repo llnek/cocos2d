@@ -9,29 +9,27 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global = this; _ = global._ ;
-var asterix= global.ZotohLab.Asterix;
-var sh = asterix.Shell;
-var loggr= global.ZotohLab.logger;
+(function (undef) { "use strict"; var global = this; _ = global._ ,
+asterix= global.ZotohLab.Asterix,
+sh= global.ZotohLab.Asterix;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-  //TODO need to have this load up iPhone specific plugin and 
+  //TODO need to have this load up iPhone specific plugin and
   // inject logic to draw controls in the game instead of as divs
 
-sh.xcfg.setGameSize('default');
+sh.setGameSize('default');
 
 if (! sh.xcfg.sound.open) {
-  ig.Sound.enabled = false;
 }
 
-if (ig.ua.iPhone) {
-  sh.xcfg.setGameSize('iphone');
+if (iPhone) {
+  sh.setGameSize('iphone');
 }
-else if (ig.ua.iPad) {
-  sh.xcfg.setGameSize('ipad');
+else if (iPad) {
+  sh.setGameSize('ipad');
 }
 
 

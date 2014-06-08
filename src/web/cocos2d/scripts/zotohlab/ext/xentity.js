@@ -11,20 +11,20 @@
 
 (function(undef){ "use strict"; var global= this,  _ = global._ ,
 asterix= global.ZotohLab.Asterix,
-klass= global.SkaroJS.klass,
+sh= global.ZotohLab.Asterix,
+SkaroJS= global.SkaroJS,
 ccsx = asterix.COCOS2DX,
-sh= asterix.Shell,
-GID_SEED = 0,
-loggr = global.SkaroJS.logger;
+GID_SEED = 0;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-asterix.XEntity = klass.xtends({
+asterix.XEntity = SkaroJS.Class.xtends({
 
   wrapEnclosure: function() {
-    var wz = ccsx.screen(), B = { left: 0, bottom: 0, right: wz.width-1, top: wz.height-1 },
+    var wz = ccsx.screen(), B = { left: 0, bottom: 0,
+      right: wz.width-1, top: wz.height-1 },
     csts = sh.xcfg.csts,
     sz = this.sprite.getContentSize(),
     pos = this.sprite.getPosition(),
@@ -60,7 +60,7 @@ asterix.XEntity = klass.xtends({
   },
 
   update: function(dt) {
-    if (sys.platform === 'browser') {
+    if (cc.sys.capabilities["keyboard"]) {
       this.keypressed(dt);
     }
   },
@@ -118,7 +118,7 @@ asterix.XEntity = klass.xtends({
 
   revive: function(x,y,options) {
     if (_.isObject(options)) {
-      this.options = klass.merge(this.options, options);
+      this.options = SkaroJS.merge(this.options, options);
     }
     this.startPos = cc.p(x,y);
     this.reviveSprite();
@@ -224,7 +224,7 @@ asterix.XEntity = klass.xtends({
       if (!this.fixed) { this.vel.x = - this.vel.x; }
     }
     else {
-      loggr.error("Failed to determine the collision of these 2 objects.");
+      SkaroJS.loggr.error("Failed to determine the collision of these 2 objects.");
     }
   },
 
@@ -283,7 +283,7 @@ Object.defineProperty(asterix.XEntity.prototype, "OID", {
 
 
 
-asterix.XEntityPool = klass.xtends({
+asterix.XEntityPool = SkaroJS.Class.xtends({
 
   checkEntity: function(ent) {
     if (ent instanceof this.entType) {

@@ -10,68 +10,18 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use strict"; var global= this, _ = global._ ,
-asterix = global.ZotohLab.Asterix,
-sh= asterix.Shell,
-echt = global.SkaroJS.echt,
-loggr = global.SkaroJS.logger;
+asterix = global.ZotohLab.Asterix;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-//asterix.XConfig = global.SkaroJS.klass.merge(asterix.XCfgBase, {
+//asterix.XConfig = global.SkaroJS.merge(asterix.XCfgBase, {
 asterix.XConfig = {
 
   urlPrefix: '/public/ig/',
   appid: '',
   color: '',
-
-  getImagePath: function(key) {
-    var url = this.assets.images[key] || '';
-    return sh.sanitizeUrl(url);
-  },
-
-  getPListPath: function(key) {
-    var url = this.assets.atlases[key] || '';
-    return sh.sanitizeUrl(url + '.plist');
-  },
-
-  getAtlasPath: function(key) {
-    var url = this.assets.atlases[key] || '';
-    return sh.sanitizeUrl(url + '.png');
-  },
-
-  getSfxPath: function(key) {
-    var url = this.assets.sounds[key];
-    return url ? sh.sanitizeUrl( url + '.' + this.game.sfx) : '';
-  },
-
-  getSpritePath: function(key) {
-    var obj = this.assets.sprites[key];
-    return obj ? sh.sanitizeUrl(obj[0]) : '';
-  },
-
-  getTilesPath: function(key) {
-    var url = this.assets.tiles[key] || '';
-    return sh.sanitizeUrl(url);
-  },
-
-  getFontPath: function(key) {
-    var obj = this.assets.fonts[key];
-    return obj ? sh.sanitizeUrl(obj[0]) + obj[2] : '';
-  },
-
-  setGameSize: function(sz) {
-    if (_.isString(sz)) {
-      this.game.size = this.devices[sz];
-    }
-    else
-    if (_.isObject(sz)) {
-      this.game.size = sz;
-    }
-  },
-
-  runOnce: function() {},
 
   levels: {
   },
@@ -134,7 +84,7 @@ asterix.XConfig = {
 
   smac: null,
 
-  l10n: {
+  l10nTable: {
     "en-US" : {
       '%mobileStart' : 'Press Anywhere To Start!',
       '%webStart' : 'Press Spacebar To Start!',
@@ -185,75 +135,9 @@ asterix.XConfig = {
     }
   },
 
-  setDeviceSizes: function (obj) {
-    if (_.isObject(obj)) { this.devices= obj; }
-  },
-
-  toggleSfx: function(override) {
-    this.sound.open = echt(override) ? override : !this.sound.open;
-    if (!cc.AudioEngine.getInstance()._soundSupported) {
-      this.sound.open=false;
-    }
-  },
-
-  sfxPlay: function(key) {
-    var eng = cc.AudioEngine.getInstance(),
-    url;
-    if (this.sound.open) {
-      url = this.getSfxPath(key);
-      if (url) {
-        eng.playEffect( url, false);
-      }
-    }
-  },
-
-  sfxInit: function() {
-    var eng= cc.AudioEngine.getInstance();
-    eng.setMusicVolume(this.sound.volume);
-    if (!eng._soundSupported) {
-      this.sound.open=false;
-    }
-  },
-
-  sanitizeUrl: function(url) {
-    // ensure we tell mustache not to escape html
-    url = url || '';
-    if (url.match(/^media/)) {
-      url = '{{{media-ref}}}/' + url;
-    }
-    else
-    if (url.match(/^game/)) {
-      url = '{{{gamesource-ref}}}/' + url;
-    }
-    return Mustache.render( url, {
-      'border-tiles' : this.game.borderTiles,
-      'gamesource-ref' : '/public/ig/lib',
-      'media-ref' : '/public/ig',
-      'lang' : sh.lang,
-      'color' : this.color,
-      'appid' :  this.appid } );
-  },
-
-  newApplication: function() {
-    var me=this; return {
-      run: function() {
-        cc.game.onStart= function() {
-          loggr.info("About to create Cocos2D HTML5 Game");
-          var app= new asterix.Cocos2dApp('StartScreen');
-          sh.l10nInit(me.l10n);
-          me.sfxInit();
-          loggr.info("registered game start state - " + app.startScene);
-          loggr.debug(JSON.stringify(me.game));
-          loggr.info("loaded and running. OK");
-        };
-        cc.game.run();
-      }
-    };
-  }
+  runOnce: function() {}
 
 };
-
-global.SkaroJS.klass.merge(asterix.XConfig.game, global.document.ccConfig);
 
 
 }).call(this);

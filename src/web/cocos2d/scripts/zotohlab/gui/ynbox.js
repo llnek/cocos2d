@@ -11,9 +11,9 @@
 
 (function (undef) { "use strict"; var global= this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
+sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
-sh = asterix.Shell,
-loggr = global.SkaroJS.logger;
+SkaroJS = global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -21,7 +21,7 @@ loggr = global.SkaroJS.logger;
 
 var BGLayer = asterix.XLayer.extend({
   pkInit: function() {
-    var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gui.ynbox'));
+    var map = cc.TMXTiledMap.create(sh.getTilesPath('gui.ynbox'));
     this.addItem(map);
     return this._super();
   },
@@ -32,7 +32,7 @@ var BGLayer = asterix.XLayer.extend({
 var UILayer =  asterix.XLayer.extend({
 
   pkInit: function() {
-    var qn= cc.LabelBMFont.create( sh.l10n('%quit?'), sh.xcfg.getFontPath('font.TinyBoxBB')),
+    var qn= cc.LabelBMFont.create( sh.l10n('%quit?'), sh.getFontPath('font.TinyBoxBB')),
     csts = sh.xcfg.csts,
     cw= ccsx.center(),
     wz= ccsx.screen(),
@@ -43,8 +43,8 @@ var UILayer =  asterix.XLayer.extend({
     qn.setOpacity(0.9*255);
     this.addItem(qn);
 
-    s2= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.back'));
-    s1= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.ok'));
+    s2= cc.Sprite.create( sh.getImagePath('gui.mmenu.back'));
+    s1= cc.Sprite.create( sh.getImagePath('gui.mmenu.ok'));
     t2 = cc.MenuItemSprite.create(s2, null, null, function() {
       this.options.onBack();
     }, this);

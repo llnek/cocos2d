@@ -11,8 +11,8 @@
 
 (function(undef) { "use stricts"; var global = this, _ = global._ ,
 asterix= global.ZotohLab.Asterix,
-sh = asterix.Shell,
-loggr= global.SkaroJS.logger;
+sh= global.ZotohLab.Asterix,
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -29,16 +29,18 @@ asterix.XLayer = cc.Layer.extend({
   },
 
   pkInput: function() {
-    if (_.has(sys.capabilities, 'keyboard')) {
+    /*
+    if (_.has(cc.sys.capabilities, 'keyboard')) {
       this.setKeyboardEnabled(true);
     }
-    if (_.has(sys.capabilities, 'mouse')) {
+    if (_.has(cc.sys.capabilities, 'mouse')) {
       this.setMouseEnabled(true);
     }
-    if (_.has(sys.capabilities, 'touches')) {
+    if (_.has(cc.sys.capabilities, 'touches')) {
       this.setTouchEnabled(true);
       this.setTouchMode(cc.TOUCH_ONE_BY_ONE);
     }
+    */
   },
 
   rtti: function() {

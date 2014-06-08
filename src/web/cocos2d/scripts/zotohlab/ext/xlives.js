@@ -11,11 +11,9 @@
 
 (function (undef){ "use strict"; var global = this,  _ = global._  ,
 asterix = global.ZotohLab.Asterix,
-klass = global.SkaroJS.klass,
-ccsx = asterix.COCOS2DX,
-sh = asterix.Shell,
-echt= global.SkaroJS.echt,
-loggr= global.SkaroJS.logger;
+sh = global.ZotohLab.Asterix,
+SkaroJS = global.SkaroJS,
+ccsx = asterix.COCOS2DX;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -32,7 +30,7 @@ asterix.XLive = cc.Sprite.extend({
   }
 });
 
-asterix.XHUDLives = klass.xtends({
+asterix.XHUDLives = SkaroJS.Class.xtends({
 
   curLives: -1,
 

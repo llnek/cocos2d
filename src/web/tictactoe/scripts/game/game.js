@@ -11,18 +11,16 @@
 
 (function (undef){ "use strict"; var global = this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
-klass = global.SkaroJS.klass,
-ttt= asterix.TicTacToe,
+sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
-sh = asterix.Shell,
-Cmd= klass.xtends({
+ttt= asterix.TicTacToe,
+SkaroJS = global.SkaroJS,
+Cmd= SkaroJS.Class.xtends({
   ctor: function(a,pos) {
     this.cell=pos;
     this.actor=a;
   }
-}),
-echt= global.SkaroJS.echt,
-loggr= global.SkaroJS.logger;
+});
 
 //////////////////////////////////////////////////////////////////////////////
 // back layer
@@ -31,7 +29,7 @@ loggr= global.SkaroJS.logger;
 var BackLayer = asterix.XLayer.extend({
 
   pkInit: function() {
-    var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gamelevel1.tiles.arena'));
+    var map = cc.TMXTiledMap.create(sh.getTilesPath('gamelevel1.tiles.arena'));
     this.addItem(map);
     return this._super();
   },
@@ -78,7 +76,7 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
     wz= ccsx.screen();
 
     this.title = ccsx.bmfLabel({
-      fontPath: sh.xcfg.getFontPath('font.TinyBoxBB'),
+      fontPath: sh.getFontPath('font.TinyBoxBB'),
       text: '',
       anchor: ccsx.AnchorTop,
       scale: 12/72,
@@ -87,10 +85,10 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
     this.addItem(this.title);
 
     this.score1= ccsx.bmfLabel({
-      fontPath: sh.xcfg.getFontPath('font.TinyBoxBB'),
+      fontPath: sh.getFontPath('font.TinyBoxBB'),
       text: '888',
       scale: 20/72,
-      color: cc.c3b(253,188,178), // 0xfdbcb2;
+      color: cc.color(253,188,178), // 0xfdbcb2;
       pos: cc.p(csts.TILE + csts.S_OFF + 2,
                 wz.height - csts.TILE - csts.S_OFF),
       anchor: ccsx.AnchorTopLeft
@@ -98,10 +96,10 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
     this.addItem(this.score1);
 
     this.score2= ccsx.bmfLabel({
-      fontPath: sh.xcfg.getFontPath('font.TinyBoxBB'),
+      fontPath: sh.getFontPath('font.TinyBoxBB'),
       text: '888',
       scale: 20/72,
-      color: cc.c3b(255,102,0), // 0xff6600;
+      color: cc.color(255,102,0), // 0xff6600;
       pos: cc.p(wz.width - csts.TILE - csts.S_OFF,
                 wz.height - csts.TILE - csts.S_OFF),
       anchor: ccsx.AnchorTopRight
@@ -109,7 +107,7 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
     this.addItem(this.score2);
 
     this.status= ccsx.bmfLabel({
-      fontPath: sh.xcfg.getFontPath('font.TinyBoxBB'),
+      fontPath: sh.getFontPath('font.TinyBoxBB'),
       text: '',
       scale: 12/72,
       pos: cc.p(cw.x, csts.TILE * 10)
@@ -117,7 +115,7 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
     this.addItem(this.status);
 
     this.result= ccsx.bmfLabel({
-      fontPath: sh.xcfg.getFontPath('font.TinyBoxBB'),
+      fontPath: sh.getFontPath('font.TinyBoxBB'),
       text: '',
       scale: 12/72,
       pos: cc.p(cw.x, csts.TILE * 10),
@@ -146,8 +144,8 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
     s1 = this.scores[this.play1.color],
     csts= sh.xcfg.csts,
     wz = ccsx.screen(),
-    n2 = global.ZotohLab.prettyNumber(s2,3),
-    n1 = global.ZotohLab.prettyNumber(s1,3);
+    n2 = SkaroJS.prettyNumber(s2,3),
+    n1 = SkaroJS.prettyNumber(s1,3);
 
     this.score1.setString(n1);
     this.score2.setString(n2);
@@ -251,16 +249,16 @@ var GameLayer = asterix.XGameLayer.extend({
     this.players= [null,p1,p2];
     this.actions = [];
 
-    this.cells= global.ZotohLab.makeArray( this.board.getBoardSize() * this.board.getBoardSize(), null);
+    this.cells= SkaroJS.makeArray( this.board.getBoardSize() * this.board.getBoardSize(), null);
     this.actor = this.board.getCurActor();
     if (this.actor.isRobot()) {
-      this.move( new Cmd(this.actor, asterix.fns.rand(sh.xcfg.csts.CELLS)));
+      this.move( new Cmd(this.actor, SkaroJS.rand(sh.xcfg.csts.CELLS)));
     }
-    loggr.debug("game started, initor = " + this.actor.color );
+    SkaroJS.loggr.debug("game started, initor = " + this.actor.color );
   },
 
   newGame: function(mode) {
-    //sh.xcfg.sfxPlay('start_game');
+    //sh.sfxPlay('start_game');
     this.setGameMode(mode);
     this.play(true);
   },
@@ -284,7 +282,7 @@ var GameLayer = asterix.XGameLayer.extend({
   // given a command object, make a move
   // if the move is valid, then a corresponding action is added to the
   // queue, such as drawing the icon , playing a sound...etc
-    loggr.debug("actor = " + cmd.actor.color + ", pos = " + cmd.cell);
+    SkaroJS.loggr.debug("actor = " + cmd.actor.color + ", pos = " + cmd.cell);
     this.board.enqueue(cmd, function(cmd, status, np) {
       // crap move, is ignored for now.
       if (status !== 'bogus') {
@@ -323,11 +321,11 @@ var GameLayer = asterix.XGameLayer.extend({
       if (c) {
         switch (cmd.actor.value) {
           case sh.xcfg.csts.CV_X:
-            sh.xcfg.sfxPlay('x_pick');
+            sh.sfxPlay('x_pick');
             offset=0;
           break;
           case sh.xcfg.csts.CV_O:
-            sh.xcfg.sfxPlay('o_pick');
+            sh.sfxPlay('o_pick');
             offset=1;
           break;
         }
@@ -391,7 +389,7 @@ var GameLayer = asterix.XGameLayer.extend({
 
   doDone: function(p,combo) {
     this.showWinningIcons(combo);
-    sh.xcfg.sfxPlay('game_end');
+    sh.sfxPlay('game_end');
     this.getHUD().endGame();
     this.lastWinner = p;
     this.board.finz();
@@ -464,7 +462,7 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   getHUD: function() {
-    return cc.Director.getInstance().getRunningScene().layers['HUD'];
+    return cc.director.getRunningScene().layers['HUD'];
   },
 
   setGameMode: function(mode) {

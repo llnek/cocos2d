@@ -11,10 +11,9 @@
 
 (function (undef) { "use strict"; var global= this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
+sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
-sh = asterix.Shell,
-echt = global.SkaroJS.echt,
-loggr = global.SkaroJS.logger;
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // splash screen for the game - make it look nice please.
@@ -26,7 +25,7 @@ var UILayer = asterix.XLayer.extend({
     var cw = ccsx.center(),
     wz = ccsx.screen();
     this.addItem(ccsx.pmenu1({
-      imgPath: sh.xcfg.getImagePath('splash.play-btn'),
+      imgPath: sh.getImagePath('splash.play-btn'),
       selector: function() {
         sh.fireEvent('/splash/controls/playgame');
       },
@@ -48,11 +47,11 @@ sh.protos['StartScreen'] = {
     }).create(options);
     if (scene) {
       scene.ebus.on('/splash/controls/playgame', function() {
-          var dir= cc.Director.getInstance(),
-          ss= sh.protos['StartScreen'],
-          mm= sh.protos['MainMenu'];
-          dir.replaceScene( mm.create({
-            onBack: function() { dir.replaceScene( ss.create() ); }
+          var ss= sh.protos['StartScreen'],
+          mm= sh.protos['MainMenu'],
+          dir= cc.director;
+          dir.runScene( mm.create({
+            onBack: function() { dir.runScene( ss.create() ); }
           }));
       });
     }

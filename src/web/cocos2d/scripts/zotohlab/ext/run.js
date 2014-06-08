@@ -11,15 +11,14 @@
 
 (function(undef) { "use strict"; var global= this, _ = global._,
 asterix= global.ZotohLab.Asterix,
-doc= global.document,
-sh= asterix.Shell,
-loggr= global.SkaroJS.logger;
+sh= global.ZotohLab.Asterix,
+SkaroJS=global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // run the application.
 //////////////////////////////////////////////////////////////////////////////
 
-sh.xcfg.newApplication().run();
+sh.run();
 
 }).call(this);
 

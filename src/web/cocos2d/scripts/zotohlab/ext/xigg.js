@@ -11,9 +11,9 @@
 
 (function(undef) { "use stricts"; var global = this, _ = global._ ,
 asterix= global.ZotohLab.Asterix,
+sh= global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
-sh = asterix.Shell,
-loggr= global.SkaroJS.logger;
+SkaroJS = global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -43,8 +43,8 @@ asterix.XGameLayer = asterix.XLayer.extend({
   },
 
   onTouchesEnded: function (touches, event) {
-    loggr.debug("touch event = " + event);
-    loggr.debug("touch = " + touches);
+    SkaroJS.loggr.debug("touch event = " + event);
+    SkaroJS.loggr.debug("touch = " + touches);
   },
 
   onclicked: function(x,y) {

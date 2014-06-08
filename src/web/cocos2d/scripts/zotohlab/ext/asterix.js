@@ -9,15 +9,41 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._, Mustache=global.Mustache,
-klass= global.SkaroJS.klass,
-echt= global.SkaroJS.echt,
-loggr= global.SkaroJS.logger;
+(function (undef) { "use strict"; var global= this, _ = global._,
+Mustache=global.Mustache,
+SkaroJS= global.SkaroJS;
 
-//////////////////////////////////////////////////
-// common functions
-//////////////////////////////////////////////////
-var Funcs= klass.xtends({
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//
+global.ZotohLab.Asterix = {
+
+  l10nInit: function(table) {
+    table = table || this.xcfg.l10nTable;
+    String.defaultLocale="en-US";
+    String.toLocaleString(table);
+    SkaroJS.loggr.info("loaded l10n strings.  locale = " + String.locale);
+  },
+
+  lang: 'en',
+
+  l10n: function(s,pms) {
+    var t= s.toLocaleString();
+    return SkaroJS.echt(pms) ? Mustache.render(t,pms) : t;
+  },
+
+  protos: {},
+
+  pools: {},
+
+  xcfg: undef,
+  main: undef,
+
+  fireEvent: function(topic, msg) {
+    var r= cc.director.getRunningScene();
+    if (r) {
+      r.ebus.fire(topic,msg);
+    }
+  },
 
   // tests if 2 rectangles intersect.
   isIntersect: function(a1,a2) {
@@ -26,27 +52,6 @@ var Funcs= klass.xtends({
 
   outOfBound: function(a,B) {
     return a.right > B.right || a.bottom < B.bottom || a.left < 0 || a.top > B.top;
-  },
-
-  randomSign: function() {
-    if (this.rand(10) % 2 === 0) {
-      return -1;
-    } else {
-      return 1;
-    }
-  },
-
-  randArrayItem: function(arr) {
-    return arr.length === 0 ? null : arr.length === 1 ? arr[0] : arr[ Math.floor(Math.random() * arr.length) ];
-  },
-
-  randPercentage: function() {
-    var pc = [0.1,0.9,0.3,0.7,0.6,0.5,0.4,0.8,0.2];
-    return this.randArrayItem(pc);
-  },
-
-  rand: function(limit) {
-    return Math.floor(Math.random() * limit);
   },
 
   calcXY: function(angle,hypot) {
@@ -134,45 +139,113 @@ var Funcs= klass.xtends({
     return deg * Math.PI / 180;
   },
 
-  ctor: function() {}
-
-});
-
-global.ZotohLab.Asterix = {
-
-  Shell: {
-
-    sanitizeUrl: function(url) { return this.xcfg ? this.xcfg.sanitizeUrl(url) : url; },
-
-    l10nInit: function(table) {
-      String.defaultLocale="en-US";
-      String.toLocaleString(table);
-      loggr.info("loaded l10n strings.  locale = " + String.locale);
-    },
-
-    lang: 'en',
-
-    l10n: function(s,pms) {
-      var t= s.toLocaleString();
-      return echt(pms) ? Mustache.render(t,pms) : t;
-    },
-
-    protos: {},
-
-    pools: {},
-
-    xcfg: undef,
-
-    fireEvent: function(topic, msg) {
-      var r= cc.director.getRunningScene();
-      if (r) {
-        r.ebus.fire(topic,msg);
-      }
-    }
-
+  getImagePath: function(key) {
+    var url = this.xcfg.assets.images[key] || '';
+    return this.sanitizeUrl(url);
   },
 
-  fns: new Funcs()
+  getPListPath: function(key) {
+    var url = this.xcfg.assets.atlases[key] || '';
+    return this.sanitizeUrl(url + '.plist');
+  },
+
+  getAtlasPath: function(key) {
+    var url = this.xcfg.assets.atlases[key] || '';
+    return this.sanitizeUrl(url + '.png');
+  },
+
+  getSfxPath: function(key) {
+    var url = this.xcfg.assets.sounds[key];
+    return url ? this.sanitizeUrl( url + '.' + this.xcfg.game.sfx) : '';
+  },
+
+  getSpritePath: function(key) {
+    var obj = this.xcfg.assets.sprites[key];
+    return obj ? this.sanitizeUrl(obj[0]) : '';
+  },
+
+  getTilesPath: function(key) {
+    var url = this.xcfg.assets.tiles[key] || '';
+    return this.sanitizeUrl(url);
+  },
+
+  getFontPath: function(key) {
+    var obj = this.xcfg.assets.fonts[key];
+    return obj ? this.sanitizeUrl(obj[0]) + obj[2] : '';
+  },
+
+  setGameSize: function(sz) {
+    if (_.isString(sz)) {
+      this.xcfg.game.size = this.xcfg.devices[sz];
+    }
+    else
+    if (_.isObject(sz)) {
+      this.xcfg.game.size = sz;
+    }
+  },
+
+  setDeviceSizes: function (obj) {
+    if (_.isObject(obj)) { this.xcfg.devices= obj; }
+  },
+
+  toggleSfx: function(override) {
+    this.xcfg.sound.open = SkaroJS.echt(override) ? override : !this.xcfg.sound.open;
+    if (!cc.audioEngine._soundSupported) {
+      this.xcfg.sound.open=false;
+    }
+  },
+
+  sfxPlay: function(key) {
+    var url;
+    if (this.xcfg.sound.open) {
+      url = this.getSfxPath(key);
+      if (url) {
+        cc.audioEngine.playEffect( url, false);
+      }
+    }
+  },
+
+  sfxInit: function() {
+    cc.audioEngine.setMusicVolume(this.xcfg.sound.volume);
+    if (! cc.audioEngine._soundSupported) {
+      this.xcfg.sound.open=false;
+    }
+  },
+
+  sanitizeUrl: function(url) {
+    // ensure we tell mustache not to escape html
+    url = url || '';
+    if (url.match(/^media/)) {
+      url = '{{{media-ref}}}/' + url;
+    }
+    else
+    if (url.match(/^game/)) {
+      url = '{{{gamesource-ref}}}/' + url;
+    }
+    return Mustache.render( url, {
+      'border-tiles' : this.xcfg.game.borderTiles,
+      'gamesource-ref' : '/public/ig/lib',
+      'media-ref' : '/public/ig',
+      'lang' : this.lang,
+      'color' : this.xcfg.color,
+      'appid' :  this.xcfg.appid
+    });
+  },
+
+  run: function() {
+    var me=this;
+    cc.game.onStart= function() {
+      SkaroJS.loggr.info("About to create Cocos2D HTML5 Game");
+      var app= new me.Cocos2dApp('StartScreen');
+      me.l10nInit(),
+      me.sfxInit();
+      SkaroJS.merge(me.xcfg.game, global.document.ccConfig);
+      SkaroJS.loggr.debug(JSON.stringify(me.xcfg.game));
+      SkaroJS.loggr.info("registered game start state - " + app.startScene);
+      SkaroJS.loggr.info("loaded and running. OK");
+    };
+    cc.game.run();
+  }
 
 };
 

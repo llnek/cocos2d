@@ -11,9 +11,9 @@
 
 (function (undef) { "use strict"; var global= this, _ = global._  ,
 asterix = global.ZotohLab.Asterix,
+sh = global.ZotohLab.Asterix,
 ccsx= asterix.COCOS2DX,
-sh = asterix.Shell,
-loggr = global.SkaroJS.logger;
+SkaroJS = global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // splash screen for the game - make it look nice please.
@@ -21,7 +21,7 @@ loggr = global.SkaroJS.logger;
 asterix.XSplashLayer = asterix.XLayer.extend({
 
   pkInit: function() {
-    var imgUrl= sh.xcfg.getImagePath('splash.splash'),
+    var imgUrl= sh.getImagePath('splash.splash'),
     wz = ccsx.screen(),
     cw = ccsx.center();
 

@@ -11,10 +11,8 @@
 
 (function(undef) { "use stricts"; var global = this, _ = global._ ,
 asterix= global.ZotohLab.Asterix,
-sh = asterix.Shell,
-klass= global.SkaroJS.klass,
-echt= global.SkaroJS.echt,
-loggr= global.SkaroJS.logger;
+sh= global.ZotohLab.Asterix,
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -55,7 +53,7 @@ asterix.XScene = cc.Scene.extend({
       }
     }, this);
     if (a.length > 0 && rc===false ) {
-      return echt(glptr) ? glptr.init() : true;
+      return SkaroJS.echt(glptr) ? glptr.init() : true;
     } else {
       return false;
     }
@@ -68,11 +66,11 @@ asterix.XScene = cc.Scene.extend({
 
 });
 
-asterix.XSceneFactory = klass.xtends({
+asterix.XSceneFactory = SkaroJS.Class.xtends({
 
   create: function(options) {
     if (_.isObject(options)) {
-      this.options = klass.merge(this.options, options );
+      this.options = SkaroJS.merge(this.options, options );
     }
     var scene = new asterix.XScene(this.options);
     return scene.init() ? scene : null;

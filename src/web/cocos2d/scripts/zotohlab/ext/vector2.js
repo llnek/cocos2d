@@ -11,9 +11,8 @@
 
 (function(undef) { "use strict"; var global= this, _ = global._ ,
 asterix= global.ZotohLab.Asterix,
-klass= global.SkaroJS.klass,
-loggr= global.SkaroJS.logger,
-Vector2 = klass.xtends({
+SkaroJS= global.SkaroJS,
+Vector2 = SkaroJS.Class.xtends({
 
   mult: function (n) {
     var rc = new Vector2(0,0,this.x,this.y);
@@ -23,7 +22,7 @@ Vector2 = klass.xtends({
   },
 
   rotate: function(cx, cy, deg) {
-    var rad = asterix.fns.degToRad(deg);
+    var rad = asterix.degToRad(deg);
     var a= [ cx + (Math.cos(rad) * (this.x - cx) - Math.sin(rad) * (this.y - y0)),
       cy + (Math.sin(rad) * (this.x - cx) + Math.cos(rad) * (this.y - y0)) ];
     this.x= a[0];
@@ -60,9 +59,6 @@ Vector2 = klass.xtends({
 });
 
 asterix.Vector2= Vector2;
-
-
-
 
 
 }).call(this);

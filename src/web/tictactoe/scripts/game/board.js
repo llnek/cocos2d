@@ -11,15 +11,14 @@
 
 (function(undef) { "use strict"; var global = this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
-loggr = global.SkaroJS.logger,
-klass= global.SkaroJS.klass,
-echt = global.SkaroJS.echt,
+sh = global.ZotohLab.Asterix,
+SkaroJS= global.SkaroJS,
 negax= global.ZotohLab.NegaMax;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-asterix.TicTacToe.Board= klass.xtends({
+asterix.TicTacToe.Board= SkaroJS.Class.xtends({
 
   gameInProgress: false,
   actors: null,
@@ -36,7 +35,7 @@ asterix.TicTacToe.Board= klass.xtends({
   getCurActor: function() { return this.actors[0]; },
 
   registerPlayers: function(p1,p2) {
-    this.actors= [ asterix.fns.randomSign() > 0 ? p1 : p2, p1, p2 ];
+    this.actors= [ SkaroJS.randomSign() > 0 ? p1 : p2, p1, p2 ];
     p2.bindBoard(this);
     p1.bindBoard(this);
     this.gameInProgress = true;
@@ -55,7 +54,7 @@ asterix.TicTacToe.Board= klass.xtends({
   },
 
   checkWin: function(cmd, cb) {
-    loggr.debug("checking for win " + cmd.actor.color + ", pos = " + cmd.cell);
+    SkaroJS.loggr.debug("checking for win " + cmd.actor.color + ", pos = " + cmd.cell);
     if (this.isStalemate()) {
       this.drawGame(cmd, cb);
     }
@@ -105,7 +104,7 @@ asterix.TicTacToe.Board= klass.xtends({
   },
 
   initBoard: function() {
-    this.grid= global.ZotohLab.makeArray( this.size * this.size, this.CV_Z);
+    this.grid= SkaroJS.makeArray( this.size * this.size, this.CV_Z);
   },
 
   isStalemate: function(game) {
@@ -151,7 +150,7 @@ asterix.TicTacToe.Board= klass.xtends({
       if (z === this.CV_Z) { memo.push(n); }
       return memo;
     }, [], this);
-    return (fr.length === 0) ? -1 : fr[ asterix.fns.rand( fr.length) ];
+    return (fr.length === 0) ? -1 : fr[ SkaroJS.rand( fr.length) ];
   },
 
   poiseToWin: function(actor,game) {
@@ -285,7 +284,7 @@ asterix.TicTacToe.Board= klass.xtends({
   ctor: function (size) {
     this.mapGoalSpace(size);
     this.initBoard();
-    loggr.debug("new board init'ed");
+    SkaroJS.loggr.debug("new board init'ed");
   }
 
 });
@@ -295,7 +294,7 @@ asterix.TicTacToe.Board= klass.xtends({
 // module def
 //////////////////////////////////////////////////////////////////////////////
 var negax= global.ZotohLab.NegaMax,
-Player = klass.xtends({
+Player = SkaroJS.Class.xtends({
 
   takeTurn: function() { throw new Error("Abstract call"); },
   isRobot: function() { return !this.isHuman(); },

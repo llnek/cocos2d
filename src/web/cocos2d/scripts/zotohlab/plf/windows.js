@@ -9,23 +9,22 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global = this; _ = global._ ;
-var asterix= global.ZotohLab.Asterix;
-var sh = asterix.Shell;
-var loggr= global.ZotohLab.logger;
+(function (undef) { "use strict"; var global = this; _ = global._ ,
+asterix= global.ZotohLab.Asterix,
+sh= global.ZotohLab.Asterix;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
 //TODO need to set up logic for resizing the game correctly for win8, showing touch controls and winjs specific logic
-sh.xcfg.setDeviceSizes({
+sh.setDeviceSizes({
     small: { width: 240, height: 160, scale: 2 },
     medium: { width: 240, height: 160, scale: 2 },
     large: { width: 240, height: 160, scale: 4 },
     default: { width: 240, height: 155, scale: 5 }
 });
-sh.xcfg.setGameSize('default');
+sh.setGameSize('default');
 
 var activation = Windows.ApplicationModel.Activation;
 var app = WinJS.Application;

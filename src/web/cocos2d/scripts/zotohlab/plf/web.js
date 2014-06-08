@@ -9,16 +9,15 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (document, undef) { "use strict"; var global = this; _ = global._ ;
-var asterix= global.ZotohLab.Asterix;
-var sh = asterix.Shell;
-var loggr= global.ZotohLab.logger;
+(function (document, undef) { "use strict"; var global = this; _ = global._ ,
+asterix= global.ZotohLab.Asterix,
+sh= global.ZotohLab.Asterix;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-//sh.xcfg.setGameSize('default');
+//sh.setGameSize('default');
 
 }).call(this, document);
 

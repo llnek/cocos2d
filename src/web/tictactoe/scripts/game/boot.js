@@ -9,9 +9,12 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global= this; var _ = global._ ;
+(function(undef) { "use strict"; var global= this; var _ = global._ ,
+sh= global.ZotohLab.Asterix;
 
-global.document.ccConfig.initAppFiles('tictactoe', [
+//////////////////////////////////////////////////////////////////////////////
+//
+global.document['ccConfig'].initAppFiles('tictactoe', [
       'zotohlab/ext/negamax.js',
       'game/tictactoe/board.js',
       'game/tictactoe/game.js',

@@ -11,16 +11,14 @@
 
 (function(undef) { "use strict"; var global= this, _ = global._,
 asterix= global.ZotohLab.Asterix,
-doc= global.document,
-sh= asterix.Shell,
-klass= global.SkaroJS.klass,
-loggr= global.SkaroJS.logger;
+sh= global.ZotohLab.Asterix,
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // main application.
 //////////////////////////////////////////////////////////////////////////////
 
-asterix.Cocos2dApp = klass.xtends({
+asterix.Cocos2dApp = SkaroJS.Class.xtends({
 
   ctor: function (scene) {
     //cc.COCOS2D_DEBUG = sh.xcfg.game.debugLevel;
@@ -47,7 +45,7 @@ asterix.Cocos2dApp = klass.xtends({
 
     asterix.XLoader.preload( this.pvGatherPreloads(), function () {
       sh.xcfg.runOnce();
-      dirc.replaceScene( sh.protos[ this.startScene ].create() );
+      dirc.runScene( sh.protos[ this.startScene ].create() );
     }, this);
 
     return true;
@@ -77,8 +75,8 @@ asterix.Cocos2dApp = klass.xtends({
     ];
 
     return _.reduce(_.flatten(rc), function(memo,v) {
-      loggr.info('Loading ' + v);
-      memo.push( { src: v } );
+      SkaroJS.loggr.info('Loading ' + v);
+      memo.push( v );
       return memo;
     }, []);
   },
@@ -137,7 +135,6 @@ asterix.Cocos2dApp = klass.xtends({
 
 });
 
-//sh.xcfg.newApplication().run();
 
 }).call(this);
 

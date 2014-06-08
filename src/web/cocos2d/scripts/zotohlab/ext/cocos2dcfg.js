@@ -10,6 +10,7 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use strict"; var global= this,  _ = global._ ,
+SkaroJS= global.SkaroJS,
 doc= global.document,
 cfg= {
 

@@ -11,15 +11,14 @@
 
 (function(undef) { "use strict"; var global = this, _ = global._ ,
 asterix= global.ZotohLab.Asterix,
-STICKY_THRESHOLD= 0.0004,
-sh= asterix.Shell,
-echt= global.SkaroJS.echt,
-loggr= global.SkaroJS.logger;
+sh= global.ZotohLab.Asterix,
+SkaroJS=global.SkaroJS,
+STICKY_THRESHOLD= 0.0004;
+
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-
 
 asterix.COCOS2DX = {
 
@@ -67,7 +66,7 @@ asterix.COCOS2DX = {
   },
 
   timerDone: function(t) {
-    return echt(t) && t.isDone();
+    return SkaroJS.echt(t) && t.isDone();
   },
 
   bbox2: function(sprite) {
@@ -147,7 +146,7 @@ asterix.COCOS2DX = {
   },
 
   screen: function() {
-    return cc.Director.getInstance().getWinSize();
+    return cc.director.getWinSize();
   },
 
   AnchorCenter: cc.p(0.5, 0.5),
@@ -208,7 +207,7 @@ asterix.COCOS2DX = {
   tmenu1: function(options) {
     var s1= cc.LabelBMFont.create(options.text, options.fontPath),
     menu,
-    t1= cc.MenuItemLabel.create(s1, options.selector, echt(options.target) ? options.target : undef);
+    t1= cc.MenuItemLabel.create(s1, options.selector, SkaroJS.echt(options.target) ? options.target : undef);
     t1.setOpacity(255 * 0.9);
     t1.setScale(options.scale || 1);
     t1.setTag(1);
@@ -223,7 +222,7 @@ asterix.COCOS2DX = {
   pmenu1: function(options) {
     var btn = cc.Sprite.create(options.imgPath),
     menu,
-    mi= cc.MenuItemSprite.create(btn, null, null, options.selector, echt(options.target) ? options.target : undef);
+    mi= cc.MenuItemSprite.create(btn, null, null, options.selector, SkaroJS.echt(options.target) ? options.target : undef);
     mi.setScale(options.scale || 1);
     mi.setTag(1);
     menu = cc.Menu.create(mi);

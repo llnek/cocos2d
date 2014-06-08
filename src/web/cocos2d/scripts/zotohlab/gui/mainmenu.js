@@ -11,9 +11,9 @@
 
 (function (undef) { "use strict"; var global= this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
+sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
-sh = asterix.Shell,
-loggr = global.SkaroJS.logger;
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // Main menu.
@@ -21,11 +21,11 @@ loggr = global.SkaroJS.logger;
 
 asterix.XMenuBackLayer = asterix.XLayer.extend({
   pkInit: function() {
-    var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gui.mmenu')),
+    var map = cc.TMXTiledMap.create(sh.getTilesPath('gui.mmenu')),
     csts = sh.xcfg.csts,
     wz = ccsx.screen(),
     cw= ccsx.center(),
-    title = cc.LabelBMFont.create( sh.l10n('%mmenu'), sh.xcfg.getFontPath('font.JellyBelly'));
+    title = cc.LabelBMFont.create( sh.l10n('%mmenu'), sh.getFontPath('font.JellyBelly'));
 
     title.setOpacity(0.9*255);
     title.setScale(0.6);
@@ -75,8 +75,8 @@ asterix.XMenuLayer= asterix.XLayer.extend({
     menu.setPosition(csts.TILE + csts.S_OFF, csts.TILE + csts.S_OFF);
     this.addItem(menu);
 
-    s2= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.back'));
-    s1= cc.Sprite.create( sh.xcfg.getImagePath('gui.mmenu.quit'));
+    s2= cc.Sprite.create( sh.getImagePath('gui.mmenu.back'));
+    s1= cc.Sprite.create( sh.getImagePath('gui.mmenu.quit'));
     t2 = cc.MenuItemSprite.create(s2, null, null, function() {
       this.options.onBack();
     }, this);
@@ -92,14 +92,14 @@ asterix.XMenuLayer= asterix.XLayer.extend({
   },
 
   pkQuit: function() {
-    var dir= cc.Director.getInstance(),
-    ss= sh.protos['StartScreen'],
-    yn= sh.protos['YesNo'];
+    var ss= sh.protos['StartScreen'],
+    yn= sh.protos['YesNo'],
+    dir = cc.director;
 
     dir.pushScene( yn.create({
       onBack: function() { dir.popScene(); },
       yes: function() {
-        sh.xcfg.sfxPlay('game_quit');
+        sh.sfxPlay('game_quit');
         dir.replaceRootScene( ss.create() );
       }
     }));
@@ -108,7 +108,7 @@ asterix.XMenuLayer= asterix.XLayer.extend({
 });
 
 asterix.XMenuLayer.onShowMenu = function() {
-  var dir= cc.Director.getInstance();
+  var dir= cc.director;
   dir.pushScene( sh.protos['MainMenu'].create({
     onBack: function() {
       dir.popScene();

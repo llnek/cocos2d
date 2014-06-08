@@ -11,8 +11,8 @@
 
 (function(undef) { "use stricts"; var global = this, _ = global._ ,
 asterix= global.ZotohLab.Asterix,
-sh = asterix.Shell,
-loggr= global.SkaroJS.logger;
+sh= global.ZotohLab.Asterix,
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -30,7 +30,6 @@ asterix.XLoader = cc.Scene.extend({
   ctor: function () {
     this.winsz = cc.director.getWinSize();
     this._super();
-    this.init();
   },
 
   init: function() {
@@ -57,8 +56,8 @@ asterix.XLoader = cc.Scene.extend({
     texture2d.initWithElement(this.logo);
     texture2d.handleLoadedTexture();
 
-    this.logoSprite = cc.Sprite.createWithTexture(texture2d);
-    this.logoSprite.setScale(cc.CONTENT_SCALE_FACTOR());
+    this.logoSprite = cc.Sprite.create(texture2d);
+    this.logoSprite.setScale( cc.contentScaleFactor());
     this.logoSprite.setPosition(cw);
     this.bgLayer.addChild(this.logoSprite);
 
@@ -94,20 +93,28 @@ asterix.XLoader = cc.Scene.extend({
   },
 
   pkStartLoading: function () {
+    var me=this, res = this.resources;
+    this._length = res.length;
     this.unschedule(this.pkStartLoading);
-    cc.Loader.preload(this.resources, function() {
-      this.niceFadeOut();
-    }, this);
+    cc.loader.load(res, function(result,cnt) {
+      me._count= cnt;
+    }, function() {
+      me.niceFadeOut();
+    });
     this.schedule(this.pkUpdatePercent);
   },
 
   pkUpdatePercent: function () {
-    var percent = cc.Loader.getInstance().getPercentage();
+    var me = this, cnt = this._count,
+    len = this._length,
+    percent = (cnt / len * 100) | 0;
+    percent = Math.min(percent, 100);
     this.progress.setPercentage(percent);
-    if (percent >= 100) {
+    if (cnt >= len) {
       this.unschedule(this.pkUpdatePercent);
     }
   }
+
 
 });
 
@@ -120,13 +127,7 @@ asterix.XLoader.preload = function (resources, selector, target) {
   }
 
   this._instance.initWithResources(resources, selector, target);
-
-  if (director.getRunningScene()) {
-    director.replaceScene(this._instance);
-  } else {
-    director.runWithScene(this._instance);
-  }
-
+  director.runScene(this._instance);
   return this._instance;
 };
 
