@@ -26,6 +26,43 @@ asterix.XGameLayer = asterix.XLayer.extend({
   level: 1,
   actor: null,
 
+  pkInput: function() {
+    if (_.has(cc.sys.capabilities, 'keyboard')) {
+      this.cfgInputKeyPad();
+    }
+    if (_.has(cc.sys.capabilities, 'mouse')) {
+      this.cfgInputMouse();
+    }
+    if (_.has(cc.sys.capabilities, 'touches')) {
+      //this.setTouchEnabled(true);
+      //this.setTouchMode(cc.TOUCH_ONE_BY_ONE);
+    }
+  },
+
+
+  cfgInputKeyPad: function() {
+    var me=this;
+    cc.eventManager.addListener({
+      event: cc.EventListener.KEYBOARD,
+      onKeyPressed:function (key, event) {
+        me.onKeyDown(key);
+      },
+      onKeyReleased:function (key, event) {
+        me.onKeyUp(key);
+      }
+    }, this);
+  },
+
+  cfgInputMouse: function() {
+    var me=this;
+    cc.eventManager.addListener({
+      event: cc.EventListener.MOUSE,
+      onMouseUp: function(event){
+        me.onMouseUp(event);
+      }
+    }, this);
+  },
+
   onKeyDown:function (e) {
     //loggr.debug('onKeyDown: e = ' + e);
     this.keyboard[e] = true;

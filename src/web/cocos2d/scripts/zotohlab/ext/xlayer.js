@@ -29,18 +29,6 @@ asterix.XLayer = cc.Layer.extend({
   },
 
   pkInput: function() {
-    /*
-    if (_.has(cc.sys.capabilities, 'keyboard')) {
-      this.setKeyboardEnabled(true);
-    }
-    if (_.has(cc.sys.capabilities, 'mouse')) {
-      this.setMouseEnabled(true);
-    }
-    if (_.has(cc.sys.capabilities, 'touches')) {
-      this.setTouchEnabled(true);
-      this.setTouchMode(cc.TOUCH_ONE_BY_ONE);
-    }
-    */
   },
 
   rtti: function() {

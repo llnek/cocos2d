@@ -31,7 +31,7 @@ cc.Director.prototype.replaceRootScene = function(scene) {
   cur.cleanup();
   this._runningScene=null;
   this._nextScene = null;
-  this.runWithScene(scene);
+  this.runScene(scene);
 };
 
 }).call(this);

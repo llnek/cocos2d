@@ -128,7 +128,7 @@ asterix.TicTacToe.Board= SkaroJS.Class.xtends({
           }
       }
     }, this);
-    return echt(rc) ? [rc, w[1]] : [undef, null] ;
+    return SkaroJS.echt(rc) ? [rc, w[1]] : [undef, null] ;
   },
 
   isWinner: function(actor, game) {
