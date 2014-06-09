@@ -11,15 +11,14 @@
 
 (function (undef) { "use strict"; var global = this, _ = global._ ,
 asterix= global.ZotohLab.Asterix,
-echt= global.ZotohLab.echt,
-sh= asterix.Shell,
+sh= global.ZotohLab.Asterix,
 bks= asterix.Bricks,
-loggr= global.ZotohLab.logger;
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-asterix.Bricks.EntityLine= bks.EntityShape.extends({
+asterix.Bricks.EntityLine= bks.EntityShape.xtends({
 
   manifest: [
     [ [0,0,0,0],

@@ -11,11 +11,10 @@
 
 (function(undef) { "use strict"; var global = this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
-echt= global.ZotohLab.echt,
+sh = global.ZotohLab.Asterix,
+SkaroJS= global.SkaroJS,
 ccsx= asterix.COCOS2DX,
-sh= asterix.Shell,
-bks= asterix.Bricks,
-loggr= global.ZotohLab.logger;
+bks= asterix.Bricks;
 
 var EntityList = [ bks.EntityLine, bks.EntityBox, bks.EntitySt,
                    bks.EntityElx, bks.EntityNub, bks.EntityStx, bks.EntityElx ];
@@ -27,7 +26,7 @@ var EntityList = [ bks.EntityLine, bks.EntityBox, bks.EntitySt,
 var BackLayer = asterix.XLayer.extend({
 
   pkInit: function() {
-    var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gamelevel1.tiles.arena'));
+    var map = cc.TMXTiledMap.create(sh.getTilesPath('gamelevel1.tiles.arena'));
     this.addItem(map);
     return this._super();
   },
@@ -47,7 +46,8 @@ var BackLayer = asterix.XLayer.extend({
 var HUDLayer = asterix.XGameHUDLayer.extend({
 
   initParentNode: function() {
-    this.atlasBatch = cc.SpriteBatchNode.createWithTexture( cc.TextureCache.getInstance().addImage( sh.xcfg.getAtlasPath('game-pics')));
+    this.atlasBatch = cc.SpriteBatchNode.create(
+                      cc.textureCache.addImage( sh.getAtlasPath('game-pics')));
     this.addChild(this.atlasBatch, this.lastZix, ++this.lastTag);
   },
 
@@ -58,7 +58,7 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
     wz = ccsx.screen();
 
     this.scoreLabel = ccsx.bmfLabel({
-      fontPath: sh.xcfg.getFontPath('font.TinyBoxBB'),
+      fontPath: sh.getFontPath('font.TinyBoxBB'),
       text: '0',
       anchor: ccsx.AnchorBottomRight,
       scale: 12/72
@@ -79,7 +79,7 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
   },
 
   showNext: function() {
-    var n= asterix.fns.rand( EntityList.length),
+    var n= SkaroJS.rand( EntityList.length),
     proto= EntityList[n],
     csts= sh.xcfg.csts,
     wz = ccsx.screen(),
@@ -135,8 +135,8 @@ var GameLayer = asterix.XGameLayer.extend({
 
   reset: function(newFlag) {
     if (this.atlasBatch) { this.atlasBatch.removeAllChildren(); } else {
-      var img = cc.TextureCache.getInstance().addImage( sh.xcfg.getAtlasPath('game-pics'));
-      this.atlasBatch = cc.SpriteBatchNode.createWithTexture(img);
+      var img = cc.textureCache.addImage( sh.getAtlasPath('game-pics'));
+      this.atlasBatch = cc.SpriteBatchNode.create(img);
       this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
     }
     if (newFlag) {
@@ -150,7 +150,7 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   getHUD: function() {
-    return cc.Director.getInstance().getRunningScene().layers['HUD'];
+    return cc.director.getRunningScene().layers['HUD'];
   },
 
   getNode: function() { return this.atlasBatch; },
@@ -164,9 +164,9 @@ var GameLayer = asterix.XGameLayer.extend({
     this.collisionMap=[];
     for (r = 0; r < hlen; ++r) {
       if (r === 0 || r === hlen-1) {
-        rc = global.ZotohLab.makeArray(wlen, 1);
+        rc = SkaroJS.makeArray(wlen, 1);
       } else {
-        rc = global.ZotohLab.makeArray(wlen, 0);
+        rc = SkaroJS.makeArray(wlen, 0);
         rc[0] = 1;
         rc[csts.FIELD_W + 1] = 1;
       }
@@ -369,13 +369,13 @@ var GameLayer = asterix.XGameLayer.extend({
     rc,r;
     this.entityGrid=[];
     for (r= 0; r < this.collisionMap.length; ++r) {
-      rc= global.ZotohLab.makeArray(this.collisionMap[r].length, undef);
+      rc= SkaroJS.makeArray(this.collisionMap[r].length, undef);
       this.entityGrid.push(rc);
     }
   },
 
   spawnNext: function() {
-    var n= asterix.fns.rand( EntityList.length),
+    var n= SkaroJS.rand( EntityList.length),
     info = this.getHUD().getNextShapeInfo(),
     proto, png, formID,
     wz = ccsx.screen(),
@@ -472,7 +472,7 @@ var GameLayer = asterix.XGameLayer.extend({
     this.spawnNext();
   },
 
-  newGame: function(mode) {
+  onNewGame: function(mode) {
     //sh.xcfg.sfxPlay('start_game');
     this.setGameMode(mode);
     this.play(true);

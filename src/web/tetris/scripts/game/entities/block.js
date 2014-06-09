@@ -11,11 +11,10 @@
 
 (function (undef) { "use strict"; var global= this, _ = global._  ,
 asterix= global.ZotohLab.Asterix,
+sh= global.ZotohLab.Asterix,
 ccsx= asterix.COCOS2DX,
 bks= asterix.Bricks,
-sh= asterix.Shell,
-echt= global.ZotohLab.echt,
-loggr= global.ZotohLab.logger;
+SkaroJS=global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -38,7 +37,7 @@ var Block = cc.Sprite.extend({
   }
 });
 
-asterix.Bricks.EntityBlock= asterix.XEntity.extends({
+asterix.Bricks.EntityBlock= asterix.XEntity.xtends({
 
   blink: function() {
     if (this.sprite) {

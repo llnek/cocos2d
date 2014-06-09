@@ -11,15 +11,16 @@
 
 (function (undef) { "use strict"; var global= this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
-sh= asterix.Shell,
-loggr = global.ZotohLab.logger;
+sh = global.ZotohLab.Asterix,
+SkaroJS = global.SkaroJS;
+
 asterix.Bricks= {};
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.xcfg = global.ZotohLab.klass.merge( asterix.XConfig, {
+sh.xcfg = SkaroJS.merge( asterix.XConfig, {
 
   appid: 'tetris',
   color: 'silver',
@@ -79,13 +80,30 @@ sh.xcfg = global.ZotohLab.klass.merge( asterix.XConfig, {
   },
 
   runOnce: function() {
-    cc.SpriteFrameCache.getInstance().addSpriteFrames( sh.xcfg.getPListPath('game-pics'));
+    cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
   }
 
 });
 
+//////////////////////////////////////////////////////////////////////////////
+// js files
+//////////////////////////////////////////////////////////////////////////////
 
-sh.xcfg.sfxInit();
+global.document.ccConfig.initAppFiles(sh.xcfg.appid, [
+
+      'game/tetris/entities/block.js',
+      'game/tetris/entities/shape.js',
+      'game/tetris/entities/box.js',
+      'game/tetris/entities/line.js',
+      'game/tetris/entities/nub.js',
+      'game/tetris/entities/elx.js',
+      'game/tetris/entities/el.js',
+      'game/tetris/entities/stx.js',
+      'game/tetris/entities/st.js',
+      'game/tetris/game.js',
+      'game/tetris/mmenu.js',
+      'game/tetris/splash.js'
+]);
 
 
 }).call(this);

@@ -257,7 +257,7 @@ var GameLayer = asterix.XGameLayer.extend({
     SkaroJS.loggr.debug("game started, initor = " + this.actor.color );
   },
 
-  newGame: function(mode) {
+  onNewGame: function(mode) {
     //sh.sfxPlay('start_game');
     this.setGameMode(mode);
     this.play(true);

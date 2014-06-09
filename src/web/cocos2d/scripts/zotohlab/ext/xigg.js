@@ -100,6 +100,12 @@ asterix.XGameLayer = asterix.XLayer.extend({
     sh.xcfg.csts.GAME_MODE=mode;
   },
 
+  newGame: function(mode) {
+    cc.audioEngine.stopMusic();
+    cc.audioEngine.stopAllEffects();
+    this.onNewGame(mode);
+  },
+
   pkInit: function() {
 
     var rc= this._super();
