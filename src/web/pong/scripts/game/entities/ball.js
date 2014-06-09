@@ -11,16 +11,16 @@
 
 (function(undef) { "use strict"; var global = this, _ = global._ ,
 asterix= global.ZotohLab.Asterix,
+sh= global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
-sh= asterix.Shell,
 png= asterix.Pong,
-loggr= global.ZotohLab.logger;
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-png.EntityBall = png.EntityXXX.extends({
+png.EntityBall = png.EntityXXX.xtends({
 
   update: function(dt) {
     var b=false;
@@ -29,8 +29,8 @@ png.EntityBall = png.EntityXXX.extends({
   },
 
   create: function() {
-    this.vel.y = 200 * asterix.fns.randomSign();
-    this.vel.x = 200 * asterix.fns.randomSign();
+    this.vel.y = 200 * SkaroJS.randomSign();
+    this.vel.x = 200 * SkaroJS.randomSign();
     return this._super();
   },
 

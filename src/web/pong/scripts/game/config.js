@@ -11,15 +11,16 @@
 
 (function (undef) { "use strict"; var global= this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
-sh= asterix.Shell,
-loggr = global.ZotohLab.logger;
+sh = global.ZotohLab.Asterix,
+SkaroJS= global.SkaroJS;
+
 asterix.Pong= {};
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.xcfg = global.ZotohLab.klass.merge( asterix.XConfig, {
+sh.xcfg = SkaroJS.merge( asterix.XConfig, {
 
   appid: 'pong',
   color: 'green',
@@ -78,7 +79,16 @@ sh.xcfg = global.ZotohLab.klass.merge( asterix.XConfig, {
 });
 
 
-sh.xcfg.sfxInit();
+global.document.ccConfig.initAppFiles(sh.xcfg.appid, [
+
+      'game/pong/entities/entity.js',
+      'game/pong/entities/ball.js',
+      'game/pong/entities/human.js',
+      'game/pong/entities/robot.js',
+      'game/pong/game.js',
+      'game/pong/mmenu.js',
+      'game/pong/splash.js'
+]);
 
 
 }).call(this);

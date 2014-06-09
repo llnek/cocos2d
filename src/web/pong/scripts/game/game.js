@@ -11,11 +11,10 @@
 
 (function(undef) { "use strict"; var global=this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
+sh = global.ZotohLab.Asterix,
 ccsx= asterix.COCOS2DX,
-sh= asterix.Shell,
 png= asterix.Pong,
-echt= global.ZotohLab.echt,
-loggr= global.ZotohLab.logger;
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // back layer
@@ -24,7 +23,7 @@ loggr= global.ZotohLab.logger;
 var BackLayer = asterix.XLayer.extend({
 
   pkInit: function() {
-    var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gamelevel1.tiles.arena'));
+    var map = cc.TMXTiledMap.create(sh.getTilesPath('gamelevel1.tiles.arena'));
     this.addItem(map);
     return this._super();
   },
@@ -104,7 +103,7 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
     wz = ccsx.screen();
 
     this.title= ccsx.bmfLabel({
-      fontPath: sh.xcfg.getFontPath('font.TinyBoxBB'),
+      fontPath: sh.getFontPath('font.TinyBoxBB'),
       text: '',
       scale: 12/72,
       pos: cc.p( cw.x, wz.height - csts.TILE * 6 /2 )
@@ -112,23 +111,23 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
     this.addItem(this.title);
 
     this.score1= ccsx.bmfLabel({
-      fontPath: sh.xcfg.getFontPath('font.OCR'),
+      fontPath: sh.getFontPath('font.OCR'),
       text: '8',
       scale: 36/72,
-      color: cc.c3b(255,0,0)
+      color: cc.color(255,0,0)
     });
     this.addItem(this.score1);
 
     this.score2= ccsx.bmfLabel({
-      fontPath: sh.xcfg.getFontPath('font.OCR'),
+      fontPath: sh.getFontPath('font.OCR'),
       text: '8',
       scale: 36/72,
-      color: cc.c3b(106, 190, 97) //#6abe61
+      color: cc.color(106, 190, 97) //#6abe61
     });
     this.addItem(this.score2);
 
     this.resultMsg = ccsx.bmfLabel({
-      fontPath: sh.xcfg.getFontPath('font.TinyBoxBB'),
+      fontPath: sh.getFontPath('font.TinyBoxBB'),
       text: '',
       visible: false,
       pos: cc.p(cw.x,  100),
@@ -167,8 +166,8 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
   drawScores: function() {
     var s2 = this.play2 ? this.scores[this.play2.color] : 0,
     s1 = this.play1 ? this.scores[this.play1.color] : 0,
-    n2 = global.ZotohLab.prettyNumber(s2,1),
-    n1 = global.ZotohLab.prettyNumber(s1,1);
+    n2 = SkaroJS.prettyNumber(s2,1),
+    n1 = SkaroJS.prettyNumber(s1,1);
     this.score1.setString(n1);
     this.score2.setString(n2);
   },
@@ -192,19 +191,19 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
 var GameLayer = asterix.XGameLayer.extend({
 
   getHUD: function() {
-    return cc.Director.getInstance().getRunningScene().layers['HUD'];
+    return cc.director.getRunningScene().layers['HUD'];
   },
 
   players: [],
   ball: null,
 
   initPaddleSize: function() {
-    var dummy= cc.Sprite.create(sh.xcfg.getImagePath('gamelevel1.images.paddle1'));
+    var dummy= cc.Sprite.create(sh.getImagePath('gamelevel1.images.paddle1'));
     return this.paddleSize = dummy.getContentSize();
   },
 
   initBallSize: function() {
-    var dummy= cc.Sprite.create(sh.xcfg.getImagePath('gamelevel1.images.ball'));
+    var dummy= cc.Sprite.create(sh.getImagePath('gamelevel1.images.ball'));
     return this.ballSize = dummy.getContentSize();
   },
 
@@ -304,7 +303,7 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   operational: function() {
-    return echt(this.ball);
+    return SkaroJS.echt(this.ball);
   },
 
   onWinner: function(p) {
@@ -322,7 +321,7 @@ var GameLayer = asterix.XGameLayer.extend({
   doDone: function(p) {
     this.getHUD().drawResult(p);
     this.getHUD().endGame();
-    sh.xcfg.sfxPlay('game_end');
+    sh.sfxPlay('game_end');
   },
 
   setGameMode: function(mode) {

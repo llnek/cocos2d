@@ -11,19 +11,19 @@
 
 (function(undef){ "use strict"; var global= this, _ = global._ ,
 asterix= global.ZotohLab.Asterix,
+sh= global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
-sh= asterix.Shell,
 png= asterix.Pong,
-loggr = global.ZotohLab.logger;
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-png.EntityXXX = asterix.XEntity.extends({
+png.EntityXXX = asterix.XEntity.xtends({
 
   create: function() {
-    this.sprite = cc.Sprite.create(sh.xcfg.getImagePath(this.resid));
+    this.sprite = cc.Sprite.create(sh.getImagePath(this.resid));
     this.sprite.setPosition(this.startPos);
     return this.sprite;
   }
@@ -35,7 +35,7 @@ png.EntityXXX = asterix.XEntity.extends({
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-png.EntityPaddle = png.EntityXXX.extends({
+png.EntityPaddle = png.EntityXXX.xtends({
 
   clamp: function() {
     var pos= this.sprite.getPosition(),
@@ -69,11 +69,11 @@ png.EntityPaddle = png.EntityXXX.extends({
     switch (this.options.color) {
     case 'X':
       other.sprite.setPosition(ccsx.getRight(this.sprite) + ccsx.getWidth(other.sprite) / 2, pos.y);
-      sh.xcfg.sfxPlay(this.snd);
+      sh.sfxPlay(this.snd);
       break;
     case 'O':
       other.sprite.setPosition(ccsx.getLeft(this.sprite) - ccsx.getWidth(other.sprite) / 2, pos.y);
-      sh.xcfg.sfxPlay(this.snd);
+      sh.sfxPlay(this.snd);
       break;
     }
   },

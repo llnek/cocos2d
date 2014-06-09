@@ -11,15 +11,15 @@
 
 (function(undef) { "use strict"; var global= this, _ = global._ ,
 asterix= global.ZotohLab.Asterix,
-sh= asterix.Shell,
+sh= global.ZotohLab.Asterix,
 png= asterix.Pong,
-echt= global.ZotohLab.echt;
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-png.EntityRobot = png.EntityPaddle.extends({
+png.EntityRobot = png.EntityPaddle.xtends({
 
   isRobot: function() { return true; },
 
