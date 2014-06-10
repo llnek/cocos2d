@@ -11,11 +11,10 @@
 
 (function(undef) { "use strict"; var global = this, _ = global._  ,
 asterix = global.ZotohLab.Asterix,
+sh = global.ZotohLab.Asterix,
 ast = asterix.Asteroids,
 ccsx= asterix.COCOS2DX,
-sh = asterix.Shell,
-echt= global.ZotohLab.echt,
-loggr= global.ZotohLab.logger;
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -32,7 +31,7 @@ var Laser = cc.Sprite.extend({
 
 });
 
-ast.EntityLaser = asterix.XEntity.extends({
+ast.EntityLaser = asterix.XEntity.xtends({
 
   update: function(dt) {
     if (this.sprite) {
@@ -48,7 +47,7 @@ ast.EntityLaser = asterix.XEntity.extends({
 
   reviveSprite: function() {
     if (this.sprite) {
-      var rc= asterix.fns.calcXY(this.options.angle, this.speed);
+      var rc= sh.calcXY(this.options.angle, this.speed);
       this.vel.x = rc[0];
       this.vel.y = rc[1];
       this.sprite.setPosition(this.startPos.x, this.startPos.y);
@@ -76,7 +75,7 @@ ast.EntityLaser = asterix.XEntity.extends({
     this.wrappable=true;
     this.speed= 100;
     this.value= 10;
-    var rc= asterix.fns.calcXY(options.angle, this.speed);
+    var rc= sh.calcXY(options.angle, this.speed);
     this.vel.x = rc[0];
     this.vel.y = rc[1];
     this.options.frames= ['laserRed.png'];

@@ -9,17 +9,18 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this; var _ = global._ ;
-var asterix = global.ZotohLab.Asterix;
-var sh= asterix.Shell;
-var loggr = global.ZotohLab.logger;
+(function (undef) { "use strict"; var global= this; var _ = global._ ,
+asterix = global.ZotohLab.Asterix,
+sh = global.ZotohLab.Asterix,
+SkaroJS= global.SkaroJS;
+
 asterix.Invaders= {};
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.xcfg = global.ZotohLab.klass.merge( asterix.XConfig, {
+sh.xcfg = SkaroJS.merge( asterix.XConfig, {
 
   appid: 'invaders',
   color: 'red',
@@ -82,13 +83,23 @@ sh.xcfg = global.ZotohLab.klass.merge( asterix.XConfig, {
   },
 
   runOnce: function() {
-    cc.SpriteFrameCache.getInstance().addSpriteFrames( sh.xcfg.getPListPath('game-pics'));
+    cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
   }
 
 });
 
 
-sh.xcfg.sfxInit();
+global.document.ccConfig.initAppFiles(sh.xcfg.appid, [
+
+      'game/invaders/entities/explode.js',
+      'game/invaders/entities/missile.js',
+      'game/invaders/entities/bomb.js',
+      'game/invaders/entities/player.js',
+      'game/invaders/entities/alien.js',
+      'game/invaders/game.js',
+      'game/invaders/mmenu.js',
+      'game/invaders/splash.js'
+]);
 
 
 }).call(this);

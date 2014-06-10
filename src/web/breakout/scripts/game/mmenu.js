@@ -11,9 +11,9 @@
 
 (function (undef) { "use strict"; var global= this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
+sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
-sh = asterix.Shell,
-loggr = global.ZotohLab.logger;
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // Main menu.
@@ -22,13 +22,13 @@ loggr = global.ZotohLab.logger;
 var MainMenuLayer = asterix.XMenuLayer.extend({
 
   pkInit: function() {
-    var dir= cc.Director.getInstance(),
+    var dir= cc.director,
     csts = sh.xcfg.csts,
     cw = ccsx.center(),
     wz = ccsx.screen();
 
     this.addItem( ccsx.tmenu1({
-      fontPath: sh.xcfg.getFontPath('font.OogieBoogie'),
+      fontPath: sh.getFontPath('font.OogieBoogie'),
       text: sh.l10n('%online'),
       scale: 0.5,
       selector: function() {
@@ -38,7 +38,7 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
     }));
 
     this.addItem( ccsx.tmenu1({
-      fontPath: sh.xcfg.getFontPath('font.OogieBoogie'),
+      fontPath: sh.getFontPath('font.OogieBoogie'),
       text: sh.l10n('%2players'),
       selector: function() {
         sh.fireEvent('/mmenu/controls/newgame', { mode: 2});
@@ -49,7 +49,7 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
     }));
 
     this.addItem( ccsx.tmenu1({
-      fontPath: sh.xcfg.getFontPath('font.OogieBoogie'),
+      fontPath: sh.getFontPath('font.OogieBoogie'),
       text: sh.l10n('%1player'),
       selector: function() {
         sh.fireEvent('/mmenu/controls/newgame', { mode: 1});
@@ -77,7 +77,7 @@ sh.protos['MainMenu'] = {
     }).create(options);
     if (scene) {
       scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
-        cc.Director.getInstance().replaceScene( asterix.BreakOut.Factory.create(msg));
+        cc.director.runScene( asterix.BreakOut.Factory.create(msg));
       });
     }
     return scene;

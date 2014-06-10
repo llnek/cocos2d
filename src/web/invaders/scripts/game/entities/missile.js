@@ -11,11 +11,10 @@
 
 (function(undef) { "use strict"; var global = this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
+sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
 ivs = asterix.Invaders,
-sh = asterix.Shell,
-echt= global.ZotohLab.echt,
-loggr= global.ZotohLab.logger;
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -31,7 +30,7 @@ var Missile = cc.Sprite.extend({
 
 });
 
-asterix.Invaders.EntityMissile = asterix.XEntity.extends({
+asterix.Invaders.EntityMissile = asterix.XEntity.xtends({
 
   rtti: function() { return 'EntityMissile'; },
 

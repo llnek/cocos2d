@@ -11,11 +11,10 @@
 
 (function(undef) { "use strict"; var global = this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
-echt = global.ZotohLab.echt,
+sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
 ast = asterix.Asteroids,
-sh = asterix.Shell,
-loggr = global.ZotohLab.logger;
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -42,7 +41,7 @@ var Ship = cc.Sprite.extend({
 
 });
 
-ast.EntityPlayer = asterix.XEntity.extends({
+ast.EntityPlayer = asterix.XEntity.xtends({
 
   initKeyOps: function() {
     this.throttleWait=300;
@@ -118,7 +117,7 @@ ast.EntityPlayer = asterix.XEntity.extends({
   },
 
   thrust: function() {
-    var rc= asterix.fns.calcXY(this.angle, this.thrustValue);
+    var rc= sh.calcXY(this.angle, this.thrustValue);
     this.accel.y = rc[1];
     this.accel.x = rc[0];
     this.sprite.onThrust(this.degrees());
@@ -139,7 +138,7 @@ ast.EntityPlayer = asterix.XEntity.extends({
   fire: function() {
     if (! ccsx.timerDone(this.coolDown)) { return; }
     // we want to find the ship's nose to fire the missile
-    var rc= asterix.fns.calcXY(this.angle, this.sprite.getContentSize().height/2),
+    var rc= sh.calcXY(this.angle, this.sprite.getContentSize().height/2),
     pos = this.sprite.getPosition();
     sh.fireEvent('/game/objects/players/shoot', { x: pos.x + rc[0] , y: pos.y + rc[1] , angle: this.angle });
     this.coolDown= ccsx.createTimer(this.sprite, 0.8);

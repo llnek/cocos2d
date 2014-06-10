@@ -302,14 +302,14 @@ asterix.XEntityPool = SkaroJS.Class.xtends({
     if (this.curSize > 0) {
       rc = this.pool.pop();
       --this.curSize;
-      loggr.debug('getting object "' + rc.rtti() + '" from pool: oid = ' + rc.OID);
+      SkaroJS.loggr.debug('getting object "' + rc.rtti() + '" from pool: oid = ' + rc.OID);
     }
     return rc;
   },
 
   add: function(ent) {
     if (this.checkEntity(ent) && this.curSize < this.maxSize) {
-      loggr.debug('putting object "' + ent.rtti() + '" into pool: oid = ' + ent.OID);
+      SkaroJS.loggr.debug('putting object "' + ent.rtti() + '" into pool: oid = ' + ent.OID);
       this.pool.push(ent);
       ent.hibernate();
       ++this.curSize;

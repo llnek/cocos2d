@@ -11,15 +11,16 @@
 
 (function (undef) { "use strict"; var global= this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
-sh= asterix.Shell,
-loggr = global.ZotohLab.logger;
+sh = global.ZotohLab.Asterix,
+SkaroJS= global.SkaroJS;
+
 asterix.Asteroids= {};
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.xcfg = global.ZotohLab.klass.merge( asterix.XConfig, {
+sh.xcfg = SkaroJS.merge( asterix.XConfig, {
 
   appid: 'asteroids',
   color: 'red',
@@ -77,14 +78,29 @@ sh.xcfg = global.ZotohLab.klass.merge( asterix.XConfig, {
   },
 
   runOnce: function() {
-    cc.SpriteFrameCache.getInstance().addSpriteFrames( sh.xcfg.getPListPath('game-pics'));
+    cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
   }
 
 
 });
 
 
-sh.xcfg.sfxInit();
+global.document.ccConfig.initAppFiles(sh.xcfg.appid, [
+
+      'game/asteroids/entities/explode.js',
+      'game/asteroids/entities/aster.js',
+      'game/asteroids/entities/asteroid3.js',
+      'game/asteroids/entities/asteroid2.js',
+      'game/asteroids/entities/asteroid1.js',
+      'game/asteroids/entities/missile.js',
+      'game/asteroids/entities/player.js',
+      'game/asteroids/entities/laser.js',
+      'game/asteroids/entities/ufo.js',
+      'game/asteroids/game.js',
+      'game/asteroids/mmenu.js',
+      'game/asteroids/splash.js'
+]);
+
 
 
 }).call(this);

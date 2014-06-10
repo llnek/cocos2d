@@ -11,11 +11,10 @@
 
 (function(undef) { "use strict"; var global = this, _ = global._  ,
 asterix = global.ZotohLab.Asterix,
+sh = global.ZotohLab.Asterix,
 ast = asterix.Asteroids,
 ccsx= asterix.COCOS2DX,
-sh = asterix.Shell,
-echt= global.ZotohLab.echt,
-loggr= global.ZotohLab.logger;
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -32,7 +31,7 @@ var Missile = cc.Sprite.extend({
 
 });
 
-ast.EntityMissile = asterix.XEntity.extends({
+ast.EntityMissile = asterix.XEntity.xtends({
 
   update: function(dt) {
     if (this.sprite) {
@@ -48,7 +47,7 @@ ast.EntityMissile = asterix.XEntity.extends({
 
   reviveSprite: function() {
     if (this.sprite) {
-      var rc= asterix.fns.calcXY(this.options.angle, this.speed);
+      var rc= sh.calcXY(this.options.angle, this.speed);
       this.vel.x = rc[0];
       this.vel.y = rc[1];
       this.sprite.setPosition(this.startPos.x, this.startPos.y);
@@ -74,7 +73,7 @@ ast.EntityMissile = asterix.XEntity.extends({
     this._super(x, y, options);
     this.wrappable=true;
     this.speed= 150;
-    var rc= asterix.fns.calcXY(options.angle, this.speed);
+    var rc= sh.calcXY(options.angle, this.speed);
     this.vel.x = rc[0];
     this.vel.y = rc[1];
     this.options.frames= ['laserGreen.png'];

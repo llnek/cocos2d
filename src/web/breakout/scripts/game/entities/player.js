@@ -11,11 +11,10 @@
 
 (function(undef) { "use strict"; var global = this, _ = global._ ,
 asterix= global.ZotohLab.Asterix,
+sh= global.ZotohLab.Asterix,
 ccsx= asterix.COCOS2DX,
 bko= asterix.BreakOut,
-sh= asterix.Shell,
-echt= global.ZotohLab.echt,
-loggr= global.ZotohLab.logger;
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -29,7 +28,7 @@ var Paddle = cc.Sprite.extend({
   }
 });
 
-bko.EntityPlayer = asterix.XEntity.extends({
+bko.EntityPlayer = asterix.XEntity.xtends({
 
   keypressed: function(dt) {
     if (sh.main.keyboard[cc.KEY.right]) {

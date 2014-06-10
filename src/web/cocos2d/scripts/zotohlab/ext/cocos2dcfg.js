@@ -21,7 +21,7 @@ cfg= {
   frameRate: 60,
 
   // 0(default), 1(Canvas only), 2(WebGL only)
-  renderMode: 0,
+  renderMode: 1,
 
   id: 'gameCanvas',
 

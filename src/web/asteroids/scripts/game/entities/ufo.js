@@ -11,11 +11,10 @@
 
 (function(undef) { "use strict"; var global = this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
-echt = global.ZotohLab.echt,
+sh = global.ZotohLab.Asterix,
 ast = asterix.Asteroids,
 ccsx = asterix.COCOS2DX,
-sh = asterix.Shell,
-loggr = global.ZotohLab.logger;
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -30,7 +29,7 @@ var Ufo = cc.Sprite.extend({
 
 });
 
-ast.EntityUfo = asterix.XEntity.extends({
+ast.EntityUfo = asterix.XEntity.xtends({
 
   update: function(dt) {
     if (! sh.main.actor) { return; }
@@ -44,23 +43,23 @@ ast.EntityUfo = asterix.XEntity.extends({
       if (pp.y > mp.y) {  //q1
         dx= pp.x - mp.x;
         dy= pp.y - mp.y;
-        deg = 90- asterix.fns.radToDeg(Math.atan(dy/dx)) ;
+        deg = 90- sh.radToDeg(Math.atan(dy/dx)) ;
       } else {
         // q2
         dx= pp.x - mp.x;
         dy= mp.y - pp.y;
-        deg = asterix.fns.radToDeg(Math.atan(dy/dx)) + 90;
+        deg = sh.radToDeg(Math.atan(dy/dx)) + 90;
       }
     } else {
       if (pp.y > mp.y) {  // q4
         dx= mp.x - pp.x;
         dy= pp.y - mp.y;
-        deg = asterix.fns.radToDeg(Math.atan(dy/dx)) + 270;
+        deg = sh.radToDeg(Math.atan(dy/dx)) + 270;
       } else {
         // q3
         dx= mp.x - pp.x;
         dy= mp.y - pp.y;
-        deg = 270 - asterix.fns.radToDeg(Math.atan(dy/dx));
+        deg = 270 - sh.radToDeg(Math.atan(dy/dx));
       }
     }
 

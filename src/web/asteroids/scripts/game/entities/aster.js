@@ -11,21 +11,20 @@
 
 (function(undef) { "use strict"; var global=this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
-echt= global.ZotohLab.echt,
+sh = global.ZotohLab.Asterix,
 ast = asterix.Asteroids,
 ccsx= asterix.COCOS2DX,
-sh = asterix.Shell,
-loggr= global.ZotohLab.logger;
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-ast.EntityAster = asterix.XEntity.extends({
+ast.EntityAster = asterix.XEntity.xtends({
 
   initVel: function(v) {
-    this.vel.y= asterix.fns.randomSign() * v;
-    this.vel.x= asterix.fns.randomSign() * v;
+    this.vel.y= SkaroJS.randomSign() * v;
+    this.vel.x= SkaroJS.randomSign() * v;
   },
 
   update: function(dt) {
@@ -54,7 +53,7 @@ ast.EntityAster = asterix.XEntity.extends({
     this._super(x,y,options);
     this.wrappable=true;
     this.bounce=1;
-    this.angle = asterix.fns.rand(360);
+    this.angle = SkaroJS.rand(360);
   }
 
 

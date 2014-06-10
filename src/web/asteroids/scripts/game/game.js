@@ -11,11 +11,10 @@
 
 (function(undef) { "use strict"; var global = this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
-echt= global.ZotohLab.echt,
+sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
-sh= asterix.Shell,
 ast= asterix.Asteroids,
-loggr= global.ZotohLab.logger;
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // back layer
@@ -24,7 +23,7 @@ loggr= global.ZotohLab.logger;
 var BackLayer = asterix.XLayer.extend({
 
   pkInit: function() {
-    var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gamelevel1.tiles.arena'));
+    var map = cc.TMXTiledMap.create(sh.getTilesPath('gamelevel1.tiles.arena'));
     this.addItem(map);
     return this._super();
   },
@@ -59,10 +58,10 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
   },
 
   initParentNode: function() {
-    this.atlasBatch = cc.SpriteBatchNode.createWithTexture( cc.TextureCache.getInstance().addImage( sh.xcfg.getAtlasPath('game-pics')));
+    this.atlasBatch = cc.SpriteBatchNode.create( cc.textureCache.addImage( sh.getAtlasPath('game-pics')));
     this.addChild(this.atlasBatch, this.lastZix, ++this.lastTag);
 
-    var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gamelevel1.tiles.hudwall'));
+    var map = cc.TMXTiledMap.create(sh.getTilesPath('gamelevel1.tiles.hudwall'));
     this.addChild(map,++this.lastZix, ++this.lastTag);
   },
 
@@ -77,7 +76,7 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
     wz = ccsx.screen();
 
     this.scoreLabel = ccsx.bmfLabel({
-      fontPath: sh.xcfg.getFontPath('font.TinyBoxBB'),
+      fontPath: sh.getFontPath('font.TinyBoxBB'),
       text: '0',
       anchor: ccsx.AnchorBottomRight,
       scale: 12/72
@@ -140,7 +139,7 @@ sh.pools['live-lasers'] = {};
 var GameLayer = asterix.XGameLayer.extend({
 
   getHUD: function() {
-    return cc.Director.getInstance().getRunningScene().layers['HUD'];
+    return cc.director.getRunningScene().layers['HUD'];
   },
 
   getNode: function() { return this.atlasBatch; },
@@ -157,8 +156,8 @@ var GameLayer = asterix.XGameLayer.extend({
 
   reset: function(newFlag) {
     if (this.atlasBatch) { this.atlasBatch.removeAllChildren(); } else {
-      var img = cc.TextureCache.getInstance().addImage( sh.xcfg.getAtlasPath('game-pics'));
-      this.atlasBatch = cc.SpriteBatchNode.createWithTexture(img);
+      var img = cc.textureCache.addImage( sh.getAtlasPath('game-pics'));
+      this.atlasBatch = cc.SpriteBatchNode.create(img);
       this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
     }
     sh.pools['missiles'].drain();
@@ -372,12 +371,12 @@ var GameLayer = asterix.XGameLayer.extend({
     B= this.getEnclosureRect();
     this.rocks= [];
     while (this.rocks.length < cfg.BOULDERS) {
-      r= { left: asterix.fns.randPercentage() * wz.width,
-           top: asterix.fns.randPercentage() * wz.height };
+      r= { left: SkaroJS.randPercentage() * wz.width,
+           top: SkaroJS.randPercentage() * wz.height };
       r.bottom = r.top - h;
       r.right = r.left + w;
-      if (!this.maybeOverlap(r) && !asterix.fns.outOfBound(r,B)) {
-        deg = asterix.fns.randPercentage() * 360;
+      if (!this.maybeOverlap(r) && !sh.outOfBound(r,B)) {
+        deg = SkaroJS.randPercentage() * 360;
         x = r.left + w/2;
         y = r.top - h/2;
         aa = new ast.EntityAsteroid1( x, y, {angle: deg});
@@ -397,11 +396,11 @@ var GameLayer = asterix.XGameLayer.extend({
     aa,x,y,r;
 
     while (test) {
-      r= { left: asterix.fns.randPercentage() * wz.width,
-           top: asterix.fns.randPercentage() * wz.height };
+      r= { left: SkaroJS.randPercentage() * wz.width,
+           top: SkaroJS.randPercentage() * wz.height };
       r.bottom = r.top - h;
       r.right = r.left + w;
-      if (!this.maybeOverlap(r) && !asterix.fns.outOfBound(r,B)) {
+      if (!this.maybeOverlap(r) && !sh.outOfBound(r,B)) {
         x = r.left + w/2;
         y = r.top - h/2;
         aa = new ast.EntityPlayer( x, y, {});
@@ -425,11 +424,11 @@ var GameLayer = asterix.XGameLayer.extend({
 
     this.ufos=[];
     while (test) {
-      r= { left: asterix.fns.randPercentage() * wz.width,
-           top: asterix.fns.randPercentage() * wz.height };
+      r= { left: SkaroJS.randPercentage() * wz.width,
+           top: SkaroJS.randPercentage() * wz.height };
       r.bottom = r.top - h;
       r.right = r.left + w;
-      if (!this.maybeOverlap(r) && !asterix.fns.outOfBound(r,B)) {
+      if (!this.maybeOverlap(r) && !sh.outOfBound(r,B)) {
         x = r.left + w/2;
         y = r.top - h/2;
         aa = new ast.EntityUfo( x, y, { player: this.actor });
@@ -447,7 +446,7 @@ var GameLayer = asterix.XGameLayer.extend({
       r.top= Math.floor(ccsx.getTop(z.sprite));
       r.bottom = r.top - ccsx.getHeight(z.sprite);
       r.right= r.left + ccsx.getWidth(z.sprite);
-      return asterix.fns.isIntersect(r,a);
+      return sh.isIntersect(r,a);
     });
   },
 
@@ -460,7 +459,7 @@ var GameLayer = asterix.XGameLayer.extend({
       this.addItem(ent.create());
     }
     sh.pools['live-missiles'][ent.OID] = ent;
-    //sh.xcfg.sfxPlay('ship-missile');
+    //sh.sfxPlay('ship-missile');
   },
 
   onFireLaser: function(msg) {
@@ -472,7 +471,7 @@ var GameLayer = asterix.XGameLayer.extend({
       this.addItem(ent.create());
     }
     sh.pools['live-lasers'][ent.OID] = ent;
-    //sh.xcfg.sfxPlay('ship-missile');
+    //sh.sfxPlay('ship-missile');
   },
 
   onPlayerKilled: function(msg) {

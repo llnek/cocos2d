@@ -11,11 +11,10 @@
 
 (function(undef) { "use strict"; var global = this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
+sh = global.ZotohLab.Asterix,
 ccsx= asterix.COCOS2DX,
 ivs= asterix.Invaders,
-sh = asterix.Shell,
-echt = global.ZotohLab.echt,
-loggr = global.ZotohLab.logger;
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // object pools
@@ -33,7 +32,7 @@ sh.pools['live-bombs'] = {};
 var BackLayer = asterix.XLayer.extend({
 
   pkInit: function() {
-    var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gamelevel1.tiles.arena'));
+    var map = cc.TMXTiledMap.create(sh.getTilesPath('gamelevel1.tiles.arena'));
     this.addItem(map);
     return this._super();
   },
@@ -53,7 +52,7 @@ var BackLayer = asterix.XLayer.extend({
 var HUDLayer = asterix.XGameHUDLayer.extend({
 
   initParentNode: function() {
-    this.atlasBatch = cc.SpriteBatchNode.createWithTexture( cc.TextureCache.getInstance().addImage( sh.xcfg.getAtlasPath('game-pics')));
+    this.atlasBatch = cc.SpriteBatchNode.create( cc.textureCache.addImage( sh.getAtlasPath('game-pics')));
     this.addChild(this.atlasBatch, this.lastZix, ++this.lastTag);
   },
 
@@ -64,7 +63,7 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
     wz = ccsx.screen();
 
     this.scoreLabel = ccsx.bmfLabel({
-      fontPath: sh.xcfg.getFontPath('font.TinyBoxBB'),
+      fontPath: sh.getFontPath('font.TinyBoxBB'),
       text: '0',
       anchor: ccsx.AnchorBottomRight,
       scale: 12/72
@@ -118,8 +117,8 @@ var GameLayer = asterix.XGameLayer.extend({
 
   reset: function() {
     if (this.atlasBatch) { this.atlasBatch.removeAllChildren(); } else {
-      var img = cc.TextureCache.getInstance().addImage( sh.xcfg.getAtlasPath('game-pics'));
-      this.atlasBatch = cc.SpriteBatchNode.createWithTexture(img);
+      var img = cc.textureCache.addImage( sh.getAtlasPath('game-pics'));
+      this.atlasBatch = cc.SpriteBatchNode.create(img);
       this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
     }
     sh.pools['missiles'].drain();
@@ -135,7 +134,7 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   getHUD: function() {
-    return cc.Director.getInstance().getRunningScene().layers['HUD'];
+    return cc.director.getRunningScene().layers['HUD'];
   },
 
   initAlienSize: function() {
@@ -277,10 +276,10 @@ var GameLayer = asterix.XGameLayer.extend({
 
   maybeShuffle: function(stepx) {
     var ok, b = stepx > 0 ? this.findMaxX() : this.findMinX();
-    if (echt(b) && b.status) {
+    if (SkaroJS.echt(b) && b.status) {
       ok = this.testDirX(b, stepx) ? this.doShuffle(stepx) : this.doForward(stepx);
       if (ok) {
-        sh.xcfg.sfxPlay('bugs-march');
+        sh.sfxPlay('bugs-march');
       }
     }
   },
@@ -350,7 +349,7 @@ var GameLayer = asterix.XGameLayer.extend({
       }
     }
     if (rc.length > 0) {
-      n = rc.length === 1 ? 0 : asterix.fns.rand( rc.length);
+      n = rc.length === 1 ? 0 : SkaroJS.rand( rc.length);
       this.aliens[n].loadBomb();
     }
     _.each(this.aliens, function(z) {
@@ -386,7 +385,7 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   newGame: function(mode) {
-    sh.xcfg.sfxPlay('start_game');
+    sh.sfxPlay('start_game');
     this.setGameMode(mode);
     this.play();
   },
@@ -414,13 +413,13 @@ var GameLayer = asterix.XGameLayer.extend({
       this.addItem(ent.create());
     }
     sh.pools['live-missiles'][ent.OID] = ent;
-    sh.xcfg.sfxPlay('ship-missile');
+    sh.sfxPlay('ship-missile');
   },
 
   onAlienKilled: function(msg) {
     var obj= new ivs.EntityExplode(msg.x, msg.y, msg);
     this.addItem(obj.create());
-    sh.xcfg.sfxPlay('xxx-explode');
+    sh.sfxPlay('xxx-explode');
   },
 
   onBombKilled: function(msg) {
@@ -433,7 +432,7 @@ var GameLayer = asterix.XGameLayer.extend({
     if (msg.explode === true) {
       obj= new ivs.EntityExplode(msg.x, msg.y, msg);
       this.addItem(obj.create());
-      sh.xcfg.sfxPlay('xxx-explode');
+      sh.sfxPlay('xxx-explode');
     }
   },
 
@@ -446,7 +445,7 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   onPlayerKilled: function(msg) {
-    sh.xcfg.sfxPlay('xxx-explode');
+    sh.sfxPlay('xxx-explode');
     if ( this.getHUD().reduceLives(1)) {
       this.onDone();
     } else {

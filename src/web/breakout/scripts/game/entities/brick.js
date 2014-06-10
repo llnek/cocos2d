@@ -11,11 +11,10 @@
 
 (function(undef) { "use strict"; var global = this, _ = global._  ,
 asterix = global.ZotohLab.Asterix,
+sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
 bko= asterix.BreakOut,
-sh= asterix.Shell,
-echt= global.ZotohLab.echt,
-loggr= global.ZotohLab.logger;
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -29,7 +28,7 @@ var Candy = cc.Sprite.extend({
   }
 });
 
-bko.EntityBrick = asterix.XEntity.extends({
+bko.EntityBrick = asterix.XEntity.xtends({
 
   create: function() {
     return this.sprite = new Candy(this.startPos.x, this.startPos.y, this.options);

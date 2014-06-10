@@ -23,7 +23,7 @@ asterix.XLive = cc.Sprite.extend({
   ctor: function(x, y, options) {
     this._super();
     this.initWithSpriteFrameName(options.frames[0]);
-    if ( echt(options.scale)) {
+    if ( SkaroJS.echt(options.scale)) {
       this.setScale(options.scale);
     }
     this.setPosition(x,y);
@@ -88,7 +88,7 @@ asterix.XHUDLives = SkaroJS.Class.xtends({
     this.hud= hud;
     this.topLeft= cc.p(x,y);
     this.reset();
-    if ( !echt(this.options.direction)) {
+    if ( !SkaroJS.echt(this.options.direction)) {
       this.options.direction = 1;
     }
   }

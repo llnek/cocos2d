@@ -9,17 +9,18 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this; var _ = global._ ;
-var asterix = global.ZotohLab.Asterix;
-var sh= asterix.Shell;
-var loggr = global.ZotohLab.logger;
+(function (undef) { "use strict"; var global= this; var _ = global._ ,
+asterix = global.ZotohLab.Asterix,
+sh = global.ZotohLab.Asterix,
+SkaroJS= global.SkaroJS;
+
 asterix.BreakOut= {};
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.xcfg = global.ZotohLab.klass.merge( asterix.XConfig, {
+sh.xcfg = SkaroJS.merge( asterix.XConfig, {
 
   appid: 'breakout',
   color: 'yellow',
@@ -89,13 +90,23 @@ sh.xcfg = global.ZotohLab.klass.merge( asterix.XConfig, {
   },
 
   runOnce: function() {
-    cc.SpriteFrameCache.getInstance().addSpriteFrames( sh.xcfg.getPListPath('game-pics'));
+    cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
   }
 
 });
 
 
-sh.xcfg.sfxInit();
+global.document.ccConfig.initAppFiles(sh.xcfg.appid, [
+
+  'game/breakout/entities/explode.js',
+  'game/breakout/entities/player.js',
+  'game/breakout/entities/ball.js',
+  'game/breakout/entities/brick.js',
+  'game/breakout/game.js',
+  'game/breakout/mmenu.js',
+  'game/breakout/splash.js'
+]);
+
 
 
 }).call(this);

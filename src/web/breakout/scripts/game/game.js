@@ -11,11 +11,10 @@
 
 (function(undef) { "use strict"; var global = this, _ = global._  ,
 asterix = global.ZotohLab.Asterix,
+sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
-sh= asterix.Shell,
 bko= asterix.BreakOut,
-echt= global.ZotohLab.echt,
-loggr= global.ZotohLab.logger;
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // background layer
@@ -24,7 +23,7 @@ loggr= global.ZotohLab.logger;
 var BackLayer = asterix.XLayer.extend({
 
   pkInit: function() {
-    var map = cc.TMXTiledMap.create(sh.xcfg.getTilesPath('gamelevel1.tiles.arena'));
+    var map = cc.TMXTiledMap.create(sh.getTilesPath('gamelevel1.tiles.arena'));
     this.addItem(map);
     return this._super();
   },
@@ -44,7 +43,7 @@ var BackLayer = asterix.XLayer.extend({
 var HUDLayer = asterix.XGameHUDLayer.extend({
 
   initParentNode: function() {
-    this.atlasBatch = cc.SpriteBatchNode.createWithTexture( cc.TextureCache.getInstance().addImage( sh.xcfg.getAtlasPath('game-pics')));
+    this.atlasBatch = cc.SpriteBatchNode.create( cc.textureCache.addImage( sh.getAtlasPath('game-pics')));
     this.addChild(this.atlasBatch, this.lastZix, ++this.lastTag);
   },
 
@@ -70,7 +69,7 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
     wz = ccsx.screen();
 
     this.scoreLabel = ccsx.bmfLabel({
-      fontPath: sh.xcfg.getFontPath('font.TinyBoxBB'),
+      fontPath: sh.getFontPath('font.TinyBoxBB'),
       text: '0',
       anchor: ccsx.AnchorBottomRight,
       scale: 12/72
@@ -128,15 +127,15 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
 var GameLayer = asterix.XGameLayer.extend({
 
   getHUD: function() {
-    return cc.Director.getInstance().getRunningScene().layers['HUD'];
+    return cc.director.getRunningScene().layers['HUD'];
   },
 
   getNode: function() { return this.atlasBatch; },
 
   reset: function(newFlag) {
     if (this.atlasBatch) { this.atlasBatch.removeAllChildren(); } else {
-      var img = cc.TextureCache.getInstance().addImage( sh.xcfg.getAtlasPath('game-pics'));
-      this.atlasBatch = cc.SpriteBatchNode.createWithTexture(img);
+      var img = cc.textureCache.addImage( sh.getAtlasPath('game-pics'));
+      this.atlasBatch = cc.SpriteBatchNode.create(img);
       this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
     }
     this.players=[];
@@ -239,7 +238,7 @@ var GameLayer = asterix.XGameLayer.extend({
       } else {
       }
       bs.setPosition(bp.x, ccsx.getTop(this.actor.sprite) + ccsx.getHeight(bs) / 2);
-      sh.xcfg.sfxPlay('ball-paddle');
+      sh.sfxPlay('ball-paddle');
     }
     else {
     // 3. check if ball hits brick
@@ -294,7 +293,7 @@ var GameLayer = asterix.XGameLayer.extend({
   onBrickKilled: function(msg) {
     var obj= new bko.EntityExplode(msg.x, msg.y, msg);
     this.addItem(obj.create());
-    sh.xcfg.sfxPlay('ball-brick');
+    sh.sfxPlay('ball-brick');
   },
 
   onEarnScore: function(msg) {
@@ -302,7 +301,7 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   newGame: function(mode) {
-    sh.xcfg.sfxPlay('start_game');
+    sh.sfxPlay('start_game');
     this.setGameMode(mode);
     this.play(true);
   }

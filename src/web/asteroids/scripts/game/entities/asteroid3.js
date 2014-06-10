@@ -11,11 +11,10 @@
 
 (function(undef) { "use strict"; var global = this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
-echt= global.ZotohLab.echt,
+sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
 ast = asterix.Asteroids,
-sh = asterix.Shell,
-loggr= global.ZotohLab.logger;
+SkaroJS= global.SkaroJS;
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -33,7 +32,7 @@ var Astro3 = cc.Sprite.extend({
 });
 
 
-ast.EntityAsteroid3 = ast.EntityAster.extends({
+ast.EntityAsteroid3 = ast.EntityAster.xtends({
 
   create: function() {
     return this.sprite = new Astro3(this.startPos.x, this.startPos.y, this.options);

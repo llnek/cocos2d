@@ -11,11 +11,10 @@
 
 (function(undef) { "use strict"; var global = this, _ = global._  ,
 asterix=global.ZotohLab.Asterix,
+sh=global.ZotohLab.Asterix,
 ccsx= asterix.COCOS2DX,
 bko= asterix.BreakOut,
-sh= asterix.Shell,
-echt= global.ZotohLab.echt,
-loggr= global.ZotohLab.logger;
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -30,7 +29,7 @@ var Ball = cc.Sprite.extend({
 });
 
 
-bko.EntityBall = asterix.XEntity.extends({
+bko.EntityBall = asterix.XEntity.xtends({
 
   update: function(dt) {
     var b=false;
@@ -39,8 +38,8 @@ bko.EntityBall = asterix.XEntity.extends({
   },
 
   create: function() {
-    this.vel.y = 200 * asterix.fns.randomSign();
-    this.vel.x = 200 * asterix.fns.randomSign();
+    this.vel.y = 200 * SkaroJS.randomSign();
+    this.vel.x = 200 * SkaroJS.randomSign();
     return this.sprite= new Ball(this.startPos.x, this.startPos.y, this.options);
   },
 
@@ -81,7 +80,7 @@ bko.EntityBall = asterix.XEntity.extends({
       this.vel.x = - this.vel.x;
     }
     else {
-      loggr.error("Failed to determine the collision of ball and brick.");
+      SkaroJS.loggr.error("Failed to determine the collision of ball and brick.");
     }
   },
 

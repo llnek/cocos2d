@@ -11,11 +11,10 @@
 
 (function(undef) { "use strict"; var global = this, _ = global._ ,
 asterix = global.ZotohLab.Asterix,
+sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
 ivs= asterix.Invaders,
-sh= asterix.Shell,
-echt= global.ZotohLab.echt,
-loggr= global.ZotohLab.logger;
+SkaroJS= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -29,7 +28,7 @@ var Alien = cc.Sprite.extend({
     this.initWithSpriteFrameName(options.frames[0]);
     this.setPosition(x,y);
 
-    var ccc = cc.SpriteFrameCache.getInstance(),
+    var ccc = cc.spriteFrameCache,
     f0 = ccc.getSpriteFrame(options.frames[0]),
     f1 = ccc.getSpriteFrame(options.frames[1]),
     animFrames = [ f0, f1 ],
@@ -45,7 +44,7 @@ var Alien = cc.Sprite.extend({
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-asterix.Invaders.EntityAlien = asterix.XEntity.extends({
+asterix.Invaders.EntityAlien = asterix.XEntity.xtends({
 
   loadBomb: function() { this.bombCount = 1; },
 

@@ -11,10 +11,13 @@
 
 (function(undef) { "use strict"; var global = this, _ = global._ ,
 asterix= global.ZotohLab.Asterix,
-sh= asterix.Shell,
-loggr= global.ZotohLab.logger;
+sh= global.ZotohLab.Asterix,
+SkaroJS= global.SkaroJS;
 
-global.ZotohLab.klass.merge(global.ZotohLab.Asterix.Shell.xcfg.l10n, {
+
+//////////////////////////////////////////////////////////////////////////////
+//
+SkaroJS.merge(sh.xcfg.l10nTable, {
 
 "en-US" : {
 
@@ -46,13 +49,8 @@ global.ZotohLab.klass.merge(global.ZotohLab.Asterix.Shell.xcfg.l10n, {
 
 
 
-
-
-
 });
 
-loggr.info("Loading resource bundle");
-sh.l10nInit(sh.xcfg.l10n);
 
 }).call(this);
 
