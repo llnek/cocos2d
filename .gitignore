@@ -4,6 +4,7 @@ target/
 #lib/
 classes/
 checkouts/
+dbs/
 
 POD-INF/classes/
 POD-INF/lib/
