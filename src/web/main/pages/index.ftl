@@ -16,6 +16,30 @@
   </div>
 </section>
 
+<!-- register+login -->
+<div class="fs-overlay fs-overlay-slidedown">
+  <button type="button" class="fs-overlay-close">Close</button>
+  <nav id="register-form">
+    <ul>
+      <li><a href="#">Register</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Work</a></li>
+      <li><a href="#">Clients</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+  <nav id="login-form">
+    <ul>
+      <li><a href="#">Login</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Work</a></li>
+      <li><a href="#">Clients</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+</div>
+
+
 <#include "/main/footer.ftl" >
 
 <#import "/main/menu.ftl" as my>

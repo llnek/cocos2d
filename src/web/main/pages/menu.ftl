@@ -15,8 +15,8 @@
 <nav id="bt-menu" class="bt-menu">
   <a href="#" class="bt-menu-trigger"><span>Menu</span></a>
   <ul>
-    <li><a href="/users/login">Login</a></li>
-    <li><a href="/users/register">Register</a></li>
+    <li><a id="login-btn" href="javascript:void(0)">Login</a></li>
+    <li><a id="register-btn" href="javascript:void(0)">Register</a></li>
   </ul>
   <@btmenu_social />
 </nav>

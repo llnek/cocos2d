@@ -10,24 +10,27 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
  ??*/
-(function(undef) { var global = this;
+(function(document,undef) { var global = this;
+// courtesy of http://tympanus.net/codrops/
+var eventtype = jQuery.browser.mobile ? 'touchstart' : 'click',
+menu = document.getElementById( 'bt-menu' ),
+overlay = document.createElement('div'),
+resetMenu = function() {
+  classie.remove( menu, 'bt-menu-open' );
+  classie.add( menu, 'bt-menu-close' );
+},
+closeClickFn = function(ev) {
+  resetMenu();
+  overlay.removeEventListener( eventtype, closeClickFn );
+};
+function hideBorderMenu() {
+  classie.remove( menu, 'bt-menu-open' );
+  classie.add( menu, 'bt-menu-close' );
+  overlay.removeEventListener( eventtype, closeClickFn );
+}
+function showBorderMenu() {
 
-function borderMenu() {
-
-  // courtesy of http://tympanus.net/codrops/
-
-  var eventtype = jQuery.browser.mobile ? 'touchstart' : 'click',
-  menu = document.getElementById( 'bt-menu' ),
-  trigger = menu.querySelector( 'a.bt-menu-trigger' ),
-  overlay = document.createElement('div'),
-  resetMenu = function() {
-    classie.remove( menu, 'bt-menu-open' );
-    classie.add( menu, 'bt-menu-close' );
-  },
-  closeClickFn = function(ev) {
-    resetMenu();
-    overlay.removeEventListener( eventtype, closeClickFn );
-  };
+  var trigger = menu.querySelector( 'a.bt-menu-trigger' );
 
   classie.add(overlay, 'bt-overlay');
   menu.appendChild( overlay );
@@ -46,9 +49,12 @@ function borderMenu() {
 
 }
 
-global.AnimatedBorderMenu = { InitBorderMenu: borderMenu };
+global.AnimatedBorderMenu = {
+  InitBorderMenu: showBorderMenu ,
+  FinzBorderMenu: hideBorderMenu
+};
 
-}).call(this);
+}).call(this,document);
 
 
 

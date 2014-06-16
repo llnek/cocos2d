@@ -541,6 +541,109 @@ a {
 }
 
 /* ==========================================================================
+   Register/Login
+   ========================================================================== */
+
+.fs-overlay {
+  background: rgba(153,204,51,0.9);
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+
+  .fs-overlay-close {
+    background: url('/public/ig/media/main/cross.png') no-repeat center center;
+    width: 80px;
+    height: 80px;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    overflow: hidden;
+    border: none;
+    text-indent: 200%;
+    color: transparent;
+    outline: none;
+    z-index: 100;
+  }
+
+  nav {
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    text-align: center;
+    position: relative;
+    top: 50%;
+    height: 60%;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    display: inline-block;
+    height: 100%;
+    position: relative;
+
+    li {
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      display: block;
+      height: 20%;
+      height: calc(100% / 5);
+      min-height: 54px;
+
+      a {
+        -webkit-transition: color 0.2s;
+        transition: color 0.2s;
+        font-size: 54px;
+        font-weight: 300;
+        display: block;
+        color: #fff;
+
+        &:hover,&:focus {
+          color: #e3fcb1;
+        }
+      }
+
+
+
+    }
+
+
+  }
+
+}
+
+.fs-overlay-slidedown {
+  visibility: hidden;
+  -webkit-transform: translateY(-100%);
+  transform: translateY(-100%);
+  -webkit-transition: -webkit-transform 0.4s ease-in-out, visibility 0s 0.4s;
+  transition: transform 0.4s ease-in-out, visibility 0s 0.4s;
+
+  &.open {
+    visibility: visible;
+    -webkit-transform: translateY(0%);
+    transform: translateY(0%);
+    -webkit-transition: -webkit-transform 0.4s ease-in-out;
+    transition: transform 0.4s ease-in-out;
+  }
+
+}
+
+@media screen and (max-height: 30.5em) {
+  .fs-overlay nav {
+    height: 70%;
+    font-size: 34px;
+  }
+  .fs-overlay ul li {
+    min-height: 34px;
+  }
+}
+
+
+/* ==========================================================================
    About Section
    ========================================================================== */
 
