@@ -18,7 +18,7 @@
   (:require [clojure.tools.logging :as log :only (info warn error debug)])
   (:require [clojure.string :as cstr])
   (:use [cmzlabsclj.tardis.core.wfs])
-  (:use [cmzlabsclj.tardis.auth.core :only [MaybeSignupTest
+  (:use [cmzlabsclj.tardis.auth.plugin :only [MaybeSignupTest
                                             MaybeLoginTest] ])
 
   (:import ( com.zotohlab.wflow If FlowPoint Activity
