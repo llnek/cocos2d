@@ -1,6 +1,7 @@
 build.output.folder/
 targets/
 target/
+modules/
 #lib/
 classes/
 checkouts/
