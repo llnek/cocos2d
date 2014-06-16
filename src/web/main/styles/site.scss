@@ -500,7 +500,7 @@ a {
   .container {
     height: 100%;
     display: block;
-    z-index: 2;
+    z-index: 0;
   }
 
   .content-wrapper {
@@ -545,13 +545,14 @@ a {
    ========================================================================== */
 
 .fs-overlay {
-  background: rgba(153,204,51,0.9);
+  //background: rgba(153,204,51,0.9);
+  background: rgba(30,30,30,0.8);
   position: fixed;
   width: 100%;
   height: 100%;
   top: 0;
   left: 0;
-  z-index: 9999;
+  z-index: 333;
 
   .fs-overlay-close {
     background: url('/public/ig/media/main/cross.png') no-repeat center center;
@@ -569,8 +570,8 @@ a {
   }
 
   form {
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
+    //-webkit-transform: translateY(-50%);
+    //transform: translateY(-50%);
     text-align: center;
     position: relative;
     top: 50%;
@@ -611,11 +612,11 @@ a {
 }
 
 .login-section {
-  width: 50%;
-  min-width: 50%;
+  width: 100%;
+  min-width: 100%;
   text-align: center;
   padding: 120px 0;
-  margin: 0 auto;
+  //margin: 0 auto;
   margin-top: 100px;
 
   .box-heading {
@@ -651,6 +652,13 @@ a {
         outline: none;
         color: $darkBgColor;
       }
+    }
+  }
+
+  .forg-pass {
+    a {
+      font-size: 0.8em;
+      color: #ccc;
     }
   }
 

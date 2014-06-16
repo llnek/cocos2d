@@ -20,66 +20,65 @@
 <div class="fs-overlay fs-overlay-slidedown">
   <button type="button" class="fs-overlay-close">Close</button>
   <section class="login-section">
+    <div class="container">
+    <div class="row">
+    <div class="col-lg-4 col-lg-offset-4">
 
     <form id="register-form" action="/" method="POST" role="form">
+    <fieldset>
       <input type="hidden" name="csrf" value=""></input>
 
       <div class="form-group">
-        <!--
-        <label for="useremail">Email address</label>
-        -->
-        <input type="email" class="form-control" id="useremail" placeholder="Enter email"></input>
+        <input type="email" class="form-control" id="rego-email" placeholder="Enter email" autofocus></input>
       </div>
 
       <div class="form-group">
-        <!--
-        <label for="userpassword">Password</label>
-        -->
-        <input type="password" class="form-control" id="userpassword" placeholder="Password"></input>
+        <input type="password" class="form-control" id="rego-password" placeholder="Password"></input>
       </div>
 
       <button type="submit" class="btn btn-default">REGISTER</button>
+    </fieldset>
     </form>
 
     <form id="login-form" action="/" method="POST" role="form">
+    <fieldset>
       <input type="hidden" name="csrf" value=""></input>
       <input type="hidden" name="ref" value=""></input>
 
       <div class="form-group">
-        <!--
-        <label for="useremail">Email address</label>
-        -->
-        <input type="email" class="form-control" id="useremail" placeholder="Enter email"></input>
+        <input type="email" class="form-control" id="login-email" placeholder="Enter email" autofocus></input>
       </div>
 
       <div class="form-group">
-        <!--
-        <label for="userpassword">Password</label>
-        -->
-        <input type="password" class="form-control" id="userpassword" placeholder="Password"></input>
+        <input type="password" class="form-control" id="login-password" placeholder="Password"></input>
       </div>
 
-      <div class="forg-pass">
-      <a href="http://wallbase.cc/user/forgot_pass" class="fp-link">Forgot your password?</a>
+      <div class="forg-pass pull-left">
+      <a id="forgot-password" href="javascript:void(0)">Forgot your password?</a>
       </div>
       <button type="submit" class="btn btn-default">LOGIN</button>
+    </fieldset>
     </form>
 
     <form id="forgot-form" action="/" method="POST" role="form">
-      <div class="back2login"><a href="" class="fp-link">&laquo; back to login screen</a></div>
-
-      <input type="hidden" name="csrf" value=""></input>
-      <div class="form-group">
-        <label for="useremail">Email address</label>
-        <input type="email" class="form-control" id="useremail" placeholder="Enter email"></input>
-      </div>
-
-      <div class="text">
-        An e-mail will be sent to the address you provided when you registered to wallbase. Please follow the instructions in the message.
-      </div>
-
-      <button type="submit" class="btn btn-default">SUBMIT</button>
+    <fieldset>
+        <div class="forg-pass pull-left">
+          <a id="backto-login" href="javascript:void(0)">&laquo; back to login screen</a>
+        </div>
+        <input type="hidden" name="csrf" value=""></input>
+        <div class="form-group">
+          <input type="email" class="form-control" id="forgot-email" placeholder="Enter email" autofocus></input>
+        </div>
+        <button type="submit" class="btn btn-default">FORGOT PASSWORD</button>
+    </fieldset>
     </form>
+
+  </div>
+  </div>
+  </div>
+
+
+
 
   </section>
 

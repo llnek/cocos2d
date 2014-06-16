@@ -35,6 +35,8 @@ function initOverlay() {
   regForm=$('#register-form'),
   loginForm=$('#login-form'),
   forgForm=$('#forgot-form'),
+  forgPwd=$('#forgot-password'),
+  backLogin=$('#backto-login'),
   overlay = document.querySelector( 'div.fs-overlay' ),
   closeBtn = $( 'button.fs-overlay-close' ),
   transEndEventNames = {
@@ -68,14 +70,16 @@ function initOverlay() {
       classie.add( overlay, 'open' );
     }
   }
-  function onklick(reg,login,forgot,z) {
-    if (z) {
+  function onklick(reg,login,forgot,finz,toggle) {
+    if (finz) {
       AnimatedBorderMenu.FinzBorderMenu();
     }
     loginForm.css('display', login);
     regForm.css('display', reg);
     forgForm.css('display', forgot);
-    toggleOverlay();
+    if (toggle===false) {} else {
+      toggleOverlay();
+    }
   }
 
   loginBtn.on( 'click', function() {
@@ -86,6 +90,12 @@ function initOverlay() {
   });
   closeBtn.on('click', function() {
     onklick('none','none','none',false);
+  });
+  forgPwd.on('click',function(){
+    onklick('none', 'none', 'block', false, false);
+  });
+  backLogin.on('click',function(){
+    onklick('none', 'block', 'none', false, false);
   });
 }
 
