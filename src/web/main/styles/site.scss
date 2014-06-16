@@ -568,7 +568,7 @@ a {
     z-index: 100;
   }
 
-  nav {
+  form {
     -webkit-transform: translateY(-50%);
     transform: translateY(-50%);
     text-align: center;
@@ -577,41 +577,19 @@ a {
     height: 60%;
   }
 
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0 auto;
-    display: inline-block;
-    height: 100%;
-    position: relative;
+  a {
+    -webkit-transition: color 0.2s;
+    transition: color 0.2s;
+    font-size: 54px;
+    font-weight: 300;
+    display: block;
+    color: #fff;
 
-    li {
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
-      display: block;
-      height: 20%;
-      height: calc(100% / 5);
-      min-height: 54px;
-
-      a {
-        -webkit-transition: color 0.2s;
-        transition: color 0.2s;
-        font-size: 54px;
-        font-weight: 300;
-        display: block;
-        color: #fff;
-
-        &:hover,&:focus {
-          color: #e3fcb1;
-        }
-      }
-
-
-
+    &:hover,&:focus {
+      color: #e3fcb1;
     }
-
-
   }
+
 
 }
 
@@ -632,29 +610,63 @@ a {
 
 }
 
+.login-section {
+  width: 50%;
+  min-width: 50%;
+  text-align: center;
+  padding: 120px 0;
+  margin: 0 auto;
+  margin-top: 100px;
+
+  .box-heading {
+    margin-bottom: 70px;
+  }
+
+  form {
+    margin: 40px 0 70px;
+
+    .form-group {
+      margin-bottom: 20px;
+
+      .form-control {
+
+        border: 3px solid #fff;
+      }
+
+    }
+
+    button {
+      background-color: #e7ddcc;
+      color: $darkBgColor;
+      border: none;
+      width: 100%;
+      display: block;
+      padding: 8px 25px;
+      font-size: 1.3125em;
+      text-transform: uppercase;
+      font-weight: 600;
+      outline: none;
+
+      &:focus {
+        outline: none;
+        color: $darkBgColor;
+      }
+    }
+  }
+
+}
+
+/*
 @media screen and (max-height: 30.5em) {
-  .fs-overlay nav {
+  .fs-overlay form {
     height: 70%;
     font-size: 34px;
   }
-  .fs-overlay ul li {
+  .fs-overlay input, .fs-overlay button {
     min-height: 34px;
   }
 }
-
-
-/* ==========================================================================
-   About Section
-   ========================================================================== */
-
-.about-section {
-
-  text-align: center;
-  height: auto;
-  min-width: 100%;
-
-}
-
+*/
 
 /* ==========================================================================
    Games Section
@@ -744,101 +756,6 @@ a {
 
 }
 
-/* ==========================================================================
-   Services Section
-   ========================================================================== */
-
-.services-section {
-  width: 100%;
-  min-width: 100%;
-  text-align: center;
-  padding: 120px 0;
-  position: relative;
-}
-
-/* ==========================================================================
-   Contact Section
-   ========================================================================== */
-
-.contact-section {
-  width: 100%;
-  min-width: 100%;
-  text-align: center;
-  padding: 120px 0;
-
-  .box-heading {
-    margin-bottom: 70px;
-  }
-
-  .contact-form {
-    margin: 40px 0 70px;
-
-    .form-group {
-      margin-bottom: 20px;
-
-      .form-control {
-
-        border: 3px solid #fff;
-      }
-
-
-    }
-
-    button {
-      background-color: #e7ddcc;
-      color: $darkBgColor;
-      border: none;
-      width: 100%;
-      display: block;
-      padding: 8px 25px;
-      font-size: 1.3125em;
-      text-transform: uppercase;
-      font-weight: 600;
-      outline: none;
-
-      &:focus {
-        outline: none;
-        color: $darkBgColor;
-      }
-    }
-  }
-
-  #feedback {
-    background: none;
-    width: 100%;
-    height: auto;
-    color: $darkBgColor;
-
-    span {
-      display: block;
-    }
-
-    .fa {
-      margin-right: 10px;
-    }
-
-    .error {
-      background-color: #f3dcdc;
-      padding: 10px;
-
-      .fa {
-        color: #e33a3a;
-      }
-    }
-
-    .success {
-      background-color: #e8f3dc;
-      padding: 10px;
-
-      .fa {
-        color: $darkBgColor;
-      }
-    }
-
-  }
-
-
-}
 
 /* ==========================================================================
    Footer Section

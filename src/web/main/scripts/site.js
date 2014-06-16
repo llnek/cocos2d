@@ -34,6 +34,7 @@ function initOverlay() {
   loginBtn= $('#login-btn' ),
   regForm=$('#register-form'),
   loginForm=$('#login-form'),
+  forgForm=$('#forgot-form'),
   overlay = document.querySelector( 'div.fs-overlay' ),
   closeBtn = $( 'button.fs-overlay-close' ),
   transEndEventNames = {
@@ -67,23 +68,24 @@ function initOverlay() {
       classie.add( overlay, 'open' );
     }
   }
-  function onklick(reg,login,z) {
+  function onklick(reg,login,forgot,z) {
     if (z) {
       AnimatedBorderMenu.FinzBorderMenu();
     }
     loginForm.css('display', login);
     regForm.css('display', reg);
+    forgForm.css('display', forgot);
     toggleOverlay();
   }
 
   loginBtn.on( 'click', function() {
-    onklick('none','block',true);
+    onklick('none','block','none',true);
   });
   regBtn.on( 'click', function() {
-    onklick('block','none',true);
+    onklick('block','none','none',true);
   });
   closeBtn.on('click', function() {
-    onklick('none','none',false);
+    onklick('none','none','none',false);
   });
 }
 

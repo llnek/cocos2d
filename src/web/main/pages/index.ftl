@@ -19,24 +19,70 @@
 <!-- register+login -->
 <div class="fs-overlay fs-overlay-slidedown">
   <button type="button" class="fs-overlay-close">Close</button>
-  <nav id="register-form">
-    <ul>
-      <li><a href="#">Register</a></li>
-      <li><a href="#">About</a></li>
-      <li><a href="#">Work</a></li>
-      <li><a href="#">Clients</a></li>
-      <li><a href="#">Contact</a></li>
-    </ul>
-  </nav>
-  <nav id="login-form">
-    <ul>
-      <li><a href="#">Login</a></li>
-      <li><a href="#">About</a></li>
-      <li><a href="#">Work</a></li>
-      <li><a href="#">Clients</a></li>
-      <li><a href="#">Contact</a></li>
-    </ul>
-  </nav>
+  <section class="login-section">
+
+    <form id="register-form" action="/" method="POST" role="form">
+      <input type="hidden" name="csrf" value=""></input>
+
+      <div class="form-group">
+        <!--
+        <label for="useremail">Email address</label>
+        -->
+        <input type="email" class="form-control" id="useremail" placeholder="Enter email"></input>
+      </div>
+
+      <div class="form-group">
+        <!--
+        <label for="userpassword">Password</label>
+        -->
+        <input type="password" class="form-control" id="userpassword" placeholder="Password"></input>
+      </div>
+
+      <button type="submit" class="btn btn-default">REGISTER</button>
+    </form>
+
+    <form id="login-form" action="/" method="POST" role="form">
+      <input type="hidden" name="csrf" value=""></input>
+      <input type="hidden" name="ref" value=""></input>
+
+      <div class="form-group">
+        <!--
+        <label for="useremail">Email address</label>
+        -->
+        <input type="email" class="form-control" id="useremail" placeholder="Enter email"></input>
+      </div>
+
+      <div class="form-group">
+        <!--
+        <label for="userpassword">Password</label>
+        -->
+        <input type="password" class="form-control" id="userpassword" placeholder="Password"></input>
+      </div>
+
+      <div class="forg-pass">
+      <a href="http://wallbase.cc/user/forgot_pass" class="fp-link">Forgot your password?</a>
+      </div>
+      <button type="submit" class="btn btn-default">LOGIN</button>
+    </form>
+
+    <form id="forgot-form" action="/" method="POST" role="form">
+      <div class="back2login"><a href="" class="fp-link">&laquo; back to login screen</a></div>
+
+      <input type="hidden" name="csrf" value=""></input>
+      <div class="form-group">
+        <label for="useremail">Email address</label>
+        <input type="email" class="form-control" id="useremail" placeholder="Enter email"></input>
+      </div>
+
+      <div class="text">
+        An e-mail will be sent to the address you provided when you registered to wallbase. Please follow the instructions in the message.
+      </div>
+
+      <button type="submit" class="btn btn-default">SUBMIT</button>
+    </form>
+
+  </section>
+
 </div>
 
 
