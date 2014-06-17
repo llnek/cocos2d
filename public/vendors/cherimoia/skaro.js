@@ -188,6 +188,11 @@ var SkaroJS = {
     return Math.floor(Math.random() * limit);
   },
 
+  toBasicAuthHeader: function(user,pwd) {
+    var str='Basic ' + PHPJS.url.base64_encode(""+user+":"+pwd);
+    return [ 'Authorization', str ];
+  },
+
   merge: function(original, extended) {
     for( var key in extended ) {
       var ext = extended[key];

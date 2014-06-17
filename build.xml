@@ -97,6 +97,7 @@
       <fileset file="${basedir}/public/vendors/zepto/zepto.min.js"/>
       <fileset file="${basedir}/public/vendors/modernizr/modernizr.custom.js"/>
       -->
+
 <!--
     <delete file="${basedir}/public/c/webcommon.js" quiet="true"/>
     <concat destfile="${basedir}/public/c/webcommon.js" append="true">
@@ -106,8 +107,13 @@
       <fileset file="${basedir}/public/vendors/mustache/mustache.js"/>
       <fileset file="${basedir}/public/vendors/helpers/dbg.js"/>
       <fileset file="${basedir}/public/vendors/jquery_plugins/detectmobilebrowser.js"/>
+      <fileset file="${basedir}/public/vendors/sjcl/sjcl.js"/>
+      <fileset file="${basedir}/public/vendors/phpjs/phpjs.js"/>
     </concat>
 -->
+
+
+
   </target>
 
   <!-- target: test-build

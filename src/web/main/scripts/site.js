@@ -37,6 +37,9 @@ function initOverlay() {
   forgForm=$('#forgot-form'),
   forgPwd=$('#forgot-password'),
   backLogin=$('#backto-login'),
+  regoSend=$('#register-send'),
+  loginSend=$('#login-send'),
+  forgSend=$('#forgot-send'),
   overlay = document.querySelector( 'div.fs-overlay' ),
   closeBtn = $( 'button.fs-overlay-close' ),
   transEndEventNames = {
@@ -96,6 +99,53 @@ function initOverlay() {
   });
   backLogin.on('click',function(){
     onklick('none', 'block', 'none', false, false);
+  });
+
+  function packFormAsJson(formObj) {
+    return _.reduce($('input',formObj), function(memo, obj) {
+      memo[obj.name] = $(obj).val();
+      return memo;
+    }, {});
+  }
+
+  function postToServer(formId,uid,pwd) {
+    var form= $(formId),
+    extras={},
+    json= packFormAsJson(form),
+    url= form.attr('action');
+    if (SkaroJS.echt(uid)) {
+      var rc= SkaroJS.toBasicAuthHeader(
+                $('input[name="'+uid+'"]', form).val(),
+                $('input[name="'+pwd+'"]', form).val());
+      extras[rc[0]] = rc[1];
+    }
+    $.ajax(url,{
+      contentType: 'application/json',
+      headers: extras,
+      data: JSON.stringify(json),
+      type: 'POST',
+      dataType: 'json'
+    }).done(function(data,s,xhr) {
+      alert('ok');
+    }).fail(function(data,s,ex) {
+      alert('shit' + ex);
+    });
+
+  }
+
+  regoSend.on('click',function(evt){
+    skaro.pde(evt);
+    postToServer('#register-form', 'rego-email','rego-password');
+  });
+
+  loginSend.on('click',function(evt){
+    skaro.pde(evt);
+    postToServer('#login-form', 'login-email','login-password');
+  });
+
+  forgSend.on('click',function(evt){
+    skaro.pde(evt);
+    postToServer('#forgot-form');
   });
 }
 
