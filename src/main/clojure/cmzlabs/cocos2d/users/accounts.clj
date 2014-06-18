@@ -16,14 +16,16 @@
   cmzlabs.cocos2d.users.accounts
 
   (:require [clojure.tools.logging :as log :only (info warn error debug)])
+  (:require [clojure.data.json :as json])
   (:require [clojure.string :as cstr])
   (:use [cmzlabsclj.tardis.core.wfs])
   (:use [cmzlabsclj.tardis.auth.plugin :only [MaybeSignupTest
                                             MaybeLoginTest] ])
-
+  (:import (com.zotohlab.gallifrey.runtime DuplicateUser))
   (:import ( com.zotohlab.wflow If FlowPoint Activity
                                  Pipeline PipelineDelegate PTask Work))
   (:import (com.zotohlab.gallifrey.io HTTPEvent HTTPResult))
+  (:import (com.zotohlab.frwk.io XData))
   (:import (com.zotohlab.wflow.core Job)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -36,8 +38,16 @@
   (DefWFTask
     (fn [fw ^Job job arg]
       (let [ ^HTTPEvent evt (.event job)
-             ^HTTPResult res (.getResultObj evt) ]
-        (.setStatus res 500)
+             ^HTTPResult res (.getResultObj evt)
+             err (:error (.getLastResult job)) ]
+        (cond
+          (instance? DuplicateUser err)
+          (let [ json { :error { :msg "An account with same id already exist." }} ]
+            (.setStatus res 409)
+            (.setContent res (XData. (json/write-str json))))
+
+          :else
+          (.setStatus res 400))
         (.replyResult evt)))
   ))
 
@@ -51,10 +61,13 @@
   (DefWFTask
     (fn [ fw ^Job job arg]
       (let [ ^HTTPEvent evt (.event job)
-             ^HTTPResult res (.getResultObj evt) ]
+             ^HTTPResult res (.getResultObj evt)
+             json { :status { :code 200 } }
+             acct (:account (.getLastResult job)) ]
+        (log/debug "successfully signed up new account " acct)
+        ;;(do cookie stuff)
         (.setStatus res 200)
-        (.setContent res "You're signed up!!")
-        (.setHeader res "content-type" "text/plain")
+        (.setContent res (XData. (json/write-str json)))
         (.replyResult evt)))
   ))
 
@@ -84,7 +97,7 @@
     (fn [ fw ^Job job arg]
       (let [ ^HTTPEvent evt (.event job)
              ^HTTPResult res (.getResultObj evt) ]
-        (.setStatus res 500)
+        (.setStatus res 403)
         (.replyResult evt)))
   ))
 
@@ -100,10 +113,11 @@
       (let [ ^HTTPEvent evt (.event job)
              ^cmzlabsclj.tardis.io.webss.WebSession
              mvs (.getSession evt)
+             acct (:account (.getLastResult job))
+             json { :status { :code 200 } }
              ^HTTPResult res (.getResultObj evt) ]
         (.setStatus res 200)
-        (.setContent res "You're logged-in !!!")
-        (.setHeader res "content-type" "text/plain")
+        (.setContent res (XData. (json/write-str json)))
         (.replyResult evt)))
   ))
 

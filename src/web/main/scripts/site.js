@@ -103,7 +103,8 @@ function initOverlay() {
 
   function packFormAsJson(formObj) {
     return _.reduce($('input',formObj), function(memo, obj) {
-      memo[obj.name] = $(obj).val();
+      var pobj=$(obj);
+      memo[ pobj.attr("data-name")] = pobj.val();
       return memo;
     }, {});
   }
@@ -128,14 +129,14 @@ function initOverlay() {
     }).done(function(data,s,xhr) {
       alert('ok');
     }).fail(function(data,s,ex) {
-      alert('shit' + ex);
+      alert('shit: ' + ex);
     });
 
   }
 
   regoSend.on('click',function(evt){
     skaro.pde(evt);
-    postToServer('#register-form', 'rego-email','rego-password');
+    postToServer('#register-form');
   });
 
   loginSend.on('click',function(evt){
