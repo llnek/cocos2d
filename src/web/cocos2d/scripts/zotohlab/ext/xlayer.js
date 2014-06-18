@@ -44,7 +44,11 @@ asterix.XLayer = cc.Layer.extend({
   },
 
   addItem: function(n) {
-    this.getNode().addChild(n, this.lastZix, ++this.lastTag);
+    var p= this.getNode();
+    if (n instanceof cc.Sprite && p instanceof cc.SpriteBatchNode) {
+      n.setBatchNode(p);
+    }
+    p.addChild(n, this.lastZix, ++this.lastTag);
   },
 
   init: function() {

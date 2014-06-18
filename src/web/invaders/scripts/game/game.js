@@ -174,10 +174,7 @@ var GameLayer = asterix.XGameLayer.extend({
       x += alien.width + csts.OFF_X;
     }
 
-    aa= new ivs.EntityPlayer(cw.x, 5 * csts.TILE + ship.height, { coolDown: 0.8});
-    this.addItem(aa.create());
-    this.players.push( aa);
-    this.actor=aa;
+    this.spawnPlayer();
   },
 
   initMotionTimers: function() {

@@ -20,17 +20,18 @@ SkaroJS= global.SkaroJS;
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
+
 var Ship = cc.Sprite.extend({
 
   ammoCount: 0,
 
   coolDown: function() {
-    this.initWithSpriteFrameName(this.options.frames[0]);
+    this.setSpriteFrame(this.frame0);
     this.ammoCount= 0;
   },
 
   loadAmmo: function() {
-    this.initWithSpriteFrameName(this.options.frames[1]);
+    this.setSpriteFrame(this.frame1);
     this.ammoCount= 1;
   },
 
@@ -40,12 +41,15 @@ var Ship = cc.Sprite.extend({
 
   ctor: function(x,y,options) {
     this.options= options;
+    this.frame0 = cc.spriteFrameCache.getSpriteFrame(this.options.frames[0]);
+    this.frame1 = cc.spriteFrameCache.getSpriteFrame(this.options.frames[1]);
     this._super();
     this.loadAmmo();
     this.setPosition(x,y);
   }
 
 });
+
 
 asterix.Invaders.EntityPlayer = asterix.XEntity.xtends({
 
