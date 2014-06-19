@@ -89,7 +89,7 @@ sh.xcfg = SkaroJS.merge( asterix.XConfig, {
 // js files
 //////////////////////////////////////////////////////////////////////////////
 
-global.document.ccConfig.initAppFiles(sh.xcfg.appid, [
+global.document.ccConfig.init(sh.xcfg.appid, [
 
       'game/tetris/entities/block.js',
       'game/tetris/entities/shape.js',
@@ -103,7 +103,7 @@ global.document.ccConfig.initAppFiles(sh.xcfg.appid, [
       'game/tetris/game.js',
       'game/tetris/mmenu.js',
       'game/tetris/splash.js'
-]);
+], {} );
 
 
 }).call(this);

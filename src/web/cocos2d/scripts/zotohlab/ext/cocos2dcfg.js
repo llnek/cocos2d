@@ -21,7 +21,7 @@ cfg= {
   frameRate: 60,
 
   // 0(default), 1(Canvas only), 2(WebGL only)
-  renderMode: 1,
+  renderMode: 0,
 
   id: 'gameCanvas',
 
@@ -38,7 +38,7 @@ cfg= {
     */
   ],
 
-  initAppFiles: function(appid,files) {
+  init: function(appid,files,options) {
     files = files || [];
     if (files.length === 0) {
       // for release mode.
@@ -67,6 +67,8 @@ cfg= {
     _.each(this.appFiles, function(f, idx) {
       this.jsList.push( this.srcDir + f);
     }, this);
+
+    SkaroJS.merge(cfg, options || {});
   },
 
   //0 to turn debug off, 1 for basic debug, and 2 for full debug

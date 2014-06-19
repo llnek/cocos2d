@@ -79,7 +79,7 @@ sh.xcfg = SkaroJS.merge( asterix.XConfig, {
 });
 
 
-global.document.ccConfig.initAppFiles(sh.xcfg.appid, [
+global.document.ccConfig.init(sh.xcfg.appid, [
 
       'game/pong/entities/entity.js',
       'game/pong/entities/ball.js',
@@ -88,7 +88,7 @@ global.document.ccConfig.initAppFiles(sh.xcfg.appid, [
       'game/pong/game.js',
       'game/pong/mmenu.js',
       'game/pong/splash.js'
-]);
+], {} );
 
 
 }).call(this);

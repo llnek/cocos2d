@@ -26,6 +26,7 @@
 
     <form id="register-form" action="/users/register" method="POST" role="form">
     <fieldset>
+      <input data-name="nonce_token" type="hidden" name="nonce_token" value="1"></input>
       <input data-name="csrf_token" type="hidden" name="csrf_token" value=""></input>
 
       <div class="form-group">
@@ -46,7 +47,7 @@
 
     <form id="login-form" action="/users/login" method="POST" role="form">
         <fieldset>
-
+          <input data-name="nonce_token" type="hidden" name="nonce_token" value="1"></input>
           <input data-name="csrf_token" type="hidden" name="csrf_token" value=""></input>
           <input data-name="xref" type="hidden" name="xref" value=""></input>
 

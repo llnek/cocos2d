@@ -24,6 +24,7 @@
 
   (:use [cmzlabsclj.tardis.core.constants])
   (:use [cmzlabsclj.tardis.core.wfs])
+  (:use [cmzlabsclj.tardis.impl.ext :only [GetAppKeyFromEvent] ])
 
   (:import (com.zotohlab.gallifrey.core Container ConfigError ))
   (:import (org.apache.commons.io FileUtils))
@@ -100,7 +101,7 @@
 (defn- dftModel ""
 
   ^Map
-  []
+  [^HTTPEvent evt]
 
   (let [ tags (HashMap.)
          dm (HashMap.) ]
@@ -111,6 +112,7 @@
       (.put "stylesheets" (ArrayList.))
       (.put "scripts" (ArrayList.))
       (.put "metatags" tags)
+      (.put "appkey" (GetAppKeyFromEvent evt))
       (.put "body" (HashMap.)))
     (.put tags "keywords" "web browser games mobile ios android windows phone")
     (.put tags "description" "Hello World!")
@@ -125,7 +127,7 @@
   ^Map
   [^HTTPEvent evt]
 
-  (let [ dm (dftModel)
+  (let [ dm (dftModel evt)
          ^Map bd (.get dm "body")
          ^List jss (.get dm "scripts")
          ^List css (.get dm "stylesheets") ]
@@ -140,7 +142,7 @@
   ^Map
   [^HTTPEvent evt]
 
-  (let [ dm (dftModel)
+  (let [ dm (dftModel evt)
          ^Map bd (.get dm "body")
          ^List jss (.get dm "scripts")
          ^List css (.get dm "stylesheets") ]
@@ -158,7 +160,7 @@
 
   (let [ uri (.getUri evt)
          ^Map mf (get @GAMES-HASH (.getUri evt))
-         dm (dftModel)
+         dm (dftModel evt)
          ^Map tags (.get dm "metatags")
          ^Map bd (.get dm "body")
          ^List jss (.get dm "scripts")
@@ -182,7 +184,7 @@
   ^Map
   [^HTTPEvent evt]
 
-  (let [ dm (dftModel)
+  (let [ dm (dftModel evt)
          ^Map bd (.get dm "body")
          ^List jss (.get dm "scripts")
          ^List css (.get dm "stylesheets") ]

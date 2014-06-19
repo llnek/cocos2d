@@ -96,7 +96,7 @@ sh.xcfg = SkaroJS.merge( asterix.XConfig, {
 });
 
 
-global.document.ccConfig.initAppFiles(sh.xcfg.appid, [
+global.document.ccConfig.init(sh.xcfg.appid, [
 
   'game/breakout/entities/explode.js',
   'game/breakout/entities/player.js',
@@ -105,7 +105,7 @@ global.document.ccConfig.initAppFiles(sh.xcfg.appid, [
   'game/breakout/game.js',
   'game/breakout/mmenu.js',
   'game/breakout/splash.js'
-]);
+], {});
 
 
 

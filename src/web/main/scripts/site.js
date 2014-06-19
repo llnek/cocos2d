@@ -102,9 +102,15 @@ function initOverlay() {
   });
 
   function packFormAsJson(formObj) {
+    var nonce= $('#pgfooter').attr('data-ref') || '';
     return _.reduce($('input',formObj), function(memo, obj) {
       var pobj=$(obj);
-      memo[ pobj.attr("data-name")] = pobj.val();
+      var dn= pobj.attr("data-name");
+      var dv= pobj.val() || '';
+      if (dn === 'credential' && dv && nonce) {
+        dv= CryptoJS.AES.encrypt(dv, nonce).toString();
+      }
+      memo[ dn] = dv;
       return memo;
     }, {});
   }

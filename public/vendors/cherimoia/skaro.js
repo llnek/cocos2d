@@ -193,6 +193,11 @@ var SkaroJS = {
     return [ 'Authorization', str ];
   },
 
+  hmac: function(text, key) {
+    // returns hex string
+    return CryptoJS.HmacSHA512(text, key);
+  },
+
   merge: function(original, extended) {
     for( var key in extended ) {
       var ext = extended[key];
