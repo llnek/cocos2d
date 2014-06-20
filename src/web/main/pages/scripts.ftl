@@ -13,7 +13,6 @@
 <script src="${jsspath}"></script>
 </#list>
 
-<script src="/public/vendors/cherimoia/skaro.js"></script>
 <script src="/public/vendors/btmenu/btmenu.js"></script>
 <script src="/public/scripts/site.js"></script>
 

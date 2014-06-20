@@ -107,10 +107,10 @@ function initOverlay() {
       var pobj=$(obj);
       var dn= pobj.attr("data-name");
       var dv= pobj.val() || '';
-      if (dn === 'credential' && dv && nonce) {
-        dv= CryptoJS.AES.encrypt(dv, nonce).toString();
+      if ( (dn === 'credential'|| dn=== 'principal') && dv && nonce) {
+        dv= SkaroJS.caesarEncrypt(PHPJS.url.base64_encode(dv), 13);
       }
-      memo[ dn] = dv;
+      memo[dn] = dv;
       return memo;
     }, {});
   }
