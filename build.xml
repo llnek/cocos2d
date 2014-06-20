@@ -111,6 +111,8 @@
       <fileset file="${basedir}/public/vendors/cryptojs/hmac-sha512.js"/>
       <fileset file="${basedir}/public/vendors/cryptojs/aes.js"/>
       <fileset file="${basedir}/public/vendors/phpjs/phpjs.js"/>
+      <fileset file="${basedir}/public/vendors/cherimoia/skaro.js"/>
+      <fileset file="${basedir}/public/vendors/cherimoia/caesar.js"/>
     </concat>
 -->
 
