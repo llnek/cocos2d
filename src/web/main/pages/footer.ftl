@@ -1,5 +1,5 @@
 
-<footer id= "pgfooter" class="footer" data-ref= "${appkey}">
+<footer id= "pgfooter" class="footer">
   <div class="container">
     <div class="social-icons light-icons">
       <img src="/public/ig/media/main/ZotohLab_x100.png" alt="logo"/>

@@ -122,6 +122,36 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+(defn- interpolateRegisterPage ""
+
+  ^Map
+  [^HTTPEvent evt]
+
+  (let [ dm (dftModel evt)
+         ^Map bd (.get dm "body")
+         ^List jss (.get dm "scripts")
+         ^List css (.get dm "stylesheets") ]
+    (.put bd "content" "/main/users/register.ftl")
+    dm
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- interpolateLoginPage ""
+
+  ^Map
+  [^HTTPEvent evt]
+
+  (let [ dm (dftModel evt)
+         ^Map bd (.get dm "body")
+         ^List jss (.get dm "scripts")
+         ^List css (.get dm "stylesheets") ]
+    (.put bd "content" "/main/users/login.ftl")
+    dm
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 (defn- interpolateIndexPage ""
 
   ^Map
@@ -147,7 +177,7 @@
          ^List jss (.get dm "scripts")
          ^List css (.get dm "stylesheets") ]
     (.put bd "games" @GAMES-MNFS)
-    (.put bd "content" "/main/games.ftl")
+    (.put bd "content" "/main/games/games.ftl")
     dm
   ))
 
@@ -173,7 +203,7 @@
     (.put tags "x5-fullscreen" "true")
     (.put tags "360-fullscreen" "true")
     (.put bd "games" @GAMES-MNFS)
-    (.put bd "content" "/main/arena.ftl")
+    (.put bd "content" "/main/games/arena.ftl")
     dm
   ))
 
@@ -192,7 +222,7 @@
     (.add css "/public/vendors/owl-carousel/owl.theme.css")
     (.add jss "/public/vendors/owl-carousel/owl.carousel.min.js")
     (.put bd "picks" @GAMES-MNFS)
-    (.put bd "content" "/main/picks.ftl")
+    (.put bd "content" "/main/games/picks.ftl")
     dm
   ))
 
@@ -220,6 +250,34 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+(deftype RegisterPage [] PipelineDelegate
+
+  (getStartActivity [_  pipe]
+    (require 'cmzlabs.cocos2d.site.core)
+    (doShowPage interpolateRegisterPage))
+
+  (onStop [_ pipe]
+    (log/info "nothing to be done here, just stop please."))
+
+  (onError [ _ err curPt]
+    (log/info "Oops, I got an error!")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(deftype LoginPage [] PipelineDelegate
+
+  (getStartActivity [_  pipe]
+    (require 'cmzlabs.cocos2d.site.core)
+    (doShowPage interpolateLoginPage))
+
+  (onStop [_ pipe]
+    (log/info "nothing to be done here, just stop please."))
+
+  (onError [ _ err curPt]
+    (log/info "Oops, I got an error!")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 (deftype IndexPage [] PipelineDelegate
 
   (getStartActivity [_  pipe]
@@ -231,6 +289,8 @@
 
   (onError [ _ err curPt]
     (log/info "Oops, I got an error!")))
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
