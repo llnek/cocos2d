@@ -193,9 +193,16 @@ var SkaroJS = {
     return [ 'Authorization', str ];
   },
 
-  hmac: function(text, key) {
-    // returns hex string
-    return CryptoJS.HmacSHA512(text, key);
+  toUtf8: function(s) {
+    return CryptoJS.enc.Utf8.stringify( CryptoJS.enc.Utf8.parse(s));
+  },
+
+  base64_encode: function(s) {
+    return CryptoJS.enc.Base64.stringify( CryptoJS.enc.Utf8.parse(s));
+  },
+
+  base64_decode: function(s) {
+    return CryptoJS.enc.Utf8.stringify( CryptoJS.enc.Base64.parse(s));
   },
 
   merge: function(original, extended) {

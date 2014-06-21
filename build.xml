@@ -107,10 +107,9 @@
       <fileset file="${basedir}/public/vendors/mustache/mustache.js"/>
       <fileset file="${basedir}/public/vendors/helpers/dbg.js"/>
       <fileset file="${basedir}/public/vendors/jquery_plugins/detectmobilebrowser.js"/>
-      <fileset file="${basedir}/public/vendors/cryptojs/sha512.js"/>
-      <fileset file="${basedir}/public/vendors/cryptojs/hmac-sha512.js"/>
-      <fileset file="${basedir}/public/vendors/cryptojs/aes.js"/>
-      <fileset file="${basedir}/public/vendors/phpjs/phpjs.js"/>
+      <fileset file="${basedir}/public/vendors/crypto-js/components/core-min.js"/>
+      <fileset file="${basedir}/public/vendors/crypto-js/components/enc-utf16-min.js"/>
+      <fileset file="${basedir}/public/vendors/crypto-js/components/enc-base64-min.js"/>
       <fileset file="${basedir}/public/vendors/cherimoia/skaro.js"/>
       <fileset file="${basedir}/public/vendors/cherimoia/caesar.js"/>
     </concat>

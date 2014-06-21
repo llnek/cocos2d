@@ -85,6 +85,7 @@ function initOverlay() {
     }
   }
 
+  /*
   loginBtn.on( 'click', function() {
     onklick('none','block','none',true);
   });
@@ -100,6 +101,7 @@ function initOverlay() {
   backLogin.on('click',function(){
     onklick('none', 'block', 'none', false, false);
   });
+  */
 
   function packFormAsJson(formObj) {
     var nonce= $('#pgfooter').attr('data-ref') || '';
@@ -108,7 +110,7 @@ function initOverlay() {
       var dn= pobj.attr("data-name");
       var dv= pobj.val() || '';
       if ( (dn === 'credential'|| dn=== 'principal') && dv && nonce) {
-        dv= SkaroJS.caesarEncrypt(PHPJS.url.base64_encode(dv), 13);
+        dv= SkaroJS.caesarEncrypt(SkaroJS.base64_encode(dv), 13);
       }
       memo[dn] = dv;
       return memo;
