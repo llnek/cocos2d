@@ -117,7 +117,7 @@ function initOverlay() {
     }, {});
   }
 
-  function postToServer(formId,uid,pwd) {
+  function postToServer(formId,ok,error, uid,pwd) {
     var form= $(formId),
     extras={},
     json= packFormAsJson(form),
@@ -134,27 +134,39 @@ function initOverlay() {
       data: JSON.stringify(json),
       type: 'POST',
       dataType: 'json'
-    }).done(function(data,s,xhr) {
-      alert('ok');
-    }).fail(function(data,s,ex) {
-      alert('shit: ' + ex);
-    });
+
+    }).done(ok).fail(err);
 
   }
 
   regoSend.on('click',function(evt){
     skaro.pde(evt);
-    postToServer('#register-form');
+    postToServer('#register-form',function() {
+      document.location.href= document.location.origin + "/users/login";
+    }, function(){
+      alert('poo!');
+    });
   });
 
   loginSend.on('click',function(evt){
     skaro.pde(evt);
-    postToServer('#login-form', 'login-email','login-password');
+    postToServer('#login-form',
+                 function() {
+
+                 },
+                 function() {
+
+                 },
+                 'login-email','login-password');
   });
 
   forgSend.on('click',function(evt){
     skaro.pde(evt);
-    postToServer('#forgot-form');
+    postToServer('#forgot-form',
+                 function() {
+                 },
+                 function() {
+                 });
   });
 }
 

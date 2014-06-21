@@ -127,13 +127,11 @@
   ^Map
   [^HTTPEvent evt]
 
-  (let [ magic (Base64/encodeBase64String (Bytesify "the answer is: 32"))
-         dm (dftModel evt)
+  (let [ dm (dftModel evt)
          ^Map bd (.get dm "body")
          ^List jss (.get dm "scripts")
          ^List css (.get dm "stylesheets") ]
     (.put bd "content" "/main/users/register.ftl")
-    (.put dm "magic" (CaesarEncrypt magic 13))
     dm
   ))
 

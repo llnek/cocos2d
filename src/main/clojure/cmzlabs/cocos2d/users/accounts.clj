@@ -65,7 +65,6 @@
              json { :status { :code 200 } }
              acct (:account (.getLastResult job)) ]
         (log/debug "successfully signed up new account " acct)
-        ;;(do cookie stuff)
         (.setStatus res 200)
         (.setContent res (XData. (json/write-str json)))
         (.replyResult evt)))
@@ -78,7 +77,7 @@
   (getStartActivity [_  pipe]
     (require 'cmzlabs.cocos2d.users.accounts)
     (log/debug "signup pipe-line - called.")
-    (If. (MaybeSignupTest) (doSignupOK) (doSignupFail)))
+    (If. (MaybeSignupTest "32") (doSignupOK) (doSignupFail)))
 
   (onStop [_ pipe]
     (log/info "nothing to be done here, just stop please."))
