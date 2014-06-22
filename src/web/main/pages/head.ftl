@@ -27,6 +27,7 @@
 <link rel="stylesheet" href="${csspath}"/>
 </#list>
 
+<link rel="stylesheet" href="/public/vendors/remodal/jquery.remodal.css"/>
 <link rel="stylesheet" href="/public/vendors/btmenu/btmenu.css"/>
 <link rel="stylesheet" href="/public/styles/main/site.css"/>
 
