@@ -1,11 +1,14 @@
 
-<div class="remodal" data-remodal-id="pg-modal"
-  data-remodal-options='{ "hashTracking": false }'>
-  <div class="pg-modal-content">
-    <br/>
-    <a class="remodal-cancel" href="#">Cancel</a>
-    <a class="remodal-confirm" href="#">OK</a>
+<div class="md-modal md-effect-19" id="pg-modal">
+  <div class="md-content">
+    <div class="pg-modal-content">
+    </div>
+    <!--
+    <button class="md-close">Close me!</button>
+    -->
   </div>
 </div>
+
+<div class="md-overlay"></div><!-- the overlay element -->
 
 

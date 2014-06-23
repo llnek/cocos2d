@@ -27,8 +27,8 @@
 <link rel="stylesheet" href="${csspath}"/>
 </#list>
 
-<link rel="stylesheet" href="/public/vendors/remodal/jquery.remodal.css"/>
-<link rel="stylesheet" href="/public/vendors/btmenu/btmenu.css"/>
+<link rel="stylesheet" href="/public/vendors/codrops/modal-win.css"/>
+<link rel="stylesheet" href="/public/vendors/codrops/btmenu.css"/>
 <link rel="stylesheet" href="/public/styles/main/site.css"/>
 
 <script src="/public/vendors/modernizr/modernizr.custom.js"></script>

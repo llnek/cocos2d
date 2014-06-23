@@ -11,6 +11,7 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
  ??*/
 (function(document, undef){ "use strict"; var global = this, _ = global._ , $ = global.jQuery;
+var ModalWindow=global.ModalWindow;
 var skaro = global.SkaroJS;
 
 /////////////////////////////////////////////
@@ -146,34 +147,28 @@ function initOverlay() {
       if (xhr.status === 409) {
         reason= "Account with same id already exist.";
       }
-      var xxx= '<p>Account creation failed: ' + reason + '</p><br/><a class="remodal-confirm" href="#">OK</a>';
-      var m=$('div.remodal'),
+      var xxx= '<p>Account creation failed: ' + reason + '</p><br/><button class="md-confirm">OK</button>';
+      var m=$('#pg-modal'),
       mc= $('div.pg-modal-content', m);
       mc.empty();
       mc.html(xxx);
-      var inst = m.remodal();
       var onok= function () {
-        $(document).off('confirm close', 'div.remodal', onok);
-        inst.close();
         mc.empty();
       };
-      $(document).on('confirm close', 'div.remodal', onok);
+      var inst = ModalWindow.Init('#pg-modal', true, onok);
       inst.open();
     }
     function ok() {
-      var xxx= '<p>Account created.</p><br/><a class="remodal-confirm" href="#">OK</a>';
-      var m=$('div.remodal'),
+      var xxx= '<p>Account created.</p><br/><button class="md-confirm">OK</button>';
+      var m=$('#pg-modal'),
       mc= $('div.pg-modal-content', m);
       mc.empty();
       mc.html(xxx);
-      var inst = m.remodal();
       var onok= function () {
-        $(document).off('confirm close', 'div.remodal', onok);
-        inst.close();
         mc.empty();
         document.location.href= document.location.origin + "/users/login";
       };
-      $(document).on('confirm close', 'div.remodal', onok);
+      var inst = ModalWindow.Init('#pg-modal', true, onok);
       inst.open();
     }
     postToServer('#register-form',ok,ecb);
