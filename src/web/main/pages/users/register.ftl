@@ -11,7 +11,11 @@
       <input data-name="csrf_token" type="hidden" name="csrf_token" value=""></input>
 
       <div class="form-group">
-        <input data-name= "principal" type="email" class="form-control" name="rego-email" placeholder="Enter email" autofocus></input>
+        <input data-name= "principal" type="text" class="form-control" name="rego-user" placeholder="Enter UserId" autofocus></input>
+      </div>
+
+      <div class="form-group">
+        <input data-name= "email" type="email" class="form-control" name="rego-email" placeholder="Enter email"></input>
       </div>
 
       <div class="form-group">

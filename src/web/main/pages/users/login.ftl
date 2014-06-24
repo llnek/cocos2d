@@ -14,7 +14,7 @@
           <div class="login-feedback">
           </div>
           <div class="form-group">
-            <input data-name="principal" type="email" class="form-control" name="login-email" placeholder="Enter email" autofocus></input>
+            <input data-name="principal" type="text" class="form-control" name="login-user" placeholder="Enter UserId" autofocus></input>
           </div>
 
           <div class="form-group">
