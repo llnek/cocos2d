@@ -103,7 +103,6 @@
     <concat destfile="${basedir}/public/c/webcommon.js" append="true">
       <fileset file="${basedir}/public/vendors/underscore/underscore-min.js"/>
       <fileset file="${basedir}/public/vendors/jquery/jquery-2.1.1.min.js"/>
-      <fileset file="${basedir}/public/vendors/codrops/modal-win.js"/>
       <fileset file="${basedir}/public/vendors/l10njs/l10n.min.js"/>
       <fileset file="${basedir}/public/vendors/mustache/mustache.js"/>
       <fileset file="${basedir}/public/vendors/helpers/dbg.js"/>

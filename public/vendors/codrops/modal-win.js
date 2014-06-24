@@ -23,7 +23,7 @@ function init(modalsel, perspective, yes,no) {
     if (no) { no(); }
   };
 
-  if (cancel) { cancel.on('click', cn); }
+  if (cancel && cancel.length > 0) { cancel.on('click', cn); }
   confirm.on('click', cf);
 
   return {
@@ -36,6 +36,13 @@ function init(modalsel, perspective, yes,no) {
           $(document.documentElement).addClass( 'md-perspective' );
         }, 25 );
       }
+      setTimeout(function() {
+        if (cancel && cancel.length > 0) {
+          $('.md-cancel').focus();
+        } else {
+          $('.md-confirm').focus();
+        }
+      }, 80);
     }
   };
 }

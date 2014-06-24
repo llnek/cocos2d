@@ -3,6 +3,7 @@ Styles for the html/body for special modal where we want 3d effects
 Note that we need a container wrapping all content on the page for the
 perspective effects (not including the modals and the overlay).
 */
+@import url(http://fonts.googleapis.com/css?family=Lato:300,400,700);
 .md-perspective {
   height: 100%;
   overflow: hidden; }
@@ -35,6 +36,21 @@ perspective effects (not including the modals and the overlay).
   -moz-transform: translateX(-50%) translateY(-50%);
   -ms-transform: translateX(-50%) translateY(-50%);
   transform: translateX(-50%) translateY(-50%); }
+  .md-modal button {
+    border: none;
+    padding: 0.6em 1.2em;
+    background: #c0392b;
+    color: #fff;
+    font-family: 'Lato', Calibri, Arial, sans-serif;
+    font-size: 1em;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: inline-block;
+    margin: 3px 2px;
+    border-radius: 2px; }
+    .md-modal button:hover {
+      background: #A5281B; }
 
 .md-show {
   visibility: visible; }
@@ -139,14 +155,17 @@ perspective effects (not including the modals and the overlay).
   50% {
     -webkit-transform: rotateX(10deg);
     -webkit-animation-timing-function: ease-out; } }
+
 @-moz-keyframes OpenTop {
   50% {
     -moz-transform: rotateX(10deg);
     -moz-animation-timing-function: ease-out; } }
+
 @keyframes OpenTop {
   50% {
     transform: rotateX(10deg);
     animation-timing-function: ease-out; } }
+
 .md-effect-19 .md-content {
   -webkit-transform: translateY(-200%);
   -moz-transform: translateY(-200%);

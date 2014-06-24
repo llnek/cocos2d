@@ -11,6 +11,8 @@
           <input data-name="csrf_token" type="hidden" name="csrf_token" value=""></input>
           <input data-name="xref" type="hidden" name="xref" value=""></input>
 
+          <div class="login-feedback">
+          </div>
           <div class="form-group">
             <input data-name="principal" type="email" class="form-control" name="login-email" placeholder="Enter email" autofocus></input>
           </div>

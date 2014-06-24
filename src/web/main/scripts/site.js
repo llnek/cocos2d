@@ -175,15 +175,17 @@ function initOverlay() {
   });
 
   loginSend.on('click',function(evt){
+    var fb= $('.login-feedback');
     skaro.pde(evt);
-    postToServer('#login-form',
-                 function() {
-
-                 },
-                 function() {
-
-                 },
-                 'login-email','login-password');
+    function ecb(xhr) {
+      fb.empty().html('<p>Login failed.  Did you mistype?</p>');
+      fb.show();
+    }
+    function ok() {
+      document.location.href= document.location.origin + "/games/toppicks";
+    }
+    fb.hide();
+    postToServer('#login-form', ok, ecb, 'login-email','login-password');
   });
 
   forgSend.on('click',function(evt){

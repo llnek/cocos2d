@@ -13,6 +13,7 @@
 <script src="${jsspath}"></script>
 </#list>
 
+<script src="/public/vendors/codrops/modal-win.js"></script>
 <script src="/public/vendors/codrops/btmenu.js"></script>
 <script src="/public/scripts/site.js"></script>
 

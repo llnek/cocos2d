@@ -189,7 +189,7 @@ var SkaroJS = {
   },
 
   toBasicAuthHeader: function(user,pwd) {
-    var str='Basic ' + PHPJS.url.base64_encode(""+user+":"+pwd);
+    var str='Basic ' + this.base64_encode(""+user+":"+pwd);
     return [ 'Authorization', str ];
   },
 
