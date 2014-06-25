@@ -25,8 +25,16 @@
   (:import ( com.zotohlab.wflow If FlowPoint Activity
                                  Pipeline PipelineDelegate PTask Work))
   (:import (com.zotohlab.gallifrey.io HTTPEvent HTTPResult))
+  (:import (org.apache.commons.codec.net URLCodec))
+  (:import (java.net HttpCookie))
   (:import (com.zotohlab.frwk.io XData))
   (:import (com.zotohlab.wflow.core Job)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(def ^:private USER_FLAG :__u982i) ;; user id
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -116,11 +124,24 @@
       (let [ ^HTTPEvent evt (.event job)
              ^cmzlabsclj.tardis.io.webss.WebSession
              mvs (.getSession evt)
+             ^cmzlabsclj.tardis.core.sys.Element
+             src (.emitter evt)
              acct (:account (.getLastResult job))
              json { :status { :code 200 } }
+             cc (URLCodec. "utf-8")
+             ck (HttpCookie. (name USER_FLAG)
+                             (.encode cc (:acctid acct)))
              ^HTTPResult res (.getResultObj evt) ]
-        (.setStatus res 200)
         (.setContent res (XData. (json/write-str json)))
+        (.setStatus res 200)
+        (.setNew! mvs true (.getAttr src :sessionAgeSecs))
+        (doto ck
+          (.setMaxAge (.getExpiryTime mvs))
+          (.setHttpOnly false)
+          (.setSecure (.isSSL? mvs))
+          (.setPath (.getAttr src :domainPath))
+          (.setDomain (.getAttr src :domain)))
+        (.addCookie res ck)
         (.replyResult evt)))
   ))
 
