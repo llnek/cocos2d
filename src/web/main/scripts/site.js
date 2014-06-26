@@ -96,13 +96,14 @@ function initOverlay() {
   closeBtn.on('click', function() {
     onklick('none','none','none',false);
   });
-  forgPwd.on('click',function(){
-    onklick('none', 'none', 'block', false, false);
-  });
   backLogin.on('click',function(){
     onklick('none', 'block', 'none', false, false);
   });
   */
+
+  forgPwd.on('click',function(){
+    document.location.href= document.location.origin + "/users/forgotlogin";
+  });
 
   function packFormAsJson(formObj) {
     var nonce= $('#pgfooter').attr('data-ref') || '';

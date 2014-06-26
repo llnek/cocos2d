@@ -39,13 +39,11 @@
   (:import (java.util Date ArrayList List HashMap Map)))
 
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (def ^:private GAMES-MNFS (atom []))
 (def ^:private GAMES-HASH (atom {}))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -75,6 +73,27 @@
     (reset! GAMES-HASH (persistent! @mc))
   ))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn GetGamesAsList ""
+
+  []
+
+  @GAMES-MNFS)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn GetGamesAsHash ""
+
+  []
+
+  @GAMES-HASH)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (deftype MyAppMain [] cmzlabsclj.tardis.impl.ext.CljAppMain
@@ -101,7 +120,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- dftModel ""
+(defn GetDftModel ""
 
   ^Map
   [^HTTPEvent evt]
@@ -123,35 +142,6 @@
     dm
   ))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- interpolateRegisterPage ""
-
-  ^Map
-  [^HTTPEvent evt]
-
-  (let [ dm (dftModel evt)
-         ^Map bd (.get dm "body")
-         ^List jss (.get dm "scripts")
-         ^List css (.get dm "stylesheets") ]
-    (.put bd "content" "/main/users/register.ftl")
-    dm
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- interpolateLoginPage ""
-
-  ^Map
-  [^HTTPEvent evt]
-
-  (let [ dm (dftModel evt)
-         ^Map bd (.get dm "body")
-         ^List jss (.get dm "scripts")
-         ^List css (.get dm "stylesheets") ]
-    (.put bd "content" "/main/users/login.ftl")
-    dm
-  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -160,7 +150,7 @@
   ^Map
   [^HTTPEvent evt]
 
-  (let [ dm (dftModel evt)
+  (let [ dm (GetDftModel evt)
          ^Map bd (.get dm "body")
          ^List jss (.get dm "scripts")
          ^List css (.get dm "stylesheets") ]
@@ -168,66 +158,6 @@
     dm
   ))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- interpolateBrowsePage ""
-
-  ^Map
-  [^HTTPEvent evt]
-
-  (let [ dm (dftModel evt)
-         ^Map bd (.get dm "body")
-         ^List jss (.get dm "scripts")
-         ^List css (.get dm "stylesheets") ]
-    (.put bd "games" @GAMES-MNFS)
-    (.put bd "content" "/main/games/games.ftl")
-    dm
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- interpolateArenaPage ""
-
-  ^Map
-  [^HTTPEvent evt]
-
-  (let [ uri (.getUri evt)
-         ^Map mf (get @GAMES-HASH (.getUri evt))
-         dm (dftModel evt)
-         ^Map tags (.get dm "metatags")
-         ^Map bd (.get dm "body")
-         ^List jss (.get dm "scripts")
-         ^List css (.get dm "stylesheets") ]
-    (.put tags "viewport" "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no")
-    (.put tags "apple-mobile-web-app-capable" "yes")
-    (when-not (nil? mf)
-        (.put tags "screen-orientation" (.get mf "orientation")))
-    (.put tags "full-screen" "yes")
-    (.put tags "x5-fullscreen" "true")
-    (.put tags "360-fullscreen" "true")
-    (.put bd "games" @GAMES-MNFS)
-    (.put bd "content" "/main/games/arena.ftl")
-    dm
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- interpolatePicksPage ""
-
-  ^Map
-  [^HTTPEvent evt]
-
-  (let [ dm (dftModel evt)
-         ^Map bd (.get dm "body")
-         ^List jss (.get dm "scripts")
-         ^List css (.get dm "stylesheets") ]
-    (.add css "/public/vendors/owl-carousel/owl.carousel.css")
-    (.add css "/public/vendors/owl-carousel/owl.theme.css")
-    (.add jss "/public/vendors/owl-carousel/owl.carousel.min.js")
-    (.put bd "picks" @GAMES-MNFS)
-    (.put bd "content" "/main/games/picks.ftl")
-    dm
-  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -251,33 +181,6 @@
         (.replyResult evt)))
   ))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(deftype RegisterPage [] PipelineDelegate
-
-  (getStartActivity [_  pipe]
-    (require 'cmzlabs.cocos2d.site.core)
-    (doShowPage interpolateRegisterPage))
-
-  (onStop [_ pipe]
-    (log/info "nothing to be done here, just stop please."))
-
-  (onError [ _ err curPt]
-    (log/info "Oops, I got an error!")))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(deftype LoginPage [] PipelineDelegate
-
-  (getStartActivity [_  pipe]
-    (require 'cmzlabs.cocos2d.site.core)
-    (doShowPage interpolateLoginPage))
-
-  (onStop [_ pipe]
-    (log/info "nothing to be done here, just stop please."))
-
-  (onError [ _ err curPt]
-    (log/info "Oops, I got an error!")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -293,49 +196,6 @@
   (onError [ _ err curPt]
     (log/info "Oops, I got an error!")))
 
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(deftype AllGamesPage [] PipelineDelegate
-
-  (getStartActivity [_  pipe]
-    (require 'cmzlabs.cocos2d.site.core)
-    (doShowPage interpolateBrowsePage))
-
-  (onStop [_ pipe]
-    (log/info "nothing to be done here, just stop please."))
-
-  (onError [ _ err curPt]
-    (log/info "Oops, I got an error!")))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(deftype TopPicksPage [] PipelineDelegate
-
-  (getStartActivity [_  pipe]
-    (require 'cmzlabs.cocos2d.site.core)
-    (doShowPage interpolatePicksPage))
-
-  (onStop [_ pipe]
-    (log/info "nothing to be done here, just stop please."))
-
-  (onError [ _ err curPt]
-    (log/info "Oops, I got an error!")))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(deftype GameArenaPage [] PipelineDelegate
-
-  (getStartActivity [_  pipe]
-    (require 'cmzlabs.cocos2d.site.core)
-    (doShowPage interpolateArenaPage))
-
-  (onStop [_ pipe]
-    (log/info "nothing to be done here, just stop please."))
-
-  (onError [ _ err curPt]
-    (log/info "Oops, I got an error!")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

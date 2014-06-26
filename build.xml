@@ -107,6 +107,7 @@
       <fileset file="${basedir}/public/vendors/mustache/mustache.js"/>
       <fileset file="${basedir}/public/vendors/helpers/dbg.js"/>
       <fileset file="${basedir}/public/vendors/jquery_plugins/detectmobilebrowser.js"/>
+      <fileset file="${basedir}/public/vendors/jquery_plugins/jquery.cookie.js"/>
       <fileset file="${basedir}/public/vendors/crypto-js/components/core-min.js"/>
       <fileset file="${basedir}/public/vendors/crypto-js/components/enc-utf16-min.js"/>
       <fileset file="${basedir}/public/vendors/crypto-js/components/enc-base64-min.js"/>
@@ -182,8 +183,10 @@
       maxmemory="2048m" classpathref="compile.path.id">
       <sysproperty key="clojure.compile.warn-on-reflection" value="true"/>
       <sysproperty key="clojure.compile.path" value="${build.dir}" />
-      <arg value="cmzlabs.cocos2d.users.accounts"/>
       <arg value="cmzlabs.cocos2d.site.core"/>
+      <arg value="cmzlabs.cocos2d.users.accounts"/>
+      <arg value="cmzlabs.cocos2d.users.rego"/>
+      <arg value="cmzlabs.cocos2d.games.core"/>
     </java>
     <copy todir="${out.jar.dir}">
       <fileset dir="${build.dir}">
