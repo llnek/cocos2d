@@ -18,6 +18,7 @@
   (:require [clojure.tools.logging :as log :only (info warn error debug)])
   (:require [clojure.data.json :as json])
   (:require [clojure.string :as cstr])
+  (:use [cmzlabsclj.nucleus.util.str :only [nsb ]])
   (:use [cmzlabsclj.tardis.core.wfs])
   (:use [cmzlabsclj.tardis.auth.plugin :only [MaybeSignupTest
                                             MaybeLoginTest] ])
@@ -128,15 +129,15 @@
              src (.emitter evt)
              acct (:account (.getLastResult job))
              json { :status { :code 200 } }
-             cc (URLCodec. "utf-8")
+             est (.getAttr src :sessionAgeSecs)
              ck (HttpCookie. (name USER_FLAG)
-                             (.encode cc (:acctid acct)))
+                             (nsb (:acctid acct)))
              ^HTTPResult res (.getResultObj evt) ]
         (.setContent res (XData. (json/write-str json)))
         (.setStatus res 200)
-        (.setNew! mvs true (.getAttr src :sessionAgeSecs))
+        (.setNew! mvs true est)
         (doto ck
-          (.setMaxAge (.getExpiryTime mvs))
+          (.setMaxAge est)
           (.setHttpOnly false)
           (.setSecure (.isSSL? mvs))
           (.setPath (.getAttr src :domainPath))
