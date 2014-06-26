@@ -229,10 +229,54 @@
     (log/info "Oops, I got an error!")))
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- doLogout ""
+
+  ^PTask
+  []
+
+  (DefWFTask
+    (fn [ fw ^Job job arg]
+      (let [ ^HTTPEvent evt (.event job)
+             ^cmzlabsclj.tardis.io.webss.WebSession
+             mvs (.getSession evt)
+             ^cmzlabsclj.tardis.core.sys.Element
+             src (.emitter evt)
+             json { :status { :code 200 } }
+             ck (HttpCookie. (name USER_FLAG) "")
+             ^HTTPResult res (.getResultObj evt) ]
+        (.setContent res (XData. (json/write-str json)))
+        (.setStatus res 200)
+        (.invalidate! mvs)
+        (doto ck
+          (.setMaxAge 0)
+          (.setHttpOnly false)
+          (.setSecure (.isSSL? mvs))
+          (.setPath (.getAttr src :domainPath))
+          (.setDomain (.getAttr src :domain)))
+        (.addCookie res ck)
+        (.replyResult evt)))
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(def ^:private pipe-eof nil)
+(deftype LogoutHandler [] PipelineDelegate
+
+  (getStartActivity [_  pipe]
+    (require 'cmzlabs.cocos2d.users.accounts)
+    (log/debug "logout pipe-line - called.")
+    (doLogout))
+
+  (onStop [_ pipe]
+    (log/info "nothing to be done here, just stop please."))
+
+  (onError [ _ err curPt]
+    (log/info "Oops, I got an error!")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(def ^:private accounts-eof nil)
 
 
 

@@ -15,6 +15,19 @@ var ModalWindow=global.ModalWindow;
 var skaro = global.SkaroJS;
 
 /////////////////////////////////////////////
+//
+function toggleMenuItems() {
+  var uid= $.cookie('__u982i');
+  if (_.isString(uid) && uid.length > 0) {
+    $('#register-btn').parent().hide();
+    $('#login-btn').parent().hide();
+    $('#logout-btn').parent().show();
+  } else {
+    $('#register-btn').parent().show();
+    $('#login-btn').parent().show();
+    $('#logout-btn').parent().hide();
+  }
+}
 
 ///////////////////////////////////////////
 //
@@ -32,6 +45,7 @@ function paintDoors() {
 
 function initOverlay() {
   var regBtn= $('#register-btn'),
+  logoutBtn= $('#logout-btn' ),
   loginBtn= $('#login-btn' ),
   regForm=$('#register-form'),
   loginForm=$('#login-form'),
@@ -141,6 +155,11 @@ function initOverlay() {
 
   }
 
+  function getToServer(url,ok,error) {
+    $.ajax(url,{
+    }).done(ok).fail(error);
+  }
+
   regoSend.on('click',function(evt){
     var fb= $('.login-feedback');
     skaro.pde(evt);
@@ -161,6 +180,16 @@ function initOverlay() {
       fb.show();
     }
     postToServer('#register-form',ok,ecb);
+  });
+
+  logoutBtn.on('click',function(evt){
+    function ecb(xhr) {
+      alert('Logout failed');
+    }
+    function ok() {
+      document.location.href= document.location.origin;
+    }
+    getToServer('/users/logout', ok, ecb);
   });
 
   loginSend.on('click',function(evt){
@@ -267,7 +296,7 @@ function boot() {
   });
 
 
-
+  toggleMenuItems();
 }
 
 $(document).ready(boot);
