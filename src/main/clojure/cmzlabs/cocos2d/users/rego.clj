@@ -74,6 +74,20 @@
     (.put bd "content" "/main/users/login.ftl")
     dm
   ))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- interpolateForgotPage ""
+
+  ^Map
+  [^HTTPEvent evt]
+
+  (let [ dm (GetDftModel evt)
+         ^Map bd (.get dm "body")
+         ^List jss (.get dm "scripts")
+         ^List css (.get dm "stylesheets") ]
+    (.put bd "content" "/main/users/forgot.ftl")
+    dm
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -125,6 +139,19 @@
   (onError [ _ err curPt]
     (log/info "Oops, I got an error!")))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(deftype ForgotPage [] PipelineDelegate
+
+  (getStartActivity [_  pipe]
+    (require 'cmzlabs.cocos2d.users.rego)
+    (doShowPage interpolateForgotPage))
+
+  (onStop [_ pipe]
+    (log/info "nothing to be done here, just stop please."))
+
+  (onError [ _ err curPt]
+    (log/info "Oops, I got an error!")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
