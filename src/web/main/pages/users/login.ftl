@@ -21,7 +21,7 @@
             <input data-name="credential" type="password" class="form-control" name="login-password" placeholder="Password"></input>
           </div>
 
-          <div class="forg-pass pull-left">
+          <div class="login-actions pull-left">
           <a id="forgot-password" href="javascript:void(0)">Forgot your password?</a>
           </div>
           <button id="login-send" type="submit" class="btn btn-default">LOGIN</button>

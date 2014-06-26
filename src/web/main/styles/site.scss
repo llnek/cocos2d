@@ -616,51 +616,28 @@ a {
 
 }
 
-.login-section {
-  width: 100%;
-  min-width: 100%;
-  text-align: center;
-  padding: 120px 0;
-  //margin: 0 auto;
-  margin-top: 100px;
+.login-section.intro-section {
 
-  .box-heading {
-    margin-bottom: 70px;
-  }
+  button {
+    background-color: #e7ddcc;
+    color: $darkBgColor;
+    border: none;
+    width: 100%;
+    display: block;
+    padding: 8px 25px;
+    font-size: 1.3125em;
+    text-transform: uppercase;
+    font-weight: 600;
+    outline: none;
 
-  form {
-    margin: 40px 0 70px;
-
-    .form-group {
-      margin-bottom: 20px;
-
-      .form-control {
-
-        border: 3px solid #fff;
-      }
-
-    }
-
-    button {
-      background-color: #e7ddcc;
-      color: $darkBgColor;
-      border: none;
-      width: 100%;
-      display: block;
-      padding: 8px 25px;
-      font-size: 1.3125em;
-      text-transform: uppercase;
-      font-weight: 600;
+    &:hover,&:focus {
       outline: none;
-
-      &:focus {
-        outline: none;
-        color: $darkBgColor;
-      }
+      background-color: $darkBgColor;
+      color: #e7ddcc;
     }
   }
 
-  .forg-pass {
+  .login-actions {
     a {
       font-size: 0.8em;
       color: #ccc;

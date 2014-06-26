@@ -15,15 +15,20 @@
 
   cmzlabs.cocos2d.users.accounts
 
+
   (:require [clojure.tools.logging :as log :only (info warn error debug)])
   (:require [clojure.data.json :as json])
   (:require [clojure.string :as cstr])
-  (:use [cmzlabsclj.nucleus.util.str :only [nsb ]])
+  (:use [cmzlabsclj.nucleus.util.core :only [ternary test-nonil ]])
+  (:use [cmzlabsclj.nucleus.util.str :only [nsb strim  hgl?]])
   (:use [cmzlabsclj.tardis.core.wfs])
   (:use [cmzlabsclj.tardis.auth.plugin :only [MaybeSignupTest
                                             MaybeLoginTest] ])
+  (:use [cmzlabsclj.tardis.io.basicauth])
+  (:use [cmzlabsclj.tardis.core.constants])
+
   (:import (com.zotohlab.gallifrey.runtime DuplicateUser))
-  (:import ( com.zotohlab.wflow If FlowPoint Activity
+  (:import ( com.zotohlab.wflow If FlowPoint Activity Block
                                  Pipeline PipelineDelegate PTask Work))
   (:import (com.zotohlab.gallifrey.io HTTPEvent HTTPResult))
   (:import (org.apache.commons.codec.net URLCodec))
@@ -160,6 +165,70 @@
 
   (onError [ _ err curPt]
     (log/info "Oops, I got an error!")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- doLookupEmail ""
+
+  ^PTask
+  []
+
+  (DefWFTask
+    (fn [ fw ^Job job arg]
+      (let [^cmzlabsclj.tardis.core.sys.Element ctr (.container job)
+            ^cmzlabsclj.tardis.auth.plugin.AuthPlugin
+            pa (:auth (.getAttr ctr K_PLUGINS))
+            ^HTTPEvent evt (.event ^Job job)
+            info (ternary (GetLoginInfo evt) {} )
+            email (nsb (:email info)) ]
+        (test-nonil "AuthPlugin" pa)
+        (cond
+          (hgl? email)
+          (if-let [ acct (.getAccount pa { :email email }) ]
+            (do
+              (log/debug "Found account with email " email))
+            (do
+              (log/debug "Failed to look up account with email " email)))
+
+          :else nil)
+      ))
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- doAckReply ""
+
+  ^PTask
+  []
+
+  (DefWFTask
+    (fn [ fw ^Job job arg]
+      (let [ ^HTTPEvent evt (.event ^Job job)
+             ^HTTPResult res (.getResultObj evt)
+             json { :status { :code 200 } } ]
+        (.setStatus res 200)
+        (.setContent res (XData. (json/write-str json)))
+        (.replyResult evt)))
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(deftype ForgotHandler [] PipelineDelegate
+
+  (getStartActivity [_  pipe]
+    (require 'cmzlabs.cocos2d.users.accounts)
+    (log/debug "forgot-login pipe-line - called.")
+    (doto (Block.)
+      (.chain (doAckReply))
+      (.chain (doLookupEmail))))
+
+  (onStop [_ pipe]
+    (log/info "nothing to be done here, just stop please."))
+
+  (onError [ _ err curPt]
+    (log/info "Oops, I got an error!")))
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

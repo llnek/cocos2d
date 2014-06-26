@@ -96,11 +96,11 @@ function initOverlay() {
   closeBtn.on('click', function() {
     onklick('none','none','none',false);
   });
-  backLogin.on('click',function(){
-    onklick('none', 'block', 'none', false, false);
-  });
   */
 
+  backLogin.on('click',function(){
+    document.location.href= document.location.origin + "/users/login";
+  });
   forgPwd.on('click',function(){
     document.location.href= document.location.origin + "/users/forgotlogin";
   });
@@ -142,6 +142,7 @@ function initOverlay() {
   }
 
   regoSend.on('click',function(evt){
+    var fb= $('.login-feedback');
     skaro.pde(evt);
     function ecb(xhr) {
       var reason= "Bad request.";
@@ -149,28 +150,15 @@ function initOverlay() {
         reason= "Account with same id already exist.";
       }
       var xxx= '<p>Account creation failed: ' + reason + '</p><br/><button class="md-confirm">OK</button>';
-      var m=$('#pg-modal'),
-      mc= $('div.pg-modal-content', m);
-      mc.empty();
-      mc.html(xxx);
-      var onok= function () {
-        mc.empty();
-      };
-      var inst = ModalWindow.Init('#pg-modal', true, onok);
-      inst.open();
+      fb.empty().html(xxx);
+      fb.show();
     }
     function ok() {
-      var xxx= '<p>Account created.</p><br/><button class="md-confirm">OK</button>';
-      var m=$('#pg-modal'),
-      mc= $('div.pg-modal-content', m);
-      mc.empty();
-      mc.html(xxx);
-      var onok= function () {
-        mc.empty();
-        document.location.href= document.location.origin + "/users/login";
-      };
-      var inst = ModalWindow.Init('#pg-modal', true, onok);
-      inst.open();
+      var xxx= '<div class="login-actions"><p>Account created successfully.<br/>'+
+        '<a href="/users/login">Continue to login?</a>' +
+        '</p></div>';
+      fb.empty().html(xxx);
+      fb.show();
     }
     postToServer('#register-form',ok,ecb);
   });
@@ -190,12 +178,18 @@ function initOverlay() {
   });
 
   forgSend.on('click',function(evt){
+    var fb= $('.login-feedback');
     skaro.pde(evt);
-    postToServer('#forgot-form',
-                 function() {
-                 },
-                 function() {
-                 });
+    function ecb(xhr) {
+      fb.empty().html('<p>Failed to send message.  Please try again later.</p>');
+      fb.show();
+    }
+    function ok() {
+      fb.empty().html('<p>Message sent.</p>');
+      fb.show();
+    }
+    fb.hide();
+    postToServer('#forgot-form', ok, ecb);
   });
 }
 

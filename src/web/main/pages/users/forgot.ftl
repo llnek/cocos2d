@@ -1,16 +1,21 @@
 
-<section id="forgotlogin-section" class="intro-section forgotlogin-section">
+<section id="forgotlogin-section" class="intro-section login-section">
 
   <div class="container">
   <div class="row">
   <div class="col-lg-4 col-lg-offset-4">
 
-    <form id="forgot-form" action="/wsapi/" method="POST" role="form">
+    <form id="forgot-form" action="/wsapi/zYiYPtaY-Pvz7-4t7c-iaVY-vcaunnGtpVcP" method="POST" role="form">
         <fieldset>
-            <div class="forg-pass pull-left">
+
+            <input data-name="csrf_token" type="hidden" name="csrf_token" value=""></input>
+
+            <div class="login-feedback">
+            </div>
+
+            <div class="login-actions pull-left">
               <a id="backto-login" href="javascript:void(0)">&laquo; Back to login screen</a>
             </div>
-            <input data-name="csrf_token" type="hidden" name="csrf_token" value=""></input>
             <div class="form-group">
               <input data-name="email" type="email" class="form-control" name="forgot-email" placeholder="Enter email" autofocus></input>
             </div>
