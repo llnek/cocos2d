@@ -50,13 +50,16 @@
 (defn- interpolateRegisterPage ""
 
   ^Map
-  [^HTTPEvent evt]
+  [^HTTPEvent evt ^String csrf]
 
-  (let [ dm (GetDftModel evt)
+  (let [ ^cmzlabsclj.tardis.io.webss.WebSession
+         mvs (.getSession evt)
+         dm (GetDftModel evt)
          ^Map bd (.get dm "body")
          ^List jss (.get dm "scripts")
          ^List css (.get dm "stylesheets") ]
     (.put bd "content" "/main/users/register.ftl")
+    (.put bd "csrf" csrf)
     dm
   ))
 
@@ -65,13 +68,16 @@
 (defn- interpolateLoginPage ""
 
   ^Map
-  [^HTTPEvent evt]
+  [^HTTPEvent evt ^String csrf]
 
-  (let [ dm (GetDftModel evt)
+  (let [ ^cmzlabsclj.tardis.io.webss.WebSession
+         mvs (.getSession evt)
+         dm (GetDftModel evt)
          ^Map bd (.get dm "body")
          ^List jss (.get dm "scripts")
          ^List css (.get dm "stylesheets") ]
     (.put bd "content" "/main/users/login.ftl")
+    (.put bd "csrf" csrf)
     dm
   ))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -79,13 +85,16 @@
 (defn- interpolateForgotPage ""
 
   ^Map
-  [^HTTPEvent evt]
+  [^HTTPEvent evt ^String csrf]
 
-  (let [ dm (GetDftModel evt)
+  (let [ ^cmzlabsclj.tardis.io.webss.WebSession
+         mvs (.getSession evt)
+         dm (GetDftModel evt)
          ^Map bd (.get dm "body")
          ^List jss (.get dm "scripts")
          ^List css (.get dm "stylesheets") ]
     (.put bd "content" "/main/users/forgot.ftl")
+    (.put bd "csrf" csrf)
     dm
   ))
 
@@ -100,14 +109,21 @@
     (fn [fw ^Job job arg]
       (let [ ^String tpl (:template (.getv job EV_OPTS))
              ^HTTPEvent evt (.event job)
-             ^Emitter src (.emitter evt)
+             ^cmzlabsclj.tardis.core.sys.Element
+             src (.emitter evt)
              ^cmzlabsclj.tardis.impl.ext.ContainerAPI
-             co (.container src)
-             [rdata ct] (.loadTemplate co tpl (interpolateFunc evt))
+             co (.container ^Emitter src)
+             ^cmzlabsclj.tardis.io.webss.WebSession
+             mvs (.getSession evt)
+             csrf (.generateCsrf co)
+             est (.getAttr src :sessionAgeSecs)
+             [rdata ct] (.loadTemplate co tpl (interpolateFunc evt csrf))
              ^HTTPResult res (.getResultObj evt) ]
         (.setHeader res "content-type" ct)
         (.setContent res rdata)
         (.setStatus res 200)
+        (.setNew! mvs true est)
+        (.setXref mvs csrf)
         (.replyResult evt)))
   ))
 

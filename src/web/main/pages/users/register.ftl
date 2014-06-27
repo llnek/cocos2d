@@ -8,7 +8,7 @@
     <form id="register-form" action="/wsapi/VpAaaGit-ncGP-4cPa-AAvQ-ti7YVpztQVan" method="POST" role="form">
     <fieldset>
       <input data-name="nonce_token" type="hidden" name="nonce_token" value="1"></input>
-      <input data-name="csrf_token" type="hidden" name="csrf_token" value=""></input>
+      <input data-name="csrf_token" type="hidden" name="csrf_token" value="${body.csrf}"></input>
 
       <div class="login-feedback">
       </div>

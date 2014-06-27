@@ -8,7 +8,7 @@
     <form id="login-form" action="/wsapi/cVQYtatp-p7nG-4cut-vzpt-nv7niYa7VGvV" method="POST" role="form">
         <fieldset>
           <input data-name="nonce_token" type="hidden" name="nonce_token" value="1"></input>
-          <input data-name="csrf_token" type="hidden" name="csrf_token" value=""></input>
+          <input data-name="csrf_token" type="hidden" name="csrf_token" value="${body.csrf}"></input>
           <input data-name="xref" type="hidden" name="xref" value=""></input>
 
           <div class="login-feedback">

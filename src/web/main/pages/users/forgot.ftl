@@ -8,7 +8,7 @@
     <form id="forgot-form" action="/wsapi/zYiYPtaY-Pvz7-4t7c-iaVY-vcaunnGtpVcP" method="POST" role="form">
         <fieldset>
 
-            <input data-name="csrf_token" type="hidden" name="csrf_token" value=""></input>
+          <input data-name="csrf_token" type="hidden" name="csrf_token" value="${body.csrf}"></input>
 
             <div class="login-feedback">
             </div>
