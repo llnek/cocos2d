@@ -168,7 +168,7 @@ function initOverlay() {
       if (xhr.status === 409) {
         reason= "Account with same id already exist.";
       }
-      var xxx= '<p>Account creation failed: ' + reason + '</p><br/><button class="md-confirm">OK</button>';
+      var xxx= '<p>Account creation failed: ' + reason + '</p>';
       fb.empty().html(xxx);
       fb.show();
     }
