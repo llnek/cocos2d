@@ -26,6 +26,7 @@
                                             MaybeLoginTest] ])
   (:use [cmzlabsclj.tardis.io.basicauth])
   (:use [cmzlabsclj.tardis.core.constants])
+  (:use [cmzlabs.cocos2d.site.core ])
 
   (:import (com.zotohlab.gallifrey.runtime DuplicateUser))
   (:import ( com.zotohlab.wflow If FlowPoint Activity Block
@@ -35,11 +36,6 @@
   (:import (java.net HttpCookie))
   (:import (com.zotohlab.frwk.io XData))
   (:import (com.zotohlab.wflow.core Job)))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(def ^:private USER_FLAG :__u982i) ;; user id
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -135,7 +131,7 @@
              acct (:account (.getLastResult job))
              json { :status { :code 200 } }
              est (.getAttr src :sessionAgeSecs)
-             ck (HttpCookie. (name USER_FLAG)
+             ck (HttpCookie. (name *USER-FLAG*)
                              (nsb (:acctid acct)))
              ^HTTPResult res (.getResultObj evt) ]
         (.setContent res (XData. (json/write-str json)))
@@ -244,7 +240,7 @@
              ^cmzlabsclj.tardis.core.sys.Element
              src (.emitter evt)
              json { :status { :code 200 } }
-             ck (HttpCookie. (name USER_FLAG) "")
+             ck (HttpCookie. (name *USER-FLAG*) "")
              ^HTTPResult res (.getResultObj evt) ]
         (.setContent res (XData. (json/write-str json)))
         (.setStatus res 200)

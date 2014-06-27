@@ -39,6 +39,9 @@
   (:import (java.util Date ArrayList List HashMap Map)))
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(def ^:dynamic *USER-FLAG* :__u982i) ;; user id
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -126,7 +129,8 @@
   [^HTTPEvent evt]
 
   (let [ tags (HashMap.)
-         dm (HashMap.) ]
+         dm (HashMap.)
+         pf (HashMap.) ]
     (doto dm
       (.put "title" "ZotohLab | Fun &amp; Games.")
       (.put "encoding" "UTF-8")
@@ -135,10 +139,15 @@
       (.put "scripts" (ArrayList.))
       (.put "metatags" tags)
       (.put "appkey" (GetAppKeyFromEvent evt))
+      (.put "profile" pf)
       (.put "body" (HashMap.)))
     (.put tags "keywords" "web browser games mobile ios android windows phone")
     (.put tags "description" "Hello World!")
     (.put tags "viewport" "width=device-width, initial-scale=1.0")
+    (.put pf "user" "Guest")
+    (when-let [ ck (.getCookie evt (name *USER-FLAG*)) ]
+      (let [ s (strim (.getValue ck)) ]
+        (.put pf "user" s)))
     dm
   ))
 
