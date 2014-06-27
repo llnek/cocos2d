@@ -34,6 +34,7 @@
   (:import (com.zotohlab.gallifrey.io HTTPEvent HTTPResult))
   (:import (org.apache.commons.codec.net URLCodec))
   (:import (java.net HttpCookie))
+  (:import (com.zotohlab.frwk.util CrappyDataError))
   (:import (com.zotohlab.frwk.io XData))
   (:import (com.zotohlab.wflow.core Job)))
 
@@ -175,7 +176,8 @@
             ^cmzlabsclj.tardis.auth.plugin.AuthPlugin
             pa (:auth (.getAttr ctr K_PLUGINS))
             ^HTTPEvent evt (.event ^Job job)
-            info (ternary (GetLoginInfo evt) {} )
+            si (try (MaybeGetAuthInfo evt) (catch CrappyDataError e#  { :e e# }))
+            info (ternary si {} )
             email (nsb (:email info)) ]
         (test-nonil "AuthPlugin" pa)
         (cond
