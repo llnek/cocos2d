@@ -13,30 +13,31 @@
 (ns  ^{ :doc ""
         :author "kenl" }
 
-  cmzlabs.cocos2d.users.accounts
+  cmzlab.cocos2d.users.accounts
 
 
-  (:require [clojure.tools.logging :as log :only (info warn error debug)])
-  (:require [clojure.data.json :as json])
-  (:require [clojure.string :as cstr])
-  (:use [cmzlabsclj.nucleus.util.core :only [ternary test-nonil ]])
-  (:use [cmzlabsclj.nucleus.util.str :only [nsb strim  hgl?]])
-  (:use [cmzlabsclj.tardis.core.wfs])
-  (:use [cmzlabsclj.tardis.auth.plugin :only [MaybeSignupTest
-                                            MaybeLoginTest] ])
-  (:use [cmzlabsclj.tardis.io.basicauth])
-  (:use [cmzlabsclj.tardis.core.constants])
-  (:use [cmzlabs.cocos2d.site.core ])
+  (:require [clojure.tools.logging :as log :only (info warn error debug)]
+            [clojure.data.json :as json]
+            [clojure.string :as cstr])
 
-  (:import (com.zotohlab.gallifrey.runtime DuplicateUser))
-  (:import ( com.zotohlab.wflow If FlowPoint Activity Block
-                                 Pipeline PipelineDelegate PTask Work))
-  (:import (com.zotohlab.gallifrey.io HTTPEvent HTTPResult))
-  (:import (org.apache.commons.codec.net URLCodec))
-  (:import (java.net HttpCookie))
-  (:import (com.zotohlab.frwk.util CrappyDataError))
-  (:import (com.zotohlab.frwk.io XData))
-  (:import (com.zotohlab.wflow.core Job)))
+  (:use [cmzlabclj.nucleus.util.core :only [ternary test-nonil ]]
+        [cmzlabclj.nucleus.util.str :only [nsb strim  hgl?]]
+        [cmzlabclj.tardis.core.wfs]
+        [cmzlabclj.tardis.auth.plugin :only [MaybeSignupTest
+                                                  MaybeLoginTest] ]
+        [cmzlabclj.tardis.io.basicauth]
+        [cmzlabclj.tardis.core.constants]
+        [cmzlab.cocos2d.site.core ])
+
+  (:import  [com.zotohlab.gallifrey.runtime DuplicateUser]
+            [com.zotohlab.wflow If FlowPoint Activity Block
+                                 Pipeline PipelineDelegate PTask Work]
+            [com.zotohlab.gallifrey.io HTTPEvent HTTPResult]
+            [org.apache.commons.codec.net URLCodec]
+            [java.net HttpCookie]
+            [com.zotohlab.frwk.util CrappyDataError]
+            [com.zotohlab.frwk.io XData]
+            [com.zotohlab.wflow.core Job]))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -48,12 +49,12 @@
 
   (DefWFTask
     (fn [fw ^Job job arg]
-      (let [ ^HTTPEvent evt (.event job)
-             ^HTTPResult res (.getResultObj evt)
-             err (:error (.getLastResult job)) ]
+      (let [^HTTPEvent evt (.event job)
+            ^HTTPResult res (.getResultObj evt)
+            err (:error (.getLastResult job)) ]
         (cond
           (instance? DuplicateUser err)
-          (let [ json { :error { :msg "An account with same id already exist." }} ]
+          (let [json { :error { :msg "An account with same id already exist." }} ]
             (.setStatus res 409)
             (.setContent res (XData. (json/write-str json))))
 
@@ -70,11 +71,11 @@
   []
 
   (DefWFTask
-    (fn [ fw ^Job job arg]
-      (let [ ^HTTPEvent evt (.event job)
-             ^HTTPResult res (.getResultObj evt)
-             json { :status { :code 200 } }
-             acct (:account (.getLastResult job)) ]
+    (fn [fw ^Job job arg]
+      (let [^HTTPEvent evt (.event job)
+            ^HTTPResult res (.getResultObj evt)
+            json { :status { :code 200 } }
+            acct (:account (.getLastResult job)) ]
         (log/debug "successfully signed up new account " acct)
         (.setStatus res 200)
         (.setContent res (XData. (json/write-str json)))
@@ -86,7 +87,7 @@
 (deftype SignupHandler [] PipelineDelegate
 
   (getStartActivity [_  pipe]
-    (require 'cmzlabs.cocos2d.users.accounts)
+    (require 'cmzlab.cocos2d.users.accounts)
     (log/debug "signup pipe-line - called.")
     (If. (MaybeSignupTest "32") (doSignupOK) (doSignupFail)))
 
@@ -108,9 +109,9 @@
   []
 
   (DefWFTask
-    (fn [ fw ^Job job arg]
-      (let [ ^HTTPEvent evt (.event job)
-             ^HTTPResult res (.getResultObj evt) ]
+    (fn [fw ^Job job arg]
+      (let [^HTTPEvent evt (.event job)
+            ^HTTPResult res (.getResultObj evt) ]
         (.setStatus res 403)
         (.replyResult evt)))
   ))
@@ -123,18 +124,18 @@
   []
 
   (DefWFTask
-    (fn [ fw ^Job job arg]
-      (let [ ^HTTPEvent evt (.event job)
-             ^cmzlabsclj.tardis.io.webss.WebSession
-             mvs (.getSession evt)
-             ^cmzlabsclj.tardis.core.sys.Element
-             src (.emitter evt)
-             acct (:account (.getLastResult job))
-             json { :status { :code 200 } }
-             est (.getAttr src :sessionAgeSecs)
-             ck (HttpCookie. (name *USER-FLAG*)
-                             (nsb (:acctid acct)))
-             ^HTTPResult res (.getResultObj evt) ]
+    (fn [fw ^Job job arg]
+      (let [^HTTPEvent evt (.event job)
+            ^cmzlabclj.tardis.io.webss.WebSession
+            mvs (.getSession evt)
+            ^cmzlabclj.tardis.core.sys.Element
+            src (.emitter evt)
+            acct (:account (.getLastResult job))
+            json { :status { :code 200 } }
+            est (.getAttr src :sessionAgeSecs)
+            ck (HttpCookie. (name *USER-FLAG*)
+                            (nsb (:acctid acct)))
+            ^HTTPResult res (.getResultObj evt) ]
         (.setContent res (XData. (json/write-str json)))
         (.setStatus res 200)
         (.setNew! mvs true est)
@@ -153,7 +154,7 @@
 (deftype LoginHandler [] PipelineDelegate
 
   (getStartActivity [_  pipe]
-    (require 'cmzlabs.cocos2d.users.accounts)
+    (require 'cmzlab.cocos2d.users.accounts)
     (log/debug "login pipe-line - called.")
     (If. (MaybeLoginTest) (doLoginOK) (doLoginFail)))
 
@@ -171,9 +172,9 @@
   []
 
   (DefWFTask
-    (fn [ fw ^Job job arg]
-      (let [^cmzlabsclj.tardis.core.sys.Element ctr (.container job)
-            ^cmzlabsclj.tardis.auth.plugin.AuthPlugin
+    (fn [fw ^Job job arg]
+      (let [^cmzlabclj.tardis.core.sys.Element ctr (.container job)
+            ^cmzlabclj.tardis.auth.plugin.AuthPlugin
             pa (:auth (.getAttr ctr K_PLUGINS))
             ^HTTPEvent evt (.event ^Job job)
             si (try (MaybeGetAuthInfo evt) (catch CrappyDataError e#  { :e e# }))
@@ -201,10 +202,10 @@
   []
 
   (DefWFTask
-    (fn [ fw ^Job job arg]
-      (let [ ^HTTPEvent evt (.event ^Job job)
-             ^HTTPResult res (.getResultObj evt)
-             json { :status { :code 200 } } ]
+    (fn [fw ^Job job arg]
+      (let [^HTTPEvent evt (.event ^Job job)
+            ^HTTPResult res (.getResultObj evt)
+            json { :status { :code 200 } } ]
         (.setStatus res 200)
         (.setContent res (XData. (json/write-str json)))
         (.replyResult evt)))
@@ -215,7 +216,7 @@
 (deftype ForgotHandler [] PipelineDelegate
 
   (getStartActivity [_  pipe]
-    (require 'cmzlabs.cocos2d.users.accounts)
+    (require 'cmzlab.cocos2d.users.accounts)
     (log/debug "forgot-login pipe-line - called.")
     (doto (Block.)
       (.chain (doAckReply))
@@ -236,15 +237,15 @@
   []
 
   (DefWFTask
-    (fn [ fw ^Job job arg]
-      (let [ ^HTTPEvent evt (.event job)
-             ^cmzlabsclj.tardis.io.webss.WebSession
-             mvs (.getSession evt)
-             ^cmzlabsclj.tardis.core.sys.Element
-             src (.emitter evt)
-             json { :status { :code 200 } }
-             ck (HttpCookie. (name *USER-FLAG*) "")
-             ^HTTPResult res (.getResultObj evt) ]
+    (fn [fw ^Job job arg]
+      (let [^HTTPEvent evt (.event job)
+            ^cmzlabclj.tardis.io.webss.WebSession
+            mvs (.getSession evt)
+            ^cmzlabclj.tardis.core.sys.Element
+            src (.emitter evt)
+            json { :status { :code 200 } }
+            ck (HttpCookie. (name *USER-FLAG*) "")
+            ^HTTPResult res (.getResultObj evt) ]
         (.setContent res (XData. (json/write-str json)))
         (.setStatus res 200)
         (.invalidate! mvs)
@@ -263,7 +264,7 @@
 (deftype LogoutHandler [] PipelineDelegate
 
   (getStartActivity [_  pipe]
-    (require 'cmzlabs.cocos2d.users.accounts)
+    (require 'cmzlab.cocos2d.users.accounts)
     (log/debug "logout pipe-line - called.")
     (doLogout))
 

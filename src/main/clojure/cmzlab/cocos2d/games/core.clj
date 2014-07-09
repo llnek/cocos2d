@@ -13,32 +13,29 @@
 (ns  ^{ :doc ""
         :author "kenl" }
 
-  cmzlabs.cocos2d.games.core
+  cmzlab.cocos2d.games.core
 
-  (:require [clojure.tools.logging :as log :only (info warn error debug)])
-  (:require [clojure.string :as cstr])
-  (:require [clojure.data.json :as json])
+  (:require [clojure.tools.logging :as log :only (info warn error debug)]
+            [clojure.string :as cstr]
+            [clojure.data.json :as json])
 
-  (:use [cmzlabsclj.nucleus.util.dates :only [ParseDate] ])
-  (:use [cmzlabsclj.nucleus.util.str :only [hgl? strim] ])
+  (:use [cmzlabclj.nucleus.util.dates :only [ParseDate] ]
+        [cmzlabclj.nucleus.util.str :only [hgl? strim] ]
+        [cmzlabclj.tardis.core.constants]
+        [cmzlabclj.tardis.core.wfs]
+        [cmzlabclj.tardis.impl.ext :only [GetAppKeyFromEvent] ]
+        [cmzlab.cocos2d.site.core ])
 
-  (:use [cmzlabsclj.tardis.core.constants])
-  (:use [cmzlabsclj.tardis.core.wfs])
-  (:use [cmzlabsclj.tardis.impl.ext :only [GetAppKeyFromEvent] ])
-  (:use [cmzlabs.cocos2d.site.core ])
-
-  (:import (com.zotohlab.gallifrey.core Container ConfigError ))
-  (:import (org.apache.commons.io FileUtils))
-
-  (:import ( com.zotohlab.wflow FlowPoint Activity
-                                 Pipeline PipelineDelegate PTask Work))
-  (:import (com.zotohlab.gallifrey.io HTTPEvent HTTPResult Emitter))
-  (:import (com.zotohlab.frwk.net ULFormItems ULFileItem))
-  (:import (com.zotohlab.frwk.io IOUtils XData))
-  (:import (com.zotohlab.wflow.core Job))
-  (:import (java.io File))
-  (:import (java.util Date ArrayList List HashMap Map)))
-
+  (:import  [com.zotohlab.gallifrey.core Container ConfigError]
+            [org.apache.commons.io FileUtils]
+            [com.zotohlab.wflow FlowPoint Activity
+                                 Pipeline PipelineDelegate PTask Work]
+            [com.zotohlab.gallifrey.io HTTPEvent HTTPResult Emitter]
+            [com.zotohlab.frwk.net ULFormItems ULFileItem]
+            [com.zotohlab.frwk.io IOUtils XData]
+            [com.zotohlab.wflow.core Job]
+            [java.io File]
+            [java.util Date ArrayList List HashMap Map]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -47,10 +44,10 @@
   ^Map
   [^HTTPEvent evt]
 
-  (let [ dm (GetDftModel evt)
-         ^Map bd (.get dm "body")
-         ^List jss (.get dm "scripts")
-         ^List css (.get dm "stylesheets") ]
+  (let [dm (GetDftModel evt)
+        ^Map bd (.get dm "body")
+        ^List jss (.get dm "scripts")
+        ^List css (.get dm "stylesheets") ]
     (.put bd "games" (GetGamesAsList))
     (.put bd "content" "/main/games/games.ftl")
     dm
@@ -63,13 +60,13 @@
   ^Map
   [^HTTPEvent evt]
 
-  (let [ uri (.getUri evt)
-         ^Map mf (get (GetGamesAsHash) (.getUri evt))
-         dm (GetDftModel evt)
-         ^Map tags (.get dm "metatags")
-         ^Map bd (.get dm "body")
-         ^List jss (.get dm "scripts")
-         ^List css (.get dm "stylesheets") ]
+  (let [uri (.getUri evt)
+        ^Map mf (get (GetGamesAsHash) (.getUri evt))
+        dm (GetDftModel evt)
+        ^Map tags (.get dm "metatags")
+        ^Map bd (.get dm "body")
+        ^List jss (.get dm "scripts")
+        ^List css (.get dm "stylesheets") ]
     (.put tags "viewport" "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no")
     (.put tags "apple-mobile-web-app-capable" "yes")
     (when-not (nil? mf)
@@ -89,10 +86,10 @@
   ^Map
   [^HTTPEvent evt]
 
-  (let [ dm (GetDftModel evt)
-         ^Map bd (.get dm "body")
-         ^List jss (.get dm "scripts")
-         ^List css (.get dm "stylesheets") ]
+  (let [dm (GetDftModel evt)
+        ^Map bd (.get dm "body")
+        ^List jss (.get dm "scripts")
+        ^List css (.get dm "stylesheets") ]
     (.add css "/public/vendors/owl-carousel/owl.carousel.css")
     (.add css "/public/vendors/owl-carousel/owl.theme.css")
     (.add jss "/public/vendors/owl-carousel/owl.carousel.min.js")
@@ -110,13 +107,13 @@
 
   (DefWFTask
     (fn [fw ^Job job arg]
-      (let [ ^String tpl (:template (.getv job EV_OPTS))
-             ^HTTPEvent evt (.event job)
-             ^Emitter src (.emitter evt)
-             ^cmzlabsclj.tardis.impl.ext.ContainerAPI
-             co (.container src)
-             [rdata ct] (.loadTemplate co tpl (interpolateFunc evt))
-             ^HTTPResult res (.getResultObj evt) ]
+      (let [^String tpl (:template (.getv job EV_OPTS))
+            ^HTTPEvent evt (.event job)
+            ^Emitter src (.emitter evt)
+            ^cmzlabclj.tardis.impl.ext.ContainerAPI
+            co (.container src)
+            [rdata ct] (.loadTemplate co tpl (interpolateFunc evt))
+            ^HTTPResult res (.getResultObj evt) ]
         (.setHeader res "content-type" ct)
         (.setContent res rdata)
         (.setStatus res 200)
@@ -128,7 +125,7 @@
 (deftype AllGamesPage [] PipelineDelegate
 
   (getStartActivity [_  pipe]
-    (require 'cmzlabs.cocos2d.games.core)
+    (require 'cmzlab.cocos2d.games.core)
     (doShowPage interpolateBrowsePage))
 
   (onStop [_ pipe]
@@ -142,7 +139,7 @@
 (deftype TopPicksPage [] PipelineDelegate
 
   (getStartActivity [_  pipe]
-    (require 'cmzlabs.cocos2d.games.core)
+    (require 'cmzlab.cocos2d.games.core)
     (doShowPage interpolatePicksPage))
 
   (onStop [_ pipe]
@@ -156,7 +153,7 @@
 (deftype GameArenaPage [] PipelineDelegate
 
   (getStartActivity [_  pipe]
-    (require 'cmzlabs.cocos2d.games.core)
+    (require 'cmzlab.cocos2d.games.core)
     (doShowPage interpolateArenaPage))
 
   (onStop [_ pipe]
