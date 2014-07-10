@@ -13,7 +13,7 @@
 (ns  ^{ :doc ""
         :author "kenl" }
 
-  cmzlab.cocos2d.users.rego
+  cmzlabclj.cocos2d.users.rego
 
   (:require [clojure.tools.logging :as log :only (info warn error debug)]
             [clojure.string :as cstr]
@@ -24,7 +24,7 @@
         [cmzlabclj.tardis.core.constants]
         [cmzlabclj.tardis.core.wfs]
         [cmzlabclj.tardis.impl.ext :only [GetAppKeyFromEvent] ]
-        [cmzlab.cocos2d.site.core ])
+        [cmzlabclj.cocos2d.site.core ])
 
   (:import  [com.zotohlab.gallifrey.core Container ConfigError]
             [org.apache.commons.io FileUtils]
@@ -129,7 +129,7 @@
 (deftype RegisterPage [] PipelineDelegate
 
   (getStartActivity [_  pipe]
-    (require 'cmzlab.cocos2d.users.rego)
+    (require 'cmzlabclj.cocos2d.users.rego)
     (doShowPage interpolateRegisterPage))
 
   (onStop [_ pipe]
@@ -143,7 +143,7 @@
 (deftype LoginPage [] PipelineDelegate
 
   (getStartActivity [_  pipe]
-    (require 'cmzlab.cocos2d.users.rego)
+    (require 'cmzlabclj.cocos2d.users.rego)
     (doShowPage interpolateLoginPage))
 
   (onStop [_ pipe]
@@ -157,7 +157,7 @@
 (deftype ForgotPage [] PipelineDelegate
 
   (getStartActivity [_  pipe]
-    (require 'cmzlab.cocos2d.users.rego)
+    (require 'cmzlabclj.cocos2d.users.rego)
     (doShowPage interpolateForgotPage))
 
   (onStop [_ pipe]

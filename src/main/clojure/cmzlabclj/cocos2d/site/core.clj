@@ -13,7 +13,7 @@
 (ns  ^{ :doc ""
         :author "kenl" }
 
-  cmzlab.cocos2d.site.core
+  cmzlabclj.cocos2d.site.core
 
   (:require [clojure.tools.logging :as log :only (info warn error debug)]
             [clojure.string :as cstr]
@@ -100,7 +100,7 @@
 (deftype MyAppMain [] cmzlabclj.tardis.impl.ext.CljAppMain
 
   (contextualize [_ ctr]
-    (require 'cmzlab.cocos2d.site.core)
+    (require 'cmzlabclj.cocos2d.site.core)
     (scanGameManifests (.getAppDir ^Container ctr))
     (log/info "My AppMain contextualized by container " ctr))
 
@@ -194,7 +194,7 @@
 (deftype IndexPage [] PipelineDelegate
 
   (getStartActivity [_  pipe]
-    (require 'cmzlab.cocos2d.site.core)
+    (require 'cmzlabclj.cocos2d.site.core)
     (doShowPage interpolateIndexPage))
 
   (onStop [_ pipe]

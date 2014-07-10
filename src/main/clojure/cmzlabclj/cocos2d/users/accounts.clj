@@ -13,7 +13,7 @@
 (ns  ^{ :doc ""
         :author "kenl" }
 
-  cmzlab.cocos2d.users.accounts
+  cmzlabclj.cocos2d.users.accounts
 
 
   (:require [clojure.tools.logging :as log :only (info warn error debug)]
@@ -27,7 +27,7 @@
                                                   MaybeLoginTest] ]
         [cmzlabclj.tardis.io.basicauth]
         [cmzlabclj.tardis.core.constants]
-        [cmzlab.cocos2d.site.core ])
+        [cmzlabclj.cocos2d.site.core ])
 
   (:import  [com.zotohlab.gallifrey.runtime DuplicateUser]
             [com.zotohlab.wflow If FlowPoint Activity Block
@@ -87,7 +87,7 @@
 (deftype SignupHandler [] PipelineDelegate
 
   (getStartActivity [_  pipe]
-    (require 'cmzlab.cocos2d.users.accounts)
+    (require 'cmzlabclj.cocos2d.users.accounts)
     (log/debug "signup pipe-line - called.")
     (If. (MaybeSignupTest "32") (doSignupOK) (doSignupFail)))
 
@@ -154,7 +154,7 @@
 (deftype LoginHandler [] PipelineDelegate
 
   (getStartActivity [_  pipe]
-    (require 'cmzlab.cocos2d.users.accounts)
+    (require 'cmzlabclj.cocos2d.users.accounts)
     (log/debug "login pipe-line - called.")
     (If. (MaybeLoginTest) (doLoginOK) (doLoginFail)))
 
@@ -216,7 +216,7 @@
 (deftype ForgotHandler [] PipelineDelegate
 
   (getStartActivity [_  pipe]
-    (require 'cmzlab.cocos2d.users.accounts)
+    (require 'cmzlabclj.cocos2d.users.accounts)
     (log/debug "forgot-login pipe-line - called.")
     (doto (Block.)
       (.chain (doAckReply))
@@ -264,7 +264,7 @@
 (deftype LogoutHandler [] PipelineDelegate
 
   (getStartActivity [_  pipe]
-    (require 'cmzlab.cocos2d.users.accounts)
+    (require 'cmzlabclj.cocos2d.users.accounts)
     (log/debug "logout pipe-line - called.")
     (doLogout))
 

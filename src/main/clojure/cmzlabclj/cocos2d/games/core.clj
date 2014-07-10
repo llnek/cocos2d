@@ -13,7 +13,7 @@
 (ns  ^{ :doc ""
         :author "kenl" }
 
-  cmzlab.cocos2d.games.core
+  cmzlabclj.cocos2d.games.core
 
   (:require [clojure.tools.logging :as log :only (info warn error debug)]
             [clojure.string :as cstr]
@@ -24,7 +24,7 @@
         [cmzlabclj.tardis.core.constants]
         [cmzlabclj.tardis.core.wfs]
         [cmzlabclj.tardis.impl.ext :only [GetAppKeyFromEvent] ]
-        [cmzlab.cocos2d.site.core ])
+        [cmzlabclj.cocos2d.site.core ])
 
   (:import  [com.zotohlab.gallifrey.core Container ConfigError]
             [org.apache.commons.io FileUtils]
@@ -125,7 +125,7 @@
 (deftype AllGamesPage [] PipelineDelegate
 
   (getStartActivity [_  pipe]
-    (require 'cmzlab.cocos2d.games.core)
+    (require 'cmzlabclj.cocos2d.games.core)
     (doShowPage interpolateBrowsePage))
 
   (onStop [_ pipe]
@@ -139,7 +139,7 @@
 (deftype TopPicksPage [] PipelineDelegate
 
   (getStartActivity [_  pipe]
-    (require 'cmzlab.cocos2d.games.core)
+    (require 'cmzlabclj.cocos2d.games.core)
     (doShowPage interpolatePicksPage))
 
   (onStop [_ pipe]
@@ -153,7 +153,7 @@
 (deftype GameArenaPage [] PipelineDelegate
 
   (getStartActivity [_  pipe]
-    (require 'cmzlab.cocos2d.games.core)
+    (require 'cmzlabclj.cocos2d.games.core)
     (doShowPage interpolateArenaPage))
 
   (onStop [_ pipe]
