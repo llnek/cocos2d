@@ -24,13 +24,15 @@ closeClickFn = function(ev) {
   overlay.removeEventListener( eventtype, closeClickFn );
 };
 function hideBorderMenu() {
+  if (!menu) { return; }
   classie.remove( menu, 'bt-menu-open' );
   classie.add( menu, 'bt-menu-close' );
   overlay.removeEventListener( eventtype, closeClickFn );
 }
 function showBorderMenu() {
 
-  var trigger = menu.querySelector( 'a.bt-menu-trigger' );
+  var trigger = menu ? menu.querySelector( 'a.bt-menu-trigger' ) : null;
+  if (!trigger) { return; }
 
   classie.add(overlay, 'bt-overlay');
   menu.appendChild( overlay );
