@@ -20,9 +20,9 @@ import com.zotohlab.odin.game.PlayerSession;
  */
 public interface Protocol {
 
-  public String getName();
-
   public void applyProtocol(PlayerSession playerSession,
-      boolean clearExistingProtocolHandlers);
+                            boolean clearExistingProtocolHandlers);
+
+  public String getName();
 
 }

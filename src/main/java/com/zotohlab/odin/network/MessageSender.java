@@ -11,7 +11,6 @@
 // Copyright (c) 2014 Cherimoia, LLC. All rights reserved.
  ??*/
 
-
 package com.zotohlab.odin.network;
 
 /**
@@ -23,6 +22,6 @@ public interface MessageSender {
 
   public boolean isReliable();
 
-  public void shutdown();
+  public void close();
 
 }
