@@ -1,12 +1,13 @@
-(ns)
+
+(ns ^{}
+
+  cmzlabclj.odin.core.services
+
+  ())
 
 
-(defn Jsonify ""
-
-  [^Event evt]
-
-  "")
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 
 (defn LookupSession ""
   
@@ -32,4 +33,8 @@
          pwd (:credential options) ]
     nil
   ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(def ^:private services-eof nil)
 

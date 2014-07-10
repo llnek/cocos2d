@@ -21,10 +21,10 @@ import com.zotohlab.odin.game.Session;
 public interface EventContext {
 
   public void setSession(Session session);
-  public Session getSession();
+  public Session session();
 
-  public void setAtt(Object att);
-  public Object getAtt();
+  public void setInfo(Object info);
+  public Object info();
 
 }
 

@@ -23,8 +23,8 @@ public interface GameStartListener {
 
   public void start(boolean isInitialized, Properties properties);
 
-  public void setGameRoom(GameRoom gameRoom);
-  public GameRoom getGameRoom();
+  public void setRoom(PlayRoom gameRoom);
+  public PlayRoom room();
 
 }
 

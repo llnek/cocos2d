@@ -23,11 +23,11 @@ import com.zotohlab.odin.network.TCPSender;
 public class ReconnetEvent extends DefaultConnectEvent {
 
   public ReconnetEvent(TCPSender tcp) {
-    super(tcp, null);
+    super(tcp);
   }
 
   @Override
-  public int getType() {
+  public int type() {
     return Events.RECONNECT;
   }
 

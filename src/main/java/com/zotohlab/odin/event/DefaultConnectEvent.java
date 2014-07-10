@@ -23,24 +23,14 @@ import com.zotohlab.odin.network.UDPSender;
  */
 public class DefaultConnectEvent extends DefaultEvent implements ConnectEvent {
 
-  protected TCPSender tcpSender;
-  protected UDPSender udpSender;
-
-  public DefaultConnectEvent(TCPSender tcp, UDPSender udp) {
-    this.tcpSender = tcp;
-    this.udpSender = udp;
-  }
+  protected TCPSender tcpsender;
 
   public DefaultConnectEvent(TCPSender tcp) {
-    this(tcp, null);
-  }
-
-  public DefaultConnectEvent(UDPSender udp) {
-    this(null, udp);
+    tcpsender = tcp;
   }
 
   @Override
-  public int getType() {
+  public int type() {
     return Events.CONNECT;
   }
 
@@ -51,31 +41,23 @@ public class DefaultConnectEvent extends DefaultEvent implements ConnectEvent {
   }
 
   @Override
-  public Object getSource() {
-    return tcpSender;
+  public Object source() {
+    return tcpsender;
   }
 
   @Override
   public void setSource(Object source) {
     if (source instanceof TCPSender) {
-      this.tcpSender = (TCPSender) source;
+      this.tcpsender = (TCPSender) source;
     }
   }
 
-  public TCPSender getTcpSender() {
-    return tcpSender;
+  public TCPSender tcpSender() {
+    return tcpsender;
   }
 
   public void setTcpSender(TCPSender tcp) {
-    this.tcpSender = tcp;
-  }
-
-  public UDPSender getUdpSender() {
-    return udpSender;
-  }
-
-  public void setUdpSender(UDPSender udp) {
-    this.udpSender = udp;
+    tcpsender = tcp;
   }
 
 }

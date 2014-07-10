@@ -23,7 +23,7 @@ import java.util.Set;
 /**
  * @author kenl
  */
-public interface GameRoom {
+public interface PlayRoom {
 
   public PlayerSession createPlayerSession(Player player);
 

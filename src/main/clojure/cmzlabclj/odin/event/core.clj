@@ -3,16 +3,35 @@
 
   cmzlabclj.odin.event.core
 
-  (:import (com.zotohlab.odin.event Events EventContext 
+  (:import (com.zotohlab.odin.event Events EventContext
                                     NetworkEvent Event))
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+(defn EventToFrame ""
 
+  ^TextWebSocketFrame
+  [etype body]
+
+  (let [evt (OEvents/event etype body)]
+    (TextWebSocketFrame. (json/write-str evt))
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
+(defn DecodeEvent ""
+
+  [^String data]
+
+  (try
+    (json/read-str data :key-fn keyword)
+    (catch Throwable e#
+      (log/error e# "")
+      {})))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 (defn ReifyContextualEvent ""
 
   ^Event
@@ -25,11 +44,11 @@
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 (defn ReifyEvent ""
 
   (^Event [^Object source eventType] (ReifyEvent source eventType nil))
-  
+
   (^Event [^Object source eventType ^Session session]
           (ReifyContextualEvent source eventType
                                 (if (nil? session)
@@ -37,7 +56,7 @@
                                   (DefaultEventContext.)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 (defn ReifyNetworkEvent ""
 
   (^NetworkEvent [^Object source] (ReifyNetworkEvent source true))
@@ -51,13 +70,13 @@
 ;;
 (defn ReifyConnectEvent ""
 
-  ^ConnectEvent 
+  ^ConnectEvent
   [^TCPSender tcp ^UDPSender udp]
 
   (DefaultConnectEvent. tcp udp))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;  
+;;
 (defn ReifySessionMessage ""
 
   ^Event
@@ -66,7 +85,7 @@
   (ReifyEvent source Events/SESSION_MESSAGE))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 (defn ReifyChangeAttrEvent ""
 
   [^Object attr ^Object value]

@@ -19,16 +19,16 @@ package com.zotohlab.odin.game;
 public interface Player {
 
   public void setId(Object uniqueKey);
-  public Object getId();
+  public Object id();
 
   public void setName(String name);
-  public String getName();
+  public String name();
 
   public void setEmailId(String emailId);
-  public String getEmailId();
+  public String emailId();
 
-  public boolean addSession(PlayerSession session);
   public boolean removeSession(PlayerSession session);
+  public boolean addSession(PlayerSession session);
 
   public void logout(PlayerSession playerSession);
 

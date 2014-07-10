@@ -18,7 +18,7 @@ package com.zotohlab.odin.game;
  */
 public interface SessionFactory {
 
-  public PlayerSession newPlayerSession(GameRoom gameRoom, Player player);
+  public PlayerSession newPlayerSession(PlayRoom gameRoom, Player player);
   public Session newSession();
 
 }

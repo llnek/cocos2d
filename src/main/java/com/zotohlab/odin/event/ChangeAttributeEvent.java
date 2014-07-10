@@ -28,7 +28,7 @@ public class ChangeAttributeEvent extends DefaultEvent {
   }
 
   @Override
-  public int getType() {
+  public int type() {
     return Events.CHANGE_ATTRIBUTE;
   }
 
@@ -52,7 +52,7 @@ public class ChangeAttributeEvent extends DefaultEvent {
   @Override
   public String toString() {
     return "ChangeAttributeEvent [key=" + key + ", value=" + value
-        + ", type=" + type + "]";
+        + ", type=" + type() + "]";
   }
 
 }

@@ -19,21 +19,17 @@ package com.zotohlab.odin.event;
  */
 public interface Event {
 
-  public int getType();
-
-  public void setType(int type);
-
-  public Object getSource();
-
-  public void setSource(Object d);
-
-  public EventContext getContext();
-
   public void setContext(EventContext context);
-
-  public long getTimeStamp();
+  public EventContext context();
 
   public void setTimeStamp(long timeStamp);
+  public long timestamp();
+
+  public void setType(int type);
+  public int type();
+
+  public void setSource(Object d);
+  public Object source();
 
 }
 

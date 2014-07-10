@@ -18,7 +18,6 @@ import com.zotohlab.odin.event.Event;
 import com.zotohlab.odin.event.EventDispatcher;
 import com.zotohlab.odin.event.EventHandler;
 import com.zotohlab.odin.network.TCPSender;
-import com.zotohlab.odin.network.UDPSender;
 
 import java.util.Collection;
 
@@ -28,9 +27,9 @@ import java.util.Collection;
 public interface Session {
 
   enum Status {
-    NOT_CONNECTED,
     CONNECTING ,
     CONNETED,
+    NOT_CONNECTED,
     CLOSED
   };
 
@@ -47,13 +46,9 @@ public interface Session {
   public boolean isWriteable();
   public void setWriteable(boolean writeable);
 
-  public boolean isUdpEnabled();
-  public void setUdpEnabled(boolean isEnabled);
-
   public boolean isShuttingDown();
 
   public long getCreationTime();
-
   public long getLastRWTime();
 
   public void setStatus(Status status);
@@ -67,9 +62,6 @@ public interface Session {
   public Collection<EventHandler> getHandlers(int eventType);
 
   public void close();
-
-  public void setUdpSender(UDPSender s);
-  public UDPSender getUdpSender();
 
   public void setTcpSender(TCPSender s);
   public TCPSender getTcpSender();

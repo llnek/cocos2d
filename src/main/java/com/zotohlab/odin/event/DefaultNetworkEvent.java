@@ -22,7 +22,7 @@ public class DefaultNetworkEvent extends DefaultEvent implements NetworkEvent {
   private boolean reliable= true;
 
   public DefaultNetworkEvent() {
-    super.setType(Events.NETWORK_MESSAGE);
+    super.setType(Events.NETWORK_MSG);
   }
 
   public DefaultNetworkEvent(Event event) {
@@ -31,9 +31,9 @@ public class DefaultNetworkEvent extends DefaultEvent implements NetworkEvent {
 
   public DefaultNetworkEvent(Event event, boolean isReliable) {
     this();
-    this.setSource(event.getSource());
-    this.setContext(event.getContext());
-    this.setTimeStamp(event.getTimeStamp());
+    this.setTimeStamp(event.timestamp());
+    this.setSource(event.source());
+    this.setContext(event.context());
     this.reliable=isReliable;
   }
 
@@ -49,7 +49,7 @@ public class DefaultNetworkEvent extends DefaultEvent implements NetworkEvent {
   public void setType(int type) {
     throw new IllegalArgumentException(
         "Event type of this class is already set to NETWORK_MESSAGE. "
-            + "It should not be reset.");
+            + "It cannot be reset.");
   }
 
 }

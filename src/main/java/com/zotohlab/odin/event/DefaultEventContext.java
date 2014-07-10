@@ -23,30 +23,30 @@ import com.zotohlab.odin.game.Session;
 public class DefaultEventContext implements EventContext {
 
   private Object attachement;
-  private Session session;
+  private Session _session;
 
   public DefaultEventContext(Session session, Object attachement) {
     this.attachement = attachement;
-    this.session = session;
+    _session = session;
   }
 
   public DefaultEventContext() {
   }
 
-  public Object getAtt() {
-    return attachement;
-  }
-
-  public Session getSession() {
-    return session;
-  }
-
-  public void setAtt(Object attachement) {
+  public void setInfo(Object attachement) {
     this.attachement = attachement;
   }
 
+  public Object info() {
+    return attachement;
+  }
+
   public void setSession(Session session) {
-    this.session = session;
+    _session = session;
+  }
+
+  public Session session() {
+    return _session;
   }
 
 }

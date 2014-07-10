@@ -22,10 +22,7 @@ import com.zotohlab.odin.network.UDPSender;
  */
 public interface ConnectEvent extends Event {
 
-  public TCPSender getTcpSender();
-  public UDPSender getUdpSender();
-
   public void setTcpSender(TCPSender s);
-  public void setUdpSender(UDPSender s);
+  public TCPSender tcpSender();
 
 }

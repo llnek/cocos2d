@@ -21,7 +21,7 @@ public interface EventHandler {
 
   public void onEvent(Event event);
 
-  public int getEventType();
+  public int eventType();
 
 }
 

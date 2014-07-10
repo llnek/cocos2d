@@ -13,7 +13,6 @@
 
 package com.zotohlab.odin.game;
 
-import com.zotohlab.odin.event.Event;
 import com.zotohlab.odin.protocol.Protocol;
 
 /**
@@ -21,17 +20,15 @@ import com.zotohlab.odin.protocol.Protocol;
  */
 public interface PlayerSession extends Session {
 
-  public Player getPlayer();
+  public void sendRoom(Object event);
+  public Player player();
 
-  public GameRoom getGameRoom();
-
-  public void setGameRoom(GameRoom gameRoom);
-
-  public Protocol getProtocol();
+  public void setRoom(PlayRoom room);
+  public PlayRoom room();
 
   public void setProtocol(Protocol p);
+  public Protocol protocol();
 
-  public void sendToGameRoom(Event event);
 
 }
 
