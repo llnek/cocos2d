@@ -18,17 +18,17 @@ package com.zotohlab.odin.game;
  */
 public interface Player {
 
-  public void setId(Object uniqueKey);
+  //public void setId(Object uniqueKey);
   public Object id();
 
   public void setName(String name);
-  public String name();
+  public String getName();
 
   public void setEmailId(String emailId);
   public String emailId();
 
-  public boolean removeSession(PlayerSession session);
-  public boolean addSession(PlayerSession session);
+  public void removeSession(PlayerSession session);
+  public void addSession(PlayerSession session);
 
   public void logout(PlayerSession playerSession);
 

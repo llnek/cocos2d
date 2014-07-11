@@ -33,8 +33,8 @@ public interface Session {
     CLOSED
   };
 
-  public Object getId();
   //public void setId(Object id);
+  public Object id();
 
   public void setAttr(Object key, Object value);
   public Object getAttr(Object key);

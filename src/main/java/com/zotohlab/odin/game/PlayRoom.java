@@ -16,7 +16,7 @@ package com.zotohlab.odin.game;
 
 import com.zotohlab.odin.event.Event;
 import com.zotohlab.odin.event.NetworkEvent;
-import com.zotohlab.odin.protocol.Protocol;
+import com.zotohlab.odin.handler.Protocol;
 import io.netty.channel.Channel;
 import java.util.Set;
 
@@ -42,6 +42,8 @@ public interface PlayRoom {
 
   public void setGame(Game g);
   public Game getGame();
+
+  public Object id();
 
   public void setStateManager(GameStateManager stateManager);
   public GameStateManager getStateManager();

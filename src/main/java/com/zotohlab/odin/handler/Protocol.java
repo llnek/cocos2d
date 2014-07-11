@@ -11,7 +11,7 @@
 // Copyright (c) 2014 Cherimoia, LLC. All rights reserved.
  ??*/
 
-package com.zotohlab.odin.protocol;
+package com.zotohlab.odin.handler;
 
 import com.zotohlab.odin.game.PlayerSession;
 

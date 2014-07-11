@@ -19,7 +19,7 @@ package com.zotohlab.odin.game;
 public interface Game {
 
   public void setName(String gameName);
-  public String name();
+  public String getName();
 
   public void setParser(CmdParser p);
   public CmdParser parser();

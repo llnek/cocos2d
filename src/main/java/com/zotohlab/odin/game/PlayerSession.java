@@ -13,7 +13,7 @@
 
 package com.zotohlab.odin.game;
 
-import com.zotohlab.odin.protocol.Protocol;
+import com.zotohlab.odin.handler.Protocol;
 
 /**
  * @author kenl
