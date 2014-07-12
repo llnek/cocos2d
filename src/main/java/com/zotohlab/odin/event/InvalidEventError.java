@@ -13,18 +13,18 @@
 
 package com.zotohlab.odin.event;
 
-import com.zotohlab.odin.game.Session;
-
 /**
  * @author kenl
  */
-public interface EventContext {
+public class InvalidEventError extends Exception {
 
-  public void setSession(Session session);
-  public Session session();
+  public InvalidEventError(String msg) {
+    super(msg);
+  }
 
-  public void setInfo(Object info);
-  public Object info();
+  public InvalidEventError(String msg, Exception e) {
+    super(msg,e);
+  }
 
 }
 

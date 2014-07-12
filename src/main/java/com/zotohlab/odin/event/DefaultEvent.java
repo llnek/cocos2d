@@ -20,7 +20,7 @@ import java.io.Serializable;
  */
 public class DefaultEvent implements Event, Serializable {
 
-  protected EventContext eventContext;
+  protected Object eventContext;
   protected int eventType;
   protected Object eventSource;
   protected long eventTimeStamp;
@@ -29,7 +29,7 @@ public class DefaultEvent implements Event, Serializable {
     eventTimeStamp= System.currentTimeMillis();
   }
 
-  public EventContext context() {
+  public Object context() {
     return eventContext;
   }
 
@@ -45,7 +45,7 @@ public class DefaultEvent implements Event, Serializable {
     return eventTimeStamp;
   }
 
-  public void setContext(EventContext context) {
+  public void setContext(Object context) {
     eventContext = context;
   }
 

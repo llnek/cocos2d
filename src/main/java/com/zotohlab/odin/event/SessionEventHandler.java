@@ -20,7 +20,6 @@ import com.zotohlab.odin.game.Session;
  */
 public interface SessionEventHandler extends EventHandler {
 
-  public void setSession(Session s);
   public Session session();
 
 }

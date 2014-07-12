@@ -25,41 +25,22 @@ import java.util.Set;
  */
 public interface PlayRoom {
 
-  public PlayerSession createPlayerSession(Player player);
+//  public void onEnter(PlayerSession playerSession);
 
-  public void onEnter(PlayerSession playerSession);
+  public void disconnect(PlayerSession session);
+  public PlayerSession connect(Player p);
 
-  public boolean connectSession(PlayerSession playerSession);
+  public GameStateManager stateManager();
+  public Game game();
 
-  public void afterSessionConnect(PlayerSession playerSession);
+  public Object roomId();
 
-  public boolean disconnectSession(PlayerSession session);
+  public void broadcast(NetworkEvent networkEvent);
+  public void post(Event event);
 
-  public Set<PlayerSession> getSessions();
+  public boolean isShuttingDown() ;
+  public void shutdown();
 
-  public void setGameRoomName(String gameRoomName);
-  public String getGameRoomName();
-
-  public void setGame(Game g);
-  public Game getGame();
-
-  public Object id();
-
-  public void setStateManager(GameStateManager stateManager);
-  public GameStateManager getStateManager();
-
-  public void setProtocol(Protocol p);
-  public Protocol getProtocol();
-
-  public void setSessions(Set<PlayerSession> sessions);
-  public void send(Event event);
-
-  public void sendBroadcast(NetworkEvent networkEvent);
-
-  public void close();
-
-  public void setFactory(SessionFactory factory);
-  public SessionFactory getFactory();
 
 }
 

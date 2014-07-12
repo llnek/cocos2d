@@ -74,5 +74,19 @@ public enum Events {
    */
   public static final byte EXCEPTION = 0x24;
 
+
+  public static Event event(int eventType, Object source)  {
+    return event(eventType, source, null);
+  }
+
+  public static Event event(int eventType, Object source , Object context)  {
+    DefaultEvent event = new DefaultEvent();
+    event.setSource(source);
+    event.setType(eventType);
+    event.setContext(context);
+    return event;
+  }
+
+
 }
 

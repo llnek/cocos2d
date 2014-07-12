@@ -24,4 +24,5 @@ public interface MessageSender {
 
   public void close();
 
+  public Object impl();
 }

@@ -19,8 +19,8 @@ package com.zotohlab.odin.event;
  */
 public interface Event {
 
-  public void setContext(EventContext context);
-  public EventContext context();
+  public void setContext(Object context);
+  public Object context();
 
   public void setTimeStamp(long timeStamp);
   public long timestamp();

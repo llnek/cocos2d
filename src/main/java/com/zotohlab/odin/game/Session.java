@@ -28,7 +28,7 @@ public interface Session {
 
   enum Status {
     CONNECTING ,
-    CONNETED,
+    CONNECTED,
     NOT_CONNECTED,
     CLOSED
   };
