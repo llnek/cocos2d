@@ -199,66 +199,44 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- onEventXXX ""
-
-  [^Session session evt]
-
-  (case (:type evt)
-    Events/SESSION_MSG
-    (onData session evt)
-
-    Events/NETWORK_MSG
-    (onNetMsg session evt)
-
-    (Events/LOGIN_ERROR Events/LOGIN_OK)
-    (when-not (nil? session) 
-      (.sendMessage session evt))
-
-      (= t Events/LOGOUT)
-      (when-not (nil? session)
-        (.close session))
-
-      (= t Events/CONNECT_ERROR)
-      (log/error "connection failed!")
-
-      (= t Events/CONNECT)
-      (onConnect session evt)
-
-      (= t Events/DISCONNECT)
-      (onError session evt)
-
-      (= t Events/RECONNECT)
-      (onReconnect session evt)
-
-      (or (= t Events/START)
-          (= t Events/STOP))
-      (when-not (nil? session)
-        (if-let [ s (.getTCPSender session) ]
-          (.sendMessage s evt)))
-
-      (= t Events/CHANGE)
-      (when-not (nil? session)
-        (.setAttr session (.getKey evt) (.getValue evt)))
-
-      (= t Events/ERROR)
-      (onError session evt)
-
-      :else
-      (log/warn "Unknown event type")
-  )))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 (defn ReifySessionEventHandler ""
 
+  ^EventHandler
   [^Session sess]
 
-  (let []
-    (reify SessionEventHandler
-      (onEvent [_ evt] (onEventXXX sess evt))
-      (getEventType [_] Events/ANY)
-      (session [_] sess))
-  ))
+  (reify SessionEventHandler
+    (getEventType [_] Events/ANY)
+    (session [_] sess)
+    (onEvent [_ evt]
+      (case (:type evt)
+        (Events/LOGIN_NOK Events/LOGIN_OK)
+        (when-not (nil? session)
+          (.sendMessage session evt))
+        Events/SESSION_MSG
+        (onData session evt)
+        Events/NETWORK_MSG
+        (onNetMsg session evt)
+        Events/LOGOUT
+        (when-not (nil? session)
+          (.close session))
+        Events/CONNECT_NOK
+        (log/error "connection failed!")
+        Events/CONNECT
+        (onConnect session evt)
+        Events/DISCONNECT
+        (onError session evt)
+        Events/RECONNECT
+        (onReconnect session evt)
+        (Events/START Events/STOP)
+        (when-not (nil? session)
+          (.sendMessage session evt))
+        Events/CHANGE
+        (when-not (nil? session)
+          (.setAttr session (:context evt) (:source evt)))
+        Events/ERROR
+        (onError session evt)
+        ;;else
+        (log/warn "Unknown event type")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
