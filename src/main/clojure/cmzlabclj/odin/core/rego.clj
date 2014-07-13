@@ -19,7 +19,8 @@
   (:use [cmzlabclj.nucleus.util.core :only [MakeMMap ternary notnil? ] ]
         [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
 
-  (:import  [com.zotohlab.odin.game Game PlayRoom Player Session]))
+  (:import  [com.zotohlab.odin.game Game PlayRoom Player PlayerSession Session]
+            [com.zotohlab.odin.event EventDispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; reconnect registry of abandoned sessions.
@@ -58,8 +59,8 @@
 
   ;; Add the handler to the game room's EventDispatcher so that it will
   ;; pass game room network events to player session session.
-  (let [h (ReifyNetworkEventListener ps) ]
-    (.addHandler disp h)
+  (let [h nil ];;(ReifyNetworkEventListener ps) ]
+    ;;(.addHandler disp h)
     (log/debug "added Network listener for session " ps)
   ))
 
@@ -69,10 +70,10 @@
 
   [^PlaySession ps]
 
-  (let [^Channel ch (-> (.getTcpSender ps)(.impl))
+  (let [^Channel ch nil ;;(-> (.getTcpSender ps)(.impl))
         pipe (.pipeline ch) ]
     (log/debug "applying websocket protocol to the player session " ps)
-    (.addLast pipe "PlayerSessionHandler", (ReifyPlayerSessionHandler ps))
+    ;;(.addLast pipe "PlayerSessionHandler", (ReifyPlayerSessionHandler ps))
     ;;(.remove pipe "IDLE_STATE_CHECK_HANDLER")
   ))
 

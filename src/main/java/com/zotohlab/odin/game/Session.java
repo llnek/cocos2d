@@ -57,14 +57,13 @@ public interface Session {
   public boolean isConnected();
   public boolean isClosed();
 
+  public Collection<EventHandler> getHandlers(int eventType);
   public void addHandler(EventHandler eventHandler);
   public void removeHandler(EventHandler eventHandler);
-  public Collection<EventHandler> getHandlers(int eventType);
 
+  public void sendMessage(Object msg);
+  public Object impl();
   public void close();
-
-  public void setTcpSender(TCPSender s);
-  public TCPSender getTcpSender();
 
 }
 
