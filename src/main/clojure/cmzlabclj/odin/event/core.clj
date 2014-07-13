@@ -107,27 +107,19 @@
 ;;
 (defn- onNetMsg ""
 
-  [^Session session ^NetworkEvent evt]
+  [^Session session evt]
 
-  (cond
-    (or (nil? session)
-        (not (.isWritable session)))
+  (if (or (nil? session)
+          (not (.isWritable session)))
     nil
-
-    (.isReliable evt)
-    (if-let [ s (.getTCPSender session) ]
-      (.sendMessage s evt))
-
-    :else
-    (if-let [ s (.getUDPSender session) ]
-      (.sendMessage s evt))
+    (.sendMessage session evt)
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- onData ""
 
-  [^PlayerSession session ^Event evt]
+  [^PlayerSession session evt]
 
   (when-not (nil? session)
     (let [ ne (ReifyNetworkEvent evt) ]
