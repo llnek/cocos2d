@@ -73,7 +73,8 @@
           (replyError evt Events/ROOM_NOK "no such room."))
         (if-let [s (JoinRoom room plyr)]
           (var-set ps s)
-          (replyError evt Events/JOIN_NOK "failed to join room."))
+          (replyError evt Events/JOIN_NOK
+                      "failed to join room."))
         (when (and (notnil? @plyr)
                    (notnil? @ps)
                    (notnil? @room))

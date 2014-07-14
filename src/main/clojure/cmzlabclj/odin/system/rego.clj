@@ -16,6 +16,7 @@
 
   (:require [clojure.tools.logging :as log :only [info warn error debug] ]
             [clojure.string :as cstr])
+
   (:use [cmzlabclj.nucleus.util.core :only [MakeMMap ternary notnil? ] ]
         [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
 
@@ -50,6 +51,8 @@
       r)
   ))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 (defn JoinRoom ""
 
   [^PlayRoom room ^Player plyr]
