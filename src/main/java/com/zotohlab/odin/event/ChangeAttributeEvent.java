@@ -29,7 +29,7 @@ public class ChangeAttributeEvent extends DefaultEvent {
 
   @Override
   public int type() {
-    return Events.CHANGE_ATTRIBUTE;
+    return Events.MODIFY;
   }
 
   public Object getKey() {

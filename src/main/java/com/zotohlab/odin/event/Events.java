@@ -18,61 +18,33 @@ package com.zotohlab.odin.event;
  */
 public enum Events {
 ;
-  public static final byte PROTCOL_VERSION=0x01;
-  public static final byte ANY = 0x00;
+  public static final byte PROTCOL_VERSION= 1;
+  public static final byte ANY = 0;
 
-  // Lifecycle events.
-  public static final byte CONNECT = 0x02;
-  public static final byte RECONNECT = 0x3;
-  public static final byte CONNECT_NOK = 0x06;
+  // actions.
+  public static final byte DISCONNECT = 2;
+  public static final byte CONNECT = 3;
+  public static final byte RECONNECT = 4;
 
-  public static final byte LOGIN = 0x08;
-  public static final byte LOGOUT = 0x0a;
-  public static final byte LOGIN_OK = 0x0b;
-  public static final byte LOGIN_NOK = 0x0c;
-  public static final byte LOGOUT_OK = 0x0e;
-  public static final byte LOGOUT_NOK = 0x0f;
+  public static final byte GAME_LIST = 5;
+  public static final byte ROOM_LIST = 6;
+  public static final byte ROOM_JOIN = 7;
+  public static final byte ROOM_QUIT = 8;
 
-  public static final byte GAME_LIST = 0x10;
-  public static final byte ROOM_LIST = 0x12;
-  public static final byte GAMEROOM_JOIN = 0x14;
-  public static final byte GAMEROOM_LEAVE = 0x16;
-  public static final byte GAMEROOM_JOIN_OK = 0x18;
-  public static final byte GAMEROOM_JOIN_NOK = 0x19;
+  public static final byte START = 9;
+  public static final byte STOP = 10;
+  public static final byte MODIFY = 11;
 
-  /**
-   * Event sent from server to client to start message sending from client to server.
-   */
-  public static final byte START = 0x1a;
+  public static final byte DISCONNECT_NOK = 12;
+  public static final byte DISCONNECT_OK = 13;
+  public static final byte CONNECT_NOK = 14;
+  public static final byte CONNECT_OK = 15;
+  public static final byte JOIN_NOK = 16;
+  public static final byte JOIN_OK = 17;
 
-  /**
-   * Event sent from server to client to stop messages from being sent to server.
-   */
-  public static final byte STOP = 0x1b;
-
-  /**
-   * Incoming data from another machine/JVM to this JVM (server or client)
-   */
-  public static final byte SESSION_MSG = 0x1c;
-
-  /**
-   * This event is used to send data from the current machine to remote
-   * machines using TCP or UDP transports. It is an out-going event.
-   */
-  public static final byte NETWORK_MSG = 0x1d;
-
-
-  public static final byte CHANGE_ATTRIBUTE = 0x20;
-
-  /**
-   * If a remote connection is disconnected or closed then raise this event.
-   */
-  public static final byte DISCONNECT = 0x22;
-
-  /**
-   * A network exception will in turn cause this even to be raised.
-   */
-  public static final byte EXCEPTION = 0x24;
+  public static final byte SESSION_MSG = 18;
+  public static final byte NETWORK_MSG = 19;
+  public static final byte EXCEPTION = 99;
 
 
   public static Event event(int eventType, Object source)  {
