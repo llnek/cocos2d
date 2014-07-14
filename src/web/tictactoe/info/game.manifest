@@ -1,11 +1,12 @@
 {
-  "uuid" : "in7pQGAv-P7au-4vGV-izGG-putzAvcPYnpV",
+  "uuid" : "bd5f79bb-eb41-4ed5-bb44-2529dc27ed3c",
   "pubdate" : "2014/06/03",
   "orientation" : "portrait",
   "author" : "llnek",
   "name" : "Tic Tac Toe",
   "desc" : "Like Tic Tac Toe, only better!",
   "status" : true,
+  "network" : [true, 2],
   "uri" : "/arena/tictactoe",
   "image" : "gui/catalog.png"
 }

@@ -1,10 +1,11 @@
 {
-  "uuid" : "GtizaQpV-tcGG-4uGY-AvVY-nVPtiAczicza",
+  "uuid" : "fa0860f9-76dc-4135-8bc7-bd5af3147d55",
   "pubdate" : "2014/06/03",
   "orientation" : "landscape",
   "author" : "llnek",
   "name" : "Pong",
   "desc" : "Like Pong, only better!",
+  "network" : [true, 2],
   "status" : true,
   "uri" : "/arena/pong",
   "image" : "gui/catalog.png"
