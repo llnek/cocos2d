@@ -12,7 +12,7 @@
 (ns ^{:doc ""
       :author "kenl" }
 
-  cmzlabclj.odin.system.rego
+  cmzlabclj.odin.core.rego
 
   (:require [clojure.tools.logging :as log :only [info warn error debug] ]
             [clojure.string :as cstr])
@@ -50,22 +50,116 @@
       r)
   ))
 
-(defn JoinRoom ""
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- enableHandlers ""
 
-  [^PlayRoom room ^Player plyr]
+  [^EventDispatcher disp
+   ^PlayerSession ps]
 
-  {})
+  ;; Add the handler to the game room's EventDispatcher so that it will
+  ;; pass game room network events to player session session.
+  (let [h nil ];;(ReifyNetworkEventListener ps) ]
+    ;;(.addHandler disp h)
+    (log/debug "added Network listener for session " ps)
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- applyProtocol ''
+
+  [^PlaySession ps]
+
+  (let [^Channel ch nil ;;(-> (.getTcpSender ps)(.impl))
+        pipe (.pipeline ch) ]
+    (log/debug "applying websocket protocol to the player session " ps)
+    ;;(.addLast pipe "PlayerSessionHandler", (ReifyPlayerSessionHandler ps))
+    ;;(.remove pipe "IDLE_STATE_CHECK_HANDLER")
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- postConnect ""
+
+  [^StateManager stateMgr
+   ^PlaySession ps]
+
+  (.setStatus ps Session$Status/CONNECTED)
+  (when-let [state (.getState stateMgr) ]
+    (.onEvent ps (Events/networkEvent state))
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn ReifyPlayRoom ""
+
+  ^PlayRoom
+  [^Game g]
+
+  (let [disp (EventDispatchers/jetLang nil)
+        sess (ConcurrentHashMap.)
+        impl (MakeMMap)
+        mgr nil]
+    (reify PlayRoom
+
+      (isShuttingDown [_] (.getf impl :shutting))
+      (game [_] g)
+      (stateManager [_] mgr)
+
+      (disconnect [_ ps]
+        (.removeHandlers disp ps)
+        (.remove sess (.id ps)))
+
+      (connect [this player]
+        (if (.isShuttingDown this)
+          (do
+            (log/warn "play room is shutting down, rejecting " player)
+            nil)
+          (let [ps (ReifyPlayerSession this player)]
+            (enableHandlers disp ps)
+            (applyProtocol ps)
+            (.put sess (.id ps) ps)
+            (postConnect mgr ps)
+            ps)))
+
+      (roomId [_] "")
+
+      (broadcast [_ evt] (.onEvent this evt))
+      (post [_ evt] (.onEvent this evt))
+
+      (shutdown [this]
+        (let [cb (reify Callable
+                   (call [_]
+                     (.setf! impl :shutting true)
+                     (doseq [v (seq (.values sess))]
+                       (.close v))
+                     (.clear sess)
+                     (.setf! impl :shutting false))) ]
+        (CoreUtils/syncExec this cb)))
+  )))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn CreateRoom ""
+
+  ^PlayRoom
+  [^Game g]
+
+  (dosync
+    (let [r (ReifyPlayRoom g) ]
+      (alter GAME-ROOMS assoc (.id r) r)
+      r)
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn LookupRoom ""
 
-  ;;^PlayRoom
+  ^PlayRoom
   [^String room]
 
   (dosync
-    (get @GAME-ROOMS room)
-    {}))
+    (get @GAME-ROOMS room)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

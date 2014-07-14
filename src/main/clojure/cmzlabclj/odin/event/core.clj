@@ -18,7 +18,7 @@
             [clojure.data.json :as json]
             [clojure.string :as cstr])
   (:use [cmzlabclj.nucleus.util.core
-         :only [ThrowUOE MakeMMap ternary test-nonil? notnil? ] ]
+         :only [ThrowUOE MakeMMap ternary test-nonil notnil? ] ]
         [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
 
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
@@ -35,19 +35,20 @@
           evt (if-not (nil? body)
                 (assoc base :source body)
                 base) ]
-      (TextWebSocketFrame. (json/write-str evt)))))
+      (TextWebSocketFrame. ^String (json/write-str evt)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn DecodeEvent ""
 
-  [^String data]
+  [^String data socket]
 
+  (log/debug "received json event: " data)
   (try
     (let [evt (json/read-str data :key-fn keyword) ]
       (when (nil? (:type evt))
         (throw (InvalidEventError. "event object has no type info.")))
-      evt)
+      (assoc evt :socket socket))
     (catch Throwable e#
       (log/error e# "")
       {})))
@@ -78,14 +79,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ReifyConnectEvent ""
-
-  ([tcp udp] (ThrowUOE "only tcp supported."))
-  ([tcp]
-   (ReifyEvent Events/CONNECT tcp)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 (defn ReifySessionMessage ""
 
   [^Object source]
@@ -98,137 +91,10 @@
 
   [^Object attr ^Object value]
 
-  (ReifyEvent Events/CHANGE_ATTRIBUTE value attr))
+  (ReifyEvent Events/MODIFY value attr))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- onNetMsg ""
-
-  [^Session session evt]
-
-  (if (or (nil? session)
-          (not (.isWritable session)))
-    nil
-    (.sendMessage session evt)
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- onData ""
-
-  [^PlayerSession session evt]
-
-  (when-not (nil? session)
-    (let [ ne (ReifyNetworkEvent evt) ]
-      (when (.isUDPEnabled session)
-        (.setReliable ne false))
-      (-> session (.getGameRoom)(.sendBroadcast ne)))
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- onConnect ""
-
-  [^Session session ^ConnectEvent evt]
-
-  (when-not (nil? session)
-    (let [ ss (.getTCPSender session)
-           es (.getTCPSender evt) ]
-      (if (notnil? es)
-        (.setTCPSender session es)
-        (if (nil? ss)
-          (log/warn "TCP connection not fully established yet.")
-          (do
-            (.setUDPEnabled session true)
-            (.setUDPSender session (.getUDPSender evt))))))
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- onReconnect
-
-  [^Session session ^ConnectEvent evt]
-
-  ;; To synchronize with task for closing session in ReconnectRegistry service.
-  (when-not (nil? session)
-    (CoreUtils/syncExec
-      session
-      (reify Callable
-        (call [_]
-          (if-let [ ^SessionRegistry reg (.getAttr Config/RECONNECT_REGISTRY) ]
-            (when (not= Session/STATUS_CLOSED (.getStatus session))
-              (.removeSession reg (.getAttr session Config/RECONNECT_KEY)))))))
-    (onConnect session evt)
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- onError ""
-
-  [^Session session ^Event evt]
-
-  (when-not (nil? session)
-    (.setStatus session Session/STATUS_NOT_CONNECTED)
-    (.setWriteable session false)
-    ;; will be set to true by udpupstream handler on connect event.
-    (.setUDPEnabled session false)
-    (let [ ^SessionRegistry rego (.getAttr session Config/RECONNECT_REGISTRY)
-           ^String rckey (.getAttr session Config/RECONNECT_KEY) ]
-      (if (and (hgl? rckey)
-               (notnil? rego))
-        (if (nil? (.getSession rego rckey))
-          (.putSession rego  rckey session)
-          (log/debug "received exception/disconnect event in session; "
-                     "puting session in reconnection registry."))
-        (do
-          (log/debug "received exception/disconnect event in session; "
-                     "closing session.")
-          (.session close))))
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn ReifySessionEventHandler ""
-
-  ^EventHandler
-  [^Session sess]
-
-  (reify SessionEventHandler
-    (getEventType [_] Events/ANY)
-    (session [_] sess)
-    (onEvent [_ evt]
-      (case (:type evt)
-        (Events/LOGIN_NOK Events/LOGIN_OK)
-        (when-not (nil? session)
-          (.sendMessage session evt))
-        Events/SESSION_MSG
-        (onData session evt)
-        Events/NETWORK_MSG
-        (onNetMsg session evt)
-        Events/LOGOUT
-        (when-not (nil? session)
-          (.close session))
-        Events/CONNECT_NOK
-        (log/error "connection failed!")
-        Events/CONNECT
-        (onConnect session evt)
-        Events/DISCONNECT
-        (onError session evt)
-        Events/RECONNECT
-        (onReconnect session evt)
-        (Events/START Events/STOP)
-        (when-not (nil? session)
-          (.sendMessage session evt))
-        Events/CHANGE
-        (when-not (nil? session)
-          (.setAttr session (:context evt) (:source evt)))
-        Events/ERROR
-        (onError session evt)
-        ;;else
-        (log/warn "Unknown event type")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

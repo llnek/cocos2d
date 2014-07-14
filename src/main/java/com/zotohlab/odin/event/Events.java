@@ -18,33 +18,37 @@ package com.zotohlab.odin.event;
  */
 public enum Events {
 ;
-  public static final byte PROTCOL_VERSION= 1;
-  public static final byte ANY = 0;
+  public static final int PROTCOL_VERSION= 1;
+  public static final int ANY = 0;
 
   // actions.
-  public static final byte DISCONNECT = 2;
-  public static final byte CONNECT = 3;
-  public static final byte RECONNECT = 4;
+  public static final int DISCONNECT = 2;
+  public static final int CONNECT = 3;
+  public static final int RECONNECT = 4;
 
-  public static final byte GAME_LIST = 5;
-  public static final byte ROOM_LIST = 6;
-  public static final byte ROOM_JOIN = 7;
-  public static final byte ROOM_QUIT = 8;
+  public static final int GAME_LIST = 5;
+  public static final int ROOM_LIST = 6;
+  public static final int ROOM_JOIN = 7;
+  public static final int ROOM_QUIT = 8;
 
-  public static final byte START = 9;
-  public static final byte STOP = 10;
-  public static final byte MODIFY = 11;
+  public static final int START = 9;
+  public static final int STOP = 10;
+  public static final int MODIFY = 11;
 
-  public static final byte DISCONNECT_NOK = 12;
-  public static final byte DISCONNECT_OK = 13;
-  public static final byte CONNECT_NOK = 14;
-  public static final byte CONNECT_OK = 15;
-  public static final byte JOIN_NOK = 16;
-  public static final byte JOIN_OK = 17;
+  public static final int DISCONNECT_NOK = 12;
+  public static final int DISCONNECT_OK = 13;
+  public static final int CONNECT_NOK = 14;
+  public static final int CONNECT_OK = 15;
 
-  public static final byte SESSION_MSG = 18;
-  public static final byte NETWORK_MSG = 19;
-  public static final byte EXCEPTION = 99;
+  public static final int ROOM_NOK = 16;
+  public static final int ROOM_OK = 17;
+  public static final int JOIN_NOK = 18;
+  public static final int JOIN_OK = 19;
+
+  public static final int SESSION_MSG = 20;
+  public static final int NETWORK_MSG = 21;
+
+  public static final int EXCEPTION = 22;
 
 
   public static Event event(int eventType, Object source)  {

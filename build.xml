@@ -187,6 +187,9 @@
       <arg value="cmzlabclj.cocos2d.users.accounts"/>
       <arg value="cmzlabclj.cocos2d.users.rego"/>
       <arg value="cmzlabclj.cocos2d.games.core"/>
+      <arg value="cmzlabclj.odin.event.core"/>
+      <arg value="cmzlabclj.odin.system.rego"/>
+      <arg value="cmzlabclj.odin.system.core"/>
       <arg value="cmzlabclj.odin.network.wsock"/>
     </java>
     <copy todir="${out.jar.dir}">
