@@ -12,19 +12,14 @@
 (ns ^{:doc ""
       :author "kenl" }
 
-  cmzlabclj.odin.game.room
+  cmzlabclj.odin.system.util
 
   (:require [clojure.tools.logging :as log :only [info warn error debug] ]
             [clojure.data.json :as json]
             [clojure.string :as cstr])
 
-  (:use [cmzlabclj.nucleus.util.core :only [MakeMMap ternary notnil? ] ]
-        [cmzlabclj.nucleus.util.guids]
+  (:use [cmzlabclj.nucleus.util.core :only [MakeMMap ternary notnil? juid] ]
         [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
-
-  (:use [cmzlabclj.odin.event.core]
-        [cmzlabclj.odin.game.session]
-        [cmzlabclj.odin.system.rego])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom Player PlayerSession Session]
             [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
@@ -34,60 +29,31 @@
             [com.zotohlab.gallifrey.core Container]
             [com.zotohlab.odin.event Events EventDispatcher]))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(def ^:private vacancy 1000)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ReifyPlayRoom ""
 
-  ^PlayRoom
-  [^Game gm]
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 
-  (let [rid (NewUUid)]
-    (reify PlayRoom
-      (disconnect [_ ps] )
-      (connect [this p]
-        (let [ps (ReifyPlayerSession this p)]
-          (.addSession ^Player p ps)
-          ps))
-      (stateManager [_] )
-      (game [_] gm)
-      (roomId [_] rid)
-      (broadcast [_ evt] )
-      (post [_ evt] )
-      (isShuttingDown [_] )
-      (shutdown [_]))
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn GenerateUID ""
+
+  ^String
+  [^Class cz]
+
+  (let [id (juid) ]
+    (if (nil? cz)
+      id
+      (str (.getSimpleName cz) "-" id))
   ))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn OpenRoom ""
-
-  ^PlayRoom
-  [^Game game ^Player plyr]
-
-  (cond
-    (== vacancy 0)
-    nil
-
-    (> (.countSessions plyr) 5)
-    nil
-
-    :else
-    (AddRoom (ReifyPlayRoom game))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn JoinRoom ""
-
-  ^PlayerSession
-  [^PlayRoom room ^Player plyr]
-
-  (.connect room plyr))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(def ^:private room-eof nil)
+(def ^:private util-eof nil)
 

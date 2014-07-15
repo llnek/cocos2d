@@ -20,15 +20,8 @@ import com.zotohlab.odin.handler.Protocol;
  */
 public interface PlayerSession extends Session {
 
-  public void sendRoom(Object event);
-  public Player player();
-
-  public void setRoom(PlayRoom room);
   public PlayRoom room();
-
-  public void setProtocol(Protocol p);
-  public Protocol protocol();
-
+  public Player player();
 
 }
 

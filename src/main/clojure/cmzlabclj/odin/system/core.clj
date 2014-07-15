@@ -50,12 +50,15 @@
 ;;
 (defn- replyOK ""
 
-  [evt]
+  [^PlayerSession ps]
 
-  (let [rsp (EventToFrame Events/PLAYGAME_REQ_OK nil)
-        ^Channel ch (:socket evt) ]
+  (let [rsp (EventToFrame Events/PLAYGAME_REQ_OK
+                          (-> (.room ps)
+                              (.roomId)))
+        ^Channel ch (.impl ps) ]
     (log/debug "player connection request is ok.")
-    (.writeAndFlush ch rsp)
+    (log/debug "player impl = " ch)
+    (.sendMessage ps rsp)
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -79,14 +82,15 @@
                                  (nth arr 2)) ]
           (var-set plyr p)
           (replyError evt Events/INVALID_USER ""))
-        (if-let [r (OpenRoom @gm)]
+        (if-let [r (OpenRoom @gm @plyr)]
           (var-set room r)
           (replyError evt Events/ROOM_UNAVAILABLE ""))
         (when (and (notnil? @plyr)
                    (notnil? @gm)
                    (notnil? @room))
-          (JoinRoom @room @plyr)
-          (replyOK evt))))
+          (let [ps (JoinRoom @room @plyr)]
+            (.bind ps (:socket evt))
+            (replyOK ps)))))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

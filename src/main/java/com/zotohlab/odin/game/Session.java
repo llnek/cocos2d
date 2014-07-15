@@ -33,36 +33,27 @@ public interface Session {
     CLOSED
   };
 
-  //public void setId(Object id);
+  public void onEvent(Object event);
   public Object id();
 
-  public void setAttr(Object key, Object value);
-  public Object getAttr(Object key);
-  public void removeAttr(Object key);
-
-  public void onEvent(Event event);
-  public EventDispatcher getEventDispatcher();
-
-  public boolean isWriteable();
-  public void setWriteable(boolean writeable);
-
-  public boolean isShuttingDown();
-
-  public long getCreationTime();
-  public long getLastRWTime();
-
   public void setStatus(Status status);
+  public boolean isShuttingDown();
   public Status getStatus();
+
+//  public EventDispatcher getEventDispatcher();
 
   public boolean isConnected();
   public boolean isClosed();
 
-  public Collection<EventHandler> getHandlers(int eventType);
-  public void addHandler(EventHandler eventHandler);
+  //public Collection<EventHandler> getHandlers(int eventType);
+
   public void removeHandler(EventHandler eventHandler);
+  public void addHandler(EventHandler eventHandler);
 
   public void sendMessage(Object msg);
+  public void bind(Object impl);
   public Object impl();
+
   public void close();
 
 }

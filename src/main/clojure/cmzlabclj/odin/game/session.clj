@@ -1,181 +1,117 @@
+;; This library is distributed in  the hope that it will be useful but without
+;; any  warranty; without  even  the  implied  warranty of  merchantability or
+;; fitness for a particular purpose.
+;; The use and distribution terms for this software are covered by the Eclipse
+;; Public License 1.0  (http://opensource.org/licenses/eclipse-1.0.php)  which
+;; can be found in the file epl-v10.html at the root of this distribution.
+;; By using this software in any  fashion, you are agreeing to be bound by the
+;; terms of this license. You  must not remove this notice, or any other, from
+;; this software.
+;; Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
+
 
 (ns ^{}
 
   cmzlabclj.odin.game.session
 
-  (:import (com.zotohlab.frwk.core CoreUtils))
-  (:import (com.zotohlab.odin.game Session Session$Status)))
+  (:require [clojure.tools.logging :as log :only [info warn error debug] ]
+            [clojure.data.json :as json]
+            [clojure.string :as cstr])
+
+  (:use [cmzlabclj.nucleus.util.core :only [MakeMMap ternary notnil? ] ]
+        [cmzlabclj.nucleus.util.process]
+        [cmzlabclj.nucleus.util.guids]
+        [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
+
+  (:use [cmzlabclj.odin.event.core]
+        [cmzlabclj.odin.system.util]
+        [cmzlabclj.odin.system.rego])
+
+  (:import  [com.zotohlab.odin.game Game PlayRoom
+                                    Player PlayerSession
+                                    Session Session$Status]
+            [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
+            [io.netty.channel Channel]
+            [org.apache.commons.io FileUtils]
+            [java.io File]
+            [com.zotohlab.frwk.util CoreUtils]
+            [com.zotohlab.gallifrey.core Container]
+            [com.zotohlab.odin.event Events EventDispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 
-(defn ReifySession ""
 
-  ^Session
-  []
-
-  (let [ disp (ReifyJetlangEventDispatcher nil nil)
-         id (GenerateUID (class Session))
-         created (System/currentTimeMillis)
-         impl (MakeMMap) ]
-    (.setf! impl :status Session$Status/NOT_CONNECTED)
-    (.setf! impl :shutting-down false)
-    (.setf! impl :write true)
-    (.setf! impl :udpok false)
-    (.setf! impl :created created)
-    (.setf! impl :lastrw created)
-    (reify Session
-      (.isShuttingDown [_] (.getf impl :shutting-down))
-      (setAttr [_ k v] (setf! impl k v))
-      (removeAttr [_ n] (clrf! impl n))
-      (getAttr [_ k] (getf impl k))
-      (getId [_] id)
-      (getEventDispatcher [_] disp)
-      (onEvent [_ evt]
-        (when-not (getf impl :shutting-down)
-          (.fireEvent disp evt)))
-      (removeHandler [_ h] (.remove disp h))
-      (addHandler [_ h] (.add disp h))
-      (getHandlers [_ etype] (.getHandlers disp etype))
-      (.setTcpSender [_ s] (.setf! impl :tcp s))
-      (.getTcpSender [_] (.getf impl :tcp))
-      (.setUdpSender [_ s] (.setf! impl :udp s))
-      (.getUdpSender [_] (.getf impl :udp))
-      (.setStatus [_ s] (.setf! impl :status s))
-      (.getStatus [_] (.getf impl :status))
-      (.setUdpEnabled [_ b] (.setf! impl :udpok b))
-      (.isUdpEnabled [_] (.getf impl :udpok))
-      (.setWritable [_ w] (.setf! impl :write w))
-      (.isWritable [_] (.getf impl :write))
-      (.isConnected [_] (= Session$Status/CONNECTED
-                           (.getf impl :status)))
-      (.isClosed [_] (= Session$Status/CLOSED
-                        (.getf impl :status)))
-      (.getLastRWTime [_] (.getf impl :lastrw))
-      (close [this]
-        (CoreUtils/syncExec
-          this
-          (reify Callable
-            (call [_]
-              (when-not (.isClosed this)
-                (.setf! impl :shutting-down true)
-                (.close disp)
-                (when-let [ s (.getf impl :tcp) ]
-                  (.shutdown s))
-                (.clrf! impl :tcp)
-                (when-let [ s (.getf impl :udp) ]
-                  (.shutdown s))
-                (.clrf! impl :udp)
-                (.setf! impl :shutting-down false)
-                (.setf! impl :status Session$Status/CLOSED))))))
-
-      Object
-
-      (hashCode [this]
-        (if-let [ n (.getId this) ]
-          (.hashCode n)
-          31))
-
-      (equals [this obj]
-        (if (nil? obj)
-          false
-          (or (identical? this obj)
-              (and (= (.getClass this)
-                      (.getClass obj))
-                   (= (.getId ^Session obj)
-                      (.getId this))))))
-
-  )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ReifyPlayerSession ""
+(defn ReifyPlayerSession
 
   ^PlayerSession
-  [^GameRoom rm ^Player py]
+  [^PlayRoom room
+   ^Player plyr]
 
-  (let [ disp (ReifyJetlangEventDispatcher rm LaneStrategy/GROUP_BY_ROOM)
-         id (GenerateUID (class PlayerSession))
-         created (System/currentTimeMillis)
-         impl (MakeMMap) ]
+  (let [created (System/currentTimeMillis)
+        sid (GenerateUID (class Session))
+        impl (MakeMMap) ]
     (.setf! impl :status Session$Status/NOT_CONNECTED)
     (.setf! impl :shutting-down false)
-    (.setf! impl :write true)
-    (.setf! impl :udpok false)
-    (.setf! impl :created created)
-    (.setf! impl :lastrw created)
     (reify PlayerSession
-      (sendToRoom [_ evt] (.send (.getf impl :room) evt))
-      (setProtocol [_ p] (.setf! impl :protocol p))
-      (getProtocol [_] (.getf impl :protocol))
-      (setGameRoom [_ r] (.setf! impl :room r))
-      (getGameRoom [_] (.getf impl :room))
-      (getPlayer [_] py)
+
+      (player [_] plyr)
+      (room [_] room)
 
       Session
-      (.isShuttingDown [_] (.getf impl :shutting-down))
-      (setAttr [_ k v] (setf! impl k v))
-      (removeAttr [_ n] (clrf! impl n))
-      (getAttr [_ k] (getf impl k))
-      (getId [_] id)
-      (getEventDispatcher [_] disp)
+      (isShuttingDown [_] (.getf impl :shutting-down))
+      (bind [this soc]
+        (.setStatus this Session$Status/CONNECTED)
+        (.setf! impl :socket soc))
+      (impl [_] (.getf impl :socket))
+      (id [_] sid)
+      (sendMessage [this msg]
+        (when (.isConnected this)
+          (let [^Channel ch (.getf impl :socket)]
+            (.writeAndFlush ch msg))))
+      ;;(getEventDispatcher [_] nil)
       (onEvent [_ evt]
-        (when-not (getf impl :shutting-down)
-          (.fireEvent disp evt)))
-      (removeHandler [_ h] (.remove disp h))
-      (addHandler [_ h] (.add disp h))
-      (getHandlers [_ etype] (.getHandlers disp etype))
-      (.setTcpSender [_ s] (.setf! impl :tcp s))
-      (.getTcpSender [_] (.getf impl :tcp))
-      (.setUdpSender [_ s] (.setf! impl :udp s))
-      (.getUdpSender [_] (.getf impl :udp))
-      (.setStatus [_ s] (.setf! impl :status s))
-      (.getStatus [_] (.getf impl :status))
-      (.setUdpEnabled [_ b] (.setf! impl :udpok b))
-      (.isUdpEnabled [_] (.getf impl :udpok))
-      (.setWritable [_ w] (.setf! impl :write w))
-      (.isWritable [_] (.getf impl :write))
-      (.isConnected [_] (= Session$Status/CONNECTED
+        (when-not (.getf impl :shutting-down)))
+      (removeHandler [_ h] )
+      (addHandler [_ h] )
+      ;;(getHandlers [_ etype] (.getHandlers disp etype))
+      (setStatus [_ s] (.setf! impl :status s))
+      (getStatus [_] (.getf impl :status))
+      (isConnected [_] (= Session$Status/CONNECTED
                            (.getf impl :status)))
-      (.isClosed [_] (= Session$Status/CONNECTED
+      (isClosed [_] (= Session$Status/CLOSED
                         (.getf impl :status)))
-      (.getLastRWTime [_] (.getf impl :lastrw))
       (close [this]
-        (CoreUtils/syncExec
+        (SyncBlockExec
           this
-          (reify Callable
-            (call [_]
-              (when-not (.isClosed this)
-                (.setf! impl :shutting-down true)
-                (.close disp)
-                (when-let [ s (.getf impl :tcp) ]
-                  (.shutdown s))
-                (.clrf! impl :tcp)
-                (when-let [ s (.getf impl :udp) ]
-                  (.shutdown s))
-                (.clrf! impl :udp)
-                (.setf! impl :shutting-down false)
-                (.setf! impl :status Session$Status/CLOSED)
-                (.disconnect (.getGameRoom this) this))))))
-
+          (fn [& args]
+            (when-not (.isClosed this)
+              (.setf! impl :shutting-down true)
+              ;;(.close disp)
+              ;;(when-let [s (.getf impl :tcp) ] (.shutdown s))
+              ;;(.clrf! impl :tcp)
+              ;;(when-let [s (.getf impl :udp) ] (.shutdown s))
+              ;;(.clrf! impl :udp)
+              (.setf! impl :shutting-down false)
+              (.setf! impl :status Session$Status/CLOSED)))))
       Object
-
       (hashCode [this]
-        (if-let [ n (.getId this) ]
+        (if-let [ n (.id this) ]
           (.hashCode n)
           31))
-
       (equals [this obj]
         (if (nil? obj)
           false
           (or (identical? this obj)
               (and (= (.getClass this)
                       (.getClass obj))
-                   (= (.getId ^Session obj)
-                      (.getId this))))))
-
-    )))
-
+                   (= (.id ^Session obj)
+                      (.id this))))))
+    )
+  ))
 
 
 
