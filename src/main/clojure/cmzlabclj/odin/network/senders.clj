@@ -1,12 +1,36 @@
-(ns ^:{
+;; This library is distributed in  the hope that it will be useful but without
+;; any  warranty; without  even  the  implied  warranty of  merchantability or
+;; fitness for a particular purpose.
+;; The use and distribution terms for this software are covered by the Eclipse
+;; Public License 1.0  (http://opensource.org/licenses/eclipse-1.0.php)  which
+;; can be found in the file epl-v10.html at the root of this distribution.
+;; By using this software in any  fashion, you are agreeing to be bound by the
+;; terms of this license. You  must not remove this notice, or any other, from
+;; this software.
+;; Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-       }
+(ns ^{:doc ""
+      :author "kenl" }
 
   cmzlabclj.odin.network.senders
 
-  (:import (com.zotohlab.odin.network MessageSender))
-  (:import (com.zotohlab.odin.event Events Event))
-  (:import (io.netty.channel Channel ChannelFutureListener)))
+  (:require [clojure.tools.logging :as log :only [info warn error debug] ]
+            [clojure.data.json :as json]
+            [clojure.string :as cstr])
+
+  (:use [cmzlabclj.nucleus.util.core
+         :only [ThrowUOE MakeMMap ternary test-nonil notnil? ] ]
+        [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
+
+  (:use [cmzlabclj.odin.event.core])
+
+  (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
+            [com.zotohlab.odin.network MessageSender TCPSender]
+            [io.netty.channel Channel ChannelFutureListener]
+            [com.zotohlab.odin.event Events]))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -16,40 +40,20 @@
   ^TCPSender
   [^Channel ch]
 
-  (let []
-    (reify TCPSender
-      (sendMessage [_ msg]
-        (.writeAndFlush ch msg))
-      (isReliable [_] true)
-      (shutdown [this]
-        (let [ evt (ReifyEvent nil Events/DISCONNECT) ]
-          (log/debug "going to close tcp connection in object: " this)
-          (if (.isActive ch)
-            (-> (.write ch evt)
-                (.addListener ChannelFutureListener/CLOSE))
+  (reify TCPSender
+    (sendMessage [_ msg] (.writeAndFlush ch msg))
+    (isReliable [_] true)
+    (shutdown [this]
+      (let [evt (EventToFrame Events/DISCONNECT nil) ]
+        (log/debug "going to close tcp connection " ch)
+        (try
+          (-> (.writeAndFlush ch evt)
+              (.addListener ChannelFutureListener/CLOSE))
+          (catch Throwable e#
             (do
               (log/warn "failed to write to socket with event " evt)
               (.close ch))))))
   ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn ReifyFastSender ""
-
-  ^UDPSender
-  [^SocketAddress remote
-   ^DatagramChannel ch
-   ^SessionRegistry rego]
-
-  (let []
-    (reify UDPSender
-      (sendMessage [_ msg]
-        (.writeAndFlush ch msg))
-      (isReliable [_] false)
-      (shutdown [_]
-        (.removeSession rego remote)))
-  ))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

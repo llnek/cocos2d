@@ -22,7 +22,7 @@ public interface MessageSender {
 
   public boolean isReliable();
 
-  public void close();
+  public void shutdown();
 
   public Object impl();
 }

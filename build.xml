@@ -190,6 +190,7 @@
       <arg value="cmzlabclj.cocos2d.games.core"/>
       <arg value="cmzlabclj.odin.system.util"/>
       <arg value="cmzlabclj.odin.event.core"/>
+      <arg value="cmzlabclj.odin.network.senders"/>
       <arg value="cmzlabclj.odin.system.rego"/>
       <arg value="cmzlabclj.odin.system.core"/>
       <arg value="cmzlabclj.odin.game.session"/>

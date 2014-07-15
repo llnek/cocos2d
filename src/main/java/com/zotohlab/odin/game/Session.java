@@ -52,7 +52,6 @@ public interface Session {
 
   public void sendMessage(Object msg);
   public void bind(Object impl);
-  public Object impl();
 
   public void close();
 

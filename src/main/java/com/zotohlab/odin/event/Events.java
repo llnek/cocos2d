@@ -26,6 +26,7 @@ public interface Events {
 
   public static final int START = 30;
   public static final int STOP = 31;
+  public static final int DISCONNECT=40;
 
   public static final int SESSION_MSG = 50;
   public static final int NETWORK_MSG = 51;

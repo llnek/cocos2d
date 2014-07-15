@@ -23,7 +23,8 @@
         [cmzlabclj.nucleus.util.guids]
         [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
 
-  (:use [cmzlabclj.odin.event.core]
+  (:use [cmzlabclj.odin.network.senders]
+        [cmzlabclj.odin.event.core]
         [cmzlabclj.odin.system.util]
         [cmzlabclj.odin.system.rego])
 
@@ -36,6 +37,7 @@
             [java.io File]
             [com.zotohlab.frwk.util CoreUtils]
             [com.zotohlab.gallifrey.core Container]
+            [com.zotohlab.odin.network MessageSender]
             [com.zotohlab.odin.event Events EventDispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -65,13 +67,12 @@
       (isShuttingDown [_] (.getf impl :shutting-down))
       (bind [this soc]
         (.setStatus this Session$Status/CONNECTED)
-        (.setf! impl :socket soc))
-      (impl [_] (.getf impl :socket))
+        (.setf! impl :tcp (ReifyReliableSender soc)))
       (id [_] sid)
       (sendMessage [this msg]
         (when (.isConnected this)
-          (let [^Channel ch (.getf impl :socket)]
-            (.writeAndFlush ch msg))))
+          (let [^MessageSender s (.getf impl :tcp)]
+            (.sendMessage s msg))))
       ;;(getEventDispatcher [_] nil)
       (onEvent [_ evt]
         (when-not (.getf impl :shutting-down)))
@@ -91,8 +92,9 @@
             (when-not (.isClosed this)
               (.setf! impl :shutting-down true)
               ;;(.close disp)
-              ;;(when-let [s (.getf impl :tcp) ] (.shutdown s))
-              ;;(.clrf! impl :tcp)
+              (when-let [^MessageSender s (.getf impl :tcp)]
+                (.shutdown s))
+              (.clrf! impl :tcp)
               ;;(when-let [s (.getf impl :udp) ] (.shutdown s))
               ;;(.clrf! impl :udp)
               (.setf! impl :shutting-down false)
