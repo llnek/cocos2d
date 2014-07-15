@@ -29,6 +29,7 @@ public interface Player {
 
   public void removeSession(PlayerSession session);
   public void addSession(PlayerSession session);
+  public int countSessions();
 
   public void logout(PlayerSession playerSession);
 

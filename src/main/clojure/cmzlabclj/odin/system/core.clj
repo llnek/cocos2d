@@ -71,9 +71,8 @@
                         gm nil
                         ps nil
                         room nil]
-        (let [g (LookupGame (nth arr 0))
-              [flag] (get g "network")]
-          (if flag
+        (let [g (LookupGame (nth arr 0))]
+          (if (.supportMultiPlayers g)
             (var-set gm g)
             (replyError evt Events/INVALID_GAME "")))
         (if-let [p (LookupPlayer (nth arr 1)

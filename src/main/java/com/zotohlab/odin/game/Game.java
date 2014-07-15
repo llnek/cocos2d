@@ -18,15 +18,12 @@ package com.zotohlab.odin.game;
  */
 public interface Game {
 
-  public void setName(String gameName);
-  public String getName();
-
-  public void setParser(CmdParser p);
+  public boolean supportMultiPlayers();
+  public int maxPlayers();
   public CmdParser parser();
-
-  public void setId(Object id);
+  public String getName();
   public Object id();
-
+  public Object info();
   public Object unload();
 
 }

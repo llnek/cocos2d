@@ -44,11 +44,21 @@
 ;;
 (defn LookupGame ""
 
+  ^Game
   [^String gameid]
 
-  (log/debug "games are ---->\n" (GetGamesAsUUID))
-  (log/debug "gameid wanted === " gameid)
-  (get (GetGamesAsUUID) gameid))
+  (if-let [g (get (GetGamesAsUUID) gameid) ]
+    (let [ [flag pc] (get g "network")]
+      (reify Game
+        (maxPlayers [_] (if (nil? pc) (int 1) (int pc)))
+        (supportMultiPlayers [_] (true? flag))
+        (getName [_] (get g "name"))
+        (parser [_] nil)
+        (info [_] g)
+        (id [_] (get g "uuid"))
+        (unload [_] nil)))
+    nil
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -65,14 +75,25 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+(defn AddRoom ""
+
+  ^PlayRoom
+  [^PlayRoom room]
+
+  (dosync
+    (alter GAME-ROOMS assoc (.roomId room) room)
+    room
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 (defn LookupRoom ""
 
-  ;;^PlayRoom
+  ^PlayRoom
   [^String room]
 
   (dosync
-    (get @GAME-ROOMS room)
-    {}))
+    (get @GAME-ROOMS room)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -133,6 +154,12 @@
                    assoc
                    user
                    (dissoc m (.id ^Session ps))))))
+
+      (countSessions [_]
+        (dosync
+          (if-let [m (get @PLAYER-SESS user)]
+            (int (count m))
+            (int 0))))
 
       (addSession [_  ps]
         (dosync
