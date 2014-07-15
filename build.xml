@@ -183,6 +183,7 @@
       maxmemory="2048m" classpathref="compile.path.id">
       <sysproperty key="clojure.compile.warn-on-reflection" value="true"/>
       <sysproperty key="clojure.compile.path" value="${build.dir}" />
+      <arg value="cmzlabclj.cocos2d.games.meta"/>
       <arg value="cmzlabclj.cocos2d.site.core"/>
       <arg value="cmzlabclj.cocos2d.users.accounts"/>
       <arg value="cmzlabclj.cocos2d.users.rego"/>
@@ -190,6 +191,7 @@
       <arg value="cmzlabclj.odin.event.core"/>
       <arg value="cmzlabclj.odin.system.rego"/>
       <arg value="cmzlabclj.odin.system.core"/>
+      <arg value="cmzlabclj.odin.game.room"/>
       <arg value="cmzlabclj.odin.network.wsock"/>
     </java>
     <copy todir="${out.jar.dir}">

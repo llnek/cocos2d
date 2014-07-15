@@ -23,7 +23,9 @@
         [cmzlabclj.nucleus.util.str :only [hgl? strim] ]
         [cmzlabclj.tardis.core.constants]
         [cmzlabclj.tardis.core.wfs]
-        [cmzlabclj.tardis.impl.ext :only [GetAppKeyFromEvent] ]
+        [cmzlabclj.tardis.impl.ext :only [GetAppKeyFromEvent] ])
+
+  (:use [cmzlabclj.cocos2d.games.meta]
         [cmzlabclj.cocos2d.site.core ])
 
   (:import  [com.zotohlab.gallifrey.core Container ConfigError]

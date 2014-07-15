@@ -15,17 +15,22 @@
   cmzlabclj.odin.system.core
 
   (:require [clojure.tools.logging :as log :only [info warn error debug] ]
+            [clojure.data.json :as json]
             [clojure.string :as cstr])
 
   (:use [cmzlabclj.nucleus.util.core :only [MakeMMap ternary notnil? ] ]
         [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
 
   (:use [cmzlabclj.odin.event.core]
+        [cmzlabclj.odin.game.room]
         [cmzlabclj.odin.system.rego])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom Player PlayerSession Session]
             [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
             [io.netty.channel Channel]
+            [org.apache.commons.io FileUtils]
+            [java.io File]
+            [com.zotohlab.gallifrey.core Container]
             [com.zotohlab.odin.event Events EventDispatcher]))
 
 
@@ -37,6 +42,7 @@
 
   (let [rsp (EventToFrame error (nsb msg))
         ^Channel ch (:socket evt) ]
+    (log/debug "replying back an error type " error)
     (.writeAndFlush ch rsp)
   ))
 
@@ -46,7 +52,7 @@
 
   [evt]
 
-  (let [rsp (EventToFrame Events/CONNECT_OK nil)
+  (let [rsp (EventToFrame Events/PLAYGAME_REQ_OK nil)
         ^Channel ch (:socket evt) ]
     (log/debug "player connection request is ok.")
     (.writeAndFlush ch rsp)
@@ -54,7 +60,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- onConnectEvent ""
+(defn- onPlayReq ""
 
   [evt]
 
@@ -62,23 +68,25 @@
     (when (and (vector? arr)
                (= (count arr) 3))
       (with-local-vars [plyr nil
+                        gm nil
                         ps nil
                         room nil]
+        (let [g (LookupGame (nth arr 0))
+              [flag] (get g "network")]
+          (if flag
+            (var-set gm g)
+            (replyError evt Events/INVALID_GAME "")))
         (if-let [p (LookupPlayer (nth arr 1)
                                  (nth arr 2)) ]
           (var-set plyr p)
-          (replyError evt Events/CONNECT_NOK "no such player."))
-        (if-let [r (LookupRoom (nth arr 0))]
+          (replyError evt Events/INVALID_USER ""))
+        (if-let [r (OpenRoom @gm)]
           (var-set room r)
-          (replyError evt Events/ROOM_NOK "no such room."))
-        (if-let [s (JoinRoom room plyr)]
-          (var-set ps s)
-          (replyError evt Events/JOIN_NOK
-                      "failed to join room."))
+          (replyError evt Events/ROOM_UNAVAILABLE ""))
         (when (and (notnil? @plyr)
-                   (notnil? @ps)
+                   (notnil? @gm)
                    (notnil? @room))
-          ;;(InitSession @ps evt)
+          (JoinRoom @room @plyr)
           (replyOK evt))))
   ))
 
@@ -90,8 +98,8 @@
 
   (let [etype (:type evt)]
     (cond
-      (== etype Events/CONNECT)
-      (onConnectEvent evt)
+      (== etype Events/PLAYGAME_REQ)
+      (onPlayReq evt)
 
       :else
       (log/warn "unhandled event " evt))))
@@ -100,8 +108,16 @@
 
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn OdinInit ""
 
+  [^Container ctr]
 
+  (let [appDir (.getAppDir ctr)
+        fp (File. appDir "conf/odin.conf")
+        json (json/read-str (FileUtils/readFileToString fp "utf-8")) ]
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

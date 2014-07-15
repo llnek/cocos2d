@@ -20,6 +20,8 @@
   (:use [cmzlabclj.nucleus.util.core :only [MakeMMap ternary notnil? ] ]
         [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
 
+  (:use [cmzlabclj.cocos2d.games.meta])
+
   (:import  [com.zotohlab.odin.game Game PlayRoom Player PlayerSession Session]
             [com.zotohlab.odin.event EventDispatcher]))
 
@@ -40,6 +42,16 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+(defn LookupGame ""
+
+  [^String gameid]
+
+  (log/debug "games are ---->\n" (GetGamesAsUUID))
+  (log/debug "gameid wanted === " gameid)
+  (get (GetGamesAsUUID) gameid))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 (defn RemoveRoom ""
 
   ^PlayRoom
@@ -50,14 +62,6 @@
       (alter GAME-ROOMS dissoc room)
       r)
   ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn JoinRoom ""
-
-  [^PlayRoom room ^Player plyr]
-
-  {})
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

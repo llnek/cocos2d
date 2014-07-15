@@ -16,12 +16,13 @@ package com.zotohlab.odin.event;
 /**
  * @author kenl
  */
-public enum Events {
-;
+public interface Events {
 
-  public static final int PLAY_GAME_REQ = 1;
-  public static final int JOIN_GAME_REQ = 2;
-  public static final int QUIT_GAME_REQ= 3;
+  public static final int PLAYGAME_REQ = 1;
+  public static final int JOINGAME_REQ = 2;
+  public static final int QUITGAME_REQ= 3;
+
+  public static final int PLAYGAME_REQ_OK =4;
 
   public static final int START = 30;
   public static final int STOP = 31;
@@ -29,20 +30,13 @@ public enum Events {
   public static final int SESSION_MSG = 50;
   public static final int NETWORK_MSG = 51;
 
-  public static final int EXCEPTION = 99;
+  public static final int INVALID_GAME = 80;
+  public static final int INVALID_USER = 81;
+  public static final int ROOM_FULL=82;
+  public static final int ROOM_UNAVAILABLE=83;
 
-
-  public static Event event(int eventType, Object source)  {
-    return event(eventType, source, null);
-  }
-
-  public static Event event(int eventType, Object source , Object context)  {
-    DefaultEvent event = new DefaultEvent();
-    event.setSource(source);
-    event.setType(eventType);
-    event.setContext(context);
-    return event;
-  }
+  public static final int ROOM_EXCEEDED=86;
+  public static final int JOIN_NOK=82;
 
 
 }

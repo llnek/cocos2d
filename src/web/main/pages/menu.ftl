@@ -16,6 +16,8 @@
   <a href="#" class="bt-menu-trigger"><span>Menu</span></a>
   <ul>
     <li><a href="/">Home</a></li>
+    <li><a href="/games/toppicks">Top Picks</a></li>
+    <li><a href="/games">Browse</a></li>
     <li><a id="logout-btn" href="javascript:void(0)">Logout</a></li>
     <li><a id="login-btn" href="/users/login">Login</a></li>
     <li><a id="register-btn" href="/users/register">Register</a></li>

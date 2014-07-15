@@ -25,6 +25,9 @@
         [cmzlabclj.tardis.core.wfs]
         [cmzlabclj.tardis.impl.ext :only [GetAppKeyFromEvent] ])
 
+  (:use [cmzlabclj.cocos2d.games.meta]
+        [cmzlabclj.odin.system.core])
+
   (:import  [com.zotohlab.gallifrey.core Container ConfigError]
             [org.apache.commons.io FileUtils]
             [com.zotohlab.wflow FlowPoint Activity
@@ -43,65 +46,13 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(def ^:private GAMES-MNFS (atom []))
-(def ^:private GAMES-HASH (atom {}))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- scanGameManifests ""
-
-  [^File appDir]
-
-  (with-local-vars [rc (transient []) mc (transient {}) ]
-    (let [fs (IOUtils/listFiles (File. appDir "public/ig/info")
-                                "manifest"
-                                true) ]
-      (doseq [^File f (seq fs) ]
-        (let [json (json/read-str (FileUtils/readFileToString f "utf-8"))
-              gid (-> (.getParentFile f)(.getName))
-              uri (get json "uri")
-              pdt (ParseDate (-> (strim (get json "pubdate"))
-                                 (.replace \/ \-))
-                             "yyyy-MM-dd")
-              info (-> json
-                       (assoc "pubdate" pdt)
-                       (assoc "gamedir" gid)) ]
-          (var-set mc (assoc! @mc uri info))
-          (var-set rc (conj! @rc info)))))
-    (reset! GAMES-MNFS (vec (sort #(compare (.getTime ^Date (get %1 "pubdate"))
-                                            (.getTime ^Date (get %2 "pubdate")))
-                                  (persistent! @rc))))
-    (reset! GAMES-HASH (persistent! @mc))
-  ))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn GetGamesAsList ""
-
-  []
-
-  @GAMES-MNFS)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn GetGamesAsHash ""
-
-  []
-
-  @GAMES-HASH)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 (deftype MyAppMain [] cmzlabclj.tardis.impl.ext.CljAppMain
 
   (contextualize [_ ctr]
-    (require 'cmzlabclj.cocos2d.site.core)
-    (scanGameManifests (.getAppDir ^Container ctr))
+    (require 'cmzlabclj.cocos2d.games.meta)
+    (ScanGameManifests (.getAppDir ^Container ctr))
+    (require 'cmzlabclj.odin.system.core)
+    (OdinInit ctr)
     (log/info "My AppMain contextualized by container " ctr))
 
   (configure [_ options]

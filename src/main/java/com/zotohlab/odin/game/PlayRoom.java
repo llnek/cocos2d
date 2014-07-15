@@ -14,11 +14,6 @@
 package com.zotohlab.odin.game;
 
 
-import com.zotohlab.odin.event.Event;
-import com.zotohlab.odin.event.NetworkEvent;
-import com.zotohlab.odin.handler.Protocol;
-import io.netty.channel.Channel;
-import java.util.Set;
 
 /**
  * @author kenl
@@ -35,8 +30,8 @@ public interface PlayRoom {
 
   public Object roomId();
 
-  public void broadcast(NetworkEvent networkEvent);
-  public void post(Event event);
+  public void broadcast(Object networkEvent);
+  public void post(Object event);
 
   public boolean isShuttingDown() ;
   public void shutdown();
