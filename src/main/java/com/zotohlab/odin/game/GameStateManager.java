@@ -18,24 +18,7 @@ package com.zotohlab.odin.game;
  */
 public interface GameStateManager {
 
-  public void setState(Object state);
+  public void update(Object event);
   public Object state();
-
-  public boolean compareAndSetState(Object syncKey, Object state);
-  public boolean compareAndSetSyncKey(Object key);
-
-  public byte[] getSerializedByteArray();
-  public Object getSyncKey();
-
-  public void setSerializedByteArray(byte[] serializedBytes)
-      throws UnsupportedOperationException;
-
-  public Object computeNextState(Object state, Object syncKey,
-      Object stateAlgorithm) throws UnsupportedOperationException;
-
-  public Object computeAndSetNextState(Object state, Object syncKey,
-      Object stateAlgorithm) throws UnsupportedOperationException;
-
-  public Object getStateAlgorithm() throws UnsupportedOperationException;
-
+  
 }

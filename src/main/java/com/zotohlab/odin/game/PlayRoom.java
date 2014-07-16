@@ -14,11 +14,12 @@
 package com.zotohlab.odin.game;
 
 
+import com.zotohlab.odin.event.Eventable;
 
 /**
  * @author kenl
  */
-public interface PlayRoom {
+public interface PlayRoom extends Eventable {
 
 //  public void onEnter(PlayerSession playerSession);
 
@@ -28,14 +29,14 @@ public interface PlayRoom {
   public GameStateManager stateManager();
   public Game game();
 
+  public int countPlayers();
   public Object roomId();
 
   public void broadcast(Object networkEvent);
   public void post(Object event);
 
-  public boolean isShuttingDown() ;
-  public void shutdown();
-
+  public boolean isShuttingDown();
+  public void close();
 
 }
 

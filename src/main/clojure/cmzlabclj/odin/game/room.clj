@@ -22,17 +22,22 @@
         [cmzlabclj.nucleus.util.guids]
         [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
 
-  (:use [cmzlabclj.odin.event.core]
+  (:use [cmzlabclj.odin.system.util]
+        [cmzlabclj.odin.event.core]
         [cmzlabclj.odin.game.session]
         [cmzlabclj.odin.system.rego])
 
-  (:import  [com.zotohlab.odin.game Game PlayRoom Player PlayerSession Session]
+  (:import  [com.zotohlab.odin.game Game PlayRoom Player
+                                    GameStateManager
+                                    Session$Status
+                                    PlayerSession Session]
             [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
             [io.netty.channel Channel]
             [org.apache.commons.io FileUtils]
+            [java.util.concurrent ConcurrentHashMap]
             [java.io File]
             [com.zotohlab.gallifrey.core Container]
-            [com.zotohlab.odin.event Events EventDispatcher]))
+            [com.zotohlab.odin.event Events Eventable EventDispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -45,12 +50,22 @@
   ^PlayRoom
   [^Game gm]
 
-  (let [rid (NewUUid)]
+  (let [created (System/currentTimeMillis)
+        impl (MakeMMap)
+        pm (ConcurrentHashMap.)
+        rid (NewUUid)]
     (reify PlayRoom
-      (disconnect [_ ps] )
+      (disconnect [_ ps]
+        (let [^PlaySession ss ps
+              py (.player ps)]
+          (.remove pm (.id py))
+          (.removeSession py ps)))
+      (countPlayers [_] (.size pm))
       (connect [this p]
-        (let [ps (ReifyPlayerSession this p)]
-          (.addSession ^Player p ps)
+        (let [ps (ReifyPlayerSession this p)
+              ^Player py p]
+          (.put pm (.id py) py)
+          (.addSession py ps)
           ps))
       (stateManager [_] )
       (game [_] gm)
@@ -58,7 +73,38 @@
       (broadcast [_ evt] )
       (post [_ evt] )
       (isShuttingDown [_] )
-      (shutdown [_]))
+      (close [_])
+
+      Eventable
+
+      (removeHandler [_ h])
+      (addHandler [_ h])
+      (sendMessage [_ msg])
+      (onEvent [this evt]
+        (let [^GameStateManager sm (.stateManager this)
+              etype (:type evt)]
+          (cond
+            (== Events/NETWORK_MSG etype)
+            (.broadcast this evt)
+            (== Events/SESSION_MSG etype)
+            (.update sm evt)
+            :else nil)))
+
+      Object
+
+      (hashCode [this]
+        (if-let [ n (.roomId this) ]
+          (.hashCode n)
+          31))
+      (equals [this obj]
+        (if (nil? obj)
+          false
+          (or (identical? this obj)
+              (and (= (.getClass this)
+                      (.getClass obj))
+                   (= (.roomId ^PlayRoom obj)
+                      (.roomId this))))))
+      )
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

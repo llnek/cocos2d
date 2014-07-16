@@ -33,26 +33,16 @@ public interface Session {
     CLOSED
   };
 
-  public void onEvent(Object event);
   public Object id();
 
   public void setStatus(Status status);
-  public boolean isShuttingDown();
   public Status getStatus();
 
-//  public EventDispatcher getEventDispatcher();
-
+  public boolean isShuttingDown();
   public boolean isConnected();
   public boolean isClosed();
 
-  //public Collection<EventHandler> getHandlers(int eventType);
-
-  public void removeHandler(EventHandler eventHandler);
-  public void addHandler(EventHandler eventHandler);
-
-  public void sendMessage(Object msg);
   public void bind(Object impl);
-
   public void close();
 
 }

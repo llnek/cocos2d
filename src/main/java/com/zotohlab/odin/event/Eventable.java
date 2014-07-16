@@ -11,17 +11,22 @@
 // Copyright (c) 2014 Cherimoia, LLC. All rights reserved.
  ??*/
 
-package com.zotohlab.odin.game;
+package com.zotohlab.odin.event;
 
-import com.zotohlab.odin.event.Eventable;
+import com.zotohlab.odin.event.EventHandler;
 
 /**
  * @author kenl
  */
-public interface PlayerSession extends Session, Eventable {
+public interface Eventable {
 
-  public PlayRoom room();
-  public Player player();
+  public void onEvent(Object event);
+//  public EventDispatcher getEventDispatcher();
+
+  //public Collection<EventHandler> getHandlers(int eventType);
+  public void removeHandler(EventHandler eventHandler);
+  public void addHandler(EventHandler eventHandler);
+  public void sendMessage(Object msg);
+
 
 }
-

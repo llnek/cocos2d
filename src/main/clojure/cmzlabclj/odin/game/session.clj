@@ -38,7 +38,7 @@
             [com.zotohlab.frwk.util CoreUtils]
             [com.zotohlab.gallifrey.core Container]
             [com.zotohlab.odin.network MessageSender]
-            [com.zotohlab.odin.event Events EventDispatcher]))
+            [com.zotohlab.odin.event Events Eventable EventDispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -63,22 +63,26 @@
       (player [_] plyr)
       (room [_] room)
 
-      Session
-      (isShuttingDown [_] (.getf impl :shutting-down))
-      (bind [this soc]
-        (.setStatus this Session$Status/CONNECTED)
-        (.setf! impl :tcp (ReifyReliableSender soc)))
-      (id [_] sid)
+      Eventable
+
       (sendMessage [this msg]
         (when (.isConnected this)
           (let [^MessageSender s (.getf impl :tcp)]
             (.sendMessage s msg))))
       ;;(getEventDispatcher [_] nil)
       (onEvent [_ evt]
-        (when-not (.getf impl :shutting-down)))
+        (when-not (.getf impl :shutting-down)
+          (log/debug "onevent called: " evt)))
       (removeHandler [_ h] )
       (addHandler [_ h] )
       ;;(getHandlers [_ etype] (.getHandlers disp etype))
+
+      Session
+      (isShuttingDown [_] (.getf impl :shutting-down))
+      (bind [this soc]
+        (.setStatus this Session$Status/CONNECTED)
+        (.setf! impl :tcp (ReifyReliableSender soc)))
+      (id [_] sid)
       (setStatus [_ s] (.setf! impl :status s))
       (getStatus [_] (.getf impl :status))
       (isConnected [_] (= Session$Status/CONNECTED

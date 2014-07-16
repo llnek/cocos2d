@@ -27,9 +27,11 @@
 
   (:import  [com.zotohlab.odin.game Game PlayRoom Player PlayerSession Session]
             [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
-            [io.netty.channel Channel]
+            [io.netty.channel ChannelHandlerContext ChannelHandler
+                              ChannelPipeline Channel]
             [org.apache.commons.io FileUtils]
             [java.io File]
+            [com.zotohlab.frwk.netty SimpleInboundHandler]
             [com.zotohlab.gallifrey.core Container]
             [com.zotohlab.odin.event Events EventDispatcher]))
 
@@ -50,15 +52,46 @@
 ;;
 (defn- replyOK ""
 
+  [^PlayerSession ps etype]
+
+  (let [rsp (EventToFrame etype
+                          (-> (.room ps)
+                              (.roomId))) ]
+    (log/debug "player connection request is ok.")
+    (.sendMessage ps rsp)
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- protocolHandler ""
+
+  ^ChannelHandler
   [^PlayerSession ps]
 
-  (let [rsp (EventToFrame Events/PLAYGAME_REQ_OK
-                          (-> (.room ps)
-                              (.roomId)))
-        ^Channel ch (.impl ps) ]
-    (log/debug "player connection request is ok.")
-    (log/debug "player impl = " ch)
-    (.sendMessage ps rsp)
+  (proxy [SimpleInboundHandler][]
+    (channelRead0 [ctx msg]
+      (let [ch (.channel ^ChannelHandlerContext ctx)
+            ^TextWebSocketFrame w msg
+            evt (DecodeEvent (.text w) ch)]
+        (.onEvent (.room ps)
+                  (assoc evt :context ps))))
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- applyProtocol ""
+
+  [^PlayerSession ps
+   ^Channel ch]
+
+  (let [pipe (.pipeline ch)]
+    (.remove pipe "WebSocketServerProtocolHandler")
+    (.remove pipe "WS403Responder")
+    (.remove pipe "WSOCKDispatcher")
+    (.addBefore pipe
+                "ErrorCatcher"
+                "OdinProtocolHandler" (protocolHandler ps))
+    (.bind ps ch)
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -88,9 +121,41 @@
         (when (and (notnil? @plyr)
                    (notnil? @gm)
                    (notnil? @room))
-          (let [ps (JoinRoom @room @plyr)]
-            (.bind ps (:socket evt))
-            (replyOK ps)))))
+          (let [ps (JoinRoom @room @plyr)
+                ch (:socket evt)]
+            (applyProtocol ps ch)
+            (replyOK ps Events/JOINGAME_OK)))))
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- onJoinReq ""
+
+  [evt]
+
+  (when-let [arr (:source evt)]
+    (when (and (vector? arr)
+               (= (count arr) 3))
+      (with-local-vars [plyr nil
+                        ps nil
+                        room nil]
+        (if-let [r (LookupRoom (nth arr 0))]
+          (let [g (.game r)]
+            (if (< (.countPlayers r)
+                   (.maxPlayers g))
+              (var-set room r)
+              (replyError evt Events/ROOM_FULL "")))
+          (replyError evt Events/INVALID_GAME ""))
+        (if-let [p (LookupPlayer (nth arr 1)
+                                 (nth arr 2)) ]
+          (var-set plyr p)
+          (replyError evt Events/INVALID_USER ""))
+        (when (and (notnil? @plyr)
+                   (notnil? @room))
+          (let [ps (JoinRoom @room @plyr)
+                ch (:socket evt)]
+            (applyProtocol ps ch)
+            (replyOK ps Events/PLAYGAME_OK)))))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -104,12 +169,11 @@
       (== etype Events/PLAYGAME_REQ)
       (onPlayReq evt)
 
+      (== etype Events/JOINGAME_REQ)
+      (onJoinReq evt)
+
       :else
       (log/warn "unhandled event " evt))))
-
-
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

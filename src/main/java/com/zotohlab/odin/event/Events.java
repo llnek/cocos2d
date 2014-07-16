@@ -22,7 +22,8 @@ public interface Events {
   public static final int JOINGAME_REQ = 2;
   public static final int QUITGAME_REQ= 3;
 
-  public static final int PLAYGAME_REQ_OK =4;
+  public static final int PLAYGAME_OK =4;
+  public static final int JOINGAME_OK =5;
 
   public static final int START = 30;
   public static final int STOP = 31;
