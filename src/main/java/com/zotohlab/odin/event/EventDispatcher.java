@@ -15,27 +15,16 @@ package com.zotohlab.odin.event;
 
 
 import com.zotohlab.odin.game.Session;
-import java.util.Collection;
 
 /**
  * @author kenl
  */
 public interface EventDispatcher {
 
-  public void addHandler( EventHandler eventHandler );
-
-  public Collection<EventHandler> getHandlers(int eventType);
-
-  public void removeHandler(EventHandler eventHandler);
-
-  public void removeHandlers(int eventType);
-
-  public boolean removeHandlers(Session session);
-
-  public void clear();
-
-  public void fireEvent( Object event );
-
+  public void unsubscribe(EventHandler eventHandler);
+  public void subscribe( EventHandler eventHandler );
+  public void unsubscribeIfSession(Session s);
+  public void publish( Object event );
   public void shutdown();
 
 }

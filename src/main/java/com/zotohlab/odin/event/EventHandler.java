@@ -14,6 +14,8 @@
 package com.zotohlab.odin.event;
 
 
+import com.zotohlab.odin.game.Session;
+
 /**
  * @author kenl
  */
@@ -23,5 +25,6 @@ public interface EventHandler {
 
   public int eventType();
 
+  public Session session();
 }
 

@@ -48,9 +48,10 @@
   [^String gameid]
 
   (if-let [g (get (GetGamesAsUUID) gameid) ]
-    (let [ [flag pc] (get g "network")]
+    (let [ [flag minp maxp] (get g "network")]
       (reify Game
-        (maxPlayers [_] (if (nil? pc) (int 1) (int pc)))
+        (maxPlayers [_] (if (nil? maxp) Integer/MAX_VALUE (int maxp)))
+        (minPlayers [_] (if (nil? minp) 2 (int minp)))
         (supportMultiPlayers [_] (true? flag))
         (getName [_] (get g "name"))
         (info [_] g)

@@ -124,7 +124,7 @@
           (let [ps (JoinRoom @room @plyr)
                 ch (:socket evt)]
             (applyProtocol ps ch)
-            (replyOK ps Events/JOINGAME_OK)))))
+            (replyOK ps Events/PLAYGAME_OK)))))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -138,12 +138,14 @@
                (= (count arr) 3))
       (with-local-vars [plyr nil
                         ps nil
+                        gm nil
                         room nil]
         (if-let [r (LookupRoom (nth arr 0))]
           (let [g (.game r)]
             (if (< (.countPlayers r)
                    (.maxPlayers g))
-              (var-set room r)
+              (do (var-set room r)
+                  (var-set gm g))
               (replyError evt Events/ROOM_FULL "")))
           (replyError evt Events/INVALID_GAME ""))
         (if-let [p (LookupPlayer (nth arr 1)
@@ -155,7 +157,10 @@
           (let [ps (JoinRoom @room @plyr)
                 ch (:socket evt)]
             (applyProtocol ps ch)
-            (replyOK ps Events/PLAYGAME_OK)))))
+            (replyOK ps Events/JOINGAME_OK)
+            (when (>= (.countPlayers ^PlayRoom @room)
+                      (.minPlayers ^Game @gm))
+              (.activate ^PlayRoom @room))))))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

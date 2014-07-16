@@ -21,7 +21,6 @@ import com.zotohlab.odin.event.Eventable;
  */
 public interface PlayRoom extends Eventable {
 
-//  public void onEnter(PlayerSession playerSession);
 
   public void disconnect(PlayerSession session);
   public PlayerSession connect(Player p);
@@ -33,11 +32,11 @@ public interface PlayRoom extends Eventable {
   public Object roomId();
 
   public void broadcast(Object networkEvent);
-  public void post(Object event);
 
   public boolean isShuttingDown();
   public void close();
 
+  public void activate();
 }
 
 

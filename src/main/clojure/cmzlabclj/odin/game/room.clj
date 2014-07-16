@@ -24,6 +24,7 @@
 
   (:use [cmzlabclj.odin.system.util]
         [cmzlabclj.odin.event.core]
+        [cmzlabclj.odin.event.disp]
         [cmzlabclj.odin.game.session]
         [cmzlabclj.odin.system.rego])
 
@@ -37,11 +38,24 @@
             [java.util.concurrent ConcurrentHashMap]
             [java.io File]
             [com.zotohlab.gallifrey.core Container]
-            [com.zotohlab.odin.event Events Eventable EventDispatcher]))
+            [com.zotohlab.odin.event Events EventHandler
+                                     Eventable EventDispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (def ^:private vacancy 1000)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- mkNetworkSubr ""
+
+  [^PlayerSession ps]
+
+  (reify EventHandler
+    (eventType [_] Events/NETWORK_MSG)
+    (session [_] ps)
+    (onEvent [_ evt]
+      (.onEvent ps evt))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -51,35 +65,40 @@
   [^Game gm]
 
   (let [created (System/currentTimeMillis)
+        disp (ReifyEventDispatcher)
         impl (MakeMMap)
         pm (ConcurrentHashMap.)
         rid (NewUUid)]
+    (.setf! impl :shutting true)
     (reify PlayRoom
       (disconnect [_ ps]
         (let [^PlaySession ss ps
               py (.player ps)]
-          (.remove pm (.id py))
-          (.removeSession py ps)))
+          (.remove pm (.id ps))
+          (.removeSession py ps)
+          (.unsubscribeIfSession disp ps)))
       (countPlayers [_] (.size pm))
       (connect [this p]
         (let [ps (ReifyPlayerSession this p)
               ^Player py p]
-          (.put pm (.id py) py)
+          (.put pm (.id ps) ps)
           (.addSession py ps)
           ps))
       (engine [_] )
       (game [_] gm)
       (roomId [_] rid)
-      (broadcast [_ evt] )
-      (post [_ evt] )
-      (isShuttingDown [_] )
+      (broadcast [_ evt] (.publish disp evt))
+      (isShuttingDown [_] (.getf impl :shutting))
       (close [_])
+      (activate [this]
+        (doseq [v (seq (.values pm))]
+          (.addHandler this (mkNetworkSubr v))))
 
       Eventable
 
-      (removeHandler [_ h])
-      (addHandler [_ h])
-      (sendMessage [_ msg])
+      (removeHandler [_ h] (.unsubscribe disp h))
+      (addHandler [_ h] (.subscribe disp h))
+      (sendMessage [this msg] (.onEvent this msg))
       (onEvent [this evt]
         (let [^GameEngine sm (.engine this)
               etype (:type evt)]
