@@ -34,7 +34,7 @@ public interface EventDispatcher {
 
   public void clear();
 
-  public void fireEvent( Event event );
+  public void fireEvent( Object event );
 
   public void shutdown();
 

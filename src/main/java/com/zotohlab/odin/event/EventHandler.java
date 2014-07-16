@@ -19,7 +19,7 @@ package com.zotohlab.odin.event;
  */
 public interface EventHandler {
 
-  public void onEvent(Event event);
+  public void onEvent(Object event);
 
   public int eventType();
 
