@@ -8,7 +8,7 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2014 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
  ??*/
 
 package com.zotohlab.odin.game;
@@ -16,10 +16,9 @@ package com.zotohlab.odin.game;
 /**
  * @author kenl
  */
-public interface SessionFactory {
+public interface GameEngine {
 
-  public PlayerSession newPlayerSession(PlayRoom gameRoom, Player player);
-  public Session newSession();
+  public void update(Object event);
+  public Object state();
 
 }
-

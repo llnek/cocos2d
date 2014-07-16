@@ -28,7 +28,7 @@
         [cmzlabclj.odin.system.rego])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom Player
-                                    GameStateManager
+                                    GameEngine
                                     Session$Status
                                     PlayerSession Session]
             [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
@@ -67,7 +67,7 @@
           (.put pm (.id py) py)
           (.addSession py ps)
           ps))
-      (stateManager [_] )
+      (engine [_] )
       (game [_] gm)
       (roomId [_] rid)
       (broadcast [_ evt] )
@@ -81,7 +81,7 @@
       (addHandler [_ h])
       (sendMessage [_ msg])
       (onEvent [this evt]
-        (let [^GameStateManager sm (.stateManager this)
+        (let [^GameEngine sm (.engine this)
               etype (:type evt)]
           (cond
             (== Events/NETWORK_MSG etype)

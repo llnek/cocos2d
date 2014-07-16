@@ -53,7 +53,6 @@
         (maxPlayers [_] (if (nil? pc) (int 1) (int pc)))
         (supportMultiPlayers [_] (true? flag))
         (getName [_] (get g "name"))
-        (parser [_] nil)
         (info [_] g)
         (id [_] (get g "uuid"))
         (unload [_] nil)))

@@ -20,7 +20,6 @@ public interface Game {
 
   public boolean supportMultiPlayers();
   public int maxPlayers();
-  public CmdParser parser();
   public String getName();
   public Object id();
   public Object info();

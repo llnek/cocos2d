@@ -26,7 +26,7 @@ public interface PlayRoom extends Eventable {
   public void disconnect(PlayerSession session);
   public PlayerSession connect(Player p);
 
-  public GameStateManager stateManager();
+  public GameEngine engine();
   public Game game();
 
   public int countPlayers();
