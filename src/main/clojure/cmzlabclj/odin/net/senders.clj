@@ -12,7 +12,7 @@
 (ns ^{:doc ""
       :author "kenl" }
 
-  cmzlabclj.odin.network.senders
+  cmzlabclj.odin.net.senders
 
   (:require [clojure.tools.logging :as log :only [info warn error debug] ]
             [clojure.data.json :as json]

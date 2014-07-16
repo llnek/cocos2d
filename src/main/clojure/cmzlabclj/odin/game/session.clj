@@ -23,7 +23,7 @@
         [cmzlabclj.nucleus.util.guids]
         [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
 
-  (:use [cmzlabclj.odin.network.senders]
+  (:use [cmzlabclj.odin.net.senders]
         [cmzlabclj.odin.event.core]
         [cmzlabclj.odin.system.util]
         [cmzlabclj.odin.system.rego])
@@ -72,7 +72,7 @@
       ;;(getEventDispatcher [_] nil)
       (onEvent [_ evt]
         (when-not (.getf impl :shutting-down)
-          (log/debug "onevent called: " evt)))
+          (log/debug "player session " sid " , onevent called: " evt)))
       (removeHandler [_ h] )
       (addHandler [_ h] )
       ;;(getHandlers [_ etype] (.getHandlers disp etype))

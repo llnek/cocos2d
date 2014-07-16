@@ -57,6 +57,7 @@
       (subscribe [_ cb]
         (let [d (.subscribe
                   queue
+                  fiber
                   (reify Callback
                     (onMessage [_ msg]
                       (when (== (.eventType ^EventHandler cb)

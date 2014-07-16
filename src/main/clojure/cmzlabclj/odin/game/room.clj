@@ -68,7 +68,7 @@
         disp (ReifyEventDispatcher)
         impl (MakeMMap)
         pm (ConcurrentHashMap.)
-        rid (NewUUid)]
+        rid "1"];;(NewUUid)]
     (.setf! impl :shutting true)
     (reify PlayRoom
       (disconnect [_ ps]
@@ -91,6 +91,7 @@
       (isShuttingDown [_] (.getf impl :shutting))
       (close [_])
       (activate [this]
+        (log/debug "activating room " rid)
         (doseq [v (seq (.values pm))]
           (.addHandler this (mkNetworkSubr v))))
 

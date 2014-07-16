@@ -191,12 +191,12 @@
       <arg value="cmzlabclj.odin.system.util"/>
       <arg value="cmzlabclj.odin.event.core"/>
       <arg value="cmzlabclj.odin.event.disp"/>
-      <arg value="cmzlabclj.odin.network.senders"/>
+      <arg value="cmzlabclj.odin.net.senders"/>
       <arg value="cmzlabclj.odin.system.rego"/>
       <arg value="cmzlabclj.odin.system.core"/>
       <arg value="cmzlabclj.odin.game.session"/>
       <arg value="cmzlabclj.odin.game.room"/>
-      <arg value="cmzlabclj.odin.network.wsock"/>
+      <arg value="cmzlabclj.odin.net.wsock"/>
     </java>
     <copy todir="${out.jar.dir}">
       <fileset dir="${build.dir}">

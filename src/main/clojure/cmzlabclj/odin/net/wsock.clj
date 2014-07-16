@@ -12,7 +12,7 @@
 (ns ^{:doc ""
       :author "kenl" }
 
-  cmzlabclj.odin.network.wsock
+  cmzlabclj.odin.net.wsock
 
   (:require [clojure.tools.logging :as log :only (info warn error debug)]
             [clojure.string :as cstr]
