@@ -22,6 +22,7 @@ public interface Game {
   public int maxPlayers();
   public int minPlayers();
   public String getName();
+  public String engineClass();
   public Object id();
   public Object info();
   public Object unload();

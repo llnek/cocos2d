@@ -48,12 +48,15 @@
   [^String gameid]
 
   (if-let [g (get (GetGamesAsUUID) gameid) ]
-    (let [ [flag minp maxp] (get g "network")]
+    (let [{flag "enabled" minp "minp" maxp "maxp" eng "engine"
+           :or {flag false minp 1 maxp 0 eng ""}}
+          (get g "network")]
       (reify Game
-        (maxPlayers [_] (if (nil? maxp) Integer/MAX_VALUE (int maxp)))
-        (minPlayers [_] (if (nil? minp) 2 (int minp)))
+        (maxPlayers [_] (if (> maxp 0) (int maxp) Integer/MAX_VALUE))
+        (minPlayers [_] (if (> minp 0) (int minp) (int 1)))
         (supportMultiPlayers [_] (true? flag))
         (getName [_] (get g "name"))
+        (engineClass [_] eng)
         (info [_] g)
         (id [_] (get g "uuid"))
         (unload [_] nil)))

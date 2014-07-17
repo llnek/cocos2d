@@ -62,7 +62,7 @@
 (deftype Handler [] PipelineDelegate
 
   (getStartActivity [_  pipe]
-    (require 'cmzlabclj.odin.network.wsock)
+    (require 'cmzlabclj.odin.net.wsock)
     (doXXX))
 
   (onStop [_ pipe]

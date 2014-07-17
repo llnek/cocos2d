@@ -19,7 +19,8 @@
             [clojure.string :as cstr])
 
   (:use [cmzlabclj.nucleus.util.core :only [MakeMMap ternary notnil? ] ]
-        [cmzlabclj.nucleus.util.guids]
+        [cmzlabclj.nucleus.util.guids :only [NewUUid]]
+        [cmzlabclj.nucleus.util.meta :only [MakeObj]]
         [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
 
   (:use [cmzlabclj.odin.system.util]
@@ -67,6 +68,7 @@
   (let [created (System/currentTimeMillis)
         disp (ReifyEventDispatcher)
         impl (MakeMMap)
+        engObj (MakeObj (.engineClass gm))
         pm (ConcurrentHashMap.)
         rid "1"];;(NewUUid)]
     (.setf! impl :shutting true)
@@ -84,7 +86,7 @@
           (.put pm (.id ps) ps)
           (.addSession py ps)
           ps))
-      (engine [_] )
+      (engine [_] engObj)
       (game [_] gm)
       (roomId [_] rid)
       (broadcast [_ evt] (.publish disp evt))

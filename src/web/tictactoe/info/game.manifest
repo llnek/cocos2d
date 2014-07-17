@@ -7,7 +7,10 @@
   "name" : "Tic Tac Toe",
   "desc" : "Like Tic Tac Toe, only better!",
   "status" : true,
-  "network" : [true, 2, 2],
+  "network" : {"enabled": true,
+               "minp" : 2,
+               "maxp" : 2,
+               "engine":  "cmzlabclj.frigga.tictactoe.core.TicTacToe" },
   "uri" : "/arena/tictactoe",
   "image" : "gui/catalog.png"
 }
