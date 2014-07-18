@@ -31,7 +31,8 @@
 ;;
 (deftype TicTacToe [stateObj] com.zotohlab.odin.game.GameEngine
 
-  (initialize [_ players] )
+  (initialize [_ players]
+    (log/debug "type of stateObj ==== " (type stateObj)))
 
   (update [_ evt]
     (log/debug "TicTacToe received event " evt))

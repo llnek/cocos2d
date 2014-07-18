@@ -97,7 +97,7 @@
         (let [^GameEngine sm (.engine this)
               ss (vec (.values pss)) ]
           (log/debug "activating room " rid)
-          (doseq [v vec]
+          (doseq [v (seq ss)]
             (.addHandler this (mkNetworkSubr v)))
           (.initialize sm ss)))
 
