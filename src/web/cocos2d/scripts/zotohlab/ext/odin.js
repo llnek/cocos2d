@@ -166,44 +166,34 @@ var Session= SkaroJS.Class.xtends({
   wsock : function() {
     var ws = new WebSocket(this.url),
     me=this;
+
     ws.onopen = function() {
-      switch (me.state) {
-        case S_NOT_CONNECTED:
-          ws.send(me.getReconnect());
-        break;
-        case S_CONNECTING:
-          ws.send(me.getLogin());
-        break;
-        default:
-          var evt = Odin.mkEvent(EXCEPTION, "Cannot reconnect when session state is: " + me.state);
-          //me.onerror(evt);
-          me.dispatch(evt);
-      }
+      // login to play a game
+      ws.send(me.getLogin());
     };
 
-    // login to server when the start event is received
-    // the callback will return the session.
     ws.onmessage = function (e) {
       var evt = Odin.decode(e.data);
-      if (evt.type === GAMEROOM_JOIN_NOK ||
-          evt.type === LOGIN_NOK ) {
-        ws.close();
-      }
-      else
-      if (evt.type === GAMEROOM_JOIN_OK) {
-        if ( _.isString(evt.source)) {
-          me.reconnectKey = evt.source;
-        }
-      }
-      else
-      if (evt.type === START) {
-        if (_.isFunction(me.onStart)) {
-          me.state = S_CONNECTED;
-          me.applyProtocol(ws);
-          me.onStart(me);
-        }
-      }
-      else {
+      switch (evt.type) {
+        case INVALID_USER:
+        case INVALID_GAME:
+        case ROOM_UNAVAILABLE:
+        case ROOM_FULL:
+          SkaroJS.loggr.error("closing websocket: error " + evt.type);
+          ws.close();
+        break;
+        case AWAIT_START:
+        break;
+        case START:
+          me.onStart(evt);
+        break;
+        case POKE_MOVE:
+          me.onMove(evt);
+        break;
+        case POKE_WAIT:
+          me.onWait(evt);
+        break;
+        default:
         SkaroJS.loggr.warn("unhandled event: " + evt.type);
       }
     };

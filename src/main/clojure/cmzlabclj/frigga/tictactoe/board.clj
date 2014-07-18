@@ -135,11 +135,11 @@
         (log/debug "checking for win " (:color (:actor cmd))
                    ", pos = " (:cell cmd))
         (cond
-          (.isStalemate this)
-          (.drawGame this cmd cb)
-
           (.isWinner this (:actor cmd))
           (.endGame this cmd cb)
+
+          (.isStalemate this)
+          (.drawGame this cmd cb)
 
           :else
           (.toggleActor this cmd cb)))
