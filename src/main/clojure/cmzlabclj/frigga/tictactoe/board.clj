@@ -62,29 +62,17 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defprotocol PlayerAPI
-
-  ""
-
-  (bindBoard [_ b] )
-  (isValue [_ v] ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 (defn ReifyPlayer ""
 
-  ^cmzlabclj.frigga.tictactoe.board.PlayerAPI
-  [idValue]
+  [idValue pcolor psession]
 
-  (let []
-    (reify PlayerAPI
-      (isValue [_ v] (== v idValue))
-      (bindBoard [_ b]))
-  ))
+  {:value idValue
+   :color pcolor
+   :session psession })
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defprotocol TicTacToeBoardAPI
+(defprotocol BoardAPI
 
   ""
 
@@ -109,7 +97,7 @@
 ;;
 (defn ReifyTicTacToeBoard ""
 
-  ^cmzlabclj.frigga.tictactoe.board.TicTacToeBoardAPI
+  ^cmzlabclj.frigga.tictactoe.board.BoardAPI
   [bsize]
 
   (let [grid (long-array (* bsize bsize) CV_Z)
@@ -118,7 +106,7 @@
         numcells (alength grid)
         impl (MakeMMap) ]
     (.setf! impl :gameon false)
-    (reify TicTacToeBoardAPI
+    (reify BoardAPI
 
       (getCurActor [_] (aget #^"[Ljava.lang.Object;" actors 0))
       (isActive [_] (.getf impl :gameon))
@@ -128,8 +116,6 @@
           (aset #^"[Ljava.lang.Object;" actors 0 which)
           (aset #^"[Ljava.lang.Object;" actors 2 p2)
           (aset #^"[Ljava.lang.Object;" actors 1 p1)
-          (.bindBoard ^cmzlabclj.frigga.tictactoe.board.PlayerAPI p2 this)
-          (.bindBoard ^cmzlabclj.frigga.tictactoe.board.PlayerAPI p1 this)
           (.setf! impl :gameon true)))
 
       (getPlayer2 [_] (aget #^"[Ljava.lang.Object;" actors 2))
@@ -141,7 +127,8 @@
                    (identical? (:actor cmd)
                                (.getCurActor this))
                    (== CV_Z (aget grid (:cell cmd))))
-          (aset ^longs grid (:cell cmd) (long (:value (:actor cmd))))
+          (aset ^longs grid (:cell cmd)
+                (long (:value (:actor cmd))))
           (.checkWin this cmd cb)))
 
       (checkWin [this cmd cb]
@@ -186,7 +173,7 @@
 
       (isWinner [this actor]
         (some (fn [r]
-                (if (every? #(.isValue ^cmzlabclj.frigga.tictactoe.board.PlayerAPI actor %)
+                (if (every? #(== (:value actor) %)
                             ;;(map #(aget grid %) r))
                             (amap ^longs r idx ret
                                   (long (aget ^longs grid (aget ^longs r idx)))))
@@ -194,8 +181,8 @@
                   nil))
               goalspace))
 
-      (getOtherPlayer [_ color]
-        (condp identical? color
+      (getOtherPlayer [_ cp]
+        (condp identical? cp
           (aget #^"[Ljava.lang.Object;" actors 1)
           (aget #^"[Ljava.lang.Object;" actors 2)
           ;;else

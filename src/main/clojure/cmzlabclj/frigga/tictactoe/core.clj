@@ -16,14 +16,17 @@
   cmzlabclj.frigga.tictactoe.core
 
   (:require [clojure.tools.logging :as log :only [info warn error debug] ]
+            [clojure.data.json :as json]
             [clojure.string :as cstr])
 
   (:use [cmzlabclj.nucleus.util.core :only [MakeMMap ternary notnil? ] ]
         [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
 
-  (:use [cmzlabclj.cocos2d.games.meta])
+  (:use [cmzlabclj.cocos2d.games.meta]
+        [cmzlabclj.frigga.tictactoe.board])
 
-  (:import  [com.zotohlab.odin.game Game PlayRoom Player PlayerSession Session]
+  (:import  [com.zotohlab.odin.game Game PlayRoom
+                                    Player PlayerSession]
             [com.zotohlab.odin.event EventDispatcher]))
 
 
@@ -32,17 +35,43 @@
 (deftype TicTacToe [stateObj] com.zotohlab.odin.game.GameEngine
 
   (initialize [_ players]
-    (log/debug "type of stateObj ==== " (type stateObj)))
+    (let [p1 (ReifyPlayer (long \X) \X (nth players 0))
+          p2 (ReifyPlayer (long \O) \O (nth players 1))
+          bd (ReifyTicTacToeBoard 3) ]
+      (reset! stateObj {:board bd})
+      (.registerPlayers bd p1 p2)))
 
   (update [_ evt]
-    (log/debug "TicTacToe received event " evt))
+    (let [^cmzlabclj.frigga.tictactoe.board.BoardAPI
+          bd (:board @stateObj)
+          cp (.getCurActor bd)
+          pss (:context evt)
+          src (:source evt)
+          cmd (json/read-str src
+                             :key-fn keyword) ]
+      (log/debug "TicTacToe received cmd " src " from session " pss)
+      (when (== (:value cp) (:value cmd))
+        (.enqueue bd (assoc cmd :actor cp) nil))))
 
-  (restart [_])
-  (start [_] )
+  (restart [_ room] )
+
+  (start [_ room]
+    (let [^cmzlabclj.frigga.tictactoe.board.BoardAPI
+          bd (:board @stateObj)
+          cp (.getCurActor bd)
+          op (.getOtherPlayer bd cp)
+          evt ()]
+      (.broadcast ^PlayRoom room evt) ;; start game
+      (.broadcast ^PlayRoom room evt) ;; who is player1,2
+      (.sendMessage ^PlayerSession
+                    (:session op) evt);; poke_wait
+      (.sendMessage ^PlayerSession
+                    (:session cp) evt)));; poke_move
+
   (stop [_] )
   (finz [_] )
 
-  (state [_] nil))
+  (state [_] @stateObj))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

@@ -87,11 +87,11 @@
           (.put pss (.id ps) ps)
           (.addSession py ps)
           ps))
+      (isShuttingDown [_] (.getf impl :shutting))
       (engine [_] engObj)
       (game [_] gm)
       (roomId [_] rid)
       (broadcast [_ evt] (.publish disp evt))
-      (isShuttingDown [_] (.getf impl :shutting))
       (close [_])
       (activate [this]
         (let [^GameEngine sm (.engine this)
@@ -99,7 +99,8 @@
           (log/debug "activating room " rid)
           (doseq [v (seq ss)]
             (.addHandler this (mkNetworkSubr v)))
-          (.initialize sm ss)))
+          (.initialize sm ss)
+          (.start sm this)))
 
       Eventable
 
@@ -109,12 +110,12 @@
       (onEvent [this evt]
         (let [^GameEngine sm (.engine this)
               etype (:type evt)]
-          (cond
-            (== Events/NETWORK_MSG etype)
+          (condp == etype
+            Events/NETWORK_MSG
             (.broadcast this evt)
-            (== Events/SESSION_MSG etype)
+            Events/SESSION_MSG
             (.update sm evt)
-            :else nil)))
+            nil)))
 
       Object
 
