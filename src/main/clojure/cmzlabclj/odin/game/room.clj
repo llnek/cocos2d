@@ -20,7 +20,7 @@
 
   (:use [cmzlabclj.nucleus.util.core :only [MakeMMap ternary notnil? ] ]
         [cmzlabclj.nucleus.util.guids :only [NewUUid]]
-        [cmzlabclj.nucleus.util.meta :only [MakeObj]]
+        [cmzlabclj.nucleus.util.meta :only [MakeObjArg1]]
         [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
 
   (:use [cmzlabclj.odin.system.util]
@@ -68,22 +68,23 @@
   (let [created (System/currentTimeMillis)
         disp (ReifyEventDispatcher)
         impl (MakeMMap)
-        engObj (MakeObj (.engineClass gm))
-        pm (ConcurrentHashMap.)
+        engObj (MakeObjArg1 (.engineClass gm)
+                            (atom {}))
+        pss (ConcurrentHashMap.)
         rid "1"];;(NewUUid)]
     (.setf! impl :shutting true)
     (reify PlayRoom
       (disconnect [_ ps]
         (let [^PlaySession ss ps
               py (.player ps)]
-          (.remove pm (.id ps))
+          (.remove pss (.id ps))
           (.removeSession py ps)
           (.unsubscribeIfSession disp ps)))
-      (countPlayers [_] (.size pm))
+      (countPlayers [_] (.size pss))
       (connect [this p]
         (let [ps (ReifyPlayerSession this p)
               ^Player py p]
-          (.put pm (.id ps) ps)
+          (.put pss (.id ps) ps)
           (.addSession py ps)
           ps))
       (engine [_] engObj)
@@ -93,9 +94,12 @@
       (isShuttingDown [_] (.getf impl :shutting))
       (close [_])
       (activate [this]
-        (log/debug "activating room " rid)
-        (doseq [v (seq (.values pm))]
-          (.addHandler this (mkNetworkSubr v))))
+        (let [^GameEngine sm (.engine this)
+              ss (vec (.values pss)) ]
+          (log/debug "activating room " rid)
+          (doseq [v vec]
+            (.addHandler this (mkNetworkSubr v)))
+          (.initialize sm ss)))
 
       Eventable
 

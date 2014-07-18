@@ -29,12 +29,17 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+(deftype TicTacToe [stateObj] com.zotohlab.odin.game.GameEngine
 
-
-(deftype TicTacToe [] com.zotohlab.odin.game.GameEngine
+  (initialize [_ players] )
 
   (update [_ evt]
     (log/debug "TicTacToe received event " evt))
+
+  (restart [_])
+  (start [_] )
+  (stop [_] )
+  (finz [_] )
 
   (state [_] nil))
 

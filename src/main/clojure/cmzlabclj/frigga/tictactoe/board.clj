@@ -18,8 +18,8 @@
             [clojure.string :as cstr]
             [clojure.data.json :as json])
 
-  (:use [cmzlabclj.nucleus.util.str :only [hgl? strim] ]
-        [cmzlabclj.nucleus.util.core :only [RandomSign]])
+  (:use [cmzlabclj.nucleus.util.core :only [MakeMMap RandomSign]]
+        [cmzlabclj.nucleus.util.str :only [hgl? strim] ])
 
   (:use [cmzlabclj.cocos2d.games.meta]
         [cmzlabclj.odin.system.core])
@@ -46,16 +46,19 @@
       (let [h (long-array bsize 0)
             v (long-array bsize 0) ]
         (doseq [c (range 0 bsize)]
-          (aset h c (+ c (* r bsize)))
-          (aset v c (+ r (* c bsize))))
-        (var-set rowsp (conj! rowsp h))
-        (var-set colsp (conj! colsp v))
-        (aset @dx r (+ r (* r bsize)))
-        (aset @dy r (+ r (* bsize (dec (- bsize r)))))))
+          (aset h c (long (+ c (* r bsize))))
+          (aset v c (long (+ r (* c bsize)))))
+        (var-set rowsp (conj! @rowsp h))
+        (var-set colsp (conj! @colsp v))
+        (aset ^longs @dx r (long (+ r (* r bsize))))
+        (aset ^longs @dy r (long (+ r (* bsize (dec (- bsize r))))))))
     (into [] (concat [@dx] [@dy]
                      (persistent! @rowsp)
                      (persistent! @colsp)))
   ))
+
+(doseq [v (mapGoalSpace 3)]
+  (println (seq v)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -75,7 +78,7 @@
 
   (let []
     (reify PlayerAPI
-      (isValue [_ v] (= v idValue))
+      (isValue [_ v] (== v idValue))
       (bindBoard [_ b]))
   ))
 
@@ -111,44 +114,44 @@
 
   (let [grid (long-array (* bsize bsize) CV_Z)
         goalspace (mapGoalSpace bsize)
+        actors (object-array 3)
         numcells (alength grid)
-        actors (make-array Object 3)
         impl (MakeMMap) ]
     (.setf! impl :gameon false)
     (reify TicTacToeBoardAPI
 
+      (getCurActor [_] (aget #^"[Ljava.lang.Object;" actors 0))
       (isActive [_] (.getf impl :gameon))
-      (getCurActor [_] (aget actors 0))
 
       (registerPlayers [this p1 p2]
-        (aset actors 2 p2)
-        (aset actors 1 p1)
-        (aset actors 0 (if (> (RandomSign) 0) p1 p2))
-        (.bindBoard p2 this)
-        (.bindBoard p1 this)
-        (.setf! impl :gameon true))
+        (let [which (if (> (RandomSign) 0) p1 p2)]
+          (aset #^"[Ljava.lang.Object;" actors 0 which)
+          (aset #^"[Ljava.lang.Object;" actors 2 p2)
+          (aset #^"[Ljava.lang.Object;" actors 1 p1)
+          (.bindBoard ^cmzlabclj.frigga.tictactoe.board.PlayerAPI p2 this)
+          (.bindBoard ^cmzlabclj.frigga.tictactoe.board.PlayerAPI p1 this)
+          (.setf! impl :gameon true)))
 
-      (getPlayer2 [_] (aget actors 2))
-      (getPlayer1 [_] (aget actors 1))
+      (getPlayer2 [_] (aget #^"[Ljava.lang.Object;" actors 2))
+      (getPlayer1 [_] (aget #^"[Ljava.lang.Object;" actors 1))
 
       (enqueue [this cmd cb]
-        (when (and (>= (.cell cmd) 0)
-                   (< (.cell cmd) numcells)
-                   (identical? (.actor cmd)
+        (when (and (>= (:cell cmd) 0)
+                   (< (:cell cmd) numcells)
+                   (identical? (:actor cmd)
                                (.getCurActor this))
-                   (== CV_Z (aget grid (.cell cmd))))
-          (aset grid (.cell cmd) (-> (.actor cmd)
-                                     (.value)))
+                   (== CV_Z (aget grid (:cell cmd))))
+          (aset ^longs grid (:cell cmd) (long (:value (:actor cmd))))
           (.checkWin this cmd cb)))
 
       (checkWin [this cmd cb]
-        (log/debug "checking for win " (.color (.actor cmd))
-                   ", pos = " (.cell cmd))
+        (log/debug "checking for win " (:color (:actor cmd))
+                   ", pos = " (:cell cmd))
         (cond
           (.isStalemate this)
           (.drawGame this cmd cb)
 
-          (.isWinner this (.actor cmd)) ;;[0]
+          (.isWinner this (:actor cmd))
           (.endGame this cmd cb)
 
           :else
@@ -163,14 +166,13 @@
         (cb cmd "win"))
 
       (toggleActor [this cmd cb]
-        (aset actors 0 (.getOtherPlayer this
-                                        (.getCurActor this)))
+        (aset #^"[Ljava.lang.Object;" actors 0
+              (.getOtherPlayer this (.getCurActor this)))
         (cb cmd "next" (.getCurActor this)))
 
       (finz [this] (.onStopReset this))
       (onStopReset [this]
-        (.setf! impl :gameon false)
-        (aset actors 0 nil))
+        (.setf! impl :gameon false))
 
       (isStalemate [_]
         (not (some #(== CV_Z %) grid)))
@@ -184,21 +186,21 @@
 
       (isWinner [this actor]
         (some (fn [r]
-                (if (every? #(.isValue actor %)
+                (if (every? #(.isValue ^cmzlabclj.frigga.tictactoe.board.PlayerAPI actor %)
                             ;;(map #(aget grid %) r))
-                            (amap r idx ret
-                                  (aget grid (aget r idx))))
+                            (amap ^longs r idx ret
+                                  (long (aget ^longs grid (aget ^longs r idx)))))
                   r
                   nil))
               goalspace))
 
       (getOtherPlayer [_ color]
         (condp identical? color
-          (aget actors 1)
-          (aget actors 2)
+          (aget #^"[Ljava.lang.Object;" actors 1)
+          (aget #^"[Ljava.lang.Object;" actors 2)
           ;;else
-          (aget actors 2)
-          (aget actors 1)
+          (aget #^"[Ljava.lang.Object;" actors 2)
+          (aget #^"[Ljava.lang.Object;" actors 1)
 
           nil))
 

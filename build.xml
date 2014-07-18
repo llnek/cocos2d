@@ -177,6 +177,8 @@
     <mkdir dir="${build.dir}/web_styles"/>
   </target>
 
+  <target name="cclj" depends="clean,compile-java,compile-clj">
+  </target>
   <!-- target: compile server-side source code ================================= -->
 
   <target name="compile-clj">
@@ -198,7 +200,7 @@
       <arg value="cmzlabclj.odin.game.session"/>
       <arg value="cmzlabclj.odin.game.room"/>
       <arg value="cmzlabclj.odin.net.wsock"/>
-      <arg value="cmzlabclj.frigga.common.negamax"/>
+      <arg value="cmzlabclj.frigga.tictactoe.board"/>
       <arg value="cmzlabclj.frigga.tictactoe.core"/>
     </java>
     <copy todir="${out.jar.dir}">
@@ -207,16 +209,19 @@
     </copy>
   </target>
 
-  <target name="compile-and-jar">
-
+  <target name="compile-java">
     <javac sourcepath="" srcdir="${src.dir}/java" destdir="${out.jar.dir}"
       includeantruntime="false" excludes=""
       debug="${build.debug}" debuglevel="lines,vars,source" classpathref="compile.path.id">
       <compilerarg line="-Xlint:deprecation -Xlint:unchecked"/>
       <include name="**/*.java"/>
     </javac>
+  </target>
+
+  <target name="compile-and-jar">
 
 
+    <antcall target="compile-java"/>
     <antcall target="compile-clj"/>
 
     <!-- copy over other resources -->
