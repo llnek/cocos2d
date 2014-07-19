@@ -18,23 +18,23 @@
 
 // Event type
 var NETWORK_MSG= 1,
-    SESSION_MSG= 2;
+    SESSION_MSG= 2,
+    PLAYGAME_REQ= 3,
+    JOINGAME_REQ= 4;
 
 // Event code
-var PLAYREQ_NOK = 10,
-    JOINREQ_NOK = 11,
-    INVALID_USER= 12,
-    INVALID_GAME= 13,
-    INVALID_ROOM= 14,
-    NO_MORE_ROOM= 15;
+var C_PLAYREQ_NOK = 10,
+    C_JOINREQ_NOK = 11,
+    C_INVALID_USER= 12,
+    C_INVALID_GAME= 13,
+    C_INVALID_ROOM= 14,
+    C_ROOM_FILLED= 15,
+    C_ROOMS_FULL=16,
+    C_EXCEPTION= 100,
+    C_CLOSED= 100;
 
-function mkPlayRequest(game,user,pwd) {
-  return mkEvent(PLAYGAME_REQ, 0, [game, user, pwd]);
-}
-
-function mkJoinRequest(room,user,pwd) {
-  return this.mkEvent(JOINGAME_REQ, 0, [room, user, pwd]);
-}
+var S_NOT_CONNECTED= 0,
+    S_CONNECTED=1;
 
 function mkEvent(eventType, code, payload) {
   return {
@@ -46,6 +46,14 @@ function mkEvent(eventType, code, payload) {
 }
 
 function noop() {
+}
+
+function mkPlayRequest(game,user,pwd) {
+  return mkEvent(PLAYGAME_REQ, 0, [game, user, pwd]);
+}
+
+function mkJoinRequest(room,user,pwd) {
+  return this.mkEvent(JOINGAME_REQ, 0, [room, user, pwd]);
 }
 
 function json_encode(e) {
@@ -80,25 +88,25 @@ var Session= SkaroJS.Class.xtends({
     this.ws = this.wsock();
   },
 
-  send : function(evt) {
+  send: function(evt) {
     if (this.state === S_CONNECTED) {
       this.ws.send( json_encode(evt));
     }
   },
 
-  addHandler : function(eventType, code, callback, target) {
+  addHandler: function(eventType, code, callback, target) {
     var h= this.ebus.on("/"+eventType+"/"+code, callback, target);
     // store the handle ids for clean up
-    this.handlers.concat(h);
+    this.handlers=this.handlers.concat(h);
     return h;
   },
 
-  removeHandler : function(handler) {
+  removeHandler: function(handler) {
     SkaroJS.removeFromArray(this.handlers, handler);
     this.ebus.off(handler);
   },
 
-  clearHandlers : function () {
+  clearHandlers: function () {
     this.onmessage = noop;
     this.onerror = noop;
     this.onclose = noop;
@@ -106,59 +114,80 @@ var Session= SkaroJS.Class.xtends({
     this.ebus.removeAll();
   },
 
-  close : function () {
+  close: function () {
+    SkaroJS.loggr.error("closing websocket: " + this.ws);
     this.state = S_NOT_CONNECTED;
     this.ws.close();
-    this.onevent( mkEvent(NETWORK_MSG, CLOSED));
   },
 
-  disconnect : function () {
+  disconnect: function () {
     this.close();
   },
 
-  wsock : function() {
+  onNetworkMsg: function(evt) {
+    switch (evt.code) {
+      default:
+    }
+  },
+
+  onSessionMsg: function(evt) {
+    switch (evt.code) {
+      case C_INVALID_USER:
+      case C_INVALID_GAME:
+      case C_ROOMS_FULL:
+      case C_ROOM_FILLED:
+        me.close();
+      break;
+      case AWAIT_START:
+      break;
+      case START:
+        me.onStart(evt);
+      break;
+      case POKE_MOVE:
+        me.onMove(evt);
+      break;
+      case POKE_WAIT:
+        me.onWait(evt);
+      break;
+      default:
+      SkaroJS.loggr.warn("unhandled event/code: " + evt.type);
+    }
+  },
+
+  wsock: function() {
     var ws = new WebSocket(this.url),
     me=this;
 
     ws.onopen = function() {
-      // login to play a game
       ws.send(me.getPlayGameReq());
     };
 
     ws.onmessage = function (e) {
-      var evt = Odin.decode(e.data);
+      var evt = json_decode(e);
       switch (evt.type) {
-        case INVALID_USER:
-        case INVALID_GAME:
-        case ROOM_UNAVAILABLE:
-        case ROOM_FULL:
-          SkaroJS.loggr.error("closing websocket: error " + evt.type);
-          ws.close();
+        case NETWORK_MSG:
+          me.onNetworkMsg(evt);
         break;
-        case AWAIT_START:
-        break;
-        case START:
-          me.onStart(evt);
-        break;
-        case POKE_MOVE:
-          me.onMove(evt);
-        break;
-        case POKE_WAIT:
-          me.onWait(evt);
+        case SESSION_MSG:
+          me.onSessionMsg(evt);
         break;
         default:
-        SkaroJS.loggr.warn("unhandled event: " + evt.type);
+          SkaroJS.loggr.warn("unhandled event from server: " +
+                             evt.type +
+                             ", code = " +
+                             evt.code);
       }
     };
 
     ws.onclose = function (e) {
-      me.state = S_NOT_CONNECTED;
-      me.onevent(mkEvent(DISCONNECT, e, me));
+      me.onevent(mkEvent(NETWORK_MSG, C_CLOSED));
+      me.ws=null;
     };
 
     ws.onerror = function (e) {
       me.state = S_NOT_CONNECTED;
-      me.onevent(mkEvent(EXCEPTION, e, me));
+      me.onevent(mkEvent(NETWORK_MSG, C_EXCEPTION, e));
+      mw.ws=null;
     };
 
     return ws;
