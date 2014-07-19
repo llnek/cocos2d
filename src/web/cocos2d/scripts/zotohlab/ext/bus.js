@@ -18,7 +18,7 @@ _SEED=0;
 
 var Subcr= SkaroJS.Class.xtends({
   ctor: function(topic, selector, target, repeat, args) {
-    this.id= "sub-" + Number(++_SEED);
+    this.id= "sub-" + new Date().getMilliseconds() + "@" + Number(++_SEED);
     this.args= args || [];
     this.target= target
     this.action= selector;
@@ -37,22 +37,24 @@ var TNode= SkaroJS.Class.xtends({
 
 var EventBus = SkaroJS.Class.xtends({
 
+  // return a list of subscriber handles.
   once: function(topic, selector, target /*, more args */) {
     var rc= this.pkListen(false,
                           topic,
                           selector,
                           target,
                           (arguments.length > 3) ? Array.prototype.slice(arguments,3) : [] );
-    return SkaroJS.echt(rc) ? rc.id : null;
+    return SkaroJS.echt(rc) ? rc : [];
   },
 
+  // return a list of subscriber handles.
   on: function(topic, selector, target /*, more args */) {
     var rc= this.pkListen(true,
                           topic,
                           selector,
                           target,
                           (arguments.length > 3) ? Array.prototype.slice(arguments,3) : [] );
-    return SkaroJS.echt(rc) ? rc.id : null;
+    return SkaroJS.echt(rc) ? rc : [];
   },
 
   fire: function(topic, msg) {
@@ -88,20 +90,21 @@ var EventBus = SkaroJS.Class.xtends({
     }
   },
 
+  removeAll: function() {
+    _.each(this.allSubs.slice(0), function(id) {
+      this.off(id);
+    }, this);
+  },
+
   pkGetSubcr: function(id) {
     return this.allSubs[ id];
   },
 
   pkListen: function(repeat, topic, selector, target, more) {
-    var ts= topic.trim().split(/\s+/),
-    rc= _.map(ts, function(z) {
-      this.pkAddSub(repeat,z,selector,target,more);
+    var ts= topic.trim().split(/\s+/);
+    return _.map(ts, function(z) {
+      return this.pkAddSub(repeat,z,selector,target,more);
     }, this);
-    switch (ts.length) {
-      case 1: return rc[0];
-      case 0: return null;
-      default: return rc;
-    }
   },
 
   pkAddSub: function(repeat, topic, selector, target, more) {

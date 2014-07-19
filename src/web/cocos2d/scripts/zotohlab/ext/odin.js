@@ -13,154 +13,107 @@
 
 (function(undef) { "use strict"; var global = this,
                                      _ = global._ ,
-                                     SkaroJS= global.SkaroJS;
+                                     SkaroJS= global.SkaroJS,
+                                     EventBus= global.ZotohLab.EventBus;
 
-    // Event code Constants
-var PROTOCOL_VERSION = 0x01,
-CONNECT = 0x02,
-RECONNECT = 0x03,
-CONNECT_NOK = 0x06,
-LOGIN = 0x08,
-LOGOUT = 0x0a,
-LOGIN_OK = 0x0b,
-LOGIN_NOK = 0x0c,
-LOGOUT_OK = 0x0e,
-LOGOUT_NOK = 0x0f,
-GAME_LIST = 0x10,
-ROOM_LIST = 0x12,
-GAMEROOM_JOIN = 0x14,
-GAMEROOM_QUIT = 0x16,
-GAMEROOM_JOIN_OK = 0x18,
-GAMEROOM_JOIN_NOK = 0x19,
-ANY = 0x00,
-START = 0x1a, //server to client to start messaging.
-STOP = 0x1b,  //messaging to stop.
-SESSION_MSG = 0x1c, // from server or another session.
-NETWORK_MSG = 0x1d, // from the current machine to remote server
-CHANGE_ATTRIBUTE = 0x20,
-DISCONNECT = 0x22,// close the websocket.
-EXCEPTION = 0x24,
+// Event type
+var NETWORK_MSG= 1,
+    SESSION_MSG= 2;
 
-NOOP= function() {},
+// Event code
+var PLAYREQ_NOK = 10,
+    JOINREQ_NOK = 11,
+    INVALID_USER= 12,
+    INVALID_GAME= 13,
+    INVALID_ROOM= 14,
+    NO_MORE_ROOM= 15;
 
-// 0=CONNECTING, 1=CONNECTED, 2=NOT CONNECTED, 3=CLOSED
-S_NOT_CONNECTED = 2,
-S_CONNECTED = 1,
-S_CONNECTING = 0,
-S_CLOSED= 3;
+function mkPlayRequest(game,user,pwd) {
+  return mkEvent(PLAYGAME_REQ, 0, [game, user, pwd]);
+}
 
-var Odin= {
+function mkJoinRequest(room,user,pwd) {
+  return this.mkEvent(JOINGAME_REQ, 0, [room, user, pwd]);
+}
 
-  mkEvent : function(eventType, payload, session, date) {
-    return {
-      timeStamp : new Date().getTime(),
-      type : eventType,
-      source : payload,
-      target: session
-    };
-  },
+function mkEvent(eventType, code, payload) {
+  return {
+    timeStamp : new Date().getTime(),
+    type : eventType,
+    code: code,
+    source : payload
+  };
+}
 
-  mkLoginEvent : function (connKey,user,pwd) {
-    return this.mkEvent(LOGIN, [connKey, user, pwd]);
-  },
+function noop() {
+}
 
-  reconnect : function(session, reconnPolicy, callback) {
-    if (reconnPolicy) {
-      reconnPolicy(session, callback);
-    }
-  },
+function json_encode(e) {
+  return JSON.stringify(e);
+}
 
-  encode: function(e) {
-    return JSON.stringify(e);
-  },
-
-  decode: function (e) {
-    var evt = JSON.parse(e);
-    if (!SkaroJS.echt(evt.type)) { throw new Error("Event object missing 'type' property."); }
-    if (evt.type === NETWORK_MSG) {
-      evt.type = SESSION_MSG;
-    }
-    return evt;
-  },
-
-  connect: function(url, callback, options) {
-    return new Session(url,callback, options || {});
-  },
-
-  reconnetPolicies: function() {
-    return {
-      noReconnect : function (session, callback) { session.close() },
-      reconnectOnce : function (session, callback) {
-        session.reconnect(callback);
-      }
-    };
+function json_decode(e) {
+  var evt = {};
+  try {
+    evt= JSON.parse(e.data);
+  } catch (e) {
+    evt= {};
   }
+  if (! _.has(evt, 'type')) {
+    evt.type = -1;
+  }
+  if (! _.has(evt, 'code')) {
+    evt.code = -1;
+  }
+  return evt;
+}
 
-};
 
 var Session= SkaroJS.Class.xtends({
 
   ctor: function(url, callback, config) {
-    this.reconnectKey= undef;
+    this.state = S_NOT_CONNECTED;
+    this.ebus= new EventBus();
+    this.handlers= [];
     this.onStart = callback;
-    this.callbacks = {};
     this.options=config;
-    this.state = S_CONNECTING;
     this.ws = this.wsock();
   },
 
   send : function(evt) {
-    if (this.state === S_CONNECTED ||
-        (this.state === S_NOT_CONNECTED && evt.type === RECONNECT)) {} else {
-      throw new Error("Session is not in connected state");
+    if (this.state === S_CONNECTED) {
+      this.ws.send( json_encode(evt));
     }
-    this.ws.send( Odin.encode(evt) );
-    return this;
   },
 
-  addHandler : function(eventType, callback) {
-    if (this.callbacks[eventType]) {} else {
-      this.callbacks[eventType] = [];
-    }
-    this.callbacks[eventType].push(callback);
-    return this;
+  addHandler : function(eventType, code, callback, target) {
+    var h= this.ebus.on("/"+eventType+"/"+code, callback, target);
+    // store the handle ids for clean up
+    this.handlers.concat(h);
+    return h;
   },
 
-  removeHandler : function(eventType, handler) {
-    SkaroJS.removeFromArray(this.callbacks[eventType], handler);
-    return this;
+  removeHandler : function(handler) {
+    SkaroJS.removeFromArray(this.handlers, handler);
+    this.ebus.off(handler);
   },
 
   clearHandlers : function () {
-    this.onmessage = NOOP;
-    this.onerror = NOOP;
-    this.onclose = NOOP;
-    this.callbacks = {};
-    return this;
+    this.onmessage = noop;
+    this.onerror = noop;
+    this.onclose = noop;
+    this.handlers= [];
+    this.ebus.removeAll();
   },
 
   close : function () {
-    this.state = S_CLOSED;
+    this.state = S_NOT_CONNECTED;
     this.ws.close();
-    this.dispatch( Odin.mkEvent(CLOSED));
+    this.onevent( mkEvent(NETWORK_MSG, CLOSED));
   },
 
   disconnect : function () {
-    this.state = S_NOT_CONNECTED;
-    this.ws.close();
-  },
-
-  reconnect : function (callback) {
-    if (this.state !== S_NOT_CONNECTED) {
-      throw new Error("Session is not in not-connected state. " +
-                      "Cannot reconnect.");
-    }
-    this.onStart = callback;
-    this.ws = this.wsock();
-  },
-
-  setState : function (newState) {
-    this.state = newState
+    this.close();
   },
 
   wsock : function() {
@@ -169,7 +122,7 @@ var Session= SkaroJS.Class.xtends({
 
     ws.onopen = function() {
       // login to play a game
-      ws.send(me.getLogin());
+      ws.send(me.getPlayGameReq());
     };
 
     ws.onmessage = function (e) {
@@ -200,71 +153,38 @@ var Session= SkaroJS.Class.xtends({
 
     ws.onclose = function (e) {
       me.state = S_NOT_CONNECTED;
-      me.dispatch(Odin.mkEvent(DISCONNECT, e, me));
+      me.onevent(mkEvent(DISCONNECT, e, me));
     };
 
     ws.onerror = function (e) {
       me.state = S_NOT_CONNECTED;
-      me.dispatch(Odin.mkEvent(EXCEPTION, e, me));
+      me.onevent(mkEvent(EXCEPTION, e, me));
     };
 
     return ws;
   },
 
-  dispatch : function (evt) {
-    if (!SkaroJS.echt( evt.target)) {
-      evt.target = this;
-    }
-    if (evt.type === SESSION_MSG) {
-      this.onmessage(evt);
-    }
-    else
-    if (evt.type === CLOSED){
-      this.onclose(evt);
-    }
-    else
-    if (evt.type === EXCEPTION) {
-      this.onerror(evt);
-    }
-    this.dispatchToHandlers(this.callbacks[ANY], evt);
-    this.dispatchToHandlers(this.callbacks[evt.type], evt);
-  },
-
-  dispatchToHandlers : function(chain, evt) {
-    if (chain) {
-      _.each(chain, function(z){ z(evt); });
-    }
-  },
-
-  getLogin : function() {
-    return Odin.encode( Odin.mkLoginEvent(this.options.connectionKey,
-                                          this.options.user,
-                                          this.options.passwd));
-  },
-
-  getReconnect : function() {
-    if (!_.isString(this.reconnectKey)) {
-      throw new Error("Session does not have reconnect key");
-    }
-    return Odin.encode(Odin.mkEvent(RECONNECT, this.reconnectKey));
-  },
-
-  applyProtocol : function(ws) {
-    ws.onmessage = this.protocol.bind(this);
-  },
-
-  protocol: function(e) {
-    this.dispatch( Odin.decode(e.data));
+  getPlayRequest: function() {
+    return json_encode( mkPlayRequest(this.options.game,
+                                      this.options.user,
+                                      this.options.passwd));
   },
 
   onevent: function(evt) {
-    this.dispatch(evt);
+    this.ebus.fire("/"+evt.type+"/"+evt.code, evt);
   }
 
 });
 
 
-global.ZotohLab.Odin = Odin;
+global.ZotohLab.Odin = {
+
+  connect: function(url, callback, options) {
+    return new Session(url, callback, options || {});
+  }
+
+};
+
 
 }).call(this);
 
