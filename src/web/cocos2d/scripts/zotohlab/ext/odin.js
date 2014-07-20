@@ -17,25 +17,34 @@
                                      EventBus= global.ZotohLab.EventBus;
 
 // Event type
-var NETWORK_MSG= 1,
-    SESSION_MSG= 2,
-    PLAYGAME_REQ= 3,
-    JOINGAME_REQ= 4;
+var PLAYGAME_REQ          = 1,
+    JOINGAME_REQ          = 2,
+    NETWORK_MSG           = 3,
+    SESSION_MSG           = 4;
 
 // Event code
-var C_PLAYREQ_NOK = 10,
-    C_JOINREQ_NOK = 11,
-    C_INVALID_USER= 12,
-    C_INVALID_GAME= 13,
-    C_INVALID_ROOM= 14,
-    C_ROOM_FILLED= 15,
-    C_ROOMS_FULL=16,
-    C_EXCEPTION= 100,
-    C_CLOSED= 100;
+var C_PLAYREQ_NOK         = 10,
+    C_JOINREQ_NOK         = 11,
+    C_USER_NOK            = 12,
+    C_GAME_NOK            = 13,
+    C_ROOM_NOK            = 14,
+    C_ROOM_FILLED         = 15,
+    C_ROOMS_FULL          = 16,
 
-var S_NOT_CONNECTED= 0,
-    S_CONNECTED=1;
+    C_AWAIT_START         = 50,
+    C_START               = 51,
+    C_STOP                = 52,
+    C_POKE_MOVE           = 53,
+    C_POKE_WAIT           = 54,
 
+    C_ERROR               = 99,
+    C_CLOSED              = 100;
+
+var S_NOT_CONNECTED       = 0,
+    S_CONNECTED           = 1;
+
+//////////////////////////////////////////////////////////////////////////////
+//
 function mkEvent(eventType, code, payload) {
   return {
     timeStamp : new Date().getTime(),
@@ -45,15 +54,19 @@ function mkEvent(eventType, code, payload) {
   };
 }
 
+//////////////////////////////////////////////////////////////////////////////
+//
 function noop() {
 }
 
+//////////////////////////////////////////////////////////////////////////////
+//
 function mkPlayRequest(game,user,pwd) {
-  return mkEvent(PLAYGAME_REQ, 0, [game, user, pwd]);
+  return mkEvent(PLAYGAME_REQ, -1, [game, user, pwd]);
 }
 
 function mkJoinRequest(room,user,pwd) {
-  return this.mkEvent(JOINGAME_REQ, 0, [room, user, pwd]);
+  return mkEvent(JOINGAME_REQ, -1, [room, user, pwd]);
 }
 
 function json_encode(e) {
@@ -79,34 +92,43 @@ function json_decode(e) {
 
 var Session= SkaroJS.Class.xtends({
 
-  ctor: function(url, callback, config) {
+  connect: function(url) {
+    this.ws= wock(url);
+  },
+
+  ctor: function(config) {
     this.state = S_NOT_CONNECTED;
     this.ebus= new EventBus();
     this.handlers= [];
-    this.onStart = callback;
     this.options=config;
-    this.ws = this.wsock();
+    this.ws = null;
   },
 
   send: function(evt) {
-    if (this.state === S_CONNECTED) {
+    if (this.state === S_CONNECTED &&
+        this.ws) {
       this.ws.send( json_encode(evt));
     }
   },
 
-  addHandler: function(eventType, code, callback, target) {
+  subscribe: function(eventType, code, callback, target) {
     var h= this.ebus.on("/"+eventType+"/"+code, callback, target);
-    // store the handle ids for clean up
-    this.handlers=this.handlers.concat(h);
-    return h;
+    if (h && h.length > 0) {
+      // store the handle ids for clean up
+      //this.handlers=this.handlers.concat(h);
+      this.handlers.push(h[0]);
+      return h[0];
+    } else {
+      return null;
+    }
   },
 
-  removeHandler: function(handler) {
-    SkaroJS.removeFromArray(this.handlers, handler);
-    this.ebus.off(handler);
+  unsubscribe: function(subid) {
+    SkaroJS.removeFromArray(this.handlers, subid);
+    this.ebus.off(subid);
   },
 
-  clearHandlers: function () {
+  reset: function () {
     this.onmessage = noop;
     this.onerror = noop;
     this.onclose = noop;
@@ -115,9 +137,14 @@ var Session= SkaroJS.Class.xtends({
   },
 
   close: function () {
-    SkaroJS.loggr.error("closing websocket: " + this.ws);
     this.state = S_NOT_CONNECTED;
-    this.ws.close();
+    if (this.ws) {
+      try {
+        this.ws.close();
+      } catch (e)
+      {}
+    }
+    this.ws= null;
   },
 
   disconnect: function () {
@@ -126,36 +153,33 @@ var Session= SkaroJS.Class.xtends({
 
   onNetworkMsg: function(evt) {
     switch (evt.code) {
+      case C_CLOSED:
+      break;
       default:
+      SkaroJS.loggr.warn("unhandled network event/code: " + evt.code);
     }
   },
 
   onSessionMsg: function(evt) {
     switch (evt.code) {
-      case C_INVALID_USER:
-      case C_INVALID_GAME:
-      case C_ROOMS_FULL:
       case C_ROOM_FILLED:
-        me.close();
+      case C_ROOMS_FULL:
+      case C_USER_NOK:
+      case C_GAME_NOK:
+      case C_AWAIT_START:
+      case C_START:
+      case C_STOP:
+      case C_POKE_MOVE:
+      case C_POKE_WAIT:
       break;
-      case AWAIT_START:
-      break;
-      case START:
-        me.onStart(evt);
-      break;
-      case POKE_MOVE:
-        me.onMove(evt);
-      break;
-      case POKE_WAIT:
-        me.onWait(evt);
-      break;
+        this.onevent(evt);
       default:
-      SkaroJS.loggr.warn("unhandled event/code: " + evt.type);
+      SkaroJS.loggr.warn("unhandled session event/code: " + evt.code);
     }
   },
 
-  wsock: function() {
-    var ws = new WebSocket(this.url),
+  wsock: function(url) {
+    var ws = new WebSocket(url),
     me=this;
 
     ws.onopen = function() {
@@ -181,13 +205,10 @@ var Session= SkaroJS.Class.xtends({
 
     ws.onclose = function (e) {
       me.onevent(mkEvent(NETWORK_MSG, C_CLOSED));
-      me.ws=null;
     };
 
     ws.onerror = function (e) {
-      me.state = S_NOT_CONNECTED;
-      me.onevent(mkEvent(NETWORK_MSG, C_EXCEPTION, e));
-      mw.ws=null;
+      me.onevent(mkEvent(NETWORK_MSG, C_ERROR, e));
     };
 
     return ws;
@@ -208,9 +229,9 @@ var Session= SkaroJS.Class.xtends({
 
 global.ZotohLab.Odin = {
 
-  connect: function(url, callback, options) {
-    return new Session(url, callback, options || {});
-  }
+  newSession: function(config) {
+    return new Session(config);
+  },
 
 };
 
