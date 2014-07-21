@@ -222,6 +222,11 @@ var GameLayer = asterix.XGameLayer.extend({
   actions: [],
   board: null,
 
+  // get an odin event
+  onevent: function(evt) {
+    console.log( evt);
+  },
+
   replay: function() {
     this.play(false);
   },
@@ -232,6 +237,8 @@ var GameLayer = asterix.XGameLayer.extend({
 
     var p1= new ttt.Human(sh.xcfg.csts.CV_X, 0, 'X');
     var p2= null;
+    var wss, wsurl;
+
     switch (sh.xcfg.csts.GAME_MODE) {
       case 1:
         p2= new ttt.AlgoBot(sh.xcfg.csts.CV_O, 1, 'O');
@@ -240,21 +247,33 @@ var GameLayer = asterix.XGameLayer.extend({
         p2= new ttt.Human(sh.xcfg.csts.CV_O, 1, 'O');
       break;
       case 3:
+        wsurl = SkaroJS.fmtUrl(SkaroJS.getWebSockProtocol(), "/network/odin/websocket");
+        wss= global.ZotohLab.Odin.newSession({
+          game: "bd5f79bb-eb41-4ed5-bb44-2529dc27ed3c",
+          user: ''+ SkaroJS.nowMillis(),
+          passwd: 'secret'
+        });
+        wss.subscribeAll(this.onevent, this);
+        wss.connect(wsurl);
+        //p2= new ttt.NetPlayer(sh.xcfg.csts.CV_O, 1, 'O');
+        //p1= new ttt.NetPlayer(sh.xcfg.csts.CV_X, 0, 'X');
       break;
     }
 
-    this.board = new ttt.Board(sh.xcfg.csts.GRID_SIZE);
-    this.board.registerPlayers(p1, p2);
-    this.getHUD().regoPlayers(p1,p2);
-    this.players= [null,p1,p2];
-    this.actions = [];
+    if (p1 && p2) {
+      this.board = new ttt.Board(sh.xcfg.csts.GRID_SIZE);
+      this.board.registerPlayers(p1, p2);
+      this.getHUD().regoPlayers(p1,p2);
+      this.players= [null,p1,p2];
+      this.actions = [];
 
-    this.cells= SkaroJS.makeArray( this.board.getBoardSize() * this.board.getBoardSize(), null);
-    this.actor = this.board.getCurActor();
-    if (this.actor.isRobot()) {
-      this.move( new Cmd(this.actor, SkaroJS.rand(sh.xcfg.csts.CELLS)));
+      this.cells= SkaroJS.makeArray( this.board.getBoardSize() * this.board.getBoardSize(), null);
+      this.actor = this.board.getCurActor();
+      if (this.actor.isRobot()) {
+        this.move( new Cmd(this.actor, SkaroJS.rand(sh.xcfg.csts.CELLS)));
+      }
+      SkaroJS.loggr.debug("game started, initor = " + this.actor.color );
     }
-    SkaroJS.loggr.debug("game started, initor = " + this.actor.color );
   },
 
   onNewGame: function(mode) {
@@ -402,7 +421,9 @@ var GameLayer = asterix.XGameLayer.extend({
     }
     else
     if (! this.board) {
-      this.getHUD().drawResult(this.lastWinner);
+      if (this.lastWinner !== undefined) {
+        this.getHUD().drawResult(this.lastWinner);
+      }
     }
   },
 

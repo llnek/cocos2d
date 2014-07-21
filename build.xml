@@ -200,7 +200,6 @@
       <arg value="cmzlabclj.odin.game.session"/>
       <arg value="cmzlabclj.odin.game.room"/>
       <arg value="cmzlabclj.odin.net.wsock"/>
-      <arg value="cmzlabclj.frigga.tictactoe.board"/>
       <arg value="cmzlabclj.frigga.tictactoe.core"/>
     </java>
     <copy todir="${out.jar.dir}">

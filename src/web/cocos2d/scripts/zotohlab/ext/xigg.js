@@ -121,6 +121,10 @@ asterix.XGameLayer = asterix.XLayer.extend({
           this.newGame(1);
         break;
 
+        case 3:
+          this.newGame(3);
+        break;
+
         default:
           rc= false;
         break;

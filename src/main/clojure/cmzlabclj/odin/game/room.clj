@@ -141,6 +141,7 @@
   ^PlayRoom
   [^Game game ^Player plyr]
 
+  (LookupFreeRoom game)
   (cond
     (== vacancy 0)
     nil

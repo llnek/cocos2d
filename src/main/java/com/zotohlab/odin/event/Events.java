@@ -18,27 +18,33 @@ package com.zotohlab.odin.event;
  */
 public interface Events {
 
-  public static final int PLAYGAME_REQ = 1;
-  public static final int JOINGAME_REQ = 2;
-  public static final int QUITGAME_REQ= 3;
+  // Event type
+  public static final int PLAYGAME_REQ          = 1;
+  public static final int JOINGAME_REQ          = 2;
+  public static final int NETWORK_MSG           = 3;
+  public static final int SESSION_MSG           = 4;
 
-  public static final int PLAYGAME_OK =4;
-  public static final int JOINGAME_OK =5;
+  // Event code
+  public static final int C_PLAYREQ_NOK         = 10;
+  public static final int C_JOINREQ_NOK         = 11;
+  public static final int C_USER_NOK            = 12;
+  public static final int C_GAME_NOK            = 13;
+  public static final int C_ROOM_NOK            = 14;
+  public static final int C_ROOM_FILLED         = 15;
+  public static final int C_ROOMS_FULL          = 16;
 
-  public static final int START = 30;
-  public static final int STOP = 31;
-  public static final int DISCONNECT=40;
+  public static final int C_AWAIT_START         = 50;
+  public static final int C_START               = 51;
+  public static final int C_STOP                = 52;
+  public static final int C_POKE_MOVE           = 53;
+  public static final int C_POKE_WAIT           = 54;
 
-  public static final int SESSION_MSG = 50;
-  public static final int NETWORK_MSG = 51;
+  public static final int C_ERROR               = 99;
+  public static final int C_CLOSED              = 100;
 
-  public static final int INVALID_GAME = 80;
-  public static final int INVALID_USER = 81;
-  public static final int ROOM_FULL=82;
-  public static final int ROOM_UNAVAILABLE=83;
+  public static final int S_NOT_CONNECTED       = 0;
+  public static final int S_CONNECTED           = 1;
 
-  public static final int ROOM_EXCEEDED=86;
-  public static final int JOIN_NOK=82;
 
 
 }

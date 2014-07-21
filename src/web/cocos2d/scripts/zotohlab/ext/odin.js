@@ -65,14 +65,20 @@ function mkPlayRequest(game,user,pwd) {
   return mkEvent(PLAYGAME_REQ, -1, [game, user, pwd]);
 }
 
+//////////////////////////////////////////////////////////////////////////////
+//
 function mkJoinRequest(room,user,pwd) {
   return mkEvent(JOINGAME_REQ, -1, [room, user, pwd]);
 }
 
+//////////////////////////////////////////////////////////////////////////////
+//
 function json_encode(e) {
   return JSON.stringify(e);
 }
 
+//////////////////////////////////////////////////////////////////////////////
+//
 function json_decode(e) {
   var evt = {};
   try {
@@ -89,11 +95,12 @@ function json_decode(e) {
   return evt;
 }
 
-
+//////////////////////////////////////////////////////////////////////////////
+//
 var Session= SkaroJS.Class.xtends({
 
   connect: function(url) {
-    this.ws= wock(url);
+    this.wsock(url);
   },
 
   ctor: function(config) {
@@ -121,6 +128,11 @@ var Session= SkaroJS.Class.xtends({
     } else {
       return null;
     }
+  },
+
+  subscribeAll: function(callback,target) {
+    return [ this.subscribe(NETWORK_MSG, '*', callback, target),
+             this.subscribe(SESSION_MSG, '*', callback, target) ];
   },
 
   unsubscribe: function(subid) {
@@ -183,7 +195,7 @@ var Session= SkaroJS.Class.xtends({
     me=this;
 
     ws.onopen = function() {
-      ws.send(me.getPlayGameReq());
+      ws.send(me.getPlayRequest());
     };
 
     ws.onmessage = function (e) {
@@ -211,7 +223,7 @@ var Session= SkaroJS.Class.xtends({
       me.onevent(mkEvent(NETWORK_MSG, C_ERROR, e));
     };
 
-    return ws;
+    return this.ws=ws;
   },
 
   getPlayRequest: function() {

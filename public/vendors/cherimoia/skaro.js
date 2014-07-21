@@ -143,6 +143,34 @@ var SkaroJS = {
     }
   },
 
+  getWebSockProtocol: function() {
+    return this.isSSL() ? "wss://" : "ws://";
+  },
+
+  nowMillis: function() {
+    if (Date.now) {
+      return Date.now();
+    } else {
+      return new Date().getMilliseconds();
+    }
+  },
+
+  isSSL: function() {
+    if (window && window.location) {
+      return window.location.protocol.indexOf('https') >= 0;
+    } else {
+      return undef;
+    }
+  },
+
+  fmtUrl: function (scheme, uri) {
+    if (window && window.location) {
+      return scheme + window.location.host + uri;
+    } else {
+      return "";
+    }
+  },
+
   isMobile: function (navigator) {
     if (navigator) {
       return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);

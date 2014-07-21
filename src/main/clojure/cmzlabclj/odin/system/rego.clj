@@ -37,7 +37,9 @@
 ;; { player-id -> map of sessions { id -> session } }
 (def ^:private PLAYER-SESS (ref {}))
 
-;; { room-id -> room }
+;; {game-id -> map
+;;             { room-id -> room }}
+(def ^:private FREE-ROOMS (ref {}))
 (def ^:private GAME-ROOMS (ref {}))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -65,38 +67,102 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn RemoveRoom ""
+(defn RemoveGameRoom ""
 
   ^PlayRoom
-  [^String room]
+  [^String game, ^String room]
 
   (dosync
-    (when-let [r (get @GAME-ROOMS room) ]
-      (alter GAME-ROOMS dissoc room)
-      r)
+    (when-let [gm (get @GAME-ROOMS game) ]
+      (when-let [r (get gm room)]
+        (alter GAME-ROOMS
+               assoc
+               game (dissoc gm room))
+      r))
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn RemoveFreeRoom ""
+
+  ^PlayRoom
+  [^String game ^String room]
+
+  (dosync
+    (when-let [gm (get @FREE-ROOMS game) ]
+      (when-let [r (get gm room)]
+        (alter FREE-ROOMS
+               assoc
+               game (dissoc gm room))
+      r))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn AddRoom ""
+(defn AddGameRoom ""
 
   ^PlayRoom
   [^PlayRoom room]
 
   (dosync
-    (alter GAME-ROOMS assoc (.roomId room) room)
-    room
+    (let [g (.game room)
+          gid (.id g)
+          m (ternay (get @GAME-ROOMS gid)
+                    (assoc {} gid g)) ]
+      (alter GAME-ROOMS
+             assoc
+             gid
+             (assoc m (.roomId room) room))
+      room)
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn AddFreeRoom ""
+
+  ^PlayRoom
+  [^PlayRoom room]
+
+  (dosync
+    (let [g (.game room)
+          gid (.id g)
+          m (ternay (get @FREE-ROOMS gid)
+                    (assoc {} gid g)) ]
+      (alter FREE-ROOMS
+             assoc
+             gid
+             (assoc m (.roomId room) room))
+      room)
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn LookupRoom ""
+(defn LookupFreeRoom ""
 
   ^PlayRoom
-  [^String room]
+  [^String game]
 
   (dosync
-    (get @GAME-ROOMS room)))
+    (if-let [gm (get @FREE-ROOMS game) ]
+      (let [r (if (> (count gm) 0)
+                (first (vals gm))
+                nil) ]
+        (alter FREE-ROOMS assoc  (.id gm) (dissoc gm (.roomId r)))
+        r)
+      nil)
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn LookupGameRoom ""
+
+  ^PlayRoom
+  [^String game ^String room]
+
+  (dosync
+    (if-let [gm (get @GAME-ROOMS game) ]
+      (get gm room))
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

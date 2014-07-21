@@ -42,9 +42,9 @@
 
   [evt error msg]
 
-  (let [rsp (EventToFrame error (nsb msg))
+  (let [rsp (EventToFrame SESSION_MSG error (nsb msg))
         ^Channel ch (:socket evt) ]
-    (log/debug "replying back an error type " error)
+    (log/debug "replying back an error session/code " error)
     (.writeAndFlush ch rsp)
   ))
 
@@ -52,9 +52,10 @@
 ;;
 (defn- replyOK ""
 
-  [^PlayerSession ps etype]
+  [^PlayerSession ps ecode]
 
-  (let [rsp (EventToFrame etype
+  (let [rsp (EventToFrame SESSION_MSG
+                          ecode
                           (-> (.room ps)
                               (.roomId))) ]
     (log/debug "player connection request is ok.")
@@ -110,11 +111,11 @@
         (let [g (LookupGame (nth arr 0))]
           (if (.supportMultiPlayers g)
             (var-set gm g)
-            (replyError evt Events/INVALID_GAME "")))
+            (replyError evt Events/C_GAME_NOK "")))
         (if-let [p (LookupPlayer (nth arr 1)
                                  (nth arr 2)) ]
           (var-set plyr p)
-          (replyError evt Events/INVALID_USER ""))
+          (replyError evt Events/C_USER_NOK ""))
         (if-let [r (OpenRoom @gm @plyr)]
           (var-set room r)
           (replyError evt Events/ROOM_UNAVAILABLE ""))
@@ -173,9 +174,6 @@
     (cond
       (== etype Events/PLAYGAME_REQ)
       (onPlayReq evt)
-
-      (== etype Events/JOINGAME_REQ)
-      (onJoinReq evt)
 
       :else
       (log/warn "unhandled event " evt))))

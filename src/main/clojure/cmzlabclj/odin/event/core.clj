@@ -29,14 +29,22 @@
 ;;
 (defn EventToFrame ""
 
-  (^TextWebSocketFrame [evt] (EventToFrame (:type evt) (:source evt)))
-  (^TextWebSocketFrame
-    [etype body]
-    (let [base {:type etype :timestamp (System/currentTimeMillis) }
-          evt (if-not (nil? body)
-                (assoc base :source body)
-                base) ]
-      (TextWebSocketFrame. ^String (json/write-str evt)))))
+  (^TextWebSocketFrame [etype body] (EventToFrame etype -1 body))
+
+  (^TextWebSocketFrame [evt] (EventToFrame (:type evt)
+                                           (:code evt)
+                                           (:source evt)))
+
+  (^TextWebSocketFrame [etype ecode body]
+                       (let [b1 {:type etype :code -1
+                                 :timestamp (System/currentTimeMillis) }
+                             b2 (if-not (nil? body)
+                                  (assoc b1 :source body)
+                                  b1)
+                             evt (if-not (nil? ecode)
+                                   (assoc b2 :code ecode)
+                                   b2) ]
+                         (TextWebSocketFrame. ^String (json/write-str evt)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -58,10 +66,13 @@
 ;;
 (defn ReifyEvent ""
 
-  ([eventType ^Object source] (ReifyEvent eventType source nil))
-  ([eventType ^Object source ^Object ctx]
+  ([eventType ecode ^Object source]
+   (ReifyEvent eventType ecode source nil))
+
+  ([eventType ecode ^Object source ^Object ctx]
    (let [base {:timestamp (System/currentTimeMillis)
-               :type (int eventType) }
+               :type (int eventType)
+               :code (int ecode) }
          e1 (if-not (nil? source)
               (assoc base :source source)
               base) ]
@@ -73,18 +84,18 @@
 ;;
 (defn ReifyNetworkEvent ""
 
-  ([source] (ReifyNetworkEvent source true))
-  ([source reliable?]
-   (let [evt (ReifyEvent Events/NETWORK_MSG source) ]
+  ([ecode source] (ReifyNetworkEvent ecode source true))
+  ([ecode source reliable?]
+   (let [evt (ReifyEvent Events/NETWORK_MSG ecode source) ]
      (assoc evt :reliable (true? reliable?)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn ReifySessionMessage ""
 
-  [^Object source]
+  [ecode ^Object source]
 
-  (ReifyEvent Events/SESSION_MSG source))
+  (ReifyEvent Events/SESSION_MSG ecode source))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

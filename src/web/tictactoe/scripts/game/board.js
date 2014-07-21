@@ -334,7 +334,7 @@ var Robot = Player.xtends({
 
 });
 
-asterix.TicTacToe.Human = Player.xtends({
+var Human = Player.xtends({
 
   isMax: function() { return false; },
   takeTurn: function() {},
@@ -343,6 +343,19 @@ asterix.TicTacToe.Human = Player.xtends({
   }
 
 });
+
+asterix.TicTacToe.NetPlayer = Human.xtends({
+
+  isMax: function() { return false; },
+  takeTurn: function() {},
+  ctor: function (idv, pic, color) {
+    this._super(idv, pic, color);
+  }
+
+});
+
+asterix.TicTacToe.Human = Human;
+
 
 asterix.TicTacToe.AlgoBot = Robot.xtends({
 
@@ -359,8 +372,6 @@ asterix.TicTacToe.AlgoBot = Robot.xtends({
   }
 
 });
-
-
 
 
 
