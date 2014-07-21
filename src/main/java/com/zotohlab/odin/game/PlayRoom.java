@@ -36,6 +36,7 @@ public interface PlayRoom extends Eventable {
   public boolean isShuttingDown();
   public void close();
 
+  public boolean canActivate();
   public void activate();
 }
 

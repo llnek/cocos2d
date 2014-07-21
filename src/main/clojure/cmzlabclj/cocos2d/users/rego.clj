@@ -20,7 +20,7 @@
             [clojure.data.json :as json])
 
   (:use [cmzlabclj.nucleus.util.dates :only [ParseDate] ]
-        [cmzlabclj.nucleus.util.str :only [hgl? strim] ]
+        [cmzlabclj.nucleus.util.str :only [nsb hgl? strim] ]
         [cmzlabclj.tardis.core.constants]
         [cmzlabclj.tardis.core.wfs]
         [cmzlabclj.tardis.impl.ext :only [GetAppKeyFromEvent] ]
@@ -31,7 +31,6 @@
             [com.zotohlab.wflow FlowPoint Activity
                                 Pipeline PipelineDelegate PTask Work]
             [com.zotohlab.gallifrey.io HTTPEvent HTTPResult Emitter]
-            [com.zotohlab.frwk.net ULFormItems ULFileItem]
             [com.zotohlab.frwk.io IOUtils XData]
             [com.zotohlab.wflow.core Job]
             [java.io File]
@@ -104,7 +103,7 @@
 
   (DefWFTask
     (fn [fw ^Job job arg]
-      (let [^String tpl (:template (.getv job EV_OPTS))
+      (let [tpl (:template (.getv job EV_OPTS))
             ^HTTPEvent evt (.event job)
             ^cmzlabclj.tardis.core.sys.Element
             src (.emitter evt)
@@ -114,7 +113,8 @@
             mvs (.getSession evt)
             csrf (.generateCsrf co)
             est (.getAttr src :sessionAgeSecs)
-            [rdata ct] (.loadTemplate co tpl (interpolateFunc evt csrf))
+            [rdata ct] (.loadTemplate co (nsb tpl)
+                                      (interpolateFunc evt csrf))
             ^HTTPResult res (.getResultObj evt) ]
         (.setHeader res "content-type" ct)
         (.setContent res rdata)
@@ -133,10 +133,10 @@
     (doShowPage interpolateRegisterPage))
 
   (onStop [_ pipe]
-    (log/info "nothing to be done here, just stop please."))
+    (log/debug "RegisterPage: stopped."))
 
   (onError [ _ err curPt]
-    (log/info "Oops, I got an error!")))
+    (log/error "RegisterPage: I got an error!")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -147,10 +147,10 @@
     (doShowPage interpolateLoginPage))
 
   (onStop [_ pipe]
-    (log/info "nothing to be done here, just stop please."))
+    (log/debug "LoginPage: stopped."))
 
   (onError [ _ err curPt]
-    (log/info "Oops, I got an error!")))
+    (log/error "LoginPage: I got an error!")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -161,10 +161,10 @@
     (doShowPage interpolateForgotPage))
 
   (onStop [_ pipe]
-    (log/info "nothing to be done here, just stop please."))
+    (log/debug "ForgotPage: stopped."))
 
   (onError [ _ err curPt]
-    (log/info "Oops, I got an error!")))
+    (log/error "ForgotPage: I got an error!")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

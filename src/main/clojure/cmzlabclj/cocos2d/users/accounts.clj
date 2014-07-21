@@ -92,10 +92,10 @@
     (If. (MaybeSignupTest "32") (doSignupOK) (doSignupFail)))
 
   (onStop [_ pipe]
-    (log/info "nothing to be done here, just stop please."))
+    (log/debug "SignupHandler: stopped."))
 
   (onError [ _ err curPt]
-    (log/info "Oops, I got an error!")))
+    (log/error "SignupHandler: I got an error!")))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -159,10 +159,10 @@
     (If. (MaybeLoginTest) (doLoginOK) (doLoginFail)))
 
   (onStop [_ pipe]
-    (log/info "nothing to be done here, just stop please."))
+    (log/debug "LoginHandler: stopped."))
 
   (onError [ _ err curPt]
-    (log/info "Oops, I got an error!")))
+    (log/info "LoginHandler: I got an error!")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -223,10 +223,10 @@
       (.chain (doLookupEmail))))
 
   (onStop [_ pipe]
-    (log/info "nothing to be done here, just stop please."))
+    (log/debug "ForgotHandler: stopped."))
 
   (onError [ _ err curPt]
-    (log/info "Oops, I got an error!")))
+    (log/error "ForgotHandler: I got an error!")))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -269,10 +269,10 @@
     (doLogout))
 
   (onStop [_ pipe]
-    (log/info "nothing to be done here, just stop please."))
+    (log/debug "LogoutHandler: stopped."))
 
   (onError [ _ err curPt]
-    (log/info "Oops, I got an error!")))
+    (log/error "LogoutHandler: I got an error!")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

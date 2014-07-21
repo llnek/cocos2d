@@ -19,7 +19,7 @@
             [clojure.data.json :as json])
 
   (:use [cmzlabclj.nucleus.util.dates :only [ParseDate] ]
-        [cmzlabclj.nucleus.util.str :only [hgl? strim] ]
+        [cmzlabclj.nucleus.util.str :only [nsb hgl? strim] ]
         [cmzlabclj.tardis.core.constants])
 
   (:import  [org.apache.commons.io FileUtils]

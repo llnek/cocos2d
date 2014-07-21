@@ -20,7 +20,7 @@
             [clojure.data.json :as json])
 
   (:use [cmzlabclj.nucleus.util.dates :only [ParseDate] ]
-        [cmzlabclj.nucleus.util.str :only [hgl? strim] ]
+        [cmzlabclj.nucleus.util.str :only [nsb hgl? strim] ]
         [cmzlabclj.tardis.core.constants]
         [cmzlabclj.tardis.core.wfs]
         [cmzlabclj.tardis.impl.ext :only [GetAppKeyFromEvent] ])
@@ -33,7 +33,6 @@
             [com.zotohlab.wflow FlowPoint Activity
                                  Pipeline PipelineDelegate PTask Work]
             [com.zotohlab.gallifrey.io HTTPEvent HTTPResult Emitter]
-            [com.zotohlab.frwk.net ULFormItems ULFileItem]
             [com.zotohlab.frwk.io IOUtils XData]
             [com.zotohlab.wflow.core Job]
             [java.io File]
@@ -62,8 +61,7 @@
   ^Map
   [^HTTPEvent evt]
 
-  (let [uri (.getUri evt)
-        ^Map mf (get (GetGamesAsHash) (.getUri evt))
+  (let [^Map mf (get (GetGamesAsHash) (.getUri evt))
         dm (GetDftModel evt)
         ^Map tags (.get dm "metatags")
         ^Map bd (.get dm "body")
@@ -109,12 +107,14 @@
 
   (DefWFTask
     (fn [fw ^Job job arg]
-      (let [^String tpl (:template (.getv job EV_OPTS))
+      (let [tpl (:template (.getv job EV_OPTS))
             ^HTTPEvent evt (.event job)
             ^Emitter src (.emitter evt)
             ^cmzlabclj.tardis.impl.ext.ContainerAPI
             co (.container src)
-            [rdata ct] (.loadTemplate co tpl (interpolateFunc evt))
+            [rdata ct]
+            (.loadTemplate co (nsb tpl)
+                           (interpolateFunc evt))
             ^HTTPResult res (.getResultObj evt) ]
         (.setHeader res "content-type" ct)
         (.setContent res rdata)
@@ -131,10 +131,10 @@
     (doShowPage interpolateBrowsePage))
 
   (onStop [_ pipe]
-    (log/info "nothing to be done here, just stop please."))
+    (log/debug "AllGamesPage: stopped."))
 
   (onError [ _ err curPt]
-    (log/info "Oops, I got an error!")))
+    (log/error "AllGamesPage: I got an error!")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -145,10 +145,10 @@
     (doShowPage interpolatePicksPage))
 
   (onStop [_ pipe]
-    (log/info "nothing to be done here, just stop please."))
+    (log/debug "TopPicksPage: stopped."))
 
   (onError [ _ err curPt]
-    (log/info "Oops, I got an error!")))
+    (log/error "TopPicksPage: I got an error!")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -159,10 +159,10 @@
     (doShowPage interpolateArenaPage))
 
   (onStop [_ pipe]
-    (log/info "nothing to be done here, just stop please."))
+    (log/debug "GameArenaPage: stopped."))
 
   (onError [ _ err curPt]
-    (log/info "Oops, I got an error!")))
+    (log/error "GameArenaPage: I got an error!")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

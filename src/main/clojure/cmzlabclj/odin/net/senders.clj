@@ -41,18 +41,14 @@
   [^Channel ch]
 
   (reify TCPSender
-    (sendMessage [_ msg] (.writeAndFlush ch msg))
+    (sendMessage [_ msg] (.writeAndFlush ch (EventToFrame msg)))
     (isReliable [_] true)
     (shutdown [this]
-      (let [evt (EventToFrame Events/DISCONNECT nil) ]
-        (log/debug "going to close tcp connection " ch)
-        (try
-          (-> (.writeAndFlush ch evt)
-              (.addListener ChannelFutureListener/CLOSE))
-          (catch Throwable e#
-            (do
-              (log/warn "failed to write to socket with event " evt)
-              (.close ch))))))
+      (log/debug "going to close tcp connection " ch)
+      (try
+        (.close ch)
+        (catch Throwable e#
+          (log/warn "failed to close channel " ch))))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

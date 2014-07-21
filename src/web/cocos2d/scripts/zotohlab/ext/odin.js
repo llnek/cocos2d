@@ -31,6 +31,9 @@ var C_PLAYREQ_NOK         = 10,
     C_ROOM_FILLED         = 15,
     C_ROOMS_FULL          = 16,
 
+    C_PLAYREQ_OK          = 30,
+    C_JOINREQ_OK          = 31,
+
     C_AWAIT_START         = 50,
     C_START               = 51,
     C_STOP                = 52,

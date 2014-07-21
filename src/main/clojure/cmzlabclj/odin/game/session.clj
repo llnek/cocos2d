@@ -51,7 +51,8 @@
 
   ^PlayerSession
   [^PlayRoom room
-   ^Player plyr]
+   ^Player plyr
+   pnumber]
 
   (let [created (System/currentTimeMillis)
         sid (GenerateUID (class Session))
@@ -60,6 +61,7 @@
     (.setf! impl :shutting-down false)
     (reify PlayerSession
 
+      (number [_] pnumber)
       (player [_] plyr)
       (room [_] room)
 

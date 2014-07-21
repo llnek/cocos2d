@@ -33,6 +33,9 @@ public interface Events {
   public static final int C_ROOM_FILLED         = 15;
   public static final int C_ROOMS_FULL          = 16;
 
+  public static final int C_PLAYREQ_OK         = 30;
+  public static final int C_JOINREQ_OK         = 31;
+
   public static final int C_AWAIT_START         = 50;
   public static final int C_START               = 51;
   public static final int C_STOP                = 52;

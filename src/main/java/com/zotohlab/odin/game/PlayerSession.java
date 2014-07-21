@@ -22,6 +22,7 @@ public interface PlayerSession extends Session, Eventable {
 
   public PlayRoom room();
   public Player player();
+  public long number();
 
 }
 

@@ -99,25 +99,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn AddGameRoom ""
-
-  ^PlayRoom
-  [^PlayRoom room]
-
-  (dosync
-    (let [g (.game room)
-          gid (.id g)
-          m (ternay (get @GAME-ROOMS gid)
-                    (assoc {} gid g)) ]
-      (alter GAME-ROOMS
-             assoc
-             gid
-             (assoc m (.roomId room) room))
-      room)
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 (defn AddFreeRoom ""
 
   ^PlayRoom
@@ -127,7 +108,7 @@
     (let [g (.game room)
           gid (.id g)
           m (ternay (get @FREE-ROOMS gid)
-                    (assoc {} gid g)) ]
+                    {}) ]
       (alter FREE-ROOMS
              assoc
              gid
@@ -137,17 +118,59 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+(defn AddGameRoom ""
+
+  ^PlayRoom
+  [^PlayRoom room]
+
+  (dosync
+    (let [g (.game room)
+          gid (.id g)
+          m (ternay (get @GAME-ROOMS gid)
+                    {}) ]
+      (alter GAME-ROOMS
+             assoc
+             gid
+             (assoc m (.roomId room) room))
+      room)
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn NewFreeRoom ""
+
+  ^PlayerSession
+  [^Game game ^Player py]
+
+  (let [room (ReifyPlayRoom game)
+        ps (.connect room py) ]
+    (dosync
+      (let [gid (.id game)
+            m (ternary (get @FREE-ROOMS gid)
+                      {}) ]
+        (alter FREE-ROOMS
+               assoc
+               gid
+               (assoc m (.roomId room) room))))
+    ps
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 (defn LookupFreeRoom ""
 
   ^PlayRoom
-  [^String game]
+  [^Game game]
 
   (dosync
-    (if-let [gm (get @FREE-ROOMS game) ]
+    (if-let [gm (get @FREE-ROOMS (.id game)) ]
       (let [r (if (> (count gm) 0)
                 (first (vals gm))
                 nil) ]
-        (alter FREE-ROOMS assoc  (.id gm) (dissoc gm (.roomId r)))
+        (alter FREE-ROOMS
+               assoc
+               (.id game)
+               (dissoc gm (.roomId r)))
         r)
       nil)
   ))

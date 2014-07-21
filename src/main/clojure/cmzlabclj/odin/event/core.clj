@@ -29,11 +29,13 @@
 ;;
 (defn EventToFrame ""
 
-  (^TextWebSocketFrame [etype body] (EventToFrame etype -1 body))
+  (^TextWebSocketFrame [etype body]
+                       (EventToFrame etype -1 body))
 
-  (^TextWebSocketFrame [evt] (EventToFrame (:type evt)
-                                           (:code evt)
-                                           (:source evt)))
+  (^TextWebSocketFrame [evt]
+                       (EventToFrame (:type evt)
+                                     (:code evt)
+                                     (:source evt)))
 
   (^TextWebSocketFrame [etype ecode body]
                        (let [b1 {:type etype :code -1
@@ -60,7 +62,8 @@
       (assoc evt :socket socket))
     (catch Throwable e#
       (log/error e# "")
-      {})))
+      {:type -1})
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -97,8 +100,6 @@
 
   (ReifyEvent Events/SESSION_MSG ecode source))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

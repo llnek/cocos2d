@@ -36,7 +36,7 @@
             [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
             [io.netty.channel Channel]
             [org.apache.commons.io FileUtils]
-            [java.util.concurrent ConcurrentHashMap]
+            [java.util.concurrent AtomicLong ConcurrentHashMap]
             [java.io File]
             [com.zotohlab.gallifrey.core Container]
             [com.zotohlab.odin.event Events EventHandler
@@ -63,15 +63,16 @@
 (defn ReifyPlayRoom ""
 
   ^PlayRoom
-  [^Game gm]
+  [^Game gameObj]
 
-  (let [created (System/currentTimeMillis)
-        disp (ReifyEventDispatcher)
-        impl (MakeMMap)
-        engObj (MakeObjArg1 (.engineClass gm)
+  (let [engObj (MakeObjArg1 (.engineClass gameObj)
                             (atom {}))
+        created (System/currentTimeMillis)
+        disp (ReifyEventDispatcher)
         pss (ConcurrentHashMap.)
-        rid "1"];;(NewUUid)]
+        pcount (AtomicLong.)
+        impl (MakeMMap)
+        rid (NewUUid)]
     (.setf! impl :shutting true)
     (reify PlayRoom
       (disconnect [_ ps]
@@ -82,16 +83,18 @@
           (.unsubscribeIfSession disp ps)))
       (countPlayers [_] (.size pss))
       (connect [this p]
-        (let [ps (ReifyPlayerSession this p)
+        (let [ps (ReifyPlayerSession this p (.incrementAndGet pcount))
               ^Player py p]
           (.put pss (.id ps) ps)
           (.addSession py ps)
           ps))
       (isShuttingDown [_] (.getf impl :shutting))
-      (engine [_] engObj)
-      (game [_] gm)
-      (roomId [_] rid)
+      (canActivate [this] (>= (.countPlayers this)
+                              (.minPlayers gameObj)))
       (broadcast [_ evt] (.publish disp evt))
+      (engine [_] engObj)
+      (game [_] gameObj)
+      (roomId [_] rid)
       (close [_])
       (activate [this]
         (let [^GameEngine sm (.engine this)
@@ -138,19 +141,17 @@
 ;;
 (defn OpenRoom ""
 
-  ^PlayRoom
+  ^PlayerSession
   [^Game game ^Player plyr]
 
-  (LookupFreeRoom game)
-  (cond
-    (== vacancy 0)
-    nil
-
-    (> (.countSessions plyr) 5)
-    nil
-
-    :else
-    (AddRoom (ReifyPlayRoom game))))
+  (if-let [room (LookupFreeRoom game) ]
+    (let [ps (.connect room plyr)]
+      (if (.canActivate room)
+        (AddGameRoom room)
+        (AddFreeRoom room))
+      ps)
+    (NewFreeRoom game plyr)
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
