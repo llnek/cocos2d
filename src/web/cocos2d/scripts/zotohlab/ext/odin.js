@@ -18,36 +18,36 @@
 
 var Events = {
 // Event type
-PLAYGAME_REQ          = 1,
-JOINGAME_REQ          = 2,
-NETWORK_MSG           = 3,
-SESSION_MSG           = 4;
+PLAYGAME_REQ          : 1,
+JOINGAME_REQ          : 2,
+NETWORK_MSG           : 3,
+SESSION_MSG           : 4;
 
 // Event code
-C_PLAYREQ_NOK         = 10,
-C_JOINREQ_NOK         = 11,
-C_USER_NOK            = 12,
-C_GAME_NOK            = 13,
-C_ROOM_NOK            = 14,
-C_ROOM_FILLED         = 15,
-C_ROOMS_FULL          = 16,
+C_PLAYREQ_NOK         : 10,
+C_JOINREQ_NOK         : 11,
+C_USER_NOK            : 12,
+C_GAME_NOK            : 13,
+C_ROOM_NOK            : 14,
+C_ROOM_FILLED         : 15,
+C_ROOMS_FULL          : 16,
 
-C_PLAYREQ_OK          = 30,
-C_JOINREQ_OK          = 31,
+C_PLAYREQ_OK          : 30,
+C_JOINREQ_OK          : 31,
 
-C_AWAIT_START         = 50,
-C_START               = 51,
-C_STOP                = 52,
-C_POKE_MOVE           = 53,
-C_POKE_WAIT           = 54,
+C_AWAIT_START         : 50,
+C_START               : 51,
+C_STOP                : 52,
+C_POKE_MOVE           : 53,
+C_POKE_WAIT           : 54,
 
-C_STARTED             = 95,
-C_CONNECTED           = 98,
-C_ERROR               = 99,
-C_CLOSED              = 100,
+C_STARTED             : 95,
+C_CONNECTED           : 98,
+C_ERROR               : 99,
+C_CLOSED              : 100,
 
-S_NOT_CONNECTED       = 0,
-S_CONNECTED           = 1
+S_NOT_CONNECTED       : 0,
+S_CONNECTED           : 1
 
 };
 
