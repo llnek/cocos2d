@@ -11,18 +11,12 @@
 // Copyright (c) 2014 Cherimoia, LLC. All rights reserved.
  ??*/
 
-package com.zotohlab.odin.network;
+
+package com.zotohlab.odin.net;
 
 /**
  * @author kenl
  */
-public interface MessageSender {
+public interface TCPSender extends MessageSender {
 
-  public Object sendMessage(Object message);
-
-  public boolean isReliable();
-
-  public void shutdown();
-
-  public Object impl();
 }

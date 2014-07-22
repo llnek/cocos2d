@@ -25,7 +25,7 @@
   (:use [cmzlabclj.odin.event.core])
 
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
-            [com.zotohlab.odin.network MessageSender TCPSender]
+            [com.zotohlab.odin.net MessageSender TCPSender]
             [io.netty.channel Channel ChannelFutureListener]
             [com.zotohlab.odin.event Events]))
 

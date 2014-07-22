@@ -29,17 +29,18 @@
         [cmzlabclj.odin.system.util]
         [cmzlabclj.odin.system.rego])
 
-  (:import  [com.zotohlab.odin.game Game PlayRoom
-                                    Player PlayerSession
-                                    Session Session$Status]
-            [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
+  (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
+            [com.zotohlab.odin.game Game PlayRoom
+                                    Player PlayerSession]
+            [com.zotohlab.odin.core Session$Status Session]
             [io.netty.channel Channel]
             [org.apache.commons.io FileUtils]
             [java.io File]
             [com.zotohlab.frwk.util CoreUtils]
             [com.zotohlab.gallifrey.core Container]
-            [com.zotohlab.odin.network MessageSender]
-            [com.zotohlab.odin.event Events Eventable EventDispatcher]))
+            [com.zotohlab.odin.net MessageSender]
+            [com.zotohlab.odin.event Events
+                                     Eventable EventDispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

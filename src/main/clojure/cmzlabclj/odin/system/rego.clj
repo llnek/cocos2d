@@ -23,7 +23,8 @@
   (:use [cmzlabclj.cocos2d.games.meta])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom
-                                    Player PlayerSession Session]
+                                    Player PlayerSession]
+            [com.zotohlab.odin.core Session]
             [com.zotohlab.odin.event EventDispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

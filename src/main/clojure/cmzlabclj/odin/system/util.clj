@@ -22,7 +22,7 @@
         [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom
-                                    Player PlayerSession Session]
+                                    Player PlayerSession]
             [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
             [io.netty.channel Channel ChannelHandler
                               ChannelHandlerContext]

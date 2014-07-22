@@ -29,11 +29,10 @@
         [cmzlabclj.odin.game.session]
         [cmzlabclj.odin.system.rego])
 
-  (:import  [com.zotohlab.odin.game Game PlayRoom Player
-                                    GameEngine
-                                    Session$Status
-                                    PlayerSession Session]
-            [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
+  (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
+            [com.zotohlab.odin.game Game PlayRoom PlayerSession
+                                    Player GameEngine]
+            [com.zotohlab.odin.core Session$Status Session]
             [io.netty.channel Channel]
             [org.apache.commons.io FileUtils]
             [java.util.concurrent.atomic AtomicLong]
@@ -172,7 +171,7 @@
         (AddFreeRoom room)))
     (when (nil? @pss)
       (var-set pss (NewFreeRoom game plyr))
-      (AddFreeRoom (.room @pss)))
+      (AddFreeRoom (.room ^PlayerSession @pss)))
     (when-let [^PlayerSession ps @pss]
       (let [^Channel ch (:socket options)
             room (.room ps)

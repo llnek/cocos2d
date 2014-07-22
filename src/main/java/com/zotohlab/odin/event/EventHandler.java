@@ -14,7 +14,7 @@
 package com.zotohlab.odin.event;
 
 
-import com.zotohlab.odin.game.Session;
+import com.zotohlab.odin.core.Session;
 
 /**
  * @author kenl

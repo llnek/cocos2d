@@ -57,8 +57,8 @@
                      (persistent! @colsp)))
   ))
 
-(doseq [v (mapGoalSpace 3)]
-  (println (seq v)))
+;;(doseq [v (mapGoalSpace 3)]
+;;(println (seq v)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

@@ -11,13 +11,29 @@
 // Copyright (c) 2014 Cherimoia, LLC. All rights reserved.
  ??*/
 
+package com.zotohlab.odin.core;
 
-package com.zotohlab.odin.network;
 
 /**
  * @author kenl
  */
-public interface UDPSender extends MessageSender {
+public interface Session {
 
+  enum Status {
+    NOT_CONNECTED,
+    CONNECTED
+  };
+
+  public Object id();
+
+  public void setStatus(Status status);
+  public Status getStatus();
+
+  public boolean isShuttingDown();
+  public boolean isConnected();
+
+  public void bind(Object impl);
+  public void close();
 
 }
+
