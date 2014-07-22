@@ -33,8 +33,8 @@ public interface Events {
   public static final int C_ROOM_FILLED         = 15;
   public static final int C_ROOMS_FULL          = 16;
 
-  public static final int C_PLAYREQ_OK         = 30;
-  public static final int C_JOINREQ_OK         = 31;
+  public static final int C_PLAYREQ_OK          = 30;
+  public static final int C_JOINREQ_OK          = 31;
 
   public static final int C_AWAIT_START         = 50;
   public static final int C_START               = 51;
@@ -42,6 +42,8 @@ public interface Events {
   public static final int C_POKE_MOVE           = 53;
   public static final int C_POKE_WAIT           = 54;
 
+  public static final int C_STARTED             = 95;
+  public static final int C_CONNECTED           = 98;
   public static final int C_ERROR               = 99;
   public static final int C_CLOSED              = 100;
 

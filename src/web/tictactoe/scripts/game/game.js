@@ -222,9 +222,46 @@ var GameLayer = asterix.XGameLayer.extend({
   actions: [],
   board: null,
 
+  state: 0,
+
   // get an odin event
   onevent: function(evt) {
     console.log( evt);
+    switch (evt.type) {
+      case NETWORK_MSG: this.onNetworkEvent(evt); break;
+      case SESSION_MSG: this.onSessionEvent(evt); break;
+    }
+  },
+
+  onNetworkEvent: function(evt) {
+  },
+
+  onSessionEvent: function(evt) {
+    switch (evt.code) {
+      case C_AWAIT_START:
+        // move state to await-start
+        this.state= C_AWAIT_START;
+      break;
+      case C_GAMEREQ_OK:
+        // move state to connected
+        evt.source.pnum;
+        evt.source.room;
+        this.state = C_CONNECTED;
+      break;
+      case C_START:
+        // move state to start, update gui
+        this.state= C_STARTED;
+      break;
+      case C_STOP:
+        // tear down game
+      break;
+      case C_POKE_MOVE:
+        // move state to wait move
+      break;
+      case C_POKE_WAIT:
+        // move state to wait for other
+      break;
+    }
   },
 
   replay: function() {
