@@ -9,7 +9,11 @@
 
 </head>
 
+<#if body.gameid??>
+<body data-gameid="${body.gameid}">
+<#else>
 <body>
+</#if>
 
 <#include "${body.content}">
 

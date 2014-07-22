@@ -84,7 +84,7 @@
 
         (when (and (notnil? @plyr)
                    (notnil? @gm))
-          (if-let [^PlayerSession ps (OpenRoom @gm @plyr)]
+          (if-let [^PlayerSession ps (OpenRoom @gm @plyr evt)]
             (do
               (var-set room (.room ps))
               (var-set pss ps))

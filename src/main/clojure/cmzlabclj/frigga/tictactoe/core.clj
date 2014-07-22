@@ -35,6 +35,7 @@
 (deftype TicTacToe [stateObj] com.zotohlab.odin.game.GameEngine
 
   (initialize [_ players]
+    (require 'cmzlabclj.frigga.tictactoe.board)
     (let [p1 (ReifyPlayer (long \X) \X (nth players 0))
           p2 (ReifyPlayer (long \O) \O (nth players 1))
           bd (ReifyTicTacToeBoard 3) ]

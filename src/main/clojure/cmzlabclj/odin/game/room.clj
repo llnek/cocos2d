@@ -99,7 +99,7 @@
       (game [_] gameObj)
       (roomId [_] rid)
       (close [_])
-      (isActive [_] (.getf impl :active))
+      (isActive [_] (true? (.getf impl :active)))
       (activate [this]
         (let [^GameEngine sm (.engine this)
               ss (vec (.values pss)) ]
@@ -150,6 +150,7 @@
   [^Game game ^Player py]
 
   (let [room (ReifyPlayRoom game) ]
+    (log/debug "created a new play room: " (.roomId room))
     (.connect room py)
   ))
 
@@ -165,11 +166,13 @@
     (when-let [room (LookupFreeRoom game) ]
       (var-set pss (.connect room plyr))
       (if (.canActivate room)
-        (AddGameRoom room)
+        (do
+          (log/debug "room has enought players, turning active")
+          (AddGameRoom room))
         (AddFreeRoom room)))
-    (if-let [^PlayerSession ps @pss]
-      (AddFreeRoom (.room ps))
-      (var-set pss (NewFreeRoom game plyr)))
+    (when (nil? @pss)
+      (var-set pss (NewFreeRoom game plyr))
+      (AddFreeRoom (.room @pss)))
     (when-let [^PlayerSession ps @pss]
       (let [^Channel ch (:socket options)
             room (.room ps)
@@ -180,8 +183,10 @@
                             Events/C_PLAYREQ_OK
                             (json/write-str src)) ]
         (ApplyProtocol ps ch)
+        (log/debug "replying back to user: " evt)
         (.writeAndFlush ch (EventToFrame evt))
         (when (.canActivate room)
+          (log/debug "room.canActivate = true")
           (.activate room))))
     @pss
   ))

@@ -89,9 +89,9 @@
       (.put "appkey" (GetAppKeyFromEvent evt))
       (.put "profile" pf)
       (.put "body" (HashMap.)))
-    (.put tags "keywords" "web browser games mobile ios android windows phone")
-    (.put tags "description" "Hello World!")
-    (.put tags "viewport" "width=device-width, initial-scale=1.0")
+    (.put tags "keywords" "content=\"web browser games mobile ios android windows phone\"")
+    (.put tags "description" "content=\"Hello World!\"")
+    (.put tags "viewport" "content=\"width=device-width, initial-scale=1.0\"")
     (.put pf "user" "Guest")
     (when-let [ck (.getCookie evt (name *USER-FLAG*)) ]
       (let [s (strim (.getValue ck)) ]

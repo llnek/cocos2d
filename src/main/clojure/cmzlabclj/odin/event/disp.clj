@@ -60,12 +60,13 @@
                   fiber
                   (reify Callback
                     (onMessage [_ msg]
-                      (when (== (.eventType ^EventHandler cb)
-                                (int (:type msg)))
+                      (when (= (.eventType ^EventHandler cb)
+                               (:type msg))
                         (.onEvent ^EventHandler cb msg))))) ]
           (.put mm cb d)
           d))
       (publish [_ msg]
+        (log/debug "publishing message ==== " msg)
         (.publish queue msg))
       (shutdown [_]
         (.clearSubscribers queue)

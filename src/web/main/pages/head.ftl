@@ -5,7 +5,7 @@
 <meta charset="${encoding}" />
 
 <#list metatags?keys as mt>
-<meta name="${mt}" href="${metatags[mt]}"/>
+<meta name="${mt}" ${metatags[mt]}/>
 </#list>
 
 <link rel="shortcut icon" type="image/png" href="/public/ig/media/main/favicon.png" />

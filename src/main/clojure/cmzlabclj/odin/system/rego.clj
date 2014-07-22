@@ -168,6 +168,7 @@
   (dosync
     (when-let [gm (get @FREE-ROOMS game) ]
       (when-let [r (get gm room)]
+        (log/debug "LookupFreeRoom: found a free room: " room)
         (alter FREE-ROOMS
                assoc
                game

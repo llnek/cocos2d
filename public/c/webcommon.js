@@ -958,7 +958,7 @@ var SkaroJS = {
 
   fmtUrl: function (scheme, uri) {
     if (window && window.location) {
-      return scheme + window.location + uri;
+      return scheme + window.location.host + uri;
     } else {
       return "";
     }
