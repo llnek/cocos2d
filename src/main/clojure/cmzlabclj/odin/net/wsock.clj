@@ -66,10 +66,10 @@
     (doXXX))
 
   (onStop [_ pipe]
-    (log/info "nothing to be done here, just stop please."))
+    (log/debug "Handler: stopped."))
 
   (onError [ _ err curPt]
-    (log/info "Oops, I got an error!")))
+    (log/error "Handler: I got an error!")))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

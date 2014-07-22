@@ -36,7 +36,8 @@
             [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
             [io.netty.channel Channel]
             [org.apache.commons.io FileUtils]
-            [java.util.concurrent AtomicLong ConcurrentHashMap]
+            [java.util.concurrent.atomic AtomicLong]
+            [java.util.concurrent ConcurrentHashMap]
             [java.io File]
             [com.zotohlab.gallifrey.core Container]
             [com.zotohlab.odin.event Events EventHandler
@@ -89,17 +90,21 @@
           (.addSession py ps)
           ps))
       (isShuttingDown [_] (.getf impl :shutting))
-      (canActivate [this] (>= (.countPlayers this)
-                              (.minPlayers gameObj)))
+      (canActivate [this]
+        (and (not (.isActive this))
+             (>= (.countPlayers this)
+                 (.minPlayers gameObj))))
       (broadcast [_ evt] (.publish disp evt))
       (engine [_] engObj)
       (game [_] gameObj)
       (roomId [_] rid)
       (close [_])
+      (isActive [_] (.getf impl :active))
       (activate [this]
         (let [^GameEngine sm (.engine this)
               ss (vec (.values pss)) ]
           (log/debug "activating room " rid)
+          (.setf! impl :active true)
           (doseq [v (seq ss)]
             (.addHandler this (mkNetworkSubr v)))
           (.initialize sm ss)
@@ -137,20 +142,48 @@
       )
   ))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn NewFreeRoom ""
+
+  ^PlayerSession
+  [^Game game ^Player py]
+
+  (let [room (ReifyPlayRoom game) ]
+    (.connect room py)
+  ))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn OpenRoom ""
 
   ^PlayerSession
-  [^Game game ^Player plyr]
+  [^Game game ^Player plyr
+   options]
 
-  (if-let [room (LookupFreeRoom game) ]
-    (let [ps (.connect room plyr)]
+  (with-local-vars [pss nil]
+    (when-let [room (LookupFreeRoom game) ]
+      (var-set pss (.connect room plyr))
       (if (.canActivate room)
         (AddGameRoom room)
-        (AddFreeRoom room))
-      ps)
-    (NewFreeRoom game plyr)
+        (AddFreeRoom room)))
+    (if-let [^PlayerSession ps @pss]
+      (AddFreeRoom (.room ps))
+      (var-set pss (NewFreeRoom game plyr)))
+    (when-let [^PlayerSession ps @pss]
+      (let [^Channel ch (:socket options)
+            room (.room ps)
+            src {:room (.roomId room)
+                 :game (.id game)
+                 :pnum (.number ps)}
+            evt (ReifyEvent Events/SESSION_MSG
+                            Events/C_PLAYREQ_OK
+                            (json/write-str src)) ]
+        (ApplyProtocol ps ch)
+        (.writeAndFlush ch (EventToFrame evt))
+        (when (.canActivate room)
+          (.activate room))))
+    @pss
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -158,9 +191,30 @@
 (defn JoinRoom ""
 
   ^PlayerSession
-  [^PlayRoom room ^Player plyr]
+  [^PlayRoom room ^Player plyr
+   options]
 
-  (.connect room plyr))
+  (let [^Channel ch (:socket options)
+        game (.game room)]
+    (when (< (.countPlayers room)
+             (.maxPlayers game))
+      (let [pss (.connect room plyr)
+            src {:room (.roomId room)
+                 :game (.id game)
+                 :pnum (.number pss) }
+            evt (ReifyEvent Events/SESSION_MSG
+                            Events/C_JOINREQ_OK
+                            (json/write-str src)) ]
+        (ApplyProtocol pss ch)
+        (.writeAndFlush ch (EventToFrame evt))
+        (when-not (.isActive room)
+          (if (.canActivate room)
+            (do
+              (.activate room)
+              (AddGameRoom room))
+            (AddFreeRoom room)))
+        pss))
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

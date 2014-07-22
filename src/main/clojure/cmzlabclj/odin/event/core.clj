@@ -22,6 +22,8 @@
          :only [ThrowUOE MakeMMap ternary test-nonil notnil? ] ]
         [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
 
+  (:use [cmzlabclj.odin.system.util])
+
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
             [com.zotohlab.odin.event Events InvalidEventError]))
 
@@ -54,16 +56,7 @@
 
   [^String data socket]
 
-  (log/debug "received json event: " data)
-  (try
-    (let [evt (json/read-str data :key-fn keyword) ]
-      (when (nil? (:type evt))
-        (throw (InvalidEventError. "event object has no type info.")))
-      (assoc evt :socket socket))
-    (catch Throwable e#
-      (log/error e# "")
-      {:type -1})
-  ))
+  (DecodeJsonEvent data socket))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

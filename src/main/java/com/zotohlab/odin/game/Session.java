@@ -20,10 +20,8 @@ package com.zotohlab.odin.game;
 public interface Session {
 
   enum Status {
-    CONNECTING ,
-    CONNECTED,
     NOT_CONNECTED,
-    CLOSED
+    CONNECTED
   };
 
   public Object id();
@@ -33,7 +31,6 @@ public interface Session {
 
   public boolean isShuttingDown();
   public boolean isConnected();
-  public boolean isClosed();
 
   public void bind(Object impl);
   public void close();

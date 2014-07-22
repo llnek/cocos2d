@@ -10,7 +10,8 @@
 ;; Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 
-(ns ^{}
+(ns ^{:doc ""
+      :author "kenl"}
 
   cmzlabclj.odin.game.session
 
@@ -80,31 +81,30 @@
       ;;(getHandlers [_ etype] (.getHandlers disp etype))
 
       Session
+
       (isShuttingDown [_] (.getf impl :shutting-down))
+
       (bind [this soc]
-        (.setStatus this Session$Status/CONNECTED)
-        (.setf! impl :tcp (ReifyReliableSender soc)))
+        (.setf! impl :tcp (ReifyReliableSender soc))
+        (.setStatus this Session$Status/CONNECTED))
       (id [_] sid)
+
       (setStatus [_ s] (.setf! impl :status s))
       (getStatus [_] (.getf impl :status))
+
       (isConnected [_] (= Session$Status/CONNECTED
-                           (.getf impl :status)))
-      (isClosed [_] (= Session$Status/CLOSED
-                        (.getf impl :status)))
+                          (.getf impl :status)))
       (close [this]
-        (SyncBlockExec
-          this
-          (fn [& args]
-            (when-not (.isClosed this)
-              (.setf! impl :shutting-down true)
-              ;;(.close disp)
-              (when-let [^MessageSender s (.getf impl :tcp)]
-                (.shutdown s))
-              (.clrf! impl :tcp)
-              ;;(when-let [s (.getf impl :udp) ] (.shutdown s))
-              ;;(.clrf! impl :udp)
-              (.setf! impl :shutting-down false)
-              (.setf! impl :status Session$Status/CLOSED)))))
+        (locking this
+          (when (.isConnected this)
+            (.setf! impl :shutting-down true)
+            ;;(.close disp)
+            (when-let [^MessageSender s (.getf impl :tcp)]
+              (.shutdown s))
+            (.clrf! impl :tcp)
+            (.setf! impl :shutting-down false)
+            (.setf! impl :status Session$Status/NOT_CONNECTED))))
+
       Object
       (hashCode [this]
         (if-let [ n (.id this) ]

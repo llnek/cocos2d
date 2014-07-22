@@ -22,7 +22,8 @@
 
   (:use [cmzlabclj.cocos2d.games.meta])
 
-  (:import  [com.zotohlab.odin.game Game PlayRoom Player PlayerSession Session]
+  (:import  [com.zotohlab.odin.game Game PlayRoom
+                                    Player PlayerSession Session]
             [com.zotohlab.odin.event EventDispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -98,7 +99,7 @@
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+;; add this room into the pending set.
 (defn AddFreeRoom ""
 
   ^PlayRoom
@@ -107,8 +108,8 @@
   (dosync
     (let [g (.game room)
           gid (.id g)
-          m (ternay (get @FREE-ROOMS gid)
-                    {}) ]
+          m (ternary (get @FREE-ROOMS gid)
+                     {}) ]
       (alter FREE-ROOMS
              assoc
              gid
@@ -117,7 +118,7 @@
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+;; add this room into the active set.
 (defn AddGameRoom ""
 
   ^PlayRoom
@@ -126,8 +127,8 @@
   (dosync
     (let [g (.game room)
           gid (.id g)
-          m (ternay (get @GAME-ROOMS gid)
-                    {}) ]
+          m (ternary (get @GAME-ROOMS gid)
+                     {}) ]
       (alter GAME-ROOMS
              assoc
              gid
@@ -135,44 +136,43 @@
       room)
   ))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn NewFreeRoom ""
-
-  ^PlayerSession
-  [^Game game ^Player py]
-
-  (let [room (ReifyPlayRoom game)
-        ps (.connect room py) ]
-    (dosync
-      (let [gid (.id game)
-            m (ternary (get @FREE-ROOMS gid)
-                      {}) ]
-        (alter FREE-ROOMS
-               assoc
-               gid
-               (assoc m (.roomId room) room))))
-    ps
-  ))
+(defmulti ^PlayRoom LookupFreeRoom (fn [a & args] (class a)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn LookupFreeRoom ""
+(defmethod LookupFreeRoom Game
 
-  ^PlayRoom
   [^Game game]
 
   (dosync
     (if-let [gm (get @FREE-ROOMS (.id game)) ]
-      (let [r (if (> (count gm) 0)
-                (first (vals gm))
-                nil) ]
+      (when-let [^PlayRoom r (if (> (count gm) 0)
+                               (first (vals gm))
+                               nil) ]
         (alter FREE-ROOMS
                assoc
                (.id game)
                (dissoc gm (.roomId r)))
         r)
       nil)
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defmethod LookupFreeRoom String
+
+  [^String game ^String room]
+
+  (dosync
+    (when-let [gm (get @FREE-ROOMS game) ]
+      (when-let [r (get gm room)]
+        (alter FREE-ROOMS
+               assoc
+               game
+               (dissoc gm room))
+        r))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
