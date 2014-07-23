@@ -63,7 +63,7 @@ var UILayer =  asterix.XLayer.extend({
 
 });
 
-sh.protos['YesNo'] = {
+sh.protos['MsgBox'] = {
 
   create: function(options) {
     var fac = new asterix.XSceneFactory({

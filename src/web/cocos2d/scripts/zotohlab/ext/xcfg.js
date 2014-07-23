@@ -33,7 +33,7 @@ asterix.XConfig = {
     atlases : {
     },
     tiles: {
-      'gui.ynbox' : 'game/{{appid}}/levels/blankscreen.tmx',
+      'gui.blank' : 'game/{{appid}}/levels/blankscreen.tmx',
       'gui.mmenu' : 'game/{{appid}}/levels/mainmenu.tmx'
     },
     images: {
