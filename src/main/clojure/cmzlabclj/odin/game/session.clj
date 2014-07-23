@@ -73,10 +73,13 @@
         (when (.isConnected this)
           (let [^MessageSender s (.getf impl :tcp)]
             (.sendMessage s msg))))
-      ;;(getEventDispatcher [_] nil)
-      (onEvent [_ evt]
-        (when-not (.getf impl :shutting-down)
-          (log/debug "player session " sid " , onevent called: " evt)))
+
+      (onEvent [this evt]
+        (when-not (and (= (:type evt) Events/NETWORK_MSG)
+                       (.getf impl :shutting-down))
+          (log/debug "player session " sid " , onevent called: " evt)
+          (.sendMessage this evt)))
+
       (removeHandler [_ h] )
       (addHandler [_ h] )
       ;;(getHandlers [_ etype] (.getHandlers disp etype))

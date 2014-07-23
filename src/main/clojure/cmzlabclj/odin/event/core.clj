@@ -65,6 +65,9 @@
   ([eventType ecode ^Object source]
    (ReifyEvent eventType ecode source nil))
 
+  ([eventType ecode]
+   (ReifyEvent eventType ecode nil nil))
+
   ([eventType ecode ^Object source ^Object ctx]
    (let [base {:timestamp (System/currentTimeMillis)
                :type (int eventType)

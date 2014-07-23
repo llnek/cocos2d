@@ -21,7 +21,7 @@ var Events = {
 PLAYGAME_REQ          : 1,
 JOINGAME_REQ          : 2,
 NETWORK_MSG           : 3,
-SESSION_MSG           : 4;
+SESSION_MSG           : 4,
 
 // Event code
 C_PLAYREQ_NOK         : 10,
@@ -88,7 +88,7 @@ function json_encode(e) {
 //////////////////////////////////////////////////////////////////////////////
 //
 function json_decode(e) {
-  var evt = {};
+  var src, evt = {};
   try {
     evt= JSON.parse(e.data);
   } catch (e) {
@@ -99,6 +99,11 @@ function json_decode(e) {
   }
   if (! _.has(evt, 'code')) {
     evt.code = -1;
+  }
+  if (_.has(evt, 'source') &&
+      _.isString(evt.source)) {
+    // assume json for now
+    evt.source = JSON.parse(evt.source);
   }
   return evt;
 }
@@ -172,31 +177,9 @@ var Session= SkaroJS.Class.xtends({
   },
 
   onNetworkMsg: function(evt) {
-    switch (evt.code) {
-      case Events.C_ERROR:
-        this.onevent(evt);
-      break;
-      default:
-      SkaroJS.loggr.warn("unhandled network event/code: " + evt.code);
-    }
   },
 
   onSessionMsg: function(evt) {
-    switch (evt.code) {
-      case Events.C_ROOM_FILLED:
-      case Events.C_ROOMS_FULL:
-      case Events.C_USER_NOK:
-      case Events.C_GAME_NOK:
-      case Events.C_AWAIT_START:
-      case Events.C_START:
-      case Events.C_STOP:
-      case Events.C_POKE_MOVE:
-      case Events.C_POKE_WAIT:
-      break;
-        this.onevent(evt);
-      default:
-      SkaroJS.loggr.warn("unhandled session event/code: " + evt.code);
-    }
   },
 
   wsock: function(url) {
@@ -211,10 +194,8 @@ var Session= SkaroJS.Class.xtends({
       var evt = json_decode(e);
       switch (evt.type) {
         case Events.NETWORK_MSG:
-          me.onNetworkMsg(evt);
-        break;
         case Events.SESSION_MSG:
-          me.onSessionMsg(evt);
+          me.onevent(evt);
         break;
         default:
           SkaroJS.loggr.warn("unhandled event from server: " +

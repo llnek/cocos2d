@@ -13,6 +13,8 @@
                                      _ = global._ ,
                                      $ = global.jQuery,
 asterix = global.ZotohLab.Asterix,
+Odin=global.ZotohLab.Odin,
+Events=Odin.Events,
 sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
 ttt= asterix.TicTacToe,
@@ -224,44 +226,51 @@ var GameLayer = asterix.XGameLayer.extend({
   actions: [],
   board: null,
 
-  state: 0,
+  gameState: 0,
 
   // get an odin event
-  onevent: function(evt) {
+  onevent: function(topic, evt) {
     console.log( evt);
     switch (evt.type) {
-      case NETWORK_MSG: this.onNetworkEvent(evt); break;
-      case SESSION_MSG: this.onSessionEvent(evt); break;
+      case Events.NETWORK_MSG: this.onNetworkEvent(evt); break;
+      case Events.SESSION_MSG: this.onSessionEvent(evt); break;
     }
   },
 
   onNetworkEvent: function(evt) {
+    switch (evt.code) {
+      case Events.C_START:
+        SkaroJS.loggr.info("play room is ready, game will start.");
+        this.gameState= Events.C_STARTED;
+      break;
+      case Events.C_STOP:
+        // tear down game
+      break;
+    }
   },
 
   onSessionEvent: function(evt) {
     switch (evt.code) {
-      case C_AWAIT_START:
+      case Events.C_AWAIT_START:
         // move state to await-start
-        this.state= C_AWAIT_START;
+        this.gameState= Events.C_AWAIT_START;
       break;
-      case C_GAMEREQ_OK:
+      case Events.C_PLAYREQ_OK:
+        SkaroJS.loggr.debug("player " +
+                            evt.source.pnum +
+                            ": request to play game was successful.");
         // move state to connected
         evt.source.pnum;
         evt.source.room;
-        this.state = C_CONNECTED;
+        this.gameState = Events.C_CONNECTED;
       break;
-      case C_START:
-        // move state to start, update gui
-        this.state= C_STARTED;
-      break;
-      case C_STOP:
-        // tear down game
-      break;
-      case C_POKE_MOVE:
+      case Events.C_POKE_MOVE:
         // move state to wait move
+        SkaroJS.loggr.debug("player " + evt.source.pnum + ": my turn to move");
       break;
-      case C_POKE_WAIT:
+      case Events.C_POKE_WAIT:
         // move state to wait for other
+        SkaroJS.loggr.debug("player " + evt.source.pnum + ": my turn to wait");
       break;
     }
   },
@@ -276,6 +285,7 @@ var GameLayer = asterix.XGameLayer.extend({
 
     var p1= new ttt.Human(sh.xcfg.csts.CV_X, 0, 'X');
     var p2= null;
+    var gameid= $('body').attr('data-gameid');
     var wss, wsurl;
 
     switch (sh.xcfg.csts.GAME_MODE) {
@@ -287,8 +297,8 @@ var GameLayer = asterix.XGameLayer.extend({
       break;
       case 3:
         wsurl = SkaroJS.fmtUrl(SkaroJS.getWebSockProtocol(), "/network/odin/websocket");
-        wss= global.ZotohLab.Odin.newSession({
-          game: "bd5f79bb-eb41-4ed5-bb44-2529dc27ed3c",
+        wss= Odin.newSession({
+          game: gameid,
           user: ''+ SkaroJS.nowMillis(),
           passwd: 'secret'
         });

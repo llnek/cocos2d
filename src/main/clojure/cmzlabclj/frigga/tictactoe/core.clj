@@ -23,11 +23,12 @@
         [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
 
   (:use [cmzlabclj.cocos2d.games.meta]
+        [cmzlabclj.odin.event.core]
         [cmzlabclj.frigga.tictactoe.board])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom
                                     Player PlayerSession]
-            [com.zotohlab.odin.event EventDispatcher]))
+            [com.zotohlab.odin.event Events EventDispatcher]))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -61,13 +62,24 @@
           bd (:board @stateObj)
           cp (.getCurActor bd)
           op (.getOtherPlayer bd cp)
-          evt ()]
+          src {:grid [0,0,0,0,0,0,0,0,0]
+               :winner -1
+               :draw  false}
+          evt (ReifyEvent Events/NETWORK_MSG
+                          Events/C_START
+                          (json/write-str src)) ]
       (.broadcast ^PlayRoom room evt) ;; start game
-      (.broadcast ^PlayRoom room evt) ;; who is player1,2
-      (.sendMessage ^PlayerSession
-                    (:session op) evt);; poke_wait
-      (.sendMessage ^PlayerSession
-                    (:session cp) evt)));; poke_move
+      (let [^PlayerSession ps (:session op)]
+        (.sendMessage ps
+                      (ReifyEvent Events/SESSION_MSG
+                                  Events/C_POKE_WAIT
+                                  (json/write-str {:pnum (.number ps)}))))
+      (let [^PlayerSession ps (:session cp)]
+        (.sendMessage ps
+                      (ReifyEvent Events/SESSION_MSG
+                                  Events/C_POKE_MOVE
+                                  (json/write-str {:pnum (.number ps)}))))
+      ))
 
   (stop [_] )
   (finz [_] )
