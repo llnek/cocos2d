@@ -56,7 +56,11 @@
     (eventType [_] Events/NETWORK_MSG)
     (session [_] ps)
     (onEvent [_ evt]
-      (.onEvent ps evt))))
+      (if-let [c (:context evt)]
+        (when (identical? c ps)
+          (.onEvent ps evt))
+        (.onEvent ps evt)))
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

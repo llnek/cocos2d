@@ -55,9 +55,9 @@
       (when (== (:value cp) (:value cmd))
         (.enqueue bd (assoc cmd :actor cp) nil))))
 
-  (restart [_ room] )
+  (restart [_  ^PlayRoom room] )
 
-  (start [_ room]
+  (start [_ ^PlayRoom room]
     (let [^cmzlabclj.frigga.tictactoe.board.BoardAPI
           bd (:board @stateObj)
           cp (.getCurActor bd)
@@ -68,17 +68,19 @@
           evt (ReifyEvent Events/NETWORK_MSG
                           Events/C_START
                           (json/write-str src)) ]
-      (.broadcast ^PlayRoom room evt) ;; start game
+      (.broadcast room evt) ;; start game
       (let [^PlayerSession ps (:session op)]
-        (.sendMessage ps
-                      (ReifyEvent Events/SESSION_MSG
-                                  Events/C_POKE_WAIT
-                                  (json/write-str {:pnum (.number ps)}))))
+        (.broadcast room 
+                    (assoc (ReifyEvent Events/NETWORK_MSG 
+                                       Events/C_POKE_WAIT
+                                       (json/write-str {:pnum (.number ps)}))
+                           :context ps)))
       (let [^PlayerSession ps (:session cp)]
-        (.sendMessage ps
-                      (ReifyEvent Events/SESSION_MSG
-                                  Events/C_POKE_MOVE
-                                  (json/write-str {:pnum (.number ps)}))))
+        (.broadcast room
+                    (assoc (ReifyEvent Events/NETWORK_MSG
+                                       Events/C_POKE_MOVE
+                                       (json/write-str {:pnum (.number ps)}))
+                           :context ps)))
       ))
 
   (stop [_] )

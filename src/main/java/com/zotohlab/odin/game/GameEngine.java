@@ -19,8 +19,8 @@ package com.zotohlab.odin.game;
 public interface GameEngine {
 
   public void initialize(Object players);
-  public void restart(Object room);
-  public void start(Object room);
+  public Object restart(PlayRoom room);
+  public Object start(PlayRoom room);
   public void stop();
   public void finz();
 
