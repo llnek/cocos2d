@@ -68,20 +68,24 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
 sh.protos['MainMenu'] = {
 
   create: function(options) {
-    var dir=cc.director, scene = new asterix.XSceneFactory(
-      [
-        asterix.XMenuBackLayer,
-        MainMenuLayer
-      ]
-    ).create(options);
+    var tttf= asterix.TicTacToe.Factory,
+    dir=cc.director,
+    scene = new asterix.XSceneFactory([
+      asterix.XMenuBackLayer,
+      MainMenuLayer
+    ]).create(options);
+
     if (scene) {
       scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
-        dir.runScene( asterix.TicTacToe.Factory.create(msg));
+        dir.runScene( tttf.create(msg));
       });
       scene.ebus.on('/mmenu/controls/online', function(topic, msg) {
         msg.onBack=function() {
           dir.runScene(sh.protos['MainMenu'].create());
         };
+        msg.yes=function(wss) {
+          dir.runScene( tttf.create({ mode: 3, wsock: wss }));
+        }
         dir.runScene( sh.protos['OnlinePlay'].create(msg));
       });
     }

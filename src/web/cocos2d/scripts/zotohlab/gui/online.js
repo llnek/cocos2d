@@ -65,8 +65,7 @@ var UILayer =  asterix.XLayer.extend({
         SkaroJS.loggr.info("play room is ready, game can start.");
         this.wss.unsubscribeAll();
         // flip to game scene
-        cc.director.runScene( asterix.TicTacToe.Factory.create({
-          mode: 3, wsock: this.wss }));
+        this.options.yes(this.wss);
       break;
     }
   },
