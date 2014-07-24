@@ -60,7 +60,9 @@ cfg= {
       this.appFiles.push('zotohlab/ext/xigg.js');
       this.appFiles.push('zotohlab/ext/xloader.js');
       this.appFiles.push('zotohlab/gui/startscreen.js');
+      this.appFiles.push('zotohlab/gui/msgbox.js');
       this.appFiles.push('zotohlab/gui/ynbox.js');
+      this.appFiles.push('zotohlab/gui/online.js');
       this.appFiles.push('zotohlab/gui/mainmenu.js');
       _.each(files,function(f) { this.appFiles.push(f); }, this);
       this.appFiles.push('zotohlab/ext/application.js');
@@ -77,7 +79,7 @@ cfg= {
   debugLevel: 2,
   debug: true,
 
-  modules: [ 'cocos2d' ],
+  modules: [ 'cocos2d', 'editbox' ],
   jsList: [],
 
   srcDir: '/public/ig/lib/',

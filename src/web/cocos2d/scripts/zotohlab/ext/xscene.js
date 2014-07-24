@@ -22,6 +22,8 @@ asterix.XScene = cc.Scene.extend({
 
   ebus: new global.ZotohLab.EventBus(),
   layers: {},
+  //lays: [],
+  //options : {},
 
   init: function() {
     if ( this._super()) {
@@ -32,7 +34,7 @@ asterix.XScene = cc.Scene.extend({
   },
 
   createLayers: function() {
-    var a = this.options.layers || [],
+    var a = this.lays || [],
     glptr = undef,
     ok,
     rc,
@@ -59,8 +61,9 @@ asterix.XScene = cc.Scene.extend({
     }
   },
 
-  ctor: function(options) {
+  ctor: function(layers, options) {
     this.options = options || {};
+    this.lays= layers || [];
     this._super();
   }
 
@@ -69,15 +72,20 @@ asterix.XScene = cc.Scene.extend({
 asterix.XSceneFactory = SkaroJS.Class.xtends({
 
   create: function(options) {
-    if (_.isObject(options)) {
-      this.options = SkaroJS.merge(this.options, options );
+    var cfg, arr= this.layers;
+    if (options && _.has(options,'layers') &&
+        _.isArray(options.layers)) {
+      arr= options.layers;
+      cfg= _.omit(options, 'layers');
+    } else {
+      cfg= options || {};
     }
-    var scene = new asterix.XScene(this.options);
+    var scene = new asterix.XScene(arr, cfg);
     return scene.init() ? scene : null;
   },
 
-  ctor: function(options) {
-    this.options= options || {};
+  ctor: function(layers) {
+    this.layers= layers || [];
   }
 
 });

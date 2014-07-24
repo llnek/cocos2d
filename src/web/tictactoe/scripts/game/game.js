@@ -547,13 +547,13 @@ var GameLayer = asterix.XGameLayer.extend({
 asterix.TicTacToe.Factory = {
 
   create: function(options) {
-    var scene = new asterix.XSceneFactory({
-      layers: [
+    var scene = new asterix.XSceneFactory(
+      [
         BackLayer,
         GameLayer,
         HUDLayer
       ]
-    }).create(options);
+    ).create(options);
     if (scene) {
       scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
         asterix.XMenuLayer.onShowMenu();

@@ -51,7 +51,11 @@ asterix.XConfig = {
       */
       'gui.mmenu.menu.bg' : 'game/{{appid}}/levels/mainmenu.png',
       'gui.mmenu.bg' : 'game/{{appid}}/levels/bg.png',
-      'gui.mmenu.border': 'game/{{appid}}/levels/{{border-tiles}}'
+      'gui.mmenu.border': 'game/{{appid}}/levels/{{border-tiles}}',
+
+      'gui.edit.orange' : 'media/cocos2d/game/orange_edit.png',
+      'gui.edit.green' : 'media/cocos2d/game/green_edit.png',
+      'gui.edit.yellow' : 'media/cocos2d/game/yellow_edit.png'
 
     },
     sounds: {
@@ -105,6 +109,8 @@ asterix.XConfig = {
       "%mmenu" : 'Main Menu',
       "%replay" : 'REPLAY',
       "%play" : 'PLAY',
+
+      "%signinplay" : 'Please sign in to play.',
 
       "%quit?" : 'Continue to quit game?'
     }

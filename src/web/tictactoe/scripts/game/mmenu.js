@@ -29,7 +29,7 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
       fontPath: sh.getFontPath('font.OogieBoogie'),
       text: sh.l10n('%online'),
       selector: function() {
-        sh.fireEvent('/mmenu/controls/newgame', { mode: 3});
+        sh.fireEvent('/mmenu/controls/online', { mode: 3});
       },
       target: this,
       scale: 0.5,
@@ -68,15 +68,21 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
 sh.protos['MainMenu'] = {
 
   create: function(options) {
-    var scene = new asterix.XSceneFactory({
-      layers: [
+    var dir=cc.director, scene = new asterix.XSceneFactory(
+      [
         asterix.XMenuBackLayer,
         MainMenuLayer
       ]
-    }).create(options);
+    ).create(options);
     if (scene) {
       scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
-        cc.director.runScene( asterix.TicTacToe.Factory.create(msg));
+        dir.runScene( asterix.TicTacToe.Factory.create(msg));
+      });
+      scene.ebus.on('/mmenu/controls/online', function(topic, msg) {
+        msg.onBack=function() {
+          dir.runScene(sh.protos['MainMenu'].create());
+        };
+        dir.runScene( sh.protos['OnlinePlay'].create(msg));
       });
     }
     return scene;

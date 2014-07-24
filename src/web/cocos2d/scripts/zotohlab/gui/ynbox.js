@@ -66,9 +66,9 @@ var UILayer =  asterix.XLayer.extend({
 sh.protos['YesNo'] = {
 
   create: function(options) {
-    var fac = new asterix.XSceneFactory({
-      layers: [ BGLayer, UILayer ]
-    });
+    var fac = new asterix.XSceneFactory(
+      [ BGLayer, UILayer ]
+    );
     return fac.create(options);
   }
 
