@@ -91,7 +91,7 @@ var EventBus = SkaroJS.Class.xtends({
   },
 
   removeAll: function() {
-    _.each(this.allSubs.slice(0), function(id) {
+    _.each(_.keys(this.allSubs), function(id) {
       this.off(id);
     }, this);
   },

@@ -40,6 +40,8 @@ C_START               : 51,
 C_STOP                : 52,
 C_POKE_MOVE           : 53,
 C_POKE_WAIT           : 54,
+C_PLAYER_JOINED       : 55,
+
 
 C_STARTED             : 95,
 C_CONNECTED           : 98,
@@ -146,6 +148,11 @@ var Session= SkaroJS.Class.xtends({
   subscribeAll: function(callback,target) {
     return [ this.subscribe(Events.NETWORK_MSG, '*', callback, target),
              this.subscribe(Events.SESSION_MSG, '*', callback, target) ];
+  },
+
+  unsubscribeAll: function() {
+    this.ebus.removeAll();
+    this.handlers= [];
   },
 
   unsubscribe: function(subid) {

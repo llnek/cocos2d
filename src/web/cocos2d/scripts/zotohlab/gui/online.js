@@ -43,13 +43,45 @@ var UILayer =  asterix.XLayer.extend({
         pswd.length === 0) { return; }
     var wsurl = SkaroJS.fmtUrl(SkaroJS.getWebSockProtocol(),
                                "/network/odin/websocket");
-    var wss= odin.newSession({ game: gid, user: user, passwd: pswd });
-    this.odinIds= wss.subscribeAll(this.onOdinEvent, this);
-    wss.connect(wsurl);
+    this.wss= odin.newSession({ game: gid, user: user, passwd: pswd });
+    this.wss.subscribeAll(this.onOdinEvent, this);
+    this.wss.connect(wsurl);
   },
 
   onOdinEvent: function(topic,evt) {
-    console.log(evt);
+    SkaroJS.loggr.debug(evt);
+    switch (evt.type) {
+      case events.NETWORK_MSG: this.onNetworkEvent(evt); break;
+      case events.SESSION_MSG: this.onSessionEvent(evt); break;
+    }
+  },
+
+  onNetworkEvent: function(evt) {
+    switch (evt.code) {
+      case events.C_PLAYER_JOINED:
+        SkaroJS.loggr.debug("another player joined room. " + evt.source.puid);
+      break;
+      case events.C_START:
+        SkaroJS.loggr.info("play room is ready, game can start.");
+        this.wss.unsubscribeAll();
+        // flip to game scene
+        cc.director.runScene( asterix.TicTacToe.Factory.create({
+          mode: 3, wsock: this.wss }));
+      break;
+    }
+  },
+
+  onSessionEvent: function(evt) {
+    switch (evt.code) {
+      case events.C_PLAYREQ_OK:
+        SkaroJS.loggr.debug("player " +
+                            evt.source.pnum +
+                            ": request to play game was successful.");
+        // move state to connected
+        evt.source.pnum;
+        evt.source.room;
+      break;
+    }
   },
 
   pkInit: function() {
