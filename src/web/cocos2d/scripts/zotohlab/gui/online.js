@@ -59,13 +59,14 @@ var UILayer =  asterix.XLayer.extend({
   onNetworkEvent: function(evt) {
     switch (evt.code) {
       case events.C_PLAYER_JOINED:
+        //TODO
         SkaroJS.loggr.debug("another player joined room. " + evt.source.puid);
       break;
       case events.C_START:
         SkaroJS.loggr.info("play room is ready, game can start.");
         this.wss.unsubscribeAll();
         // flip to game scene
-        this.options.yes(this.wss);
+        this.options.yes(this.wss, this.player);
       break;
     }
   },
@@ -76,11 +77,45 @@ var UILayer =  asterix.XLayer.extend({
         SkaroJS.loggr.debug("player " +
                             evt.source.pnum +
                             ": request to play game was successful.");
-        // move state to connected
-        evt.source.pnum;
-        evt.source.room;
+        this.player=evt.source.pnum;
+        this.showWaitOthers();
       break;
     }
+  },
+
+  onCancelPlay: function() {
+    try {
+      this.wss.close();
+    } catch (e) {}
+    this.wss=null;
+    this.options.onBack();
+  },
+
+  showWaitOthers: function() {
+    this.removeAllItems();
+    var qn= cc.LabelBMFont.create(sh.l10n('%waitothers'),
+                                  sh.getFontPath('font.TinyBoxBB')),
+    csts = sh.xcfg.csts,
+    cw= ccsx.center(),
+    wz= ccsx.screen(),
+    me=this,
+    s1, s2, t1, t2, menu;
+
+    qn.setPosition(cw.x, wz.height * 0.90);
+    qn.setScale(18/72);
+    qn.setOpacity(0.9*255);
+    this.addItem(qn);
+
+    s2= cc.Sprite.create( sh.getImagePath('gui.mmenu.back'));
+    t2 = cc.MenuItemSprite.create(s2, null, null, function() {
+      me.onCancelPlay();
+    }, this);
+
+    menu= cc.Menu.create(t2);
+    menu.alignItemsHorizontally(10);
+    menu.setPosition(wz.width - csts.TILE - csts.S_OFF - s2.getContentSize().width / 2,
+      csts.TILE + csts.S_OFF + s2.getContentSize().height / 2);
+    this.addItem(menu);
   },
 
   pkInit: function() {
@@ -127,7 +162,7 @@ var UILayer =  asterix.XLayer.extend({
     s2= cc.Sprite.create( sh.getImagePath('gui.mmenu.back'));
     s1= cc.Sprite.create( sh.getImagePath('gui.mmenu.ok'));
     t2 = cc.MenuItemSprite.create(s2, null, null, function() {
-      this.options.onBack();
+      me.options.onBack();
     }, this);
     t1 = cc.MenuItemSprite.create(s1, null, null, function() {
       me.onOnlineReq(uid.getString(),pwd.getString());

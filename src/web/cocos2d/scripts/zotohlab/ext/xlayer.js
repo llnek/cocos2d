@@ -39,6 +39,10 @@ asterix.XLayer = cc.Layer.extend({
     return this;
   },
 
+  removeAllItems: function(c) {
+    this.getNode().removeAllChildren(c || true);
+  },
+
   removeItem: function(n,c) {
     this.getNode().removeChild(n,c || true);
   },

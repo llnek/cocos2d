@@ -23,7 +23,10 @@
 
   (:import  [com.zotohlab.odin.game Game PlayRoom
                                     Player PlayerSession]
-            [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
+            [io.netty.handler.codec.http.websocketx TextWebSocketFrame
+                                                    PingWebSocketFrame
+                                                    PongWebSocketFrame
+                                                    CloseWebSocketFrame]
             [io.netty.channel Channel ChannelHandler
                               ChannelHandlerContext]
             [org.apache.commons.io FileUtils]
@@ -59,11 +62,17 @@
 
   (proxy [SimpleInboundHandler][]
     (channelRead0 [ctx msg]
-      (let [ch (.channel ^ChannelHandlerContext ctx)
-            ^TextWebSocketFrame w msg
-            evt (DecodeJsonEvent (.text w) ch)]
-        (.onEvent (.room ps)
-                  (assoc evt :context ps))))
+      (let [ch (.channel ^ChannelHandlerContext ctx) ]
+        (when (instance? TextWebSocketFrame msg)
+          (let [evt (DecodeJsonEvent (.text ^TextWebSocketFrame msg) ch) ]
+            (.onEvent (.room ps)
+                      (assoc evt :context ps))))
+        (when (instance? CloseWebSocketFrame msg)
+          (.onEvent ps {:type Events/NETWORK_MSG
+                        :code Events/C_CLOSED
+                        :context ps}))
+        (when (instance? PingWebSocketFrame msg))
+        (when (instance? PongWebSocketFrame msg))))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

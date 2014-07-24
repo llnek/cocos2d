@@ -110,6 +110,8 @@ asterix.XConfig = {
       "%replay" : 'REPLAY',
       "%play" : 'PLAY',
 
+      "%waitothers" : 'Waiting for other players to join...',
+      "%waitother" : 'Waiting for another player to join...',
       "%signinplay" : 'Please sign in to play.',
 
       "%quit?" : 'Continue to quit game?'

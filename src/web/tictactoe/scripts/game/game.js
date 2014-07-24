@@ -226,7 +226,8 @@ var GameLayer = asterix.XGameLayer.extend({
   actions: [],
   board: null,
 
-  gameState: 0,
+  lastEvt: null,
+  gstate: 0,
 
   // get an odin event
   onevent: function(topic, evt) {
@@ -239,11 +240,8 @@ var GameLayer = asterix.XGameLayer.extend({
 
   onNetworkEvent: function(evt) {
     switch (evt.code) {
-      case Events.C_START:
-        SkaroJS.loggr.info("play room is ready, game will start.");
-        this.gameState= Events.C_STARTED;
-      break;
       case Events.C_STOP:
+        SkaroJS.loggr.info("game will stop");
         // tear down game
       break;
     }
@@ -251,26 +249,15 @@ var GameLayer = asterix.XGameLayer.extend({
 
   onSessionEvent: function(evt) {
     switch (evt.code) {
-      case Events.C_AWAIT_START:
-        // move state to await-start
-        this.gameState= Events.C_AWAIT_START;
-      break;
-      case Events.C_PLAYREQ_OK:
-        SkaroJS.loggr.debug("player " +
-                            evt.source.pnum +
-                            ": request to play game was successful.");
-        // move state to connected
-        evt.source.pnum;
-        evt.source.room;
-        this.gameState = Events.C_CONNECTED;
-      break;
       case Events.C_POKE_MOVE:
         // move state to wait move
         SkaroJS.loggr.debug("player " + evt.source.pnum + ": my turn to move");
+        this.lastEvt=evt;
       break;
       case Events.C_POKE_WAIT:
         // move state to wait for other
         SkaroJS.loggr.debug("player " + evt.source.pnum + ": my turn to wait");
+        this.lastEvt=null;
       break;
     }
   },
@@ -283,39 +270,38 @@ var GameLayer = asterix.XGameLayer.extend({
 
     this.reset(newFlag);
 
-    var p1= new ttt.Human(sh.xcfg.csts.CV_X, 0, 'X');
+    var p1= null;
     var p2= null;
-    var gameid= $('body').attr('data-gameid');
-    var wss, wsurl;
 
     switch (sh.xcfg.csts.GAME_MODE) {
       case 1:
+        p1= new ttt.Human(sh.xcfg.csts.CV_X, 0, 'X');
         p2= new ttt.AlgoBot(sh.xcfg.csts.CV_O, 1, 'O');
       break;
       case 2:
+        p1= new ttt.Human(sh.xcfg.csts.CV_X, 0, 'X');
         p2= new ttt.Human(sh.xcfg.csts.CV_O, 1, 'O');
       break;
       case 3:
-        wsurl = SkaroJS.fmtUrl(SkaroJS.getWebSockProtocol(), "/network/odin/websocket");
-        wss= Odin.newSession({
-          game: gameid,
-          user: ''+ SkaroJS.nowMillis(),
-          passwd: 'secret'
-        });
-        wss.subscribeAll(this.onevent, this);
-        wss.connect(wsurl);
-        //p2= new ttt.NetPlayer(sh.xcfg.csts.CV_O, 1, 'O');
-        //p1= new ttt.NetPlayer(sh.xcfg.csts.CV_X, 0, 'X');
+        p1= new ttt.NetPlayer(sh.xcfg.csts.CV_X, 0, 'X');
+        p2= new ttt.NetPlayer(sh.xcfg.csts.CV_O, 1, 'O');
       break;
     }
 
-    if (p1 && p2) {
-      this.board = new ttt.Board(sh.xcfg.csts.GRID_SIZE);
-      this.board.registerPlayers(p1, p2);
-      this.getHUD().regoPlayers(p1,p2);
-      this.players= [null,p1,p2];
-      this.actions = [];
+    this.board = new ttt.Board(sh.xcfg.csts.GRID_SIZE);
+    this.board.registerPlayers(p1, p2);
+    this.getHUD().regoPlayers(p1,p2);
+    this.players= [null,p1,p2];
+    this.actions = [];
 
+    if (this.options.wss) {
+      this.options.wss.subscribeAll(this.onevent,this);
+      this.lastEvt= null;
+      this.options.wss.send({
+        type: Events.SESSION_MSG,
+        code: Events.C_STARTED
+      });
+    } else {
       this.cells= SkaroJS.makeArray( this.board.getBoardSize() * this.board.getBoardSize(), null);
       this.actor = this.board.getCurActor();
       if (this.actor.isRobot()) {
@@ -371,6 +357,13 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   onclicked: function(mx,my) {
+
+    if (this.options.wss) {
+      if (! this.lastEvt) {
+        return;
+      }
+    }
+
     if (this.board && this.board.isActive() ) {
       var cell= this.clickToCell(mx, my);
       if (cell >= 0) {
@@ -547,13 +540,12 @@ var GameLayer = asterix.XGameLayer.extend({
 asterix.TicTacToe.Factory = {
 
   create: function(options) {
-    var scene = new asterix.XSceneFactory(
-      [
-        BackLayer,
-        GameLayer,
-        HUDLayer
-      ]
-    ).create(options);
+    var scene = new asterix.XSceneFactory([
+      BackLayer,
+      GameLayer,
+      HUDLayer
+    ]).create(options);
+
     if (scene) {
       scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
         asterix.XMenuLayer.onShowMenu();

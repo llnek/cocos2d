@@ -171,6 +171,7 @@ var Session= SkaroJS.Class.xtends({
   close: function () {
     this.state = Events.S_NOT_CONNECTED;
     if (this.ws) {
+      this.reset();
       try {
         this.ws.close();
       } catch (e)
