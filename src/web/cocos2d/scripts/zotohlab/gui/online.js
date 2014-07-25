@@ -66,7 +66,7 @@ var UILayer =  asterix.XLayer.extend({
         SkaroJS.loggr.info("play room is ready, game can start.");
         this.wss.unsubscribeAll();
         // flip to game scene
-        this.options.yes(this.wss, this.player);
+        this.options.yes(this.wss, this.player, evt.source || {});
       break;
     }
   },

@@ -83,8 +83,11 @@ sh.protos['MainMenu'] = {
         msg.onBack=function() {
           dir.runScene(sh.protos['MainMenu'].create());
         };
-        msg.yes=function(wss,pnum) {
-          dir.runScene( tttf.create({ mode: 3, wsock: wss , pnum: pnum }));
+        msg.yes=function(wss,pnum,startmsg) {
+          dir.runScene( tttf.create({ imsg: startmsg,
+                                      mode: 3,
+                                      wsock: wss ,
+                                      pnum: pnum }));
         }
         dir.runScene( sh.protos['OnlinePlay'].create(msg));
       });
