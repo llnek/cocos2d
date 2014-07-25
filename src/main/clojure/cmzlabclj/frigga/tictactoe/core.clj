@@ -40,16 +40,13 @@
 
   (initialize [_ players]
     (let [m (reduce #(assoc %1 (.id ^PlayerSession %2) %2)
-                              {}
-                              players) ]
+                    {}
+                    players) ]
       (dosync
         (reset! stateAtom {:players players})
         (ref-set stateRef m))))
 
   (start [_]
-    (log/debug "STARTEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"))
-
-  (poo [_]
     (require 'cmzlabclj.frigga.tictactoe.board)
     (let [ps (:players @stateAtom)
           p1 (ReifyPlayer (long \X) \X (nth ps 0))
@@ -59,8 +56,10 @@
       (.registerPlayers bd p1 p2)
       (let [cp (.getCurActor bd)
             op (.getOtherPlayer bd cp)
-            ^PlayerSession cpss (:session cp)
-            ^PlayerSession opss (:session op) ]
+            ^PlayerSession
+            cpss (:session cp)
+            ^PlayerSession
+            opss (:session op) ]
         (.broadcast (.room opss)
                     (assoc (ReifyEvent Events/NETWORK_MSG
                                        Events/C_POKE_WAIT
@@ -73,15 +72,16 @@
                            :context cpss)))))
 
   (update [this evt]
-    (case (:type evt)
+    (log/debug "game engine got an update " evt)
+    (condp == (:type evt)
       Events/NETWORK_MSG (.onNetworkMsg this evt)
       Events/SESSION_MSG (.onSessionMsg this evt)
-      nil))
+      (log/warn "game engine: unhandled update event " evt)))
 
   (onNetworkMsg [_ evt] nil)
 
   (onSessionMsg [this evt]
-    (case (:code evt)
+    (condp == (:code evt)
       Events/C_PLAYMOVE
       (let [^cmzlabclj.frigga.tictactoe.board.BoardAPI
             bd (:board @stateAtom)
@@ -95,16 +95,18 @@
           (.enqueue bd (assoc cmd :actor cp) nil)))
 
       Events/C_STARTED
-      (let [^PlayerSession ps (:context evt) ]
+      (do
+        (log/debug "TicTacToe received started event " evt)
+        (let [^PlayerSession ps (:context evt) ]
         (dosync
           (let [m (dissoc @stateRef (.id ps)) ]
             (if (= (count m) 0)
               (do
                 (ref-set stateRef {})
                 (.start this))
-              (ref-set stateRef m)))))
+              (ref-set stateRef m))))))
 
-      nil))
+      (log/warn "game engine: unhandled session msg " evt)))
 
   (restart [_ ] )
 

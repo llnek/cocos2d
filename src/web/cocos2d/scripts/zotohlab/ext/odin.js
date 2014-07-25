@@ -195,6 +195,7 @@ var Session= SkaroJS.Class.xtends({
     me=this;
 
     ws.onopen = function() {
+      me.state= Events.S_CONNECTED;
       ws.send(me.getPlayRequest());
     };
 

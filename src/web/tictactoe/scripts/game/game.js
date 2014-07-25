@@ -173,6 +173,8 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
   drawStatus: function(actor) {
     var pfx;
 
+    if (!actor) { return; }
+
     if (actor.isRobot()) {
       pfx = sh.l10n('%computer');
     }
@@ -294,10 +296,11 @@ var GameLayer = asterix.XGameLayer.extend({
     this.players= [null,p1,p2];
     this.actions = [];
 
-    if (this.options.wss) {
-      this.options.wss.subscribeAll(this.onevent,this);
+    if (this.options.wsock) {
+      SkaroJS.loggr.debug("about to reply started!");
+      this.options.wsock.subscribeAll(this.onevent,this);
       this.lastEvt= null;
-      this.options.wss.send({
+      this.options.wsock.send({
         type: Events.SESSION_MSG,
         code: Events.C_STARTED
       });
@@ -358,7 +361,7 @@ var GameLayer = asterix.XGameLayer.extend({
 
   onclicked: function(mx,my) {
 
-    if (this.options.wss) {
+    if (this.options.wsock) {
       if (! this.lastEvt) {
         return;
       }

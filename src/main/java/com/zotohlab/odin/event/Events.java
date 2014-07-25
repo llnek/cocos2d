@@ -19,38 +19,38 @@ package com.zotohlab.odin.event;
 public interface Events {
 
   // Event type
-  public static final int PLAYGAME_REQ          = 1;
-  public static final int JOINGAME_REQ          = 2;
-  public static final int NETWORK_MSG           = 3;
-  public static final int SESSION_MSG           = 4;
+  public static final long PLAYGAME_REQ          = 1L;
+  public static final long JOINGAME_REQ          = 2L;
+  public static final long NETWORK_MSG           = 3L;
+  public static final long SESSION_MSG           = 4L;
 
   // Event code
-  public static final int C_PLAYREQ_NOK         = 10;
-  public static final int C_JOINREQ_NOK         = 11;
-  public static final int C_USER_NOK            = 12;
-  public static final int C_GAME_NOK            = 13;
-  public static final int C_ROOM_NOK            = 14;
-  public static final int C_ROOM_FILLED         = 15;
-  public static final int C_ROOMS_FULL          = 16;
+  public static final long C_PLAYREQ_NOK         = 10L;
+  public static final long C_JOINREQ_NOK         = 11L;
+  public static final long C_USER_NOK            = 12L;
+  public static final long C_GAME_NOK            = 13L;
+  public static final long C_ROOM_NOK            = 14L;
+  public static final long C_ROOM_FILLED         = 15L;
+  public static final long C_ROOMS_FULL          = 16L;
 
-  public static final int C_PLAYREQ_OK          = 30;
-  public static final int C_JOINREQ_OK          = 31;
+  public static final long C_PLAYREQ_OK          = 30L;
+  public static final long C_JOINREQ_OK          = 31L;
 
-  public static final int C_AWAIT_START         = 50;
-  public static final int C_START               = 51;
-  public static final int C_STOP                = 52;
-  public static final int C_POKE_MOVE           = 53;
-  public static final int C_POKE_WAIT           = 54;
-  public static final int C_PLAYMOVE           = 55;
+  public static final long C_AWAIT_START         = 50L;
+  public static final long C_START               = 51L;
+  public static final long C_STOP                = 52L;
+  public static final long C_POKE_MOVE           = 53L;
+  public static final long C_POKE_WAIT           = 54L;
+  public static final long C_PLAYMOVE            = 55L;
 
-  public static final int C_PLAYER_JOINED       = 90;
-  public static final int C_STARTED             = 95;
-  public static final int C_CONNECTED           = 98;
-  public static final int C_ERROR               = 99;
-  public static final int C_CLOSED              = 100;
+  public static final long C_PLAYER_JOINED       = 90L;
+  public static final long C_STARTED             = 95L;
+  public static final long C_CONNECTED           = 98L;
+  public static final long C_ERROR               = 99L;
+  public static final long C_CLOSED              = 100L;
 
-  public static final int S_NOT_CONNECTED       = 0;
-  public static final int S_CONNECTED           = 1;
+  public static final long S_NOT_CONNECTED       = 0L;
+  public static final long S_CONNECTED           = 1L;
 
 
 

@@ -75,10 +75,16 @@
             (.sendMessage s msg))))
 
       (onEvent [this evt]
-        (when-not (and (= (:type evt) Events/NETWORK_MSG)
-                       (.getf impl :shutting-down))
-          (log/debug "player session " sid " , onevent called: " evt)
-          (.sendMessage this evt)))
+        (log/debug "player session " sid " , onevent called: " evt)
+        (when-not (.getf impl :shutting-down)
+          (if (and (== Events/NETWORK_MSG (:type evt))
+                   (notnil? (:context evt)))
+            (when (identical? this
+                              (:context evt))
+              (.sendMessage this
+                            (assoc evt
+                                   :type Events/SESSION_MSG)))
+            (.sendMessage this evt))))
 
       (removeHandler [_ h] )
       (addHandler [_ h] )

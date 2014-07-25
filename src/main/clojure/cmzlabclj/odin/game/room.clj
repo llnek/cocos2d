@@ -120,14 +120,12 @@
       (addHandler [_ h] (.subscribe disp h))
       (sendMessage [this msg] (.onEvent this msg))
       (onEvent [this evt]
-        (let [^GameEngine sm (.engine this)
-              etype (:type evt)]
-          (condp == etype
-            Events/NETWORK_MSG
-            (.broadcast this evt)
-            Events/SESSION_MSG
-            (.update sm evt)
-            nil)))
+        (let [^GameEngine sm (.engine this) ]
+          (log/debug "room got an event " evt)
+          (condp == (:type evt)
+            Events/NETWORK_MSG (.broadcast this evt)
+            Events/SESSION_MSG (.update sm evt)
+            (log/warn "room.onevent: unhandled event " evt))))
 
       Object
 

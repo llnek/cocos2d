@@ -23,7 +23,6 @@ public interface GameEngine {
 
   public Object restart();
   public Object start();
-  public Object poo();
 
   public void stop();
   public void finz();
