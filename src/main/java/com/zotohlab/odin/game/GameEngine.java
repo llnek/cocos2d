@@ -19,11 +19,20 @@ package com.zotohlab.odin.game;
 public interface GameEngine {
 
   public void initialize(Object players);
-  public Object restart(PlayRoom room);
-  public Object start(PlayRoom room);
+  public Object ready(Object room);
+
+  public Object restart();
+  public Object start();
+  public Object poo();
+
   public void stop();
   public void finz();
 
   public void update(Object event);
   public Object state();
+
+  public void onNetworkMsg(Object evt);
+  public void onSessionMsg(Object evt);
+
+
 }

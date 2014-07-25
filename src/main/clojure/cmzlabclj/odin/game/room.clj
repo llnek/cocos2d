@@ -20,7 +20,7 @@
 
   (:use [cmzlabclj.nucleus.util.core :only [MakeMMap ternary notnil? ] ]
         [cmzlabclj.nucleus.util.guids :only [NewUUid]]
-        [cmzlabclj.nucleus.util.meta :only [MakeObjArg1]]
+        [cmzlabclj.nucleus.util.meta :only [MakeObjArgN]]
         [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
 
   (:use [cmzlabclj.odin.system.util]
@@ -69,8 +69,9 @@
   ^PlayRoom
   [^Game gameObj]
 
-  (let [engObj (MakeObjArg1 (.engineClass gameObj)
-                            (atom {}))
+  (let [engObj (MakeObjArgN (.engineClass gameObj)
+                            (atom {})
+                            (ref {}))
         created (System/currentTimeMillis)
         disp (ReifyEventDispatcher)
         pss (ConcurrentHashMap.)
@@ -111,7 +112,7 @@
           (doseq [v (seq ss)]
             (.addHandler this (mkNetworkSubr v)))
           (.initialize sm ss)
-          (.start sm this)))
+          (.ready sm this)))
 
       Eventable
 

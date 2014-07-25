@@ -40,9 +40,9 @@ C_START               : 51,
 C_STOP                : 52,
 C_POKE_MOVE           : 53,
 C_POKE_WAIT           : 54,
-C_PLAYER_JOINED       : 55,
+C_PLAYMOVE            : 55,
 
-
+C_PLAYER_JOINED       : 90,
 C_STARTED             : 95,
 C_CONNECTED           : 98,
 C_ERROR               : 99,

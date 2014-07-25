@@ -30,63 +30,102 @@
                                     Player PlayerSession]
             [com.zotohlab.odin.event Events EventDispatcher]))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype TicTacToe [stateObj] com.zotohlab.odin.game.GameEngine
+(deftype TicTacToe [stateAtom stateRef] com.zotohlab.odin.game.GameEngine
 
   (initialize [_ players]
+    (let [m (reduce #(assoc %1 (.id ^PlayerSession %2) %2)
+                              {}
+                              players) ]
+      (dosync
+        (reset! stateAtom {:players players})
+        (ref-set stateRef m))))
+
+  (start [_]
+    (log/debug "STARTEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"))
+
+  (poo [_]
     (require 'cmzlabclj.frigga.tictactoe.board)
-    (let [p1 (ReifyPlayer (long \X) \X (nth players 0))
-          p2 (ReifyPlayer (long \O) \O (nth players 1))
+    (let [ps (:players @stateAtom)
+          p1 (ReifyPlayer (long \X) \X (nth ps 0))
+          p2 (ReifyPlayer (long \O) \O (nth ps 1))
           bd (ReifyTicTacToeBoard 3) ]
-      (reset! stateObj {:board bd})
-      (.registerPlayers bd p1 p2)))
+      (swap! stateAtom assoc :board bd)
+      (.registerPlayers bd p1 p2)
+      (let [cp (.getCurActor bd)
+            op (.getOtherPlayer bd cp)
+            ^PlayerSession cpss (:session cp)
+            ^PlayerSession opss (:session op) ]
+        (.broadcast (.room opss)
+                    (assoc (ReifyEvent Events/NETWORK_MSG
+                                       Events/C_POKE_WAIT
+                                       (json/write-str {:pnum (.number opss)}))
+                           :context opss))
+        (.broadcast (.room cpss)
+                    (assoc (ReifyEvent Events/NETWORK_MSG
+                                       Events/C_POKE_MOVE
+                                       (json/write-str {:pnum (.number cpss)}))
+                           :context cpss)))))
 
-  (update [_ evt]
-    (let [^cmzlabclj.frigga.tictactoe.board.BoardAPI
-          bd (:board @stateObj)
-          cp (.getCurActor bd)
-          pss (:context evt)
-          src (:source evt)
-          cmd (json/read-str src
-                             :key-fn keyword) ]
-      (log/debug "TicTacToe received cmd " src " from session " pss)
-      (when (== (:value cp) (:value cmd))
-        (.enqueue bd (assoc cmd :actor cp) nil))))
+  (update [this evt]
+    (case (:type evt)
+      Events/NETWORK_MSG (.onNetworkMsg this evt)
+      Events/SESSION_MSG (.onSessionMsg this evt)
+      nil))
 
-  (restart [_  ^PlayRoom room] )
+  (onNetworkMsg [_ evt] nil)
 
-  (start [_ ^PlayRoom room]
-    (let [^cmzlabclj.frigga.tictactoe.board.BoardAPI
-          bd (:board @stateObj)
-          cp (.getCurActor bd)
-          op (.getOtherPlayer bd cp)
-          src {:grid [0,0,0,0,0,0,0,0,0]
-               :winner -1
-               :draw  false}
+  (onSessionMsg [this evt]
+    (case (:code evt)
+      Events/C_PLAYMOVE
+      (let [^cmzlabclj.frigga.tictactoe.board.BoardAPI
+            bd (:board @stateAtom)
+            cp (.getCurActor bd)
+            pss (:context evt)
+            src (:source evt)
+            cmd (json/read-str src
+                               :key-fn keyword) ]
+        (log/debug "TicTacToe received cmd " src " from session " pss)
+        (when (== (:value cp) (:value cmd))
+          (.enqueue bd (assoc cmd :actor cp) nil)))
+
+      Events/C_STARTED
+      (let [^PlayerSession ps (:context evt) ]
+        (dosync
+          (let [m (dissoc @stateRef (.id ps)) ]
+            (if (= (count m) 0)
+              (do
+                (ref-set stateRef {})
+                (.start this))
+              (ref-set stateRef m)))))
+
+      nil))
+
+  (restart [_ ] )
+
+  (ready [_  room]
+    (let [src {:grid [0,0,0,0,0,0,0,0,0]
+               :size 3
+               :players (reduce (fn [memo ^PlayerSession ps]
+                                  (assoc memo
+                                         (.id (.player ps))
+                                         (.number ps)))
+                                {}
+                                (:players @stateAtom)) }
           evt (ReifyEvent Events/NETWORK_MSG
                           Events/C_START
                           (json/write-str src)) ]
-      (.broadcast room evt) ;; start game
-      (let [^PlayerSession ps (:session op)]
-        (.broadcast room 
-                    (assoc (ReifyEvent Events/NETWORK_MSG 
-                                       Events/C_POKE_WAIT
-                                       (json/write-str {:pnum (.number ps)}))
-                           :context ps)))
-      (let [^PlayerSession ps (:session cp)]
-        (.broadcast room
-                    (assoc (ReifyEvent Events/NETWORK_MSG
-                                       Events/C_POKE_MOVE
-                                       (json/write-str {:pnum (.number ps)}))
-                           :context ps)))
-      ))
+      (.broadcast ^PlayRoom room evt)))
 
   (stop [_] )
   (finz [_] )
 
-  (state [_] @stateObj))
+  (state [_] @stateAtom))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

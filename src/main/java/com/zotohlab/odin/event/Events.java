@@ -41,8 +41,9 @@ public interface Events {
   public static final int C_STOP                = 52;
   public static final int C_POKE_MOVE           = 53;
   public static final int C_POKE_WAIT           = 54;
-  public static final int C_PLAYER_JOINED       = 55;
+  public static final int C_PLAYMOVE           = 55;
 
+  public static final int C_PLAYER_JOINED       = 90;
   public static final int C_STARTED             = 95;
   public static final int C_CONNECTED           = 98;
   public static final int C_ERROR               = 99;
