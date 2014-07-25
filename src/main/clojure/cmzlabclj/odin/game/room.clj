@@ -89,9 +89,14 @@
       (countPlayers [_] (.size pss))
       (connect [this p]
         (let [ps (ReifyPlayerSession this p (.incrementAndGet pcount))
-              ^Player py p]
+              ^Player py p
+              src {:puid (.id py)
+                   :pnum (.number ps) } ]
           (.put pss (.id ps) ps)
           (.addSession py ps)
+          (.broadcast this (ReifyEvent Events/NETWORK_MSG
+                                       Events/C_PLAYER_JOINED
+                                       (json/write-str src)))
           ps))
       (isShuttingDown [_] (.getf impl :shutting))
       (canActivate [this]
