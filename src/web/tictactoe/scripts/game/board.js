@@ -9,7 +9,8 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this, _ = global._ ,
+(function(undef) { "use strict"; var global = this,
+                                     _ = global._ ,
 asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
 SkaroJS= global.SkaroJS,
@@ -18,24 +19,22 @@ negax= global.ZotohLab.NegaMax;
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-asterix.TicTacToe.Board= SkaroJS.Class.xtends({
+var tttBoard= SkaroJS.Class.xtends({
 
   gameInProgress: false,
+  ncells: 0,
   actors: null,
-
-  GOALSPACE : null,
-  DAGSPACE : null,
-  ROWSPACE : null,
-  COLSPACE : null,
-
   grid : null,
   CV_Z : 0,
 
   isActive: function() { return this.gameInProgress; },
   getCurActor: function() { return this.actors[0]; },
 
+  isNil: function(cellv) { return cellv === this.CV_Z; },
+  getNilValue: function() { return this.CV_Z; },
+  getState: function() { return this.grid; },
+
   registerPlayers: function(p1,p2) {
-    this.actors= [ SkaroJS.randomSign() > 0 ? p1 : p2, p1, p2 ];
     p2.bindBoard(this);
     p1.bindBoard(this);
     this.gameInProgress = true;
@@ -44,23 +43,91 @@ asterix.TicTacToe.Board= SkaroJS.Class.xtends({
   getPlayer2: function() { return this.actors[2]; },
   getPlayer1: function() { return this.actors[1]; },
 
+  toggleActor: function(cmd, cb) {
+    this.actors[0] = cmd.actor;
+  },
+
   enqueue: function(cmd, cb) {
-    if ( (cmd.cell >= 0 && cmd.cell < this.grid.length) &&
-         this.actors[0] === cmd.actor &&
-         this.CV_Z === this.grid[cmd.cell]) {
-      this.grid[cmd.cell] = cmd.actor.value;
-      this.checkWin(cmd,cb);
+    if ((cmd.cell >= 0 && cmd.cell < this.ncells) &&
+        this.actors[0] === cmd.actor &&
+        this.CV_Z === this.grid[cmd.cell]) {
+      this.onEnqueue(cmd,cb);
+      //this.grid[cmd.cell] = cmd.actor.value;
+      //this.checkWin(cmd,cb);
     }
+  },
+
+  ctor: function(size) {
+    SkaroJS.loggr.debug("new board(" + size + ") init'ed");
+    this.ncells= size * size;
+    this.size= size;
+  }
+
+});
+
+var tttNetBoard= tttBoard.xtends({
+
+  registerPlayers: function(p1,p2) {
+    this.actors= [ null, p1, p2 ];
+    this._super(p1,p2);
+  },
+
+  onEnqueue: function(cmd,cb) {
+    var src= {
+      color: cmd.actor.color,
+      value: cmd.actor.value,
+      grid: this.grid,
+      cell: cmd.cell
+    };
+    var evt= {
+      type: Events.SESSION_MSG,
+      code: Events.C_PLAY_MOVE,
+      source: JSON.stringify(src)
+    };
+    if (this.actors[0] &&
+        SkaroJS.echt(this.actors[0].wss)) {
+      this.actors[0].wss.send(evt);
+    }
+  },
+
+  initBoard: function(bvals) {
+    if (this.ncells !== bvals.length) {
+      throw new Error("invalid grid size: " + bvals.length);
+    }
+    this.grid= bvals;
+  },
+
+  ctor: function(size) {
+    this._super(size);
+  }
+
+});
+
+var tttNonNetBoard= tttBoard.xtends({
+
+  GOALSPACE : null,
+  DAGSPACE : null,
+  ROWSPACE : null,
+  COLSPACE : null,
+
+  registerPlayers: function(p1,p2) {
+    this.actors= [ SkaroJS.randomSign() > 0 ? p1 : p2, p1, p2 ];
+    this._super(p1,p2);
+  },
+
+  onEnqueue: function(cmd,cb) {
+    this.grid[cmd.cell] = cmd.actor.value;
+    this.checkWin(cmd,cb);
   },
 
   checkWin: function(cmd, cb) {
     SkaroJS.loggr.debug("checking for win " + cmd.actor.color + ", pos = " + cmd.cell);
-    if (this.isStalemate()) {
-      this.drawGame(cmd, cb);
-    }
-    else
     if (this.isWinner(cmd.actor)[0] ) {
       this.endGame(cmd,cb);
+    }
+    else
+    if (this.isStalemate()) {
+      this.drawGame(cmd, cb);
     }
     else {
       this.toggleActor(cmd,cb);
@@ -87,12 +154,8 @@ asterix.TicTacToe.Board= SkaroJS.Class.xtends({
     this.actors[0]=null;
   },
 
-  isNil: function(cellv) { return cellv === this.CV_Z; },
-  getNilValue: function() { return this.CV_Z; },
-
   getGoalSpace: function() { return this.GOALSPACE; },
   getBoardSize: function() { return this.size; },
-  getState: function() { return this.grid; },
 
   getDiagX: function() { return this.DAGSPACE[0]; },
   getDiagY: function() { return this.DAGSPACE[1]; },
@@ -103,7 +166,7 @@ asterix.TicTacToe.Board= SkaroJS.Class.xtends({
     this.grid=[];
   },
 
-  initBoard: function() {
+  initBoard: function(bvals) {
     this.grid= SkaroJS.makeArray( this.size * this.size, this.CV_Z);
   },
 
@@ -253,42 +316,43 @@ asterix.TicTacToe.Board= SkaroJS.Class.xtends({
   },
 
   isOver: function(snapshot) {
-    return this.isStalemate(snapshot.state) ||
-           this.isWinner(snapshot.cur,snapshot.state)[0] ||
-           this.isWinner(snapshot.other, snapshot.state)[0] ;
+    return this.isWinner(snapshot.cur,snapshot.state)[0] ||
+           this.isWinner(snapshot.other, snapshot.state)[0] ||
+           this.isStalemate(snapshot.state);
   },
 
   mapGoalSpace: function(size) {
     this.ROWSPACE = [];
-    this.size = size;
     this.COLSPACE = [];
     var dx = [],
     dy = [],
     c, r, h, v;
-    for (r=0; r < this.size; ++r) {
+    for (r=0; r < size; ++r) {
       h = [];
       v = [];
-      for (c=0; c < this.size; ++c) {
-        h.push(r * this.size + c);
-        v.push(c * this.size + r);
+      for (c=0; c < size; ++c) {
+        h.push(r * size + c);
+        v.push(c * size + r);
       }
       this.ROWSPACE.push(h);
       this.COLSPACE.push(v);
-      dx.push(r * this.size + r);
-      dy.push((this.size - r - 1) * this.size + r);
+      dx.push(r * size + r);
+      dy.push((size - r - 1) * size + r);
     }
     this.DAGSPACE = [dx, dy];
     this.GOALSPACE = this.DAGSPACE.concat(this.ROWSPACE, this.COLSPACE);
   },
 
   ctor: function (size) {
+    this._super(size);
     this.mapGoalSpace(size);
-    this.initBoard();
-    SkaroJS.loggr.debug("new board init'ed");
   }
 
 });
 
+asterix.TicTacToe.CreateBoard = function(mode,size) {
+  return mode === 3 ? new tttNetBoard(size) : new tttNonNetBoard(size);
+}
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -301,6 +365,7 @@ Player = SkaroJS.Class.xtends({
   isHuman: function() { return this.human; },
   isValue: function(n) { return this.value === n; },
   bindBoard: function(b) { this.arena=b; },
+  number: function() { return this.entity; },
   ctor: function(value, human, pic, picColor) {
     this.picColor = picColor;
     this.picValue = value;
@@ -317,10 +382,12 @@ Object.defineProperty(Player.prototype, "value", {
   get: function() { return this.picValue; },
   set: function(v) { this.picValue=v; }
 });
+/*
 Object.defineProperty(Player.prototype, "pic", {
   get: function() { return this.entity; },
   set: function(v) { this.entity=v; }
 });
+*/
 Object.defineProperty(Player.prototype, "board", {
   get: function() { return this.arena; },
 });
@@ -348,8 +415,9 @@ asterix.TicTacToe.NetPlayer = Human.xtends({
 
   isMax: function() { return false; },
   takeTurn: function() {},
-  ctor: function (idv, pic, color) {
+  ctor: function (idv, pic, color, wss) {
     this._super(idv, pic, color);
+    this.wss=wss;
   }
 
 });

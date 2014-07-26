@@ -114,7 +114,7 @@
     (let [src {:players (reduce (fn [memo ^PlayerSession ps]
                                   (assoc memo
                                          (.id (.player ps))
-                                         (.number ps)))
+                                         [ (.number ps) (.id (.player ps)) ]))
                                 {}
                                 (:players @stateAtom)) }
           evt (ReifyEvent Events/NETWORK_MSG

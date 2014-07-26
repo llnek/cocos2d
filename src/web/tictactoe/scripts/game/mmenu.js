@@ -25,6 +25,7 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
 
   pkInit: function() {
     var csts = sh.xcfg.csts,
+    pobj,
     cw = ccsx.center(),
     wz = ccsx.screen();
 
@@ -40,13 +41,16 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
       pos: cc.p(114, wz.height - csts.TILE * 18 - 2)
     }));
 
+    pobj={};
+    pobj[ sh.l10n('%p1') ] = [ 1, sh.l10n('%player1') ];
+    pobj[ sh.l10n('%p2') ] = [ 2, sh.l10n('%player2') ];
     this.addItem(ccsx.tmenu1({
       fontPath: sh.getFontPath('font.OogieBoogie'),
       text: sh.l10n('%2players'),
       selector: function() {
         sh.fireEvent('/mmenu/controls/newgame',
                      SkaroJS.merge(SkaroJS.merge({},SEED), { seed_data: {
-                       players: { P1:1, P2:2 }
+                       players: pobj
                      }, mode: 2}));
       },
       target: this,
@@ -54,13 +58,16 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
       pos: cc.p(cw.x + 68, wz.height - csts.TILE * 28 - 4)
     }));
 
+    pobj={};
+    pobj[ sh.l10n('%cpu') ] = [ 2, sh.l10n('%computer') ];
+    pobj[ sh.l10n('%p1') ] = [ 1,  sh.l10n('%player1') ];
     this.addItem(ccsx.tmenu1({
       fontPath: sh.getFontPath('font.OogieBoogie'),
       text: sh.l10n('%1player'),
       selector: function() {
         sh.fireEvent('/mmenu/controls/newgame',
                      SkaroJS.merge(SkaroJS.merge({}, SEED), { seed_data: {
-                       players: { P1:1, CPU:2 }
+                       players: pobj
                      }, mode: 1}));
       },
       target: this,

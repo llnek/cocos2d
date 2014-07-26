@@ -41,7 +41,7 @@ public interface Events {
   public static final long C_STOP                = 52L;
   public static final long C_POKE_MOVE           = 53L;
   public static final long C_POKE_WAIT           = 54L;
-  public static final long C_PLAYMOVE            = 55L;
+  public static final long C_PLAY_MOVE            = 55L;
 
   public static final long C_PLAYER_JOINED       = 90L;
   public static final long C_STARTED             = 95L;

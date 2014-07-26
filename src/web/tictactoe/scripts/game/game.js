@@ -55,21 +55,14 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
   scores:  { 'O': 0, 'X': 0 },
   mode: 0,
 
-  p2Long: sh.l10n('%player2'),
-  p1Long: sh.l10n('%player1'),
+  p2Long: '',
+  p1Long: '',
 
   p2ID: '',
   p1ID: '',
 
   setGameMode: function(mode) {
-    this.p2ID= sh.l10n('%p2');
-    this.p1ID= sh.l10n('%p1');
-    if (mode === 1) {
-      this.p2Long= sh.l10n('%computer');
-      this.p2ID= sh.l10n('%cpu');
-    }
     this.mode= mode;
-    this.title.setString(this.p1ID + " / " + this.p2ID);
   },
 
   initParentNode: function() {},
@@ -128,6 +121,7 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
     this.addItem(this.result);
   },
 
+  // kenl
   updateScore: function(p, value) {
     this.scores[p.color] = this.scores[p.color] + value;
     this.drawScores();
@@ -143,6 +137,7 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
     obj.setString( msg);
   },
 
+  // kenl
   drawScores: function() {
     var s2 = this.scores[this.play2.color],
     s1 = this.scores[this.play1.color],
@@ -161,35 +156,37 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
     if (!winner) {
       msg= sh.l10n('%whodraw');
     }
-    else
-    switch (winner.color) {
-      case 'O': msg= sh.l10n('%whowin', { who: this.p2Long}); break;
-      case 'X': msg= sh.l10n('%whowin', { who: this.p1Long}); break;
+    else {
+      switch (winner.number() ) {
+        case 2: msg= sh.l10n('%whowin', { who: this.p2Long}); break;
+        case 1: msg= sh.l10n('%whowin', { who: this.p1Long}); break;
+      }
+      /*
+      switch (winner.color) {
+        case 'O': msg= sh.l10n('%whowin', { who: this.p2Long}); break;
+        case 'X': msg= sh.l10n('%whowin', { who: this.p1Long}); break;
+      }
+      */
     }
 
     this.drawStatusText(this.result, msg);
   },
 
   drawStatus: function(actor) {
-    var pfx;
-
-    if (!actor) { return; }
-
-    if (actor.isRobot()) {
-      pfx = sh.l10n('%computer');
+    if (actor) {
+      var pfx = actor.number() === 1 ? this.p1Long : this.p2Long;
+      this.drawStatusText(this.status, sh.l10n('%whosturn', { who: pfx }));
     }
-    else if (actor.color === 'X') {
-      pfx = sh.l10n('%player1');
-    } else {
-      pfx = sh.l10n('%player2');
-    }
-
-    this.drawStatusText(this.status,  sh.l10n('%whosturn', {who: pfx}));
   },
 
-  regoPlayers: function(p1,p2) {
+  regoPlayers: function(p1,p1ids,p2,p2ids) {
     this.play2= p2;
     this.play1= p1;
+    this.p2Long= p2ids[1];
+    this.p1Long= p1ids[1];
+    this.p2ID= p2ids[0];
+    this.p1ID= p1ids[0];
+    this.title.setString(this.p1ID + " / " + this.p2ID);
   },
 
   initIcons: function() {
@@ -225,15 +222,16 @@ var GameLayer = asterix.XGameLayer.extend({
   // holds references to sprites
   cells: [],
 
+  // queue for UI updates
   actions: [],
-  board: null,
 
+  // previous event from server - online only
   lastEvt: null,
-  gstate: 0,
+  board: null,
 
   // get an odin event
   onevent: function(topic, evt) {
-    console.log( evt);
+    SkaroJS.loggr.debug(evt);
     switch (evt.type) {
       case Events.NETWORK_MSG: this.onNetworkEvent(evt); break;
       case Events.SESSION_MSG: this.onSessionEvent(evt); break;
@@ -243,23 +241,40 @@ var GameLayer = asterix.XGameLayer.extend({
   onNetworkEvent: function(evt) {
     switch (evt.code) {
       case Events.C_STOP:
-        SkaroJS.loggr.info("game will stop");
+        SkaroJS.loggr.debug("game will stop");
         // tear down game
       break;
     }
   },
 
   onSessionEvent: function(evt) {
+    var gvs= evt.source.grid,
+    pnum= evt.source.pnum,
+    cs= this.board.getState(),
+    player;
+
+    _.each(cs,function(v,pos){
+      if (v !== gvs[pos]) {
+        assert();
+      }
+    });
+
+    if (diff) {
+      this.actions.push();
+      this.actions.push([cmd, status]);
+    }
     switch (evt.code) {
       case Events.C_POKE_MOVE:
         // move state to wait move
-        SkaroJS.loggr.debug("player " + evt.source.pnum + ": my turn to move");
-        this.lastEvt=evt;
+        SkaroJS.loggr.debug("player " + pnum + ": my turn to move");
+        player = this.players[evt.source.pnum];
+        this.board.toggleActor(new Cmd(player));
       break;
       case Events.C_POKE_WAIT:
         // move state to wait for other
-        SkaroJS.loggr.debug("player " + evt.source.pnum + ": my turn to wait");
-        this.lastEvt=null;
+        SkaroJS.loggr.debug("player " + pnum + ": my turn to wait");
+        player = this.players[pnum===1 ? 2 : 1];
+        this.board.toggleActor(new Cmd(player));
       break;
     }
   },
@@ -270,52 +285,70 @@ var GameLayer = asterix.XGameLayer.extend({
 
   play: function(newFlag) {
 
-    SkaroJS.loggr.debug("seed_data = " + JSON.stringify(this.options));
+    SkaroJS.loggr.debug("this.options = " + JSON.stringify(this.options));
 
     this.reset(newFlag);
 
-    var state0 = this.options.seed_data;
-    var p1= null;
-    var p2= null;
+    var state0 = this.options.seed_data,
+    ncells= state0.size * state0.size,
+    csts = sh.xcfg.csts,
+    p1ids, p2ids,
+    p1= null,
+    p2= null;
 
+    _.each(state0.players,function(v,k) {
+      if (v[0] === 1) {
+        p1ids= [k, v[1] ];
+      } else {
+        p2ids= [k, v[1] ];
+      }
+    });
 
     switch (sh.xcfg.csts.GAME_MODE) {
     //switch (this.options.mode) {
       case 1:
-        p2= new ttt.AlgoBot(sh.xcfg.csts.CV_O, 1, 'O');
-        p1= new ttt.Human(sh.xcfg.csts.CV_X, 0, 'X');
+        p2= new ttt.AlgoBot(csts.CV_O, 2, 'O');
+        p1= new ttt.Human(csts.CV_X, 1, 'X');
       break;
       case 2:
-        p1= new ttt.Human(sh.xcfg.csts.CV_X, 0, 'X');
-        p2= new ttt.Human(sh.xcfg.csts.CV_O, 1, 'O');
+        p1= new ttt.Human(csts.CV_X, 1, 'X');
+        p2= new ttt.Human(csts.CV_O, 2, 'O');
       break;
       case 3:
-        p1= new ttt.NetPlayer(sh.xcfg.csts.CV_X, 0, 'X');
-        p2= new ttt.NetPlayer(sh.xcfg.csts.CV_O, 1, 'O');
+        _.each(state0.players, function(v,k) {
+          var ws= this.options.pnum === v[0] ? this.options.wsock : null;
+          if (v[0] === 1) {
+            p1= new ttt.NetPlayer(csts.CV_X, 1, 'X', ws);
+          } else {
+            p2= new ttt.NetPlayer(csts.CV_O, 2, 'O', ws);
+          }
+        });
       break;
     }
 
-    this.board = new ttt.Board(sh.xcfg.csts.GRID_SIZE);
+    this.board = ttt.CreateBoard(this.options.mode, state0.size);
+    this.board.initBoard(state0.grid);
     this.board.registerPlayers(p1, p2);
-    this.getHUD().regoPlayers(p1,p2);
+
+    this.getHUD().regoPlayers(p1, p1ids, p2, p2ids);
+    this.cells= SkaroJS.makeArray(ncells, null);
     this.players= [null,p1,p2];
     this.actions = [];
 
     if (this.options.wsock) {
-      SkaroJS.loggr.debug("about to reply started!");
       this.options.wsock.subscribeAll(this.onevent,this);
       this.lastEvt= null;
+      SkaroJS.loggr.debug("about to reply started!");
       this.options.wsock.send({
         type: Events.SESSION_MSG,
         code: Events.C_STARTED
       });
     } else {
-      this.cells= SkaroJS.makeArray( this.board.getBoardSize() * this.board.getBoardSize(), null);
       this.actor = this.board.getCurActor();
       if (this.actor.isRobot()) {
-        this.move( new Cmd(this.actor, SkaroJS.rand(sh.xcfg.csts.CELLS)));
+        this.move( new Cmd(this.actor, SkaroJS.rand(ncells)));
       }
-      SkaroJS.loggr.debug("game started, initor = " + this.actor.color );
+      //SkaroJS.loggr.debug("game started, initor = " + this.actor.color );
     }
   },
 
@@ -332,12 +365,13 @@ var GameLayer = asterix.XGameLayer.extend({
     } else {
       this.getHUD().reset();
     }
-    this.actor=null;
-    this.players=[];
     _.each(this.cells, function(z) {
       if (z) { this.removeItem(z[0]); }
     },this);
+
+    this.players=[];
     this.cells=[];
+    this.actor=null;
   },
 
   move: function(cmd) {
@@ -366,16 +400,21 @@ var GameLayer = asterix.XGameLayer.extend({
 
   onclicked: function(mx,my) {
 
-    if (this.options.wsock) {
-      if (! this.lastEvt) {
+    if (this.board && this.board.isActive() ) {
+
+      var player= this.board.getCurActor(),
+      cell;
+
+      if (this.options.mode === 3 &&
+          player &&
+          this.options.pnum === player.number()) {
+      } else {
         return;
       }
-    }
 
-    if (this.board && this.board.isActive() ) {
-      var cell= this.clickToCell(mx, my);
+      cell= this.clickToCell(mx, my);
       if (cell >= 0) {
-        this.move( new Cmd(this.actor, cell));
+        this.move( new Cmd(player, cell));
       }
     }
   },
@@ -424,13 +463,13 @@ var GameLayer = asterix.XGameLayer.extend({
 
   checkEnding: function() {
     if (this.board &&  !this.board.isActive()) {
+      var rc= this.board.checkWinner();
+      if (rc[0]) {
+        this.doWin(rc);
+      }
+      else
       if (this.board.isStalemate()) {
         this.doStalemate();
-      } else {
-        var rc= this.board.checkWinner();
-        if (rc[0]) {
-          this.doWin(rc);
-        }
       }
     }
   },
