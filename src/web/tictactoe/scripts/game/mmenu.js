@@ -15,6 +15,9 @@ sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
 SkaroJS= global.SkaroJS;
 
+var SEED= {seed_data: {grid: [0,0,0, 0,0,0, 0,0,0], size: 3, players: { }},
+           mode: 0 };
+
 //////////////////////////////////////////////////////////////////////////////
 // Main menu.
 //////////////////////////////////////////////////////////////////////////////
@@ -29,7 +32,8 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
       fontPath: sh.getFontPath('font.OogieBoogie'),
       text: sh.l10n('%online'),
       selector: function() {
-        sh.fireEvent('/mmenu/controls/online', { mode: 3});
+        sh.fireEvent('/mmenu/controls/online',
+                     _.extend(_.extend({},SEED), { mode: 3 }));
       },
       target: this,
       scale: 0.5,
@@ -40,7 +44,10 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
       fontPath: sh.getFontPath('font.OogieBoogie'),
       text: sh.l10n('%2players'),
       selector: function() {
-        sh.fireEvent('/mmenu/controls/newgame', { mode: 2});
+        sh.fireEvent('/mmenu/controls/newgame',
+                     SkaroJS.merge(SkaroJS.merge({},SEED), { seed_data: {
+                       players: { P1:1, P2:2 }
+                     }, mode: 2}));
       },
       target: this,
       scale: 0.5,
@@ -51,7 +58,10 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
       fontPath: sh.getFontPath('font.OogieBoogie'),
       text: sh.l10n('%1player'),
       selector: function() {
-        sh.fireEvent('/mmenu/controls/newgame', { mode: 1});
+        sh.fireEvent('/mmenu/controls/newgame',
+                     SkaroJS.merge(SkaroJS.merge({}, SEED), { seed_data: {
+                       players: { P1:1, CPU:2 }
+                     }, mode: 1}));
       },
       target: this,
       scale: 0.5,
@@ -84,10 +94,12 @@ sh.protos['MainMenu'] = {
           dir.runScene(sh.protos['MainMenu'].create());
         };
         msg.yes=function(wss,pnum,startmsg) {
-          dir.runScene( tttf.create({ imsg: startmsg,
-                                      mode: 3,
-                                      wsock: wss ,
-                                      pnum: pnum }));
+          var m= _.extend( _.omit(msg, 'yes', 'onBack'), {
+            wsock: wss,
+            pnum: pnum
+          });
+          m.seed_data.players = startmsg.players;
+          dir.runScene( tttf.create(m));
         }
         dir.runScene( sh.protos['OnlinePlay'].create(msg));
       });

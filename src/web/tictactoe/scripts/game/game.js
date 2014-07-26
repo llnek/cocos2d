@@ -270,15 +270,20 @@ var GameLayer = asterix.XGameLayer.extend({
 
   play: function(newFlag) {
 
+    SkaroJS.loggr.debug("seed_data = " + JSON.stringify(this.options));
+
     this.reset(newFlag);
 
+    var state0 = this.options.seed_data;
     var p1= null;
     var p2= null;
 
+
     switch (sh.xcfg.csts.GAME_MODE) {
+    //switch (this.options.mode) {
       case 1:
-        p1= new ttt.Human(sh.xcfg.csts.CV_X, 0, 'X');
         p2= new ttt.AlgoBot(sh.xcfg.csts.CV_O, 1, 'O');
+        p1= new ttt.Human(sh.xcfg.csts.CV_X, 0, 'X');
       break;
       case 2:
         p1= new ttt.Human(sh.xcfg.csts.CV_X, 0, 'X');

@@ -111,9 +111,7 @@
   (restart [_ ] )
 
   (ready [_  room]
-    (let [src {:grid [0,0,0,0,0,0,0,0,0]
-               :size 3
-               :players (reduce (fn [memo ^PlayerSession ps]
+    (let [src {:players (reduce (fn [memo ^PlayerSession ps]
                                   (assoc memo
                                          (.id (.player ps))
                                          (.number ps)))
