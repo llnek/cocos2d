@@ -244,28 +244,26 @@ var GameLayer = asterix.XGameLayer.extend({
         SkaroJS.loggr.debug("game will stop");
         // tear down game
       break;
+      default:
+        this.onSessionEvent(evt);
+      break;
     }
   },
 
   onSessionEvent: function(evt) {
-    var gvs= evt.source.grid,
+    var cmd = evt.source.cmd || {},
+    gvs= evt.source.grid,
     pnum= evt.source.pnum,
-    cs= this.board.getState(),
     player;
 
-    _.each(cs,function(v,pos){
-      if (v !== gvs[pos]) {
-        assert();
-      }
-    });
-
-    if (diff) {
-      this.actions.push();
-      this.actions.push([cmd, status]);
+    if (cmd && _.isNumber(cmd.cell)) {
+      SkaroJS.loggr.debug("adding one more action from server" +
+                          JSON.stringify(cmd));
+      this.actions.push([cmd, 'server']);
     }
+
     switch (evt.code) {
       case Events.C_POKE_MOVE:
-        // move state to wait move
         SkaroJS.loggr.debug("player " + pnum + ": my turn to move");
         player = this.players[evt.source.pnum];
         this.board.toggleActor(new Cmd(player));
@@ -322,7 +320,7 @@ var GameLayer = asterix.XGameLayer.extend({
           } else {
             p2= new ttt.NetPlayer(csts.CV_O, 2, 'O', ws);
           }
-        });
+        }, this);
       break;
     }
 
@@ -427,7 +425,7 @@ var GameLayer = asterix.XGameLayer.extend({
       cmd= _ref[0],
       c = this.cellToGrid(cmd.cell);
       if (c) {
-        switch (cmd.actor.value) {
+        switch (cmd.value) {
           case sh.xcfg.csts.CV_X:
             sh.sfxPlay('x_pick');
             offset=0;
@@ -462,7 +460,9 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   checkEnding: function() {
-    if (this.board &&  !this.board.isActive()) {
+    if (this.board &&
+        !this.board.isOnline() &&
+        !this.board.isActive()) {
       var rc= this.board.checkWinner();
       if (rc[0]) {
         this.doWin(rc);

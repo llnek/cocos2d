@@ -54,22 +54,7 @@
           bd (ReifyTicTacToeBoard 3) ]
       (swap! stateAtom assoc :board bd)
       (.registerPlayers bd p1 p2)
-      (let [cp (.getCurActor bd)
-            op (.getOtherPlayer bd cp)
-            ^PlayerSession
-            cpss (:session cp)
-            ^PlayerSession
-            opss (:session op) ]
-        (.broadcast (.room opss)
-                    (assoc (ReifyEvent Events/NETWORK_MSG
-                                       Events/C_POKE_WAIT
-                                       (json/write-str {:pnum (.number opss)}))
-                           :context opss))
-        (.broadcast (.room cpss)
-                    (assoc (ReifyEvent Events/NETWORK_MSG
-                                       Events/C_POKE_MOVE
-                                       (json/write-str {:pnum (.number cpss)}))
-                           :context cpss)))))
+      (.broadcast bd nil)))
 
   (update [this evt]
     (log/debug "game engine got an update " evt)
@@ -82,7 +67,7 @@
 
   (onSessionMsg [this evt]
     (condp == (:code evt)
-      Events/C_PLAYMOVE
+      Events/C_PLAY_MOVE
       (let [^cmzlabclj.frigga.tictactoe.board.BoardAPI
             bd (:board @stateAtom)
             cp (.getCurActor bd)
@@ -91,8 +76,7 @@
             cmd (json/read-str src
                                :key-fn keyword) ]
         (log/debug "TicTacToe received cmd " src " from session " pss)
-        (when (== (:value cp) (:value cmd))
-          (.enqueue bd (assoc cmd :actor cp) nil)))
+        (.enqueue bd cmd))
 
       Events/C_STARTED
       (do

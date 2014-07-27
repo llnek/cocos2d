@@ -18,13 +18,17 @@
             [clojure.string :as cstr]
             [clojure.data.json :as json])
 
-  (:use [cmzlabclj.nucleus.util.core :only [MakeMMap RandomSign]]
+  (:use [cmzlabclj.nucleus.util.core :only [notnil? ternary MakeMMap RandomSign]]
         [cmzlabclj.nucleus.util.str :only [hgl? strim] ])
 
   (:use [cmzlabclj.cocos2d.games.meta]
+        [cmzlabclj.odin.event.core]
         [cmzlabclj.odin.system.core])
 
-  (:import  [java.util Date ArrayList List HashMap Map]))
+  (:import  [com.zotohlab.odin.game Game PlayRoom
+                                    Player PlayerSession]
+            [com.zotohlab.odin.event Events]
+            [java.util Date ArrayList List HashMap Map]))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -75,21 +79,22 @@
 (defprotocol BoardAPI
 
   ""
-
+  (broadcastStatus [_ ecode cmd status] )
   (registerPlayers [_ p1 p2])
   (getCurActor [_])
   (isActive [_])
   (getPlayer2 [_])
   (getPlayer1 [_])
-  (enqueue [_ cmd cb])
-  (checkWin [_ cmd cb])
-  (drawGame [_ cmd cb])
-  (endGame [_ cmd cb])
-  (toggleActor [_ cmd cb])
+  (enqueue [_ cmd])
+  (checkWin [_ cmd])
+  (drawGame [_ cmd])
+  (endGame [_ cmd])
+  (toggleActor [_ cmd])
   (onStopReset [_])
+  (repoke [_])
+  (broadcast [_ cmd])
   (finz [_])
   (isStalemate [_])
-  (checkWinner [_])
   (isWinner [_ a])
   (getOtherPlayer [_ a]))
 
@@ -121,55 +126,91 @@
       (getPlayer2 [_] (aget #^"[Ljava.lang.Object;" actors 2))
       (getPlayer1 [_] (aget #^"[Ljava.lang.Object;" actors 1))
 
-      (enqueue [this cmd cb]
-        (when (and (>= (:cell cmd) 0)
-                   (< (:cell cmd) numcells)
-                   (identical? (:actor cmd)
-                               (.getCurActor this))
-                   (== CV_Z (aget grid (:cell cmd))))
-          (aset ^longs grid (:cell cmd)
-                (long (:value (:actor cmd))))
-          (.checkWin this cmd cb)))
+      (broadcast [this cmd]
+        (let [cp (.getCurActor this)
+              op (.getOtherPlayer this cp)
+              gvs (vec grid)
+              src (if (notnil? cmd)
+                    {:grid (vec grid) :cmd cmd}
+                    {:grid (vec grid) })
+              ^PlayerSession cpss (:session cp)
+              ^PlayerSession opss (:session op) ]
+          (.sendMessage opss (ReifyEvent Events/NETWORK_MSG
+                                         Events/C_POKE_WAIT
+                                         (json/write-str (assoc src :pnum (.number opss)))))
+          (.sendMessage cpss (ReifyEvent Events/NETWORK_MSG
+                                         Events/C_POKE_MOVE
+                                         (json/write-str (assoc src :pnum (.number cpss)))))))
 
-      (checkWin [this cmd cb]
-        (log/debug "checking for win " (:color (:actor cmd))
+      (repoke [this]
+        (let [^PlayerSession pss (:session (.getCurActor this))
+              src {:pnum (.number pss)
+                   :grid (vec grid) } ]
+          (.sendMessage pss
+                        (ReifyEvent Events/SESSION_MSG
+                                    Events/C_POKE_MOVE
+                                    (json/write-str src )))))
+
+      (enqueue [this cmd]
+        (if (and (>= (:cell cmd) 0)
+                 (< (:cell cmd) numcells)
+                 (== (:value (.getCurActor this)
+                             (:value cmd)))
+                 (== CV_Z (aget grid (:cell cmd))))
+          (do
+            (aset ^longs grid (:cell cmd)
+                  (long (:value cmd)))
+            (.checkWin this cmd))
+          (.repoke this)))
+
+      (checkWin [this cmd]
+        (log/debug "checking for win " (:color cmd)
                    ", pos = " (:cell cmd))
         (cond
-          (.isWinner this (:actor cmd))
-          (.endGame this cmd cb)
+          (.isWinner this (.getCurActor this))
+          (.endGame this cmd)
 
           (.isStalemate this)
-          (.drawGame this cmd cb)
+          (.drawGame this cmd)
 
           :else
-          (.toggleActor this cmd cb)))
+          (.toggleActor this cmd)))
 
-      (drawGame [this cmd cb]
+      (broadcastStatus [this ecode cmd status]
+        (let [^PlayerSession pss (:session (.getCurActor this))
+              ^PlayRoom room (.room pss)
+              src {:grid (vec grid)
+                   :cmd cmd
+                   :status status }
+              evt (ReifyEvent Events/NETWORK_MSG
+                              ecode
+                              (json/write-str src)) ]
+          (.broadcast room evt)))
+
+      (drawGame [this cmd]
         (.onStopReset this)
-        (cb cmd "draw"))
+        (.broadcastStatus this Events/C_STOP cmd 0))
 
-      (endGame [this cmd cb]
-        (.onStopReset this)
-        (cb cmd "win"))
+      (endGame [this cmd]
+        (let [^PlayerSession pss (:session (.getCurActor this))]
+          (.onStopReset this)
+          (.broadcastStatus this
+                            Events/C_STOP
+                            cmd
+                            (.number pss))))
 
-      (toggleActor [this cmd cb]
+      (toggleActor [this cmd]
         (aset #^"[Ljava.lang.Object;" actors 0
               (.getOtherPlayer this (.getCurActor this)))
-        (cb cmd "next" (.getCurActor this)))
+        (.broadcast this cmd))
 
       (finz [this] (.onStopReset this))
+
       (onStopReset [this]
         (.setf! impl :gameon false))
 
       (isStalemate [_]
-        (not (some #(== CV_Z %) grid)))
-
-      (checkWinner [this]
-        (some (fn [a]
-                (if-let [w (.isWinner this a)]
-                  [a w]
-                  nil))
-              (drop 1 actors)))
+        (not (some #(== CV_Z %) (seq grid))))
 
       (isWinner [this actor]
         (some (fn [r]

@@ -16,6 +16,7 @@ ccsx = asterix.COCOS2DX,
 SkaroJS= global.SkaroJS;
 
 var SEED= {seed_data: {grid: [0,0,0, 0,0,0, 0,0,0], size: 3, players: { }},
+           pnum: 1,
            mode: 0 };
 
 //////////////////////////////////////////////////////////////////////////////

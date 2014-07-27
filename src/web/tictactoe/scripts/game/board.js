@@ -13,6 +13,8 @@
                                      _ = global._ ,
 asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
+Odin=global.ZotohLab.Odin,
+Events=Odin.Events,
 SkaroJS= global.SkaroJS,
 negax= global.ZotohLab.NegaMax;
 
@@ -97,6 +99,8 @@ var tttNetBoard= tttBoard.xtends({
     this.grid= bvals;
   },
 
+  isOnline: function() { return true; },
+
   ctor: function(size) {
     this._super(size);
   }
@@ -114,6 +118,8 @@ var tttNonNetBoard= tttBoard.xtends({
     this.actors= [ SkaroJS.randomSign() > 0 ? p1 : p2, p1, p2 ];
     this._super(p1,p2);
   },
+
+  isOnline: function() { return false; },
 
   onEnqueue: function(cmd,cb) {
     this.grid[cmd.cell] = cmd.actor.value;
