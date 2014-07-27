@@ -175,12 +175,11 @@
             (.drawGame this cmd)
             (.toggleActor this cmd))))
 
-      (broadcastStatus [this ecode cmd status]
+      (broadcastStatus [this ecode data status]
         (let [^PlayerSession pss (:session (.getCurActor this))
               ^PlayRoom room (.room pss)
-              src {:grid (vec grid)
-                   :cmd cmd
-                   :status status }
+              src (merge {:grid (vec grid) :status status }
+                         data)
               evt (ReifyEvent Events/NETWORK_MSG
                               ecode
                               (json/write-str src)) ]
@@ -192,10 +191,11 @@
 
       (endGame [this cmd combo]
         (let [^PlayerSession pss (:session (.getCurActor this))]
+          (log/debug "game to end, winner found! combo = " combo)
           (.onStopReset this)
           (.broadcastStatus this
                             Events/C_STOP
-                            (assoc cmd :combo combo)
+                            {:cmd cmd :combo combo}
                             (.number pss))))
 
       (toggleActor [this cmd]
@@ -212,12 +212,16 @@
         (not (some #(== CV_Z %) (seq grid))))
 
       (isWinner [this actor]
+        (log/debug "test isWinner - actor value = " (:value actor))
         (some (fn [r]
                 (if (every? #(== (:value actor) %)
                             ;;(map #(aget grid %) r))
+                            (let [xxx
                             (amap ^longs r idx ret
-                                  (long (aget ^longs grid (aget ^longs r idx)))))
-                  r
+                                  (long (aget ^longs grid (aget ^longs r idx))))]
+                              (log/debug "test one row === " (vec xxx))
+                              xxx))
+                  (vec r)
                   nil))
               goalspace))
 

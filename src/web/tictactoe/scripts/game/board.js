@@ -42,6 +42,16 @@ var tttBoard= SkaroJS.Class.xtends({
     this.gameInProgress = true;
   },
 
+  onStopReset: function() {
+    this.gameInProgress = false;
+  },
+
+  finz: function() {
+    this.onStopReset();
+    this.grid=[];
+    this.actors=[null,null,null];
+  },
+
   getPlayer2: function() { return this.actors[2]; },
   getPlayer1: function() { return this.actors[1]; },
 
@@ -156,22 +166,11 @@ var tttNonNetBoard= tttBoard.xtends({
     cb(cmd, 'next', this.actors[0]);
   },
 
-  onStopReset: function() {
-    this.gameInProgress = false;
-    this.actors[0]=null;
-  },
-
   getGoalSpace: function() { return this.GOALSPACE; },
   getBoardSize: function() { return this.size; },
 
   getDiagX: function() { return this.DAGSPACE[0]; },
   getDiagY: function() { return this.DAGSPACE[1]; },
-
-  finz: function() {
-    this.onStopReset();
-    this.actors=[];
-    this.grid=[];
-  },
 
   initBoard: function(bvals) {
     this.grid= SkaroJS.makeArray( this.size * this.size, this.CV_Z);

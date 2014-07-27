@@ -270,7 +270,7 @@ var GameLayer = asterix.XGameLayer.extend({
     var cmd = evt.source.cmd,
     rc=null;
     if (cmd && _.isNumber(cmd.cell)) {
-      SkaroJS.loggr.debug("adding one more action from server" +
+      SkaroJS.loggr.debug("adding one more action from server " +
                           JSON.stringify(cmd));
       rc= [cmd, 'server'];
       this.actions.push(rc);
@@ -454,9 +454,10 @@ var GameLayer = asterix.XGameLayer.extend({
       this.doWin(cmd);
     }
     else
-    if (status === 'winner') {
+    if (status === 'draw') {
       this.doStalemate();
-    } else {
+    }
+    else {
       c = this.cellToGrid(cmd.cell);
       if (c) {
         switch (cmd.value) {
@@ -477,7 +478,7 @@ var GameLayer = asterix.XGameLayer.extend({
   checkEntities: function(dt) {
     if (this.board &&
         this.actions.length > 0) {
-      this.syncOneAction(this.actions.pop());
+      this.syncOneAction(this.actions.shift());
     }
     this.updateHUD();
   },

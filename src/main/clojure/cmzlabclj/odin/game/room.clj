@@ -37,6 +37,7 @@
             [org.apache.commons.io FileUtils]
             [java.util.concurrent.atomic AtomicLong]
             [java.util.concurrent ConcurrentHashMap]
+            [java.util ArrayList]
             [java.io File]
             [com.zotohlab.gallifrey.core Container]
             [com.zotohlab.odin.event Events EventHandler
@@ -75,6 +76,7 @@
         created (System/currentTimeMillis)
         disp (ReifyEventDispatcher)
         pss (ConcurrentHashMap.)
+        pssArr (ArrayList.)
         pcount (AtomicLong.)
         impl (MakeMMap)
         rid (NewUUid)]
@@ -93,6 +95,7 @@
               src {:puid (.id py)
                    :pnum (.number ps) } ]
           (.put pss (.id ps) ps)
+          (.add pssArr ps)
           (.addSession py ps)
           (.broadcast this (ReifyEvent Events/NETWORK_MSG
                                        Events/C_PLAYER_JOINED
@@ -111,12 +114,12 @@
       (isActive [_] (true? (.getf impl :active)))
       (activate [this]
         (let [^GameEngine sm (.engine this)
-              ss (vec (.values pss)) ]
+              sss (vec pssArr) ]
           (log/debug "activating room " rid)
           (.setf! impl :active true)
-          (doseq [v (seq ss)]
+          (doseq [v sss]
             (.addHandler this (mkNetworkSubr v)))
-          (.initialize sm ss)
+          (.initialize sm sss)
           (.ready sm this)))
 
       Eventable
