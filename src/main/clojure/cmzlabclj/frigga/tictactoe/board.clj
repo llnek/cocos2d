@@ -151,22 +151,25 @@
                                     Events/C_POKE_MOVE
                                     (json/write-str src )))))
 
-      (enqueue [this cmd]
-        (if (and (>= (:cell cmd) 0)
-                 (< (:cell cmd) numcells)
-                 (== (:value (.getCurActor this)
-                             (:value cmd)))
-                 (== CV_Z (aget grid (:cell cmd))))
-          (do
-            (aset ^longs grid (:cell cmd)
-                  (long (:value cmd)))
-            (.checkWin this cmd))
-          (.repoke this)))
+      (enqueue [this src]
+        (let [gvs (:grid src)
+              cmd (dissoc src :grid) ]
+          (if (and (>= (:cell cmd) 0)
+                   (< (:cell cmd) numcells)
+                   (== (:value (.getCurActor this)
+                               (:value cmd)))
+                   (== CV_Z (aget grid (:cell cmd))))
+            (do
+              (aset ^longs grid (:cell cmd)
+                    (long (:value cmd)))
+              (.checkWin this cmd))
+            (.repoke this))))
 
       (checkWin [this cmd]
         (log/debug "checking for win " (:color cmd)
                    ", pos = " (:cell cmd))
-        (if-let [ combo (.isWinner this (.getCurActor this)) ]
+        (log/debug "current grid = " (vec grid))
+        (if-let [combo (.isWinner this (.getCurActor this)) ]
           (.endGame this cmd combo)
           (if (.isStalemate this)
             (.drawGame this cmd)

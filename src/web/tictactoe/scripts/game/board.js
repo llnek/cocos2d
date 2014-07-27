@@ -128,26 +128,27 @@ var tttNonNetBoard= tttBoard.xtends({
 
   checkWin: function(cmd, cb) {
     SkaroJS.loggr.debug("checking for win " + cmd.actor.color + ", pos = " + cmd.cell);
-    if (this.isWinner(cmd.actor)[0] ) {
-      this.endGame(cmd,cb);
+    var rc= this.isWinner(cmd.actor);
+    if (rc[0]) {
+      this.endGame(rc,cb);
     }
     else
     if (this.isStalemate()) {
-      this.drawGame(cmd, cb);
+      this.drawGame(cb);
     }
     else {
       this.toggleActor(cmd,cb);
     }
   },
 
-  drawGame: function(cmd, cb) {
+  drawGame: function(cb) {
     this.onStopReset();
-    cb(cmd, 'draw');
+    cb(null, 'draw');
   },
 
   endGame: function(cmd, cb) {
     this.onStopReset();
-    cb(cmd, 'win');
+    cb(cmd, 'winner');
   },
 
   toggleActor: function(cmd, cb) {

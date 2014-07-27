@@ -225,8 +225,6 @@ var GameLayer = asterix.XGameLayer.extend({
   // queue for UI updates
   actions: [],
 
-  // previous event from server - online only
-  lastEvt: null,
   board: null,
 
   // get an odin event
@@ -239,18 +237,18 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   onStop: function(evt) {
-    if (this.maybeUpdateActions(evt)) {
-      this.syncOneAction();
-    }
+    this.maybeUpdateActions(evt);
     switch (evt.source.status) {
       case 0:
-        this.doStalemate();
+        this.actions.push([null, 'draw' ]);
       break;
       case 1:
-        this.doWin([this.board.getPlayer1(), [] ]);
+        this.actions.push( [[ this.board.getPlayer1(),
+                              evt.source.combo ], 'winner'] );
       break;
       case 2:
-        this.doWin([this.board.getPlayer2(), [] ]);
+        this.actions.push( [[ this.board.getPlayer2(),
+                              evt.source.combo ], 'winner'] );
       break;
     }
   },
@@ -262,6 +260,7 @@ var GameLayer = asterix.XGameLayer.extend({
         this.onStop(evt);
       break;
       default:
+        //TODO: fix this hack
         this.onSessionEvent(evt);
       break;
     }
@@ -357,7 +356,6 @@ var GameLayer = asterix.XGameLayer.extend({
 
     if (this.options.wsock) {
       this.options.wsock.subscribeAll(this.onevent,this);
-      this.lastEvt= null;
       SkaroJS.loggr.debug("about to reply started!");
       this.options.wsock.send({
         type: Events.SESSION_MSG,
@@ -400,10 +398,6 @@ var GameLayer = asterix.XGameLayer.extend({
   // queue, such as drawing the icon , playing a sound...etc
     SkaroJS.loggr.debug("actor = " + cmd.actor.color + ", pos = " + cmd.cell);
     this.board.enqueue(cmd, function(cmd, status, np) {
-      // crap move, is ignored for now.
-      if (status !== 'bogus') {
-        this.actions.push([cmd, status]);
-      }
       if (status === 'next') {
         // there is a next, so move was valid and game has not ended.
         // switch the players.
@@ -415,6 +409,17 @@ var GameLayer = asterix.XGameLayer.extend({
                                             },this)));
         }
       }
+      else if (status === 'winner') {
+        this.actions.push([cmd, status]);
+      }
+      else if (status === 'draw') {
+        this.actions.push([null, status]);
+      }
+      else
+      if (status !== 'bogus') {
+        this.actions.push([cmd, status]);
+      }
+
     }.bind(this) );
   },
 
@@ -439,35 +444,40 @@ var GameLayer = asterix.XGameLayer.extend({
     }
   },
 
-  syncOneAction: function() {
-    var _ref= this.actions.pop();
-    if (! _ref) {return;}
+  syncOneAction: function(_ref) {
     var status = _ref[1],
+    c=undef,
     offset=0,
-    cmd= _ref[0],
-    c = this.cellToGrid(cmd.cell);
+    cmd= _ref[0];
 
-    if (c) {
-      switch (cmd.value) {
-        case sh.xcfg.csts.CV_X:
-          sh.sfxPlay('x_pick');
-          offset=0;
-        break;
-        case sh.xcfg.csts.CV_O:
-          sh.sfxPlay('o_pick');
-          offset=1;
-        break;
+    if (status === 'winner') {
+      this.doWin(cmd);
+    }
+    else
+    if (status === 'winner') {
+      this.doStalemate();
+    } else {
+      c = this.cellToGrid(cmd.cell);
+      if (c) {
+        switch (cmd.value) {
+          case sh.xcfg.csts.CV_X:
+            sh.sfxPlay('x_pick');
+            offset=0;
+          break;
+          case sh.xcfg.csts.CV_O:
+            sh.sfxPlay('o_pick');
+            offset=1;
+          break;
+        }
+        this.cells[cmd.cell] = [ this.drawSymbol(c[0],c[1], offset), c[0], c[1], offset ];
       }
-      this.cells[cmd.cell] = [ this.drawSymbol(c[0],c[1], offset), c[0], c[1], offset ];
     }
   },
 
   checkEntities: function(dt) {
-    if (this.board && this.actions.length > 0) {
-      this.syncOneAction();
-    }
-    else if (this.board) {
-      this.checkEnding();
+    if (this.board &&
+        this.actions.length > 0) {
+      this.syncOneAction(this.actions.pop());
     }
     this.updateHUD();
   },
@@ -485,21 +495,6 @@ var GameLayer = asterix.XGameLayer.extend({
     this.addItem(s1);
 
     return s1;
-  },
-
-  checkEnding: function() {
-    if (this.board &&
-        !this.board.isOnline() &&
-        !this.board.isActive()) {
-      var rc= this.board.checkWinner();
-      if (rc[0]) {
-        this.doWin(rc);
-      }
-      else
-      if (this.board.isStalemate()) {
-        this.doStalemate();
-      }
-    }
   },
 
   doStalemate: function() {
