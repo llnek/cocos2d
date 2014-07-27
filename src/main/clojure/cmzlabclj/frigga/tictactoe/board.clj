@@ -88,7 +88,7 @@
   (enqueue [_ cmd])
   (checkWin [_ cmd])
   (drawGame [_ cmd])
-  (endGame [_ cmd])
+  (endGame [_ cmd combo])
   (toggleActor [_ cmd])
   (onStopReset [_])
   (repoke [_])
@@ -166,15 +166,11 @@
       (checkWin [this cmd]
         (log/debug "checking for win " (:color cmd)
                    ", pos = " (:cell cmd))
-        (cond
-          (.isWinner this (.getCurActor this))
-          (.endGame this cmd)
-
-          (.isStalemate this)
-          (.drawGame this cmd)
-
-          :else
-          (.toggleActor this cmd)))
+        (if-let [ combo (.isWinner this (.getCurActor this)) ]
+          (.endGame this cmd combo)
+          (if (.isStalemate this)
+            (.drawGame this cmd)
+            (.toggleActor this cmd))))
 
       (broadcastStatus [this ecode cmd status]
         (let [^PlayerSession pss (:session (.getCurActor this))
@@ -191,12 +187,12 @@
         (.onStopReset this)
         (.broadcastStatus this Events/C_STOP cmd 0))
 
-      (endGame [this cmd]
+      (endGame [this cmd combo]
         (let [^PlayerSession pss (:session (.getCurActor this))]
           (.onStopReset this)
           (.broadcastStatus this
                             Events/C_STOP
-                            cmd
+                            (assoc cmd :combo combo)
                             (.number pss))))
 
       (toggleActor [this cmd]

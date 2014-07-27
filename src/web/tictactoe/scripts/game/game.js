@@ -238,11 +238,28 @@ var GameLayer = asterix.XGameLayer.extend({
     }
   },
 
+  onStop: function(evt) {
+    if (this.maybeUpdateActions(evt)) {
+      this.syncOneAction();
+    }
+    switch (evt.source.status) {
+      case 0:
+        this.doStalemate();
+      break;
+      case 1:
+        this.doWin([this.board.getPlayer1(), [] ]);
+      break;
+      case 2:
+        this.doWin([this.board.getPlayer2(), [] ]);
+      break;
+    }
+  },
+
   onNetworkEvent: function(evt) {
     switch (evt.code) {
       case Events.C_STOP:
         SkaroJS.loggr.debug("game will stop");
-        // tear down game
+        this.onStop(evt);
       break;
       default:
         this.onSessionEvent(evt);
@@ -250,18 +267,23 @@ var GameLayer = asterix.XGameLayer.extend({
     }
   },
 
-  onSessionEvent: function(evt) {
-    var cmd = evt.source.cmd || {},
-    gvs= evt.source.grid,
-    pnum= evt.source.pnum,
-    player;
-
+  maybeUpdateActions: function(evt) {
+    var cmd = evt.source.cmd,
+    rc=null;
     if (cmd && _.isNumber(cmd.cell)) {
       SkaroJS.loggr.debug("adding one more action from server" +
                           JSON.stringify(cmd));
-      this.actions.push([cmd, 'server']);
+      rc= [cmd, 'server'];
+      this.actions.push(rc);
     }
+    return rc;
+  },
 
+  onSessionEvent: function(evt) {
+    var pnum= evt.source.pnum,
+    player;
+
+    this.maybeUpdateActions(evt);
     switch (evt.code) {
       case Events.C_POKE_MOVE:
         SkaroJS.loggr.debug("player " + pnum + ": my turn to move");
@@ -417,26 +439,32 @@ var GameLayer = asterix.XGameLayer.extend({
     }
   },
 
+  syncOneAction: function() {
+    var _ref= this.actions.pop();
+    if (! _ref) {return;}
+    var status = _ref[1],
+    offset=0,
+    cmd= _ref[0],
+    c = this.cellToGrid(cmd.cell);
+
+    if (c) {
+      switch (cmd.value) {
+        case sh.xcfg.csts.CV_X:
+          sh.sfxPlay('x_pick');
+          offset=0;
+        break;
+        case sh.xcfg.csts.CV_O:
+          sh.sfxPlay('o_pick');
+          offset=1;
+        break;
+      }
+      this.cells[cmd.cell] = [ this.drawSymbol(c[0],c[1], offset), c[0], c[1], offset ];
+    }
+  },
+
   checkEntities: function(dt) {
     if (this.board && this.actions.length > 0) {
-      var _ref = this.actions.pop(),
-      status = _ref[1],
-      offset=0,
-      cmd= _ref[0],
-      c = this.cellToGrid(cmd.cell);
-      if (c) {
-        switch (cmd.value) {
-          case sh.xcfg.csts.CV_X:
-            sh.sfxPlay('x_pick');
-            offset=0;
-          break;
-          case sh.xcfg.csts.CV_O:
-            sh.sfxPlay('o_pick');
-            offset=1;
-          break;
-        }
-        this.cells[cmd.cell] = [ this.drawSymbol(c[0],c[1], offset), c[0], c[1], offset ];
-      }
+      this.syncOneAction();
     }
     else if (this.board) {
       this.checkEnding();
