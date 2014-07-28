@@ -255,10 +255,16 @@ var GameLayer = asterix.XGameLayer.extend({
 
   onNetworkEvent: function(evt) {
     switch (evt.code) {
+      case Events.C_RESTART:
+        SkaroJS.loggr.debug("restarting a new game...");
+        this.play(false);
+      break;
+
       case Events.C_STOP:
         SkaroJS.loggr.debug("game will stop");
         this.onStop(evt);
       break;
+
       default:
         //TODO: fix this hack
         this.onSessionEvent(evt);
@@ -279,32 +285,37 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   onSessionEvent: function(evt) {
-    var pnum= evt.source.pnum,
-    player;
+    var pnum= evt.source.pnum;
 
     this.maybeUpdateActions(evt);
     switch (evt.code) {
       case Events.C_POKE_MOVE:
         SkaroJS.loggr.debug("player " + pnum + ": my turn to move");
-        player = this.players[evt.source.pnum];
-        this.board.toggleActor(new Cmd(player));
+        this.actor= this.players[evt.source.pnum];
+        this.board.toggleActor(new Cmd(this.actor));
       break;
       case Events.C_POKE_WAIT:
         // move state to wait for other
         SkaroJS.loggr.debug("player " + pnum + ": my turn to wait");
-        player = this.players[pnum===1 ? 2 : 1];
-        this.board.toggleActor(new Cmd(player));
+        this.actor = this.players[pnum===1 ? 2 : 1];
+        this.board.toggleActor(new Cmd(this.actor));
       break;
     }
   },
 
   replay: function() {
-    this.play(false);
+    if (this.options.wsock) {
+      this.options.wsock.send({
+        type: Events.SESSION_MSG,
+        code: Events.C_REPLAY,
+        source : "{}"
+      });
+    } else {
+      this.play(false);
+    }
   },
 
   play: function(newFlag) {
-
-    SkaroJS.loggr.debug("this.options = " + JSON.stringify(this.options));
 
     this.reset(newFlag);
 
@@ -476,9 +487,11 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   checkEntities: function(dt) {
-    if (this.board &&
-        this.actions.length > 0) {
-      this.syncOneAction(this.actions.shift());
+    if (this.actions.length > 0) {
+      var n= this.actions.shift();
+      if (this.board) {
+        this.syncOneAction(n);
+      }
     }
     this.updateHUD();
   },

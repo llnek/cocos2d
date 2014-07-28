@@ -33,15 +33,37 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- mapPlayers ""
+
+  [players]
+
+  (reduce #(assoc %1 (.id ^PlayerSession %2) %2)
+          {}
+          players
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- mapPlayersEx ""
+
+  [players]
+
+  {:players (reduce (fn [memo ^PlayerSession ps]
+                      (assoc memo
+                             (.id (.player ps))
+                             [ (.number ps) (.id (.player ps)) ]))
+                    {}
+                    players) })
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (deftype TicTacToe [stateAtom stateRef] com.zotohlab.odin.game.GameEngine
 
   (initialize [_ players]
-    (let [m (reduce #(assoc %1 (.id ^PlayerSession %2) %2)
-                    {}
-                    players) ]
+    (require 'cmzlabclj.frigga.tictactoe.core)
+    (let [m (mapPlayers players) ]
       (dosync
         (reset! stateAtom {:players players})
         (ref-set stateRef m))))
@@ -63,10 +85,18 @@
       Events/SESSION_MSG (.onSessionMsg this evt)
       (log/warn "game engine: unhandled update event " evt)))
 
-  (onNetworkMsg [_ evt] nil)
+  (onNetworkMsg [this evt]
+    (condp == (:code evt)
+      Events/C_REPLAY
+      (.restart this)
+
+      nil))
 
   (onSessionMsg [this evt]
     (condp == (:code evt)
+      Events/C_REPLAY
+      (.onNetworkMsg this evt)
+
       Events/C_PLAY_MOVE
       (let [^cmzlabclj.frigga.tictactoe.board.BoardAPI
             bd (:board @stateAtom)
@@ -92,15 +122,23 @@
 
       (log/warn "game engine: unhandled session msg " evt)))
 
-  (restart [_ ] )
+  (restart [this ]
+    (log/debug "restarting game one more time.....................")
+    (require 'cmzlabclj.frigga.tictactoe.core)
+    (let [parr (:players @stateAtom)
+          pss (first parr)
+          room (.room ^PlayerSession pss)
+          m (mapPlayers parr)
+          src (mapPlayersEx parr)
+          evt (ReifyEvent Events/NETWORK_MSG
+                          Events/C_RESTART
+                          (json/write-str src)) ]
+      (dosync (ref-set stateRef m))
+      (.broadcast ^PlayRoom room evt)))
 
   (ready [_  room]
-    (let [src {:players (reduce (fn [memo ^PlayerSession ps]
-                                  (assoc memo
-                                         (.id (.player ps))
-                                         [ (.number ps) (.id (.player ps)) ]))
-                                {}
-                                (:players @stateAtom)) }
+    (require 'cmzlabclj.frigga.tictactoe.core)
+    (let [src (mapPlayersEx (:players @stateAtom))
           evt (ReifyEvent Events/NETWORK_MSG
                           Events/C_START
                           (json/write-str src)) ]

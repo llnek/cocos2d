@@ -36,12 +36,16 @@ public interface Events {
   public static final long C_PLAYREQ_OK          = 30L;
   public static final long C_JOINREQ_OK          = 31L;
 
-  public static final long C_AWAIT_START         = 50L;
+  public static final long C_AWAIT_START         = 40L;
+
+  public static final long C_RESTART                 = 50L;
   public static final long C_START               = 51L;
   public static final long C_STOP                = 52L;
   public static final long C_POKE_MOVE           = 53L;
   public static final long C_POKE_WAIT           = 54L;
   public static final long C_PLAY_MOVE            = 55L;
+  public static final long C_REPLAY         = 56L;
+
 
   public static final long C_PLAYER_JOINED       = 90L;
   public static final long C_STARTED             = 95L;

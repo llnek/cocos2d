@@ -35,12 +35,15 @@ C_ROOMS_FULL          : 16,
 C_PLAYREQ_OK          : 30,
 C_JOINREQ_OK          : 31,
 
-C_AWAIT_START         : 50,
+C_AWAIT_START         : 40,
+
+C_RESTART             : 50,
 C_START               : 51,
 C_STOP                : 52,
 C_POKE_MOVE           : 53,
 C_POKE_WAIT           : 54,
 C_PLAY_MOVE           : 55,
+C_REPLAY              : 56,
 
 C_PLAYER_JOINED       : 90,
 C_STARTED             : 95,
