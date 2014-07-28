@@ -22,7 +22,7 @@ var NILFUNC=function() {};
 // back layer
 //////////////////////////////////////////////////////////////////////////////
 
-var BackLayer = asterix.XLayer.extend({
+ttt.BackLayer = asterix.XLayer.extend({
 
   pkInit: function() {
     var map = cc.TMXTiledMap.create(sh.getTilesPath('gamelevel1.tiles.arena'));
@@ -42,7 +42,7 @@ var BackLayer = asterix.XLayer.extend({
 // HUD layer
 //////////////////////////////////////////////////////////////////////////////
 
-var HUDLayer = asterix.XGameHUDLayer.extend({
+ttt.HUDLayer = asterix.XGameHUDLayer.extend({
 
   scores:  { 'O': 0, 'X': 0 },
   mode: 0,
@@ -156,7 +156,7 @@ var HUDLayer = asterix.XGameHUDLayer.extend({
   },
 
   drawStatus: function(actor) {
-    if (actor) {
+    if (_.isObject(actor)) {
       var pfx = actor.number() === 1 ? this.p1Long : this.p2Long;
       this.drawStatusText(this.status, sh.l10n('%whosturn', { who: pfx }));
     }

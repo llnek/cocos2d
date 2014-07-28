@@ -12,8 +12,8 @@
 (function (undef){ "use strict"; var global = this, _ = global._ ;
 
 var asterix= global.ZotohLab.Asterix,
+ccsx= asterix.CCS2DX,
 sjs= global.SkaroJS,
-ccsx= sh.CCS2DX,
 sh= asterix;
 
 var Odin= global.ZotohLab.Odin,
@@ -51,7 +51,9 @@ var GameLayer = asterix.XGameLayer.extend({
 
   // get an odin event, first level callback
   onevent: function(topic, evt) {
+
     sjs.loggr.debug(evt);
+
     switch (evt.type) {
       case evts.NETWORK_MSG:
         this.onNetworkEvent(evt);
@@ -63,18 +65,20 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   onStop: function(evt) {
+
     this.maybeUpdateActions(evt);
+
     switch (evt.source.status) {
-      case 0:
-        this.actions.push([null, 'draw' ]);
+      case 2:
+        this.actions.push([[ this.board.getPlayer2(),
+                             evt.source.combo ], 'winner'] );
       break;
       case 1:
         this.actions.push([[ this.board.getPlayer1(),
                              evt.source.combo ], 'winner'] );
       break;
-      case 2:
-        this.actions.push([[ this.board.getPlayer2(),
-                             evt.source.combo ], 'winner'] );
+      case 0:
+        this.actions.push([null, 'draw' ]);
       break;
       default:
         throw new Error("onStop has bad status.");
@@ -110,19 +114,19 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   onSessionEvent: function(evt) {
-    var pnum= evt.source.pnum;
     this.maybeUpdateActions(evt);
+    var pnum= evt.source.pnum;
     switch (evt.code) {
       case evts.C_POKE_MOVE:
         sjs.loggr.debug("player " + pnum + ": my turn to move");
         this.actor= this.players[pnum];
-        this.board.toggleActor(new Cmd(this.actor));
+        this.board.toggleActor(Cmd(this.actor));
       break;
       case evts.C_POKE_WAIT:
         // move state to wait for other
         sjs.loggr.debug("player " + pnum + ": my turn to wait");
         this.actor = this.players[pnum===1 ? 2 : 1];
-        this.board.toggleActor(new Cmd(this.actor));
+        this.board.toggleActor(Cmd(this.actor));
       break;
     }
   },
@@ -147,6 +151,9 @@ var GameLayer = asterix.XGameLayer.extend({
     p1ids, p2ids,
     p1= null,
     p2= null;
+
+    sh.xcfg.csts.GRID_SIZE= state0.size;
+    sh.xcfg.csts.CELLS = ncells;
 
     // sort out names of players
     _.each(state0.players,function(v,k) {
@@ -182,7 +189,7 @@ var GameLayer = asterix.XGameLayer.extend({
       break;
     }
 
-    this.board = ttt.CreateBoard(this.options.mode, state0.size);
+    this.board = ttt.NewBoard(this.options.mode,state0.size);
     this.board.initBoard(state0.grid);
     this.board.registerPlayers(p1, p2);
 
@@ -192,8 +199,10 @@ var GameLayer = asterix.XGameLayer.extend({
     this.actions = [];
 
     if (this.options.wsock) {
+      // online play
+      sjs.loggr.debug("reply to server: session started ok");
+      this.options.wsock.unsubscribeAll();
       this.options.wsock.subscribeAll(this.onevent,this);
-      sjs.loggr.debug("reply to server: started ok");
       this.options.wsock.send({
         type: evts.SESSION_MSG,
         code: evts.C_STARTED
@@ -201,10 +210,11 @@ var GameLayer = asterix.XGameLayer.extend({
     } else {
       this.actor= this.board.curActor();
       if (this.actor.isRobot()) {
-        this.move(Cmd(this.actor,
-                      sjs.rand(ncells)));
+        this.move(Cmd(this.actor, sjs.rand(ncells)));
       }
     }
+
+    this.board.delay(1500);
   },
 
   onNewGame: function(mode) {
@@ -214,12 +224,14 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   reset: function(newFlag) {
+
     if (newFlag) {
       this.getHUD().resetAsNew();
       this.mapGridPos();
     } else {
       this.getHUD().reset();
     }
+
     _.each(this.cells, function(z) {
       if (z) { this.removeItem(z[0]); }
     },this);
@@ -229,15 +241,12 @@ var GameLayer = asterix.XGameLayer.extend({
     this.actor=null;
   },
 
-  // not called by online match
+  // not called by online play
   move: function(cmd) {
   // given a command object, make a move
   // if the move is valid, then a corresponding action is
   // added to the
   // queue, such as drawing the icon , playing a sound...etc
-    sjs.loggr.debug("actor = " + cmd.actor.color +
-                    ", pos = " + cmd.cell);
-
     this.board.enqueue(cmd, function(cmd, status, np) {
       if (status === 'next') {
         this.actions.push([cmd, status]);
@@ -284,6 +293,8 @@ var GameLayer = asterix.XGameLayer.extend({
       if (cell >= 0) {
         this.move(Cmd(player, cell));
       }
+
+      sjs.loggr.debug("actor = " + player.color + ", pos = " + cell);
     }
   },
 
@@ -313,7 +324,9 @@ var GameLayer = asterix.XGameLayer.extend({
             offset=1;
           break;
         }
-        this.cells[cmd.cell] = [ this.drawSymbol(c[0],c[1], offset), c[0], c[1], offset ];
+        this.cells[cmd.cell] = [ this.drawSymbol(c[0],c[1], offset),
+                                 c[0],
+                                 c[1], offset ];
       }
     }
   },
@@ -374,14 +387,12 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   updateHUD: function() {
-    if (this.board && this.board.isActive()) {
+    if (! _.isObject(this.board)) {
+      this.getHUD().drawResult(this.lastWinner);
+    } else {
+      //if (this.board.isActive()) {
+      //}
       this.getHUD().drawStatus(this.actor);
-    }
-    else
-    if (! this.board) {
-      if (this.lastWinner !== undefined) {
-        this.getHUD().drawResult(this.lastWinner);
-      }
     }
   },
 
@@ -457,9 +468,9 @@ asterix.TicTacToe.Factory = {
 
   create: function(options) {
     var scene = new asterix.XSceneFactory([
-      BackLayer,
+      ttt.BackLayer,
       GameLayer,
-      HUDLayer
+      ttt.HUDLayer
     ]).create(options);
 
     if (scene) {
@@ -476,6 +487,4 @@ asterix.TicTacToe.Factory = {
 };
 
 }).call(this);
-
-
 

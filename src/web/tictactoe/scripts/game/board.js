@@ -38,6 +38,13 @@ var tttBoard= SkaroJS.Class.xtends({
   getNilValue: function() { return this.CV_Z; },
   getState: function() { return this.grid; },
 
+  delay: function(millis) {
+    this.gameInProgress=false;
+    global.setTimeout(function() {
+      this.gameInProgress=true;
+    }.bind(this), millis);
+  },
+
   registerPlayers: function(p1,p2) {
     p2.bindBoard(this);
     p1.bindBoard(this);
@@ -360,7 +367,7 @@ var tttNonNetBoard= tttBoard.xtends({
 
 });
 
-asterix.TicTacToe.CreateBoard = function(mode,size) {
+asterix.TicTacToe.NewBoard = function(mode,size) {
   return mode === 3 ? new tttNetBoard(size) : new tttNonNetBoard(size);
 }
 
