@@ -9,11 +9,15 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this; var _ = global._ ,
+(function(undef) { "use strict"; var global = this,
+                                     _ = global._ ,
 asterix= global.ZotohLab.Asterix,
 sh= global.ZotohLab.Asterix,
 SkaroJS= global.SkaroJS;
 
+
+//////////////////////////////////////////////////////////////////////////////
+//
 SkaroJS.merge(sh.xcfg.l10nTable, {
 
 "en-US" : {

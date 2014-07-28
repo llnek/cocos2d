@@ -9,7 +9,8 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._ ,
+(function (undef) { "use strict"; var global= this,
+                                      _ = global._ ,
 asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
@@ -22,41 +23,53 @@ SkaroJS= global.SkaroJS;
 var UILayer = asterix.XLayer.extend({
 
   pkInit: function() {
+
     var cw = ccsx.center(),
     wz = ccsx.screen();
+
     this.addItem(ccsx.pmenu1({
       imgPath: sh.getImagePath('splash.play-btn'),
       selector: function() {
         sh.fireEvent('/splash/controls/playgame');
       },
       target: this,
-      pos: cc.p(cw.x, 56)
+      //pos: cc.p(cw.x, 56)
+      pos: cc.p(cw.x, 0.12 * wz.height)
     }));
+
     return this._super();
+
   }
 
 });
 
+
+//////////////////////////////////////////////////////////////////////////////
+//
 sh.protos['StartScreen'] = {
+
   create: function(options) {
-    var scene = new asterix.XSceneFactory(
-      [
-        asterix.XSplashLayer,
-        UILayer
-      ]
-    ).create(options);
+
+    var scene = new asterix.XSceneFactory([
+      asterix.XSplashLayer,
+      UILayer
+    ]).create(options);
+
     if (scene) {
       scene.ebus.on('/splash/controls/playgame', function() {
-          var ss= sh.protos['StartScreen'],
-          mm= sh.protos['MainMenu'],
-          dir= cc.director;
-          dir.runScene( mm.create({
-            onBack: function() { dir.runScene( ss.create() ); }
-          }));
+        var ss= sh.protos['StartScreen'],
+        mm= sh.protos['MainMenu'],
+        dir= cc.director;
+        dir.runScene( mm.create({
+          onBack: function() { dir.runScene( ss.create() ); }
+        }));
       });
     }
+
     return scene;
+
   }
+
 };
 
 

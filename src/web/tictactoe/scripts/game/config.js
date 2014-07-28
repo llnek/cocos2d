@@ -9,7 +9,8 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._ ,
+(function (undef) { "use strict"; var global= this,
+                                      _ = global._ ,
 asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
 SkaroJS= global.SkaroJS;
@@ -28,8 +29,8 @@ sh.xcfg = SkaroJS.merge( asterix.XConfig, {
   csts: {
     CV_X: 'X'.charCodeAt(0),
     CV_O: 'O'.charCodeAt(0),
-    GRID_SIZE: 3,
-    CELLS: 9,
+    //GRID_SIZE: 3,
+    //CELLS: 9,
     GRID_W: 40,
     GRID_H: 60,
     C_GAP: 1,

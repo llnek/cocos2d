@@ -9,22 +9,28 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._ ,
+(function (undef) { "use strict"; var global= this,
+                                      _ = global._ ,
 asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
 SkaroJS= global.SkaroJS;
 
-var SEED= {seed_data: {grid: [0,0,0, 0,0,0, 0,0,0], size: 3, players: { }},
+var SEED= {seed_data: {grid: [0,0,0, 0,0,0, 0,0,0],
+                       size: 3,
+                       players: { }},
            pnum: 1,
-           mode: 0 };
+           mode: 0
+};
 
 //////////////////////////////////////////////////////////////////////////////
 // Main menu.
 //////////////////////////////////////////////////////////////////////////////
+
 var MainMenuLayer = asterix.XMenuLayer.extend({
 
   pkInit: function() {
+
     var csts = sh.xcfg.csts,
     pobj,
     cw = ccsx.center(),
@@ -83,9 +89,12 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
 
 });
 
+//////////////////////////////////////////////////////////////////////////////
+//
 sh.protos['MainMenu'] = {
 
   create: function(options) {
+
     var tttf= asterix.TicTacToe.Factory,
     dir=cc.director,
     scene = new asterix.XSceneFactory([
@@ -99,7 +108,7 @@ sh.protos['MainMenu'] = {
       });
       scene.ebus.on('/mmenu/controls/online', function(topic, msg) {
         msg.onBack=function() {
-          dir.runScene(sh.protos['MainMenu'].create());
+          dir.runScene( sh.protos['MainMenu'].create());
         };
         msg.yes=function(wss,pnum,startmsg) {
           var m= _.extend( _.omit(msg, 'yes', 'onBack'), {
@@ -112,6 +121,7 @@ sh.protos['MainMenu'] = {
         dir.runScene( sh.protos['OnlinePlay'].create(msg));
       });
     }
+
     return scene;
   }
 
