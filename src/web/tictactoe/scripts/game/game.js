@@ -23,6 +23,7 @@ Cmd= SkaroJS.Class.xtends({
   ctor: function(a,pos) {
     this.cell=pos;
     this.actor=a;
+    this.value=a.value;
   }
 });
 
@@ -410,6 +411,7 @@ var GameLayer = asterix.XGameLayer.extend({
     SkaroJS.loggr.debug("actor = " + cmd.actor.color + ", pos = " + cmd.cell);
     this.board.enqueue(cmd, function(cmd, status, np) {
       if (status === 'next') {
+        this.actions.push([cmd, status]);
         // there is a next, so move was valid and game has not ended.
         // switch the players.
         this.actor= np;
@@ -441,11 +443,12 @@ var GameLayer = asterix.XGameLayer.extend({
       var player= this.board.getCurActor(),
       cell;
 
-      if (this.options.mode === 3 &&
-          player &&
-          this.options.pnum === player.number()) {
-      } else {
-        return;
+      if (this.options.mode === 3) {
+        if (player &&
+            this.options.pnum === player.number()) {
+        } else {
+          return;
+        }
       }
 
       cell= this.clickToCell(mx, my);

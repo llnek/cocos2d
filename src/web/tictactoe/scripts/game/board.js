@@ -140,10 +140,12 @@ var tttNonNetBoard= tttBoard.xtends({
     SkaroJS.loggr.debug("checking for win " + cmd.actor.color + ", pos = " + cmd.cell);
     var rc= this.isWinner(cmd.actor);
     if (rc[0]) {
+      cb(cmd, 'lastmove');
       this.endGame(rc,cb);
     }
     else
     if (this.isStalemate()) {
+      cb(cmd, 'lastmove');
       this.drawGame(cb);
     }
     else {
@@ -211,7 +213,7 @@ var tttNonNetBoard= tttBoard.xtends({
         return actor.isValue(n);
       });
     });
-    return rc ? [rc, combo] : [rc, null];
+    return rc ? [actor, combo] : [null, null];
   },
 
   nextFreeCell: function(actor) {
