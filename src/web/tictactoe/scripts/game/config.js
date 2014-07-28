@@ -88,6 +88,7 @@ sh.xcfg = SkaroJS.merge( asterix.XConfig, {
 global.document['ccConfig'].init(sh.xcfg.appid, [
       'zotohlab/ext/negamax.js',
       'game/tictactoe/board.js',
+      'game/tictactoe/hud.js',
       'game/tictactoe/game.js',
       'game/tictactoe/mmenu.js',
       'game/tictactoe/splash.js'

@@ -9,206 +9,26 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this,
-                                     _ = global._ ,
-                                     $ = global.jQuery,
-asterix = global.ZotohLab.Asterix,
-Odin=global.ZotohLab.Odin,
-Events=Odin.Events,
-sh = global.ZotohLab.Asterix,
-ccsx = asterix.COCOS2DX,
-ttt= asterix.TicTacToe,
-SkaroJS = global.SkaroJS,
-Cmd= SkaroJS.Class.xtends({
-  ctor: function(a,pos) {
-    this.cell=pos;
-    this.actor=a;
-    this.value=a.value;
-  }
-});
+(function (undef){ "use strict"; var global = this, _ = global._ ;
 
-//////////////////////////////////////////////////////////////////////////////
-// back layer
-//////////////////////////////////////////////////////////////////////////////
+var asterix= global.ZotohLab.Asterix,
+sjs= global.SkaroJS,
+ccsx= sh.CCS2DX,
+sh= asterix;
 
-var BackLayer = asterix.XLayer.extend({
+var Odin= global.ZotohLab.Odin,
+evts= Odin.Events;
 
-  pkInit: function() {
-    var map = cc.TMXTiledMap.create(sh.getTilesPath('gamelevel1.tiles.arena'));
-    this.addItem(map);
-    return this._super();
-  },
+var ttt= sh.TicTacToe;
+var $= global.jQuery;
 
-  pkInput: function() {},
-
-  rtti: function() {
-    return 'BackLayer';
-  }
-
-});
-
-//////////////////////////////////////////////////////////////////////////////
-// HUD layer
-//////////////////////////////////////////////////////////////////////////////
-
-var HUDLayer = asterix.XGameHUDLayer.extend({
-
-  scores:  { 'O': 0, 'X': 0 },
-  mode: 0,
-
-  p2Long: '',
-  p1Long: '',
-
-  p2ID: '',
-  p1ID: '',
-
-  setGameMode: function(mode) {
-    this.mode= mode;
-  },
-
-  initParentNode: function() {},
-
-  initLabels: function() {
-    var csts = sh.xcfg.csts,
-    cw= ccsx.center(),
-    wz= ccsx.screen();
-
-    this.title = ccsx.bmfLabel({
-      fontPath: sh.getFontPath('font.TinyBoxBB'),
-      text: '',
-      anchor: ccsx.AnchorTop,
-      scale: 12/72,
-      pos: cc.p(cw.x, wz.height - csts.TILE - csts.GAP)
-    });
-    this.addItem(this.title);
-
-    this.score1= ccsx.bmfLabel({
-      fontPath: sh.getFontPath('font.TinyBoxBB'),
-      text: '888',
-      scale: 20/72,
-      color: cc.color(253,188,178), // 0xfdbcb2;
-      pos: cc.p(csts.TILE + csts.S_OFF + 2,
-                wz.height - csts.TILE - csts.S_OFF),
-      anchor: ccsx.AnchorTopLeft
-    });
-    this.addItem(this.score1);
-
-    this.score2= ccsx.bmfLabel({
-      fontPath: sh.getFontPath('font.TinyBoxBB'),
-      text: '888',
-      scale: 20/72,
-      color: cc.color(255,102,0), // 0xff6600;
-      pos: cc.p(wz.width - csts.TILE - csts.S_OFF,
-                wz.height - csts.TILE - csts.S_OFF),
-      anchor: ccsx.AnchorTopRight
-    });
-    this.addItem(this.score2);
-
-    this.status= ccsx.bmfLabel({
-      fontPath: sh.getFontPath('font.TinyBoxBB'),
-      text: '',
-      scale: 12/72,
-      pos: cc.p(cw.x, csts.TILE * 10)
-    });
-    this.addItem(this.status);
-
-    this.result= ccsx.bmfLabel({
-      fontPath: sh.getFontPath('font.TinyBoxBB'),
-      text: '',
-      scale: 12/72,
-      pos: cc.p(cw.x, csts.TILE * 10),
-      visible: false
-    });
-    this.addItem(this.result);
-  },
-
-  // kenl
-  updateScore: function(p, value) {
-    this.scores[p.color] = this.scores[p.color] + value;
-    this.drawScores();
-  },
-
-  endGame: function() {
-    this.replayBtn.setVisible(true);
-    this.result.setVisible(true);
-    this.status.setVisible(false);
-  },
-
-  drawStatusText: function(obj, msg) {
-    obj.setString( msg);
-  },
-
-  // kenl
-  drawScores: function() {
-    var s2 = this.scores[this.play2.color],
-    s1 = this.scores[this.play1.color],
-    csts= sh.xcfg.csts,
-    wz = ccsx.screen(),
-    n2 = SkaroJS.prettyNumber(s2,3),
-    n1 = SkaroJS.prettyNumber(s1,3);
-
-    this.score1.setString(n1);
-    this.score2.setString(n2);
-  },
-
-  drawResult: function(winner) {
-    var msg='';
-
-    if (!winner) {
-      msg= sh.l10n('%whodraw');
-    }
-    else {
-      switch (winner.number() ) {
-        case 2: msg= sh.l10n('%whowin', { who: this.p2Long}); break;
-        case 1: msg= sh.l10n('%whowin', { who: this.p1Long}); break;
-      }
-      /*
-      switch (winner.color) {
-        case 'O': msg= sh.l10n('%whowin', { who: this.p2Long}); break;
-        case 'X': msg= sh.l10n('%whowin', { who: this.p1Long}); break;
-      }
-      */
-    }
-
-    this.drawStatusText(this.result, msg);
-  },
-
-  drawStatus: function(actor) {
-    if (actor) {
-      var pfx = actor.number() === 1 ? this.p1Long : this.p2Long;
-      this.drawStatusText(this.status, sh.l10n('%whosturn', { who: pfx }));
-    }
-  },
-
-  regoPlayers: function(p1,p1ids,p2,p2ids) {
-    this.play2= p2;
-    this.play1= p1;
-    this.p2Long= p2ids[1];
-    this.p1Long= p1ids[1];
-    this.p2ID= p2ids[0];
-    this.p1ID= p1ids[0];
-    this.title.setString(this.p1ID + " / " + this.p2ID);
-  },
-
-  initIcons: function() {
-  },
-
-  resetAsNew: function() {
-    this.scores=  { 'O': 0, 'X': 0 };
-    this.reset();
-  },
-
-  reset: function() {
-    this.replayBtn.setVisible(false);
-    this.result.setVisible(false);
-    this.status.setVisible(true);
-  },
-
-  rtti: function() {
-    return 'HUD';
-  }
-
-});
+function Cmd(a,pos) {
+  return {
+    cell: pos,
+    actor: a,
+    value: a.value
+  };
+}
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -226,14 +46,19 @@ var GameLayer = asterix.XGameLayer.extend({
   // queue for UI updates
   actions: [],
 
+  // polymorphic board (net/non-net)
   board: null,
 
-  // get an odin event
+  // get an odin event, first level callback
   onevent: function(topic, evt) {
-    SkaroJS.loggr.debug(evt);
+    sjs.loggr.debug(evt);
     switch (evt.type) {
-      case Events.NETWORK_MSG: this.onNetworkEvent(evt); break;
-      case Events.SESSION_MSG: this.onSessionEvent(evt); break;
+      case evts.NETWORK_MSG:
+        this.onNetworkEvent(evt);
+      break;
+      case evts.SESSION_MSG:
+        this.onSessionEvent(evt);
+      break;
     }
   },
 
@@ -244,28 +69,29 @@ var GameLayer = asterix.XGameLayer.extend({
         this.actions.push([null, 'draw' ]);
       break;
       case 1:
-        this.actions.push( [[ this.board.getPlayer1(),
-                              evt.source.combo ], 'winner'] );
+        this.actions.push([[ this.board.getPlayer1(),
+                             evt.source.combo ], 'winner'] );
       break;
       case 2:
-        this.actions.push( [[ this.board.getPlayer2(),
-                              evt.source.combo ], 'winner'] );
+        this.actions.push([[ this.board.getPlayer2(),
+                             evt.source.combo ], 'winner'] );
+      break;
+      default:
+        throw new Error("onStop has bad status.");
       break;
     }
   },
 
   onNetworkEvent: function(evt) {
     switch (evt.code) {
-      case Events.C_RESTART:
-        SkaroJS.loggr.debug("restarting a new game...");
+      case evts.C_RESTART:
+        sjs.loggr.debug("restarting a new game...");
         this.play(false);
       break;
-
-      case Events.C_STOP:
-        SkaroJS.loggr.debug("game will stop");
+      case evts.C_STOP:
+        sjs.loggr.debug("game will stop");
         this.onStop(evt);
       break;
-
       default:
         //TODO: fix this hack
         this.onSessionEvent(evt);
@@ -274,30 +100,27 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   maybeUpdateActions: function(evt) {
-    var cmd = evt.source.cmd,
-    rc=null;
-    if (cmd && _.isNumber(cmd.cell)) {
-      SkaroJS.loggr.debug("adding one more action from server " +
-                          JSON.stringify(cmd));
-      rc= [cmd, 'server'];
-      this.actions.push(rc);
+    var cmd= evt.source.cmd;
+    if (_.isObject(cmd) &&
+        _.isNumber(cmd.cell)) {
+      sjs.loggr.debug("adding one more action from server " +
+                      JSON.stringify(cmd));
+      this.actions.push([cmd, 'server']);
     }
-    return rc;
   },
 
   onSessionEvent: function(evt) {
     var pnum= evt.source.pnum;
-
     this.maybeUpdateActions(evt);
     switch (evt.code) {
-      case Events.C_POKE_MOVE:
-        SkaroJS.loggr.debug("player " + pnum + ": my turn to move");
-        this.actor= this.players[evt.source.pnum];
+      case evts.C_POKE_MOVE:
+        sjs.loggr.debug("player " + pnum + ": my turn to move");
+        this.actor= this.players[pnum];
         this.board.toggleActor(new Cmd(this.actor));
       break;
-      case Events.C_POKE_WAIT:
+      case evts.C_POKE_WAIT:
         // move state to wait for other
-        SkaroJS.loggr.debug("player " + pnum + ": my turn to wait");
+        sjs.loggr.debug("player " + pnum + ": my turn to wait");
         this.actor = this.players[pnum===1 ? 2 : 1];
         this.board.toggleActor(new Cmd(this.actor));
       break;
@@ -305,11 +128,11 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   replay: function() {
-    if (this.options.wsock) {
+    if (_.isObject(this.options.wsock)) {
+      // request server to restart a new game
       this.options.wsock.send({
-        type: Events.SESSION_MSG,
-        code: Events.C_REPLAY,
-        source : "{}"
+        type: evts.SESSION_MSG,
+        code: evts.C_REPLAY
       });
     } else {
       this.play(false);
@@ -318,15 +141,14 @@ var GameLayer = asterix.XGameLayer.extend({
 
   play: function(newFlag) {
 
-    this.reset(newFlag);
-
-    var state0 = this.options.seed_data,
-    ncells= state0.size * state0.size,
-    csts = sh.xcfg.csts,
+    var state0= this.options.seed_data,
+    ncells= state0.size*state0.size,
+    csts= sh.xcfg.csts,
     p1ids, p2ids,
     p1= null,
     p2= null;
 
+    // sort out names of players
     _.each(state0.players,function(v,k) {
       if (v[0] === 1) {
         p1ids= [k, v[1] ];
@@ -335,8 +157,12 @@ var GameLayer = asterix.XGameLayer.extend({
       }
     });
 
-    switch (sh.xcfg.csts.GAME_MODE) {
-    //switch (this.options.mode) {
+    // clean slate
+    this.reset(newFlag);
+
+    // based on mode, create the 2 players
+    //switch (sh.xcfg.csts.GAME_MODE) {
+    switch (this.options.mode) {
       case 1:
         p2= new ttt.AlgoBot(csts.CV_O, 2, 'O');
         p1= new ttt.Human(csts.CV_X, 1, 'X');
@@ -346,14 +172,13 @@ var GameLayer = asterix.XGameLayer.extend({
         p2= new ttt.Human(csts.CV_O, 2, 'O');
       break;
       case 3:
-        _.each(state0.players, function(v,k) {
-          var ws= this.options.pnum === v[0] ? this.options.wsock : null;
-          if (v[0] === 1) {
-            p1= new ttt.NetPlayer(csts.CV_X, 1, 'X', ws);
-          } else {
-            p2= new ttt.NetPlayer(csts.CV_O, 2, 'O', ws);
-          }
-        }, this);
+        p1= new ttt.NetPlayer(csts.CV_X, 1, 'X');
+        p2= new ttt.NetPlayer(csts.CV_O, 2, 'O');
+        if (this.options.pnum === 1) {
+          p1.setWEBSock(this.options.wsock);
+        } else {
+          p2.setWEBSock(this.options.wsock);
+        }
       break;
     }
 
@@ -362,23 +187,23 @@ var GameLayer = asterix.XGameLayer.extend({
     this.board.registerPlayers(p1, p2);
 
     this.getHUD().regoPlayers(p1, p1ids, p2, p2ids);
-    this.cells= SkaroJS.makeArray(ncells, null);
+    this.cells= sjs.makeArray(ncells, null);
     this.players= [null,p1,p2];
     this.actions = [];
 
     if (this.options.wsock) {
       this.options.wsock.subscribeAll(this.onevent,this);
-      SkaroJS.loggr.debug("about to reply started!");
+      sjs.loggr.debug("reply to server: started ok");
       this.options.wsock.send({
-        type: Events.SESSION_MSG,
-        code: Events.C_STARTED
+        type: evts.SESSION_MSG,
+        code: evts.C_STARTED
       });
     } else {
-      this.actor = this.board.getCurActor();
+      this.actor= this.board.curActor();
       if (this.actor.isRobot()) {
-        this.move( new Cmd(this.actor, SkaroJS.rand(ncells)));
+        this.move(Cmd(this.actor,
+                      sjs.rand(ncells)));
       }
-      //SkaroJS.loggr.debug("game started, initor = " + this.actor.color );
     }
   },
 
@@ -404,11 +229,15 @@ var GameLayer = asterix.XGameLayer.extend({
     this.actor=null;
   },
 
+  // not called by online match
   move: function(cmd) {
   // given a command object, make a move
-  // if the move is valid, then a corresponding action is added to the
+  // if the move is valid, then a corresponding action is
+  // added to the
   // queue, such as drawing the icon , playing a sound...etc
-    SkaroJS.loggr.debug("actor = " + cmd.actor.color + ", pos = " + cmd.cell);
+    sjs.loggr.debug("actor = " + cmd.actor.color +
+                    ", pos = " + cmd.cell);
+
     this.board.enqueue(cmd, function(cmd, status, np) {
       if (status === 'next') {
         this.actions.push([cmd, status]);
@@ -418,7 +247,7 @@ var GameLayer = asterix.XGameLayer.extend({
         if (np.isRobot()) {
           this.runAction(cc.Sequence.create(cc.DelayTime.create(1),
                                             cc.CallFunc.create(function() {
-                                              this.move(new Cmd(np,np.takeTurn()));
+                                              this.move(Cmd(np,np.takeTurn()));
                                             },this)));
         }
       }
@@ -440,7 +269,7 @@ var GameLayer = asterix.XGameLayer.extend({
 
     if (this.board && this.board.isActive() ) {
 
-      var player= this.board.getCurActor(),
+      var player= this.board.curActor(),
       cell;
 
       if (this.options.mode === 3) {
@@ -453,7 +282,7 @@ var GameLayer = asterix.XGameLayer.extend({
 
       cell= this.clickToCell(mx, my);
       if (cell >= 0) {
-        this.move( new Cmd(player, cell));
+        this.move(Cmd(player, cell));
       }
     }
   },

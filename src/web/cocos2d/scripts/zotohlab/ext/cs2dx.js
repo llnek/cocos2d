@@ -246,6 +246,7 @@ asterix.COCOS2DX = {
 
 };
 
+asterix.CCS2DX= asterix.COCOS2DX;
 
 
 }).call(this);

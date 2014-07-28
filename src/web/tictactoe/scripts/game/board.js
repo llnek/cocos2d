@@ -32,7 +32,7 @@ var tttBoard= SkaroJS.Class.xtends({
   CV_Z : 0,
 
   isActive: function() { return this.gameInProgress; },
-  getCurActor: function() { return this.actors[0]; },
+  curActor: function() { return this.actors[0]; },
 
   isNil: function(cellv) { return cellv === this.CV_Z; },
   getNilValue: function() { return this.CV_Z; },
@@ -423,11 +423,12 @@ var Human = Player.xtends({
 
 asterix.TicTacToe.NetPlayer = Human.xtends({
 
+  setWEBSock: function(wss) { this.wss= wss; },
   isMax: function() { return false; },
   takeTurn: function() {},
-  ctor: function (idv, pic, color, wss) {
+  ctor: function (idv, pic, color) {
     this._super(idv, pic, color);
-    this.wss=wss;
+    this.wss=null;
   }
 
 });
