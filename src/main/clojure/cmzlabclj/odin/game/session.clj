@@ -9,7 +9,6 @@
 ;; this software.
 ;; Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-
 (ns ^{:doc ""
       :author "kenl"}
 
@@ -43,8 +42,7 @@
                                      Eventable EventDispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-
+;;(set! *warn-on-reflection* true)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -69,6 +67,7 @@
 
       Eventable
 
+      ;; send a message to client
       (sendMessage [this msg]
         (when (.isConnected this)
           (let [^MessageSender s (.getf impl :tcp)]
@@ -76,17 +75,22 @@
 
       (onEvent [this evt]
         (log/debug "player session " sid " , onevent called: " evt)
+        ;; when it is a network msg with a specific socket attached.
+        ;; it means only the same socket should apply the message,
+        ;; others should ignore - do nothing.
         (when-not (.getf impl :shutting-down)
           (if (and (== Events/NETWORK_MSG (:type evt))
                    (notnil? (:context evt)))
             (when (identical? this
                               (:context evt))
+              ;; change the type to SESSION_MSG.
               (.sendMessage this
                             (assoc evt
                                    :type Events/SESSION_MSG)))
             (.sendMessage this evt))))
 
       (removeHandler [_ h] )
+
       (addHandler [_ h] )
       ;;(getHandlers [_ etype] (.getHandlers disp etype))
 
@@ -97,13 +101,14 @@
       (bind [this soc]
         (.setf! impl :tcp (ReifyReliableSender soc))
         (.setStatus this Session$Status/CONNECTED))
+
       (id [_] sid)
 
       (setStatus [_ s] (.setf! impl :status s))
       (getStatus [_] (.getf impl :status))
 
-      (isConnected [_] (= Session$Status/CONNECTED
-                          (.getf impl :status)))
+      (isConnected [_] (== Session$Status/CONNECTED
+                           (.getf impl :status)))
       (close [this]
         (locking this
           (when (.isConnected this)
@@ -116,10 +121,12 @@
             (.setf! impl :status Session$Status/NOT_CONNECTED))))
 
       Object
+
       (hashCode [this]
         (if-let [ n (.id this) ]
           (.hashCode n)
           31))
+
       (equals [this obj]
         (if (nil? obj)
           false
@@ -130,8 +137,6 @@
                       (.id this))))))
     )
   ))
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

@@ -28,9 +28,9 @@
             [java.util HashMap]
             [com.zotohlab.odin.event EventHandler EventDispatcher]))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+;;(set! *warn-on-reflection* true)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -40,6 +40,7 @@
   []
 
   (let [queue (MemoryChannel.)
+        ;;TODO: fix this hashmap
         mm (HashMap.)
         fiber (ThreadFiber.) ]
     (.start fiber)
@@ -54,25 +55,27 @@
       (unsubscribe [_ cb]
         (if-let [^Disposable d (.get mm cb) ]
           (.dispose d)))
+
       (subscribe [_ cb]
         (let [d (.subscribe
                   queue
                   fiber
                   (reify Callback
                     (onMessage [_ msg]
-                      (when (= (.eventType ^EventHandler cb)
-                               (:type msg))
+                      (when (== (.eventType ^EventHandler cb)
+                                (int (:type msg)))
                         (.onEvent ^EventHandler cb msg))))) ]
           (.put mm cb d)
           d))
+
       (publish [_ msg]
         (log/debug "publishing message ==== " msg)
         (.publish queue msg))
+
       (shutdown [_]
         (.clearSubscribers queue)
         (.dispose fiber)))
   ))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

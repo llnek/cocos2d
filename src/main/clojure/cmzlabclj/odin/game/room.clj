@@ -44,6 +44,10 @@
                                      Eventable EventDispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;(set! *warn-on-reflection* true)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (def ^:private vacancy 1000)
 
@@ -51,12 +55,15 @@
 ;;
 (defn- mkNetworkSubr ""
 
+  ^EventHandler
   [^PlayerSession ps]
 
   (reify EventHandler
     (eventType [_] Events/NETWORK_MSG)
     (session [_] ps)
     (onEvent [_ evt]
+      ;; if a context is given, then only the
+      ;; matching one gets the message.
       (if-let [c (:context evt)]
         (when (identical? c ps)
           (.onEvent ps evt))
@@ -82,13 +89,16 @@
         rid (NewUUid)]
     (.setf! impl :shutting true)
     (reify PlayRoom
+
       (disconnect [_ ps]
         (let [^PlaySession ss ps
               py (.player ps)]
           (.remove pss (.id ps))
           (.removeSession py ps)
           (.unsubscribeIfSession disp ps)))
+
       (countPlayers [_] (.size pss))
+
       (connect [this p]
         (let [ps (ReifyPlayerSession this p (.incrementAndGet pcount))
               ^Player py p
@@ -101,17 +111,26 @@
                                        Events/C_PLAYER_JOINED
                                        (json/write-str src)))
           ps))
+
       (isShuttingDown [_] (.getf impl :shutting))
+
       (canActivate [this]
         (and (not (.isActive this))
              (>= (.countPlayers this)
                  (.minPlayers gameObj))))
+
       (broadcast [_ evt] (.publish disp evt))
+
       (engine [_] engObj)
+
       (game [_] gameObj)
+
       (roomId [_] rid)
+
       (close [_])
+
       (isActive [_] (true? (.getf impl :active)))
+
       (activate [this]
         (let [^GameEngine sm (.engine this)
               sss (vec pssArr) ]
@@ -125,8 +144,11 @@
       Eventable
 
       (removeHandler [_ h] (.unsubscribe disp h))
+
       (addHandler [_ h] (.subscribe disp h))
+
       (sendMessage [this msg] (.onEvent this msg))
+
       (onEvent [this evt]
         (let [^GameEngine sm (.engine this) ]
           (log/debug "room got an event " evt)
@@ -141,6 +163,7 @@
         (if-let [ n (.roomId this) ]
           (.hashCode n)
           31))
+
       (equals [this obj]
         (if (nil? obj)
           false
@@ -169,8 +192,7 @@
 (defn OpenRoom ""
 
   ^PlayerSession
-  [^Game game ^Player plyr
-   options]
+  [^Game game ^Player plyr options]
 
   (with-local-vars [pss nil]
     (when-let [room (LookupFreeRoom game) ]
@@ -206,8 +228,7 @@
 (defn JoinRoom ""
 
   ^PlayerSession
-  [^PlayRoom room ^Player plyr
-   options]
+  [^PlayRoom room ^Player plyr options]
 
   (let [^Channel ch (:socket options)
         game (.game room)]

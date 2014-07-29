@@ -28,6 +28,10 @@
             [com.zotohlab.odin.event Events InvalidEventError]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;(set! *warn-on-reflection* true)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn EventToFrame ""
 
@@ -92,10 +96,11 @@
 ;;
 (defn ReifySessionMessage ""
 
-  [ecode ^Object source]
+  ([ecode source]
+   (ReifySessionMessage ecode source nil))
 
-  (ReifyEvent Events/SESSION_MSG ecode source))
-
+  ([ecode source ctx]
+   (ReifyEvent Events/SESSION_MSG ecode source ctx)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
