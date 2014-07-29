@@ -25,7 +25,7 @@
         [cmzlabclj.odin.game.room]
         [cmzlabclj.odin.system.rego])
 
-  (:import  [com.zotohlab.odin.game Game PlayRoom 
+  (:import  [com.zotohlab.odin.game Game PlayRoom
                                     Player PlayerSession]
             [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
             [io.netty.channel ChannelHandlerContext ChannelHandler
@@ -35,6 +35,10 @@
             [com.zotohlab.frwk.netty SimpleInboundHandler]
             [com.zotohlab.gallifrey.core Container]
             [com.zotohlab.odin.event Events EventDispatcher]))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;(set! *warn-on-reflection* true)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -52,7 +56,7 @@
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+;; source json = [gameid, userid, password]
 (defn- onPlayReq ""
 
   [evt]
@@ -67,7 +71,7 @@
                         gm nil
                         pss nil
                         room nil]
-
+        ;; maybe get the request game?
         (let [g (LookupGame (nth arr 0))]
           (if (and (notnil? g)
                    (.supportMultiPlayers g))
@@ -75,31 +79,34 @@
             (rError ch
                     Events/C_GAME_NOK
                     "no such game/not network enabled.")))
-
+        ;; maybe get the player?
         (if-let [p (LookupPlayer (nth arr 1)
                                  (nth arr 2)) ]
           (var-set plyr p)
           (rError ch
                   Events/C_USER_NOK
                   "user or password error."))
-
+        ;; maybe try to find or create a game room?
         (when (and (notnil? @plyr)
                    (notnil? @gm))
-          (if-let [^PlayerSession ps (OpenRoom @gm @plyr evt)]
+          (if-let [ps (OpenRoom @gm @plyr evt)]
             (do
               (var-set room (.room ps))
               (var-set pss ps))
             (rError ch
                     Events/C_ROOMS_FULL
                     "no room available.")))
-
         @pss)
 
-      :else nil)
+      :else
+      (rError ch
+              Events/C_PLAYREQ_NOK
+              "bad request."))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+;; Request to join a specific game room.  Not used now.
+;; source json = [gameid, roomid, userid, password]
 (defn- onJoinReq ""
 
   [evt]
@@ -114,49 +121,53 @@
                         pss nil
                         gm nil
                         room nil]
-
+        ;; maybe get the player?
         (if-let [p (LookupPlayer (nth arr 2)
                                  (nth arr 3)) ]
           (var-set plyr p)
           (rError ch
                   Events/C_USER_NOK
-                  ""))
-
+                  "no such player."))
+        ;; maybe get the requested room?
         (when-not (nil? @plyr)
           (let [gid (nth arr 0)
                 rid (nth arr 1)
                 r (ternary (LookupGameRoom gid rid)
                            (LookupFreeRoom gid rid)) ]
-            (when (nil? r)
-              (rError ch Events/C_ROOM_NOK "")
-              (var-set pss (JoinRoom r @plyr evt)))
-            (when (nil? @pss)
-              (rError ch
-                      Events/C_ROOMS_FULL ""))))
+            (if (nil? r)
+              (rError ch Events/C_ROOM_NOK "no such room.")
+              (do
+                (var-set pss (JoinRoom r @plyr evt))
+                (when (nil? @pss)
+                  (rError ch
+                          Events/C_ROOM_FILLED
+                          "no more room."))))))
         @pss)
 
-      :else nil)
+      :else
+      (rError ch
+              Events/C_JOINREQ_NOK
+              "bad request."))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+;; Main entry point.
 (defn OdinOnEvent ""
 
   [evt]
 
   (let [etype (:type evt)]
-    (cond
-      (== etype Events/PLAYGAME_REQ)
+    (condp == etype
+      Events/PLAYGAME_REQ
       (onPlayReq evt)
 
-      (== etype Events/JOINGAME_REQ)
+      Events/JOINGAME_REQ
       (onJoinReq evt)
 
-      :else
       (log/warn "unhandled event " evt))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+;; One time init from the MainApp.
 (defn OdinInit ""
 
   [^Container ctr]

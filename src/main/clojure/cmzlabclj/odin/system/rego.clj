@@ -28,10 +28,10 @@
             [com.zotohlab.odin.event EventDispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; reconnect registry of abandoned sessions.
-;; { reconnection-key -> session }
-(def ^:private RECONN-REGO (ref {}))
+;;(set! *warn-on-reflection* true)
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; players
 ;; { player-id -> player }
 (def ^:private PLAYER-REGO (ref {}))
@@ -53,7 +53,7 @@
 
   (if-let [g (get (GetGamesAsUUID) gameid) ]
     (let [{flag "enabled" minp "minp" maxp "maxp" eng "engine"
-           :or {flag false minp 1 maxp 0 eng ""}}
+           :or {flag false minp 1 maxp 1 eng ""}}
           (get g "network")]
       (reify Game
         (maxPlayers [_] (if (> maxp 0) (int maxp) Integer/MAX_VALUE))
@@ -63,16 +63,18 @@
         (engineClass [_] eng)
         (info [_] g)
         (id [_] (get g "uuid"))
+        ;;TODO: unload is an extreme action, what about the
+        ;;game rooms???
         (unload [_] nil)))
     nil
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn RemoveGameRoom ""
+(defn RemoveGameRoom "Remove an active room."
 
   ^PlayRoom
-  [^String game, ^String room]
+  [^String game ^String room]
 
   (dosync
     (when-let [gm (get @GAME-ROOMS game) ]
@@ -85,7 +87,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn RemoveFreeRoom ""
+(defn RemoveFreeRoom "Remove a waiting room."
 
   ^PlayRoom
   [^String game ^String room]
@@ -100,8 +102,8 @@
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; add this room into the pending set.
-(defn AddFreeRoom ""
+;;
+(defn AddFreeRoom "Add a new partially filled room into the pending set."
 
   ^PlayRoom
   [^PlayRoom room]
@@ -119,8 +121,8 @@
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; add this room into the active set.
-(defn AddGameRoom ""
+;;
+(defn AddGameRoom "Move room into the active set."
 
   ^PlayRoom
   [^PlayRoom room]
@@ -138,7 +140,7 @@
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+;; Returns a free room which is detached from the pending set.
 (defmulti ^PlayRoom LookupFreeRoom (fn [a & args] (class a)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -152,6 +154,8 @@
       (when-let [^PlayRoom r (if (> (count gm) 0)
                                (first (vals gm))
                                nil) ]
+        (log/debug "LookupFreeRoom: found a free room: "
+                   (.roomId r))
         (alter FREE-ROOMS
                assoc
                (.id game)
@@ -191,41 +195,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn RemoveSession "For possible reconnection."
-
-  ^Session
-  [^String reconnKey]
-
-  (dosync
-    (when-let [s (get @RECONN-REGO reconnKey) ]
-      (alter RECONN-REGO dissoc reconnKey)
-      s)
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn AddSession "For possible reconnection."
-
-  [^String reconnKey
-   ^Session s]
-
-  (dosync
-    (alter RECONN-REGO assoc reconnKey s)
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn LookupSession "For possible reconnection."
-
-  ^Session
-  [^String reconnKey]
-
-  (dosync
-    (get @RECONN-REGO reconnKey)
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 (defn ReifyPlayer ""
 
   ^Player
@@ -241,7 +210,7 @@
       (getName [_] (.getf impl :name))
       (id [_] user)
 
-      (removeSession [_  ps]
+      (removeSession [_ ps]
         (dosync
           (if-let [m (get @PLAYER-SESS user) ]
             (alter PLAYER-SESS
@@ -255,7 +224,7 @@
             (int (count m))
             (int 0))))
 
-      (addSession [_  ps]
+      (addSession [_ ps]
         (dosync
           (let [m (ternary (get @PLAYER-SESS user) {}) ]
             (alter PLAYER-SESS
@@ -265,7 +234,6 @@
 
       (logout [_ ps] ))
     ))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -277,6 +245,9 @@
   (dosync
     (when-let [p (get @PLAYER-REGO user) ]
       (alter PLAYER-REGO dissoc user)
+      (if-let [m (get @PLAYER-SESS user)]
+        (doseq [[k v] (seq m)]
+          (.close ^PlayerSession v)))
       (alter PLAYER-SESS dissoc user)
       p)
   ))
@@ -304,7 +275,6 @@
   (^Player [^String user ^String pwd] (CreatePlayer user pwd))
 
   (^Player [^String user] (dosync (get @PLAYER-REGO user))))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

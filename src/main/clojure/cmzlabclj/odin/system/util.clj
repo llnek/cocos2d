@@ -37,15 +37,18 @@
                                      Events EventDispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;(set! *warn-on-reflection* true)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn DecodeJsonEvent
+(defn DecodeJsonEvent "returns event with socket info attached."
 
   [^String data socket]
 
-  (log/debug "received json event: " data)
+  (log/debug "wsock: received json event: " data)
   (try
     (let [evt (json/read-str data :key-fn keyword) ]
-      (when (nil? (:type evt))
+      (when-not (number? (:type evt))
         (throw (InvalidEventError. "event object has no type info.")))
       (assoc evt :socket socket))
     (catch Throwable e#
@@ -63,16 +66,24 @@
   (proxy [SimpleInboundHandler][]
     (channelRead0 [ctx msg]
       (let [ch (.channel ^ChannelHandlerContext ctx) ]
-        (when (instance? TextWebSocketFrame msg)
-          (let [evt (DecodeJsonEvent (.text ^TextWebSocketFrame msg) ch) ]
+        (condp instance? msg
+          TextWebSocketFrame
+          (let [^TextWebSocketFrame fr msg
+                evt (DecodeJsonEvent (.text fr) ch) ]
             (.onEvent (.room ps)
-                      (assoc evt :context ps))))
-        (when (instance? CloseWebSocketFrame msg)
+                      (assoc evt :context ps)))
+          CloseWebSocketFrame
           (.onEvent ps {:type Events/NETWORK_MSG
                         :code Events/C_CLOSED
-                        :context ps}))
-        (when (instance? PingWebSocketFrame msg))
-        (when (instance? PongWebSocketFrame msg))))
+                        :context ps})
+          PingWebSocketFrame
+          (let [^PingWebSocketFrame fr msg
+                ct (.content fr) ]
+            (.retain ct)
+            (.writeAndFlush ch (PongWebSocketFrame. ct)))
+          PongWebSocketFrame
+          (log/debug "got a pong reply back.")
+          nil)))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -38,8 +38,12 @@
             [java.util Date ArrayList List HashMap Map]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;(set! *warn-on-reflection* true)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- doXXX ""
+(defn- doStart ""
 
   ^PTask
   []
@@ -47,11 +51,10 @@
   (DefWFTask
     (fn [fw ^Job job arg]
       (let [^WebSockEvent evt (.event job)
-            ^cmzlabclj.tardis.core.sys.Element
-            src (.emitter evt)
+            ^XData data (.getData evt)
             ^cmzlabclj.tardis.impl.ext.ContainerAPI
-            co (.container ^Emitter src)
-            ^XData data (.getData evt) ]
+            co (.container ^Emitter
+                           (.emitter evt)) ]
         (OdinOnEvent (DecodeEvent (.stringify data)
                                   (.getSocket evt)))))
   ))
@@ -62,7 +65,7 @@
 
   (getStartActivity [_  pipe]
     (require 'cmzlabclj.odin.net.wsock)
-    (doXXX))
+    (doStart))
 
   (onStop [_ pipe]
     (log/debug "Handler: stopped."))
@@ -70,9 +73,7 @@
   (onError [ _ err curPt]
     (log/error "Handler: I got an error!")))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (def ^:private wsock-eof nil)
-
 

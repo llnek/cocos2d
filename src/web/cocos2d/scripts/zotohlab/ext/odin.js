@@ -11,10 +11,10 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
  ??*/
 
-(function(undef) { "use strict"; var global = this,
-                                     _ = global._ ,
-                                     SkaroJS= global.SkaroJS,
-                                     EventBus= global.ZotohLab.EventBus;
+(function(undef) { "use strict"; var global = this, _ = global._ ;
+
+var EventBus= global.ZotohLab.EventBus,
+sjs= global.SkaroJS;
 
 var Events = {
 // Event type
@@ -60,10 +60,10 @@ S_CONNECTED           : 1
 //
 function mkEvent(eventType, code, payload) {
   return {
-    timeStamp : new Date().getTime(),
-    type : eventType,
+    timeStamp: new Date().getTime(),
+    type: eventType,
     code: code,
-    source : payload
+    source: payload
   };
 }
 
@@ -100,10 +100,10 @@ function json_decode(e) {
     evt= {};
   }
   if (! _.has(evt, 'type')) {
-    evt.type = -1;
+    evt.type= -1;
   }
   if (! _.has(evt, 'code')) {
-    evt.code = -1;
+    evt.code= -1;
   }
   if (_.has(evt, 'source') &&
       _.isString(evt.source)) {
@@ -115,14 +115,14 @@ function json_decode(e) {
 
 //////////////////////////////////////////////////////////////////////////////
 //
-var Session= SkaroJS.Class.xtends({
+var Session= sjs.Class.xtends({
 
   connect: function(url) {
     this.wsock(url);
   },
 
   ctor: function(config) {
-    this.state = Events.S_NOT_CONNECTED;
+    this.state= Events.S_NOT_CONNECTED;
     this.ebus= new EventBus();
     this.handlers= [];
     this.options=config;
@@ -131,14 +131,14 @@ var Session= SkaroJS.Class.xtends({
 
   send: function(evt) {
     if (this.state === Events.S_CONNECTED &&
-        this.ws) {
+        _.isObject(this.ws)) {
       this.ws.send( json_encode(evt));
     }
   },
 
   subscribe: function(eventType, code, callback, target) {
     var h= this.ebus.on("/"+eventType+"/"+code, callback, target);
-    if (h && h.length > 0) {
+    if (_.isArray(h) && h.length > 0) {
       // store the handle ids for clean up
       //this.handlers=this.handlers.concat(h);
       this.handlers.push(h[0]);
@@ -159,21 +159,21 @@ var Session= SkaroJS.Class.xtends({
   },
 
   unsubscribe: function(subid) {
-    SkaroJS.removeFromArray(this.handlers, subid);
+    sjs.removeFromArray(this.handlers, subid);
     this.ebus.off(subid);
   },
 
   reset: function () {
-    this.onmessage = noop;
-    this.onerror = noop;
-    this.onclose = noop;
+    this.onmessage= noop;
+    this.onerror= noop;
+    this.onclose= noop;
     this.handlers= [];
     this.ebus.removeAll();
   },
 
   close: function () {
-    this.state = Events.S_NOT_CONNECTED;
-    if (this.ws) {
+    this.state= Events.S_NOT_CONNECTED;
+    if (_.isObject(this.ws)) {
       this.reset();
       try {
         this.ws.close();
@@ -194,34 +194,34 @@ var Session= SkaroJS.Class.xtends({
   },
 
   wsock: function(url) {
-    var ws = new WebSocket(url),
+    var ws= new WebSocket(url),
     me=this;
 
-    ws.onopen = function() {
+    ws.onopen= function() {
       me.state= Events.S_CONNECTED;
       ws.send(me.getPlayRequest());
     };
 
-    ws.onmessage = function (e) {
-      var evt = json_decode(e);
+    ws.onmessage= function (e) {
+      var evt= json_decode(e);
       switch (evt.type) {
         case Events.NETWORK_MSG:
         case Events.SESSION_MSG:
           me.onevent(evt);
         break;
         default:
-          SkaroJS.loggr.warn("unhandled event from server: " +
-                             evt.type +
-                             ", code = " +
-                             evt.code);
+          sjs.loggr.warn("unhandled event from server: " +
+                         evt.type +
+                         ", code = " +
+                         evt.code);
       }
     };
 
-    ws.onclose = function (e) {
+    ws.onclose= function (e) {
       me.onevent(mkEvent(Events.NETWORK_MSG, Events.C_CLOSED));
     };
 
-    ws.onerror = function (e) {
+    ws.onerror= function (e) {
       me.onevent(mkEvent(Events.NETWORK_MSG, Events.C_ERROR, e));
     };
 
@@ -241,7 +241,7 @@ var Session= SkaroJS.Class.xtends({
 });
 
 
-global.ZotohLab.Odin = {
+global.ZotohLab.Odin= {
 
   newSession: function(config) {
     return new Session(config);
