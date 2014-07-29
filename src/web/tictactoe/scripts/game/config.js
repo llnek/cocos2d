@@ -9,11 +9,11 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this,
-                                      _ = global._ ,
-asterix = global.ZotohLab.Asterix,
+(function (undef) { "use strict"; var global= this, _ = global._ ;
+
+var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
-SkaroJS= global.SkaroJS;
+sjs= global.SkaroJS;
 
 asterix.TicTacToe= {};
 
@@ -21,7 +21,7 @@ asterix.TicTacToe= {};
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.xcfg = SkaroJS.merge( asterix.XConfig, {
+sh.xcfg = sjs.merge( asterix.XConfig, {
 
   appid: 'tictactoe',
   color: 'sky',

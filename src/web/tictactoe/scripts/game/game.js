@@ -14,13 +14,12 @@
 var asterix= global.ZotohLab.Asterix,
 ccsx= asterix.CCS2DX,
 sjs= global.SkaroJS,
-sh= asterix;
+sh= asterix,
+ttt= sh.TicTacToe;
 
 var Odin= global.ZotohLab.Odin,
 evts= Odin.Events;
 
-var ttt= sh.TicTacToe;
-var $= global.jQuery;
 
 function Cmd(a,pos) {
   return {
@@ -114,8 +113,8 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   onSessionEvent: function(evt) {
+    var pnum= _.isNumber(evt.source.pnum) ? evt.source.pnum : -1;
     this.maybeUpdateActions(evt);
-    var pnum= evt.source.pnum;
     switch (evt.code) {
       case evts.C_POKE_MOVE:
         sjs.loggr.debug("player " + pnum + ": my turn to move");
@@ -214,6 +213,7 @@ var GameLayer = asterix.XGameLayer.extend({
       }
     }
 
+    // add a delay to prevent clicking too early.
     this.board.delay(1500);
   },
 
@@ -233,7 +233,9 @@ var GameLayer = asterix.XGameLayer.extend({
     }
 
     _.each(this.cells, function(z) {
-      if (z) { this.removeItem(z[0]); }
+      if (z) {
+        this.removeItem(z[0]);
+      }
     },this);
 
     this.players=[];
@@ -334,7 +336,7 @@ var GameLayer = asterix.XGameLayer.extend({
   checkEntities: function(dt) {
     if (this.actions.length > 0) {
       var n= this.actions.shift();
-      if (this.board) {
+      if (_.isObject(this.board)) {
         this.syncOneAction(n);
       }
     }
@@ -390,8 +392,6 @@ var GameLayer = asterix.XGameLayer.extend({
     if (! _.isObject(this.board)) {
       this.getHUD().drawResult(this.lastWinner);
     } else {
-      //if (this.board.isActive()) {
-      //}
       this.getHUD().drawStatus(this.actor);
     }
   },

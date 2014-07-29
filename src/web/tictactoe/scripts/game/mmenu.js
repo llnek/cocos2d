@@ -9,18 +9,21 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this,
-                                      _ = global._ ,
-asterix = global.ZotohLab.Asterix,
+(function (undef) { "use strict"; var global= this, _ = global._ ;
+
+var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
-SkaroJS= global.SkaroJS;
+sjs= global.SkaroJS;
 
-var SEED= {seed_data: {grid: [0,0,0, 0,0,0, 0,0,0],
-                       size: 3,
-                       players: { }},
-           pnum: 1,
-           mode: 0
+var SEED= {
+  seed_data: {
+    grid: [0,0,0, 0,0,0, 0,0,0],
+    size: 3,
+    players: { }
+  },
+  pnum: 1,
+  mode: 0
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -32,7 +35,7 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
   pkInit: function() {
 
     var csts = sh.xcfg.csts,
-    pobj,
+    pobj2, pobj1,
     cw = ccsx.center(),
     wz = ccsx.screen();
 
@@ -48,16 +51,16 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
       pos: cc.p(114, wz.height - csts.TILE * 18 - 2)
     }));
 
-    pobj={};
-    pobj[ sh.l10n('%p1') ] = [ 1, sh.l10n('%player1') ];
-    pobj[ sh.l10n('%p2') ] = [ 2, sh.l10n('%player2') ];
+    pobj2={};
+    pobj2[ sh.l10n('%p1') ] = [ 1, sh.l10n('%player1') ];
+    pobj2[ sh.l10n('%p2') ] = [ 2, sh.l10n('%player2') ];
     this.addItem(ccsx.tmenu1({
       fontPath: sh.getFontPath('font.OogieBoogie'),
       text: sh.l10n('%2players'),
       selector: function() {
         sh.fireEvent('/mmenu/controls/newgame',
-                     SkaroJS.merge(SkaroJS.merge({},SEED), { seed_data: {
-                       players: pobj
+                     sjs.merge(sjs.merge({},SEED), { seed_data: {
+                       players: pobj2
                      }, mode: 2}));
       },
       target: this,
@@ -65,16 +68,16 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
       pos: cc.p(cw.x + 68, wz.height - csts.TILE * 28 - 4)
     }));
 
-    pobj={};
-    pobj[ sh.l10n('%cpu') ] = [ 2, sh.l10n('%computer') ];
-    pobj[ sh.l10n('%p1') ] = [ 1,  sh.l10n('%player1') ];
+    pobj1={};
+    pobj1[ sh.l10n('%cpu') ] = [ 2, sh.l10n('%computer') ];
+    pobj1[ sh.l10n('%p1') ] = [ 1,  sh.l10n('%player1') ];
     this.addItem(ccsx.tmenu1({
       fontPath: sh.getFontPath('font.OogieBoogie'),
       text: sh.l10n('%1player'),
       selector: function() {
         sh.fireEvent('/mmenu/controls/newgame',
-                     SkaroJS.merge(SkaroJS.merge({}, SEED), { seed_data: {
-                       players: pobj
+                     sjs.merge(sjs.merge({}, SEED), { seed_data: {
+                       players: pobj1
                      }, mode: 1}));
       },
       target: this,

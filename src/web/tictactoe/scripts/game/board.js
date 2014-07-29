@@ -9,21 +9,23 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this,
-                                     _ = global._ ,
-asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
-Odin=global.ZotohLab.Odin,
-Events=Odin.Events,
-SkaroJS= global.SkaroJS,
-negax= global.ZotohLab.NegaMax;
+(function(undef) { "use strict"; var global = this, _ = global._ ;
+
+var asterix = global.ZotohLab.Asterix,
+sjs= global.SkaroJS,
+sh = global.ZotohLab.Asterix;
+
+var negax= global.ZotohLab.NegaMax;
+var Odin=global.ZotohLab.Odin,
+evts=Odin.Events;
+
 
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-var tttBoard= SkaroJS.Class.xtends({
+var tttBoard= sjs.Class.xtends({
 
   gameInProgress: false,
   ncells: 0,
@@ -40,7 +42,7 @@ var tttBoard= SkaroJS.Class.xtends({
 
   delay: function(millis) {
     this.gameInProgress=false;
-    global.setTimeout(function() {
+    setTimeout(function() {
       this.gameInProgress=true;
     }.bind(this), millis);
   },
@@ -79,13 +81,15 @@ var tttBoard= SkaroJS.Class.xtends({
   },
 
   ctor: function(size) {
-    SkaroJS.loggr.debug("new board(" + size + ") init'ed");
+    sjs.loggr.debug("new board(" + size + ") init'ed");
     this.ncells= size * size;
     this.size= size;
   }
 
 });
 
+//////////////////////////////////////////////////////////////////////////////
+//
 var tttNetBoard= tttBoard.xtends({
 
   registerPlayers: function(p1,p2) {
@@ -101,12 +105,12 @@ var tttNetBoard= tttBoard.xtends({
       cell: cmd.cell
     };
     var evt= {
-      type: Events.SESSION_MSG,
-      code: Events.C_PLAY_MOVE,
+      type: evts.SESSION_MSG,
+      code: evts.C_PLAY_MOVE,
       source: JSON.stringify(src)
     };
     if (this.actors[0] &&
-        SkaroJS.echt(this.actors[0].wss)) {
+        _.isObject(this.actors[0].wss)) {
       this.actors[0].wss.send(evt);
     }
   },
@@ -126,6 +130,8 @@ var tttNetBoard= tttBoard.xtends({
 
 });
 
+//////////////////////////////////////////////////////////////////////////////
+//
 var tttNonNetBoard= tttBoard.xtends({
 
   GOALSPACE : null,
@@ -134,7 +140,7 @@ var tttNonNetBoard= tttBoard.xtends({
   COLSPACE : null,
 
   registerPlayers: function(p1,p2) {
-    this.actors= [ SkaroJS.randomSign() > 0 ? p1 : p2, p1, p2 ];
+    this.actors= [ sjs.randomSign() > 0 ? p1 : p2, p1, p2 ];
     this._super(p1,p2);
   },
 
@@ -146,15 +152,15 @@ var tttNonNetBoard= tttBoard.xtends({
   },
 
   checkWin: function(cmd, cb) {
-    SkaroJS.loggr.debug("checking for win " + cmd.actor.color + ", pos = " + cmd.cell);
+    sjs.loggr.debug('checking for win "' + cmd.actor.color + '", pos = ' + cmd.cell);
     var rc= this.isWinner(cmd.actor);
-    if (rc[0]) {
-      cb(cmd, 'lastmove');
+    if (_.isObject(rc[0])) {
+      cb(cmd, 'winning-move');
       this.endGame(rc,cb);
     }
     else
     if (this.isStalemate()) {
-      cb(cmd, 'lastmove');
+      cb(cmd, 'last-move');
       this.drawGame(cb);
     }
     else {
@@ -184,7 +190,7 @@ var tttNonNetBoard= tttBoard.xtends({
   getDiagY: function() { return this.DAGSPACE[1]; },
 
   initBoard: function(bvals) {
-    this.grid= SkaroJS.makeArray( this.size * this.size, this.CV_Z);
+    this.grid= sjs.makeArray( this.size * this.size, this.CV_Z);
   },
 
   isStalemate: function(game) {
@@ -198,21 +204,23 @@ var tttNonNetBoard= tttBoard.xtends({
     w;
     _.find(this.actors, function(actor,n) {
       switch (n) {
-        case 0: return false;
+        case 0:
+          return false;
         default:
           w= this.isWinner(actor);
-          if (w[0]) {
-            rc=actor; return true;
+          if (_.isObject(w[0])) {
+            rc=actor;
+            return true;
           } else {
             return false;
           }
       }
     }, this);
-    return SkaroJS.echt(rc) ? [rc, w[1]] : [undef, null] ;
+    return _.isObject(rc) ? [rc, w[1]] : [undef, null] ;
   },
 
-  isWinner: function(actor, game) {
-    game= game || this.grid;
+  isWinner: function(actor, gameVals) {
+    var game= gameVals || this.grid;
     var rc, combo;
     rc= _.some(this.GOALSPACE, function(r) {
       combo=r;
@@ -230,22 +238,23 @@ var tttNonNetBoard= tttBoard.xtends({
       if (z === this.CV_Z) { memo.push(n); }
       return memo;
     }, [], this);
-    return (fr.length === 0) ? -1 : fr[ SkaroJS.rand( fr.length) ];
+    return (fr.length === 0) ? -1 : fr[ sjs.rand( fr.length) ];
   },
 
-  poiseToWin: function(actor,game) {
+  poiseToWin: function(actor,gameVals) {
     var sum = this.getBoardSize() - 1,
     m, rc,
     lastFree = -1;
-    game= game || this.grid;
+    var game= gameVals || this.grid;
+
     rc = _.some(this.GOALSPACE, function(r) {
       m = _.foldl(r, function(memo, n) {
         if (actor.isValue( game[n])) {
           memo.used += 1;
         }
         if (game[n] === this.CV_Z) {
-          memo.last = n;
           memo.free += 1;
+          memo.last = n;
         }
         return memo;
       }, { used: 0, free: 0, last: -1 }, this);
@@ -255,10 +264,11 @@ var tttNonNetBoard= tttBoard.xtends({
     return rc ? lastFree : -1;
   },
 
-  freeMove: function(actor,game) {
+  freeMove: function(actor,gameVals) {
     var sum = this.getBoardSize() - 1,
     m, rc;
-    game= game || this.grid;
+    var game= gameVals || this.grid;
+
     rc = _.some(this.GOALSPACE, function(r) {
       m = _.foldl(r, function(memo, n) {
         if (actor.isValue(game[n])) {
@@ -290,7 +300,7 @@ var tttNonNetBoard= tttBoard.xtends({
   },
 
   makeMove: function(snapshot,move) {
-    if ( this.isNil( snapshot.state[move])) {
+    if (this.isNil( snapshot.state[move])) {
       snapshot.state[move] = snapshot.cur.value;
     } else {
       throw new Error("Fatal Error: cell [" + move + "] is not free.");
@@ -329,12 +339,12 @@ var tttNonNetBoard= tttBoard.xtends({
 
   evalScore: function(snapshot) {
     // if we lose, return a nega value
-    return this.isWinner(snapshot.other, snapshot.state )[0] ? -100 : 0;
+    return _.isObject(this.isWinner(snapshot.other, snapshot.state )[0]) ? -100 : 0;
   },
 
   isOver: function(snapshot) {
-    return this.isWinner(snapshot.cur,snapshot.state)[0] ||
-           this.isWinner(snapshot.other, snapshot.state)[0] ||
+    return _.isObject(this.isWinner(snapshot.cur,snapshot.state)[0]) ||
+           _.isObject(this.isWinner(snapshot.other, snapshot.state)[0]) ||
            this.isStalemate(snapshot.state);
   },
 
@@ -374,8 +384,9 @@ asterix.TicTacToe.NewBoard = function(mode,size) {
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
+//
 var negax= global.ZotohLab.NegaMax,
-Player = SkaroJS.Class.xtends({
+Player = sjs.Class.xtends({
 
   takeTurn: function() { throw new Error("Abstract call"); },
   isRobot: function() { return !this.isHuman(); },

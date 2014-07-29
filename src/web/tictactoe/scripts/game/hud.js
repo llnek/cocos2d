@@ -9,13 +9,14 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this,
-                                     _ = global._ ,
-                                     sjs = global.SkaroJS,
-asterix = global.ZotohLab.Asterix,
+(function (undef){ "use strict"; var global = this, _ = global._ ;
+
+var asterix = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
 sh= asterix,
+sjs = global.SkaroJS,
 ttt= asterix.TicTacToe;
+
 var NILFUNC=function() {};
 
 //////////////////////////////////////////////////////////////////////////////
@@ -44,7 +45,7 @@ ttt.BackLayer = asterix.XLayer.extend({
 
 ttt.HUDLayer = asterix.XGameHUDLayer.extend({
 
-  scores:  { 'O': 0, 'X': 0 },
+  scores: { 'O': 0, 'X': 0 },
   mode: 0,
 
   // these will be set by the game
@@ -143,7 +144,7 @@ ttt.HUDLayer = asterix.XGameHUDLayer.extend({
   drawResult: function(winner) {
     var msg='';
 
-    if (winner) {
+    if (_.isObject(winner)) {
       switch (winner.number() ) {
         case 2: msg= sh.l10n('%whowin', { who: this.p2Long}); break;
         case 1: msg= sh.l10n('%whowin', { who: this.p1Long}); break;
@@ -175,7 +176,7 @@ ttt.HUDLayer = asterix.XGameHUDLayer.extend({
   initIcons: NILFUNC,
 
   resetAsNew: function() {
-    this.scores=  { 'O': 0, 'X': 0 };
+    this.scores= { 'O': 0, 'X': 0 };
     this.reset();
   },
 
