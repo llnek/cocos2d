@@ -32,7 +32,6 @@
                               ChannelPipeline Channel]
             [org.apache.commons.io FileUtils]
             [java.io File]
-            [com.zotohlab.frwk.netty SimpleInboundHandler]
             [com.zotohlab.gallifrey.core Container]
             [com.zotohlab.odin.event Events EventDispatcher]))
 

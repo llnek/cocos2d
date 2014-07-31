@@ -32,7 +32,7 @@
             [org.apache.commons.io FileUtils]
             [java.io File]
             [com.zotohlab.gallifrey.core Container]
-            [com.zotohlab.frwk.netty SimpleInboundHandler]
+            [com.zotohlab.frwk.netty SimpleInboundFilter]
             [com.zotohlab.odin.event InvalidEventError
                                      Events EventDispatcher]))
 
@@ -63,7 +63,7 @@
   ^ChannelHandler
   [^PlayerSession ps]
 
-  (proxy [SimpleInboundHandler][]
+  (proxy [SimpleInboundFilter][]
     (channelRead0 [ctx msg]
       (let [ch (.channel ^ChannelHandlerContext ctx) ]
         (condp instance? msg
