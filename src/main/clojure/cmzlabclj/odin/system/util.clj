@@ -98,7 +98,7 @@
     (.remove pipe "WS403Responder")
     (.remove pipe "WSOCKDispatcher")
     (.addBefore pipe
-                "ErrorCatcher"
+                "ErrorSinkFilter"
                 "OdinProtocolHandler" (protocolHandler ps))
     (.bind ps ch)
   ))
