@@ -27,8 +27,9 @@
             [com.zotohlab.odin.event EventDispatcher]))
 
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+;;(set! *warn-on-reflection* true)
 
 
 (deftype Pong [] com.zotohlab.odin.game.GameEngine
