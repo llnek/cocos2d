@@ -1,12 +1,12 @@
 {
-  "uuid" : "fc611261-5de0-4eb1-ab5a-6c2bbb773a29",
-  "pubdate" : "2014/06/09",
-  "orientation" : "portrait",
-  "author" : "llnek",
-  "name" : "SpaceRaider",
-  "desc" : "Like Defender, only better!",
-  "status" : true,
-  "uri" : "/arena/spaceraider",
-  "image" : "gui/catalog.png"
+  :uuid "fc611261-5de0-4eb1-ab5a-6c2bbb773a29"
+  :pubdate #inst "2014-06-09"
+  :orientation "portrait"
+  :author "llnek"
+  :name "SpaceRaider"
+  :desc "Like Defender, only better!"
+  :status true
+  :uri "/arena/spaceraider"
+  :image "gui/catalog.png"
 }
 

@@ -10,8 +10,8 @@
 ;; Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 
-(ns  ^{ :doc ""
-        :author "kenl" }
+(ns  ^{:doc ""
+       :author "kenl" }
 
   cmzlabclj.cocos2d.users.rego
 
@@ -110,12 +110,13 @@
             ^HTTPEvent evt (.event job)
             ^cmzlabclj.tardis.core.sys.Element
             src (.emitter evt)
+            cfg (.getAttr src :emcfg)
             ^cmzlabclj.tardis.impl.ext.ContainerAPI
             co (.container ^Emitter src)
             ^cmzlabclj.tardis.io.webss.WebSession
             mvs (.getSession evt)
             csrf (.generateCsrf co)
-            est (.getAttr src :sessionAgeSecs)
+            est (:sessionAgeSecs cfg)
             [rdata ct] (.loadTemplate co (nsb tpl)
                                       (interpolateFunc evt csrf))
             ^HTTPResult res (.getResultObj evt) ]

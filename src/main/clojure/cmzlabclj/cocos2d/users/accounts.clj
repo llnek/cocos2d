@@ -10,11 +10,10 @@
 ;; Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
 
-(ns  ^{ :doc ""
-        :author "kenl" }
+(ns  ^{:doc ""
+       :author "kenl" }
 
   cmzlabclj.cocos2d.users.accounts
-
 
   (:require [clojure.tools.logging :as log :only (info warn error debug)]
             [clojure.data.json :as json]
@@ -133,9 +132,10 @@
             mvs (.getSession evt)
             ^cmzlabclj.tardis.core.sys.Element
             src (.emitter evt)
+            cfg (.getAttr src :emcfg)
             acct (:account (.getLastResult job))
             json { :status { :code 200 } }
-            est (.getAttr src :sessionAgeSecs)
+            est (:sessionAgeSecs cfg)
             ck (HttpCookie. (name *USER-FLAG*)
                             (nsb (:acctid acct)))
             ^HTTPResult res (.getResultObj evt) ]
@@ -146,8 +146,8 @@
           (.setMaxAge est)
           (.setHttpOnly false)
           (.setSecure (.isSSL? mvs))
-          (.setPath (.getAttr src :domainPath))
-          (.setDomain (.getAttr src :domain)))
+          (.setPath (:domainPath cfg))
+          (.setDomain (:domain cfg)))
         (.addCookie res ck)
         (.replyResult evt)))
   ))
@@ -220,7 +220,7 @@
 
   (getStartActivity [_  pipe]
     (require 'cmzlabclj.cocos2d.users.accounts)
-    (log/debug "forgot-login pipe-line - called.")
+    (log/debug "Forgot-login pipe-line - called.")
     (doto (Block.)
       (.chain (doAckReply))
       (.chain (doLookupEmail))))
@@ -246,6 +246,7 @@
             mvs (.getSession evt)
             ^cmzlabclj.tardis.core.sys.Element
             src (.emitter evt)
+            cfg (.getAttr src :emcfg)
             json { :status { :code 200 } }
             ck (HttpCookie. (name *USER-FLAG*) "")
             ^HTTPResult res (.getResultObj evt) ]
@@ -256,8 +257,8 @@
           (.setMaxAge 0)
           (.setHttpOnly false)
           (.setSecure (.isSSL? mvs))
-          (.setPath (.getAttr src :domainPath))
-          (.setDomain (.getAttr src :domain)))
+          (.setPath (:domainPath cfg))
+          (.setDomain (:domain cfg)))
         (.addCookie res ck)
         (.replyResult evt)))
   ))

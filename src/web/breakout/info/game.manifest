@@ -1,12 +1,12 @@
 {
-  "uuid" : "7d943e06-0849-4bf4-a16d-64a401f72a3e",
-  "pubdate" : "2014/06/03",
-  "orientation" : "portrait",
-  "author" : "llnek",
-  "name" : "Break!",
-  "desc" : "Like Break Out, only better!",
-  "status" : true,
-  "uri" : "/arena/breakout",
-  "image" : "gui/catalog.png"
+  :uuid "7d943e06-0849-4bf4-a16d-64a401f72a3e"
+  :pubdate #inst "2014-06-03"
+  :orientation "portrait"
+  :author "llnek"
+  :name "Break!"
+  :desc "Like Break Out, only better!"
+  :status true
+  :uri "/arena/breakout"
+  :image "gui/catalog.png"
 }
 

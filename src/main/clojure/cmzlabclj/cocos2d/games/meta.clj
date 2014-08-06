@@ -9,8 +9,8 @@
 ;; this software.
 ;; Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(ns  ^{ :doc ""
-        :author "kenl" }
+(ns  ^{:doc ""
+       :author "kenl" }
 
   cmzlabclj.cocos2d.games.meta
 
@@ -20,6 +20,7 @@
 
   (:use [cmzlabclj.nucleus.util.dates :only [ParseDate] ]
         [cmzlabclj.nucleus.util.str :only [nsb hgl? strim] ]
+        [cmzlabclj.nucleus.util.files :only [ReadEdn] ]
         [cmzlabclj.tardis.core.constants])
 
   (:import  [org.apache.commons.io FileUtils]
@@ -53,21 +54,17 @@
                                 "manifest"
                                 true) ]
       (doseq [^File f (seq fs) ]
-        (let [json (json/read-str (FileUtils/readFileToString f "utf-8"))
+        (let [info (ReadEdn f)
               gid (-> (.getParentFile f)(.getName))
-              uid (get json "uuid")
-              uri (get json "uri")
-              pdt (ParseDate (-> (strim (get json "pubdate"))
-                                 (.replace \/ \-))
-                             "yyyy-MM-dd")
-              info (-> json
-                       (assoc "pubdate" pdt)
-                       (assoc "gamedir" gid)) ]
+              uid (:uuid info)
+              uri (:uri info)
+              pdt (:pubdate info)
+              info (assoc info :gamedir gid) ]
           (var-set mc (assoc! @mc uri info))
           (var-set uc (assoc! @uc uid info))
           (var-set rc (conj! @rc info)))))
-    (reset! GAMES-MNFS (vec (sort #(compare (.getTime ^Date (get %1 "pubdate"))
-                                            (.getTime ^Date (get %2 "pubdate")))
+    (reset! GAMES-MNFS (vec (sort #(compare (.getTime ^Date (:pubdate %1))
+                                            (.getTime ^Date (:pubdate %2)))
                                   (persistent! @rc))))
     (reset! GAMES-HASH (persistent! @mc))
     (reset! GAMES-UUID (persistent! @uc))

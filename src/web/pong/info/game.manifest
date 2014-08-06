@@ -1,16 +1,19 @@
 {
-  "uuid" : "fa0860f9-76dc-4135-8bc7-bd5af3147d55",
-  "pubdate" : "2014/06/03",
-  "orientation" : "landscape",
-  "author" : "llnek",
-  "name" : "Pong",
-  "desc" : "Like Pong, only better!",
-  "network" : {"enabled": true,
-               "minp" : 2,
-               "maxp" : 2,
-               "engine":  "cmzlabclj.frigga.pong.core.Pong" },
-  "status" : true,
-  "uri" : "/arena/pong",
-  "image" : "gui/catalog.png"
+  :uuid "fa0860f9-76dc-4135-8bc7-bd5af3147d55"
+  :pubdate #inst "2014-06-03"
+  :orientation "landscape"
+  :author "llnek"
+  :name "Pong"
+  :desc "Like Pong, only better!"
+
+  :network {
+    :enabled true
+    :minp 2
+    :maxp 2
+    :engine  "cmzlabclj.frigga.pong.core.Pong" }
+
+  :status true
+  :uri "/arena/pong"
+  :image "gui/catalog.png"
 }
 

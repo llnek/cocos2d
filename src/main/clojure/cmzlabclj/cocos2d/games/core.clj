@@ -10,8 +10,8 @@
 ;; Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
 
-(ns  ^{ :doc ""
-        :author "kenl" }
+(ns  ^{:doc ""
+       :author "kenl" }
 
   cmzlabclj.cocos2d.games.core
 
