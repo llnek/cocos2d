@@ -47,24 +47,29 @@
 
   [^File appDir]
 
-  (with-local-vars [rc (transient [])
+  (with-local-vars [info {}
                     uc (transient {})
-                    mc (transient {}) ]
+                    mc (transient {})
+                    rc (transient []) ]
     (let [fs (IOUtils/listFiles (File. appDir "public/ig/info")
                                 "manifest"
                                 true) ]
       (doseq [^File f (seq fs) ]
-        (let [info (ReadEdn f)
-              gid (-> (.getParentFile f)(.getName))
-              uid (:uuid info)
-              uri (:uri info)
-              pdt (:pubdate info)
-              info (assoc info :gamedir gid) ]
-          (var-set mc (assoc! @mc uri info))
-          (var-set uc (assoc! @uc uid info))
-          (var-set rc (conj! @rc info)))))
-    (reset! GAMES-MNFS (vec (sort #(compare (.getTime ^Date (:pubdate %1))
-                                            (.getTime ^Date (:pubdate %2)))
+        (let [gid (-> (.getParentFile f)(.getName))
+              manf (ReadEdn f)
+              uid (:uuid manf)
+              uri (:uri manf)
+              pdt (:pubdate manf)
+              tmp (-> (assoc manf :gamedir gid)
+                      (dissoc manf :pubdate)) ]
+          (doseq [[k v] (seq tmp)]
+            (var-set info (assoc @info (name k) v)))
+          (var-set info (assoc @info (name :pubdate) pdt))
+          (var-set mc (assoc! @mc uri @info))
+          (var-set uc (assoc! @uc uid @info))
+          (var-set rc (conj! @rc @info)))))
+    (reset! GAMES-MNFS (vec (sort #(compare (.getTime ^Date (%1 "pubdate"))
+                                            (.getTime ^Date (%2 "pubdate")))
                                   (persistent! @rc))))
     (reset! GAMES-HASH (persistent! @mc))
     (reset! GAMES-UUID (persistent! @uc))
