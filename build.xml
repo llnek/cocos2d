@@ -212,6 +212,7 @@
   <target name="compile-java">
     <javac sourcepath="" srcdir="${src.dir}/java" destdir="${out.jar.dir}"
       includeantruntime="false" excludes=""
+      target="1.8"
       debug="${build.debug}" debuglevel="lines,vars,source" classpathref="compile.path.id">
       <compilerarg line="-Xlint:deprecation -Xlint:unchecked"/>
       <include name="**/*.java"/>
