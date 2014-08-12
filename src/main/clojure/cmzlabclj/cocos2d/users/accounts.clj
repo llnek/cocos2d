@@ -29,7 +29,7 @@
         [cmzlabclj.cocos2d.site.core ])
 
   (:import  [com.zotohlab.gallifrey.runtime DuplicateUser]
-            [com.zotohlab.wflow If FlowPoint Activity Block
+            [com.zotohlab.wflow If FlowNode Activity Block
                                  Pipeline PipelineDelegate PTask Work]
             [com.zotohlab.gallifrey.io HTTPEvent HTTPResult]
             [org.apache.commons.codec.net URLCodec]

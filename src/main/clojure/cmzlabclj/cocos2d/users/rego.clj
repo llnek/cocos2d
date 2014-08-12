@@ -28,7 +28,7 @@
 
   (:import  [com.zotohlab.gallifrey.core Container ConfigError]
             [org.apache.commons.io FileUtils]
-            [com.zotohlab.wflow FlowPoint Activity
+            [com.zotohlab.wflow FlowNode Activity
                                 Pipeline PipelineDelegate PTask Work]
             [com.zotohlab.gallifrey.io HTTPEvent HTTPResult Emitter]
             [com.zotohlab.frwk.io IOUtils XData]
@@ -111,11 +111,10 @@
             ^cmzlabclj.tardis.core.sys.Element
             src (.emitter evt)
             cfg (.getAttr src :emcfg)
-            ^cmzlabclj.tardis.impl.ext.ContainerAPI
             co (.container ^Emitter src)
             ^cmzlabclj.tardis.io.webss.WebSession
             mvs (.getSession evt)
-            csrf (.generateCsrf co)
+            csrf (.generateCsrf ^cmzlabclj.tardis.impl.ext.ContainerAPI co)
             est (:sessionAgeSecs cfg)
             [rdata ct] (.loadTemplate co (nsb tpl)
                                       (interpolateFunc evt csrf))

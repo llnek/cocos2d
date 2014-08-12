@@ -29,7 +29,7 @@
 
   (:import  [com.zotohlab.gallifrey.core Container ConfigError]
             [org.apache.commons.io FileUtils]
-            [com.zotohlab.wflow FlowPoint Activity
+            [com.zotohlab.wflow FlowNode Activity
                                 Pipeline PipelineDelegate PTask Work]
             [com.zotohlab.gallifrey.io WebSockEvent Emitter]
             [com.zotohlab.frwk.io IOUtils XData]
@@ -52,9 +52,7 @@
     (fn [fw ^Job job arg]
       (let [^WebSockEvent evt (.event job)
             ^XData data (.getData evt)
-            ^cmzlabclj.tardis.impl.ext.ContainerAPI
-            co (.container ^Emitter
-                           (.emitter evt)) ]
+            co (.container (.emitter evt)) ]
         (OdinOnEvent (DecodeEvent (.stringify data)
                                   (.getSocket evt)))))
   ))

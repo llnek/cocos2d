@@ -30,7 +30,7 @@
 
   (:import  [com.zotohlab.gallifrey.core Container ConfigError]
             [org.apache.commons.io FileUtils]
-            [com.zotohlab.wflow FlowPoint Activity
+            [com.zotohlab.wflow FlowNode Activity
                                  Pipeline PipelineDelegate PTask Work]
             [com.zotohlab.gallifrey.io HTTPEvent HTTPResult Emitter]
             [com.zotohlab.frwk.io IOUtils XData]
@@ -115,7 +115,6 @@
       (let [tpl (:template (.getv job EV_OPTS))
             ^HTTPEvent evt (.event job)
             ^Emitter src (.emitter evt)
-            ^cmzlabclj.tardis.impl.ext.ContainerAPI
             co (.container src)
             [rdata ct]
             (.loadTemplate co (nsb tpl)
