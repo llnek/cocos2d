@@ -77,7 +77,8 @@
             (var-set gm g)
             (rError ch
                     Events/C_GAME_NOK
-                    "no such game/not network enabled.")))
+                    (str "no such game/not network enabled. id="
+                         (nth arr 0)))))
         ;; maybe get the player?
         (if-let [p (LookupPlayer (nth arr 1)
                                  (nth arr 2)) ]

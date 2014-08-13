@@ -107,8 +107,8 @@
       (setStatus [_ s] (.setf! impl :status s))
       (getStatus [_] (.getf impl :status))
 
-      (isConnected [_] (== Session$Status/CONNECTED
-                           (.getf impl :status)))
+      (isConnected [_] (= Session$Status/CONNECTED
+                          (.getf impl :status)))
       (close [this]
         (locking this
           (when (.isConnected this)

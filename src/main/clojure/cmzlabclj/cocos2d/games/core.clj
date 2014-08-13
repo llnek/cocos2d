@@ -53,7 +53,7 @@
         ^Map bd (.get dm "body")
         ^List jss (.get dm "scripts")
         ^List css (.get dm "stylesheets") ]
-    (.put bd "games" (GetGamesAsList))
+    (.put bd "games" (GetGamesAsListForUI))
     (.put bd "content" "/main/games/games.ftl")
     dm
   ))
@@ -65,7 +65,7 @@
   ^Map
   [^HTTPEvent evt]
 
-  (let [^Map mf (get (GetGamesAsHash) (.getUri evt))
+  (let [mf (get (GetGamesAsHash) (.getUri evt))
         dm (GetDftModel evt)
         ^Map tags (.get dm "metatags")
         ^Map bd (.get dm "body")
@@ -74,12 +74,12 @@
     (.put tags "viewport" "content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\"")
     (.put tags "apple-mobile-web-app-capable" "content=\"yes\"")
     (when-not (nil? mf)
-        (.put tags "screen-orientation" (str "content=\"" (.get mf "orientation") "\""))
-        (.put bd "gameid" (.get mf "uuid")))
+        (.put tags "screen-orientation" (str "content=\"" (:orientation mf) "\""))
+        (.put bd "gameid" (:uuid mf)))
     (.put tags "full-screen" "content=\"yes\"")
     (.put tags "x5-fullscreen" "content=\"true\"")
     (.put tags "360-fullscreen" "content=\"true\"")
-    (.put bd "games" (GetGamesAsList))
+    (.put bd "games" (GetGamesAsListForUI))
     (.put bd "content" "/main/games/arena.ftl")
     dm
   ))
@@ -98,7 +98,7 @@
     (.add css "/public/vendors/owl-carousel/owl.carousel.css")
     (.add css "/public/vendors/owl-carousel/owl.theme.css")
     (.add jss "/public/vendors/owl-carousel/owl.carousel.min.js")
-    (.put bd "picks" (GetGamesAsList))
+    (.put bd "picks" (GetGamesAsListForUI))
     (.put bd "content" "/main/games/picks.ftl")
     dm
   ))

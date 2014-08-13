@@ -51,18 +51,21 @@
   ^Game
   [^String gameid]
 
+  (log/debug "Looking for game with uuid = " gameid)
   (if-let [g (get (GetGamesAsUUID) gameid) ]
-    (let [{flag "enabled" minp "minp" maxp "maxp" eng "engine"
+    ;; inner objects are still normal EDN objects with keywords
+    (let [{flag :enabled minp :minp maxp :maxp eng :engine
            :or {flag false minp 1 maxp 1 eng ""}}
-          (get g "network")]
+          (:network g)]
+      (log/debug "Found game with uuid = " gameid)
       (reify Game
         (maxPlayers [_] (if (> maxp 0) (int maxp) Integer/MAX_VALUE))
         (minPlayers [_] (if (> minp 0) (int minp) (int 1)))
         (supportMultiPlayers [_] (true? flag))
-        (getName [_] (get g "name"))
+        (getName [_] (:name g))
         (engineClass [_] eng)
         (info [_] g)
-        (id [_] (get g "uuid"))
+        (id [_] (:uuid g))
         ;;TODO: unload is an extreme action, what about the
         ;;game rooms???
         (unload [_] nil)))
