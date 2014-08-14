@@ -120,6 +120,11 @@ ttt.HUDLayer = asterix.XGameHUDLayer.extend({
     cw= ccsx.center(),
     wz= ccsx.screen();
 
+    if (this.countDownState) {
+      // timer is already showing, go away
+      return;
+    }
+
     if (! this.countDown) {
       this.countDown= ccsx.bmfLabel({
         fontPath: sh.getFontPath('font.TinyBoxBB'),
