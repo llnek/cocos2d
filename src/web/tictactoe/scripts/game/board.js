@@ -40,10 +40,26 @@ var tttBoard= sjs.Class.xtends({
   getNilValue: function() { return this.CV_Z; },
   getState: function() { return this.grid; },
 
+  getOtherPlayer: function(color) {
+    if (color === this.actors[1]) {
+      return this.actors[2];
+    }
+    else if (color === this.actors[2]) {
+      return this.actors[1];
+    } else {
+      return null;
+    }
+  },
+
+  forfeit: function() {
+    this.finz();
+  },
+
   delay: function(millis) {
     this.gameInProgress=false;
     setTimeout(function() {
       this.gameInProgress=true;
+      sh.fireEvent('/game/board/activated',{});
     }.bind(this), millis);
   },
 
@@ -311,17 +327,6 @@ var tttNonNetBoard= tttBoard.xtends({
     var t = snapshot.cur;
     snapshot.cur= snapshot.other;
     snapshot.other=t;
-  },
-
-  getOtherPlayer: function(color) {
-    if (color === this.actors[1]) {
-      return this.actors[2];
-    }
-    else if (color === this.actors[2]) {
-      return this.actors[1];
-    } else {
-      return null;
-    }
   },
 
   takeSnapshot: function() {

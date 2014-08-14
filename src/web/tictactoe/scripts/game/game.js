@@ -250,6 +250,12 @@ var GameLayer = asterix.XGameLayer.extend({
   // added to the
   // queue, such as drawing the icon , playing a sound...etc
     this.board.enqueue(cmd, function(cmd, status, np) {
+
+      if (status === 'bogus') {} else {
+        // kill the last timer
+        this.getHUD().killTimer();
+      }
+
       if (status === 'next') {
         this.actions.push([cmd, status]);
         // there is a next, so move was valid and game has not ended.
@@ -260,6 +266,9 @@ var GameLayer = asterix.XGameLayer.extend({
                                             cc.CallFunc.create(function() {
                                               this.move(Cmd(np,np.takeTurn()));
                                             },this)));
+        } else {
+          // if hunman player, start the timer
+          this.getHUD().showTimer();
         }
       }
       else if (status === 'winner') {
@@ -451,6 +460,20 @@ var GameLayer = asterix.XGameLayer.extend({
     }
   },
 
+  playBoardReady: function() {
+    var cur = this.board.curActor();
+    if (!cur.isRobot()) {
+      this.getHUD().showTimer();
+    }
+  },
+
+  playTimeExpired: function(msg) {
+    var winner=this.board.getOtherPlayer(this.board.curActor());
+    var cmd= [winner,[]];
+    this.board.forfeit();
+    this.actions.push([cmd, "winner"]);
+  },
+
   getHUD: function() {
     return cc.director.getRunningScene().layers['HUD'];
   },
@@ -479,6 +502,12 @@ asterix.TicTacToe.Factory = {
       });
       scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
         sh.main.replay();
+      });
+      scene.ebus.on('/game/player/timer/expired',function(t,msg) {
+        sh.main.playTimeExpired(msg);
+      });
+      scene.ebus.on('/game/board/activated',function(t,msg) {
+        sh.main.playBoardReady();
       });
     }
     return scene;

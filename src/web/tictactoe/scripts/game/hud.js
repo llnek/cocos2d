@@ -112,6 +112,59 @@ ttt.HUDLayer = asterix.XGameHUDLayer.extend({
       visible: false
     });
     this.addItem(this.result);
+
+  },
+
+  showTimer: function() {
+    var csts = sh.xcfg.csts,
+    cw= ccsx.center(),
+    wz= ccsx.screen();
+
+    if (! this.countDown) {
+      this.countDown= ccsx.bmfLabel({
+        fontPath: sh.getFontPath('font.TinyBoxBB'),
+        text: '',
+        scale: 20/72,
+        color: cc.color(255,255,255), // 0xff6600;
+        pos: cc.p(wz.width/2,
+                  wz.height - csts.TILE - csts.S_OFF - 40),
+        anchor: ccsx.AnchorCenter
+      });
+      this.addItem(this.countDown);
+    }
+
+    this.countDownValue= 5;
+    this.countDown.setString('' + this.countDownValue);
+
+    this.schedule(this.updateTimer,1.0);
+    this.countDownState= true;
+  },
+
+  updateTimer: function(dt) {
+
+    if (!this.countDownState) {
+      return;
+    }
+
+    this.countDownValue -= 1;
+    if (this.countDownValue < 0) {
+      this.killTimer();
+      sh.fireEvent('/game/player/timer/expired', {});
+    }
+    else if (this.countDown) {
+      this.countDown.setString('' + this.countDownValue);
+    }
+  },
+
+  killTimer: function() {
+    if (this.countDownState) {
+      this.unschedule(this.updateTimer);
+      this.countDown.setString('');
+      //this.removeItem(this.countDown);
+    }
+    this.countDownState=false;
+    this.countDownValue=0;
+    //this.countDown=null;
   },
 
   updateScore: function(p, value) {
