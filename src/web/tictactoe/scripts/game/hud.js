@@ -18,6 +18,7 @@ sjs = global.SkaroJS,
 ttt= asterix.TicTacToe;
 
 var NILFUNC=function() {};
+var PLAYER_THINK_TIME= 7;
 
 //////////////////////////////////////////////////////////////////////////////
 // back layer
@@ -138,7 +139,7 @@ ttt.HUDLayer = asterix.XGameHUDLayer.extend({
       this.addItem(this.countDown);
     }
 
-    this.countDownValue= 5;
+    this.countDownValue= PLAYER_THINK_TIME;
     this.countDown.setString('' + this.countDownValue);
 
     this.schedule(this.updateTimer,1.0);

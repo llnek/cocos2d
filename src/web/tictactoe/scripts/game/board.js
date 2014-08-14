@@ -114,6 +114,7 @@ var tttNetBoard= tttBoard.xtends({
   },
 
   onEnqueue: function(cmd,cb) {
+    cb=null; //ignored
     var src= {
       color: cmd.actor.color,
       value: cmd.actor.value,

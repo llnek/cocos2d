@@ -89,10 +89,12 @@ var GameLayer = asterix.XGameLayer.extend({
     switch (evt.code) {
       case evts.C_RESTART:
         sjs.loggr.debug("restarting a new game...");
+        this.getHUD().killTimer();
         this.play(false);
       break;
       case evts.C_STOP:
         sjs.loggr.debug("game will stop");
+        this.getHUD().killTimer();
         this.onStop(evt);
       break;
       default:
@@ -119,12 +121,13 @@ var GameLayer = asterix.XGameLayer.extend({
       case evts.C_POKE_MOVE:
         sjs.loggr.debug("player " + pnum + ": my turn to move");
         this.actor= this.players[pnum];
+        this.getHUD().showTimer();
         this.board.toggleActor(Cmd(this.actor));
       break;
       case evts.C_POKE_WAIT:
-        // move state to wait for other
         sjs.loggr.debug("player " + pnum + ": my turn to wait");
         this.actor = this.players[pnum===1 ? 2 : 1];
+        this.getHUD().killTimer();
         this.board.toggleActor(Cmd(this.actor));
       break;
     }
@@ -147,6 +150,7 @@ var GameLayer = asterix.XGameLayer.extend({
     var state0= this.options.seed_data,
     ncells= state0.size*state0.size,
     csts= sh.xcfg.csts,
+    delay,
     p1ids, p2ids,
     p1= null,
     p2= null;
@@ -214,7 +218,7 @@ var GameLayer = asterix.XGameLayer.extend({
     }
 
     // add a delay to prevent clicking too early.
-    this.board.delay(1500);
+    this.board.delay(1000);
   },
 
   onNewGame: function(mode) {
@@ -390,6 +394,7 @@ var GameLayer = asterix.XGameLayer.extend({
 
   doDone: function(p,combo) {
     this.showWinningIcons(combo);
+    this.getHUD().killTimer();
     sh.sfxPlay('game_end');
     this.getHUD().endGame();
     this.lastWinner = p;
@@ -461,9 +466,11 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   playBoardReady: function() {
-    var cur = this.board.curActor();
-    if (!cur.isRobot()) {
-      this.getHUD().showTimer();
+    if (_.isObject(this.options.wsock)) {} else {
+      var cur = this.board.curActor();
+      if (!cur.isRobot()) {
+        this.getHUD().showTimer();
+      }
     }
   },
 
