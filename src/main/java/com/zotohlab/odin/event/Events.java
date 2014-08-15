@@ -37,6 +37,8 @@ public interface Events {
   public static final long C_JOINREQ_OK          = 31L;
 
   public static final long C_AWAIT_START         = 40L;
+  public static final long C_SYNC_ARENA          = 45;
+  public static final long C_POKE_RUMBLE         = 46;
 
   public static final long C_RESTART                 = 50L;
   public static final long C_START               = 51L;

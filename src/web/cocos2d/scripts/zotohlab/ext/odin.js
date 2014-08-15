@@ -36,6 +36,8 @@ C_PLAYREQ_OK          : 30,
 C_JOINREQ_OK          : 31,
 
 C_AWAIT_START         : 40,
+C_SYNC_ARENA          : 45,
+C_POKE_RUMBLE         : 46,
 
 C_RESTART             : 50,
 C_START               : 51,

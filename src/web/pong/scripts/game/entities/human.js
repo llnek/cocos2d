@@ -53,7 +53,18 @@ png.EntityHuman = png.EntityPaddle.xtends({
 });
 
 
+png.NetPlayer = png.EntityHuman.xtends({
 
+  setWEBSock: function(wss) {
+    this.wss=wss;
+  },
+
+  ctor: function(x,y,options) {
+    this._super(x,y,options);
+    this.wss=null;
+  }
+
+});
 
 }).call(this);
 

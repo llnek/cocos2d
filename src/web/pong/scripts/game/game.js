@@ -17,12 +17,100 @@ ccsx= asterix.COCOS2DX,
 png= asterix.Pong,
 sjs= global.SkaroJS;
 
+var Odin= global.ZotohLab.Odin,
+evts= Odin.Events;
+
+
 
 //////////////////////////////////////////////////////////////////////////////
 // game layer
 //////////////////////////////////////////////////////////////////////////////
 
 var GameLayer = asterix.XGameLayer.extend({
+
+  // get an odin event, first level callback
+  onevent: function(topic, evt) {
+
+    sjs.loggr.debug(evt);
+
+    switch (evt.type) {
+      case evts.NETWORK_MSG:
+        this.onNetworkEvent(evt);
+      break;
+      case evts.SESSION_MSG:
+        this.onSessionEvent(evt);
+      break;
+    }
+  },
+
+  onStop: function(evt) {
+
+    this.maybeUpdateActions(evt);
+
+    switch (evt.source.status) {
+      case 2:
+        this.actions.push([[ this.board.getPlayer2(),
+                             evt.source.combo ], 'winner'] );
+      break;
+      case 1:
+        this.actions.push([[ this.board.getPlayer1(),
+                             evt.source.combo ], 'winner'] );
+      break;
+      case 0:
+        this.actions.push([null, 'draw' ]);
+      break;
+      default:
+        throw new Error("onStop has bad status.");
+      break;
+    }
+  },
+
+  onNetworkEvent: function(evt) {
+    switch (evt.code) {
+      case evts.C_RESTART:
+        sjs.loggr.debug("restarting a new game...");
+        this.getHUD().killTimer();
+        this.play(false);
+      break;
+      case evts.C_STOP:
+        sjs.loggr.debug("game will stop");
+        this.getHUD().killTimer();
+        this.onStop(evt);
+      break;
+      default:
+        //TODO: fix this hack
+        this.onSessionEvent(evt);
+      break;
+    }
+  },
+
+  onSessionEvent: function(evt) {
+    var pnum= _.isNumber(evt.source.pnum) ? evt.source.pnum : -1;
+    this.actor= this.players[pnum];
+    switch (evt.code) {
+      case evts.C_POKE_RUMBLE:
+        sjs.loggr.debug("activate arena, start to rumble!");
+      break;
+      case evts.C_SYNC_ARENA:
+        sjs.loggr.debug("synchronize ui as defined by server.");
+      break;
+    }
+  },
+
+  replay: function() {
+    if (_.isObject(this.options.wsock)) {
+      // request server to restart a new game
+      this.options.wsock.send({
+        type: evts.SESSION_MSG,
+        code: evts.C_REPLAY
+      });
+    } else {
+      this.play(false);
+    }
+  },
+
+
+
 
   getHUD: function() {
     return cc.director.getRunningScene().layers['HUD'];
@@ -39,10 +127,6 @@ var GameLayer = asterix.XGameLayer.extend({
   initBallSize: function() {
     var dummy= cc.Sprite.create(sh.getImagePath('gamelevel1.images.ball'));
     return this.ballSize = dummy.getContentSize();
-  },
-
-  replay: function() {
-    this.play(false);
   },
 
   play: function(newFlag) {
@@ -100,9 +184,18 @@ var GameLayer = asterix.XGameLayer.extend({
     this.getHUD().regoPlayers(p1,p1ids,p2,p2ids);
     this.players= [null, p1, p2];
 
-    if (this.options.mode !== 3) {
-      this.prepareGameEntities();
+    if (this.options.wsock) {
+      // online play
+      sjs.loggr.debug("reply to server: session started ok");
+      this.options.wsock.unsubscribeAll();
+      this.options.wsock.subscribeAll(this.onevent,this);
+      this.options.wsock.send({
+        type: evts.SESSION_MSG,
+        code: evts.C_STARTED
+      });
     }
+
+    this.prepareGameEntities();
   },
 
   prepareGameEntities: function() {
@@ -113,10 +206,16 @@ var GameLayer = asterix.XGameLayer.extend({
 
   spawnBall: function() {
     var cw= ccsx.center();
-    this.ball = new png.EntityBall( cw.x, cw.y, {});
-    if (this.players[2].isRobot()) {
-      this.players[2].bindBall(this.ball);
+
+    if (this.options.wsock) {
+      this.ball = new png.NetBall( cw.x, cw.y, {});
+    } else {
+      this.ball = new png.EntityBall( cw.x, cw.y, {});
+      if (this.players[2].isRobot()) {
+        this.players[2].bindBall(this.ball);
+      }
     }
+
     this.addItem(this.ball.create());
   },
 
