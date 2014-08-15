@@ -5,7 +5,7 @@
   <div class="row">
   <div class="col-lg-4 col-lg-offset-4">
 
-    <form id="forgot-form" action="/wsapi/zYiYPtaY-Pvz7-4t7c-iaVY-vcaunnGtpVcP" method="POST" role="form">
+    <form id="forgot-form" action="/wsapi/2284fc6c-40d1-4e52-8fb8-20ee0f7a992f" method="POST" role="form">
         <fieldset>
 
           <input data-name="csrf_token" type="hidden" name="csrf_token" value="${body.csrf}"></input>

@@ -9,11 +9,20 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._  ,
-asterix = global.ZotohLab.Asterix,
+(function (undef) { "use strict"; var global= this, _ = global._ ;
+
+var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
-SkaroJS= global.SkaroJS;
+sjs= global.SkaroJS;
+
+var SEED= {
+  seed_data: {
+    players: { }
+  },
+  pnum: 1,
+  mode: 0
+};
 
 //////////////////////////////////////////////////////////////////////////////
 // Main menu.
@@ -24,6 +33,7 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
   pkInit: function() {
     var dir= cc.director,
     csts = sh.xcfg.csts,
+    pobj1, pobj2,
     cw = ccsx.center(),
     wz = ccsx.screen();
 
@@ -31,30 +41,45 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
       fontPath: sh.getFontPath('font.OogieBoogie'),
       text: sh.l10n('%online'),
       selector: function() {
-        sh.fireEvent('/mmenu/controls/newgame', { mode: 3});
+        sh.fireEvent('/mmenu/controls/online',
+                     sjs.merge(sjs.merge({},SEED), { mode: 3 }));
       },
       target: this,
       scale: 0.5,
       pos: cc.p(114, wz.height - csts.TILE * 18 - 2)
     }));
 
+    pobj2={};
+    pobj2[ sh.l10n('%p1') ] = [ 1, sh.l10n('%player1') ];
+    pobj2[ sh.l10n('%p2') ] = [ 2, sh.l10n('%player2') ];
+
     this.addItem(ccsx.tmenu1({
       fontPath: sh.getFontPath('font.OogieBoogie'),
       text: sh.l10n('%2players'),
       scale: 0.5,
       selector: function() {
-        sh.fireEvent('/mmenu/controls/newgame', { mode: 2});
+        sh.fireEvent('/mmenu/controls/newgame',
+                     sjs.merge(sjs.merge({},SEED), { seed_data: {
+                       players: pobj2
+                     }, mode: 2}));
       },
       target: this,
       pos: cc.p(cw.x + 68, wz.height - csts.TILE * 28 - 4)
     }));
+
+    pobj1={};
+    pobj1[ sh.l10n('%cpu') ] = [ 2, sh.l10n('%computer') ];
+    pobj1[ sh.l10n('%p1') ] = [ 1,  sh.l10n('%player1') ];
 
     this.addItem(ccsx.tmenu1({
       fontPath: sh.getFontPath('font.OogieBoogie'),
       text: sh.l10n('%1player'),
       scale: 0.5,
       selector: function() {
-        sh.fireEvent('/mmenu/controls/newgame', { mode: 1});
+        sh.fireEvent('/mmenu/controls/newgame',
+                     sjs.merge(sjs.merge({},SEED), { seed_data: {
+                       players: pobj1
+                     }, mode: 1}));
       },
       target: this,
       pos: cc.p(cw.x, csts.TILE * 19)
@@ -70,17 +95,37 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
 sh.protos['MainMenu'] = {
 
   create: function(options) {
-    var scene = new asterix.XSceneFactory({
-      layers: [
-        asterix.XMenuBackLayer,
-        MainMenuLayer
-      ]
-    }).create(options);
+
+    var fac= asterix.Pong.Factory,
+    dir=cc.director,
+    scene = new asterix.XSceneFactory([
+      asterix.XMenuBackLayer,
+      MainMenuLayer
+    ]).create(options);
+
     if (scene) {
+
       scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
-        cc.director.runScene( asterix.Pong.Factory.create(msg));
+        dir.runScene( fac.create(msg));
       });
+
+      scene.ebus.on('/mmenu/controls/online', function(topic, msg) {
+        msg.onBack=function() {
+          dir.runScene( sh.protos['MainMenu'].create());
+        };
+        msg.yes=function(wss,pnum,startmsg) {
+          var m= _.extend( _.omit(msg, 'yes', 'onBack'), {
+            wsock: wss,
+            pnum: pnum
+          });
+          m.seed_data.players = startmsg.players;
+          dir.runScene( fac.create(m));
+        }
+        dir.runScene( sh.protos['OnlinePlay'].create(msg));
+      });
+
     }
+
     return scene;
   }
 

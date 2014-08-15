@@ -9,10 +9,12 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._ ,
-asterix = global.ZotohLab.Asterix,
+(function (undef) { "use strict"; var global= this, _ = global._ ;
+
+var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
-SkaroJS= global.SkaroJS;
+sjs= global.SkaroJS;
+
 
 asterix.Pong= {};
 
@@ -20,7 +22,7 @@ asterix.Pong= {};
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.xcfg = SkaroJS.merge( asterix.XConfig, {
+sh.xcfg = sjs.merge( asterix.XConfig, {
 
   appid: 'pong',
   color: 'green',
@@ -85,6 +87,7 @@ global.document.ccConfig.init(sh.xcfg.appid, [
       'game/pong/entities/ball.js',
       'game/pong/entities/human.js',
       'game/pong/entities/robot.js',
+      'game/pong/hud.js',
       'game/pong/game.js',
       'game/pong/mmenu.js',
       'game/pong/splash.js'

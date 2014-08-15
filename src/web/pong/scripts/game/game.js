@@ -9,180 +9,14 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global=this, _ = global._ ,
-asterix = global.ZotohLab.Asterix,
+(function(undef) { "use strict"; var global=this, _ = global._ ;
+
+var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
 ccsx= asterix.COCOS2DX,
 png= asterix.Pong,
-SkaroJS= global.SkaroJS;
+sjs= global.SkaroJS;
 
-//////////////////////////////////////////////////////////////////////////////
-// back layer
-//////////////////////////////////////////////////////////////////////////////
-
-var BackLayer = asterix.XLayer.extend({
-
-  pkInit: function() {
-    var map = cc.TMXTiledMap.create(sh.getTilesPath('gamelevel1.tiles.arena'));
-    this.addItem(map);
-    return this._super();
-  },
-
-  pkInput: function() {},
-
-  rtti: function() {
-    return 'BackLayer';
-  }
-
-});
-
-//////////////////////////////////////////////////////////////////////////////
-// HUD layer
-//////////////////////////////////////////////////////////////////////////////
-
-var HUDLayer = asterix.XGameHUDLayer.extend({
-
-  scores:  { 'O': 0, 'X': 0 },
-  mode: 0,
-  MAX_SCORE: 3, //11,
-
-  p2Long: sh.l10n('%player2'),
-  p1Long: sh.l10n('%player1'),
-
-  p2ID: '',
-  p1ID: '',
-
-  setGameMode: function(mode) {
-    var csts = sh.xcfg.csts,
-    cw= ccsx.center(),
-    wz= ccsx.screen();
-
-    this.p2ID= sh.l10n('%p2');
-    this.p1ID= sh.l10n('%p1');
-    if (mode === 1) {
-      this.p2Long= sh.l10n('%computer');
-      this.p2ID= sh.l10n('%cpu');
-    }
-    this.mode= mode;
-    this.title.setString(this.p1ID + " / " + this.p2ID);
-    this.score1.setPosition( cw.x - ccsx.getScaledWidth(this.title)/2 -
-                             ccsx.getScaledWidth(this.score1)/2 - 10,
-                             wz.height - csts.TILE * 6 /2 - 2);
-    this.score2.setPosition( cw.x + ccsx.getScaledWidth(this.title)/2 +
-                             ccsx.getScaledWidth(this.score2)/2 + 6,
-                             wz.height - csts.TILE * 6 /2 - 2);
-  },
-
-  initParentNode: function() {},
-
-  regoPlayers: function(p1,p2) {
-    this.play2= p2;
-    this.play1= p1;
-  },
-
-  resetAsNew: function() {
-    //this.scores=  { 'O': 0, 'X': 0 };
-    this.reset();
-  },
-
-  reset: function() {
-    this.scores=  { 'O': 0, 'X': 0 };
-    this.replayBtn.setVisible(false);
-    this.resultMsg.setVisible(false);
-    this.drawScores();
-  },
-
-  endGame: function() {
-    this.replayBtn.setVisible(true);
-    this.resultMsg.setVisible(true);
-  },
-
-  initLabels: function() {
-    var csts = sh.xcfg.csts,
-    cw= ccsx.center(),
-    wz = ccsx.screen();
-
-    this.title= ccsx.bmfLabel({
-      fontPath: sh.getFontPath('font.TinyBoxBB'),
-      text: '',
-      scale: 12/72,
-      pos: cc.p( cw.x, wz.height - csts.TILE * 6 /2 )
-    });
-    this.addItem(this.title);
-
-    this.score1= ccsx.bmfLabel({
-      fontPath: sh.getFontPath('font.OCR'),
-      text: '8',
-      scale: 36/72,
-      color: cc.color(255,0,0)
-    });
-    this.addItem(this.score1);
-
-    this.score2= ccsx.bmfLabel({
-      fontPath: sh.getFontPath('font.OCR'),
-      text: '8',
-      scale: 36/72,
-      color: cc.color(106, 190, 97) //#6abe61
-    });
-    this.addItem(this.score2);
-
-    this.resultMsg = ccsx.bmfLabel({
-      fontPath: sh.getFontPath('font.TinyBoxBB'),
-      text: '',
-      visible: false,
-      pos: cc.p(cw.x,  100),
-      scale: 24/72
-    });
-    this.addItem(this.resultMsg);
-
-  },
-
-  initCtrlBtns: function() {
-    this._super(28/48, cc.ALIGN_TOP);
-  },
-
-  initIcons: function() {
-  },
-
-  rtti: function() {
-    return 'HUD';
-  },
-
-  isDone: function() {
-    var s2= this.scores[this.play2.color],
-    s1= this.scores[this.play1.color],
-    rc= [false, null];
-
-    if (s2 >= this.MAX_SCORE) { rc = [ true, this.play2]; }
-    if (s1 >= this.MAX_SCORE) { rc = [ true, this.play1]; }
-    return rc;
-  },
-
-  updateScore: function(actor,value) {
-    this.scores[actor.color] = this.scores[actor.color] + value;
-    this.drawScores();
-  },
-
-  drawScores: function() {
-    var s2 = this.play2 ? this.scores[this.play2.color] : 0,
-    s1 = this.play1 ? this.scores[this.play1.color] : 0,
-    n2 = SkaroJS.prettyNumber(s2,1),
-    n1 = SkaroJS.prettyNumber(s1,1);
-    this.score1.setString(n1);
-    this.score2.setString(n2);
-  },
-
-  drawResult: function(winner) {
-    var msg="";
-    switch (winner.color) {
-      case 'O': msg= sh.l10n('%whowin', { who: this.p2Long}); break;
-      case 'X': msg= sh.l10n('%whowin', { who: this.p1Long}); break;
-    }
-    this.resultMsg.setString(msg);
-  }
-
-
-});
 
 //////////////////////////////////////////////////////////////////////////////
 // game layer
@@ -212,35 +46,68 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   play: function(newFlag) {
-    var ps = this.initPaddleSize(),
+    var state0= this.options.seed_data,
+    ps = this.initPaddleSize(),
     bs = this.initBallSize(),
     csts= sh.xcfg.csts,
     cw= ccsx.center(),
     wz= ccsx.screen(),
+    p2ids,p1ids,
     p2,p1,
     p1x,p2x;
 
+    // sort out names of players
+    _.each(state0.players,function(v,k) {
+      if (v[0] === 1) {
+        p1ids= [k, v[1] ];
+      } else {
+        p2ids= [k, v[1] ];
+      }
+    });
+
+
+    // position of paddles
     p2x = wz.width - csts.TILE - 4 - bs.width - ps.width/2;
     p1x = csts.TILE + bs.width + 4 + ps.width/2;
+
+    // start with clean slate
     this.reset(newFlag);
 
-    p1 = new png.EntityHuman( p1x, cw.y, { color: 'X' });
-    p2= null;
-    switch (csts.GAME_MODE) {
+    p2=null;
+    p1=null;
+    // based on mode, create the 2 players
+    //switch (sh.xcfg.csts.GAME_MODE) {
+    switch (this.options.mode) {
       case 1:
-      p2 = new png.EntityRobot( p2x, cw.y, { color: 'O' });
+        p2 = new png.EntityRobot(p2x, cw.y, { color: 'O' });
+        p1 = new png.EntityHuman(p1x, cw.y, { color: 'X' });
       break;
       case 2:
-      p2 = new png.EntityHuman( p2x, cw.y, { color: 'O' });
+        p2 = new png.EntityHuman(p2x, cw.y, { color: 'O' });
+        p1 = new png.EntityHuman(p1x, cw.y, { color: 'X' });
       break;
       case 3:
+        p2 = new png.NetPlayer(p2x, cw.y, { color: 'O' });
+        p1 = new png.NetPlayer(p1x, cw.y, { color: 'X' });
+        if (this.options.pnum === 1) {
+          p1.setWEBSock(this.options.wsock);
+        } else {
+          p2.setWEBSock(this.options.wsock);
+        }
       break;
-    };
+    }
 
-    this.getHUD().regoPlayers(p1,p2);
-    this.players= [ null, p1, p2];
-    this.addItem(p1.create());
-    this.addItem(p2.create());
+    this.getHUD().regoPlayers(p1,p1ids,p2,p2ids);
+    this.players= [null, p1, p2];
+
+    if (this.options.mode !== 3) {
+      this.prepareGameEntities();
+    }
+  },
+
+  prepareGameEntities: function() {
+    this.addItem(this.players[1].create());
+    this.addItem(this.players[2].create());
     this.spawnBall();
   },
 
@@ -253,7 +120,7 @@ var GameLayer = asterix.XGameLayer.extend({
     this.addItem(this.ball.create());
   },
 
-  newGame: function(mode) {
+  onNewGame: function(mode) {
     //sh.xcfg.sfxPlay('start_game');
     this.setGameMode(mode);
     this.play(true);
@@ -303,7 +170,7 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   operational: function() {
-    return SkaroJS.echt(this.ball);
+    return sjs.echt(this.ball);
   },
 
   onWinner: function(p) {
@@ -343,13 +210,13 @@ var GameLayer = asterix.XGameLayer.extend({
 asterix.Pong.Factory = {
 
   create: function(options) {
-    var scene = new asterix.XSceneFactory({
-      layers: [
-        BackLayer,
-        GameLayer,
-        HUDLayer
-      ]
-    }).create(options);
+
+    var scene = new asterix.XSceneFactory([
+      png.BackLayer,
+      GameLayer,
+      png.HUDLayer
+    ]).create(options);
+
     if (scene) {
       scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
         asterix.XMenuLayer.onShowMenu();
