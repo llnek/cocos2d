@@ -149,6 +149,7 @@ var GameLayer = asterix.XGameLayer.extend({
       }
     });
 
+
     // position of paddles
     p2x = wz.width - csts.TILE - 4 - bs.width - ps.width/2;
     p1x = csts.TILE + bs.width + 4 + ps.width/2;
@@ -164,12 +165,10 @@ var GameLayer = asterix.XGameLayer.extend({
       case 1:
         p2 = new png.EntityRobot(p2x, cw.y, { color: 'O' });
         p1 = new png.EntityHuman(p1x, cw.y, { color: 'X' });
-        this.arena = new png.NonNetArena();
       break;
       case 2:
         p2 = new png.EntityHuman(p2x, cw.y, { color: 'O' });
         p1 = new png.EntityHuman(p1x, cw.y, { color: 'X' });
-        this.arena = new png.NonNetArena();
       break;
       case 3:
         p2 = new png.NetPlayer(p2x, cw.y, { color: 'O' });
@@ -179,13 +178,11 @@ var GameLayer = asterix.XGameLayer.extend({
         } else {
           p2.setWEBSock(this.options.wsock);
         }
-        this.arena = new png.NetArena();
       break;
     }
 
     this.getHUD().regoPlayers(p1,p1ids,p2,p2ids);
     this.players= [null, p1, p2];
-    this.arena.registerPlayers(this,p1,p2);
 
     if (this.options.wsock) {
       // online play
@@ -196,10 +193,30 @@ var GameLayer = asterix.XGameLayer.extend({
         type: evts.SESSION_MSG,
         code: evts.C_STARTED
       });
-    } else {
-      this.arena.startRumble();
     }
 
+    this.prepareGameEntities();
+  },
+
+  prepareGameEntities: function() {
+    this.addItem(this.players[1].create());
+    this.addItem(this.players[2].create());
+    this.spawnBall();
+  },
+
+  spawnBall: function() {
+    var cw= ccsx.center();
+
+    if (this.options.wsock) {
+      this.ball = new png.NetBall( cw.x, cw.y, {});
+    } else {
+      this.ball = new png.EntityBall( cw.x, cw.y, {});
+      if (this.players[2].isRobot()) {
+        this.players[2].bindBall(this.ball);
+      }
+    }
+
+    this.addItem(this.ball.create());
   },
 
   onNewGame: function(mode) {
@@ -223,31 +240,53 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   updateEntities: function(dt) {
-    this.arena.updateEntities(dt);
+    this.players[2].update(dt);
+    this.players[1].update(dt);
+    this.ball.update(dt);
   },
 
   checkEntities: function() {
-    this.arena.checkEntities();
+    var p2 = this.players[2],
+    p1 = this.players[1],
+    bs = this.ball.sprite,
+    bp= bs.getPosition();
+
+    if ( bp.x < ccsx.getLeft(p1.sprite)) {
+      this.onWinner(p2);
+    }
+    else
+    if (bp.x > ccsx.getRight(p2.sprite)) {
+      this.onWinner(p1);
+    }
+    else
+    if (ccsx.collide(p2,this.ball)) {
+      p2.check(this.ball);
+    }
+    else
+    if ( ccsx.collide(p1,this.ball)) {
+      p1.check(this.ball);
+    }
   },
 
   operational: function() {
-    return this.arena && this.arena.isActive();
+    return sjs.echt(this.ball);
   },
 
   onWinner: function(p) {
     this.getHUD().updateScore(p,1);
+    this.ball.dispose();
+    this.ball=null;
     var rc= this.getHUD().isDone();
     if (rc[0]) {
       this.doDone( rc[1] );
     } else {
-      this.arena.spawnNewBall();
+      this.spawnBall();
     }
   },
 
   doDone: function(p) {
     this.getHUD().drawResult(p);
     this.getHUD().endGame();
-    this.arena.finz();
     sh.sfxPlay('game_end');
   },
 

@@ -34,7 +34,7 @@ var Cmd= {
 
 var pngArena = sjs.Class.xtends({
 
-  gameInProgress; false,
+  gameInProgress: false,
   actors: [],
   ball: null,
 
@@ -42,16 +42,53 @@ var pngArena = sjs.Class.xtends({
     this.gameInProgress = false;
   },
 
+  isActive: function() {
+    return this.gameInProgress;
+  },
+
+  startRumble: function() {
+    this.gameInProgress= true;
+  },
+
   finz: function() {
+    this.actors[2].dispose();
+    this.actors[1].dispose();
     this.onStopReset();
     this.actors=[null,null,null];
+    this.ball=null;
   },
 
   getPlayer2: function() { return this.actors[2]; },
   getPlayer1: function() { return this.actors[1]; },
 
-  registerPlayers: function(p1,p2) {
+  registerPlayers: function(ctx,p1,p2) {
     this.actors= [null, p1, p2];
+    this.ctx=ctx;
+    this.prepareGameEntities();
+  },
+
+  prepareGameEntities: function() {
+    this.ctx.addItem(this.actors[1].create());
+    this.ctx.addItem(this.actors[2].create());
+    this.spawnBall();
+  },
+
+  disposeBall: function() {
+    if (this.ball) {
+      this.ball.dispose();
+    }
+    this.ball=null;
+  },
+
+  spawnNewBall: function() {
+    this.spawnBall();
+  },
+
+  spawnBall: function() {
+    var cw= ccsx.center();
+
+    this.doSpawnBall(cw.x, cw.y, {});
+    this.ctx.addItem(this.ball.create());
   },
 
   getOtherPlayer: function(color) {
@@ -63,6 +100,10 @@ var pngArena = sjs.Class.xtends({
     } else {
       return null;
     }
+  },
+
+  updateEntities: function(dt) {
+    this.doUpdateWorld(dt);
   },
 
   checkEntities: function() {
@@ -86,7 +127,17 @@ var pngArena = sjs.Class.xtends({
 
 });
 
-var png.NetArena = pngArena.xtends({
+png.NetArena = pngArena.xtends({
+
+  startRumble: function() {
+    sjs.loggr.debug("reply to server: session started ok");
+    this.ctx.options.wsock.unsubscribeAll();
+    this.ctx.options.wsock.subscribeAll(this.onevent,this);
+    this.ctx.options.wsock.send({
+      type: evts.SESSION_MSG,
+      code: evts.C_STARTED
+    });
+  },
 
   doCheckWorld: function() {
   },
@@ -95,29 +146,37 @@ var png.NetArena = pngArena.xtends({
     // update move to server
   },
 
+  doSpawnBall: function(x,y,options) {
+    this.ball = new png.NetBall(x,y,options);
+  },
+
   isOnline: function() { return true; }
 
 });
 
-var png.NonNetArena = pngArena.xtends({
+png.NonNetArena = pngArena.xtends({
+
+  doUpdateWorld: function(dt) {
+    this.actors[2].update(dt);
+    this.actors[1].update(dt);
+    this.ball.update(dt);
+  },
 
   doCheckWorld: function(dt) {
     var p1= this.actors[1];
     var p2= this.actors[2];
 
-    p1.update(dt);
-    p2.update(dt);
-    this.ball.update(dt);
-
     var bs = this.ball.sprite,
     bp= bs.getPosition();
 
     if ( bp.x < ccsx.getLeft(p1.sprite)) {
-      this.onWinner(p2);
+      this.disposeBall();
+      this.ctx.onWinner(p2);
     }
     else
     if (bp.x > ccsx.getRight(p2.sprite)) {
-      this.onWinner(p1);
+      this.disposeBall();
+      this.ctx.onWinner(p1);
     }
     else
     if (ccsx.collide(p2,this.ball)) {
@@ -132,6 +191,13 @@ var png.NonNetArena = pngArena.xtends({
 
   onEnqueue: function(cmd) {
     cmd.actor.update(cmd.move);
+  },
+
+  doSpawnBall: function(x,y,options) {
+    this.ball = new png.EntityBall( x, y, options);
+    if (this.actors[2].isRobot()) {
+        this.actors[2].bindBall(this.ball);
+    }
   },
 
   isOnline: function() { return false; }
