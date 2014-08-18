@@ -82,145 +82,95 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- gameLoop ""
+(defn- startGameLoop ""
 
-  []
+  [framesPerSec options]
 
-  (with-local-vars [lastTick (System/currentTimeMillis)
-                    lastBallUpdate 0
-                    thisTick 0]
-    (while m_isGameRunning
-      (var-set thisTick (System/currentTimeMillis))
-      ;; --- update the game with the difference
-      ;;in ms since the
-      ;; --- last tick
-      (let [diff (- @thisTick @lastTick)]
-        (var-set lastBallUpdate (+ @lastBallUpdate diff))
-        (update diff))
-      (var-set lastTick @thisTick)
-
-      ;; --- check if time to send a ball update
-      (if (> @lastBallUpdate BALL_UPDATE_INTERVAL)
-        (sendBallUpdate)
-        (var-set lastBallUpdate (- @lastBallUpdate
-                                   BALL_UPDATE_INTERVAL)))
-
-      ;; --- pause game
-      (TryC
-        (Thread/sleep GAME_LOOP_INTERVAL)))
+  (let [wsecs (/ 1000 framesPerSec)]
+    (with-local-vars [lastTick (System/currentTimeMillis)
+                      lastBallUpdate 0
+                      loopy true
+                      thisTick 0]
+      (while @loopy
+        (var-set thisTick (System/currentTimeMillis))
+        ;; --- update the game with the difference
+        ;;in ms since the
+        ;; --- last tick
+        (let [diff (- @thisTick @lastTick)]
+          (var-set lastBallUpdate (+ @lastBallUpdate diff))
+          (update diff options))
+        (var-set lastTick @thisTick)
+        ;; --- check if time to send a ball update
+        (if (> @lastBallUpdate BALL_UPDATE_INTERVAL)
+          (sendBallUpdate)
+          (var-set lastBallUpdate (- @lastBallUpdate
+                                     BALL_UPDATE_INTERVAL)))
+        ;; --- pause game
+        (TryC
+          (Thread/sleep wsecs))))
   ))
+
+(defn- traceEnclosure ""
+
+  [dt ball bbox]
+
+  (let [sz (/ (:height ball) 2)
+        sw (/ (:width ball) 2)
+        hit false
+        y (+ (:y ball) (* dt (:vy ball)))
+        x (+ (:x ball) (* dt (:vx ball))) ]
+    ;; hitting top wall ?
+    (when (> (+ y sz) (:top bbox))
+      (var-set ball (assoc ball :vy (* -1 (:vy ball))))
+      (var-set y (- (:top bbox sz)))
+      (var-set hit true))
+    ;; hitting bottom wall ?
+    (when (< (- y sz) (:bottom bbox))
+      (var-set ball (assoc ball :vy (* -1 (:vy ball))))
+      (var-set y (+ (:bottom bbox) sz))
+      (var-set hit true))
+
+    if (x + sw > bbox.right) {
+      this.vel.x = - this.vel.x;
+      x = bbox.right - sw;
+      hit=true;
+    }
+
+    if (x - sw < bbox.left) {
+      this.vel.x = - this.vel.x;
+      x = bbox.left + sw;
+      hit=true;
+    }
+
+    //this.lastPos = this.sprite.getPosition();
+    // no need to update the last pos
+    if (hit) {
+      this.sprite.setPosition(x, y);
+    }
+
+    return hit;
+  },
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; tick the time in milliseconds since the last update
 (defn- update ""
 
-  [tick]
+  [tick p1 p2 ball options]
 
-  (updatePaddle m_leftPaddle tick)
-  (updatePaddle m_rightPaddle tick)
-  (updateBall tick))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- updatePaddle ""
-
-  [^Paddle paddle tick]
-
-  (let []
-    (.setY paddle (Math.max(Math.min(paddle.getY()-
-                Math.sin(paddle.getDirection())*paddle.getSpeed()*tick/1000,
-                COURT_HEIGHT-WALL_HEIGHT-PADDLE_HEIGHT), WALL_HEIGHT)))
-  ))
+  (updateBall p1 p2 ball options tick))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- updateBall ""
 
-  [tick]
+  [tick p1 p2 ball options]
 
-  ;; --- determine the new X,Y without regard to game boundaries
-  (let [bdir (.getDirection m_ball)
-        bspd (.getSpeed m_ball)
-        hvPI (/ Math/PI 2)
-        tsecs (/ tick 1000)
-        ballX (+ (.getX m_ball) (* (Math/cos bdir)
-                                   (* tsecs bspd)))
-        ballY (- (.getY m_ball) (* (Math/sin bdir)
-                                   (* tsecs bspd)))]
-
-    ;; --- set the potential new ball position which may be
-    ;;overridden below
-    (doto m_ball
-      (.setX ballX)
-      (.setY ballY))
-
-    ;; --- determine if the ball hit a boundary
-    ;; --- NOTE: this is a rough calculation and does not attempt to
-    ;; --- interpolate within a tick to determine the exact position
-    ;; --- of the ball and paddle at the potential time of a collision
-
-    (if (< ballX PADDLE_WIDTH)
-      (do
-        ;;--- left side
-        (if (and (> (+ ballY BALL_SIZE) (.getY m_leftPaddle))
-                 (< ballY (+ (.getY m_leftPaddle)
-                             PADDLE_HEIGHT)))
-          (do
-            ;; --- paddle hit the ball so it will appear the same distance
-            ;; --- on the other side of the collision point and angle will
-            ;; --- flip
-            (.setX m_ball (- (* 2 PADDLE_WIDTH) ballX))
-            (bounceBall (if (> (.getDirection m_ball) Math/PI)
-                          (* 3 hvPI)
-                          hvPI))
-            (.setSpeed m_ball (+ (.getSpeed m_ball) BALL_SPEEDUP)))
-          (do
-            ;; --- increase score
-            ;; TODO
-            (inc m_rightPlayerScore)
-            (sendScoreUpdate)
-            ;; --- reset ball
-            (resetBall)
-            (sendBallUpdate))))
-      (when (> ballX (- COURT_WIDTH PADDLE_WIDTH BALL_SIZE))
-        ;; --- right side
-        (if (and (> (+ ballY BALL_SIZE)
-                    (.getY m_rightPaddle))
-                 (< ballY (+ (.getY m_rightPaddle)
-                               PADDLE_HEIGHT)))
-          (do
-            (.setX m_ball (- (* 2 (- COURT_WIDTH PADDLE_WIDTH BALL_SIZE)) ballX))
-            (bounceBall (if (> (.getDirection m_ball)
-                               (* 3 hvPI))
-                          (* 3 hvPI)
-                          hvPI))
-            (.setSpeed m_ball (+ (.getSpeed m_ball) BALL_SPEEDUP)))
-          (do
-            ;; --- increase score
-            (inc m_leftPlayerScore)
-            (sendScoreUpdate)
-            ;; --- reset ball
-            (resetBall)
-            (sendBallUpdate)))))
-
-    ;; --- the ball may also have hit a top or bottom wall
-    (if (< ballY WALL_HEIGHT)
-      (do
-        ;; --- top wall
-        (.setY m_ball (- (* 2 WALL_HEIGHT) ballY))
-        (bounceBall (if (> (.getDirection m_ball) hvPI)
-                      Math/PI
-                      (* 2 Math/PI))))
-      (when (> (+ ballY BALL_SIZE)
-               (- ARENA_HEIGHT WALL_HEIGHT))
-        ;; --- bottom wall
-        (.setY m_ball (- (* 2 (- COURT_HEIGHT WALL_HEIGHT BALL_SIZE)) ballY))
-        (bounceBall (if (> (.getDirection m_ball)
-                           (* 3 hvPI))
-                      (* 2 Math/PI)
-                      Math/PI))))
-  ))
+  (let [[b pos] (traceEnclosure)]
+    (if b
+      (setPos pos)
+      (moveBall (+ (:x ball) (* dt (:vx ball)))
+                (+ (:y ball) (* dt (:vy ball)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -274,6 +224,11 @@
   ;; pos[x,y] , speed + dir
   nil)
 
+(defn- spawnGameLoop ""
+
+  []
+
+  (Coroutine #(startGameLoop 60 options)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
