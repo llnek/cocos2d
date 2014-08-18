@@ -13,6 +13,8 @@
 
 package com.zotohlab.odin.game;
 
+import java.util.Map;
+
 /**
  * @author kenl
  */
@@ -21,8 +23,8 @@ public interface GameEngine {
   public void initialize(Object players);
   public Object ready(Object room);
 
-  public Object restart();
-  public Object start();
+  public Object restart(Map<?,?> options);
+  public Object start(Map<?,?> options);
 
   public void stop();
   public void finz();

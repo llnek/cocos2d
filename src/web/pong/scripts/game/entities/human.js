@@ -25,6 +25,10 @@ png.EntityHuman = png.EntityPaddle.xtends({
   isRobot: function() { return false; },
 
   keypressed: function(dt) {
+    this.onKeyPressed(dt);
+  },
+
+  onKeyPressed: function(dt) {
     var sz = this.sprite.getContentSize().height / 2,
     pos = this.sprite.getPosition(),
     y= pos.y,
@@ -56,8 +60,15 @@ png.EntityHuman = png.EntityPaddle.xtends({
 png.NetPlayer = png.EntityHuman.xtends({
 
   setWEBSock: function(wss) {
+    this.kcodes = [cc.KEY.up, cc.KEY.down];
     this.wss=wss;
   },
+
+  keypressed: function(dt) {
+    if (this.wss) {
+      this.onKeyPressed();
+    }
+  }
 
   ctor: function(x,y,options) {
     this._super(x,y,options);

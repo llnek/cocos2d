@@ -68,12 +68,12 @@
         (reset! stateAtom {:players players})
         (ref-set stateRef m))))
 
-  (start [_]
+  (start [_ options]
     (require 'cmzlabclj.frigga.pong.arena)
     (let [ps (:players @stateAtom)
           p1 (ReifyPlayer (long \X) \X (nth ps 0))
           p2 (ReifyPlayer (long \O) \O (nth ps 1))
-          aa (ReifyPongArena) ]
+          aa (ReifyPongArena options) ]
       (swap! stateAtom assoc :arena aa)
       (.registerPlayers aa p1 p2)
       (.broadcast aa nil)))
@@ -88,7 +88,7 @@
   (onNetworkMsg [this evt]
     (condp == (:code evt)
       Events/C_REPLAY
-      (.restart this)
+      (.restart this {})
 
       nil))
 
@@ -100,29 +100,31 @@
       Events/C_PLAY_MOVE
       (let [^cmzlabclj.frigga.pong.arena.ArenaAPI
             aa (:arena @stateAtom)
-            cp (.getCurActor aa)
             pss (:context evt)
             src (:source evt)
             cmd (json/read-str src
                                :key-fn keyword) ]
         (log/debug "pong received cmd " src " from session " pss)
-        (.enqueue aa cmd))
+        (.enqueue aa evt))
 
       Events/C_STARTED
       (do
         (log/debug "pong received started event " evt)
-        (let [^PlayerSession ps (:context evt) ]
+        (let [^PlayerSession ps (:context evt)
+              src (:source evt)
+              cmd (json/read-str src
+                                 :key-fn keyword) ]
         (dosync
           (let [m (dissoc @stateRef (.id ps)) ]
             (if (= (count m) 0)
               (do
                 (ref-set stateRef {})
-                (.start this))
+                (.start this cmd))
               (ref-set stateRef m))))))
 
       (log/warn "game engine: unhandled session msg " evt)))
 
-  (restart [this ]
+  (restart [this options]
     (log/debug "restarting game one more time.....................")
     (require 'cmzlabclj.frigga.pong.core)
     (let [parr (:players @stateAtom)

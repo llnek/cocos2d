@@ -69,7 +69,7 @@
         (reset! stateAtom {:players players})
         (ref-set stateRef m))))
 
-  (start [_]
+  (start [_ options]
     (require 'cmzlabclj.frigga.tictactoe.board)
     (let [ps (:players @stateAtom)
           p1 (ReifyPlayer (long \X) \X (nth ps 0))
@@ -89,7 +89,7 @@
   (onNetworkMsg [this evt]
     (condp == (:code evt)
       Events/C_REPLAY
-      (.restart this)
+      (.restart this {})
 
       nil))
 
@@ -118,12 +118,12 @@
             (if (= (count m) 0)
               (do
                 (ref-set stateRef {})
-                (.start this))
+                (.start this {}))
               (ref-set stateRef m))))))
 
       (log/warn "game engine: unhandled session msg " evt)))
 
-  (restart [this ]
+  (restart [this options]
     (log/debug "restarting game one more time.....................")
     (require 'cmzlabclj.frigga.tictactoe.core)
     (let [parr (:players @stateAtom)

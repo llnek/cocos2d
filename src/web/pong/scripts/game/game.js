@@ -21,6 +21,9 @@ var Odin= global.ZotohLab.Odin,
 evts= Odin.Events;
 
 
+var BALL_SPEED=150,
+TILE_SIZE=8;
+
 
 //////////////////////////////////////////////////////////////////////////////
 // game layer
@@ -44,8 +47,6 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   onStop: function(evt) {
-
-    this.maybeUpdateActions(evt);
 
     switch (evt.source.status) {
       case 2:
@@ -85,16 +86,19 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   onSessionEvent: function(evt) {
-    var pnum= _.isNumber(evt.source.pnum) ? evt.source.pnum : -1;
+    var pnum= _.isNumber(evt.source.pnum) ? evt.source.pnum : 0;
     this.actor= this.players[pnum];
     switch (evt.code) {
-      case evts.C_POKE_RUMBLE:
+      case evts.C_POKE_MOVE:
         sjs.loggr.debug("activate arena, start to rumble!");
+        this.arena.animate();
       break;
       case evts.C_SYNC_ARENA:
         sjs.loggr.debug("synchronize ui as defined by server.");
+        this.arena.sync(evt);
       break;
     }
+
   },
 
   replay: function() {
@@ -108,8 +112,6 @@ var GameLayer = asterix.XGameLayer.extend({
       this.play(false);
     }
   },
-
-
 
 
   getHUD: function() {
@@ -179,7 +181,17 @@ var GameLayer = asterix.XGameLayer.extend({
         } else {
           p2.setWEBSock(this.options.wsock);
         }
-        this.arena = new png.NetArena();
+        var opts= {
+          world: this.getEnclosureRect(),
+          paddle: [this.paddleSize.width,
+                   this.paddleSize.height],
+          ball: [this.ballSize.width,
+                 this.ballSize.heigth],
+          p1: [p1x, cw.y],
+          p2: [p2x, cw.y],
+          tile: TILE_SIZE,
+          ball_speed: BALL_SPEED};
+        this.arena = new png.NetArena(opts);
       break;
     }
 
@@ -189,17 +201,11 @@ var GameLayer = asterix.XGameLayer.extend({
 
     if (this.options.wsock) {
       // online play
-      sjs.loggr.debug("reply to server: session started ok");
       this.options.wsock.unsubscribeAll();
       this.options.wsock.subscribeAll(this.onevent,this);
-      this.options.wsock.send({
-        type: evts.SESSION_MSG,
-        code: evts.C_STARTED
-      });
-    } else {
-      this.arena.startRumble();
     }
 
+    this.arena.startRumble();
   },
 
   onNewGame: function(mode) {

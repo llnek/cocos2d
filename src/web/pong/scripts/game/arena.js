@@ -47,7 +47,9 @@ var pngArena = sjs.Class.xtends({
   },
 
   startRumble: function() {
-    this.gameInProgress= true;
+  },
+
+  animate: function() {
   },
 
   finz: function() {
@@ -122,7 +124,7 @@ var pngArena = sjs.Class.xtends({
   },
 
   ctor: function(options) {
-
+    this.options=options || {};
   }
 
 });
@@ -131,12 +133,46 @@ png.NetArena = pngArena.xtends({
 
   startRumble: function() {
     sjs.loggr.debug("reply to server: session started ok");
-    this.ctx.options.wsock.unsubscribeAll();
-    this.ctx.options.wsock.subscribeAll(this.onevent,this);
     this.ctx.options.wsock.send({
       type: evts.SESSION_MSG,
-      code: evts.C_STARTED
+      code: evts.C_STARTED,
+      source: JSON.stringify(this.options)
     });
+  },
+
+  notifyServer: function(actor) {
+    var pos = actor.sprite.getPosition();
+    var src = {
+      pos: [pos.x, pos.y ]
+    };
+    this.ctx.options.wsock.send({
+      type: evts.SESSION_MSG,
+      code: evts.C_PLAY_MOVE,
+      source: JSON.stringify(src)
+    });
+  },
+
+  sync: function(evt) {
+    if (evt.source.pnum > 0) {
+      var py= this.actors[evt.source.pnum];
+      if (evt.source.pos) {
+        py.sprite.setPosition(pos.x, pos.y);
+      } else {
+        // its a win update
+      }
+    }
+    else if (evt.source.pos) {
+      this.ball.sprite.setPosition(pos.x,pos.y);
+    }
+  },
+
+  doUpdateWorld: function(dt) {
+    _.each(this.actors, function(a) {
+      if (a && a.wss) {
+        a.update(dt);
+        this.notifyServer(a);
+      }
+    },this);
   },
 
   doCheckWorld: function() {
@@ -150,11 +186,23 @@ png.NetArena = pngArena.xtends({
     this.ball = new png.NetBall(x,y,options);
   },
 
+  animate: function() {
+    this.gameInProgress = true;
+  },
+
   isOnline: function() { return true; }
+
 
 });
 
 png.NonNetArena = pngArena.xtends({
+
+  startRumble: function() {
+    this.gameInProgress = true;
+  },
+
+  animate: function() {
+  },
 
   doUpdateWorld: function(dt) {
     this.actors[2].update(dt);
