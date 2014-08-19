@@ -25,6 +25,8 @@
   (:use [cmzlabclj.cocos2d.games.meta]
         [cmzlabclj.odin.event.core])
 
+  (:use [cmzlabclj.frigga.pong.arena])
+
   (:import  [com.zotohlab.odin.game Game PlayRoom
                                     Player PlayerSession]
             [com.zotohlab.odin.event Events EventDispatcher]))
@@ -73,6 +75,7 @@
     (let [ps (:players @stateAtom)
           p1 (ReifyPlayer (long \X) \X (nth ps 0))
           p2 (ReifyPlayer (long \O) \O (nth ps 1))
+          ^cmzlabclj.frigga.pong.arena.ArenaAPI
           aa (ReifyPongArena options) ]
       (swap! stateAtom assoc :arena aa)
       (.registerPlayers aa p1 p2)

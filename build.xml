@@ -202,6 +202,8 @@
       <arg value="cmzlabclj.odin.net.wsock"/>
       <arg value="cmzlabclj.frigga.tictactoe.board"/>
       <arg value="cmzlabclj.frigga.tictactoe.core"/>
+      <arg value="cmzlabclj.frigga.pong.arena"/>
+      <arg value="cmzlabclj.frigga.pong.core"/>
     </java>
     <copy todir="${out.jar.dir}">
       <fileset dir="${build.dir}">

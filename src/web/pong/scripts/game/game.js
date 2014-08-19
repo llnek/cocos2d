@@ -183,14 +183,16 @@ var GameLayer = asterix.XGameLayer.extend({
         }
         var opts= {
           world: this.getEnclosureRect(),
-          paddle: [this.paddleSize.width,
-                   this.paddleSize.height],
-          ball: [this.ballSize.width,
-                 this.ballSize.heigth],
-          p1: [p1x, cw.y],
-          p2: [p2x, cw.y],
-          tile: TILE_SIZE,
-          ball_speed: BALL_SPEED};
+          paddle: {height: this.paddleSize.height,
+                   width: this.paddleSize.width},
+          ball: {height: this.ballSize.heigth,
+                 width: this.ballSize.width,
+                 x: cw.x,
+                 y: cw.y,
+                 speed: BALL_SPEED},
+          p1: {x: p1x, y: cw.y},
+          p2: {x: p2x, y: cw.y},
+          numpts: 9};
         this.arena = new png.NetArena(opts);
       break;
     }

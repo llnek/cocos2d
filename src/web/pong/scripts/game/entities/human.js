@@ -68,7 +68,7 @@ png.NetPlayer = png.EntityHuman.xtends({
     if (this.wss) {
       this.onKeyPressed();
     }
-  }
+  },
 
   ctor: function(x,y,options) {
     this._super(x,y,options);
