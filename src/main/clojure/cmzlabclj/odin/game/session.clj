@@ -16,8 +16,8 @@
 
   (:require [clojure.tools.logging :as log :only [info warn error debug] ]
             [clojure.data.json :as json]
-            [clojure.string :as cstr]
-            [clojure.core.async :as async])
+            [clojure.string :as cstr])
+            ;;[clojure.core.async :as async])
 
   (:use [cmzlabclj.nucleus.util.core :only [MakeMMap ternary notnil? ] ]
         [cmzlabclj.nucleus.util.process]
@@ -57,7 +57,7 @@
 
   (let [created (System/currentTimeMillis)
         sid (GenerateUID (class Session))
-        ch (async/chan (async/sliding-buffer 10))
+        ;;ch (async/chan (async/sliding-buffer 10))
         impl (MakeMMap) ]
     (.setf! impl :status Session$Status/NOT_CONNECTED)
     (.setf! impl :shutting-down false)

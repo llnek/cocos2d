@@ -60,19 +60,50 @@ png.EntityHuman = png.EntityPaddle.xtends({
 png.NetPlayer = png.EntityHuman.xtends({
 
   setWEBSock: function(wss) {
-    this.kcodes = [cc.KEY.up, cc.KEY.down];
+    //this.kcodes = [cc.KEY.up, cc.KEY.down];
     this.wss=wss;
+  },
+
+  setDir: function(dir) {
+    this.dir=dir;
+  },
+
+  simulateMove: function(dt) {
+    var sz = this.sprite.getContentSize().height / 2,
+    pos = this.sprite.getPosition(),
+    y= pos.y,
+    csts = sh.xcfg.csts,
+    wz = ccsx.screen(),
+    y2 = wz.height - csts.TILE * 6,
+    y1 = csts.TILE,
+    ty, delta= dt * this.speed;
+
+    if (this.dir > 0) {
+        y += delta;
+    }
+    else
+    if (this.dir < 0) {
+        y -= delta;
+    }
+
+    if (y !== pos.y) {
+      this.updatePosition(pos.x, y);
+      this.clamp();
+    }
   },
 
   keypressed: function(dt) {
     if (this.wss) {
-      this.onKeyPressed();
+      this.onKeyPressed(dt);
+    } else {
+      this.simulateMove(dt);
     }
   },
 
   ctor: function(x,y,options) {
     this._super(x,y,options);
     this.wss=null;
+    this.dir=0;
   }
 
 });

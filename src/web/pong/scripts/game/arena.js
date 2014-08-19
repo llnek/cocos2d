@@ -138,12 +138,40 @@ png.NetArena = pngArena.xtends({
       code: evts.C_STARTED,
       source: JSON.stringify(this.options)
     });
+    _.each(this.actors, function(a) {
+      if (a && a.wss) {
+        this.lastY = a.sprite.getPosition().y;
+        this.lastDir=0;
+      }
+    },this);
   },
 
-  notifyServer: function(actor) {
+  testMove: function(a) {
+    var y= a.sprite.getPosition().y;
+    var dir;
+    if (y > this.lastY) {
+      dir=1;
+      // moving up
+    } else if (y < this.lastY) {
+      // moving down
+      dir= -1;
+    }
+    else {
+      dir=0;
+    }
+    this.lastY=y;
+    if (this.lastDir !== dir) {
+      // direction changed, tell server
+      this.notifyServer(a,dir);
+      this.lastDir=dir;
+    }
+  },
+
+  notifyServer: function(actor,direction) {
     var pos = actor.sprite.getPosition();
     var src = {
-      pos: [pos.x, pos.y ]
+      pos: { x: Math.floor(pos.x), y: Math.floor(pos.y) },
+      dir: direction
     };
     this.ctx.options.wsock.send({
       type: evts.SESSION_MSG,
@@ -152,17 +180,16 @@ png.NetArena = pngArena.xtends({
     });
   },
 
-  sync: function(evt) {
-    if (evt.source.pnum > 0) {
+  onEvent: function(evt) {
+    if (_.isNumber(evt.source.dir) && _.isNumber(evt.source.pnum)) {
       var py= this.actors[evt.source.pnum];
       if (evt.source.pos) {
-        py.sprite.setPosition(pos.x, pos.y);
-      } else {
-        // its a win update
+        py.sprite.setPosition(evt.source.pos.x, evt.source.pos.y);
       }
+      py.setDir(evt.source.dir);
     }
     else if (evt.source.pos) {
-      this.ball.sprite.setPosition(pos.x,pos.y);
+      //this.ball.sprite.setPosition(pos.x,pos.y);
     }
   },
 
@@ -170,7 +197,7 @@ png.NetArena = pngArena.xtends({
     _.each(this.actors, function(a) {
       if (a && a.wss) {
         a.update(dt);
-        this.notifyServer(a);
+        this.testMove(a);
       }
     },this);
   },

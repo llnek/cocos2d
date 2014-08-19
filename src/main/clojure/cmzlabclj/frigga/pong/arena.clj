@@ -17,8 +17,8 @@
 
   (:require [clojure.tools.logging :as log :only [info warn error debug] ]
             [clojure.data.json :as json]
-            [clojure.string :as cstr]
-            [clojure.core.async :as async])
+            [clojure.string :as cstr])
+            ;;[clojure.core.async :as async])
 
   (:use [cmzlabclj.nucleus.util.core :only [MakeMMap ternary notnil? ] ]
         [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
@@ -65,6 +65,8 @@
 
   (registerPlayers [_ p1 p2])
   (broadcast [_ cmd])
+  (getPlayer2 [_])
+  (getPlayer1 [_])
   (enqueue [_ cmd])
   )
 
@@ -88,18 +90,37 @@
   (let [maxpts (:numpts options)
         world (:world options)
         pd (:paddle options)
-        ba (:ball options)]
+        ba (:ball options)
+        impl (MakeMMap) ]
     (reify ArenaAPI
-      (registerPlayers [_ ps1 ps2])
-      (broadcast [_ cmd])
+      (registerPlayers [_ ps1 ps2]
+        (.setf! impl :p2 ps2)
+        (.setf! impl :p1 ps1))
+
+      (getPlayer2 [_] (.getf impl :p2))
+      (getPlayer1 [_] (.getf impl :p1))
+
+      (broadcast [this cmd]
+        (let [^PlayerSession p2 (:session (.getf impl :p2))
+              ^PlayerSession p1 (:session (.getf impl :p1))
+              src {}]
+          (.sendMessage p2 (ReifyEvent Events/SESSION_MSG
+                                       Events/C_POKE_MOVE
+                                       (json/write-str (assoc src :pnum (.number p2)))))
+          (.sendMessage p1 (ReifyEvent Events/NETWORK_MSG
+                                       Events/C_POKE_MOVE
+                                       (json/write-str (assoc src :pnum (.number p1)))))))
+
       (enqueue [_ evt]
-        (let [pss (:context evt)
+        (let [^PlayerSession p2 (:session (.getf impl :p2))
+              ^PlayerSession p1 (:session (.getf impl :p1))
+              pss (:context evt)
               src (:source evt)
-              cmd (json/read-str src
-                                 :key-fn keyword)]
-          (log/debug "pong received cmd "
-                     src
-                     " from session " pss)))
+              cmd (json/read-str src :key-fn keyword)
+              pt (if (= p2 pss) p1 p2)]
+          (.sendMessage pt (ReifyEvent Events/SESSION_MSG
+                                       Events/C_POKE_MOVE
+                                       (json/write-str (assoc cmd :pnum (.number pss)))))))
 
     )))
 

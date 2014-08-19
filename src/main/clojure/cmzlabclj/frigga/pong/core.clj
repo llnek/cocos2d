@@ -103,11 +103,8 @@
       Events/C_PLAY_MOVE
       (let [^cmzlabclj.frigga.pong.arena.ArenaAPI
             aa (:arena @stateAtom)
-            pss (:context evt)
-            src (:source evt)
-            cmd (json/read-str src
-                               :key-fn keyword) ]
-        (log/debug "pong received cmd " src " from session " pss)
+            pss (:context evt)]
+        (log/debug "pong received cmd " (:source evt) " from session " pss)
         (.enqueue aa evt))
 
       Events/C_STARTED

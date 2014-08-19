@@ -21,7 +21,8 @@ var Odin= global.ZotohLab.Odin,
 evts= Odin.Events;
 
 
-var BALL_SPEED=150,
+var BALL_SPEED=150, // 25 incremental
+PADDLE_SPEED=200, // 300
 TILE_SIZE=8;
 
 
@@ -91,7 +92,11 @@ var GameLayer = asterix.XGameLayer.extend({
     switch (evt.code) {
       case evts.C_POKE_MOVE:
         sjs.loggr.debug("activate arena, start to rumble!");
-        this.arena.animate();
+        if (this.options.pnum === pnum) {
+          this.arena.animate();
+        } else {
+          this.arena.onEvent(evt);
+        }
       break;
       case evts.C_SYNC_ARENA:
         sjs.loggr.debug("synchronize ui as defined by server.");
@@ -152,8 +157,8 @@ var GameLayer = asterix.XGameLayer.extend({
     });
 
     // position of paddles
-    p2x = wz.width - csts.TILE - 4 - bs.width - ps.width/2;
-    p1x = csts.TILE + bs.width + 4 + ps.width/2;
+    p2x = Math.floor(wz.width - csts.TILE - 4 - bs.width - ps.width/2);
+    p1x = Math.floor(csts.TILE + bs.width + 4 + ps.width/2);
 
     // start with clean slate
     this.reset(newFlag);
@@ -183,15 +188,16 @@ var GameLayer = asterix.XGameLayer.extend({
         }
         var opts= {
           world: this.getEnclosureRect(),
-          paddle: {height: this.paddleSize.height,
-                   width: this.paddleSize.width},
-          ball: {height: this.ballSize.heigth,
-                 width: this.ballSize.width,
-                 x: cw.x,
-                 y: cw.y,
-                 speed: BALL_SPEED},
-          p1: {x: p1x, y: cw.y},
-          p2: {x: p2x, y: cw.y},
+          paddle: {height: Math.floor(ps.height),
+                   width: Math.floor(ps.width),
+                   speed: Math.floor(PADDLE_SPEED)},
+          ball: {height: Math.floor(bs.height),
+                 width: Math.floor(bs.width),
+                 x: Math.floor(cw.x),
+                 y: Math.floor(cw.y),
+                 speed: Math.floor(BALL_SPEED) },
+          p1: {x: p1x, y: Math.floor(cw.y) },
+          p2: {x: p2x, y: Math.floor(cw.y) },
           numpts: 9};
         this.arena = new png.NetArena(opts);
       break;
@@ -267,10 +273,10 @@ var GameLayer = asterix.XGameLayer.extend({
   getEnclosureRect: function() {
     var csts = sh.xcfg.csts,
     wz = ccsx.screen();
-    return { top: wz.height - 6 * csts.TILE,
+    return { top: Math.floor(wz.height - 6 * csts.TILE),
              left: csts.TILE,
              bottom: csts.TILE,
-             right: wz.width - csts.TILE };
+             right: Math.floor(wz.width - csts.TILE) };
   }
 
 });
