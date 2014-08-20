@@ -146,7 +146,63 @@ png.NetArena = pngArena.xtends({
     },this);
   },
 
-  testMove: function(a) {
+  notifyServer: function(actor,direction) {
+    var vy = direction * this.options.paddle.speed;
+    var pos = actor.sprite.getPosition();
+    var pnum= this.ctx.options.pnum;
+    var src, cmd = {
+      x: Math.floor(pos.x),
+      y: Math.floor(pos.y),
+      dir: direction,
+      vy: vy
+    };
+    if (pnum === 2) {
+      src = { p2: cmd };
+    } else {
+      src = { p1: cmd };
+    }
+    this.ctx.options.wsock.send({
+      type: evts.SESSION_MSG,
+      code: evts.C_PLAY_MOVE,
+      source: JSON.stringify(src)
+    });
+  },
+
+  onEvent: function(evt) {
+
+    if (evt.source.ball) {
+      var c = evt.source.ball;
+      this.ball.sprite.setPosition(c.x,c.y);
+      this.ball.vel.vy= c.vy;
+      this.ball.vel.vx= c.vx;
+      console.log("Ball got SYNC'ED !!!");
+    }
+
+    if (evt.source.p2) {
+      var py= this.actors[2];
+      var c = evt.source.p2;
+      var dir=0;
+      py.sprite.setPosition(c.x, c.y);
+      if (c.vy > 0) { dir = 1;}
+      if (c.vy < 0) { dir = -1;}
+      py.setDir(dir);
+      console.log("P2 got SYNC'ED !!!");
+    }
+
+    if (evt.source.p1) {
+      var py= this.actors[1];
+      var c = evt.source.p1;
+      var dir=0;
+      py.sprite.setPosition(c.x, c.y);
+      if (c.vy > 0) { dir = 1;}
+      if (c.vy < 0) { dir = -1;}
+      py.setDir(dir);
+      console.log("P1 got SYNC'ED !!!");
+    }
+
+  },
+
+  maybeNotifyServer: function(a) {
     var y= a.sprite.getPosition().y;
     var dir;
     if (y > this.lastY) {
@@ -167,42 +223,47 @@ png.NetArena = pngArena.xtends({
     }
   },
 
-  notifyServer: function(actor,direction) {
-    var pos = actor.sprite.getPosition();
-    var src = {
-      pos: { x: Math.floor(pos.x), y: Math.floor(pos.y) },
-      dir: direction
-    };
-    this.ctx.options.wsock.send({
-      type: evts.SESSION_MSG,
-      code: evts.C_PLAY_MOVE,
-      source: JSON.stringify(src)
-    });
-  },
-
-  onEvent: function(evt) {
-    if (_.isNumber(evt.source.dir) && _.isNumber(evt.source.pnum)) {
-      var py= this.actors[evt.source.pnum];
-      if (evt.source.pos) {
-        py.sprite.setPosition(evt.source.pos.x, evt.source.pos.y);
-      }
-      py.setDir(evt.source.dir);
-    }
-    else if (evt.source.pos) {
-      //this.ball.sprite.setPosition(pos.x,pos.y);
-    }
-  },
-
   doUpdateWorld: function(dt) {
     _.each(this.actors, function(a) {
-      if (a && a.wss) {
-        a.update(dt);
-        this.testMove(a);
+      if (a) {
+        if (a.wss) {
+          a.update(dt);
+          this.maybeNotifyServer(a);
+        } else {
+          a.simulateMove(dt);
+        }
       }
     },this);
+    this.ball.update(dt);
   },
 
   doCheckWorld: function() {
+
+    var p1= this.actors[1];
+    var p2= this.actors[2];
+
+    var bs = this.ball.sprite,
+    bp= bs.getPosition();
+
+    /*
+    if ( bp.x < ccsx.getLeft(p1.sprite)) {
+      this.disposeBall();
+      this.ctx.onWinner(p2);
+    }
+    else
+    if (bp.x > ccsx.getRight(p2.sprite)) {
+      this.disposeBall();
+      this.ctx.onWinner(p1);
+    }
+    else
+    */
+    if (ccsx.collide(p2,this.ball)) {
+      p2.check(this.ball);
+    }
+    else
+    if ( ccsx.collide(p1,this.ball)) {
+      p1.check(this.ball);
+    }
   },
 
   onEnqueue: function(cmd) {

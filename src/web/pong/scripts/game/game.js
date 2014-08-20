@@ -87,6 +87,9 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   onSessionEvent: function(evt) {
+    if (! _.isObject(evt.source)) {
+      return;
+    }
     var pnum= _.isNumber(evt.source.pnum) ? evt.source.pnum : 0;
     this.actor= this.players[pnum];
     switch (evt.code) {
@@ -95,12 +98,12 @@ var GameLayer = asterix.XGameLayer.extend({
         if (this.options.pnum === pnum) {
           this.arena.animate();
         } else {
-          this.arena.onEvent(evt);
+          //this.arena.onEvent(evt);
         }
       break;
       case evts.C_SYNC_ARENA:
         sjs.loggr.debug("synchronize ui as defined by server.");
-        this.arena.sync(evt);
+        this.arena.onEvent(evt);
       break;
     }
 
@@ -188,6 +191,8 @@ var GameLayer = asterix.XGameLayer.extend({
         }
         var opts= {
           world: this.getEnclosureRect(),
+          framespersec: 60,
+          syncMillis: 3000,
           paddle: {height: Math.floor(ps.height),
                    width: Math.floor(ps.width),
                    speed: Math.floor(PADDLE_SPEED)},

@@ -52,8 +52,8 @@ png.NetBall = png.EntityBall.xtends({
   },
 
   create: function() {
-    this.vel.y = 200 * SkaroJS.randomSign();
-    this.vel.x = 200 * SkaroJS.randomSign();
+    this.vel.y = 0; //200 * SkaroJS.randomSign();
+    this.vel.x = 0; //200 * SkaroJS.randomSign();
     return this._super();
   },
 

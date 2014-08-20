@@ -78,6 +78,7 @@ png.NetPlayer = png.EntityHuman.xtends({
     y1 = csts.TILE,
     ty, delta= dt * this.speed;
 
+    //console.log("dt === " + dt + ", dir = " + this.dir);
     if (this.dir > 0) {
         y += delta;
     }

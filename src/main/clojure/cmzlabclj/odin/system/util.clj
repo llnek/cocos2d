@@ -75,6 +75,7 @@
           CloseWebSocketFrame
           (.onEvent ps {:type Events/NETWORK_MSG
                         :code Events/C_CLOSED
+                        :source "{}"
                         :context ps})
           PingWebSocketFrame
           (let [^PingWebSocketFrame fr msg
