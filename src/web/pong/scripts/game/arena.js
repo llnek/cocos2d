@@ -170,11 +170,13 @@ png.NetArena = pngArena.xtends({
 
   onEvent: function(evt) {
 
+    console.log("onEvent:");
+    console.log(JSON.stringify(evt.source));
     if (evt.source.ball) {
       var c = evt.source.ball;
       this.ball.sprite.setPosition(c.x,c.y);
-      this.ball.vel.vy= c.vy;
-      this.ball.vel.vx= c.vx;
+      this.ball.vel.y= c.vy;
+      this.ball.vel.x= c.vx;
       console.log("Ball got SYNC'ED !!!");
     }
 

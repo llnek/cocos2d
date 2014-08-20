@@ -123,6 +123,7 @@
 
   [dt ^cmzlabclj.nucleus.util.core.MubleAPI ball bbox]
 
+  (log/debug "about to trace-enclosure: bbox = " bbox)
   (with-local-vars [y (+ (.getf ball :y)
                          (* dt (.getf ball :vy)))
                     x (+ (.getf ball :x)
@@ -156,13 +157,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- maybeUpdateBall ""
+(defn- maybeUpdate ""
 
   [^cmzlabclj.nucleus.util.core.MubleAPI p1
    ^cmzlabclj.nucleus.util.core.MubleAPI p2
    ^cmzlabclj.nucleus.util.core.MubleAPI ball
    bbox]
 
+  (log/debug "about to test for update: ball = " (.toEDN ball))
   (let [hh (/ (.getf ball :height) 2)
         hw (/ (.getf ball :width) 2)
         b2 (rect (.getf ball :x)
@@ -174,18 +176,22 @@
                       y (.getf ball :y)]
       (when (> (:right b2)
                (:right bbox))
+        (log/debug "maybeUpdate: clamping ball - right")
         (var-set x (- (:right bbox) hw)))
 
       (when (< (:left b2)
                (:left bbox))
+        (log/debug "maybeUpdate: clamping ball - left")
         (var-set x (+ (:left bbox hw))))
 
       (when (> (:top b2)
                (:top bbox))
+        (log/debug "maybeUpdate: clamping ball - top")
         (var-set y (- (:top bbox) hh)))
 
       (when (< (:bottom b2)
                (:bottom bbox))
+        (log/debug "maybeUpdate: clamping ball - bottom")
         (var-set y (+ (:bottom bbox) hh)))
 
       (.setf! ball :x @x)
@@ -197,6 +203,7 @@
                   (.getf p2 :width)
                   (.getf p2 :height))]
       (when (rectXrect b2 r)
+        (log/debug "paddle-2 ---------------> hit ball")
         (.setf! ball :x (- (:left r) hw))
         (.setf! ball :vx (- (.getf ball :vx)))))
 
@@ -205,10 +212,10 @@
                   (.getf p1 :width)
                   (.getf p1 :height))]
       (when (rectXrect b2 r)
+        (log/debug "paddle-1 ---------------> hit ball")
         (.setf! ball :x (+ (:right r) hw))
         (.setf! ball :vx (- (.getf ball :vx)))))
   ))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -224,19 +231,21 @@
         ^cmzlabclj.nucleus.util.core.MubleAPI
         ball (.getf impl :ball)]
 
+    ;;(log/debug "updateEntities: delta-time = " dt " millis.")
     (.setf! pad2 :y (+ (* dt (.getf pad2 :vy))
-                      (.getf pad2 :y)))
+                       (.getf pad2 :y)))
     (.setf! pad1 :y (+ (* dt (.getf pad1 :vy))
-                      (.getf pad1 :y)))
+                       (.getf pad1 :y)))
     (clamp pad2 bbox)
     (clamp pad1 bbox)
 
     (when-not (traceEnclosure dt ball bbox)
+      (log/debug "traced-enclosure: ball hit wall ---------> BANG")
       (.setf! ball :x (+ (* dt (.getf ball :vx))
                          (.getf ball :x)))
       (.setf! ball :y (+ (* dt (.getf ball :vy))
                          (.getf ball :y))))
-    (maybeUpdateBall pad1 pad2 ball bbox)
+    (maybeUpdate pad1 pad2 ball bbox)
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -296,12 +305,12 @@
         ball (.getf impl :ball)
         ^PlayerSession ps2 (:session (.getf impl :p2))
         ^PlayerSession ps1 (:session (.getf impl :p1))
-        src {:p2 {:y (.getf pad1 :y)
-                  :x (.getf pad1 :x)
-                  :vy (.getf pad1 :vy)}
-             :p1 {:y (.getf pad2 :y)
+        src {:p2 {:y (.getf pad2 :y)
                   :x (.getf pad2 :x)
                   :vy (.getf pad2 :vy)}
+             :p1 {:y (.getf pad1 :y)
+                  :x (.getf pad1 :x)
+                  :vy (.getf pad1 :vy)}
              :ball {:y (.getf ball :y)
                     :x (.getf ball :x)
                     :vy (.getf ball :vy)
@@ -325,15 +334,15 @@
         maxpts (:numpts options)
         world (:world options)
         lastTick (.getf impl :lastTick)
+        lastSync (.getf impl :lastSync)
         now (System/currentTimeMillis)]
     ;; --- update the game with the difference
     ;;in ms since the
     ;; --- last tick
     (let [diff (- now lastTick)
-          lastSync (+ (.getf impl :lastSync)
-                      diff)]
+          lastSync2 (+ lastSync diff)]
       (updateEntities impl diff world)
-      (.setf! impl :lastSync lastSync)
+      (.setf! impl :lastSync lastSync2)
       (.setf! impl :lastTick now)
       ;; --- check if time to send a ball update
       (when (> lastSync bui)
@@ -348,6 +357,8 @@
   [options impl]
 
   (let [fps (/ 1000 (:framespersec options)) ]
+    (.setf! impl :lastTick (System/currentTimeMillis))
+    (.setf! impl :lastSync 0)
     (Coroutine #(while true
                   (TryC (updateArena options impl))
                   (TryC (Thread/sleep fps))))
@@ -395,6 +406,8 @@
                           :vy (* (RandomSign) (:speed ba))
                           :x (:x ba)
                           :y (:y ba)}}]
+          (.setf! ball :vx (:vx (:ball src)))
+          (.setf! ball :vy (:vy (:ball src)))
           (.sendMessage p2 (ReifyEvent Events/SESSION_MSG
                                        Events/C_POKE_MOVE
                                        (json/write-str {:pnum (.number p2)})))
@@ -407,10 +420,6 @@
           (.sendMessage p1 (ReifyEvent Events/SESSION_MSG
                                        Events/C_SYNC_ARENA
                                        (json/write-str src)))
-          (.setf! ball :vx (:vx (:ball src)))
-          (.setf! ball :vy (:vy (:ball src)))
-          (.setf! impl :lastTick (System/currentTimeMillis))
-          (.setf! impl :lastSync 0)
           (runGameLoop options impl)))
 
       (enqueue [_ evt]
