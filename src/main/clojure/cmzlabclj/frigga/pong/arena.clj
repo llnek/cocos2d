@@ -123,7 +123,6 @@
 
   [dt ^cmzlabclj.nucleus.util.core.MubleAPI ball bbox]
 
-  (log/debug "about to trace-enclosure: bbox = " bbox)
   (with-local-vars [y (+ (.getf ball :y)
                          (* dt (.getf ball :vy)))
                     x (+ (.getf ball :x)
@@ -141,17 +140,21 @@
         (.setf! ball :vy (- (.getf ball :vy)))
         (var-set y (+ (:bottom bbox) sz))
         (var-set hit true))
+
       (when (> (+ @x sw) (:right bbox))
         (.setf! ball :vx (- (.getf ball :vx)))
         (var-set x (- (:right bbox) sw))
         (var-set hit true))
+
       (when (< (- @x sw) (:left bbox))
         (.setf! ball :vx (- (.getf ball :vx)))
         (var-set x (+ (:left bbox) sw))
         (var-set hit true))
+
       (when @hit
         (.setf! ball :x @x)
-        (.setf! ball :y @y)))
+        (.setf! ball :y @y)
+        (log/debug "setting new values to ball " (.toEDN ball))))
     @hit
   ))
 
@@ -195,7 +198,9 @@
         (var-set y (+ (:bottom bbox) hh)))
 
       (.setf! ball :x @x)
-      (.setf! ball :y @y))
+      (.setf! ball :y @y)
+      (log/debug "set ball with values = " (.toEDN ball)))
+
     ;; check if ball is hitting paddles
 
     (let [r (rect (.getf p2 :x)
@@ -239,12 +244,14 @@
     (clamp pad2 bbox)
     (clamp pad1 bbox)
 
-    (when-not (traceEnclosure dt ball bbox)
+    (if (traceEnclosure dt ball bbox)
       (log/debug "traced-enclosure: ball hit wall ---------> BANG")
-      (.setf! ball :x (+ (* dt (.getf ball :vx))
-                         (.getf ball :x)))
-      (.setf! ball :y (+ (* dt (.getf ball :vy))
-                         (.getf ball :y))))
+      (do
+        (.setf! ball :x (+ (* dt (.getf ball :vx))
+                           (.getf ball :x)))
+        (.setf! ball :y (+ (* dt (.getf ball :vy))
+                           (.getf ball :y)))
+        (log/debug "setting ball new values = " (.toEDN ball))))
     (maybeUpdate pad1 pad2 ball bbox)
   ))
 
@@ -330,7 +337,7 @@
 
   [options ^cmzlabclj.nucleus.util.core.MubleAPI impl]
 
-  (let [bui (:syncMillis options)
+  (let [waitIntv (:syncMillis options)
         maxpts (:numpts options)
         world (:world options)
         lastTick (.getf impl :lastTick)
@@ -341,11 +348,11 @@
     ;; --- last tick
     (let [diff (- now lastTick)
           lastSync2 (+ lastSync diff)]
-      (updateEntities impl diff world)
+      (updateEntities impl (/ diff 1000) world)
       (.setf! impl :lastSync lastSync2)
       (.setf! impl :lastTick now)
       ;; --- check if time to send a ball update
-      (when (> lastSync bui)
+      (when (> lastSync waitIntv)
         (syncClients impl)
         (.setf! impl :lastSync 0)))
   ))
