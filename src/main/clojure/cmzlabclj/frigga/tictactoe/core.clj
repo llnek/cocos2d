@@ -145,6 +145,9 @@
                           (json/write-str src)) ]
       (.broadcast ^PlayRoom room evt)))
 
+  (startRound [_ obj])
+  (endRound [_ obj])
+
   (stop [_] )
   (finz [_] )
 

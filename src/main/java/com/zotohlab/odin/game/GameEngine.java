@@ -26,6 +26,9 @@ public interface GameEngine {
   public Object restart(Map<?,?> options);
   public Object start(Map<?,?> options);
 
+  public void startRound(Map<?,?> options);
+  public void endRound(Object any);
+
   public void stop();
   public void finz();
 

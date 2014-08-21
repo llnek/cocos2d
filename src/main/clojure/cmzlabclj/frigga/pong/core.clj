@@ -70,13 +70,13 @@
         (reset! stateAtom {:players players})
         (ref-set stateRef m))))
 
-  (start [_ options]
+  (start [this options]
     (require 'cmzlabclj.frigga.pong.arena)
     (let [ps (:players @stateAtom)
           p1 (ReifyPlayer (long \X) \X (nth ps 0))
           p2 (ReifyPlayer (long \O) \O (nth ps 1))
           ^cmzlabclj.frigga.pong.arena.ArenaAPI
-          aa (ReifyPongArena options) ]
+          aa (ReifyPongArena this options) ]
       (swap! stateAtom assoc :arena aa)
       (.registerPlayers aa p1 p2)
       (.broadcast aa nil)))
@@ -145,6 +145,11 @@
                           Events/C_START
                           (json/write-str src)) ]
       (.broadcast ^PlayRoom room evt)))
+
+  (startRound [_ obj])
+
+  (endRound [_ obj]
+    (swap! stateAtom dissoc :arena))
 
   (stop [_] )
   (finz [_] )

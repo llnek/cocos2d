@@ -28,7 +28,7 @@
   (:use [cmzlabclj.cocos2d.games.meta]
         [cmzlabclj.odin.event.core])
 
-  (:import  [com.zotohlab.odin.game Game PlayRoom
+  (:import  [com.zotohlab.odin.game GameEngine Game PlayRoom
                                     Player PlayerSession]
             [com.zotohlab.odin.event Events EventDispatcher]))
 
@@ -38,28 +38,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 
-;; --- how often the server should update clients with the world state
-(def ^:private WORLD_SYNC_INTERVAL 5000)
-
-;; game loop intervla in milliseconds
-(def ^:private GAME_LOOP_INTERVAL 1000/60)
-
-;; --- game metrics (pixels)
 ;; 150px/sec
 (def ^:private INITIAL_BALL_SPEED 150)
-(def ^:private ARENA_HEIGHT 480)
-(def ^:private ARENA_WIDTH 640)
 (def ^:private BALL_SIZE 10)
 (def ^:private BALL_SPEEDUP 25) ;; pixels / sec
-
 (def ^:private PADDLE_HEIGHT 60)
 (def ^:private PADDLE_WIDTH 10)
 (def ^:private PADDLE_SPEED 300)
-(def ^:private WALL_HEIGHT 10)
-
-(def ^:private QUAD_PI (/ Math/PI 4))
-(def ^:private HALF_PI (/ Math/PI 2))
-(def ^:private TWO_PI (* Math/PI 2))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -127,6 +112,7 @@
                          (* dt (.getf ball :vy)))
                     x (+ (.getf ball :x)
                          (* dt (.getf ball :vx)))
+                    winner 0
                     hit false]
     (let [sz (/ (.getf ball :height) 2)
           sw (/ (.getf ball :width) 2)]
@@ -144,18 +130,19 @@
       (when (> (+ @x sw) (:right bbox))
         (.setf! ball :vx (- (.getf ball :vx)))
         (var-set x (- (:right bbox) sw))
+        (var-set winner 1)
         (var-set hit true))
 
       (when (< (- @x sw) (:left bbox))
         (.setf! ball :vx (- (.getf ball :vx)))
         (var-set x (+ (:left bbox) sw))
+        (var-set winner 2)
         (var-set hit true))
 
       (when @hit
         (.setf! ball :x @x)
-        (.setf! ball :y @y)
-        (log/debug "setting new values to ball " (.toEDN ball))))
-    @hit
+        (.setf! ball :y @y)))
+    [@hit @winner]
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -167,7 +154,6 @@
    ^cmzlabclj.nucleus.util.core.MubleAPI ball
    bbox]
 
-  (log/debug "about to test for update: ball = " (.toEDN ball))
   (let [hh (/ (.getf ball :height) 2)
         hw (/ (.getf ball :width) 2)
         b2 (rect (.getf ball :x)
@@ -179,27 +165,22 @@
                       y (.getf ball :y)]
       (when (> (:right b2)
                (:right bbox))
-        (log/debug "maybeUpdate: clamping ball - right")
         (var-set x (- (:right bbox) hw)))
 
       (when (< (:left b2)
                (:left bbox))
-        (log/debug "maybeUpdate: clamping ball - left")
         (var-set x (+ (:left bbox hw))))
 
       (when (> (:top b2)
                (:top bbox))
-        (log/debug "maybeUpdate: clamping ball - top")
         (var-set y (- (:top bbox) hh)))
 
       (when (< (:bottom b2)
                (:bottom bbox))
-        (log/debug "maybeUpdate: clamping ball - bottom")
         (var-set y (+ (:bottom bbox) hh)))
 
       (.setf! ball :x @x)
-      (.setf! ball :y @y)
-      (log/debug "set ball with values = " (.toEDN ball)))
+      (.setf! ball :y @y))
 
     ;; check if ball is hitting paddles
 
@@ -208,7 +189,6 @@
                   (.getf p2 :width)
                   (.getf p2 :height))]
       (when (rectXrect b2 r)
-        (log/debug "paddle-2 ---------------> hit ball")
         (.setf! ball :x (- (:left r) hw))
         (.setf! ball :vx (- (.getf ball :vx)))))
 
@@ -217,9 +197,48 @@
                   (.getf p1 :width)
                   (.getf p1 :height))]
       (when (rectXrect b2 r)
-        (log/debug "paddle-1 ---------------> hit ball")
         (.setf! ball :x (+ (:right r) hw))
         (.setf! ball :vx (- (.getf ball :vx)))))
+
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- resetPoint ""
+
+  [^cmzlabclj.nucleus.util.core.MubleAPI impl
+   winner]
+
+  )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- gameOver ""
+
+  [^cmzlabclj.nucleus.util.core.MubleAPI impl
+   winner]
+
+  )
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- updatePoint ""
+
+  [^cmzlabclj.nucleus.util.core.MubleAPI impl
+   winner]
+
+  (let [s2 (.getf impl :score2)
+        s1 (.getf impl :score1)
+        sx (if (== winner 2)
+             (inc s2)
+             (inc s1))]
+    (.setf! impl :score2 s2)
+    (.setf! impl :score1 s1)
+    (if (> sx (.getf impl :numpts))
+      (gameOver winner)
+      (resetPoint winner))
+
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -236,7 +255,6 @@
         ^cmzlabclj.nucleus.util.core.MubleAPI
         ball (.getf impl :ball)]
 
-    ;;(log/debug "updateEntities: delta-time = " dt " millis.")
     (.setf! pad2 :y (+ (* dt (.getf pad2 :vy))
                        (.getf pad2 :y)))
     (.setf! pad1 :y (+ (* dt (.getf pad1 :vy))
@@ -244,15 +262,15 @@
     (clamp pad2 bbox)
     (clamp pad1 bbox)
 
-    (if (traceEnclosure dt ball bbox)
-      (log/debug "traced-enclosure: ball hit wall ---------> BANG")
-      (do
-        (.setf! ball :x (+ (* dt (.getf ball :vx))
-                           (.getf ball :x)))
-        (.setf! ball :y (+ (* dt (.getf ball :vy))
-                           (.getf ball :y)))
-        (log/debug "setting ball new values = " (.toEDN ball))))
-    (maybeUpdate pad1 pad2 ball bbox)
+    (let [[hit winner] (traceEnclosure dt ball bbox)]
+      (when hit
+          (.setf! ball :x (+ (* dt (.getf ball :vx))
+                             (.getf ball :x)))
+          (.setf! ball :y (+ (* dt (.getf ball :vy))
+                             (.getf ball :y))))
+      (if (> winner 0)
+        (updatePoint impl winner)
+        (maybeUpdate pad1 pad2 ball bbox)))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -359,23 +377,48 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+(defn- postUpdateArena ""
+
+  [^GameEngine engine
+   options
+   ^cmzlabclj.nucleus.util.core.MubleAPI impl]
+
+  (let [fps (/ 1000 (:framespersec options))
+        nps (:numpts options)
+        s2 (.getf impl :score2)
+        s1 (.getf impl :score1)]
+    (if (or (> s2 nps)
+            (> s1 nps))
+      (do
+        (log/debug "haha score " s2
+                   " vs " s1
+                   " :-------------------> game over.")
+        (.endRound engine nil)
+        ;; use this to get out of the while loop
+        (throw (Exception. "game over.")))
+      (TryC (Thread/sleep fps)))
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 (defn- runGameLoop ""
 
-  [options impl]
+  [engine options ^cmzlabclj.nucleus.util.core.MubleAPI impl]
 
-  (let [fps (/ 1000 (:framespersec options)) ]
-    (.setf! impl :lastTick (System/currentTimeMillis))
-    (.setf! impl :lastSync 0)
-    (Coroutine #(while true
-                  (TryC (updateArena options impl))
-                  (TryC (Thread/sleep fps))))
-  ))
+  (.setf! impl :lastTick (System/currentTimeMillis))
+  (.setf! impl :numpts (:numpts options))
+  (.setf! impl :lastSync 0)
+  (.setf! impl :score2 0)
+  (.setf! impl :score1 0)
+  (Coroutine #(while true
+                (TryC (updateArena options impl))
+                (postUpdateArena engine options impl))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn ReifyPongArena ""
 
-  [options]
+  [engine options]
 
   (let [maxpts (:numpts options)
         world (:world options)
@@ -427,7 +470,7 @@
           (.sendMessage p1 (ReifyEvent Events/SESSION_MSG
                                        Events/C_SYNC_ARENA
                                        (json/write-str src)))
-          (runGameLoop options impl)))
+          (runGameLoop engine options impl)))
 
       (enqueue [_ evt]
         (let [^PlayerSession p2 (:session (.getf impl :p2))
