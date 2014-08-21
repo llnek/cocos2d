@@ -127,19 +127,16 @@
         (.setf! ball :vy (- (.getf ball :vy)))
         (var-set y (+ (:bottom bbox) sz))
         (var-set hit true))
-
       (when (> (+ @x sw) (:right bbox))
         (.setf! ball :vx (- (.getf ball :vx)))
         (var-set x (- (:right bbox) sw))
         (var-set winner 1)
         (var-set hit true))
-
       (when (< (- @x sw) (:left bbox))
         (.setf! ball :vx (- (.getf ball :vx)))
         (var-set x (+ (:left bbox) sw))
         (var-set winner 2)
         (var-set hit true))
-
       (when @hit
         (.setf! ball :x @x)
         (.setf! ball :y @y)))
@@ -224,6 +221,7 @@
     (.sendMessage ps1 (ReifyEvent Events/SESSION_MSG
                                   Events/C_SYNC_ARENA
                                   (json/write-str src)))
+    (.setf! impl :resetting-point true)
     (.resetPoint arena)
   ))
 
@@ -244,17 +242,19 @@
   [^cmzlabclj.nucleus.util.core.MubleAPI impl
    winner]
 
-  (let [s2 (.getf impl :score2)
+  (let [nps (.getf impl :numpts)
+        s2 (.getf impl :score2)
         s1 (.getf impl :score1)
         sx (if (== winner 2)
              (inc s2)
              (inc s1))]
-    (.setf! impl :score2 s2)
-    (.setf! impl :score1 s1)
-    (if (> sx (.getf impl :numpts))
-      (gameOver winner)
-      (resetPoint winner))
-
+    (log/debug "increment score by 1, someone lost a point. " s1  " , " s2)
+    (if (== winner 2)
+      (.setf! impl :score2 sx)
+      (.setf! impl :score1 sx))
+    (resetPoint impl winner)
+    (when (>= sx nps)
+      (gameOver impl winner))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -279,7 +279,7 @@
     (clamp pad1 bbox)
 
     (let [[hit winner] (traceEnclosure dt ball bbox)]
-      (when hit
+      (when-not hit
           (.setf! ball :x (+ (* dt (.getf ball :vx))
                              (.getf ball :x)))
           (.setf! ball :y (+ (* dt (.getf ball :vy))
@@ -371,24 +371,26 @@
 
   [options ^cmzlabclj.nucleus.util.core.MubleAPI impl]
 
-  (let [waitIntv (:syncMillis options)
-        maxpts (:numpts options)
-        world (:world options)
-        lastTick (.getf impl :lastTick)
-        lastSync (.getf impl :lastSync)
-        now (System/currentTimeMillis)]
-    ;; --- update the game with the difference
-    ;;in ms since the
-    ;; --- last tick
-    (let [diff (- now lastTick)
-          lastSync2 (+ lastSync diff)]
-      (updateEntities impl (/ diff 1000) world)
-      (.setf! impl :lastSync lastSync2)
-      (.setf! impl :lastTick now)
-      ;; --- check if time to send a ball update
-      (when (> lastSync waitIntv)
-        (syncClients impl)
-        (.setf! impl :lastSync 0)))
+  (if (true? (.getf impl :resetting-point))
+    nil
+    (let [waitIntv (:syncMillis options)
+          maxpts (:numpts options)
+          world (:world options)
+          lastTick (.getf impl :lastTick)
+          lastSync (.getf impl :lastSync)
+          now (System/currentTimeMillis)]
+      ;; --- update the game with the difference
+      ;;in ms since the
+      ;; --- last tick
+      (let [diff (- now lastTick)
+            lastSync2 (+ lastSync diff)]
+        (updateEntities impl (/ diff 1000) world)
+        (.setf! impl :lastSync lastSync2)
+        (.setf! impl :lastTick now)
+        ;; --- check if time to send a ball update
+        (when (> lastSync waitIntv)
+          (syncClients impl)
+          (.setf! impl :lastSync 0))))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -403,8 +405,9 @@
         nps (:numpts options)
         s2 (.getf impl :score2)
         s1 (.getf impl :score1)]
-    (if (or (> s2 nps)
-            (> s1 nps))
+    (if (and (not (true? (.getf impl :resetting-point)))
+             (or (> s2 nps)
+                 (> s1 nps)))
       (do
         (log/debug "haha score " s2
                    " vs " s1
@@ -414,6 +417,16 @@
         (throw (Exception. "game over.")))
       (TryC (Thread/sleep fps)))
   ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- rerunGameLoop ""
+
+  [engine options ^cmzlabclj.nucleus.util.core.MubleAPI impl]
+
+  (.setf! impl :lastTick (System/currentTimeMillis))
+  (.setf! impl :lastSync 0)
+  (.setf! impl :resetting-point false))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -438,6 +451,7 @@
    pp1 pp2
    pd ba]
 
+  (log/debug "resetting all entities back to default positions.")
   (.setf! impl :paddle2 (reifyPaddle (:x pp2)
                                       (:y pp2)
                                       (:width pd)
@@ -446,10 +460,14 @@
                                       (:y pp1)
                                       (:width pd)
                                       (:height pd)))
-  (.setf! impl :ball (reifyBall (:x ba)
-                                (:y ba)
-                                (:width ba)
-                                (:height ba))))
+  (let [^cmzlabclj.nucleus.util.core.MubleAPI
+        b (reifyBall (:x ba)
+                     (:y ba)
+                     (:width ba)
+                     (:height ba))]
+    (.setf! b :vx (* (RandomSign) (:speed ba)))
+    (.setf! b :vy (* (RandomSign) (:speed ba)))
+    (.setf! impl :ball b)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -477,6 +495,7 @@
 
       (resetPoint [this]
         (initEntities impl pp1 pp2 pd ba)
+        (Thread/sleep 3000)
         (.broadcast this nil))
 
       (broadcast [this cmd]
@@ -484,16 +503,14 @@
               ^PlayerSession p1 (:session (.getf impl :p1))
               ^cmzlabclj.nucleus.util.core.MubleAPI
               ball (.getf impl :ball)
-              src {:ball {:vx (* (RandomSign) (:speed ba))
-                          :vy (* (RandomSign) (:speed ba))
-                          :x (:x ba)
-                          :y (:y ba)}}]
-          (.setf! ball :vx (:vx (:ball src)))
-          (.setf! ball :vy (:vy (:ball src)))
+              src {:ball {:vx (.getf ball :vx)
+                          :vy (.getf ball :vy)
+                          :x (:x ball)
+                          :y (:y ball)}}]
           (.sendMessage p2 (ReifyEvent Events/SESSION_MSG
                                        Events/C_POKE_MOVE
                                        (json/write-str {:pnum (.number p2)})))
-          (.sendMessage p1 (ReifyEvent Events/NETWORK_MSG
+          (.sendMessage p1 (ReifyEvent Events/SESSION_MSG
                                        Events/C_POKE_MOVE
                                        (json/write-str {:pnum (.number p1)})))
           (.sendMessage p2 (ReifyEvent Events/SESSION_MSG
@@ -502,7 +519,9 @@
           (.sendMessage p1 (ReifyEvent Events/SESSION_MSG
                                        Events/C_SYNC_ARENA
                                        (json/write-str src)))
-          (runGameLoop engine options impl)))
+          (if-not (nil? cmd)
+            (runGameLoop engine options impl)
+            (rerunGameLoop engine options impl))))
 
       (enqueue [_ evt]
         (let [^PlayerSession p2 (:session (.getf impl :p2))

@@ -253,6 +253,12 @@ var GameLayer = asterix.XGameLayer.extend({
     return this.arena && this.arena.isActive();
   },
 
+  updatePoints: function(scores) {
+    this.getHUD().updateScores(scores);
+    this.arena.pause();
+    this.arena.reposEntities();
+  },
+
   onWinner: function(p) {
     this.getHUD().updateScore(p,1);
     var rc= this.getHUD().isDone();

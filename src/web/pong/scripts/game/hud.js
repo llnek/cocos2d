@@ -161,6 +161,12 @@ png.HUDLayer = asterix.XGameHUDLayer.extend({
     return rc;
   },
 
+  updateScores: function(scores) {
+    this.scores[this.play2.color] = scores[this.play2.color];
+    this.scores[this.play1.color] = scores[this.play1.color];
+    this.drawScores();
+  },
+
   updateScore: function(actor,value) {
     this.scores[actor.color] = this.scores[actor.color] + value;
     this.drawScores();

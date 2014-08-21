@@ -79,7 +79,7 @@
           aa (ReifyPongArena this options) ]
       (swap! stateAtom assoc :arena aa)
       (.registerPlayers aa p1 p2)
-      (.broadcast aa nil)))
+      (.broadcast aa {})))
 
   (update [this evt]
     (log/debug "game engine got an update " evt)

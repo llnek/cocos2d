@@ -75,6 +75,10 @@ var pngArena = sjs.Class.xtends({
     this.spawnBall();
   },
 
+  reposEntities: function() {
+
+  },
+
   disposeBall: function() {
     if (this.ball) {
       this.ball.dispose();
@@ -83,6 +87,7 @@ var pngArena = sjs.Class.xtends({
   },
 
   spawnNewBall: function() {
+    this.disposeBall();
     this.spawnBall();
   },
 
@@ -168,10 +173,29 @@ png.NetArena = pngArena.xtends({
     });
   },
 
+  pause: function() {
+    this.gameInProgress=false;
+  },
+
   onEvent: function(evt) {
 
     console.log("onEvent:");
     console.log(JSON.stringify(evt.source));
+
+    if (evt.source.scores) {
+      console.log("got new scores !!!!");
+      var rc= {};
+      rc[this.actors[2].color] = evt.source.scores.p2;
+      rc[this.actors[1].color] = evt.source.scores.p1;
+      this.ctx.updatePoints(rc);
+      _.each(this.actors, function(a) {
+        if (a && a.wss) {
+          this.lastY = a.sprite.getPosition().y;
+          this.lastDir=0;
+        }
+      },this);
+    }
+
     if (evt.source.ball) {
       var c = evt.source.ball;
       this.ball.sprite.setPosition(c.x,c.y);
@@ -202,6 +226,24 @@ png.NetArena = pngArena.xtends({
       console.log("P1 got SYNC'ED !!!");
     }
 
+  },
+
+  reposEntities: function() {
+    var obj = this.options.p2;
+    var sp= this.actors[2].sprite;
+    sp.setPosition(obj.x, obj.y);
+    this.actors[2].setDir(0);
+
+    obj= this.options.p1;
+    sp= this.actors[1].sprite;
+    sp.setPosition(obj.x, obj.y);
+    this.actors[1].setDir(0);
+
+    obj= this.options.ball;
+    sp= this.ball.sprite;
+    sp.setPosition(obj.x, obj.y);
+    this.ball.vel.y=0;
+    this.ball.vel.x=0;
   },
 
   maybeNotifyServer: function(a) {
