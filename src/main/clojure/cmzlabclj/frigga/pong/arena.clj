@@ -51,6 +51,7 @@
 (defprotocol ArenaAPI ""
 
   (registerPlayers [_ p1 p2])
+  (resetPoint [_])
   (broadcast [_ cmd])
   (getPlayer2 [_])
   (getPlayer1 [_])
@@ -209,7 +210,22 @@
   [^cmzlabclj.nucleus.util.core.MubleAPI impl
    winner]
 
-  )
+  (let [^PlayerSession ps2 (:session (.getf impl :p2))
+        ^PlayerSession ps1 (:session (.getf impl :p1))
+        s2 (.getf impl :score2)
+        s1 (.getf impl :score1)
+        ^cmzlabclj.frigga.pong.arena.ArenaAPI
+        arena (.getf impl :arena)
+        src {:scores {:p2 s2 :p1 s1 }}]
+    ;; update scores
+    (.sendMessage ps2 (ReifyEvent Events/SESSION_MSG
+                                  Events/C_SYNC_ARENA
+                                  (json/write-str src)))
+    (.sendMessage ps1 (ReifyEvent Events/SESSION_MSG
+                                  Events/C_SYNC_ARENA
+                                  (json/write-str src)))
+    (.resetPoint arena)
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -416,6 +432,27 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+(defn- initEntities ""
+
+  [^cmzlabclj.nucleus.util.core.MubleAPI impl
+   pp1 pp2
+   pd ba]
+
+  (.setf! impl :paddle2 (reifyPaddle (:x pp2)
+                                      (:y pp2)
+                                      (:width pd)
+                                      (:height pd)))
+  (.setf! impl :paddle1 (reifyPaddle (:x pp1)
+                                      (:y pp1)
+                                      (:width pd)
+                                      (:height pd)))
+  (.setf! impl :ball (reifyBall (:x ba)
+                                (:y ba)
+                                (:width ba)
+                                (:height ba))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 (defn ReifyPongArena ""
 
   [engine options]
@@ -428,24 +465,19 @@
         pp1 (:p1 options)
         impl (MakeMMap) ]
     (reify ArenaAPI
-      (registerPlayers [_ ps1 ps2]
+      (registerPlayers [this ps1 ps2]
+        ;;(require 'cmzlabclj.frigga.pong.arena)
+        (.setf! impl :arena this)
         (.setf! impl :p2 ps2)
         (.setf! impl :p1 ps1)
-        (.setf! impl :paddle2 (reifyPaddle (:x pp2)
-                                           (:y pp2)
-                                           (:width pd)
-                                           (:height pd)))
-        (.setf! impl :paddle1 (reifyPaddle (:x pp1)
-                                           (:y pp1)
-                                           (:width pd)
-                                           (:height pd)))
-        (.setf! impl :ball (reifyBall (:x ba)
-                                      (:y ba)
-                                      (:width ba)
-                                      (:height ba))))
+        (initEntities impl pp1 pp2 pd ba))
 
       (getPlayer2 [_] (.getf impl :p2))
       (getPlayer1 [_] (.getf impl :p1))
+
+      (resetPoint [this]
+        (initEntities impl pp1 pp2 pd ba)
+        (.broadcast this nil))
 
       (broadcast [this cmd]
         (let [^PlayerSession p2 (:session (.getf impl :p2))
