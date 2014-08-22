@@ -127,7 +127,9 @@
   (restart [this options]
     (log/debug "restarting game one more time.....................")
     (require 'cmzlabclj.frigga.pong.core)
-    (let [parr (:players @stateAtom)
+    (let [^cmzlabclj.frigga.pong.arena.ArenaAPI
+          arena (:arena @stateAtom)
+          parr (:players @stateAtom)
           pss (first parr)
           room (.room ^PlayerSession pss)
           m (mapPlayers parr)
@@ -136,6 +138,7 @@
                           Events/C_RESTART
                           (json/write-str src)) ]
       (dosync (ref-set stateRef m))
+      (.restart arena)
       (.broadcast ^PlayRoom room evt)))
 
   (ready [_  room]
@@ -148,8 +151,7 @@
 
   (startRound [_ obj])
 
-  (endRound [_ obj]
-    (swap! stateAtom dissoc :arena))
+  (endRound [_ obj])
 
   (stop [_] )
   (finz [_] )

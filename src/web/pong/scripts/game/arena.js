@@ -55,6 +55,7 @@ var pngArena = sjs.Class.xtends({
   finz: function() {
     this.actors[2].dispose();
     this.actors[1].dispose();
+    this.disposeBall();
     this.onStopReset();
     this.actors=[null,null,null];
     this.ball=null;
@@ -151,6 +152,11 @@ png.NetArena = pngArena.xtends({
     },this);
   },
 
+  onStopReset: function() {
+    this.ctx.options.wsock.unsubscribeAll();
+    this._super();
+  },
+
   notifyServer: function(actor,direction) {
     var vy = direction * this.options.paddle.speed;
     var pos = actor.sprite.getPosition();
@@ -182,6 +188,16 @@ png.NetArena = pngArena.xtends({
     console.log("onEvent:");
     console.log(JSON.stringify(evt.source));
 
+    if (evt.source.winner) {
+      var winner = this.actors[evt.source.winner.pnum];
+      var scores = evt.source.winner.scores;
+      var rc= {};
+      rc[this.actors[2].color] = scores.p2;
+      rc[this.actors[1].color] = scores.p1;
+      this.ctx.updatePoints(rc);
+      this.ctx.doDone(winner);
+    }
+
     if (evt.source.scores) {
       console.log("got new scores !!!!");
       var rc= {};
@@ -194,6 +210,8 @@ png.NetArena = pngArena.xtends({
           this.lastDir=0;
         }
       },this);
+      this.reposEntities();
+      this.pause();
     }
 
     if (evt.source.ball) {
@@ -268,6 +286,7 @@ png.NetArena = pngArena.xtends({
   },
 
   doUpdateWorld: function(dt) {
+    //console.log("update update update update pls " + dt);
     _.each(this.actors, function(a) {
       if (a) {
         if (a.wss) {
@@ -319,6 +338,7 @@ png.NetArena = pngArena.xtends({
   },
 
   animate: function() {
+    console.log("game in progress in ------------------ ON");
     this.gameInProgress = true;
   },
 

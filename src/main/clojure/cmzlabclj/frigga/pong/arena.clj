@@ -52,11 +52,11 @@
 
   (registerPlayers [_ p1 p2])
   (resetPoint [_])
+  (restart [_])
   (broadcast [_ cmd])
   (getPlayer2 [_])
   (getPlayer1 [_])
-  (enqueue [_ cmd])
-  )
+  (enqueue [_ cmd]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -232,8 +232,22 @@
   [^cmzlabclj.nucleus.util.core.MubleAPI impl
    winner]
 
-  )
-
+  (let [^PlayerSession ps2 (:session (.getf impl :p2))
+        ^PlayerSession ps1 (:session (.getf impl :p1))
+        s2 (.getf impl :score2)
+        s1 (.getf impl :score1)
+        pnum (if (> s2 s1) 2 1)
+        ^cmzlabclj.frigga.pong.arena.ArenaAPI
+        arena (.getf impl :arena)
+        src {:winner {:pnum pnum :scores {:p2 s2 :p1 s1 }}}]
+    ;; end game
+    (.sendMessage ps2 (ReifyEvent Events/SESSION_MSG
+                                  Events/C_SYNC_ARENA
+                                  (json/write-str src)))
+    (.sendMessage ps1 (ReifyEvent Events/SESSION_MSG
+                                  Events/C_SYNC_ARENA
+                                  (json/write-str src)))
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -356,6 +370,7 @@
                     :x (.getf ball :x)
                     :vy (.getf ball :vy)
                     :vx (.getf ball :vx) }} ]
+    (log/debug "sync new BALL values " (:ball src))
     (.sendMessage ps2 (ReifyEvent Events/SESSION_MSG
                                   Events/C_SYNC_ARENA
                                   (json/write-str src)))
@@ -493,9 +508,13 @@
       (getPlayer2 [_] (.getf impl :p2))
       (getPlayer1 [_] (.getf impl :p1))
 
+      (restart [_]
+        (.setf! impl :resetting-point false)
+        (.setf! impl :score2 0)
+        (.setf! impl :score1 0))
+
       (resetPoint [this]
         (initEntities impl pp1 pp2 pd ba)
-        (Thread/sleep 3000)
         (.broadcast this nil))
 
       (broadcast [this cmd]
@@ -505,8 +524,9 @@
               ball (.getf impl :ball)
               src {:ball {:vx (.getf ball :vx)
                           :vy (.getf ball :vy)
-                          :x (:x ball)
-                          :y (:y ball)}}]
+                          :x (.getf ball :x)
+                          :y (.getf ball :y)}}]
+          (log/debug "setting default ball values " src)
           (.sendMessage p2 (ReifyEvent Events/SESSION_MSG
                                        Events/C_POKE_MOVE
                                        (json/write-str {:pnum (.number p2)})))

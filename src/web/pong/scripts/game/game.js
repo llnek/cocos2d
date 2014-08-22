@@ -23,7 +23,7 @@ evts= Odin.Events;
 
 var BALL_SPEED=150, // 25 incremental
 PADDLE_SPEED=200, // 300
-TILE_SIZE=8;
+NUM_ROUNDS=3;
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -71,12 +71,10 @@ var GameLayer = asterix.XGameLayer.extend({
     switch (evt.code) {
       case evts.C_RESTART:
         sjs.loggr.debug("restarting a new game...");
-        this.getHUD().killTimer();
         this.play(false);
       break;
       case evts.C_STOP:
         sjs.loggr.debug("game will stop");
-        this.getHUD().killTimer();
         this.onStop(evt);
       break;
       default:
@@ -111,6 +109,10 @@ var GameLayer = asterix.XGameLayer.extend({
 
   replay: function() {
     if (_.isObject(this.options.wsock)) {
+
+      this.options.wsock.unsubscribeAll();
+      this.options.wsock.subscribeAll(this.onevent,this);
+
       // request server to restart a new game
       this.options.wsock.send({
         type: evts.SESSION_MSG,
@@ -203,7 +205,7 @@ var GameLayer = asterix.XGameLayer.extend({
                  speed: Math.floor(BALL_SPEED) },
           p1: {x: p1x, y: Math.floor(cw.y) },
           p2: {x: p2x, y: Math.floor(cw.y) },
-          numpts: 9};
+          numpts: NUM_ROUNDS};
         this.arena = new png.NetArena(opts);
       break;
     }
@@ -255,8 +257,6 @@ var GameLayer = asterix.XGameLayer.extend({
 
   updatePoints: function(scores) {
     this.getHUD().updateScores(scores);
-    this.arena.pause();
-    this.arena.reposEntities();
   },
 
   onWinner: function(p) {
