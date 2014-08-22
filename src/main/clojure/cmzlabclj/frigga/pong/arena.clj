@@ -51,6 +51,7 @@
 (defprotocol ArenaAPI ""
 
   (registerPlayers [_ p1 p2])
+  (startPoint [_ cmd])
   (resetPoint [_])
   (restart [_])
   (broadcast [_ cmd])
