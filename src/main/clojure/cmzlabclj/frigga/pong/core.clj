@@ -121,7 +121,9 @@
       (let [^cmzlabclj.frigga.pong.arena.ArenaAPI
             aa (:arena @stateAtom)
             pss (:context evt)]
-        (log/debug "received cmd " (:source evt) " from session " pss)
+        (log/debug "received paddle-move "
+                   (:source evt)
+                   " from session " pss)
         (.enqueue aa evt))
 
       Events/C_STARTED
@@ -141,13 +143,13 @@
       (log/warn "game engine: unhandled session msg " evt)))
 
   (restart [this options]
+    (log/debug "restarting game one more time.")
     (require 'cmzlabclj.frigga.pong.core)
     (let [parr (:players @stateAtom)
           m (mapPlayers parr)
           ^PlayerSession pss (first parr)
           ^PlayRoom room (.room pss)]
       (dosync (ref-set stateRef m))
-      (log/debug "restarting game one more time.")
       (bcastAll room
                 Events/C_RESTART
                 (mapPlayersEx parr))))
