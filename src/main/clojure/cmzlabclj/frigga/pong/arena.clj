@@ -48,7 +48,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defmacro plusEQ [dt v] `(+ ~v (* ~dt ~v)))
 (defmacro halve [v] `(/ ~v 2))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -154,8 +153,8 @@
 
   [dt ^cmzlabclj.nucleus.util.core.MubleAPI ball bbox]
 
-  (with-local-vars [y (plusEQ dt (.getf ball :y))
-                    x (plusEQ dt (.getf ball :x))
+  (with-local-vars [y (+ (.getf ball :y) (* dt (.getf ball :vy)))
+                    x (+ (.getf ball :x) (* dt (.getf ball :vx)))
                     winner 0
                     hit false]
     (let [sz (halve (.getf ball :height))

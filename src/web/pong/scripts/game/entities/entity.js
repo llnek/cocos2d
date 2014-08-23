@@ -9,12 +9,14 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef){ "use strict"; var global= this, _ = global._ ,
-asterix= global.ZotohLab.Asterix,
+(function(undef){ "use strict"; var global= this, _ = global._ ;
+
+var asterix= global.ZotohLab.Asterix,
 sh= global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
 png= asterix.Pong,
-SkaroJS= global.SkaroJS;
+sjs= global.SkaroJS;
+
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -80,7 +82,7 @@ png.EntityPaddle = png.EntityXXX.xtends({
 
   ctor: function(x,y,options) {
     this._super(x,y,options);
-    this.speed= 200;
+    this.speed= this.options.speed;
     this.kcodes= [];
     switch (this.options.color) {
     case 'X':

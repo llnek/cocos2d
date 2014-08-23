@@ -233,6 +233,10 @@ var SkaroJS = {
     return CryptoJS.enc.Utf8.stringify( CryptoJS.enc.Base64.parse(s));
   },
 
+  mergeEx:function(original,extended) {
+    return this.merge(this.merge({},original), extended);
+  },
+
   merge: function(original, extended) {
     for( var key in extended ) {
       var ext = extended[key];

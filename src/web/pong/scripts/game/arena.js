@@ -52,13 +52,17 @@ var pngArena = sjs.Class.xtends({
   animate: function() {
   },
 
+  pause: function() {
+    this.gameInProgress=false;
+  },
+
   finz: function() {
     this.actors[2].dispose();
     this.actors[1].dispose();
     this.disposeBall();
+    this.ball=null;
     this.onStopReset();
     this.actors=[null,null,null];
-    this.ball=null;
   },
 
   getPlayer2: function() { return this.actors[2]; },
@@ -77,7 +81,6 @@ var pngArena = sjs.Class.xtends({
   },
 
   reposEntities: function() {
-
   },
 
   disposeBall: function() {
@@ -93,9 +96,8 @@ var pngArena = sjs.Class.xtends({
   },
 
   spawnBall: function() {
-    var cw= ccsx.center();
-
-    this.doSpawnBall(cw.x, cw.y, {});
+    var dft=this.options.ball;
+    this.doSpawnBall(dft.x, dft.y, dft);
     this.ctx.addItem(this.ball.create());
   },
 
@@ -135,6 +137,8 @@ var pngArena = sjs.Class.xtends({
 
 });
 
+//////////////////////////////////////////////////////////////////////////////
+// online game
 png.NetArena = pngArena.xtends({
 
   startRumble: function() {
@@ -144,6 +148,7 @@ png.NetArena = pngArena.xtends({
       code: evts.C_STARTED,
       source: JSON.stringify(this.options)
     });
+    // try to keep track of paddle movements
     _.each(this.actors, function(a) {
       if (a && a.wss) {
         this.lastY = a.sprite.getPosition().y;
@@ -153,10 +158,11 @@ png.NetArena = pngArena.xtends({
   },
 
   onStopReset: function() {
-    this.ctx.options.wsock.unsubscribeAll();
+    //this.ctx.options.wsock.unsubscribeAll();
     this._super();
   },
 
+  // inform the server that paddle has changed direction: up , down or stopped.
   notifyServer: function(actor,direction) {
     var vy = direction * this.options.paddle.speed;
     var pos = actor.sprite.getPosition();
@@ -179,50 +185,54 @@ png.NetArena = pngArena.xtends({
     });
   },
 
-  pause: function() {
-    this.gameInProgress=false;
-  },
-
   onEvent: function(evt) {
 
-    console.log("onEvent:");
-    console.log(JSON.stringify(evt.source));
+    sjs.loggr.debug("onEvent: => " + JSON.stringify(evt.source));
 
-    if (evt.source.winner) {
-      var winner = this.actors[evt.source.winner.pnum];
-      var scores = evt.source.winner.scores;
-      var rc= {};
+    if (_.isObject(evt.source.winner)) {
+      var win = this.actors[evt.source.winner.pnum],
+      scores = evt.source.winner.scores,
+      rc= {};
+
       rc[this.actors[2].color] = scores.p2;
       rc[this.actors[1].color] = scores.p1;
+
       this.ctx.updatePoints(rc);
-      this.ctx.doDone(winner);
+      this.ctx.doDone(win);
     }
 
-    if (evt.source.scores) {
-      console.log("got new scores !!!!");
+    if (_.isObject(evt.source.scores)) {
+      sjs.loggr.debug("server sent us new scores !!!!");
       var rc= {};
       rc[this.actors[2].color] = evt.source.scores.p2;
       rc[this.actors[1].color] = evt.source.scores.p1;
+
       this.ctx.updatePoints(rc);
       _.each(this.actors, function(a) {
         if (a && a.wss) {
           this.lastY = a.sprite.getPosition().y;
           this.lastDir=0;
         }
-      },this);
+      }, this);
+
+      // once we get a new score, we reposition the entities
+      // and pause the game (no moves) until the server
+      // tells us to begin a new point.
       this.reposEntities();
       this.pause();
     }
 
-    if (evt.source.ball) {
+    if (_.isObject(evt.source.ball) &&
+        _.isObject(this.ball)) {
+      sjs.loggr.debug("server says: Ball got SYNC'ED !!!");
       var c = evt.source.ball;
       this.ball.sprite.setPosition(c.x,c.y);
       this.ball.vel.y= c.vy;
       this.ball.vel.x= c.vx;
-      console.log("Ball got SYNC'ED !!!");
     }
 
-    if (evt.source.p2) {
+    if (_.isObject(evt.source.p2)) {
+      sjs.loggr.debug("server says: P2 got SYNC'ED !!!");
       var py= this.actors[2];
       var c = evt.source.p2;
       var dir=0;
@@ -230,10 +240,10 @@ png.NetArena = pngArena.xtends({
       if (c.vy > 0) { dir = 1;}
       if (c.vy < 0) { dir = -1;}
       py.setDir(dir);
-      console.log("P2 got SYNC'ED !!!");
     }
 
-    if (evt.source.p1) {
+    if (_.isObject(evt.source.p1)) {
+      sjs.loggr.debug("server says: P1 got SYNC'ED !!!");
       var py= this.actors[1];
       var c = evt.source.p1;
       var dir=0;
@@ -241,19 +251,20 @@ png.NetArena = pngArena.xtends({
       if (c.vy > 0) { dir = 1;}
       if (c.vy < 0) { dir = -1;}
       py.setDir(dir);
-      console.log("P1 got SYNC'ED !!!");
     }
 
   },
 
+  // reset back to default position, no movements
   reposEntities: function() {
-    var obj = this.options.p2;
-    var sp= this.actors[2].sprite;
+    var sp= this.actors[2].sprite,
+    obj = this.options.p2;
+
     sp.setPosition(obj.x, obj.y);
     this.actors[2].setDir(0);
 
-    obj= this.options.p1;
     sp= this.actors[1].sprite;
+    obj= this.options.p1;
     sp.setPosition(obj.x, obj.y);
     this.actors[1].setDir(0);
 
@@ -265,17 +276,18 @@ png.NetArena = pngArena.xtends({
   },
 
   maybeNotifyServer: function(a) {
-    var y= a.sprite.getPosition().y;
-    var dir;
-    if (y > this.lastY) {
-      dir=1;
-      // moving up
-    } else if (y < this.lastY) {
-      // moving down
-      dir= -1;
-    }
-    else {
-      dir=0;
+    var y= a.sprite.getPosition().y,
+    dir=0,
+    delta= Math.abs(y - this.lastY);
+
+    if (delta >= 1) {
+      if (y > this.lastY) {
+        dir=1;
+        // moving up
+      } else if (y < this.lastY) {
+        // moving down
+        dir= -1;
+      }
     }
     this.lastY=y;
     if (this.lastDir !== dir) {
@@ -286,7 +298,6 @@ png.NetArena = pngArena.xtends({
   },
 
   doUpdateWorld: function(dt) {
-    //console.log("update update update update pls " + dt);
     _.each(this.actors, function(a) {
       if (a) {
         if (a.wss) {
@@ -338,7 +349,6 @@ png.NetArena = pngArena.xtends({
   },
 
   animate: function() {
-    console.log("game in progress in ------------------ ON");
     this.gameInProgress = true;
   },
 
@@ -347,13 +357,12 @@ png.NetArena = pngArena.xtends({
 
 });
 
+//////////////////////////////////////////////////////////////////////////////
+// basic game, no network
 png.NonNetArena = pngArena.xtends({
 
   startRumble: function() {
     this.gameInProgress = true;
-  },
-
-  animate: function() {
   },
 
   doUpdateWorld: function(dt) {
