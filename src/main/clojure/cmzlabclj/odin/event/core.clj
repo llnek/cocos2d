@@ -33,26 +33,31 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn EventToFrame ""
+(defn EventToFrame "Turn data into websocket frames."
 
-  (^TextWebSocketFrame [etype body]
-                       (EventToFrame etype -1 body))
+  (^TextWebSocketFrame
+    [etype body]
+    (EventToFrame etype -1 body))
 
-  (^TextWebSocketFrame [evt]
-                       (EventToFrame (:type evt)
-                                     (:code evt)
-                                     (:source evt)))
+  (^TextWebSocketFrame
+    [evt]
+    (EventToFrame (:source evt) 
+                  (:type evt) (:code evt)))
 
-  (^TextWebSocketFrame [etype ecode body]
-                       (let [b1 {:type etype :code -1
-                                 :timestamp (System/currentTimeMillis) }
-                             b2 (if-not (nil? body)
-                                  (assoc b1 :source body)
-                                  b1)
-                             evt (if-not (nil? ecode)
-                                   (assoc b2 :code ecode)
-                                   b2) ]
-                         (TextWebSocketFrame. ^String (json/write-str evt)))))
+  (^TextWebSocketFrame
+    [etype ecode body]
+    (let [b1 {:type etype
+              :code -1
+              :timestamp (System/currentTimeMillis) }
+          b2 (if (nil? body)
+               b1
+               (assoc b1 :source body))
+          evt (if (nil? ecode)
+                b2
+                (assoc b2 :code ecode)) ]
+      (TextWebSocketFrame. ^String
+                           (json/write-str evt)))))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -66,35 +71,37 @@
 ;;
 (defn ReifyEvent ""
 
-  ([eventType ecode ^Object source]
-   (ReifyEvent eventType ecode source nil))
-
-  ([eventType ecode]
-   (ReifyEvent eventType ecode nil nil))
-
   ([eventType ecode ^Object source ^Object ctx]
    (let [base {:timestamp (System/currentTimeMillis)
                :type (int eventType)
                :code (int ecode) }
-         e1 (if-not (nil? source)
-              (assoc base :source source)
-              base) ]
-     (if-not (nil? ctx)
-       (assoc e1 :context ctx)
-       e1))))
+         e1 (if (nil? source)
+              base
+              (assoc base :source source)) ]
+     (if (nil? ctx)
+       e1
+       (assoc e1 :context ctx))))
+
+  ([eventType ecode source]
+   (ReifyEvent eventType ecode source nil))
+
+  ([eventType ecode]
+   (ReifyEvent eventType ecode nil nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ReifyNetworkEvent ""
+(defn ReifyNetworkEvent "Make a Network Event."
 
-  ([ecode source] (ReifyNetworkEvent ecode source true))
+  ([ecode source]
+   (ReifyNetworkEvent ecode source true))
+
   ([ecode source reliable?]
-   (let [evt (ReifyEvent Events/NETWORK_MSG ecode source) ]
-     (assoc evt :reliable (true? reliable?)))))
+   (-> (ReifyEvent Events/NETWORK_MSG ecode source)
+       (assoc :reliable (true? reliable?)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ReifySessionMessage ""
+(defn ReifySessionMessage "Make a Session Event."
 
   ([ecode source]
    (ReifySessionMessage ecode source nil))
