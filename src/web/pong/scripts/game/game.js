@@ -110,10 +110,8 @@ var GameLayer = asterix.XGameLayer.extend({
   replay: function() {
     if (_.isObject(this.options.wsock)) {
 
-      this.options.wsock.unsubscribeAll();
-      this.options.wsock.subscribeAll(this.onevent,this);
-
       // request server to restart a new game
+      this.options.wsock.unsubscribeAll();
       this.options.wsock.send({
         type: evts.SESSION_MSG,
         code: evts.C_REPLAY

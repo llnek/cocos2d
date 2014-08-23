@@ -59,7 +59,6 @@
   (startPoint [_ cmd])
   (resetPoint [_])
   (restart [_])
-  (broadcast [_ cmd])
   (getPlayer2 [_])
   (getPlayer1 [_])
   (enqueue [_ cmd]))
@@ -312,7 +311,8 @@
         sx (if (== winner 2)
              (inc s2)
              (inc s1))]
-    (log/debug "increment score by 1, someone lost a point. " s1  " , " s2)
+    (log/debug "increment score by 1, "
+               "someone lost a point. " s1  " , " s2)
     (if (== winner 2)
       (.setf! impl :score2 sx)
       (.setf! impl :score1 sx))
@@ -444,7 +444,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- rerunGameLoop "When a new point starts, re run the 
+(defn- rerunGameLoop "When a new point starts, re run the
                      current game loop."
 
   [engine options ^cmzlabclj.nucleus.util.core.MubleAPI impl]
@@ -461,6 +461,7 @@
 
   (.setf! impl :lastTick (System/currentTimeMillis))
   (.setf! impl :numpts (:numpts options))
+  (.setf! impl :resetting-point false)
   (.setf! impl :lastSync 0)
   (.setf! impl :score2 0)
   (.setf! impl :score1 0)
@@ -496,6 +497,35 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+(defn- pokeAndStartUI ""
+
+  [engine options impl]
+
+  (let [^PlayerSession p2 (:session (.getf impl :p2))
+        ^PlayerSession p1 (:session (.getf impl :p1))
+        ^cmzlabclj.nucleus.util.core.MubleAPI
+        ball (.getf impl :ball)
+        src {:ball {:vx (.getf ball :vx)
+                    :vy (.getf ball :vy)
+                    :x (.getf ball :x)
+                    :y (.getf ball :y)} }]
+    (.sendMessage p2 (ReifyEvent Events/SESSION_MSG
+                                 Events/C_POKE_MOVE
+                                 (json/write-str {:pnum (.number p2)})))
+    (.sendMessage p1 (ReifyEvent Events/SESSION_MSG
+                                 Events/C_POKE_MOVE
+                                 (json/write-str {:pnum (.number p1)})))
+    (.sendMessage p2 (ReifyEvent Events/SESSION_MSG
+                                 Events/C_SYNC_ARENA
+                                 (json/write-str src)))
+    (.sendMessage p1 (ReifyEvent Events/SESSION_MSG
+                                 Events/C_SYNC_ARENA
+                                 (json/write-str src)))
+    (log/debug "setting default ball values " src)
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 (defn ReifyPongArena "The local game arena."
 
   ^cmzlabclj.frigga.pong.arena.ArenaAPI
@@ -526,33 +556,13 @@
 
       (resetPoint [this]
         (initEntities impl pp1 pp2 pd ba)
-        (.broadcast this nil))
+        (.startPoint this {}))
 
-      (broadcast [this cmd]
-        (let [^PlayerSession p2 (:session (.getf impl :p2))
-              ^PlayerSession p1 (:session (.getf impl :p1))
-              ^cmzlabclj.nucleus.util.core.MubleAPI
-              ball (.getf impl :ball)
-              src {:ball {:vx (.getf ball :vx)
-                          :vy (.getf ball :vy)
-                          :x (.getf ball :x)
-                          :y (.getf ball :y)}}]
-          (log/debug "setting default ball values " src)
-          (.sendMessage p2 (ReifyEvent Events/SESSION_MSG
-                                       Events/C_POKE_MOVE
-                                       (json/write-str {:pnum (.number p2)})))
-          (.sendMessage p1 (ReifyEvent Events/SESSION_MSG
-                                       Events/C_POKE_MOVE
-                                       (json/write-str {:pnum (.number p1)})))
-          (.sendMessage p2 (ReifyEvent Events/SESSION_MSG
-                                       Events/C_SYNC_ARENA
-                                       (json/write-str src)))
-          (.sendMessage p1 (ReifyEvent Events/SESSION_MSG
-                                       Events/C_SYNC_ARENA
-                                       (json/write-str src)))
-          (if-not (nil? cmd)
-            (runGameLoop engine options impl)
-            (rerunGameLoop engine options impl))))
+      (startPoint [_ cmd]
+        (pokeAndStartUI engine options impl)
+        (if (true? (:new cmd))
+          (runGameLoop engine options impl)
+          (rerunGameLoop engine options impl)))
 
       (enqueue [_ evt]
         (let [^PlayerSession p2 (:session (.getf impl :p2))
