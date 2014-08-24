@@ -9,12 +9,14 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this, _ = global._ ,
-asterix = global.ZotohLab.Asterix,
+(function(undef) { "use strict"; var global = this, _ = global._ ;
+
+var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
 ivs = asterix.Invaders,
-SkaroJS= global.SkaroJS;
+sjs= global.SkaroJS;
+
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -41,8 +43,8 @@ var Ship = cc.Sprite.extend({
 
   ctor: function(x,y,options) {
     this.options= options;
-    this.frame0 = cc.spriteFrameCache.getSpriteFrame(this.options.frames[0]);
-    this.frame1 = cc.spriteFrameCache.getSpriteFrame(this.options.frames[1]);
+    this.frame0 = ccsx.getSpriteFrame(options.frames[0]);
+    this.frame1 = ccsx.getSpriteFrame(options.frames[1]);
     this._super();
     this.loadAmmo();
     this.setPosition(x,y);

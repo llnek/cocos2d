@@ -9,11 +9,13 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._ ,
-asterix = global.ZotohLab.Asterix,
+(function (undef) { "use strict"; var global= this, _ = global._ ;
+
+var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
-SkaroJS= global.SkaroJS;
+sjs= global.SkaroJS;
+
 
 //////////////////////////////////////////////////////////////////////////////
 // Main menu.
@@ -29,34 +31,13 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
 
     this.addItem( ccsx.tmenu1({
       fontPath: sh.getFontPath('font.OogieBoogie'),
-      text: sh.l10n('%online'),
-      scale: 0.5,
-      selector: function() {
-      },
-      target: this,
-      pos: cc.p(114, wz.height - csts.TILE * 18 - 2)
-    }));
-
-    this.addItem( ccsx.tmenu1({
-      fontPath: sh.getFontPath('font.OogieBoogie'),
-      text: sh.l10n('%2players'),
-      selector: function() {
-        sh.fireEvent('/mmenu/controls/newgame', { mode: 2});
-      },
-      target: this,
-      scale: 0.5,
-      pos: cc.p(cw.x + 68, wz.height - csts.TILE * 28 - 4)
-    }));
-
-    this.addItem( ccsx.tmenu1({
-      fontPath: sh.getFontPath('font.OogieBoogie'),
       text: sh.l10n('%1player'),
       selector: function() {
         sh.fireEvent('/mmenu/controls/newgame', { mode: 1});
       },
       target: this,
       scale: 0.5,
-      pos: cc.p(cw.x, csts.TILE * 19)
+      pos: cc.p(cw.x, wz.height * 0.75)
     }));
 
     this.doCtrlBtns();
@@ -69,12 +50,10 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
 sh.protos['MainMenu'] = {
 
   create: function(options) {
-    var scene = new asterix.XSceneFactory({
-      layers: [
-        asterix.XMenuBackLayer,
-        MainMenuLayer
-      ]
-    }).create(options);
+    var scene = new asterix.XSceneFactory([
+      asterix.XMenuBackLayer,
+      MainMenuLayer
+    ]).create(options);
     if (scene) {
       scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
         cc.director.runScene( asterix.Invaders.Factory.create(msg));

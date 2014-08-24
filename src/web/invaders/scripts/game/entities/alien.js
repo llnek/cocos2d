@@ -9,12 +9,14 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this, _ = global._ ,
-asterix = global.ZotohLab.Asterix,
+(function(undef) { "use strict"; var global = this, _ = global._ ;
+
+var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
 ivs= asterix.Invaders,
-SkaroJS= global.SkaroJS;
+sjs= global.SkaroJS;
+
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -28,9 +30,8 @@ var Alien = cc.Sprite.extend({
     this.initWithSpriteFrameName(options.frames[0]);
     this.setPosition(x,y);
 
-    var ccc = cc.spriteFrameCache,
-    f0 = ccc.getSpriteFrame(options.frames[0]),
-    f1 = ccc.getSpriteFrame(options.frames[1]),
+    var f0 = ccsx.getSpriteFrame(options.frames[0]),
+    f1 = ccsx.getSpriteFrame(options.frames[1]),
     animFrames = [ f0, f1 ],
     animation = cc.Animation.create(animFrames, options.frameTime),
     animate = cc.Animate.create(animation);

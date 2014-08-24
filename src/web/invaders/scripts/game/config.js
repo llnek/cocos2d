@@ -9,10 +9,11 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this; var _ = global._ ,
-asterix = global.ZotohLab.Asterix,
+(function (undef) { "use strict"; var global= this; var _ = global._ ;
+
+var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
-SkaroJS= global.SkaroJS;
+sjs= global.SkaroJS;
 
 asterix.Invaders= {};
 
@@ -20,7 +21,7 @@ asterix.Invaders= {};
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.xcfg = SkaroJS.merge( asterix.XConfig, {
+sh.xcfg = sjs.mergeEx( asterix.XConfig, {
 
   appid: 'invaders',
   color: 'red',
@@ -96,6 +97,7 @@ global.document.ccConfig.init(sh.xcfg.appid, [
       'game/invaders/entities/bomb.js',
       'game/invaders/entities/player.js',
       'game/invaders/entities/alien.js',
+      'game/invaders/hud.js',
       'game/invaders/game.js',
       'game/invaders/mmenu.js',
       'game/invaders/splash.js'

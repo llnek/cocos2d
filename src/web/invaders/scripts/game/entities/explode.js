@@ -9,12 +9,14 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this, _ = global._ ,
-asterix = global.ZotohLab.Asterix,
+(function(undef) { "use strict"; var global = this, _ = global._ ;
+
+var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
 ivs = asterix.Invaders,
-SkaroJS= global.SkaroJS;
+sjs= global.SkaroJS;
+
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -28,9 +30,10 @@ var Boom = cc.Sprite.extend({
     this.initWithSpriteFrameName(options.frames[0]);
     this.setPosition(x,y);
 
-    var sfc = cc.spriteFrameCache,
-    frs = [ sfc.getSpriteFrame(options.frames[0]), sfc.getSpriteFrame(options.frames[1]),
-            sfc.getSpriteFrame(options.frames[2]), sfc.getSpriteFrame(options.frames[3]) ],
+    var frs = [ccsx.getSpriteFrame(options.frames[0]),
+               ccsx.getSpriteFrame(options.frames[1]),
+               ccsx.getSpriteFrame(options.frames[2]),
+               ccsx.getSpriteFrame(options.frames[3]) ],
     animation = cc.Animation.create(frs, options.frameTime);
 
     this.runAction( cc.Sequence.create(cc.Animate.create(animation),

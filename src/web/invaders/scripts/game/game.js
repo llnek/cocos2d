@@ -9,12 +9,14 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this, _ = global._ ,
-asterix = global.ZotohLab.Asterix,
+(function(undef) { "use strict"; var global = this, _ = global._ ;
+
+var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
 ccsx= asterix.COCOS2DX,
 ivs= asterix.Invaders,
-SkaroJS= global.SkaroJS;
+sjs= global.SkaroJS;
+
 
 //////////////////////////////////////////////////////////////////////////////
 // object pools
@@ -24,90 +26,6 @@ sh.pools['missiles'] = new asterix.XEntityPool({ entityProto: ivs.EntityMissile 
 sh.pools['bombs'] = new asterix.XEntityPool({ entityProto: ivs.EntityBomb });
 sh.pools['live-missiles'] = {};
 sh.pools['live-bombs'] = {};
-
-//////////////////////////////////////////////////////////////////////////////
-// background layer
-//////////////////////////////////////////////////////////////////////////////
-
-var BackLayer = asterix.XLayer.extend({
-
-  pkInit: function() {
-    var map = cc.TMXTiledMap.create(sh.getTilesPath('gamelevel1.tiles.arena'));
-    this.addItem(map);
-    return this._super();
-  },
-
-  pkInput: function() {},
-
-  rtti: function() {
-    return 'BackLayer';
-  }
-
-});
-
-//////////////////////////////////////////////////////////////////////////////
-// HUD
-//////////////////////////////////////////////////////////////////////////////
-
-var HUDLayer = asterix.XGameHUDLayer.extend({
-
-  initParentNode: function() {
-    this.atlasBatch = cc.SpriteBatchNode.create( cc.textureCache.addImage( sh.getAtlasPath('game-pics')));
-    this.addChild(this.atlasBatch, this.lastZix, ++this.lastTag);
-  },
-
-  getNode: function() { return this.atlasBatch; },
-
-  initLabels: function() {
-    var csts = sh.xcfg.csts,
-    wz = ccsx.screen();
-
-    this.scoreLabel = ccsx.bmfLabel({
-      fontPath: sh.getFontPath('font.TinyBoxBB'),
-      text: '0',
-      anchor: ccsx.AnchorBottomRight,
-      scale: 12/72
-    });
-    this.scoreLabel.setPosition( wz.width - csts.TILE - csts.S_OFF,
-      wz.height - csts.TILE - csts.S_OFF - ccsx.getScaledHeight(this.scoreLabel));
-
-    this.addChild(this.scoreLabel, this.lastZix, ++this.lastTag);
-  },
-
-  initIcons: function() {
-    var csts = sh.xcfg.csts,
-    wz = ccsx.screen();
-
-    this.lives = new asterix.XHUDLives( this, csts.TILE + csts.S_OFF,
-      wz.height - csts.TILE - csts.S_OFF, {
-      frames: ['health.png'],
-      totalLives: 3
-    });
-
-    this.lives.create();
-  },
-
-  removeItem: function(n) {
-    if (n instanceof cc.Sprite) { this._super(n); } else {
-      this.removeChild(n);
-    }
-  },
-
-  addItem: function(n) {
-    if (n instanceof cc.Sprite) { this._super(n); } else {
-      this.addChild(n, this.lastZix, ++this.lastTag);
-    }
-  },
-
-  initCtrlBtns: function(s) {
-    this._super(32/48);
-  },
-
-  rtti: function() {
-    return 'HUD';
-  }
-
-});
 
 //////////////////////////////////////////////////////////////////////////////
 // game layer
@@ -219,7 +137,9 @@ var GameLayer = asterix.XGameLayer.extend({
     _.each(_.keys(mss), function(z) {
       m = mss[z];
       for (n=0; n < ass.length; ++n) {
-        if (ass[n].status !== true) { continue; }
+        if (ass[n].status !== true) {
+          continue;
+        }
         if (ccsx.collide(m, ass[n])) {
           m.check(ass[n]);
           break;
@@ -263,7 +183,9 @@ var GameLayer = asterix.XGameLayer.extend({
     p= this.actor,
     n;
     for (n=0; n < ass.length; ++n) {
-      if (ass[n].status !== true) { continue; }
+      if (ass[n].status !== true) {
+        continue;
+      }
       if (ccsx.collide(p, ass[n])) {
         p.check(ass[n]);
         break;
@@ -273,7 +195,7 @@ var GameLayer = asterix.XGameLayer.extend({
 
   maybeShuffle: function(stepx) {
     var ok, b = stepx > 0 ? this.findMaxX() : this.findMinX();
-    if (SkaroJS.echt(b) && b.status) {
+    if (sjs.echt(b) && b.status) {
       ok = this.testDirX(b, stepx) ? this.doShuffle(stepx) : this.doForward(stepx);
       if (ok) {
         sh.sfxPlay('bugs-march');
@@ -346,7 +268,7 @@ var GameLayer = asterix.XGameLayer.extend({
       }
     }
     if (rc.length > 0) {
-      n = rc.length === 1 ? 0 : SkaroJS.rand( rc.length);
+      n = rc.length === 1 ? 0 : sjs.rand( rc.length);
       this.aliens[n].loadBomb();
     }
     _.each(this.aliens, function(z) {
@@ -464,7 +386,7 @@ var GameLayer = asterix.XGameLayer.extend({
 
 asterix.Invaders.Factory = {
   create: function(options) {
-    var fac = new asterix.XSceneFactory({ layers: [ BackLayer, GameLayer, HUDLayer ] });
+    var fac = new asterix.XSceneFactory([ ivs.BackLayer, GameLayer, ivs.HUDLayer ]);
     var scene= fac.create(options);
     if (!scene) { return null; }
     scene.ebus.on('/game/objects/aliens/dropbombs', function(topic, msg) {
