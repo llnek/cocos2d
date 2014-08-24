@@ -9,12 +9,14 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this, _ = global._  ,
-asterix=global.ZotohLab.Asterix,
+(function(undef) { "use strict"; var global = this, _ = global._  ;
+
+var asterix=global.ZotohLab.Asterix,
 sh=global.ZotohLab.Asterix,
 ccsx= asterix.COCOS2DX,
 bko= asterix.BreakOut,
-SkaroJS= global.SkaroJS;
+sjs= global.SkaroJS;
+
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -38,8 +40,8 @@ bko.EntityBall = asterix.XEntity.xtends({
   },
 
   create: function() {
-    this.vel.y = 200 * SkaroJS.randomSign();
-    this.vel.x = 200 * SkaroJS.randomSign();
+    this.vel.y = 200 * sjs.randomSign();
+    this.vel.x = 200 * sjs.randomSign();
     return this.sprite= new Ball(this.startPos.x, this.startPos.y, this.options);
   },
 
@@ -80,7 +82,7 @@ bko.EntityBall = asterix.XEntity.xtends({
       this.vel.x = - this.vel.x;
     }
     else {
-      SkaroJS.loggr.error("Failed to determine the collision of ball and brick.");
+      sjs.loggr.error("Failed to determine the collision of ball and brick.");
     }
   },
 

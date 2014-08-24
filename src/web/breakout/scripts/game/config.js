@@ -9,10 +9,11 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this; var _ = global._ ,
-asterix = global.ZotohLab.Asterix,
+(function (undef) { "use strict"; var global= this; var _ = global._ ;
+
+var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
-SkaroJS= global.SkaroJS;
+sjs= global.SkaroJS;
 
 asterix.BreakOut= {};
 
@@ -20,7 +21,7 @@ asterix.BreakOut= {};
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.xcfg = SkaroJS.merge( asterix.XConfig, {
+sh.xcfg = sjs.mergeEx( asterix.XConfig, {
 
   appid: 'breakout',
   color: 'yellow',
@@ -102,6 +103,7 @@ global.document.ccConfig.init(sh.xcfg.appid, [
   'game/breakout/entities/player.js',
   'game/breakout/entities/ball.js',
   'game/breakout/entities/brick.js',
+  'game/breakout/hud.js',
   'game/breakout/game.js',
   'game/breakout/mmenu.js',
   'game/breakout/splash.js'
