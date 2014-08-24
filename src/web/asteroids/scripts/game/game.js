@@ -9,120 +9,14 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this, _ = global._ ,
-asterix = global.ZotohLab.Asterix,
+(function(undef) { "use strict"; var global = this, _ = global._ ;
+
+var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
 ast= asterix.Asteroids,
-SkaroJS= global.SkaroJS;
+sjs= global.SkaroJS;
 
-//////////////////////////////////////////////////////////////////////////////
-// back layer
-//////////////////////////////////////////////////////////////////////////////
-
-var BackLayer = asterix.XLayer.extend({
-
-  pkInit: function() {
-    var map = cc.TMXTiledMap.create(sh.getTilesPath('gamelevel1.tiles.arena'));
-    this.addItem(map);
-    return this._super();
-  },
-
-  pkInput: function() {},
-
-  rtti: function() {
-    return 'BackLayer';
-  }
-
-});
-
-//////////////////////////////////////////////////////////////////////////////
-// HUD layer
-//////////////////////////////////////////////////////////////////////////////
-
-var HUDLayer = asterix.XGameHUDLayer.extend({
-
-  updateScore: function(n) {
-    this.score += n;
-    this.drawScore();
-  },
-
-  resetAsNew: function() {
-    this.score = 0;
-    this.reset();
-  },
-
-  reset: function() {
-    this.replayBtn.setVisible(false);
-    this.lives.resurrect();
-  },
-
-  initParentNode: function() {
-    this.atlasBatch = cc.SpriteBatchNode.create( cc.textureCache.addImage( sh.getAtlasPath('game-pics')));
-    this.addChild(this.atlasBatch, this.lastZix, ++this.lastTag);
-
-    var map = cc.TMXTiledMap.create(sh.getTilesPath('gamelevel1.tiles.hudwall'));
-    this.addChild(map,++this.lastZix, ++this.lastTag);
-  },
-
-  getNode: function() { return this.atlasBatch; },
-
-  drawScore: function() {
-    this.scoreLabel.setString(Number(this.score).toString());
-  },
-
-  initLabels: function() {
-    var csts = sh.xcfg.csts,
-    wz = ccsx.screen();
-
-    this.scoreLabel = ccsx.bmfLabel({
-      fontPath: sh.getFontPath('font.TinyBoxBB'),
-      text: '0',
-      anchor: ccsx.AnchorBottomRight,
-      scale: 12/72
-    });
-    this.scoreLabel.setPosition( wz.width - csts.TILE - csts.S_OFF,
-      wz.height - csts.TILE - csts.S_OFF - ccsx.getScaledHeight(this.scoreLabel));
-
-    this.addChild(this.scoreLabel, this.lastZix, ++this.lastTag);
-  },
-
-  initCtrlBtns: function() {
-    this._super(32/48);
-  },
-
-  initIcons: function() {
-    var csts = sh.xcfg.csts,
-    wz = ccsx.screen();
-
-    this.lives = new asterix.XHUDLives( this, csts.TILE + csts.S_OFF,
-      wz.height - csts.TILE - csts.S_OFF, {
-      frames: ['rship_1.png'],
-      scale: 0.5,
-      totalLives: 3
-    });
-
-    this.lives.create();
-  },
-
-  removeItem: function(n) {
-    if (n instanceof cc.Sprite) { this._super(n); } else {
-      this.removeChild(n);
-    }
-  },
-
-  addItem: function(n) {
-    if (n instanceof cc.Sprite) { this._super(n); } else {
-      this.addChild(n, this.lastZix, ++this.lastTag);
-    }
-  },
-
-  rtti: function() {
-    return 'HUD';
-  }
-
-
-});
 
 //////////////////////////////////////////////////////////////////////////////
 // game layer
@@ -371,12 +265,12 @@ var GameLayer = asterix.XGameLayer.extend({
     B= this.getEnclosureRect();
     this.rocks= [];
     while (this.rocks.length < cfg.BOULDERS) {
-      r= { left: SkaroJS.randPercentage() * wz.width,
-           top: SkaroJS.randPercentage() * wz.height };
+      r= { left: sjs.randPercentage() * wz.width,
+           top: sjs.randPercentage() * wz.height };
       r.bottom = r.top - h;
       r.right = r.left + w;
       if (!this.maybeOverlap(r) && !sh.outOfBound(r,B)) {
-        deg = SkaroJS.randPercentage() * 360;
+        deg = sjs.randPercentage() * 360;
         x = r.left + w/2;
         y = r.top - h/2;
         aa = new ast.EntityAsteroid1( x, y, {angle: deg});
@@ -396,8 +290,8 @@ var GameLayer = asterix.XGameLayer.extend({
     aa,x,y,r;
 
     while (test) {
-      r= { left: SkaroJS.randPercentage() * wz.width,
-           top: SkaroJS.randPercentage() * wz.height };
+      r= { left: sjs.randPercentage() * wz.width,
+           top: sjs.randPercentage() * wz.height };
       r.bottom = r.top - h;
       r.right = r.left + w;
       if (!this.maybeOverlap(r) && !sh.outOfBound(r,B)) {
@@ -424,8 +318,8 @@ var GameLayer = asterix.XGameLayer.extend({
 
     this.ufos=[];
     while (test) {
-      r= { left: SkaroJS.randPercentage() * wz.width,
-           top: SkaroJS.randPercentage() * wz.height };
+      r= { left: sjs.randPercentage() * wz.width,
+           top: sjs.randPercentage() * wz.height };
       r.bottom = r.top - h;
       r.right = r.left + w;
       if (!this.maybeOverlap(r) && !sh.outOfBound(r,B)) {
@@ -540,13 +434,11 @@ var GameLayer = asterix.XGameLayer.extend({
 asterix.Asteroids.Factory = {
 
   create: function(options) {
-    var scene = new asterix.XSceneFactory({
-      layers: [
-        BackLayer,
-        GameLayer,
-        HUDLayer
-      ]
-    }).create(options);
+    var scene = new asterix.XSceneFactory([
+      ast.BackLayer,
+      GameLayer,
+      ast.HUDLayer
+    ]).create(options);
     if (scene) {
       scene.ebus.on('/game/objects/missiles/killed', function(topic, msg) {
         sh.main.onMissileKilled(msg);

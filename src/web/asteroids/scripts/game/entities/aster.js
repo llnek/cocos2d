@@ -9,12 +9,14 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global=this, _ = global._ ,
-asterix = global.ZotohLab.Asterix,
+(function(undef) { "use strict"; var global=this, _ = global._ ;
+
+var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
 ast = asterix.Asteroids,
 ccsx= asterix.COCOS2DX,
-SkaroJS= global.SkaroJS;
+sjs= global.SkaroJS;
+
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -23,8 +25,8 @@ SkaroJS= global.SkaroJS;
 ast.EntityAster = asterix.XEntity.xtends({
 
   initVel: function(v) {
-    this.vel.y= SkaroJS.randomSign() * v;
-    this.vel.x= SkaroJS.randomSign() * v;
+    this.vel.y= sjs.randomSign() * v;
+    this.vel.x= sjs.randomSign() * v;
   },
 
   update: function(dt) {
@@ -53,7 +55,7 @@ ast.EntityAster = asterix.XEntity.xtends({
     this._super(x,y,options);
     this.wrappable=true;
     this.bounce=1;
-    this.angle = SkaroJS.rand(360);
+    this.angle = sjs.rand(360);
   }
 
 

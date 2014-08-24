@@ -9,10 +9,11 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._ ,
-asterix = global.ZotohLab.Asterix,
+(function (undef) { "use strict"; var global= this, _ = global._ ;
+
+var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
-SkaroJS= global.SkaroJS;
+sjs= global.SkaroJS;
 
 asterix.Asteroids= {};
 
@@ -20,7 +21,7 @@ asterix.Asteroids= {};
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.xcfg = SkaroJS.merge( asterix.XConfig, {
+sh.xcfg = sjs.mergeEx(asterix.XConfig, {
 
   appid: 'asteroids',
   color: 'red',
@@ -96,6 +97,7 @@ global.document.ccConfig.init(sh.xcfg.appid, [
       'game/asteroids/entities/player.js',
       'game/asteroids/entities/laser.js',
       'game/asteroids/entities/ufo.js',
+      'game/asteroids/hud.js',
       'game/asteroids/game.js',
       'game/asteroids/mmenu.js',
       'game/asteroids/splash.js'
