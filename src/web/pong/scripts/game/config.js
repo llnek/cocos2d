@@ -22,7 +22,7 @@ asterix.Pong= {};
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.xcfg = sjs.merge( asterix.XConfig, {
+sh.xcfg = sjs.mergeEx( asterix.XConfig, {
 
   appid: 'pong',
   color: 'green',

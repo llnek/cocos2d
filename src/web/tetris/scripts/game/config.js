@@ -9,10 +9,11 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._ ,
-asterix = global.ZotohLab.Asterix,
+(function (undef) { "use strict"; var global= this, _ = global._ ;
+
+var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
-SkaroJS = global.SkaroJS;
+sjs = global.SkaroJS;
 
 asterix.Bricks= {};
 
@@ -20,7 +21,7 @@ asterix.Bricks= {};
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.xcfg = SkaroJS.merge( asterix.XConfig, {
+sh.xcfg = sjs.mergeEx( asterix.XConfig, {
 
   appid: 'tetris',
   color: 'silver',
@@ -89,7 +90,7 @@ sh.xcfg = SkaroJS.merge( asterix.XConfig, {
 // js files
 //////////////////////////////////////////////////////////////////////////////
 
-global.document.ccConfig.init(sh.xcfg.appid, [
+global.document['ccConfig'].init(sh.xcfg.appid, [
 
       'game/tetris/entities/block.js',
       'game/tetris/entities/shape.js',
@@ -100,6 +101,7 @@ global.document.ccConfig.init(sh.xcfg.appid, [
       'game/tetris/entities/el.js',
       'game/tetris/entities/stx.js',
       'game/tetris/entities/st.js',
+      'game/tetris/hud.js',
       'game/tetris/game.js',
       'game/tetris/mmenu.js',
       'game/tetris/splash.js'

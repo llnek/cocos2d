@@ -9,12 +9,14 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._ ,
-asterix= global.ZotohLab.Asterix,
+(function (undef) { "use strict"; var global= this, _ = global._ ;
+
+var asterix= global.ZotohLab.Asterix,
 sh= global.ZotohLab.Asterix,
 ccsx= asterix.COCOS2DX,
 bks= asterix.Bricks,
-SkaroJS= global.SkaroJS;
+sjs= global.SkaroJS;
+
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -61,7 +63,7 @@ asterix.Bricks.EntityShape= asterix.XEntity.xtends({
   },
 
   randPng: function() {
-    return SkaroJS.rand( sh.xcfg.csts.BLOCK_COLORS) + 1;
+    return sjs.rand( sh.xcfg.csts.BLOCK_COLORS) + 1;
   },
 
   shiftRight: function() {
@@ -85,7 +87,7 @@ asterix.Bricks.EntityShape= asterix.XEntity.xtends({
   },
 
   rotateRight: function() {
-    var nF = SkaroJS.xmod(this.formID+1, this.numRotates()),
+    var nF = sjs.xmod(this.formID+1, this.numRotates()),
     bs= this.findBBox(this.startPos.x, this.startPos.y, nF);
     if (bs.length > 0) {
       this.reifyBlocks(this.startPos.x, this.startPos.y, nF, bs);
@@ -94,7 +96,7 @@ asterix.Bricks.EntityShape= asterix.XEntity.xtends({
   },
 
   rotateLeft: function() {
-    var nF = SkaroJS.xmod(this.formID-1, this.numRotates()),
+    var nF = sjs.xmod(this.formID-1, this.numRotates()),
     bs= this.findBBox(this.startPos.x, this.startPos.y, nF);
     if (bs.length > 0) {
       this.reifyBlocks(this.startPos.x, this.startPos.y, nF, bs);
@@ -134,10 +136,10 @@ asterix.Bricks.EntityShape= asterix.XEntity.xtends({
     r,c, cm= this.layer.collisionMap,
     csts= sh.xcfg.csts;
 
-    SkaroJS.loggr.debug("tile = " + tile.row + ", " + tile.col);
+    sjs.loggr.debug("tile = " + tile.row + ", " + tile.col);
 
     if ( cm[tile.row][tile.col] !== 0)  {
-      SkaroJS.loggr.debug("collide! tile = " + tile.row + ", " + tile.col);
+      sjs.loggr.debug("collide! tile = " + tile.row + ", " + tile.col);
       return true;
     } else {
       return false;
@@ -209,7 +211,7 @@ asterix.Bricks.EntityShape= asterix.XEntity.xtends({
     if (options.formID) {
       this.formID = options.formID;
     } else {
-      this.formID= SkaroJS.rand(this.numRotates());
+      this.formID= sjs.rand(this.numRotates());
     }
     if (options.png) {
       this.png = options.png;

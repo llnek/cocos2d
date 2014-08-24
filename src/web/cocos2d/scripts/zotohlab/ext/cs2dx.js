@@ -149,6 +149,10 @@ asterix.COCOS2DX = {
     return cc.director.getWinSize();
   },
 
+  getSpriteFrame: function(frameid) {
+    return cc.spriteFrameCache.getSpriteFrame(frameid);
+  },
+
   AnchorCenter: cc.p(0.5, 0.5),
   AnchorTop: cc.p(0.5, 1),
   AnchorTopRight: cc.p(1, 1),

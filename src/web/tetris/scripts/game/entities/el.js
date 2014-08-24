@@ -9,10 +9,11 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._ ,
-asterix= global.ZotohLab.Asterix,
+(function (undef) { "use strict"; var global= this, _ = global._ ;
+
+var asterix= global.ZotohLab.Asterix,
 sh= global.ZotohLab.Asterix,
-SkaroJS= global.SkaroJS,
+sjs= global.SkaroJS,
 bks= asterix.Bricks;
 
 //////////////////////////////////////////////////////////////////////////////

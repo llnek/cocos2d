@@ -9,123 +9,16 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this, _ = global._ ,
-asterix = global.ZotohLab.Asterix,
+(function(undef) { "use strict"; var global = this, _ = global._ ;
+
+var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
-SkaroJS= global.SkaroJS,
+sjs= global.SkaroJS,
 ccsx= asterix.COCOS2DX,
 bks= asterix.Bricks;
 
 var EntityList = [ bks.EntityLine, bks.EntityBox, bks.EntitySt,
                    bks.EntityElx, bks.EntityNub, bks.EntityStx, bks.EntityElx ];
-
-//////////////////////////////////////////////////////////////////////////////
-// background layer
-//////////////////////////////////////////////////////////////////////////////
-
-var BackLayer = asterix.XLayer.extend({
-
-  pkInit: function() {
-    var map = cc.TMXTiledMap.create(sh.getTilesPath('gamelevel1.tiles.arena'));
-    this.addItem(map);
-    return this._super();
-  },
-
-  pkInput: function() {},
-
-  rtti: function() {
-    return 'BackLayer';
-  }
-
-});
-
-//////////////////////////////////////////////////////////////////////////////
-// HUD
-//////////////////////////////////////////////////////////////////////////////
-
-var HUDLayer = asterix.XGameHUDLayer.extend({
-
-  initParentNode: function() {
-    this.atlasBatch = cc.SpriteBatchNode.create(
-                      cc.textureCache.addImage( sh.getAtlasPath('game-pics')));
-    this.addChild(this.atlasBatch, this.lastZix, ++this.lastTag);
-  },
-
-  getNode: function() { return this.atlasBatch; },
-
-  initLabels: function() {
-    var csts = sh.xcfg.csts,
-    wz = ccsx.screen();
-
-    this.scoreLabel = ccsx.bmfLabel({
-      fontPath: sh.getFontPath('font.TinyBoxBB'),
-      text: '0',
-      anchor: ccsx.AnchorBottomRight,
-      scale: 12/72
-    });
-    this.scoreLabel.setPosition( wz.width - csts.TILE - csts.S_OFF,
-      wz.height - csts.TILE - csts.S_OFF - ccsx.getScaledHeight(this.scoreLabel));
-
-    this.addChild(this.scoreLabel, this.lastZix, ++this.lastTag);
-  },
-
-  initIcons: function() {
-  },
-
-  resetAsNew: function() {
-  },
-
-  reset: function() {
-  },
-
-  showNext: function() {
-    var n= SkaroJS.rand( EntityList.length),
-    proto= EntityList[n],
-    csts= sh.xcfg.csts,
-    wz = ccsx.screen(),
-    cw= ccsx.center(),
-    sz = proto.prototype.matrix * csts.TILE,
-    left= (csts.FIELD_W + 2) * csts.TILE,
-    x= left + (wz.width - left - csts.TILE) / 2,
-    y = cw.y;
-
-    if (this.nextShape) { this.nextShape.dispose(); }
-    x -= sz/2;
-    y += sz/2;
-    this.nextShape= new (proto)( x, y, { wantKeys: false });
-    this.nextShape.createAsOutline(this);
-    this.nextShapeInfo= {
-      formID: this.nextShape.formID,
-      png: this.nextShape.png,
-      model: proto
-    };
-  },
-
-  getNextShapeInfo: function() {
-    return this.nextShapeInfo;
-  },
-
-  removeItem: function(n) {
-    if (n instanceof cc.Sprite) { this._super(n); } else {
-      this.removeChild(n);
-    }
-  },
-
-  addItem: function(n) {
-    if (n instanceof cc.Sprite) { this._super(n); } else {
-      this.addChild(n, this.lastZix, ++this.lastTag);
-    }
-  },
-
-  initCtrlBtns: function(s) {
-    this._super(32/48);
-  },
-
-  rtti: function() {
-    return 'HUD';
-  }
-
-});
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -164,9 +57,9 @@ var GameLayer = asterix.XGameLayer.extend({
     this.collisionMap=[];
     for (r = 0; r < hlen; ++r) {
       if (r === 0 || r === hlen-1) {
-        rc = SkaroJS.makeArray(wlen, 1);
+        rc = sjs.makeArray(wlen, 1);
       } else {
-        rc = SkaroJS.makeArray(wlen, 0);
+        rc = sjs.makeArray(wlen, 0);
         rc[0] = 1;
         rc[csts.FIELD_W + 1] = 1;
       }
@@ -369,13 +262,13 @@ var GameLayer = asterix.XGameLayer.extend({
     rc,r;
     this.entityGrid=[];
     for (r= 0; r < this.collisionMap.length; ++r) {
-      rc= SkaroJS.makeArray(this.collisionMap[r].length, undef);
+      rc= sjs.makeArray(this.collisionMap[r].length, undef);
       this.entityGrid.push(rc);
     }
   },
 
   spawnNext: function() {
-    var n= SkaroJS.rand( EntityList.length),
+    var n= sjs.rand( EntityList.length),
     info = this.getHUD().getNextShapeInfo(),
     proto, png, formID,
     wz = ccsx.screen(),
@@ -483,7 +376,7 @@ var GameLayer = asterix.XGameLayer.extend({
 
 asterix.Bricks.Factory = {
   create: function(options) {
-    var fac = new asterix.XSceneFactory({ layers: [ BackLayer, GameLayer, HUDLayer ] });
+    var fac = new asterix.XSceneFactory([ bks.BackLayer, GameLayer, bks.HUDLayer ]);
     var scene= fac.create(options);
     if (!scene) { return null; }
     scene.ebus.on('/game/objects/aliens/dropbombs', function(topic, msg) {

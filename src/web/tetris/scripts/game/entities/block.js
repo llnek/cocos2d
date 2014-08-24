@@ -9,12 +9,13 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._  ,
-asterix= global.ZotohLab.Asterix,
+(function (undef) { "use strict"; var global= this, _ = global._  ;
+
+var asterix= global.ZotohLab.Asterix,
 sh= global.ZotohLab.Asterix,
 ccsx= asterix.COCOS2DX,
 bks= asterix.Bricks,
-SkaroJS=global.SkaroJS;
+sjs=global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -22,15 +23,17 @@ SkaroJS=global.SkaroJS;
 
 var Block = cc.Sprite.extend({
   blink: function() {
-    this.initWithSpriteFrameName(this.options.frames[1]);
     this.setAnchorPoint(ccsx.AnchorTopLeft);
+    this.setSpriteFrame(this.frame1);
   },
   show: function() {
-    this.initWithSpriteFrameName(this.options.frames[0]);
     this.setAnchorPoint(ccsx.AnchorTopLeft);
+    this.setSpriteFrame(this.frame0);
   },
   ctor: function(x,y,options) {
     this.options = options;
+    this.frame0 = ccsx.getSpriteFrame(options.frames[0]);
+    this.frame1 = ccsx.getSpriteFrame(options.frames[1]);
     this._super();
     this.show();
     this.setPosition(x,y);
