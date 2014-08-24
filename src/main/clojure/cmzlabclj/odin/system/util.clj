@@ -67,23 +67,26 @@
     (channelRead0 [ctx msg]
       (let [ch (.channel ^ChannelHandlerContext ctx) ]
         (condp instance? msg
+
+          ;; TODO: handle closing of socket
+          CloseWebSocketFrame
+          (log/debug "player session sent us a closed message.")
+
           TextWebSocketFrame
           (let [^TextWebSocketFrame fr msg
                 evt (DecodeJsonEvent (.text fr) ch) ]
             (.onEvent (.room ps)
                       (assoc evt :context ps)))
-          CloseWebSocketFrame
-          (.onEvent ps {:type Events/NETWORK_MSG
-                        :code Events/C_CLOSED
-                        :source "{}"
-                        :context ps})
+
           PingWebSocketFrame
           (let [^PingWebSocketFrame fr msg
                 ct (.content fr) ]
             (.retain ct)
             (.writeAndFlush ch (PongWebSocketFrame. ct)))
+
           PongWebSocketFrame
           (log/debug "got a pong reply back.")
+
           nil)))
   ))
 

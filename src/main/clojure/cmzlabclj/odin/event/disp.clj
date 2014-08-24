@@ -40,32 +40,36 @@
   []
 
   (let [queue (MemoryChannel.)
-        ;;TODO: fix this hashmap
-        mm (HashMap.)
+        handlers (ref {})
         fiber (ThreadFiber.) ]
     (.start fiber)
     (reify EventDispatcher
       (unsubscribeIfSession [_ s]
-        (let [t (HashMap.)]
-          (doseq [^EventHandler k (seq (.keySet mm))]
+        (dosync
+          (doseq [^EventHandler k (keys @handlers)]
             (when-let [ps (.session k)]
               (when (identical? ps s)
-                (.dispose ^Disposable (.remove mm k)))))))
+                (.dispose ^Disposable (get @handlers k))
+                (alter handlers dissoc k))))))
 
       (unsubscribe [_ cb]
-        (if-let [^Disposable d (.get mm cb) ]
-          (.dispose d)))
+        (dosync
+        (if-let [^Disposable d (get @handlers cb) ]
+          (.dispose d)
+          (alter handlers dissoc cb))))
 
       (subscribe [_ cb]
-        (let [d (.subscribe
+        (let [^EventHandler hdlr cb
+              d (.subscribe
                   queue
                   fiber
                   (reify Callback
                     (onMessage [_ msg]
-                      (when (== (.eventType ^EventHandler cb)
+                      (when (== (.eventType hdlr)
                                 (int (:type msg)))
-                        (.onEvent ^EventHandler cb msg))))) ]
-          (.put mm cb d)
+                        (.onEvent hdlr msg))))) ]
+          (dosync
+            (alter handlers assoc cb d))
           d))
 
       (publish [_ msg]
@@ -74,7 +78,8 @@
 
       (shutdown [_]
         (.clearSubscribers queue)
-        (.dispose fiber)))
+        (.dispose fiber)
+        (dosync (ref-set handlers nil))))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -46,7 +46,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn LookupGame ""
+(defn LookupGame "Find a game from the registry."
 
   ^Game
   [^String gameid]
@@ -106,7 +106,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn AddFreeRoom "Add a new partially filled room into the pending set."
+(defn AddFreeRoom "Add a new partially filled room
+                   into the pending set."
 
   ^PlayRoom
   [^PlayRoom room]
@@ -235,8 +236,14 @@
                    user
                    (assoc m (.id ^Session ps) ps)))))
 
-      (logout [_ ps] ))
-    ))
+      (logout [_ ps]
+        (dosync
+          (if-let [m (get @PLAYER-SESS user)]
+            (doseq [^PlayerSession
+                    pss (vals m)]
+              (.close pss))
+            (alter PLAYER-SESS dissoc user)))))
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -249,8 +256,9 @@
     (when-let [p (get @PLAYER-REGO user) ]
       (alter PLAYER-REGO dissoc user)
       (if-let [m (get @PLAYER-SESS user)]
-        (doseq [[k v] (seq m)]
-          (.close ^PlayerSession v)))
+        (doseq [^PlayerSession
+                v (vals m)]
+          (.close v)))
       (alter PLAYER-SESS dissoc user)
       p)
   ))
@@ -275,9 +283,13 @@
 ;;
 (defn LookupPlayer ""
 
-  (^Player [^String user ^String pwd] (CreatePlayer user pwd))
+  (^Player
+    [^String user ^String pwd]
+    (CreatePlayer user pwd))
 
-  (^Player [^String user] (dosync (get @PLAYER-REGO user))))
+  (^Player
+    [^String user]
+    (dosync (get @PLAYER-REGO user))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

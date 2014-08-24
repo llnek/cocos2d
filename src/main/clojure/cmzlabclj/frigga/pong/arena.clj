@@ -498,7 +498,8 @@
 ;;
 (defn- pokeAndStartUI ""
 
-  [engine options impl]
+  [engine options
+   ^cmzlabclj.nucleus.util.core.MubleAPI impl]
 
   (let [^PlayerSession p2 (:session (.getf impl :p2))
         ^PlayerSession p1 (:session (.getf impl :p1))

@@ -51,9 +51,7 @@
 (defn ReifyPlayerSession
 
   ^PlayerSession
-  [^PlayRoom room
-   ^Player plyr
-   pnumber]
+  [^PlayRoom room ^Player plyr pnumber]
 
   (let [created (System/currentTimeMillis)
         sid (GenerateUID (class Session))
@@ -85,6 +83,7 @@
                    (notnil? (:context evt)))
             (when (identical? this
                               (:context evt))
+              ;; TODO: check if we really need to do this swapping
               ;; change the type to SESSION_MSG.
               (.sendMessage this
                             (assoc evt
@@ -116,7 +115,8 @@
           (when (.isConnected this)
             (.setf! impl :shutting-down true)
             ;;(.close disp)
-            (when-let [^MessageSender s (.getf impl :tcp)]
+            (when-let [^MessageSender
+                       s (.getf impl :tcp)]
               (.shutdown s))
             (.clrf! impl :tcp)
             (.setf! impl :shutting-down false)

@@ -42,14 +42,13 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- rError ""
+(defn- rError "Reply back an error."
 
   [^Channel ch error msg]
 
-  (let [src {:message (nsb msg)}
-        rsp (ReifyEvent Events/SESSION_MSG
+  (let [rsp (ReifyEvent Events/SESSION_MSG
                         error
-                        (json/write-str src)) ]
+                        (json/write-str {:message (nsb msg)})) ]
     (log/debug "replying back an error session/code " error)
     (.writeAndFlush ch (EventToFrame rsp))
   ))
@@ -65,7 +64,7 @@
     (cond
       (and (notnil? arr)
            (vector? arr)
-           (= (count arr) 3))
+           (== (count arr) 3))
       (with-local-vars [plyr nil
                         gm nil
                         pss nil
@@ -116,7 +115,7 @@
     (cond
       (and (notnil? arr)
            (vector? arr)
-           (= (count arr) 4))
+           (== (count arr) 4))
       (with-local-vars [plyr nil
                         pss nil
                         gm nil
@@ -172,6 +171,7 @@
 
   [^Container ctr]
 
+  ;;TODO: loading in Odin config file. do something with it?
   (let [appDir (.getAppDir ctr)
         fp (File. appDir "conf/odin.conf")
         json (json/read-str (FileUtils/readFileToString fp "utf-8")) ]

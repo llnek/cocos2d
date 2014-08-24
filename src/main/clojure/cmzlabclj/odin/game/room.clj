@@ -82,30 +82,35 @@
                             (ref {}))
         created (System/currentTimeMillis)
         disp (ReifyEventDispatcher)
-        pss (ConcurrentHashMap.)
-        pssArr (ArrayList.)
+        sessions (ref {})
+        pssArr (ref [])
         pcount (AtomicLong.)
         impl (MakeMMap)
         rid (NewUUid)]
-    (.setf! impl :shutting true)
+    (.setf! impl :shutting false)
     (reify PlayRoom
 
       (disconnect [_ ps]
-        (let [^PlaySession ss ps
-              py (.player ps)]
-          (.remove pss (.id ps))
-          (.removeSession py ps)
-          (.unsubscribeIfSession disp ps)))
+        (let [^PlayerSession ss ps
+              py (.player ss)]
+          (dosync
+            (alter sessions dissoc (.id ss))
+            (ref-set pssArr (filter #(not (identical? % ss))
+                                    @pssArr)))
+          (.removeSession py ss)
+          (.unsubscribeIfSession disp ss)))
 
-      (countPlayers [_] (.size pss))
+      (countPlayers [_] (count @pssArr))
 
       (connect [this p]
-        (let [ps (ReifyPlayerSession this p (.incrementAndGet pcount))
+        (let [ps (ReifyPlayerSession this p
+                                     (.incrementAndGet pcount))
               ^Player py p
               src {:puid (.id py)
                    :pnum (.number ps) } ]
-          (.put pss (.id ps) ps)
-          (.add pssArr ps)
+          (dosync
+            (alter sessions assoc (.id ps) ps)
+            (alter pssArr conj ps))
           (.addSession py ps)
           (.broadcast this (ReifyEvent Events/NETWORK_MSG
                                        Events/C_PLAYER_JOINED
@@ -127,13 +132,17 @@
 
       (roomId [_] rid)
 
-      (close [_])
+      (close [_]
+        (dosync
+          (doseq [^PlayerSession v (vals @sessions)]
+            (.close v))
+          (ref-set sessions {})))
 
       (isActive [_] (true? (.getf impl :active)))
 
       (activate [this]
         (let [^GameEngine sm (.engine this)
-              sss (vec pssArr) ]
+              sss (seq @pssArr)]
           (log/debug "activating room " rid)
           (.setf! impl :active true)
           (doseq [v sss]

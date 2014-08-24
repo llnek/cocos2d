@@ -41,8 +41,9 @@
 
   (^TextWebSocketFrame
     [evt]
-    (EventToFrame (:source evt) 
-                  (:type evt) (:code evt)))
+    (EventToFrame (:type evt)
+                  (:code evt)
+                  (:source evt)))
 
   (^TextWebSocketFrame
     [etype ecode body]
