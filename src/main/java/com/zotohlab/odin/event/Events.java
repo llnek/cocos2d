@@ -18,11 +18,13 @@ package com.zotohlab.odin.event;
  */
 public interface Events {
 
-  // Event type
-  public static final long PLAYGAME_REQ          = 1L;
-  public static final long JOINGAME_REQ          = 2L;
-  public static final long NETWORK_MSG           = 3L;
-  public static final long SESSION_MSG           = 4L;
+  // Message types
+  public static final long NETWORK_MSG           = 1L;
+  public static final long SESSION_MSG           = 2L;
+
+  // Event types
+  public static final long PLAYGAME_REQ          = 3L;
+  public static final long JOINGAME_REQ          = 4L;
 
   // Event code
   public static final long C_PLAYREQ_NOK         = 10L;
