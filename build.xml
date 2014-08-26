@@ -192,6 +192,7 @@
       <arg value="cmzlabclj.cocos2d.users.accounts"/>
       <arg value="cmzlabclj.cocos2d.users.rego"/>
       <arg value="cmzlabclj.cocos2d.games.core"/>
+      <arg value="cmzlabclj.cocos2d.util.core"/>
       <arg value="cmzlabclj.odin.system.util"/>
       <arg value="cmzlabclj.odin.event.core"/>
       <arg value="cmzlabclj.odin.event.disp"/>
@@ -441,6 +442,10 @@
   </target>
 
   <target name="appitize">
+    <java classname="cmzlabclj.cocos2d.util.core" fork="true" failonerror="true"
+        maxmemory="2048m" classpathref="compile.path.id">
+        <arg value="${basedir}"/>
+    </java>
   </target>
 
 
@@ -456,6 +461,7 @@
 
   <target name="devmode" depends="build">
     <antcall target="finz-build"/>
+    <antcall target="appitize"/>
   </target>
 
   <target name="test" depends="test-build">
