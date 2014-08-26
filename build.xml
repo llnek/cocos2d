@@ -1,6 +1,7 @@
 <project name="cocos2d" basedir="." default="devmode" xmlns:ivy="antlib:org.apache.ivy.ant">
 
   <property name="PID" value="${ant.project.name}"/>
+  <property environment="env"/>
   <property file="build.xs" />
 
   <ivy:settings file="${basedir}/ivy.config.xml"/>
@@ -437,6 +438,9 @@
       </chainedmapper>
       <targetfile/>
     </apply>
+  </target>
+
+  <target name="appitize">
   </target>
 
 
