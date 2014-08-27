@@ -28,6 +28,16 @@
 
   <taskdef resource="net/sf/antcontrib/antlib.xml"/>
 
+  <scriptdef name="generateguid" language="javascript">
+    <attribute name="property" />
+    <![CDATA[
+    project.setProperty( attributes.get( "property" ),
+        'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+            return v.toString(16); }) );
+    ]]>
+  </scriptdef>
+
   <!-- resolve ivy stuff
        ================================= -->
   <target name="resolve">
@@ -183,7 +193,7 @@
   <!-- target: compile server-side source code ================================= -->
 
   <target name="compile-clj">
-    <java classname="clojure.lang.Compile" fork="true" failonerror="true" 
+    <java classname="clojure.lang.Compile" fork="true" failonerror="true"
       maxmemory="2048m" classpathref="compile.path.id">
       <sysproperty key="clojure.compile.warn-on-reflection" value="true"/>
       <sysproperty key="clojure.compile.path" value="${build.dir}" />
@@ -441,13 +451,6 @@
     </apply>
   </target>
 
-  <target name="appitize">
-    <java classname="cmzlabclj.cocos2d.util.core" fork="true" failonerror="true"
-        maxmemory="2048m" classpathref="compile.path.id">
-        <arg value="${basedir}"/>
-    </java>
-  </target>
-
 
   <!--
        public TARGETS
@@ -462,6 +465,28 @@
   <target name="devmode" depends="build">
     <antcall target="finz-build"/>
     <antcall target="appitize"/>
+  </target>
+
+  <target name="newapp" depends="" if="env.COCOS_CONSOLE_ROOT">
+    <input
+      message="Please enter app-name: "
+      addproperty="app.id"/>
+    <echo message="Creating new game: ${app.id}"/>
+    <mkdir dir="${basedir}/cocos"/>
+    <generateguid property="guid1" />
+    <echo message="ios-bundleid= ${guid1}"/>
+    <exec executable="cocos">
+      <arg value="new"/>
+      <arg value="-l"/>
+      <arg value="js"/>
+      <arg value="-t"/>
+      <arg value="runtime"/>
+      <arg value="--ios-bundleid"/>
+      <arg value="com.zotohlab.${guid1}"/>
+      <arg value="-d"/>
+      <arg value="${basedir}/cocos"/>
+      <arg value="${app.id}"/>
+    </exec>
   </target>
 
   <target name="test" depends="test-build">

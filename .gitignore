@@ -6,6 +6,7 @@ modules/
 classes/
 checkouts/
 dbs/
+cocos/
 
 POD-INF/classes/
 POD-INF/lib/
@@ -15,6 +16,7 @@ public/styles/
 public/media/
 public/pages/
 public/extlibs/
+
 
 *.class
 *.asc
