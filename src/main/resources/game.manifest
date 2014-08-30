@@ -1,0 +1,12 @@
+{
+  :uuid "@@UUID@@"
+  :pubdate #inst "@@PUBDATE@@"
+  :orientation "portrait"
+  :author "llnek"
+  :name ""
+  :desc ""
+  :status true
+  :uri ""
+  :image ""
+}
+

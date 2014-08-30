@@ -28,13 +28,12 @@
 
   <taskdef resource="net/sf/antcontrib/antlib.xml"/>
 
-  <scriptdef name="generateguid" language="javascript">
+  <scriptdef name="genuuid" language="javascript">
     <attribute name="property" />
     <![CDATA[
-    project.setProperty( attributes.get( "property" ),
-        'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
-            return v.toString(16); }) );
+      load("nashorn:mozilla_compat.js");
+      importClass( java.util.UUID );
+      project.setProperty( attributes.get( "property" ), UUID.randomUUID() );
     ]]>
   </scriptdef>
 
@@ -468,13 +467,34 @@
   </target>
 
   <target name="newapp" depends="" if="env.COCOS_CONSOLE_ROOT">
-    <input
-      message="Please enter app-name: "
-      addproperty="app.id"/>
+    <input message="Enter app-name: " addproperty="app.id"/>
     <echo message="Creating new game: ${app.id}"/>
+    <mkdir dir="${web.dir}/${app.id}"/>
+    <for list="media/game,media/gui,scripts/game/entities,scripts/game/i18n,scripts/game/levels" param="p">
+    <sequential>
+      <mkdir dir="${web.dir}/${app.id}/@{p}"/>
+    </sequential>
+    </for>
+    <for list="info,pages,styles" param="p">
+    <sequential>
+      <mkdir dir="${web.dir}/${app.id}/@{p}"/>
+    </sequential>
+    </for>
+    <copy file="${src.dir}/resources/game.manifest" todir="${web.dir}/${app.id}/info"/>
+    <copy file="${src.dir}/resources/index.html" todir="${web.dir}/${app.id}/pages"/>
+    <copy file="${src.dir}/resources/main.scss" todir="${web.dir}/${app.id}/styles"/>
+    <tstamp><format property="pub.time" pattern="yyyy-MM-dd"/></tstamp>
+    <genuuid property="appkey" />
+    <replace file="${web.dir}/${app.id}/info/game.manifest" token="@@PUBDATE@@" value="${pub.time}"/>
+    <replace file="${web.dir}/${app.id}/info/game.manifest" token="@@UUID@@" value="${appkey}"/>
+    <replace file="${web.dir}/${app.id}/pages/index.html" token="@@APPID@@" value="${app.id}"/>
+    <touch file="${web.dir}/${app.id}/scripts/game/i18n/game_en_US.js"/>
+    <touch file="${web.dir}/${app.id}/scripts/game/config.js"/>
+    <touch file="${web.dir}/${app.id}/scripts/game/game.js"/>
+    <touch file="${web.dir}/${app.id}/scripts/game/splash.js"/>
+    <touch file="${web.dir}/${app.id}/scripts/game/mmenu.js"/>
+    <touch file="${web.dir}/${app.id}/scripts/game/hud.js"/>
     <mkdir dir="${basedir}/cocos"/>
-    <generateguid property="guid1" />
-    <echo message="ios-bundleid= ${guid1}"/>
     <exec executable="cocos">
       <arg value="new"/>
       <arg value="-l"/>
@@ -482,11 +502,20 @@
       <arg value="-t"/>
       <arg value="runtime"/>
       <arg value="--ios-bundleid"/>
-      <arg value="com.zotohlab.${guid1}"/>
+      <arg value="com.zotohlab.${appkey}"/>
       <arg value="-d"/>
       <arg value="${basedir}/cocos"/>
       <arg value="${app.id}"/>
     </exec>
+  </target>
+
+  <target name="deploy" depends="">
+    <input message="Enter app-name: " addproperty="app.id"/>
+    <available file="${web.dir}/${app.id}" type="dir" property="app.present"/>
+    <if><equals arg1="${app.present}" arg2="true"/>
+    <then>
+    </then>
+    </if>
   </target>
 
   <target name="test" depends="test-build">
