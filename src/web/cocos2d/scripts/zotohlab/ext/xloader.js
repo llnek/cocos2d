@@ -28,7 +28,7 @@ asterix.XLoader = cc.Scene.extend({
   _instance: null,
 
   ctor: function () {
-    this.winsz = cc.director.getWinSize();
+    this.winsz = cc.director.getWinSizeInPixels();
     this._super();
   },
 

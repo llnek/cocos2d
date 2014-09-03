@@ -39,7 +39,7 @@
 
   ;; for security, don't just eval stuff
   ;;(alter-var-root #'*read-eval* (constantly false))
-  (let [appDir (File. (first args))
+  (let [appDir (File. ^String (first args))
         apps ((comp (fn [_] (GetGamesAsList))
                     ScanGameManifests)
               appDir) ]

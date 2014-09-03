@@ -1,26 +1,26 @@
-skaro.home=/wdrive/dev/builds/skaro/package
+skaroHome=/wdrive/dev/builds/skaro/package
 
-ivy.root=${skaro.home}/.ivyroot
-ivy.lcache.dir=${ivy.root}/cache
-ivy.lrepo.dir=${ivy.root}/repos
+ivyRoot=${skaroHome}/.ivyroot
+ivyLCacheDir=${ivyRoot}/cache
+ivyLRepoDir=${ivyRoot}/repos
 
-build.dir=${basedir}/build.output.folder
-report.dir=${build.dir}/reports
-pod.dir=${basedir}/POD-INF
+buildDir=${basedir}/build.output.folder
+reportDir=${buildDir}/reports
+podDir=${basedir}/POD-INF
 
-build.version=1.0.0
-build.debug=true
-build.type=web
+buildVersion=1.0.0
+buildDebug=true
+buildType=web
 
-ivy.lib.dir=${basedir}/lib
-lib.dir=${pod.dir}/lib
+ivyLibDir=${basedir}/lib
+libDir=${podDir}/lib
 
-test.dir=${basedir}/src/test
-src.dir=${basedir}/src/main
-web.dir=${basedir}/src/web
+testDir=${basedir}/src/test
+srcDir=${basedir}/src/main
+webDir=${basedir}/src/web
 
-out.test.dir=${pod.dir}/test-classes
-out.jar.dir=${pod.dir}/classes
+outTestDir=${podDir}/test-classes
+outJarDir=${podDir}/classes
 
 #jslang=typescript
 #jslang=clojurescript
@@ -29,7 +29,6 @@ jslang=js
 
 #csslang=less
 csslang=scss
-
 
 
 
