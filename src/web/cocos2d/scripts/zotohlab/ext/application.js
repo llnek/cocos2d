@@ -151,7 +151,7 @@ asterix.Cocos2dApp = SkaroJS.Class.xtends({
     var me= this;
     if (!ok) {
       cc.audioEngine.stopMusic();
-      /* Check that the music stopped (Chrome bug). */
+      // check that the music stopped (Chrome bug)
       cc.director.getRunningScene().schedule(function() {
         if (!me.isSoundEnabled()) {
           cc.audioEngine.stopMusic();
