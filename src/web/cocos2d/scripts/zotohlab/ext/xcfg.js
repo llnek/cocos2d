@@ -9,14 +9,15 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global= this, _ = global._ ,
-asterix = global.ZotohLab.Asterix;
+(function(undef) { "use strict"; var global= this, _ = global._ ;
+
+var asterix = global.ZotohLab.Asterix,
+sjs= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-//asterix.XConfig = global.SkaroJS.merge(asterix.XCfgBase, {
 asterix.XConfig = {
 
   urlPrefix: '/public/ig/',
@@ -136,7 +137,7 @@ asterix.XConfig = {
 
   sound: {
     volume: 0.5,
-    open: true,
+    open: false,
     music: {
       volume: 0.5,
       track: null

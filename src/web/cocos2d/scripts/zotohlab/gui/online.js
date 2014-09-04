@@ -9,15 +9,16 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global = this,
-                                      _ = global._ ,
-                                      $ = global.jQuery,
-                                      SkaroJS = global.SkaroJS,
-asterix = global.ZotohLab.Asterix,
+(function (undef) { "use strict"; var global = this, _ = global._ ;
+
+var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
 odin= global.ZotohLab.Odin,
+sjs = global.SkaroJS,
+$ = global.jQuery,
 events= odin.Events,
 ccsx = asterix.COCOS2DX;
+
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -41,7 +42,7 @@ var UILayer =  asterix.XLayer.extend({
     var pswd = (pwd || '').trim();
     if (user.length === 0 ||
         pswd.length === 0) { return; }
-    var wsurl = SkaroJS.fmtUrl(SkaroJS.getWebSockProtocol(),
+    var wsurl = sjs.fmtUrl(sjs.getWebSockProtocol(),
                                "/network/odin/websocket");
     this.wss= odin.newSession({ game: gid, user: user, passwd: pswd });
     this.wss.subscribeAll(this.onOdinEvent, this);
@@ -49,7 +50,7 @@ var UILayer =  asterix.XLayer.extend({
   },
 
   onOdinEvent: function(topic,evt) {
-    SkaroJS.loggr.debug(evt);
+    sjs.loggr.debug(evt);
     switch (evt.type) {
       case events.NETWORK_MSG: this.onNetworkEvent(evt); break;
       case events.SESSION_MSG: this.onSessionEvent(evt); break;
@@ -60,10 +61,10 @@ var UILayer =  asterix.XLayer.extend({
     switch (evt.code) {
       case events.C_PLAYER_JOINED:
         //TODO
-        SkaroJS.loggr.debug("another player joined room. " + evt.source.puid);
+        sjs.loggr.debug("another player joined room. " + evt.source.puid);
       break;
       case events.C_START:
-        SkaroJS.loggr.info("play room is ready, game can start.");
+        sjs.loggr.info("play room is ready, game can start.");
         this.wss.unsubscribeAll();
         // flip to game scene
         this.options.yes(this.wss, this.player, evt.source || {});
@@ -74,7 +75,7 @@ var UILayer =  asterix.XLayer.extend({
   onSessionEvent: function(evt) {
     switch (evt.code) {
       case events.C_PLAYREQ_OK:
-        SkaroJS.loggr.debug("player " +
+        sjs.loggr.debug("player " +
                             evt.source.pnum +
                             ": request to play game was successful.");
         this.player=evt.source.pnum;

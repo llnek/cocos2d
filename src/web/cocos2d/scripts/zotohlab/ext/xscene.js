@@ -9,10 +9,12 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use stricts"; var global = this, _ = global._ ,
-asterix= global.ZotohLab.Asterix,
+(function(undef) { "use stricts"; var global = this, _ = global._ ;
+
+var asterix= global.ZotohLab.Asterix,
 sh= global.ZotohLab.Asterix,
-SkaroJS= global.SkaroJS;
+sjs= global.SkaroJS;
+
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -20,7 +22,7 @@ SkaroJS= global.SkaroJS;
 
 asterix.XScene = cc.Scene.extend({
 
-  ebus: new global.ZotohLab.EventBus(),
+  ebus: global.ZotohLab.MakeEventBus(),
   layers: {},
   //lays: [],
   //options : {},
@@ -55,7 +57,7 @@ asterix.XScene = cc.Scene.extend({
       }
     }, this);
     if (a.length > 0 && rc===false ) {
-      return SkaroJS.echt(glptr) ? glptr.init() : true;
+      return sjs.echt(glptr) ? glptr.init() : true;
     } else {
       return false;
     }
@@ -69,7 +71,7 @@ asterix.XScene = cc.Scene.extend({
 
 });
 
-asterix.XSceneFactory = SkaroJS.Class.xtends({
+asterix.XSceneFactory = sjs.Class.xtends({
 
   create: function(options) {
     var cfg, arr= this.layers;

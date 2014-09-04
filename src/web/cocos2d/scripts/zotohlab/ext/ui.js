@@ -9,14 +9,15 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this, _ = global._ ,
-SkaroJS= global.SkaroJS;
+(function(undef) { "use strict"; var global = this, _ = global._ ;
+
+var sjs= global.SkaroJS;
 
 //////////////////////////////////////////////////////////////////////
 // classes
 //////////////////////////////////////////////////////////////////////
 
-var Circle = SkaroJS.Class.xtends({
+var Circle = sjs.Class.xtends({
 
   draw: function(ctx, styleObj) {
     ctx.beginPath();
@@ -34,7 +35,7 @@ var Circle = SkaroJS.Class.xtends({
 
 });
 
-var Line = SkaroJS.Class.xtends({
+var Line = sjs.Class.xtends({
 
   draw: function(ctx, styleObj) {
     ctx.beginPath();
@@ -57,14 +58,14 @@ var Line = SkaroJS.Class.xtends({
 
 });
 
-var Point = SkaroJS.Class.xtends({
+var Point = sjs.Class.xtends({
   ctor: function(x,y) {
     this.y=y;
     this.x=x;
   }
 });
 
-var Area = SkaroJS.Class.xtends({
+var Area = sjs.Class.xtends({
   ctor: function(x,y,w,h) {
     this.pos= new Point(x,y);
     this.height=h;
@@ -72,7 +73,7 @@ var Area = SkaroJS.Class.xtends({
   }
 });
 
-var TextStyle = SkaroJS.Class.xtends({
+var TextStyle = sjs.Class.xtends({
 
   ctor: function() {
     this.font = "14px 'Architects Daughter'";
@@ -84,11 +85,12 @@ var TextStyle = SkaroJS.Class.xtends({
 });
 
 global.ZotohLab.UI = {
+
+  TextStyle: TextStyle,
   Circle: Circle,
   Line: Line,
   Point: Point,
   Area: Area,
-  TextStyle: TextStyle,
 
   pixelateImage: function(ctx2d,w,h,scale) {
     var c,r, img = ctx2d.getImageData(0, 0, w,h);

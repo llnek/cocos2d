@@ -9,11 +9,37 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this, _ = global._ ,
-asterix= global.ZotohLab.Asterix,
+(function(undef) { "use strict"; var global = this, _ = global._ ;
+
+var asterix= global.ZotohLab.Asterix,
 sh= global.ZotohLab.Asterix,
-SkaroJS=global.SkaroJS,
+sjs=global.SkaroJS,
 STICKY_THRESHOLD= 0.0004;
+
+
+//////////////////////////////////////////////////////////////////////////////
+// monkey patch stuff that we want to extend
+//////////////////////////////////////////////////////////////////////////////
+
+cc.Director.prototype.getSceneStackLength = function() {
+  return this._scenesStack.length;
+};
+
+cc.Director.prototype.replaceRootScene = function(scene) {
+  this.popToRootScene();
+  if (this._scenesStack.length !== 1) {
+    throw new Error("scene stack is screwed up");
+  }
+  var cur = this._scenesStack.pop();
+  if (cur.isRunning()) {
+    cur.onExitTransitionDidStart();
+    cur.onExit();
+  }
+  cur.cleanup();
+  this._runningScene=null;
+  this._nextScene = null;
+  this.runScene(scene);
+};
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -66,7 +92,7 @@ asterix.COCOS2DX = {
   },
 
   timerDone: function(t) {
-    return SkaroJS.echt(t) && t.isDone();
+    return sjs.echt(t) && t.isDone();
   },
 
   bbox2: function(sprite) {
@@ -146,8 +172,11 @@ asterix.COCOS2DX = {
   },
 
   screen: function() {
-    return cc.director.getWinSizeInPixels();
-    //return cc.director.getWinSize();
+    if (cc.sys.isNative) {
+      return cc.director.getWinSizeInPixels();
+    } else {
+      return cc.director.getWinSize();
+    }
   },
 
   getSpriteFrame: function(frameid) {
@@ -212,7 +241,7 @@ asterix.COCOS2DX = {
   tmenu1: function(options) {
     var s1= cc.LabelBMFont.create(options.text, options.fontPath),
     menu,
-    t1= cc.MenuItemLabel.create(s1, options.selector, SkaroJS.echt(options.target) ? options.target : undef);
+    t1= cc.MenuItemLabel.create(s1, options.selector, sjs.echt(options.target) ? options.target : undef);
     t1.setOpacity(255 * 0.9);
     t1.setScale(options.scale || 1);
     t1.setTag(1);
@@ -227,7 +256,7 @@ asterix.COCOS2DX = {
   pmenu1: function(options) {
     var btn = cc.Sprite.create(options.imgPath),
     menu,
-    mi= cc.MenuItemSprite.create(btn, null, null, options.selector, SkaroJS.echt(options.target) ? options.target : undef);
+    mi= cc.MenuItemSprite.create(btn, null, null, options.selector, sjs.echt(options.target) ? options.target : undef);
     mi.setScale(options.scale || 1);
     mi.setTag(1);
     menu = cc.Menu.create(mi);

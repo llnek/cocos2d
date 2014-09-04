@@ -9,10 +9,11 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global= this, _ = global._ ,
-asterix= global.ZotohLab.Asterix,
-SkaroJS= global.SkaroJS,
-Vector2 = SkaroJS.Class.xtends({
+(function(undef) { "use strict"; var global= this, _ = global._ ;
+
+var asterix= global.ZotohLab.Asterix,
+sjs= global.SkaroJS,
+Vector2 = sjs.Class.xtends({
 
   mult: function (n) {
     var rc = new Vector2(0,0,this.x,this.y);

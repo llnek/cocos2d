@@ -15,62 +15,66 @@ var sjs=global.SkaroJS,
 _SEED=0;
 
 //////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
-
-var Subcr= sjs.Class.xtends({
-  ctor: function(topic, selector, target, repeat, args) {
-    this.id= "sub-" + Number(++_SEED);
-    this.args= args || [];
-    this.target= target
-    this.action= selector;
-    this.topic= topic
-    this.repeat= repeat;
-    this.active=true;
-  }
-});
+//
+function mkSubSCR(topic, selector, target, repeat, args) {
+  return {
+    id: "sub-" + Number(++_SEED),
+    repeat: sjs.boolify(repeat),
+    args: args || [],
+    action: selector,
+    target: target,
+    topic: topic,
+    active: true
+  };
+}
 
 //////////////////////////////////////////////////////////////////////////////
 //
 function mkTreeNode() {
   return {
-    parts: {},  // children - branches
-    subs: []    // subscribers (callbacks)
+    tree: {},  // children - branches
+    subs: []   // subscribers (callbacks)
   };
 }
 
+//////////////////////////////////////////////////////////////////////////////
+//
+function safeSplit(s) {
+  return _.without(s.trim().split('/'), '');
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//
 var EventBus = sjs.Class.xtends({
 
-  // return a list of subscriber handles.
-  once: function(topic, selector, target /*, more args */) {
+  // subscribe to 1+ topics, returning a list of subscriber handles.
+  // topics => "/hello/*  /goodbye/*"
+  once: function(topics, selector, target /*, more args */) {
     var rc= this.pkListen(false,
-                          topic,
+                          topics,
                           selector,
                           target,
                           sjs.dropArgs(arguments,3));
     return sjs.echt(rc) ? rc : [];
   },
 
-  // return a list of subscriber handles.
-  on: function(topic, selector, target /*, more args */) {
+  // subscribe to 1+ topics, returning a list of subscriber handles.
+  // topics => "/hello/*  /goodbye/*"
+  on: function(topics, selector, target /*, more args */) {
     var rc= this.pkListen(true,
-                          topic,
+                          topics,
                           selector,
                           target,
                           sjs.dropArgs(arguments,3));
     return sjs.echt(rc) ? rc : [];
   },
 
+  // trigger event on this topic.
   fire: function(topic, msg) {
-    var tokens= topic.split('/'),
-    status= [false];
-
-    this.pkDoPub(status, topic, this.rootNode, tokens, 0, msg || {} );
-    if (status[0] === true) {
-      ++this.msgCount;
+    var tokens= safeSplit(topic);
+    if (tokens.length > 0 ) {
+      return this.pkDoPub(topic, this.rootNode, tokens, 0, msg || {} );
     }
-
-    return status[0];
   },
 
   resume: function(handle) {
@@ -90,48 +94,62 @@ var EventBus = sjs.Class.xtends({
   off: function(handle) {
     var sub= this.allSubs[handle];
     if (sub) {
-      this.pkUnSub(this.rootNode, sub.topic.split('/'), 0, sub);
+      this.pkUnSub(this.rootNode, safeSplit(sub.topic), 0, sub);
     }
   },
 
   removeAll: function() {
+    /*
     _.each(_.keys(this.allSubs), function(id) {
       this.off(id);
     }, this);
+    */
+    // really no point in doing a nice cleanup, just clear everything since
+    // we are removing all subscribers anyway.
+    this.rootNode = mkTreeNode();
+    this.allSubs = {};
   },
 
   pkGetSubcr: function(id) {
     return this.allSubs[id];
   },
 
-  pkListen: function(repeat, topic, selector, target, more) {
-    var ts= topic.trim().split(/\s+/);
-    return _.map(ts, function(z) {
-      return this.pkAddSub(repeat,z,selector,target,more);
+  pkListen: function(repeat, topics, selector, target, more) {
+    var ts= topics.trim().split(/\s+/);
+    // for each topic, subscribe to it.
+    var rc= _.map(ts, function(t) {
+      return this.pkAddSub(repeat,t,selector,target,more);
     }, this);
+    return _.without(rc, '');
   },
 
+  // register a subscriber to the topic leaf node, creating the path
+  // when necessary.
   pkAddSub: function(repeat, topic, selector, target, more) {
-    var rc= new Subcr(topic, selector, target, repeat, more),
-    tkns= topic.split('/'),
-    node= _.reduce(tkns, function(memo, z) {
-      return this.pkDoSub(memo,z);
-    }, this.rootNode, this);
-
-    this.allSubs[rc.id] = rc;
-    node.subs.push(rc);
-
-    return rc.id;
+    var tkns= safeSplit(topic);
+    if (tkns.length > 0) {
+      var rc= mkSubSCR(topic, selector, target, repeat, more),
+      node= _.reduce(tkns, function(memo, z) {
+        return this.pkDoSub(memo,z);
+      }, this.rootNode, this);
+      this.allSubs[rc.id] = rc;
+      node.subs.push(rc);
+      return rc.id;
+    } else {
+      return '';
+    }
   },
 
+  // remove the subscriber and trim if it is a dangling leaf node.
   pkUnSub: function(node, tokens, pos, sub) {
     if (! sjs.echt(node)) { return; }
     if (pos < tokens.length) {
       var k= tokens[pos],
-      cn= node.parts[k];
+      cn= node.tree[k];
       this.pkUnSub(cn, tokens, pos+1, sub);
-      if (_.isEmpty(cn.parts) && cn.subs.length === 0) {
-        delete node.parts[k];
+      if (_.isEmpty(cn.tree) &&
+          cn.subs.length === 0) {
+        delete node.tree[k];
       }
     } else {
       _.find(node.subs, function(z,n) {
@@ -145,55 +163,66 @@ var EventBus = sjs.Class.xtends({
     }
   },
 
-  pkDoPub: function(status, topic, node, tokens, pos, msg) {
-    if (! sjs.echt(node)) { return; }
+  pkDoPub: function(topic, node, tokens, pos, msg) {
+    if (! sjs.echt(node)) { return false; }
+    var rc=false;
     if (pos < tokens.length) {
-      this.pkDoPub(status, topic, node.parts[ tokens[pos] ], tokens, pos+1, msg);
-      this.pkDoPub(status, topic, node.parts['*'], tokens, pos+1,msg);
-      this.pkRun(status, topic, node.parts['**'], msg);
+      rc = rc || this.pkDoPub(topic, node.tree[ tokens[pos] ], tokens, pos+1, msg);
+      rc = rc || this.pkDoPub(topic, node.tree['*'], tokens, pos+1,msg);
     } else {
-      this.pkRun(status, topic, node,msg);
+      rc = rc || this.pkRun(topic, node,msg);
     }
+    return rc;
   },
 
-  pkRun: function(status, topic, node, msg) {
-    var cs= node ? node.subs : [],
+  // invoke subscribers, and for non repeating ones, remove them from
+  // the list.
+  pkRun: function(topic, node, msg) {
+    var cs= _.isObject(node) ? node.subs : [],
+    rc=false,
     purge=false;
     _.each(cs, function (z) {
-      if (z.active && sjs.echt(z.action)) {
+      if (z.active &&
+          sjs.echt(z.action)) {
+        // pass along any extra parameters, if any.
         z.action.apply(z.target, [topic, msg].concat(z.args));
+        // if once only, kill it.
         if (!z.repeat) {
           delete this.allSubs[z.id];
           z.active= false;
           z.action= null;
           purge=true;
         }
-        status[0]= true;
+        rc = true;
       }
     }, this);
+    // get rid of unwanted ones, and reassign new set to the node.
     if (purge && cs.length > 0) {
       node.subs= _.filter(cs,function(z) {
         if (z.action) { return true; } else { return false; }
       });
     }
+    return rc;
   },
 
+  // find or create a new child node.
   pkDoSub: function(node,token) {
-    if ( ! _.has(node.parts, token)) {
-      node.parts[token] = mkTreeNode();
+    if ( ! _.has(node.tree, token)) {
+      node.tree[token] = mkTreeNode();
     }
-    return node.parts[token];
+    return node.tree[token];
   },
 
   ctor: function() {
     this.rootNode = mkTreeNode();
     this.allSubs = {};
-    this.msgCount=0;
   }
 
 });
 
-global.ZotohLab.EventBus = EventBus;
+global.ZotohLab.MakeEventBus = function() {
+  return new EventBus();
+}
 
 }).call(this);
 

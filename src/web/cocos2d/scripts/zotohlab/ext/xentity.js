@@ -9,10 +9,11 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef){ "use strict"; var global= this,  _ = global._ ,
-asterix= global.ZotohLab.Asterix,
+(function(undef){ "use strict"; var global= this,  _ = global._ ;
+
+var asterix= global.ZotohLab.Asterix,
 sh= global.ZotohLab.Asterix,
-SkaroJS= global.SkaroJS,
+sjs= global.SkaroJS,
 ccsx = asterix.COCOS2DX,
 GID_SEED = 0;
 
@@ -20,7 +21,7 @@ GID_SEED = 0;
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-asterix.XEntity = SkaroJS.Class.xtends({
+asterix.XEntity = sjs.Class.xtends({
 
   wrapEnclosure: function() {
     var wz = ccsx.screen(), B = { left: 0, bottom: 0,
@@ -118,7 +119,7 @@ asterix.XEntity = SkaroJS.Class.xtends({
 
   revive: function(x,y,options) {
     if (_.isObject(options)) {
-      this.options = SkaroJS.merge(this.options, options);
+      this.options = sjs.merge(this.options, options);
     }
     this.startPos = cc.p(x,y);
     this.reviveSprite();
@@ -224,7 +225,7 @@ asterix.XEntity = SkaroJS.Class.xtends({
       if (!this.fixed) { this.vel.x = - this.vel.x; }
     }
     else {
-      SkaroJS.loggr.error("Failed to determine the collision of these 2 objects.");
+      sjs.loggr.error("Failed to determine the collision of these 2 objects.");
     }
   },
 
@@ -283,7 +284,7 @@ Object.defineProperty(asterix.XEntity.prototype, "OID", {
 
 
 
-asterix.XEntityPool = SkaroJS.Class.xtends({
+asterix.XEntityPool = sjs.Class.xtends({
 
   checkEntity: function(ent) {
     if (ent instanceof this.entType) {
@@ -302,14 +303,14 @@ asterix.XEntityPool = SkaroJS.Class.xtends({
     if (this.curSize > 0) {
       rc = this.pool.pop();
       --this.curSize;
-      SkaroJS.loggr.debug('getting object "' + rc.rtti() + '" from pool: oid = ' + rc.OID);
+      sjs.loggr.debug('getting object "' + rc.rtti() + '" from pool: oid = ' + rc.OID);
     }
     return rc;
   },
 
   add: function(ent) {
     if (this.checkEntity(ent) && this.curSize < this.maxSize) {
-      SkaroJS.loggr.debug('putting object "' + ent.rtti() + '" into pool: oid = ' + ent.OID);
+      sjs.loggr.debug('putting object "' + ent.rtti() + '" into pool: oid = ' + ent.OID);
       this.pool.push(ent);
       ent.hibernate();
       ++this.curSize;

@@ -9,21 +9,22 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global=this, _ = global._ ,
-asterix= global.ZotohLab.Asterix,
-SkaroJS= global.SkaroJS,
+(function (undef) { "use strict"; var global=this, _ = global._ ;
+
+var asterix= global.ZotohLab.Asterix,
+sjs= global.SkaroJS,
 CKS= global.Cookies;
 
 ////////////////////////////////////////////////////////////////////
 //// score class
 ///////////////////////////////////////////////////////////////////
 
-asterix.Score= Skaro.Class.xtends({
-  ctor: function(name,value) {
-    this.value=value;
-    this.name= name;
-  }
-});
+function mkScore(n,v) {
+  return {
+    value: Number(v.trim()),
+    name: n.trim()
+  };
+}
 
 asterix.HighScores= Skaro.Class.xtends({
 
@@ -32,14 +33,13 @@ asterix.HighScores= Skaro.Class.xtends({
   },
 
   read: function() {
-    var s = CKS.get(this.KEY) || '',
-    a,
-    tkns = s.split('|');
+    var a, s = CKS.get(this.KEY) || '',
+    ts = _.without(s.split('|'), '');
     //this.reset();
-    this.scores= _.reduce(tkns, function(memo,z) {
-      a = z.split(':');
+    this.scores= _.reduce(ts, function(memo,z) {
+      a = _.without(z.split(':'), '');
       if (a.length === 2) {
-        memo.push(new Score(a[0].trim(), Number(a[1].trim())));
+        memo.push(mkScore(a[0], a[1]));
       }
       return memo;
     }, []);
@@ -63,7 +63,7 @@ asterix.HighScores= Skaro.Class.xtends({
   },
 
   insert: function(name, score) {
-    var s= new Score( (name || '').trim(), score),
+    var s= mkScore(name || '', score),
     i,
     len= this.scores.length;
 

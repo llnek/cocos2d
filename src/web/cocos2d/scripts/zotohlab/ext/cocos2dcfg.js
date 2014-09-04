@@ -9,8 +9,9 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global= this,  _ = global._ ,
-SkaroJS= global.SkaroJS,
+(function(undef) { "use strict"; var global= this,  _ = global._ ;
+
+var sjs= global.SkaroJS,
 doc= global.document,
 cfg= {
 
@@ -23,19 +24,16 @@ cfg= {
   // 0(default), 1(Canvas only), 2(WebGL only)
   renderMode: 0,
 
-  id: 'gameCanvas',
+  id: 'gameArea',
 
   appFiles: [
-    'plugins/deps.js',
     'zotohlab/ext/cs2dx.js',
     'zotohlab/ext/odin.js',
     /*
     'zotohlab/ext/basefuncs.js',
     'zotohlab/ext/asterix.js',
-    'zotohlab/ext/odin.js',
     'zotohlab/ext/bus.js',
     'zotohlab/ext/ui.js',
-    'zotohlab/ext/xcfgbase.js',
     'zotohlab/ext/xcfg.js'
     */
   ],
@@ -72,7 +70,7 @@ cfg= {
       this.jsList.push( this.srcDir + f);
     }, this);
 
-    SkaroJS.merge(cfg, options || {});
+    sjs.merge(cfg, options || {});
   },
 
   //0 to turn debug off, 1 for basic debug, and 2 for full debug

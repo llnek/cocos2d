@@ -16,6 +16,7 @@
 var EventBus= global.ZotohLab.EventBus,
 sjs= global.SkaroJS;
 
+
 var Events = {
 // Event type
 PLAYGAME_REQ          : 1,
@@ -62,7 +63,7 @@ S_CONNECTED           : 1
 //
 function mkEvent(eventType, code, payload) {
   return {
-    timeStamp: new Date().getTime(),
+    timeStamp: _.now(),
     type: eventType,
     code: code,
     source: payload

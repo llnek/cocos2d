@@ -1,4 +1,4 @@
 
-<canvas id="gameCanvas"></canvas>
+<canvas id="gameArea"></canvas>
 
 

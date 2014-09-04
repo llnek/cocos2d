@@ -9,10 +9,13 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use stricts"; var global = this, _ = global._ ,
-asterix= global.ZotohLab.Asterix,
+(function(undef) { "use stricts"; var global = this, _ = global._ ;
+
+var asterix= global.ZotohLab.Asterix,
 sh= global.ZotohLab.Asterix,
-SkaroJS= global.SkaroJS;
+ccsx= asterix.COCOS2DX,
+sjs= global.SkaroJS;
+
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -28,7 +31,7 @@ asterix.XLoader = cc.Scene.extend({
   _instance: null,
 
   ctor: function () {
-    this.winsz = cc.director.getWinSizeInPixels();
+    this.winsz = ccsx.screen();
     this._super();
   },
 

@@ -9,8 +9,9 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global = this, _ = global._ ,
-SkaroJS= global.SkaroJS,
+(function (undef) { "use strict"; var global = this, _ = global._ ;
+
+var sjs= global.SkaroJS,
 PINF = 1000000;
 
 global.ZotohLab.NegaMax= {
@@ -58,7 +59,7 @@ function negamax(board, game, maxDepth, depth, alpha, beta) {
   return bestValue;
 };
 
-global.ZotohLab.NegaMax.Algo = SkaroJS.Class.xtends({
+global.ZotohLab.NegaMax.Algo = sjs.Class.xtends({
 
   ctor: function(board) {
     this.board= board;
@@ -72,7 +73,7 @@ global.ZotohLab.NegaMax.Algo = SkaroJS.Class.xtends({
 
 });
 
-global.ZotohLab.NegaMax.Snapshot = SkaroJS.Class.xtends({
+global.ZotohLab.NegaMax.Snapshot = sjs.Class.xtends({
 
   lastBestMove: null,
   other: null,

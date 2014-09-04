@@ -9,11 +9,13 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use stricts"; var global = this, _ = global._ ,
-asterix= global.ZotohLab.Asterix,
+(function(undef) { "use stricts"; var global = this, _ = global._ ;
+
+var asterix= global.ZotohLab.Asterix,
 sh= global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
-SkaroJS = global.SkaroJS;
+sjs = global.SkaroJS;
+
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -38,7 +40,6 @@ asterix.XGameLayer = asterix.XLayer.extend({
       //this.setTouchMode(cc.TOUCH_ONE_BY_ONE);
     }
   },
-
 
   cfgInputKeyPad: function() {
     var me=this;
@@ -80,8 +81,8 @@ asterix.XGameLayer = asterix.XLayer.extend({
   },
 
   onTouchesEnded: function (touches, event) {
-    SkaroJS.loggr.debug("touch event = " + event);
-    SkaroJS.loggr.debug("touch = " + touches);
+    sjs.loggr.debug("touch event = " + event);
+    sjs.loggr.debug("touch = " + touches);
   },
 
   onclicked: function(x,y) {
