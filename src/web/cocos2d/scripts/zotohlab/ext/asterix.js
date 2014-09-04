@@ -9,26 +9,28 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._,
-Mustache=global.Mustache,
-SkaroJS= global.SkaroJS;
+(function (undef) { "use strict"; var global= this, _ = global._ ;
+
+var Mustache=global.Mustache,
+sjs= global.SkaroJS;
+
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
 global.ZotohLab.Asterix = {
 
   l10nInit: function(table) {
-    table = table || this.xcfg.l10nTable;
     String.defaultLocale="en-US";
-    String.toLocaleString(table);
-    SkaroJS.loggr.info("loaded l10n strings.  locale = " + String.locale);
+    String.toLocaleString(table ||
+                          this.xcfg.l10nTable);
+    sjs.loggr.info("loaded l10n strings.  locale = " + String.locale);
   },
 
   lang: 'en',
 
   l10n: function(s,pms) {
     var t= s.toLocaleString();
-    return SkaroJS.echt(pms) ? Mustache.render(t,pms) : t;
+    return _.isObject(pms) ? Mustache.render(t,pms) : t;
   },
 
   protos: {},
@@ -47,11 +49,17 @@ global.ZotohLab.Asterix = {
 
   // tests if 2 rectangles intersect.
   isIntersect: function(a1,a2) {
-    return ! (a1.left > a2.right  || a2.left > a1.right || a1.top < a2.bottom || a2.top < a1.bottom);
+    return ! (a1.left > a2.right ||
+              a2.left > a1.right ||
+              a1.top < a2.bottom ||
+              a2.top < a1.bottom);
   },
 
   outOfBound: function(a,B) {
-    return a.right > B.right || a.bottom < B.bottom || a.left < 0 || a.top > B.top;
+    return a.right > B.right ||
+           a.bottom < B.bottom ||
+           a.left < 0 ||
+           a.top > B.top;
   },
 
   calcXY: function(angle,hypot) {
@@ -189,7 +197,7 @@ global.ZotohLab.Asterix = {
   },
 
   toggleSfx: function(override) {
-    this.xcfg.sound.open = SkaroJS.echt(override) ? override : !this.xcfg.sound.open;
+    this.xcfg.sound.open = sjs.echt(override) ? override : !this.xcfg.sound.open;
     if (!cc.audioEngine._soundSupported) {
       this.xcfg.sound.open=false;
     }
@@ -206,9 +214,9 @@ global.ZotohLab.Asterix = {
   },
 
   sfxInit: function() {
-    cc.audioEngine.setMusicVolume(this.xcfg.sound.volume);
-    if (! cc.audioEngine._soundSupported) {
-      this.xcfg.sound.open=false;
+    if (cc.audioEngine._soundSupported) {
+      cc.audioEngine.setMusicVolume(this.xcfg.sound.volume);
+      this.xcfg.sound.open= true;
     }
   },
 
@@ -235,14 +243,14 @@ global.ZotohLab.Asterix = {
   run: function() {
     var me=this;
     cc.game.onStart= function() {
-      SkaroJS.loggr.info("About to create Cocos2D HTML5 Game");
+      sjs.loggr.info("About to create Cocos2D HTML5 Game");
       var app= new me.Cocos2dApp('StartScreen');
       me.l10nInit(),
       me.sfxInit();
-      SkaroJS.merge(me.xcfg.game, global.document.ccConfig);
-      SkaroJS.loggr.debug(JSON.stringify(me.xcfg.game));
-      SkaroJS.loggr.info("registered game start state - " + app.startScene);
-      SkaroJS.loggr.info("loaded and running. OK");
+      sjs.merge(me.xcfg.game, global.document.ccConfig);
+      sjs.loggr.debug(JSON.stringify(me.xcfg.game));
+      sjs.loggr.info("registered game start state - " + app.startScene);
+      sjs.loggr.info("loaded and running. OK");
     };
     cc.game.run();
   }

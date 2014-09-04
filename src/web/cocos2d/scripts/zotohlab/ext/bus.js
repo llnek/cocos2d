@@ -9,16 +9,18 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this, _ = global._ , SkaroJS=global.SkaroJS,
+(function(undef) { "use strict"; var global = this, _ = global._ ;
+
+var sjs=global.SkaroJS,
 _SEED=0;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-var Subcr= SkaroJS.Class.xtends({
+var Subcr= sjs.Class.xtends({
   ctor: function(topic, selector, target, repeat, args) {
-    this.id= "sub-" + new Date().getMilliseconds() + "@" + Number(++_SEED);
+    this.id= "sub-" + Number(++_SEED);
     this.args= args || [];
     this.target= target
     this.action= selector;
@@ -28,14 +30,16 @@ var Subcr= SkaroJS.Class.xtends({
   }
 });
 
-var TNode= SkaroJS.Class.xtends({
-  ctor: function() {
-    this.parts= {};
-    this.subs=[];
-  }
-});
+//////////////////////////////////////////////////////////////////////////////
+//
+function mkTreeNode() {
+  return {
+    parts: {},  // children - branches
+    subs: []    // subscribers (callbacks)
+  };
+}
 
-var EventBus = SkaroJS.Class.xtends({
+var EventBus = sjs.Class.xtends({
 
   // return a list of subscriber handles.
   once: function(topic, selector, target /*, more args */) {
@@ -43,8 +47,8 @@ var EventBus = SkaroJS.Class.xtends({
                           topic,
                           selector,
                           target,
-                          (arguments.length > 3) ? Array.prototype.slice(arguments,3) : [] );
-    return SkaroJS.echt(rc) ? rc : [];
+                          sjs.dropArgs(arguments,3));
+    return sjs.echt(rc) ? rc : [];
   },
 
   // return a list of subscriber handles.
@@ -53,13 +57,13 @@ var EventBus = SkaroJS.Class.xtends({
                           topic,
                           selector,
                           target,
-                          (arguments.length > 3) ? Array.prototype.slice(arguments,3) : [] );
-    return SkaroJS.echt(rc) ? rc : [];
+                          sjs.dropArgs(arguments,3));
+    return sjs.echt(rc) ? rc : [];
   },
 
   fire: function(topic, msg) {
     var tokens= topic.split('/'),
-    status= [ false ];
+    status= [false];
 
     this.pkDoPub(status, topic, this.rootNode, tokens, 0, msg || {} );
     if (status[0] === true) {
@@ -70,21 +74,21 @@ var EventBus = SkaroJS.Class.xtends({
   },
 
   resume: function(handle) {
-    var sub= this.allSubs[ handle ];
+    var sub= this.allSubs[handle];
     if (sub) {
       sub.active=true;
     }
   },
 
   pause: function(handle) {
-    var sub= this.allSubs[ handle ];
+    var sub= this.allSubs[handle];
     if (sub) {
       sub.active=false;
     }
   },
 
   off: function(handle) {
-    var sub= this.allSubs[ handle ];
+    var sub= this.allSubs[handle];
     if (sub) {
       this.pkUnSub(this.rootNode, sub.topic.split('/'), 0, sub);
     }
@@ -97,7 +101,7 @@ var EventBus = SkaroJS.Class.xtends({
   },
 
   pkGetSubcr: function(id) {
-    return this.allSubs[ id];
+    return this.allSubs[id];
   },
 
   pkListen: function(repeat, topic, selector, target, more) {
@@ -121,7 +125,7 @@ var EventBus = SkaroJS.Class.xtends({
   },
 
   pkUnSub: function(node, tokens, pos, sub) {
-    if (! SkaroJS.echt(node)) { return; }
+    if (! sjs.echt(node)) { return; }
     if (pos < tokens.length) {
       var k= tokens[pos],
       cn= node.parts[k];
@@ -142,7 +146,7 @@ var EventBus = SkaroJS.Class.xtends({
   },
 
   pkDoPub: function(status, topic, node, tokens, pos, msg) {
-    if (! SkaroJS.echt(node)) { return; }
+    if (! sjs.echt(node)) { return; }
     if (pos < tokens.length) {
       this.pkDoPub(status, topic, node.parts[ tokens[pos] ], tokens, pos+1, msg);
       this.pkDoPub(status, topic, node.parts['*'], tokens, pos+1,msg);
@@ -156,7 +160,7 @@ var EventBus = SkaroJS.Class.xtends({
     var cs= node ? node.subs : [],
     purge=false;
     _.each(cs, function (z) {
-      if (z.active && SkaroJS.echt(z.action)) {
+      if (z.active && sjs.echt(z.action)) {
         z.action.apply(z.target, [topic, msg].concat(z.args));
         if (!z.repeat) {
           delete this.allSubs[z.id];
@@ -176,13 +180,13 @@ var EventBus = SkaroJS.Class.xtends({
 
   pkDoSub: function(node,token) {
     if ( ! _.has(node.parts, token)) {
-      node.parts[token] = new TNode();
+      node.parts[token] = mkTreeNode();
     }
     return node.parts[token];
   },
 
   ctor: function() {
-    this.rootNode = new TNode();
+    this.rootNode = mkTreeNode();
     this.allSubs = {};
     this.msgCount=0;
   }

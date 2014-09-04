@@ -155,6 +155,14 @@ var SkaroJS = {
     }
   },
 
+  boolify: function(v) {
+    return v ? true : false;
+  },
+
+  dropArgs: function(args,num) {
+    return args.length > num ? Array.prototype.slice(args,num) : [];
+  },
+
   isSSL: function() {
     if (window && window.location) {
       return window.location.protocol.indexOf('https') >= 0;
