@@ -62,7 +62,6 @@ cfg= {
       this.appFiles.push('zotohlab/gui/online.js');
       this.appFiles.push('zotohlab/gui/mainmenu.js');
       _.each(files,function(f) { this.appFiles.push(f); }, this);
-      this.appFiles.push('zotohlab/ext/application.js');
     }
 
     _.each(this.appFiles, function(f, idx) {

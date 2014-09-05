@@ -26,15 +26,14 @@ global.ZotohLab.Asterix = {
     sjs.loggr.info("loaded l10n strings.  locale = " + String.locale);
   },
 
-  lang: 'en',
-
   l10n: function(s,pms) {
     var t= s.toLocaleString();
     return _.isObject(pms) ? Mustache.render(t,pms) : t;
   },
 
-  protos: {},
+  lang: 'en',
 
+  protos: {},
   pools: {},
 
   xcfg: undef,
