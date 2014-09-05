@@ -240,20 +240,136 @@ global.ZotohLab.Asterix = {
     });
   },
 
-  run: function() {
-    var me=this;
+  run: function(startScreen) {
+    var s1= startScreen || 'StartScreen',
+    me=this;
     cc.game.onStart= function() {
       sjs.loggr.info("About to create Cocos2D HTML5 Game");
-      var app= new me.Cocos2dApp('StartScreen');
+      me.preLaunchApp(s1);
       me.l10nInit(),
       me.sfxInit();
       sjs.merge(me.xcfg.game, global.document.ccConfig);
       sjs.loggr.debug(JSON.stringify(me.xcfg.game));
-      sjs.loggr.info("registered game start state - " + app.startScene);
+      sjs.loggr.info("registered game start state - " + s1);
       sjs.loggr.info("loaded and running. OK");
     };
     cc.game.run();
+  },
+
+  preLaunchApp: function (s1) {
+
+    var sz = this.xcfg.game.size,
+    dirc = cc.director,
+    eglv = cc.view,
+    me = this;
+
+    eglv.setDesignResolutionSize(sz.width, sz.height,
+                                 cc.ResolutionPolicy.SHOW_ALL);
+    eglv.resizeWithBrowserSize(true);
+    eglv.adjustViewPort(true);
+
+    //dirc.setAnimationInterval(1 / sh.xcfg.game.frameRate);
+    if (this.xcfg.game.debug) {
+      dirc.setDisplayStats(this.xcfg.game.showFPS);
+    }
+
+    this.XLoader.preload( this.pvGatherPreloads(), function () {
+      me.xcfg.runOnce();
+      dirc.runScene( me.protos[s1].create() );
+    }, this);
+
+    return true;
+  },
+
+  pvGatherPreloads: function() {
+    var assets= this.xcfg.assets,
+    me=this,
+    p,
+    rc= [
+      _.map(assets.sprites, function(v,k) { return me.pvLoadSprite(k,v); }),
+      _.map(assets.images, function(v,k) { return me.pvLoadImage(k,v); }),
+      _.map(assets.sounds, function(v,k) { return me.pvLoadSound(k,v); }),
+
+      _.reduce(assets.fonts, function(memo, v,k) {
+        // value is array of [ path, image , xml ]
+        p= me.sanitizeUrl(v[0]);
+        return memo.concat([ p + v[1], p + v[2] ]);
+      }, []),
+
+      _.reduce(assets.atlases, function(memo, v,k) {
+        return memo.concat( me.pvLoadAtlas(k,v));
+      }, []),
+
+      _.map(assets.tiles, function(v,k) {
+        return me.pvLoadTile(k,v);
+      }),
+
+      this.xcfg.game.preloadLevels ? this.pvLoadLevels() : []
+    ];
+
+    return _.reduce(_.flatten(rc), function(memo,v) {
+      sjs.loggr.info('Loading ' + v);
+      memo.push( v );
+      return memo;
+    }, []);
+  },
+
+  pvLoadLevels: function() {
+    var rc = [],
+    me= this,
+    f1= function(k) {
+      return function(obj,n) {
+        var a = _.reduce(obj, function(memo, item, x) {
+              var z= k + '.' + n + '.' + x;
+              switch (n) {
+                case 'sprites':
+                  memo.push( this.pvLoadSprite( z,item));
+                  me.xcfg.assets.sprites[z] = item;
+                break;
+                case 'images':
+                  memo.push( this.pvLoadImage( z, item));
+                  me.xcfg.assets.images[z] = item;
+                break;
+                case 'tiles':
+                  memo.push( this.pvLoadTile( z, item));
+                  me.xcfg.assets.tiles[z] = item;
+                break;
+              }
+              return memo;
+        }, [], this);
+        rc = rc.concat(a);
+      };
+    };
+
+    _.each(this.xcfg.levels, function(v,k) {
+      _.each(v, f1(k), this);
+    }, this);
+
+    return rc;
+  },
+
+  pvLoadSprite: function(k, v) {
+    return this.sanitizeUrl(v[0]);
+  },
+
+  pvLoadImage: function(k,v) {
+    return this.sanitizeUrl(v);
+  },
+
+  pvLoadSound: function(k,v) {
+    return this.sanitizeUrl( v + '.' + this.xcfg.game.sfx );
+  },
+
+  pvLoadAtlas: function(k,v) {
+    return [ this.sanitizeUrl( v + '.plist'),
+             this.sanitizeUrl( v + '.png') ];
+  },
+
+  pvLoadTile: function(k,v) {
+    return this.sanitizeUrl(v);
   }
+
+
 
 };
 

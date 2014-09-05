@@ -30,7 +30,6 @@ cfg= {
     'zotohlab/ext/cs2dx.js',
     'zotohlab/ext/odin.js',
     /*
-    'zotohlab/ext/basefuncs.js',
     'zotohlab/ext/asterix.js',
     'zotohlab/ext/bus.js',
     'zotohlab/ext/ui.js',

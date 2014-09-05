@@ -39,43 +39,59 @@ asterix.XLoader = cc.Scene.extend({
     this.bgLayer = cc.LayerColor.create(cc.color(0,0,0, 255));
     this.bgLayer.setPosition(0, 0);
     this._super();
-    this.pkLoad();
-    this.addChild(this.bgLayer, 0);
   },
 
   pkLoad: function() {
     this.logo= new Image();
+    this.pbar= new Image();
     var me=this;
-    this.logo.onload = function() { me.pkInitStage(); };
-    this.logo.src = '/public/ig/media/main/ZotohLab_x200.png';
+    this.pbar.onload = function() {
+      me.logo.onload = function() { me.pkInitStage(); };
+      me.logo.src = '/public/ig/media/main/ZotohLab_x200.png';
+    };
+    this.pbar.src = '/public/ig/media/cocos2d/game/preloader_bar.png';
   },
 
   pkInitStage: function () {
-    var cw = cc.p(this.winsz.width / 2, this.winsz.height / 2),
-    texture2d = new cc.Texture2D(),
+    var logo2d = new cc.Texture2D(),
+    pbar2d= new cc.Texture2D(),
+    cw = ccsx.center(),
     me= this,
     s1,s2;
 
-    texture2d.initWithElement(this.logo);
-    texture2d.handleLoadedTexture();
+    logo2d.initWithElement(this.logo);
+    logo2d.handleLoadedTexture();
 
-    this.logoSprite = cc.Sprite.create(texture2d);
+    pbar2d.initWithElement(this.pbar);
+    pbar2d.handleLoadedTexture();
+
+    this.addChild(this.bgLayer, 0);
+
+    this.logoSprite = cc.Sprite.create(logo2d);
     this.logoSprite.setScale( cc.contentScaleFactor());
     this.logoSprite.setPosition(cw);
     this.bgLayer.addChild(this.logoSprite);
 
-    s2 = cc.Sprite.create( '/public/ig/media/cocos2d/game/preloader_bar.png');
+    s2 = cc.Sprite.create(pbar2d);
+    s2.setScale( cc.contentScaleFactor());
+
     this.progress = cc.ProgressTimer.create(s2);
-    this.progress.setType(cc.PROGRESS_TIMER_TYPE_BAR);
-    this.progress.setScaleX(0.5);
+    this.progress.setType(cc.ProgressTimer.TYPE_BAR);
+    this.progress.setScaleX(0.8);
     this.progress.setScaleY(0.3);
-    this.progress.setPosition( this.logoSprite.getPosition().x - 0.5 * this.logo.width / 2 , cw.y - this.logo.height / 2 - 10);
+    //this.progress.setOpacity(0);
+    //this.progress.setPercentage(0);
+    this.progress.setPosition(this.logoSprite.getPosition().x, // - 0.5 * this.logo.width / 2 ,
+                              cw.y - this.logo.height / 2 - 10);
+    //this.progress.setMidpoint(cc.p(0,0));
     this.bgLayer.addChild(this.progress);
+
+    this.scheduleOnce(this.pkStartLoading);
   },
 
   onEnter: function () {
     this._super();
-    this.schedule(this.pkStartLoading, 0.3);
+    this.pkLoad();
   },
 
   /*
@@ -96,25 +112,26 @@ asterix.XLoader = cc.Scene.extend({
   },
 
   pkStartLoading: function () {
-    var me=this, res = this.resources;
+    var res = this.resources,
+    me=this;
     this._length = res.length;
-    this.unschedule(this.pkStartLoading);
+    this._count=0;
     cc.loader.load(res, function(result,cnt) {
       me._count= cnt;
     }, function() {
       me.niceFadeOut();
     });
-    this.schedule(this.pkUpdatePercent);
+    this.schedule(this.update, 0.25);
   },
 
-  pkUpdatePercent: function () {
-    var me = this, cnt = this._count,
+  update: function () {
+    var cnt = this._count,
     len = this._length,
     percent = (cnt / len * 100) | 0;
     percent = Math.min(percent, 100);
     this.progress.setPercentage(percent);
     if (cnt >= len) {
-      this.unschedule(this.pkUpdatePercent);
+      this.unscheduleUpdate();
     }
   }
 
