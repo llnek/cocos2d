@@ -30,14 +30,24 @@ asterix.XGameLayer = asterix.XLayer.extend({
 
   pkInput: function() {
     if (_.has(cc.sys.capabilities, 'keyboard')) {
+      cc.log('pkInput:  keyboard supported');
       this.cfgInputKeyPad();
+    }else{
+      cc.log('pkInput:  keyboard not supported');
     }
     if (_.has(cc.sys.capabilities, 'mouse')) {
+      cc.log('pkInput:  mouse supported');
       this.cfgInputMouse();
+    }else{
+      cc.log('pkInput:  mouse not supported');
     }
     if (_.has(cc.sys.capabilities, 'touches')) {
+      cc.log('pkInput:  touch supported');
+      this.cfgInputTouchOne();
       //this.setTouchEnabled(true);
       //this.setTouchMode(cc.TOUCH_ONE_BY_ONE);
+    }else{
+      cc.log('pkInput:  touch not supported');
     }
   },
 
@@ -64,6 +74,56 @@ asterix.XGameLayer = asterix.XLayer.extend({
     }, this);
   },
 
+  processEvent:function (event) {
+    cc.log('event === ' + JSON.stringify(event));
+    /*
+    var delta = event.getDelta();
+    var curPos = cc.p(this._ship.x, this._ship.y);
+    curPos = cc.pAdd(curPos, delta);
+    curPos = cc.pClamp(curPos, cc.p(0, 0), cc.p(winSize.width, winSize.height));
+    this._ship.x = curPos.x;
+    curPos = null;
+    */
+  },
+
+  cfgInputTouchesAll: function() {
+    var me=this;
+    cc.eventManager.addListener({
+      prevTouchId: -1,
+      event: cc.EventListener.TOUCH_ALL_AT_ONCE,
+      onTouchesMoved:function (touches, event) {
+        var touch = touches[0];
+        if (this.prevTouchId != touch.getId())
+            this.prevTouchId = touch.getId();
+        else event.getCurrentTarget().processEvent(touches[0]);
+    }
+    }, this);
+  },
+
+  cfgInputTouchOne: function() {
+    var me=this;
+    cc.eventManager.addListener({
+      event: cc.EventListener.TOUCH_ONE_BY_ONE,
+      swallowTouches: true,
+      onTouchBegan: function(t,e) { return me.onTouchBegan(t,e);},
+      onTouchMoved: function(t,e) { return me.onTouchMoved(t,e);},
+      onTouchEnded: function(t,e) { return me.onTouchEnded(t,e);}
+    }, this);
+  },
+
+  onTouchMoved: function(touch,event) {
+  },
+
+  onTouchBegan: function(touch,event) {
+    var pt= touch.getLocation();
+    cc.log("touch location [" + pt.x + "," + pt.y + "]");
+    this.onclicked(pt.x, pt.y);
+    return true;
+  },
+
+  onTouchEnded: function(touch,event) {
+  },
+
   onKeyDown:function (e) {
     //loggr.debug('onKeyDown: e = ' + e);
     this.keyboard[e] = true;
@@ -76,7 +136,7 @@ asterix.XGameLayer = asterix.XLayer.extend({
 
   onMouseUp: function(evt) {
     var pt= evt.getLocation();
-    //loggr.debug("mouse location [" + pt.x + "," + pt.y + "]");
+    cc.log("mouse location [" + pt.x + "," + pt.y + "]");
     this.onclicked(pt.x, pt.y);
   },
 

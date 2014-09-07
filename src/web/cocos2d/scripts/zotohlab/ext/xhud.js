@@ -69,7 +69,7 @@ asterix.XGameHUDLayer = asterix.XLayer.extend({
     cw= ccsx.center(),
     y, c, menu;
 
-    where = where || cc.ALIGN_BOTTOM;
+    where = where || 'cc.ALIGN_BOTTOM';
     scale = scale || 1;
 
     menu= ccsx.pmenu1({
@@ -79,7 +79,7 @@ asterix.XGameHUDLayer = asterix.XLayer.extend({
         sh.fireEvent('/game/hud/controls/showmenu'); }
     });
     c= menu.getChildByTag(1);
-    if (where === cc.ALIGN_TOP) {
+    if (where === 'cc.ALIGN_TOP') {
       y = wz.height - csts.TILE  - ccsx.getScaledHeight(c) / 2
     } else {
       y = csts.TILE  + ccsx.getScaledHeight(c) / 2
@@ -95,7 +95,7 @@ asterix.XGameHUDLayer = asterix.XLayer.extend({
         sh.fireEvent('/game/hud/controls/replay'); }
     });
     c= menu.getChildByTag(1);
-    if (where === cc.ALIGN_TOP) {
+    if (where === 'cc.ALIGN_TOP') {
       y = wz.height - csts.TILE  - ccsx.getScaledHeight(c) / 2
     } else {
       y = csts.TILE  + ccsx.getScaledHeight(c) / 2

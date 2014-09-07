@@ -13,7 +13,8 @@
 
 var asterix= global.ZotohLab.Asterix,
 sh= global.ZotohLab.Asterix,
-sjs= global.SkaroJS;
+sjs= global.SkaroJS,
+SEED= 0;
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -34,7 +35,7 @@ asterix.XLayer = cc.Layer.extend({
   },
 
   rtti: function() {
-    return "";
+    return "" + Number(SEED++);
   },
 
   getNode: function() {
@@ -55,6 +56,10 @@ asterix.XLayer = cc.Layer.extend({
       n.setBatchNode(p);
     }
     p.addChild(n, this.lastZix, ++this.lastTag);
+  },
+
+  setParent: function(par) {
+    this.parScene=par;
   },
 
   init: function() {

@@ -36,12 +36,14 @@ asterix.XLoader = cc.Scene.extend({
   },
 
   init: function() {
-    this.bgLayer = cc.LayerColor.create(cc.color(0,0,0, 255));
+    this.bgLayer = new cc.LayerColor(cc.color(0,0,0, 255));
     this.bgLayer.setPosition(0, 0);
-    this._super();
+    //this._super();
+    this.addChild(this.bgLayer, 0);
   },
 
   pkLoad: function() {
+    /*
     this.logo= new Image();
     this.pbar= new Image();
     var me=this;
@@ -50,6 +52,40 @@ asterix.XLoader = cc.Scene.extend({
       me.logo.src = '/public/ig/media/main/ZotohLab_x200.png';
     };
     this.pbar.src = '/public/ig/media/cocos2d/game/preloader_bar.png';
+    */
+  },
+
+  pkLoadNative: function() {
+    this.pbarSprite= new cc.Sprite('res/cocos2d/game/preloader_bar.png');
+    this.logoSprite= new cc.Sprite('res/main/ZotohLab_x200.png');
+    this.pkInitStageNative();
+  },
+
+  pkInitStageNative: function () {
+    var cw = ccsx.center(),
+    me= this,
+    s1,s2;
+
+
+    this.logoSprite.setScale( cc.contentScaleFactor());
+    this.logoSprite.setPosition(cw);
+    this.bgLayer.addChild(this.logoSprite);
+
+    s2 = this.pbarSprite;
+    s2.setScale( cc.contentScaleFactor());
+
+    this.progress = new cc.ProgressTimer(s2);
+    this.progress.setType(cc.ProgressTimer.TYPE_BAR);
+    this.progress.setScaleX(0.8);
+    this.progress.setScaleY(0.3);
+    //this.progress.setOpacity(0);
+    //this.progress.setPercentage(0);
+    this.progress.setPosition(this.logoSprite.getPosition().x, // - 0.5 * this.logo.width / 2 ,
+                              cw.y - this.logoSprite.getContentSize().height / 2 - 10);
+    //this.progress.setMidpoint(cc.p(0,0));
+    this.bgLayer.addChild(this.progress);
+
+    this.scheduleOnce(this.pkStartLoading);
   },
 
   pkInitStage: function () {
@@ -91,7 +127,8 @@ asterix.XLoader = cc.Scene.extend({
 
   onEnter: function () {
     this._super();
-    this.pkLoad();
+    //this.pkLoad();
+    this.pkLoadNative();
   },
 
   /*
@@ -116,6 +153,7 @@ asterix.XLoader = cc.Scene.extend({
     me=this;
     this._length = res.length;
     this._count=0;
+
     cc.loader.load(res, function(result,cnt) {
       me._count= cnt;
     }, function() {

@@ -22,17 +22,17 @@ sjs= global.SkaroJS;
 
 asterix.XScene = cc.Scene.extend({
 
-  ebus: global.ZotohLab.MakeEventBus(),
-  layers: {},
+  //ebus: global.ZotohLab.MakeEventBus(),
+  //layers: {},
   //lays: [],
   //options : {},
 
+  getLayers: function() {
+    return this.layers;
+  },
+
   init: function() {
-    if ( this._super()) {
-      return this.createLayers();
-    } else {
-      return false;
-    }
+    return this._super() ? this.createLayers() : false;
   },
 
   createLayers: function() {
@@ -44,6 +44,7 @@ asterix.XScene = cc.Scene.extend({
     // look for failures, hold off init'ing game layer, leave that as last
     rc = _.some(a, function(proto) {
       obj= new (proto)(this.options);
+      obj.setParent(this);
       if ( obj instanceof asterix.XGameLayer ) {
         glptr = obj;
         ok=true
@@ -56,6 +57,7 @@ asterix.XScene = cc.Scene.extend({
         return false;
       }
     }, this);
+
     if (a.length > 0 && rc===false ) {
       return sjs.echt(glptr) ? glptr.init() : true;
     } else {
@@ -63,18 +65,22 @@ asterix.XScene = cc.Scene.extend({
     }
   },
 
-  ctor: function(layers, options) {
+  ctor: function(ls, options) {
+    this.ebus= global.ZotohLab.MakeEventBus();
     this.options = options || {};
-    this.lays= layers || [];
+    this.lays= ls || [];
+    this.layers= {};
     this._super();
   }
+
 
 });
 
 asterix.XSceneFactory = sjs.Class.xtends({
 
   create: function(options) {
-    var cfg, arr= this.layers;
+    var arr= this.layers,
+    cfg;
     if (options && _.has(options,'layers') &&
         _.isArray(options.layers)) {
       arr= options.layers;
@@ -86,8 +92,8 @@ asterix.XSceneFactory = sjs.Class.xtends({
     return scene.init() ? scene : null;
   },
 
-  ctor: function(layers) {
-    this.layers= layers || [];
+  ctor: function(ls) {
+    this.layers= ls || [];
   }
 
 });

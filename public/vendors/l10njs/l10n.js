@@ -1,7 +1,7 @@
 /*
  * l10n.js
  * 2013-04-18
- * 
+ *
  * By Eli Grey, http://eligrey.com
  * Licensed under the X11/MIT License
  *   See LICENSE.md
@@ -17,7 +17,7 @@
 var
   undef_type = "undefined"
 , string_type = "string"
-, nav = self.navigator
+, nav = window.navigator
 , String_ctr = String
 , has_own_prop = Object.prototype.hasOwnProperty
 , load_queues = {}
@@ -40,22 +40,22 @@ var
 	  len = this.length
 	, i   = 0
 	;
-	
+
 	for (; i < len; i++) {
 		if (i in this && this[i] === item) {
 			return i;
 		}
 	}
-	
+
 	return -1;
 }
 , request_JSON = function (uri) {
 	var req = new XHR();
-	
+
 	// sadly, this has to be blocking to allow for a graceful degrading API
 	req.open("GET", uri, FALSE);
 	req.send(null);
-	
+
 	if (req.status !== 200) {
 		// warn about error without stopping execution
 		setTimeout(function () {
@@ -64,7 +64,7 @@ var
 			l10n_err.name = "Localization Error";
 			throw l10n_err;
 		}, 0);
-		
+
 		return {};
 	} else {
 		return JSON.parse(req.responseText);
@@ -85,16 +85,16 @@ var
 				if (has_own_prop.call(data, locale)) {
 					localization = data[locale];
 					locale = locale[$to_lowercase]();
-					
+
 					if (!(locale in localizations) || localization === FALSE) {
 						// reset locale if not existing or reset flag is specified
 						localizations[locale] = {};
 					}
-					
+
 					if (localization === FALSE) {
 						continue;
 					}
-					
+
 					// URL specified
 					if (typeof localization === string_type) {
 						if (String_ctr[$locale][$to_lowercase]().indexOf(locale) === 0) {
@@ -108,7 +108,7 @@ var
 							continue;
 						}
 					}
-					
+
 					for (message in localization) {
 						if (has_own_prop.call(localization, message)) {
 							localizations[locale][message] = localization[message];
@@ -128,13 +128,13 @@ var
 	, len = queue.length
 	, localization
 	;
-	
+
 	for (; i < len; i++) {
 		localization = {};
 		localization[locale] = request_JSON(queue[i]);
 		load(localization);
 	}
-	
+
 	delete load_queues[locale];
 }
 , use_default
@@ -142,7 +142,7 @@ var
 	if (typeof this === undef_type) {
 		return this;
 	}
-	
+
 	var
 	  using_default = use_default
 	, current_locale = String_ctr[using_default ? $default_locale : $locale]
@@ -153,7 +153,7 @@ var
 	;
 
 	use_default = FALSE;
-	
+
 	// Iterate through locales starting at most-specific until a localization is found
 	do {
 		locale = parts.slice(0, i).join("-");
@@ -166,7 +166,7 @@ var
 		}
 	}
 	while (i --> 1);
-	
+
 	if (!using_default && String_ctr[$default_locale]) {
 		use_default = TRUE;
 		return localize.call(this_val);
@@ -178,7 +178,7 @@ var
 
 if (typeof XMLHttpRequest === undef_type && typeof ActiveXObject !== undef_type) {
 	var AXO = ActiveXObject;
-	
+
 	XHR = function () {
 		try {
 			return new AXO("Msxml2.XMLHTTP.6.0");
@@ -189,7 +189,7 @@ if (typeof XMLHttpRequest === undef_type && typeof ActiveXObject !== undef_type)
 		try {
 			return new AXO("Msxml2.XMLHTTP");
 		} catch (xhrEx3) {}
-	
+
 		throw new Error("XMLHttpRequest not supported by this browser.");
 	};
 } else {
@@ -205,13 +205,13 @@ if (typeof document !== undef_type) {
 	, i = elts.length
 	, localization
 	;
-	
+
 	while (i--) {
 		var
 		  elt = elts[i]
 		, rel = (elt.getAttribute("rel") || "")[$to_lowercase]().split(/\s+/)
 		;
-		
+
 		if (l10n_js_media_type.test(elt.type)) {
 			if (array_index_of.call(rel, "localizations") !== -1) {
 				// multiple localizations

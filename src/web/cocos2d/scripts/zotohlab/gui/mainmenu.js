@@ -23,11 +23,11 @@ sjs= global.SkaroJS;
 
 asterix.XMenuBackLayer = asterix.XLayer.extend({
   pkInit: function() {
-    var map = cc.TMXTiledMap.create(sh.getTilesPath('gui.mmenu')),
+    var map = new cc.TMXTiledMap(sh.getTilesPath('gui.mmenu')),
     csts = sh.xcfg.csts,
     wz = ccsx.screen(),
     cw= ccsx.center(),
-    title = cc.LabelBMFont.create( sh.l10n('%mmenu'), sh.getFontPath('font.JellyBelly'));
+    title = new cc.LabelBMFont( sh.l10n('%mmenu'), sh.getFontPath('font.JellyBelly'));
 
     title.setOpacity(0.9*255);
     title.setScale(0.6);
@@ -37,6 +37,10 @@ asterix.XMenuBackLayer = asterix.XLayer.extend({
     this.addItem(title);
 
     return this._super();
+  },
+
+  rtti: function() {
+    return 'XMenuBackLayer';
   },
 
   pkInput: function() {}
@@ -54,11 +58,11 @@ asterix.XMenuLayer= asterix.XLayer.extend({
     w= audio[1],
     h= audio[2],
     p= sh.sanitizeUrl(audio[0]),
-    s1= cc.Sprite.create(p, cc.rect(w,0,w,h)),
-    s2= cc.Sprite.create(p, cc.rect(0,0,w,h));
+    s1= new cc.Sprite(p, cc.rect(w,0,w,h)),
+    s2= new cc.Sprite(p, cc.rect(0,0,w,h));
 
-    audio= cc.MenuItemToggle.create( cc.MenuItemSprite.create(s1),
-                                     cc.MenuItemSprite.create(s2),
+    audio= cc.MenuItemToggle.create(new cc.MenuItemSprite(s1),
+                        new cc.MenuItemSprite(s2),
            function(sender) {
             if (sender.getSelectedIndex() === 0) {
               sh.xcfg.toggleSfx(true);
@@ -73,24 +77,28 @@ asterix.XMenuLayer= asterix.XLayer.extend({
       audio.setSelectedIndex(1);
     }
 
-    menu= cc.Menu.create(audio);
+    menu= new cc.Menu(audio);
     menu.setPosition(csts.TILE + csts.S_OFF, csts.TILE + csts.S_OFF);
     this.addItem(menu);
 
-    s2= cc.Sprite.create( sh.getImagePath('gui.mmenu.back'));
-    s1= cc.Sprite.create( sh.getImagePath('gui.mmenu.quit'));
-    t2 = cc.MenuItemSprite.create(s2, null, null, function() {
+    s2= new cc.Sprite( sh.getImagePath('gui.mmenu.back'));
+    s1= new cc.Sprite( sh.getImagePath('gui.mmenu.quit'));
+    t2 = new cc.MenuItemSprite(s2, null, null, function() {
       this.options.onBack();
     }, this);
-    t1 = cc.MenuItemSprite.create(s1, null, null, function() {
+    t1 = new cc.MenuItemSprite(s1, null, null, function() {
       this.pkQuit();
     }, this);
 
-    menu= cc.Menu.create(t1,t2);
-    menu.alignItemsHorizontally(10);
+    menu= new cc.Menu(t1,t2);
+    menu.alignItemsHorizontallyWithPadding(10);
     menu.setPosition(wz.width - csts.TILE - csts.S_OFF - (s2.getContentSize().width + s1.getContentSize().width + 10) / 2,
       csts.TILE + csts.S_OFF + s2.getContentSize().height / 2);
     this.addItem(menu);
+  },
+
+  rtti: function() {
+    return 'XMenuLayer';
   },
 
   pkQuit: function() {

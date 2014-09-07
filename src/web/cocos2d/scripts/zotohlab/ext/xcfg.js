@@ -29,50 +29,50 @@ asterix.XConfig = {
 
   assets: {
     sprites: {
-      'gui.audio' : [ 'media/cocos2d/btns/{{color}}/audio_onoff.png', 48,48, -1 ]
+      'gui.audio' : [ 'res/cocos2d/btns/{{color}}/audio_onoff.png', 48,48, -1 ]
     },
     atlases : {
     },
     tiles: {
-      'gui.blank' : 'game/{{appid}}/levels/blankscreen.tmx',
-      'gui.mmenu' : 'game/{{appid}}/levels/mainmenu.tmx'
+      'gui.blank' : 'src/{{appid}}/levels/blankscreen.tmx',
+      'gui.mmenu' : 'src/{{appid}}/levels/mainmenu.tmx'
     },
     images: {
-      'splash.splash' : 'media/{{appid}}/gui/splash.png',
+      'splash.splash' : 'res/{{appid}}/gui/splash.png',
 
-      "gui.mmenu.replay" : 'media/cocos2d/btns/{{color}}/replay.png',
-      "gui.mmenu.quit" : 'media/cocos2d/btns/{{color}}/quit.png',
-      "gui.mmenu.back" : 'media/cocos2d/btns/{{color}}/go_back.png',
-      "gui.mmenu.ok" : 'media/cocos2d/btns/{{color}}/go_ok.png',
-      "gui.mmenu.menu" : 'media/cocos2d/btns/{{color}}/go_mmenu.png',
+      "gui.mmenu.replay" : 'res/cocos2d/btns/{{color}}/replay.png',
+      "gui.mmenu.quit" : 'res/cocos2d/btns/{{color}}/quit.png',
+      "gui.mmenu.back" : 'res/cocos2d/btns/{{color}}/go_back.png',
+      "gui.mmenu.ok" : 'res/cocos2d/btns/{{color}}/go_ok.png',
+      "gui.mmenu.menu" : 'res/cocos2d/btns/{{color}}/go_mmenu.png',
 
       /*
-      'gui.mmenu.border16': 'media/cocos2d/game/cbox-borders_x16.png',
-      'gui.mmenu.border8': 'media/cocos2d/game/cbox-borders_x8.png',
+      'gui.mmenu.border16': 'res/cocos2d/game/cbox-borders_x16.png',
+      'gui.mmenu.border8': 'res/cocos2d/game/cbox-borders_x8.png',
       */
-      'gui.mmenu.menu.bg' : 'game/{{appid}}/levels/mainmenu.png',
-      'gui.mmenu.bg' : 'game/{{appid}}/levels/bg.png',
-      'gui.mmenu.border': 'game/{{appid}}/levels/{{border-tiles}}',
+      'gui.mmenu.menu.bg' : 'src/{{appid}}/levels/mainmenu.png',
+      'gui.mmenu.bg' : 'src/{{appid}}/levels/bg.png',
+      'gui.mmenu.border': 'src/{{appid}}/levels/{{border-tiles}}',
 
-      'gui.edit.orange' : 'media/cocos2d/game/orange_edit.png',
-      'gui.edit.green' : 'media/cocos2d/game/green_edit.png',
-      'gui.edit.yellow' : 'media/cocos2d/game/yellow_edit.png'
+      'gui.edit.orange' : 'res/cocos2d/game/orange_edit.png',
+      'gui.edit.green' : 'res/cocos2d/game/green_edit.png',
+      'gui.edit.yellow' : 'res/cocos2d/game/yellow_edit.png'
 
     },
     sounds: {
     },
     fonts: {
-      'font.TinyBoxBB' : [ 'media/cocos2d/fon/{{lang}}/', 'TinyBoxBlackBitA8.png', 'TinyBoxBlackBitA8.fnt' ],
-      'font.LaffRiotNF' : [ 'media/cocos2d/fon/{{lang}}/', 'LaffRiotNF.png', 'LaffRiotNF.fnt' ],
-      'font.JellyBelly' : [ 'media/cocos2d/fon/{{lang}}/', 'JellyBelly.png', 'JellyBelly.fnt' ],
-      'font.Subito' : [ 'media/cocos2d/fon/{{lang}}/', 'Subito.png', 'Subito.fnt' ],
-      'font.OogieBoogie' : [ 'media/cocos2d/fon/{{lang}}/', 'OogieBoogie.png', 'OogieBoogie.fnt' ],
-      'font.DigitalDream' : [ 'media/cocos2d/fon/{{lang}}/', 'DigitalDream.png', 'DigitalDream.fnt' ],
-      'font.AutoMission' : [ 'media/cocos2d/fon/{{lang}}/', 'AutoMission.png', 'AutoMission.fnt' ],
-      'font.ConvWisdom' : [ 'media/cocos2d/fon/{{lang}}/', 'ConvWisdom.png', 'ConvWisdom.fnt' ],
-      'font.Ubuntu' : [ 'media/cocos2d/fon/{{lang}}/', 'Ubuntu.png', 'Ubuntu.fnt' ],
-      'font.OCR' : [ 'media/cocos2d/fon/{{lang}}/', 'OCR.png', 'OCR.fnt' ],
-      'font.Downlink' : [ 'media/cocos2d/fon/{{lang}}/', 'Downlink.png', 'Downlink.fnt' ]
+      'font.TinyBoxBB' : [ 'res/cocos2d/fon/{{lang}}/', 'TinyBoxBlackBitA8.png', 'TinyBoxBlackBitA8.fnt' ],
+      'font.LaffRiotNF' : [ 'res/cocos2d/fon/{{lang}}/', 'LaffRiotNF.png', 'LaffRiotNF.fnt' ],
+      'font.JellyBelly' : [ 'res/cocos2d/fon/{{lang}}/', 'JellyBelly.png', 'JellyBelly.fnt' ],
+      'font.Subito' : [ 'res/cocos2d/fon/{{lang}}/', 'Subito.png', 'Subito.fnt' ],
+      'font.OogieBoogie' : [ 'res/cocos2d/fon/{{lang}}/', 'OogieBoogie.png', 'OogieBoogie.fnt' ],
+      'font.DigitalDream' : [ 'res/cocos2d/fon/{{lang}}/', 'DigitalDream.png', 'DigitalDream.fnt' ],
+      'font.AutoMission' : [ 'res/cocos2d/fon/{{lang}}/', 'AutoMission.png', 'AutoMission.fnt' ],
+      'font.ConvWisdom' : [ 'res/cocos2d/fon/{{lang}}/', 'ConvWisdom.png', 'ConvWisdom.fnt' ],
+      'font.Ubuntu' : [ 'res/cocos2d/fon/{{lang}}/', 'Ubuntu.png', 'Ubuntu.fnt' ],
+      'font.OCR' : [ 'res/cocos2d/fon/{{lang}}/', 'OCR.png', 'OCR.fnt' ],
+      'font.Downlink' : [ 'res/cocos2d/fon/{{lang}}/', 'Downlink.png', 'Downlink.fnt' ]
     }
   },
 

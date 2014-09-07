@@ -55,13 +55,13 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
     tiles: {
     },
     images: {
-      'splash.play-btn' : 'media/cocos2d/btns/play_blue_x64.png'
+      'splash.play-btn' : 'res/cocos2d/btns/play_blue_x64.png'
     },
     sounds: {
-      'game_end' : 'media/cocos2d/sfx/MineExplosion',
-      'x_pick' : 'media/cocos2d/sfx/ElevatorBeep',
-      'o_pick' : 'media/cocos2d/sfx/MineBeep',
-      'game_quit' : 'media/cocos2d/sfx/Death'
+      'game_end' : 'audio/cocos2d/sfx/MineExplosion',
+      'x_pick' : 'audio/cocos2d/sfx/ElevatorBeep',
+      'o_pick' : 'audio/cocos2d/sfx/MineBeep',
+      'game_quit' : 'audio/cocos2d/sfx/Death'
     },
     fonts: {
     }
@@ -70,13 +70,13 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
   levels: {
     "gamelevel1" : {
       tiles: {
-        'arena' : 'game/{{appid}}/levels/arena.tmx'
+        'arena' : 'src/{{appid}}/levels/arena.tmx'
       },
       images: {
-        'arena' : 'game/{{appid}}/levels/arena.png'
+        'arena' : 'src/{{appid}}/levels/arena.png'
       },
       sprites: {
-        'markers' : [ 'media/{{appid}}/game/markers.png', 72,72, -1]
+        'markers' : [ 'res/{{appid}}/game/markers.png', 72,72, -1]
       }
     }
   }
@@ -85,6 +85,7 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
 
 //////////////////////////////////////////////////////////////////////////////
 //
+/*
 global.document['ccConfig'].init(sh.xcfg.appid, [
       'zotohlab/ext/negamax.js',
       'game/tictactoe/board.js',
@@ -93,7 +94,7 @@ global.document['ccConfig'].init(sh.xcfg.appid, [
       'game/tictactoe/mmenu.js',
       'game/tictactoe/splash.js'
 ], {});
-
+*/
 
 
 }).call(this);

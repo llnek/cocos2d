@@ -28,12 +28,16 @@ asterix.XSplashLayer = asterix.XLayer.extend({
     cw = ccsx.center();
 
     if (imgUrl) {
-      var s= cc.Sprite.create( imgUrl);
+      var s= new cc.Sprite(imgUrl);
       s.setPosition(cw);
       this.addItem(s);
     }
 
     return this._super();
+  },
+
+  rtti: function() {
+    return "SplashLayer";
   },
 
   pkInput: function() {}

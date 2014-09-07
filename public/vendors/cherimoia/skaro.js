@@ -13,6 +13,11 @@
 var fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
 var ZEROS= "00000000000000000000000000000000";  //32
 
+if (typeof HTMLElement === 'undefined') {
+  // fake a type.
+  global.HTMLElement= function HTMLElement() {};
+}
+
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
 function _echt (obj) {

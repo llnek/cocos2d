@@ -88,6 +88,10 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
     this.doCtrlBtns();
 
     return this._super();
+  },
+
+  rtti: function() {
+    return 'MainMenuLayer';
   }
 
 });

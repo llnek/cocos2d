@@ -86,15 +86,16 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   onNetworkEvent: function(evt) {
+    var h= this.getHUD();
     switch (evt.code) {
       case evts.C_RESTART:
         sjs.loggr.debug("restarting a new game...");
-        this.getHUD().killTimer();
+        h.killTimer();
         this.play(false);
       break;
       case evts.C_STOP:
         sjs.loggr.debug("game will stop");
-        this.getHUD().killTimer();
+        h.killTimer();
         this.onStop(evt);
       break;
       default:
@@ -116,18 +117,19 @@ var GameLayer = asterix.XGameLayer.extend({
 
   onSessionEvent: function(evt) {
     var pnum= _.isNumber(evt.source.pnum) ? evt.source.pnum : -1;
+    var h= this.getHUD();
     this.maybeUpdateActions(evt);
     switch (evt.code) {
       case evts.C_POKE_MOVE:
         sjs.loggr.debug("player " + pnum + ": my turn to move");
         this.actor= this.players[pnum];
-        this.getHUD().showTimer();
+        h.showTimer();
         this.board.toggleActor(Cmd(this.actor));
       break;
       case evts.C_POKE_WAIT:
         sjs.loggr.debug("player " + pnum + ": my turn to wait");
         this.actor = this.players[pnum===1 ? 2 : 1];
-        this.getHUD().killTimer();
+        h.killTimer();
         this.board.toggleActor(Cmd(this.actor));
       break;
     }
@@ -150,6 +152,7 @@ var GameLayer = asterix.XGameLayer.extend({
     var state0= this.options.seed_data,
     ncells= state0.size*state0.size,
     csts= sh.xcfg.csts,
+    h= this.getHUD(),
     delay,
     p1ids, p2ids,
     p1= null,
@@ -196,7 +199,7 @@ var GameLayer = asterix.XGameLayer.extend({
     this.board.initBoard(state0.grid);
     this.board.registerPlayers(p1, p2);
 
-    this.getHUD().regoPlayers(p1, p1ids, p2, p2ids);
+    h.regoPlayers(p1, p1ids, p2, p2ids);
     this.cells= sjs.makeArray(ncells, null);
     this.players= [null,p1,p2];
     this.actions = [];
@@ -228,12 +231,12 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   reset: function(newFlag) {
-
+    var h= this.getHUD();
     if (newFlag) {
-      this.getHUD().resetAsNew();
+      h.resetAsNew();
       this.mapGridPos();
     } else {
-      this.getHUD().reset();
+      h.reset();
     }
 
     _.each(this.cells, function(z) {
@@ -249,15 +252,16 @@ var GameLayer = asterix.XGameLayer.extend({
 
   // not called by online play
   move: function(cmd) {
-  // given a command object, make a move
-  // if the move is valid, then a corresponding action is
-  // added to the
-  // queue, such as drawing the icon , playing a sound...etc
+    var h= this.getHUD();
+    // given a command object, make a move
+    // if the move is valid, then a corresponding action is
+    // added to the
+    // queue, such as drawing the icon , playing a sound...etc
     this.board.enqueue(cmd, function(cmd, status, np) {
 
       if (status === 'bogus') {} else {
         // kill the last timer
-        this.getHUD().killTimer();
+        h.killTimer();
       }
 
       if (status === 'next') {
@@ -272,7 +276,7 @@ var GameLayer = asterix.XGameLayer.extend({
                                             },this)));
         } else {
           // if hunman player, start the timer
-          this.getHUD().showTimer();
+          h.showTimer();
         }
       }
       else if (status === 'winner') {
@@ -361,7 +365,7 @@ var GameLayer = asterix.XGameLayer.extend({
     w= m[1],
     h= m[2],
     p= sh.sanitizeUrl(m[0]),
-    s1= cc.Sprite.create(p, cc.rect(offset * w,0,w,h));
+    s1= new cc.Sprite(p, cc.rect(offset * w,0,w,h));
 
     s1.setAnchorPoint(ccsx.AnchorCenter);
     s1.setPosition(x,y);
@@ -377,8 +381,10 @@ var GameLayer = asterix.XGameLayer.extend({
 
   doWin: function(info) {
     var combo= info[1],
-    p= info[0];
-    this.getHUD().updateScore(p,1);
+    p= info[0],
+    h= this.getHUD();
+
+    h.updateScore(p,1);
     this.doDone(p, combo);
   },
 
@@ -393,20 +399,24 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   doDone: function(p,combo) {
+    var h= this.getHUD();
+
     this.showWinningIcons(combo);
-    this.getHUD().killTimer();
+    h.killTimer();
     sh.sfxPlay('game_end');
-    this.getHUD().endGame();
+    h.endGame();
     this.lastWinner = p;
     this.board.finz();
     this.board=null;
   },
 
   updateHUD: function() {
+    var h= this.getHUD();
+
     if (! _.isObject(this.board)) {
-      this.getHUD().drawResult(this.lastWinner);
+      h.drawResult(this.lastWinner);
     } else {
-      this.getHUD().drawStatus(this.actor);
+      h.drawStatus(this.actor);
     }
   },
 
@@ -467,9 +477,10 @@ var GameLayer = asterix.XGameLayer.extend({
 
   playBoardReady: function() {
     if (_.isObject(this.options.wsock)) {} else {
-      var cur = this.board.curActor();
+      var cur = this.board.curActor(),
+      h= this.getHUD();
       if (!cur.isRobot()) {
-        this.getHUD().showTimer();
+        h.showTimer();
       }
     }
   },
@@ -482,14 +493,21 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   getHUD: function() {
-    return cc.director.getRunningScene().layers['HUD'];
+    var rc= this.parScene.getLayers(); //cc.director.getRunningScene().getLayers();
+    return rc['HUD'];
+  },
+
+  rtti: function() {
+    return 'GameLayer';
   },
 
   setGameMode: function(mode) {
+    var h= this.getHUD();
     this._super(mode);
-    this.getHUD().setGameMode(mode);
+    if (h) {
+      h.setGameMode(mode);
+    }
   }
-
 
 });
 

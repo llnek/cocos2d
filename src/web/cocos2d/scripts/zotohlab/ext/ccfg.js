@@ -79,7 +79,7 @@ cfg= {
   jsList: [],
 
   srcDir: '/public/ig/lib/',
-  engineDir: '/public/extlibs/cocos2d-html5'
+  engineDir: 'frameworks/cocos2d-html5'
 
 };
 

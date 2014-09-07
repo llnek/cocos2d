@@ -9,7 +9,45 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._ ;
+/*
+document.ccConfig = {
+
+  loadExtension: false,
+  chipmunk: true,
+  box2d: false,
+  showFPS: false,
+  frameRate: 60,
+
+  // 0(default), 1(Canvas only), 2(WebGL only)
+  renderMode: 0,
+
+  id: 'gameArea',
+
+  //0 to turn debug off, 1 for basic debug, and 2 for full debug
+  debugLevel: 2,
+
+  modules: [ 'cocos2d', 'editbox' ],
+  jsList: []
+
+};
+*/
+
+(function() {
+  if (cc.sys.isNative) {
+      var searchPaths = jsb.fileUtils.getSearchPaths();
+      searchPaths.push('script');
+      if (cc.sys.os == cc.sys.OS_IOS || cc.sys.os == cc.sys.OS_OSX) {
+          searchPaths.push("audio");
+          searchPaths.push("res");
+          searchPaths.push("src");
+      }
+      jsb.fileUtils.setSearchPaths(searchPaths);
+  }
+}).call(this);
+
+
+
+cc.game.onStart= function() { "use strict"; var global=window;
 
 var asterix= global.ZotohLab.Asterix,
 STARTSCREEN= 'StartScreen',
@@ -27,6 +65,9 @@ function preLaunchApp(ss1) {
                                cc.ResolutionPolicy.SHOW_ALL);
   eglv.resizeWithBrowserSize(true);
   eglv.adjustViewPort(true);
+
+
+  cc.director.setProjection(cc.Director.PROJECTION_2D);
 
   //dirc.setAnimationInterval(1 / sh.xcfg.game.frameRate);
   if (sh.xcfg.game.debug) {
@@ -130,20 +171,19 @@ function pvLoadTile(k,v) {
 
 //////////////////////////////////////////////////////////////////////////////
 //
-cc.game.onStart= function() {
-  sjs.loggr.info("About to create Cocos2D HTML5 Game");
+
+  cc.log("About to create Cocos2D HTML5 Game");
   preLaunchApp(STARTSCREEN);
   sh.l10nInit(),
   sh.sfxInit();
   //sjs.merge(me.xcfg.game, global.document.ccConfig);
-  sjs.loggr.debug(JSON.stringify(sh.xcfg.game));
-  sjs.loggr.info("registered game start state - " + STARTSCREEN);
-  sjs.loggr.info("loaded and running. OK");
+  cc.log(JSON.stringify(sh.xcfg.game));
+  cc.log("registered game start state - " + STARTSCREEN);
+  cc.log("loaded and running. OK");
 };
 cc.game.run();
 
 
 
-}).call(this);
 
 

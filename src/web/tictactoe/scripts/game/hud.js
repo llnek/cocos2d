@@ -27,7 +27,7 @@ var PLAYER_THINK_TIME= 7;
 ttt.BackLayer = asterix.XLayer.extend({
 
   pkInit: function() {
-    var map = cc.TMXTiledMap.create(sh.getTilesPath('gamelevel1.tiles.arena'));
+    var map = new cc.TMXTiledMap(sh.getTilesPath('gamelevel1.tiles.arena'));
     this.addItem(map);
     return this._super();
   },
@@ -35,7 +35,7 @@ ttt.BackLayer = asterix.XLayer.extend({
   pkInput: NILFUNC,
 
   rtti: function() {
-    return 'BackLayer';
+    return 'tttBackLayer';
   }
 
 });

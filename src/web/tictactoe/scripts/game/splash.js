@@ -40,7 +40,10 @@ var UILayer = asterix.XLayer.extend({
     }));
 
     return this._super();
+  },
 
+  rtti: function() {
+    return "UILayer";
   }
 
 });

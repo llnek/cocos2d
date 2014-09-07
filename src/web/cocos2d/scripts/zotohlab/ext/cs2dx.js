@@ -88,7 +88,7 @@ asterix.COCOS2DX = {
   },
 
   createTimer: function(par, tm) {
-    return par.runAction(cc.DelayTime.create(tm));
+    return par.runAction(new cc.DelayTime(tm));
   },
 
   timerDone: function(t) {
@@ -239,13 +239,13 @@ asterix.COCOS2DX = {
   },
 
   tmenu1: function(options) {
-    var s1= cc.LabelBMFont.create(options.text, options.fontPath),
+    var s1= new cc.LabelBMFont(options.text, options.fontPath),
     menu,
-    t1= cc.MenuItemLabel.create(s1, options.selector, sjs.echt(options.target) ? options.target : undef);
+    t1= new cc.MenuItemLabel(s1, options.selector, sjs.echt(options.target) ? options.target : undef);
     t1.setOpacity(255 * 0.9);
     t1.setScale(options.scale || 1);
     t1.setTag(1);
-    menu= cc.Menu.create(t1);
+    menu= new cc.Menu(t1);
     menu.alignItemsVertically();
     if (options.anchor) { menu.setAnchorPoint(options.anchor); }
     if (options.pos) { menu.setPosition(options.pos); }
@@ -254,12 +254,12 @@ asterix.COCOS2DX = {
   },
 
   pmenu1: function(options) {
-    var btn = cc.Sprite.create(options.imgPath),
+    var btn = new cc.Sprite(options.imgPath),
     menu,
-    mi= cc.MenuItemSprite.create(btn, null, null, options.selector, sjs.echt(options.target) ? options.target : undef);
+    mi= new cc.MenuItemSprite(btn, btn, btn, options.selector, sjs.echt(options.target) ? options.target : undef);
     mi.setScale(options.scale || 1);
     mi.setTag(1);
-    menu = cc.Menu.create(mi);
+    menu = new cc.Menu(mi);
     menu.alignItemsVertically();
     if (options.anchor) { menu.setAnchorPoint(options.anchor); }
     if (options.pos) { menu.setPosition(options.pos); }
@@ -268,7 +268,7 @@ asterix.COCOS2DX = {
   },
 
   bmfLabel: function(options) {
-    var f= cc.LabelBMFont.create(options.text, options.fontPath);
+    var f= new cc.LabelBMFont(options.text, options.fontPath);
     f.setScale( options.scale || 1);
     if (options.color) { f.setColor(options.color); }
     if (options.pos) { f.setPosition(options.pos); }
