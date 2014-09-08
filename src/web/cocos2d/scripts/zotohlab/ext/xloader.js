@@ -42,8 +42,8 @@ asterix.XLoader = cc.Scene.extend({
     this.addChild(this.bgLayer, 0);
   },
 
+  //TODO: devicewebdiff
   pkLoad: function() {
-    /*
     this.logo= new Image();
     this.pbar= new Image();
     var me=this;
@@ -52,7 +52,6 @@ asterix.XLoader = cc.Scene.extend({
       me.logo.src = '/public/ig/media/main/ZotohLab_x200.png';
     };
     this.pbar.src = '/public/ig/media/cocos2d/game/preloader_bar.png';
-    */
   },
 
   pkLoadNative: function() {
@@ -127,8 +126,9 @@ asterix.XLoader = cc.Scene.extend({
 
   onEnter: function () {
     this._super();
-    //this.pkLoad();
-    this.pkLoadNative();
+    //TODO: devicewebdiff
+    this.pkLoad();
+    //this.pkLoadNative();
   },
 
   /*

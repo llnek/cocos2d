@@ -272,6 +272,7 @@ global.ZotohLab.Asterix = {
       dirc.setDisplayStats(this.xcfg.game.showFPS);
     }
 
+    //TODO: devicewebdiff
     this.XLoader.preload( this.pvGatherPreloads(), function () {
       me.xcfg.runOnce();
       dirc.runScene( me.protos[s1].create() );

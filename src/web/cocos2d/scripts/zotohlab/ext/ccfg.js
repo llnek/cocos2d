@@ -79,8 +79,13 @@ cfg= {
   jsList: [],
 
   srcDir: '/public/ig/lib/',
-  engineDir: 'frameworks/cocos2d-html5'
 
+  //TODO: devicewebdiff
+  // for device
+  //engineDir: 'frameworks/cocos2d-html5'
+
+  // for web
+  engineDir: '/public/extlibs/cocos2d-html5'
 };
 
 if ( ! doc.createElement('canvas').getContext) {

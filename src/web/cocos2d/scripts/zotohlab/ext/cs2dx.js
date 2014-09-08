@@ -256,7 +256,7 @@ asterix.COCOS2DX = {
   pmenu1: function(options) {
     var btn = new cc.Sprite(options.imgPath),
     menu,
-    mi= new cc.MenuItemSprite(btn, btn, btn, options.selector, sjs.echt(options.target) ? options.target : undef);
+    mi= new cc.MenuItemSprite(btn, null, null, options.selector, sjs.echt(options.target) ? options.target : undef);
     mi.setScale(options.scale || 1);
     mi.setTag(1);
     menu = new cc.Menu(mi);

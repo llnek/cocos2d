@@ -50,12 +50,21 @@ asterix.XLayer = cc.Layer.extend({
     this.getNode().removeChild(n,c || true);
   },
 
-  addItem: function(n) {
-    var p= this.getNode();
-    if (n instanceof cc.Sprite && p instanceof cc.SpriteBatchNode) {
+  addItem: function(n,zx,tag) {
+    var zOrder = sjs.echt(zx) ? zx : this.lastZix,
+    p= this.getNode(),
+    ptag = tag;
+
+    if (! sjs.echt(ptag)) {
+      ptag = ++this.lastTag;
+    }
+
+    if (n instanceof cc.Sprite &&
+        p instanceof cc.SpriteBatchNode) {
       n.setBatchNode(p);
     }
-    p.addChild(n, this.lastZix, ++this.lastTag);
+
+    p.addChild(n, zOrder, ptag);
   },
 
   setParent: function(par) {
