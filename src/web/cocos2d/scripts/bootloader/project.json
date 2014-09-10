@@ -34,9 +34,8 @@
       "src/zotohlab/gui/msgbox.js",
       "src/zotohlab/gui/ynbox.js",
       "src/zotohlab/gui/online.js",
-      "src/zotohlab/gui/mainmenu.js",
+      "src/zotohlab/gui/mainmenu.js"
 
-      @@APPJSFILES@@
 
     ]
 }

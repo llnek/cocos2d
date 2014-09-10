@@ -12,9 +12,18 @@
 //////////////////////////////////////////////////////////////////////////////
 // external tools
 //////////////////////////////////////////////////////////////////////////////
+
+import org.apache.commons.io.FileUtils
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonParser
+import com.google.gson.JsonObject
+import com.google.gson.JsonArray
+import com.google.gson.Gson
 import java.util.UUID
 
+
 includeTool << gant.tools.Ivy
+
 
 //////////////////////////////////////////////////////////////////////////////
 // global properties
@@ -563,7 +572,8 @@ target (newapp: '') {
   input (message: "Enter app-name: ", addproperty: 'appid')
   println "Creating new game: ${appid}"
   mkdir (dir: "${webDir}/${appid}")
-  ["media/game", "media/gui" , "scripts/device",
+  ["media/game", "media/gui" , "media/sfx",
+   "scripts/device",
    "scripts/game/entities" ,
    "scripts/game/i18n", "scripts/game/levels"].each { s ->
     mkdir (dir: "${webDir}/${appid}/${s}")
@@ -601,16 +611,20 @@ target (newapp: '') {
     arg (value: "${basedir}/cocos")
     arg (value: "${appid}")
   }
+  mkdir (dir: "${basedir}/cocos/${appid}/audio")
 }
 
 target (deployapp: '') {
   input (message: "Enter app-name: ", addproperty: 'appid')
+  final vendors= "${basedir}/public/vendors"
   final despath= "${basedir}/cocos/${appid}"
   final srcpath= "${webDir}/${appid}"
   final des= new File("${despath}")
   final src= new File("${srcpath}")
+  final dd3 = new File(des, "audio")
   final dd2 = new File(des, "res")
   final dd1 = new File(des, "src")
+  final dd3path= dd3.getCanonicalPath()
   final dd2path= dd2.getCanonicalPath()
   final dd1path= dd1.getCanonicalPath()
 
@@ -619,28 +633,66 @@ target (deployapp: '') {
     println "Invalid game: ${appid}"
   } else {
     println "Deploying game: ${appid}"
+    dd3.deleteDir()
     dd2.deleteDir()
     dd1.deleteDir()
+    dd3.mkdirs()
     dd2.mkdirs()
     dd1.mkdirs()
-    copy (todir: dd2path) {
-      fileset (dir: "${srcpath}/media")
+    // audio
+    copy (todir: dd3path+'/cocos2d/sfx') {
+      fileset (dir: "${webDir}/cocos2d/media/sfx")
+      fileset(dir: "${srcpath}/media/sfx",
+      erroronmissingdir: false)
     }
-    copy (todir: "${dd1path}/game") {
+    copy (todir: dd3path+"/${appid}/sfx") {
+      fileset(dir: "${srcpath}/media/sfx",
+      erroronmissingdir: false)
+    }
+    // images
+    copy (todir: dd2path+'/main') {
+      fileset (dir: "${webDir}/main/media") {
+        exclude (name: 'sfx/**')
+      }
+    }
+    copy (todir: dd2path+'/cocos2d') {
+      fileset (dir: "${webDir}/cocos2d/media") {
+        exclude (name: 'sfx/**')
+      }
+    }
+    copy (todir: dd2path+"/${appid}") {
+      fileset (dir: "${srcpath}/media") {
+        exclude (name: 'sfx/**')
+      }
+    }
+    // js code
+    copy (todir: "${dd1path}/zotohlab") {
+      fileset (dir: "${webDir}/cocos2d/scripts/zotohlab")
+    }
+    copy (todir: "${dd1path}/${appid}") {
       fileset (dir: "${srcpath}/scripts/game")
     }
-    copy (todir: dd1path) {
-      fileset (dir: "${srcpath}/scripts/device") {
-        include (name: "resource.js")
-        include (name: "app.js")
+    copy (todir: "${dd1path}/helpers") {
+      fileset (dir: "${vendors}/helpers") {
+        include (name: 'dbg.js')
       }
     }
-    copy (todir: despath) {
-      fileset (dir: "${srcpath}/scripts/device") {
-        exclude (name: "resource.js")
-        exclude (name: "app.js")
+    ['underscore','cherimoia', 'l10njs', 'mustache'].each { d ->
+      copy (todir: "${dd1path}/${d}") {
+        fileset (dir: "${vendors}/${d}")
       }
     }
+    // boot stuff
+    copy (todir: "${despath}") {
+      fileset (dir: "${webDir}/cocos2d/scripts/bootloader")
+    }
+    final j2= new JsonParser().parse(FileUtils.readFileToString(
+      new File("${srcpath}/scripts/game/files.json"),"utf-8"))
+    final j1= new JsonParser().parse(FileUtils.readFileToString(
+      new File("${despath}/project.json"),"utf-8"))
+    j1.getAsJsonArray('jsList').addAll( j2.getAsJsonArray('jsList'))
+    FileUtils.writeStringToFile(new File("${despath}/project.json"),
+    new GsonBuilder().setPrettyPrinting().create().toJson(j1), "utf-8")
   }
 }
 
