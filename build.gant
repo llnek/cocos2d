@@ -329,7 +329,6 @@ def doFinzBuild() {
     fileset (file: "${basedir}/public/vendors/crypto-js/components/enc-base64-min.js")
     fileset (file: "${basedir}/public/vendors/cherimoia/skaro.js")
     fileset (file: "${basedir}/public/vendors/cherimoia/caesar.js")
-    fileset (file: "${basedir}/public/vendors/cherimoia/zlab.js")
   }
 }
 

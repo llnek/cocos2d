@@ -1,0 +1,8 @@
+     "src/zotohlab/ext/negamax.js",
+      "src/tictactoe/config.js",
+      "src/tictactoe/i18n/game_en_US.js",
+      "src/tictactoe/board.js",
+      "src/tictactoe/hud.js",
+      "src/tictactoe/game.js",
+      "src/tictactoe/mmenu.js",
+      "src/tictactoe/splash.js"
