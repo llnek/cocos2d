@@ -270,8 +270,6 @@ def doBuildWebApps() {
 def doBuildOneWebApp (dir) {
   final wappid= dir.getName()
 
-  if ("tictactoe" == wappid || "cocos2d" == wappid || "main" == wappid) {} else { return; }
-
   mkdir (dir: "${buildDir}/web_scripts/${wappid}")
   mkdir (dir: "${buildDir}/web_styles/${wappid}")
   if ("clojurescript" == "${jslang}") {
