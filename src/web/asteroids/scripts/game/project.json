@@ -1,0 +1,19 @@
+ {
+
+    "jsList"        : [
+      "src/asteroids/entities/explode.js",
+      "src/asteroids/entities/aster.js",
+      "src/asteroids/entities/asteroid3.js",
+      "src/asteroids/entities/asteroid2.js",
+      "src/asteroids/entities/asteroid1.js",
+      "src/asteroids/entities/missile.js",
+      "src/asteroids/entities/player.js",
+      "src/asteroids/entities/laser.js",
+      "src/asteroids/entities/ufo.js",
+      "src/asteroids/hud.js",
+      "src/asteroids/game.js",
+      "src/asteroids/mmenu.js",
+      "src/asteroids/splash.js"
+
+    ]
+}

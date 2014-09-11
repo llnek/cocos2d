@@ -1,0 +1,14 @@
+ {
+
+    "jsList"        : [
+  "src/breakout/entities/explode.js",
+  "src/breakout/entities/player.js",
+  "src/breakout/entities/ball.js",
+  "src/breakout/entities/brick.js",
+  "src/breakout/hud.js",
+  "src/breakout/game.js",
+  "src/breakout/mmenu.js",
+  "src/breakout/splash.js"
+
+    ]
+}

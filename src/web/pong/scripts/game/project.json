@@ -1,0 +1,16 @@
+ {
+
+    "jsList"        : [
+
+      "src/pong/entities/entity.js",
+      "src/pong/entities/ball.js",
+      "src/pong/entities/human.js",
+      "src/pong/entities/robot.js",
+      "src/pong/hud.js",
+      "src/pong/arena.js",
+      "src/pong/game.js",
+      "src/pong/mmenu.js",
+      "src/pong/splash.js"
+
+    ]
+}

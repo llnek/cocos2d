@@ -87,26 +87,7 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
 });
 
 //////////////////////////////////////////////////////////////////////////////
-// js files
-//////////////////////////////////////////////////////////////////////////////
-
-global.document['ccConfig'].init(sh.xcfg.appid, [
-
-      'game/tetris/entities/block.js',
-      'game/tetris/entities/shape.js',
-      'game/tetris/entities/box.js',
-      'game/tetris/entities/line.js',
-      'game/tetris/entities/nub.js',
-      'game/tetris/entities/elx.js',
-      'game/tetris/entities/el.js',
-      'game/tetris/entities/stx.js',
-      'game/tetris/entities/st.js',
-      'game/tetris/hud.js',
-      'game/tetris/game.js',
-      'game/tetris/mmenu.js',
-      'game/tetris/splash.js'
-], {} );
-
+//EOF
 
 }).call(this);
 

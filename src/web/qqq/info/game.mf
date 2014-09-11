@@ -1,8 +1,0 @@
-{
-  :pubdate #inst "2014-09-11"
-  :author "llnek"
-  :status true
-  :uri ""
-  :image ""
-}
-

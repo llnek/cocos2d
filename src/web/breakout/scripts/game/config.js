@@ -97,21 +97,9 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
 });
 
 
-global.document.ccConfig.init(sh.xcfg.appid, [
-
-  'game/breakout/entities/explode.js',
-  'game/breakout/entities/player.js',
-  'game/breakout/entities/ball.js',
-  'game/breakout/entities/brick.js',
-  'game/breakout/hud.js',
-  'game/breakout/game.js',
-  'game/breakout/mmenu.js',
-  'game/breakout/splash.js'
-], {});
-
-
-
 }).call(this);
 
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

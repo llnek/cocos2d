@@ -1,0 +1,15 @@
+ {
+
+    "jsList"        : [
+      "src/invaders/entities/explode.js",
+      "src/invaders/entities/missile.js",
+      "src/invaders/entities/bomb.js",
+      "src/invaders/entities/player.js",
+      "src/invaders/entities/alien.js",
+      "src/invaders/hud.js",
+      "src/invaders/game.js",
+      "src/invaders/mmenu.js",
+      "src/invaders/splash.js"
+
+    ]
+}

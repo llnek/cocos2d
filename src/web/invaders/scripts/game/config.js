@@ -90,21 +90,8 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
 });
 
 
-global.document.ccConfig.init(sh.xcfg.appid, [
-
-      'game/invaders/entities/explode.js',
-      'game/invaders/entities/missile.js',
-      'game/invaders/entities/bomb.js',
-      'game/invaders/entities/player.js',
-      'game/invaders/entities/alien.js',
-      'game/invaders/hud.js',
-      'game/invaders/game.js',
-      'game/invaders/mmenu.js',
-      'game/invaders/splash.js'
-], {
-  renderMode: 2
-});
-
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

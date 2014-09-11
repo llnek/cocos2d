@@ -81,20 +81,9 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
 });
 
 
-global.document.ccConfig.init(sh.xcfg.appid, [
-
-      'game/pong/entities/entity.js',
-      'game/pong/entities/ball.js',
-      'game/pong/entities/human.js',
-      'game/pong/entities/robot.js',
-      'game/pong/hud.js',
-      'game/pong/arena.js',
-      'game/pong/game.js',
-      'game/pong/mmenu.js',
-      'game/pong/splash.js'
-], {} );
-
-
 }).call(this);
 
+
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

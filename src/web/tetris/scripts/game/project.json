@@ -1,0 +1,18 @@
+ {
+    "jsList"        : [
+      "src/tetris/entities/block.js",
+      "src/tetris/entities/shape.js",
+      "src/tetris/entities/box.js",
+      "src/tetris/entities/line.js",
+      "src/tetris/entities/nub.js",
+      "src/tetris/entities/elx.js",
+      "src/tetris/entities/el.js",
+      "src/tetris/entities/stx.js",
+      "src/tetris/entities/st.js",
+      "src/tetris/hud.js",
+      "src/tetris/game.js",
+      "src/tetris/mmenu.js",
+      "src/tetris/splash.js"
+
+    ]
+}
