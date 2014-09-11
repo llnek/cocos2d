@@ -1,0 +1,41 @@
+ {
+    "project_type": "javascript",
+
+    "debugMode"     : 1,
+    "showFPS"       : false,
+    "frameRate"     : 60,
+    "id"            : "gameArea",
+    "renderMode"    : 0,
+
+    "engineDir"     : "frameworks/cocos2d-html5",
+    "modules"       : ["cocos2d","editbox"],
+
+    "jsList"        : [
+      "src/underscore/underscore-min.js",
+      "src/l10njs/l10n.min.js",
+      "src/mustache/mustache.js",
+      "src/helpers/dbg.js",
+      "src/cherimoia/skaro.js",
+      "src/cherimoia/caesar.js",
+      "src/cherimoia/zlab.js",
+      "src/zotohlab/ext/asterix.js",
+      "src/zotohlab/ext/bus.js",
+      "src/zotohlab/ext/xcfg.js",
+      "src/zotohlab/ext/cs2dx.js",
+      "src/zotohlab/ext/odin.js",
+      "src/zotohlab/ext/xscene.js",
+      "src/zotohlab/ext/xlayer.js",
+      "src/zotohlab/ext/xentity.js",
+      "src/zotohlab/ext/xlives.js",
+      "src/zotohlab/ext/xhud.js",
+      "src/zotohlab/ext/xigg.js",
+      "src/zotohlab/ext/xloader.js",
+      "src/zotohlab/gui/startscreen.js",
+      "src/zotohlab/gui/msgbox.js",
+      "src/zotohlab/gui/ynbox.js",
+      "src/zotohlab/gui/online.js",
+      "src/zotohlab/gui/mainmenu.js"
+
+
+    ]
+}

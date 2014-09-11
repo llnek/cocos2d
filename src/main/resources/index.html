@@ -1,34 +1,57 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <link rel="shortcut icon" type="image/png" href="/public/ig/media/main/favicon.png" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta charset="utf-8">
 
-<#include "/main/head.ftl">
+  <title>@@TITLE@@</title>
+  <meta name="description" content="@@DESCRIPTION@@"/>
+  <meta name="keywords" content="@@KEYWORDS@@"/>
 
-<link rel="stylesheet" href="/public/styles/cocos2d/game.css"/>
-<link rel="stylesheet" href="/public/styles/@@APPID@@/main.css"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="full-screen" content="yes"/>
+  <meta name="screen-orientation" content="@@LAYOUT@@"/>
+  <meta name="x5-fullscreen" content="true"/>
+  <meta name="360-fullscreen" content="true"/>
+
+  <style>
+    body, canvas, div {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        -khtml-user-select: none;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+    body {
+      padding:0; margin: 0; background: #000;
+    }
+  </style>
+
 
 </head>
+<body data-gameid="@@UUID@@">
 
-<body>
+  <canvas id="gameArea" width="@@WIDTH@@" height="@@HEIGHT@@"></canvas>
 
-<#include "${body.content}">
+  <script type="text/javascript">
+    @@CCCONFIG@@
+  </script>
 
-<#include "/main/scripts.ftl" >
+  <script src="@@CCDIR@@cocos2d-html5/CCBoot.js"></script>
+  <script src="@@BOOTDIR@@main.js"></script>
 
-<script src="/public/vendors/cherimoia/skaro.js"></script>
-<script src="/public/ig/lib/zotohlab/ext/basefuncs.js"></script>
-<script src="/public/ig/lib/zotohlab/ext/asterix.js"></script>
-<script src="/public/ig/lib/zotohlab/ext/bus.js"></script>
-<script src="/public/ig/lib/zotohlab/ext/ui.js"></script>
-<script src="/public/ig/lib/zotohlab/ext/xcfg.js"></script>
-<script src="/public/ig/lib/zotohlab/ext/cocos2dcfg.js"></script>
-
-<script src="/public/ig/lib/game/@@APPID@@/config.js"></script>
-<script src="/public/ig/lib/game/@@APPID@@/i18n/game_en_US.js"></script>
-
-<script src="/public/extlibs/cocos2d-html5/CCBoot.js"></script>
-<script src="/public/ig/lib/zotohlab/ext/run.js"></script>
-
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', '']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = '//www.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
 </body>
 </html>
 

@@ -53,12 +53,12 @@
                     tmp nil
                     gc (transient [])
                     rc (transient []) ]
-    (let [fs (IOUtils/listFiles (File. appDir "public/ig/info")
-                                "manifest"
-                                true) ]
-      (doseq [^File f (seq fs) ]
-        (let [gid (-> (.getParentFile f)(.getName))
-              info (assoc (ReadEdn f) :gamedir gid)
+    (let [fds (IOUtils/listDirs (File. appDir "public/ig/info")) ]
+      (doseq [^File fd (seq fds) ]
+        (let [info (merge (assoc (ReadEdn (File. fd "game.mf"))
+                                 :gamedir (.getName fd))
+                          (json/read-str (FileUtils/readFileToString (File. fd "game.json") "utf-8")
+                                         :key-fn keyword))
               net (:network info)
               uid (:uuid info)
               uri (:uri info)

@@ -5,30 +5,30 @@
 <#include "/main/head.ftl">
 
 <link rel="stylesheet" href="/public/styles/cocos2d/game.css"/>
-<link rel="stylesheet" href="/public/styles/tictactoe/main.css"/>
+<link rel="stylesheet" href="/public/styles/@@APPID@@/main.css"/>
 
 </head>
 
-<#if body.gameid??>
-<body data-gameid="${body.gameid}">
-<#else>
 <body>
-</#if>
 
 <#include "${body.content}">
 
 <#include "/main/scripts.ftl" >
 
+<script src="/public/vendors/cherimoia/skaro.js"></script>
+<script src="/public/ig/lib/zotohlab/ext/basefuncs.js"></script>
 <script src="/public/ig/lib/zotohlab/ext/asterix.js"></script>
 <script src="/public/ig/lib/zotohlab/ext/bus.js"></script>
+<script src="/public/ig/lib/zotohlab/ext/ui.js"></script>
 <script src="/public/ig/lib/zotohlab/ext/xcfg.js"></script>
-<script src="/public/ig/lib/zotohlab/ext/ccfg.js"></script>
+<script src="/public/ig/lib/zotohlab/ext/cocos2dcfg.js"></script>
 
-<script src="/public/ig/lib/game/tictactoe/config.js"></script>
-<script src="/public/ig/lib/game/tictactoe/i18n/game_en_US.js"></script>
+<script src="/public/ig/lib/game/@@APPID@@/config.js"></script>
+<script src="/public/ig/lib/game/@@APPID@@/i18n/game_en_US.js"></script>
 
 <script src="/public/extlibs/cocos2d-html5/CCBoot.js"></script>
 <script src="/public/ig/lib/zotohlab/ext/run.js"></script>
 
 </body>
 </html>
+

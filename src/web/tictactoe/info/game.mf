@@ -1,10 +1,6 @@
 {
-  :uuid "bd5f79bb-eb41-4ed5-bb44-2529dc27ed3c"
   :pubdate #inst "2014-06-03"
-  :orientation "portrait"
   :author "llnek"
-  :name "Tic Tac Toe"
-  :desc "Like Tic Tac Toe, only better!"
   :status true
 
   :network {

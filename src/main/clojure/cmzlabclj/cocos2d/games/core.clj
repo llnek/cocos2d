@@ -74,7 +74,7 @@
     (.put tags "viewport" "content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\"")
     (.put tags "apple-mobile-web-app-capable" "content=\"yes\"")
     (when-not (nil? mf)
-        (.put tags "screen-orientation" (str "content=\"" (:orientation mf) "\""))
+        (.put tags "screen-orientation" (str "content=\"" (:layout mf) "\""))
         (.put bd "gameid" (:uuid mf)))
     (.put tags "full-screen" "content=\"yes\"")
     (.put tags "x5-fullscreen" "content=\"true\"")

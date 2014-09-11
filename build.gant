@@ -13,6 +13,7 @@
 // external tools
 //////////////////////////////////////////////////////////////////////////////
 
+import org.apache.commons.lang3.StringUtils
 import org.apache.commons.io.FileUtils
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
@@ -20,7 +21,6 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonArray
 import com.google.gson.Gson
 import java.util.UUID
-
 
 includeTool << gant.tools.Ivy
 
@@ -261,6 +261,7 @@ def doBuildWebApps() {
     new File("${webDir}").eachDir( { f ->
       doBuildOneWebApp(f)
     });
+    doBuildForCC2DX()
   }
 }
 
@@ -268,6 +269,8 @@ def doBuildWebApps() {
 //
 def doBuildOneWebApp (dir) {
   final wappid= dir.getName()
+
+  if ("tictactoe" == wappid || "cocos2d" == wappid || "main" == wappid) {} else { return; }
 
   mkdir (dir: "${buildDir}/web_scripts/${wappid}")
   mkdir (dir: "${buildDir}/web_styles/${wappid}")
@@ -290,6 +293,7 @@ def doBuildOneWebApp (dir) {
   doCompileMedia(wappid)
   doCompileInfo(wappid)
   doCompilePages(wappid)
+  doFinzApp(wappid)
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -340,6 +344,40 @@ def doFinzBuild() {
     fileset (file: "${basedir}/public/vendors/cherimoia/caesar.js")
   }
 }
+
+//////////////////////////////////////////////////////////////////////////////
+//
+def doBuildForCC2DX() {
+  delete (file: "${basedir}/public/c/ztlcommon.js", quiet: 'true')
+  concat (destfile: "${basedir}/public/c/ztlcommon.js", append: 'true') {
+    fileset (file: "${basedir}/public/vendors/underscore/underscore-min.js")
+    fileset (file: "${basedir}/public/vendors/l10njs/l10n.min.js")
+    fileset (file: "${basedir}/public/vendors/mustache/mustache.js")
+    fileset (file: "${basedir}/public/vendors/helpers/dbg.js")
+    fileset (file: "${basedir}/public/vendors/cherimoia/skaro.js")
+    fileset (file: "${basedir}/public/vendors/cherimoia/caesar.js")
+    fileset (file: "${basedir}/public/vendors/cherimoia/zlab.js")
+    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/asterix.js")
+    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/bus.js")
+    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/xcfg.js")
+    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/cs2dx.js")
+    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/odin.js")
+    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/xscene.js")
+    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/xlayer.js")
+    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/xentity.js")
+    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/xlives.js")
+    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/xhud.js")
+    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/xigg.js")
+    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/xloader.js")
+    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/gui/startscreen.js")
+    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/gui/msgbox.js")
+    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/gui/ynbox.js")
+    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/gui/online.js")
+    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/gui/mainmenu.js")
+
+  }
+}
+
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -498,12 +536,55 @@ def doCompileInfo(wappid) {
 //////////////////////////////////////////////////////////////////////////////
 //
 def doCompilePages(wappid) {
-  mkdir (dir: "${basedir}/public/pages/${wappid}")
-  copy (todir: "${basedir}/public/pages/${wappid}") {
-    fileset (dir: "${webDir}/${wappid}/pages") {
-      include (name: '**/*')
+
+  if ("main" == wappid || "cocos2d" == wappid) {
+    copy (todir: "${basedir}/public/pages/${wappid}") {
+      fileset (dir: "${webDir}/${wappid}/pages") {
+        include (name: '**/*')
+      }
     }
+    return;
   }
+
+  final des= "${basedir}/public/pages/${wappid}"
+  //mkdir (dir: des)
+  copy (todir: "$des", file: "${srcDir}/resources/index.html")
+  final json= new JsonParser().parse(FileUtils.readFileToString(
+      new File("${webDir}/${wappid}/info/game.json"),"utf-8"))
+  def html= FileUtils.readFileToString(new File("${des}/index.html"), "utf-8")
+  html= StringUtils.replace(html, "@@DESCRIPTION@@", json.get("description").getAsString())
+  html= StringUtils.replace(html, "@@KEYWORDS@@", json.get("keywords").getAsString())
+  html= StringUtils.replace(html, "@@TITLE@@", json.get("name").getAsString())
+  html= StringUtils.replace(html, "@@LAYOUT@@", json.get("layout").getAsString())
+  html= StringUtils.replace(html, "@@HEIGHT@@", json.get("height").getAsString())
+  html= StringUtils.replace(html, "@@WIDTH@@", json.get("width").getAsString())
+  html= StringUtils.replace(html, "@@UUID@@", json.get("uuid").getAsString())
+
+  def bdir= "/public/ig/lib/game/${wappid}/"
+  def ccdir= "/public/extlibs/"
+
+  if ("${pmode}" == "release") { ccdir= "frameworks/" }
+  if ("${pmode}" == "release") { bdir= "" }
+
+  html= StringUtils.replace(html, "@@BOOTDIR@@", "${bdir}")
+  html= StringUtils.replace(html, "@@CCDIR@@", "${ccdir}")
+
+  final cfg= FileUtils.readFileToString(new File("${webDir}/${wappid}/scripts/game/ccconfig.js"), "utf-8")
+  html= StringUtils.replace(html, "@@CCCONFIG@@", cfg)
+
+  FileUtils.writeStringToFile(new File("${des}/index.html"), html, "utf-8")
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//
+def doFinzApp(wappid) {
+  def des= "${basedir}/public/ig/lib/game/${wappid}"
+  if ("${pmode}" == "release") {
+  } else {
+    copy (todir: "${des}", file: "${srcDir}/resources/project.json")
+    copy (todir: "${des}", file: "${srcDir}/resources/main.js")
+  }
+
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -553,6 +634,7 @@ def doYuiJS() {
        */
 
 target (release: '') {
+  property( name: 'pmode' , value: 'release')
   depends (buildr)
   doYuiCSS()
   doYuiJS()
@@ -560,6 +642,7 @@ target (release: '') {
 }
 
 target (devmode: '') {
+  property( name: 'pmode' , value: 'dev')
   depends (buildr)
   doFinzBuild()
 }
@@ -581,15 +664,16 @@ target (newapp: '') {
   ["info" , "pages" , "styles"].each { s ->
     mkdir (dir: "${webDir}/${appid}/${s}")
   }
-  copy (file: "${srcDir}/resources/game.manifest", todir: "${webDir}/${appid}/info")
+  copy (file: "${srcDir}/resources/game.json", todir: "${webDir}/${appid}/info")
+  copy (file: "${srcDir}/resources/game.mf", todir: "${webDir}/${appid}/info")
   copy (file: "${srcDir}/resources/index.html", todir: "${webDir}/${appid}/pages")
   copy (file: "${srcDir}/resources/main.scss", todir: "${webDir}/${appid}/styles")
   final appkey= UUID.randomUUID()
   tstamp () {
     format (property: "pubtime", pattern: "yyyy-MM-dd")
   }
-  replace (file: "${webDir}/${appid}/info/game.manifest", token: "@@PUBDATE@@", value: "${pubtime}")
-  replace (file: "${webDir}/${appid}/info/game.manifest", token: "@@UUID@@", value: "${appkey}")
+  replace (file: "${webDir}/${appid}/info/game.mf", token: "@@PUBDATE@@", value: "${pubtime}")
+  replace (file: "${webDir}/${appid}/info/game.mf", token: "@@UUID@@", value: "${appkey}")
   replace (file: "${webDir}/${appid}/pages/index.html", token: "@@APPID@@", value: "${appid}")
   touch (file: "${webDir}/${appid}/scripts/game/i18n/game_en_US.js")
   ["config.js","game.js", "splash.js", "mmenu.js", "hud.js"].each { s ->
