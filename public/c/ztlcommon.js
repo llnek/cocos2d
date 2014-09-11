@@ -3447,49 +3447,28 @@ asterix.XLoader = cc.Scene.extend({
     this.addChild(this.bgLayer, 0);
   },
 
-  //TODO: devicewebdiff
-  pkLoad: function() {
-    this.logo= new Image();
-    this.pbar= new Image();
+  pkLoadBar: function() {
     var me=this;
-    this.pbar.onload = function() {
-      me.logo.onload = function() { me.pkInitStage(); };
-      me.logo.src = '/public/ig/media/main/ZotohLab_x200.png';
-    };
-    this.pbar.src = '/public/ig/media/cocos2d/game/preloader_bar.png';
+    cc.loader.loadImg('/public/ig/media/cocos2d/game/preloader_bar.png',
+                      {isCrossOrigin : false },
+      function(err, img) {
+        if (err) { cc.error('failed to load progress-bar.png'); } else {
+          me.pbar= img;
+          me.pkInitStage();
+        }
+    });
   },
 
-  pkLoadNative: function() {
-    this.pbarSprite= new cc.Sprite('res/cocos2d/game/preloader_bar.png');
-    this.logoSprite= new cc.Sprite('res/main/ZotohLab_x200.png');
-    this.pkInitStageNative();
-  },
-
-  pkInitStageNative: function () {
-    var cw = ccsx.center(),
-    me= this,
-    s1,s2;
-
-
-    this.logoSprite.setScale( cc.contentScaleFactor());
-    this.logoSprite.setPosition(cw);
-    this.bgLayer.addChild(this.logoSprite);
-
-    s2 = this.pbarSprite;
-    s2.setScale( cc.contentScaleFactor());
-
-    this.progress = new cc.ProgressTimer(s2);
-    this.progress.setType(cc.ProgressTimer.TYPE_BAR);
-    this.progress.setScaleX(0.8);
-    this.progress.setScaleY(0.3);
-    //this.progress.setOpacity(0);
-    //this.progress.setPercentage(0);
-    this.progress.setPosition(this.logoSprite.getPosition().x, // - 0.5 * this.logo.width / 2 ,
-                              cw.y - this.logoSprite.getContentSize().height / 2 - 10);
-    //this.progress.setMidpoint(cc.p(0,0));
-    this.bgLayer.addChild(this.progress);
-
-    this.scheduleOnce(this.pkStartLoading);
+  pkLoad: function() {
+    var me=this;
+    cc.loader.loadImg('/public/ig/media/main/ZotohLab_x200.png',
+                      {isCrossOrigin : false },
+      function(err, img) {
+        if (err) { cc.error('failed to load zotohlab.png'); } else {
+          me.logo= img;
+          me.pkLoadBar();
+        }
+    });
   },
 
   pkInitStage: function () {
@@ -3531,9 +3510,7 @@ asterix.XLoader = cc.Scene.extend({
 
   onEnter: function () {
     this._super();
-    //TODO: devicewebdiff
     this.pkLoad();
-    //this.pkLoadNative();
   },
 
   /*
