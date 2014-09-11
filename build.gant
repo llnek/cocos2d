@@ -546,9 +546,13 @@ def doCompilePages(wappid) {
     return;
   }
 
-  final des= "${basedir}/public/pages/${wappid}"
-  //mkdir (dir: des)
-  copy (todir: "$des", file: "${srcDir}/resources/index.html")
+  doJiggleTheIndexFile(wappid, "${basedir}/public/pages/${wappid}", false)
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//
+def doJiggleTheIndexFile(wappid,des,cocos) {
+  copy (file: "${srcDir}/resources/index.html", todir: "${des}")
   final json= new JsonParser().parse(FileUtils.readFileToString(
       new File("${webDir}/${wappid}/info/game.json"),"utf-8"))
   def html= FileUtils.readFileToString(new File("${des}/index.html"), "utf-8")
@@ -562,14 +566,18 @@ def doCompilePages(wappid) {
 
   def bdir= "/public/ig/lib/game/${wappid}/"
   def ccdir= "/public/extlibs/"
+  def cfg= ""
 
-  if ("${pmode}" == "release") { ccdir= "frameworks/" }
-  if ("${pmode}" == "release") { bdir= "" }
+  if (cocos || "${pmode}" == "release") {
+    ccdir= "frameworks/"
+    bdir= ""
+    cfg= FileUtils.readFileToString(new File("${srcDir}/resources/cocos2d.js"), "utf-8")
+  } else {
+    cfg= FileUtils.readFileToString(new File("${webDir}/${wappid}/scripts/game/ccconfig.js"), "utf-8")
+  }
 
-  html= StringUtils.replace(html, "@@BOOTDIR@@", "${bdir}")
-  html= StringUtils.replace(html, "@@CCDIR@@", "${ccdir}")
-
-  final cfg= FileUtils.readFileToString(new File("${webDir}/${wappid}/scripts/game/ccconfig.js"), "utf-8")
+  html= StringUtils.replace(html, "@@BOOTDIR@@", bdir)
+  html= StringUtils.replace(html, "@@CCDIR@@", ccdir)
   html= StringUtils.replace(html, "@@CCCONFIG@@", cfg)
 
   FileUtils.writeStringToFile(new File("${des}/index.html"), html, "utf-8")
@@ -656,7 +664,6 @@ target (newapp: '') {
   println "Creating new game: ${appid}"
   mkdir (dir: "${webDir}/${appid}")
   ["media/game", "media/gui" , "media/sfx",
-   "scripts/device",
    "scripts/game/entities" ,
    "scripts/game/i18n", "scripts/game/levels"].each { s ->
     mkdir (dir: "${webDir}/${appid}/${s}")
@@ -666,22 +673,19 @@ target (newapp: '') {
   }
   copy (file: "${srcDir}/resources/game.json", todir: "${webDir}/${appid}/info")
   copy (file: "${srcDir}/resources/game.mf", todir: "${webDir}/${appid}/info")
-  copy (file: "${srcDir}/resources/index.html", todir: "${webDir}/${appid}/pages")
-  copy (file: "${srcDir}/resources/main.scss", todir: "${webDir}/${appid}/styles")
+  //copy (file: "${srcDir}/resources/index.html", todir: "${webDir}/${appid}/pages")
+  //copy (file: "${srcDir}/resources/main.scss", todir: "${webDir}/${appid}/styles")
   final appkey= UUID.randomUUID()
   tstamp () {
     format (property: "pubtime", pattern: "yyyy-MM-dd")
   }
   replace (file: "${webDir}/${appid}/info/game.mf", token: "@@PUBDATE@@", value: "${pubtime}")
-  replace (file: "${webDir}/${appid}/info/game.mf", token: "@@UUID@@", value: "${appkey}")
-  replace (file: "${webDir}/${appid}/pages/index.html", token: "@@APPID@@", value: "${appid}")
-  touch (file: "${webDir}/${appid}/scripts/game/i18n/game_en_US.js")
+  replace (file: "${webDir}/${appid}/info/game.json", token: "@@UUID@@", value: "${appkey}")
   ["config.js","game.js", "splash.js", "mmenu.js", "hud.js"].each { s ->
     touch (file: "${webDir}/${appid}/scripts/game/${s}")
   }
-  ["resource.js","app.js"].each { s ->
-    touch (file: "${webDir}/${appid}/scripts/device/${s}")
-  }
+  copy (file: "${srcDir}/resources/game_en_US.js", todir: "${webDir}/${appid}/scripts/game/i18n")
+  copy (file: "${srcDir}/resources/ccconfig.js", todir: "${webDir}/${appid}/scripts/game")
   mkdir (dir: "${basedir}/cocos")
   exec (executable: 'cocos') {
     arg (value: 'new')
@@ -767,16 +771,21 @@ target (deployapp: '') {
       }
     }
     // boot stuff
-    copy (todir: "${despath}") {
-      fileset (dir: "${webDir}/cocos2d/scripts/bootloader")
+    copy (todir: "${despath}", overwrite: true) {
+      fileset (dir: "${srcDir}/resources") {
+        include (name: 'project.json')
+        include (name: 'main.js')
+        include (name: 'index.html')
+      }
     }
-    final j2= new JsonParser().parse(FileUtils.readFileToString(
-      new File("${srcpath}/scripts/game/files.json"),"utf-8"))
     final j1= new JsonParser().parse(FileUtils.readFileToString(
-      new File("${despath}/project.json"),"utf-8"))
+      new File("${srcDir}/resources/project.json"),"utf-8"))
+    final j2= new JsonParser().parse(FileUtils.readFileToString(
+      new File("${srcpath}/scripts/game/project.json"),"utf-8"))
     j1.getAsJsonArray('jsList').addAll( j2.getAsJsonArray('jsList'))
     FileUtils.writeStringToFile(new File("${despath}/project.json"),
     new GsonBuilder().setPrettyPrinting().create().toJson(j1), "utf-8")
+    doJiggleTheIndexFile(appid,"${basedir}/cocos/${appid}",true)
   }
 }
 

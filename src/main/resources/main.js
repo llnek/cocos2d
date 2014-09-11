@@ -9,51 +9,23 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-/*
-document.ccConfig = {
-
-  loadExtension: false,
-  chipmunk: true,
-  box2d: false,
-  showFPS: false,
-  frameRate: 60,
-
-  // 0(default), 1(Canvas only), 2(WebGL only)
-  renderMode: 0,
-
-  id: 'gameArea',
-
-  //0 to turn debug off, 1 for basic debug, and 2 for full debug
-  debugLevel: 2,
-
-  modules: [ 'cocos2d', 'editbox' ],
-  jsList: []
-
-};
-*/
-
-(function() {
-  if (cc.sys.isNative) {
-      var searchPaths = jsb.fileUtils.getSearchPaths();
-      searchPaths.push('script');
-      if (cc.sys.os == cc.sys.OS_IOS || cc.sys.os == cc.sys.OS_OSX) {
-          searchPaths.push("audio");
-          searchPaths.push("res");
-          searchPaths.push("src");
-      }
-      jsb.fileUtils.setSearchPaths(searchPaths);
-  }
-}).call(this);
-
-
-
-cc.game.onStart= function() { "use strict"; var global=window;
+cc.game.onStart= function() { "use strict"; var global=window, _ = global._ ;
 
 var asterix= global.ZotohLab.Asterix,
 STARTSCREEN= 'StartScreen',
 sh = asterix,
 sjs = global.SkaroJS;
 
+if (cc.sys.isNative) {
+    var searchPaths = jsb.fileUtils.getSearchPaths();
+    searchPaths.push('script');
+    if (cc.sys.os == cc.sys.OS_IOS || cc.sys.os == cc.sys.OS_OSX) {
+        searchPaths.push("audio");
+        searchPaths.push("res");
+        searchPaths.push("src");
+    }
+    jsb.fileUtils.setSearchPaths(searchPaths);
+}
 //////////////////////////////////////////////////////////////////////////////
 //
 function preLaunchApp(ss1) {

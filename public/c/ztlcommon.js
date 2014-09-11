@@ -1304,6 +1304,38 @@ global.ZotohLab.Asterix = {
   },
 
   sanitizeUrl: function(url) {
+    if (cc.sys.isNative) {
+      return this.sanitizeUrlForDevice(url);
+    } else {
+      return this.sanitizeUrlForWeb(url);
+    }
+  },
+
+  sanitizeUrlForDevice: function(url) {
+    sjs.loggr.debug('about to sanitize url for jsb: ' + url);
+    // ensure we tell mustache not to escape html
+    url = url || '';
+    if (url.match(/^media/)) {
+      if (url.indexOf('/sfx/') > 0) {
+        url = 'audio' + url.slice(0,5);
+      } else {
+        url = 'res' + url.slice(0,5);
+      }
+    }
+    else
+    if (url.match(/^game/)) {
+      url = 'src' + url.slice(0,4);
+    }
+    return Mustache.render( url, {
+      'border-tiles' : this.xcfg.game.borderTiles,
+      'lang' : this.lang,
+      'color' : this.xcfg.color,
+      'appid' :  this.xcfg.appid
+    });
+  },
+
+  sanitizeUrlForWeb: function(url) {
+    sjs.loggr.debug('about to sanitize url for web: ' + url);
     // ensure we tell mustache not to escape html
     url = url || '';
     if (url.match(/^media/)) {
