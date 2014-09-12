@@ -682,7 +682,7 @@ target (newapp: '') {
   ["config.js","game.js", "splash.js", "mmenu.js", "hud.js"].each { s ->
     touch (file: "${webDir}/${appid}/scripts/game/${s}")
   }
-  copy (file: "${srcDir}/resources/game_en_US.js", todir: "${webDir}/${appid}/scripts/game/i18n")
+  copy (file: "${srcDir}/resources/l10n.js", tofile: "${webDir}/${appid}/scripts/game/i18n/game_en_US.js")
   copy (file: "${srcDir}/resources/ccconfig.js", todir: "${webDir}/${appid}/scripts/game")
   mkdir (dir: "${basedir}/cocos")
   exec (executable: 'cocos') {
