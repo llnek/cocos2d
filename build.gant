@@ -788,4 +788,26 @@ target (deployapp: '') {
 }
 
 //////////////////////////////////////////////////////////////////////////////
+//
+target (android: '') {
+  input (message: "Enter app-name: ", addproperty: 'appid')
+  final despath= "${basedir}/cocos/${appid}"
+  final des= new File("${despath}")
+  if ( ! des.exists()) {
+    println "Invalid game: ${appid}"
+  } else {
+    exec (executable: 'cocos') {
+      arg (value: 'deploy')
+      arg (value: '-s')
+      arg (value: "${despath}")
+      arg (value: '-p')
+      arg (value: 'android')
+      arg (value: '-m')
+      arg (value: 'release')
+    }
+  }
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
 // EOF
