@@ -261,7 +261,7 @@ def doBuildWebApps() {
     new File("${webDir}").eachDir( { f ->
       doBuildOneWebApp(f)
     });
-    doBuildForCC2DX()
+    //doBuildForCC2DX()
   }
 }
 
@@ -697,7 +697,6 @@ target (newapp: '') {
     arg (value: "${basedir}/cocos")
     arg (value: "${appid}")
   }
-  mkdir (dir: "${basedir}/cocos/${appid}/audio")
 }
 
 target (deployapp: '') {
@@ -707,10 +706,8 @@ target (deployapp: '') {
   final srcpath= "${webDir}/${appid}"
   final des= new File("${despath}")
   final src= new File("${srcpath}")
-  final dd3 = new File(des, "audio")
   final dd2 = new File(des, "res")
   final dd1 = new File(des, "src")
-  final dd3path= dd3.getCanonicalPath()
   final dd2path= dd2.getCanonicalPath()
   final dd1path= dd1.getCanonicalPath()
 
@@ -719,37 +716,19 @@ target (deployapp: '') {
     println "Invalid game: ${appid}"
   } else {
     println "Deploying game: ${appid}"
-    dd3.deleteDir()
     dd2.deleteDir()
     dd1.deleteDir()
-    dd3.mkdirs()
     dd2.mkdirs()
     dd1.mkdirs()
-    // audio
-    copy (todir: dd3path+'/cocos2d/sfx') {
-      fileset (dir: "${webDir}/cocos2d/media/sfx")
-      fileset(dir: "${srcpath}/media/sfx",
-      erroronmissingdir: false)
-    }
-    copy (todir: dd3path+"/${appid}/sfx") {
-      fileset(dir: "${srcpath}/media/sfx",
-      erroronmissingdir: false)
-    }
-    // images
+    // resources
     copy (todir: dd2path+'/main') {
-      fileset (dir: "${webDir}/main/media") {
-        exclude (name: 'sfx/**')
-      }
+      fileset (dir: "${webDir}/main/media")
     }
     copy (todir: dd2path+'/cocos2d') {
-      fileset (dir: "${webDir}/cocos2d/media") {
-        exclude (name: 'sfx/**')
-      }
+      fileset (dir: "${webDir}/cocos2d/media")
     }
     copy (todir: dd2path+"/${appid}") {
-      fileset (dir: "${srcpath}/media") {
-        exclude (name: 'sfx/**')
-      }
+      fileset (dir: "${srcpath}/media")
     }
     // js code
     copy (todir: "${dd1path}/zotohlab") {

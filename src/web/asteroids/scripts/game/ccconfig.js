@@ -18,7 +18,32 @@ document.ccConfig = {
 
   modules: [ 'cocos2d' ],
   jsList: [
-    '/public/c/ztlcommon.js',
+    "/public/vendors/underscore/underscore-min.js",
+    "/public/vendors/l10njs/l10n.min.js",
+    "/public/vendors/mustache/mustache.js",
+    "/public/vendors/helpers/dbg.js",
+    "/public/vendors/cherimoia/skaro.js",
+    "/public/vendors/cherimoia/caesar.js",
+    "/public/vendors/cherimoia/zlab.js",
+    "/public/ig/lib/zotohlab/ext/asterix.js",
+    "/public/ig/lib/zotohlab/ext/bus.js",
+    "/public/ig/lib/zotohlab/ext/xcfg.js",
+    "/public/ig/lib/zotohlab/ext/cs2dx.js",
+    "/public/ig/lib/zotohlab/ext/odin.js",
+    "/public/ig/lib/zotohlab/ext/xscene.js",
+    "/public/ig/lib/zotohlab/ext/xlayer.js",
+    "/public/ig/lib/zotohlab/ext/xentity.js",
+    "/public/ig/lib/zotohlab/ext/xlives.js",
+    "/public/ig/lib/zotohlab/ext/xhud.js",
+    "/public/ig/lib/zotohlab/ext/xigg.js",
+    "/public/ig/lib/zotohlab/ext/xloader.js",
+    "/public/ig/lib/zotohlab/gui/startscreen.js",
+    "/public/ig/lib/zotohlab/gui/msgbox.js",
+    "/public/ig/lib/zotohlab/gui/ynbox.js",
+    "/public/ig/lib/zotohlab/gui/online.js",
+    "/public/ig/lib/zotohlab/gui/mainmenu.js",
+
+
 
       '/public/ig/lib/game/asteroids/entities/explode.js',
       '/public/ig/lib/game/asteroids/entities/aster.js',
