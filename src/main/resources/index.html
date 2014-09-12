@@ -33,7 +33,11 @@
 </head>
 <body data-gameid="@@UUID@@">
 
-  <canvas id="gameArea" width="@@WIDTH@@" height="@@HEIGHT@@"></canvas>
+  <div id="gameDiv">
+    <canvas id="gameArea" width="@@WIDTH@@" height="@@HEIGHT@@"></canvas>
+    <!-- We want to create a custom loading scene, so use a dummy cocos2d_loadJsImg to inhibit jsloader.js. -->
+    <img id="cocos2d_loadJsImg" />
+  </div>
 
   <script type="text/javascript">
     @@CCCONFIG@@

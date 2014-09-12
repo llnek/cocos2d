@@ -1104,7 +1104,8 @@ sjs= global.SkaroJS;
 global.ZotohLab.Asterix = {
 
   l10nInit: function(table) {
-    String.defaultLocale="en-US";
+    //String.defaultLocale="en-US";
+    String.defaultLocale= this.lang;
     String.toLocaleString(table ||
                           this.xcfg.l10nTable);
     sjs.loggr.info("loaded l10n strings.  locale = " + String.locale);
@@ -1115,7 +1116,7 @@ global.ZotohLab.Asterix = {
     return _.isObject(pms) ? Mustache.render(t,pms) : t;
   },
 
-  lang: 'en',
+  lang: cc.sys.language || 'en',
 
   protos: {},
   pools: {},
@@ -1486,9 +1487,12 @@ global.ZotohLab.Asterix = {
   }
 
 
-
 };
 
+// monkey patch logger to use cocos2d's log functions.
+sjs.loggr= cc;
+sjs.loggr.info = cc.log;
+sjs.loggr.debug = cc.log;
 
 }).call(this);
 

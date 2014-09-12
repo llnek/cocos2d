@@ -11,8 +11,7 @@ document.ccConfig = {
 
   id: 'gameArea',
 
-  //0 to turn debug off, 1 for basic debug, and 2 for full debug
-  debugLevel: 2,
+  debugLevel: 1,
 
   engineDir: ['/public/extlibs/cocos2d-html5'],
 

@@ -71,8 +71,7 @@ cfg= {
     sjs.merge(cfg, options || {});
   },
 
-  //0 to turn debug off, 1 for basic debug, and 2 for full debug
-  debugLevel: 2,
+  debugLevel: 1,
   debug: true,
 
   modules: [ 'cocos2d', 'editbox' ],
