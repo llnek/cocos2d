@@ -66,7 +66,7 @@ function pvGatherPreloads() {
     _.reduce(assets.fonts, function(memo, v,k) {
       // value is array of [ path, image , xml ]
       p= sh.sanitizeUrl(v[0]);
-      return memo.concat([ p + v[1], p + v[2] ]);
+      return memo.concat([p+'/'+v[1], p+'/'+v[2]]);
     }, []),
 
     _.reduce(assets.atlases, function(memo, v,k) {

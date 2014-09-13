@@ -34,7 +34,7 @@ asterix.XEntity = sjs.Class.xtends({
     hw = sz.width / 2 ,
     x = pos.x,
     y = pos.y,
-    bx= ccsx.bbox2(this.sprite);
+    bx= ccsx.bbox4(this.sprite);
     if (bx.bottom >= B.top) {
       //y = 0 - hh;
       y = hh + csts.TILE;
@@ -79,7 +79,7 @@ asterix.XEntity = sjs.Class.xtends({
     if (this.wrappable) { return; }
 
     pos = this.sprite.getPosition();
-    b2= ccsx.bbox2(this.sprite);
+    b2= ccsx.bbox4(this.sprite);
     x= pos.x;
     y= pos.y;
 

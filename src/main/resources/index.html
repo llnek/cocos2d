@@ -29,13 +29,25 @@
     }
   </style>
 
+<script>
+if ( ! document.createElement('canvas').getContext) {
+  var s = document.createElement('div');
+  s.innerHTML = '<h2>Your browser does not support HTML5 canvas!</h2>' +
+        '<p>Google Chrome is a browser that combines a minimal design with sophisticated technology to make the web faster, safer, and easier.Click the logo to download.</p>' +
+        '<a href="http://www.google.com/chrome" target="_blank"><img src="http://www.google.com/intl/en-US/chrome/assets/common/images/chrome_logo_2x.png" border="0"/></a>';
+  document.getElementById('gameArea').parentNode.insertBefore(s);
+}
+</script>
 
 </head>
 <body data-gameid="@@UUID@@">
 
-  <div id="gameDiv">
+<!--
+  -->
     <canvas id="gameArea" width="@@WIDTH@@" height="@@HEIGHT@@"></canvas>
     <!-- We want to create a custom loading scene, so use a dummy cocos2d_loadJsImg to inhibit jsloader.js. -->
+
+  <div id="gameDiv">
     <img id="cocos2d_loadJsImg" />
   </div>
 

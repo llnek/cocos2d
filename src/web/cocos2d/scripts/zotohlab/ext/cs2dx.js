@@ -48,6 +48,7 @@ cc.Director.prototype.replaceRootScene = function(scene) {
 
 asterix.COCOS2DX = {
 
+  //test collision of 2 entities
   collide2: function(a,b) {
     if (!a || !b) { return false; }
     var pos2 = b.sprite.getPosition(),
@@ -74,17 +75,19 @@ asterix.COCOS2DX = {
     return d2 <= rr;
   },
 
+  //test collision of 2 entities using cc-rects
   collide: function(a,b) {
-    return a && b ? cc.rectIntersectsRect( this.bbox(a.sprite), this.bbox(b.sprite)) : false;
+    return a && b ? cc.rectIntersectsRect(this.bbox(a.sprite),
+                                          this.bbox(b.sprite)) : false;
   },
 
   outOfBound: function(ent) {
-    var bx= this.bbox2(ent.sprite),
+    var bx= this.bbox4(ent.sprite),
     wz = this.screen();
     return (bx.bottom > wz.height-1 ||
-        bx.top < 0 ||
-        bx.right < 0 ||
-        bx.left > wz.width -1);
+            bx.top < 0 ||
+            bx.right < 0 ||
+            bx.left > wz.width -1);
   },
 
   createTimer: function(par, tm) {
@@ -95,25 +98,28 @@ asterix.COCOS2DX = {
     return sjs.echt(t) && t.isDone();
   },
 
-  bbox2: function(sprite) {
+  //return a 4-point rect.
+  bbox4: function(sprite) {
     return {
+      bottom: this.getBottom(sprite),
       top: this.getTop(sprite),
       left: this.getLeft(sprite),
-      bottom: this.getBottom(sprite),
       right: this.getRight(sprite)
     };
   },
 
+  //return a cc-rect
   bbox: function(sprite) {
     return new cc.Rect( this.getLeft(sprite), this.getBottom(sprite), this.getWidth(sprite),
     this.getHeight(sprite));
   },
 
-  bboxb4: function(ent) {
+  //return rect from the last frame
+  bbox4b4: function(ent) {
     return {
+      bottom: this.getLastBottom(ent),
       top: this.getLastTop(ent),
       left: this.getLastLeft(ent),
-      bottom: this.getLastBottom(ent),
       right: this.getLastRight(ent)
     };
   },
@@ -151,32 +157,34 @@ asterix.COCOS2DX = {
   },
 
   getLastLeft: function(ent) {
-    return ent.lastPos.x - this.getWidth(ent.sprite)/2;
+    return sjs.echt(ent.lastPos) ? ent.lastPos.x - this.getWidth(ent.sprite)/2
+                                 : this.getLeft(ent);
   },
 
   getLastRight: function(ent) {
-    return ent.lastPos.x + this.getWidth(ent.sprite)/2;
+    return sjs.echt(ent.lastPos) ? ent.lastPos.x + this.getWidth(ent.sprite)/2
+                                 : this.getRight(ent);
   },
 
   getLastTop: function(ent) {
-    return ent.lastPos.y + this.getHeight(ent.sprite)/2;
+    return sjs.echt(ent.lastPos) ? ent.lastPos.y + this.getHeight(ent.sprite)/2
+                                 : this.getTop(ent);
   },
 
   getLastBottom: function(ent) {
-    return ent.lastPos.y - this.getHeight(ent.sprite)/2;
+    return sjs.echt(ent.lastPos) ? ent.lastPos.y - this.getHeight(ent.sprite)/2
+                                 : this.getBottom(ent);
   },
 
   center: function() {
-    var winSize = this.screen();
-    return cc.p(winSize.width / 2, winSize.height / 2);
+    var wz = this.screen();
+    return cc.p(wz.width * 0.5,
+                wz.height * 0.5);
   },
 
   screen: function() {
-    if (cc.sys.isNative) {
-      return cc.director.getWinSizeInPixels();
-    } else {
-      return cc.director.getWinSize();
-    }
+    return (cc.sys.isNative) ? cc.director.getWinSize()
+                             : cc.director.getWinSizeInPixels();
   },
 
   getSpriteFrame: function(frameid) {
@@ -202,8 +210,8 @@ asterix.COCOS2DX = {
     hw1= sz1.width/2,
     x = pos1.x,
     y= pos1.y,
-    bx2 = this.bbox2(obj2.sprite),
-    bx1 = this.bbox2(obj1.sprite);
+    bx2 = this.bbox4(obj2.sprite),
+    bx1 = this.bbox4(obj1.sprite);
 
     // coming from right
     if (bx1.left < bx2.right && bx2.right < bx1.right) {
@@ -238,12 +246,14 @@ asterix.COCOS2DX = {
     obj1.updatePosition(x,y);
   },
 
+  //make a text label menu button
   tmenu1: function(options) {
     var s1= new cc.LabelBMFont(options.text, options.fontPath),
     menu,
-    t1= new cc.MenuItemLabel(s1, options.selector, sjs.echt(options.target) ? options.target : undef);
-    t1.setOpacity(255 * 0.9);
+    t1= new cc.MenuItemLabel(s1, options.selector,
+                             sjs.echt(options.target) ? options.target : undef);
     t1.setScale(options.scale || 1);
+    t1.setOpacity(255 * 0.9);
     t1.setTag(1);
     menu= new cc.Menu(t1);
     menu.alignItemsVertically();
@@ -253,10 +263,21 @@ asterix.COCOS2DX = {
     return menu;
   },
 
+  //make a gfx menu button
   pmenu1: function(options) {
     var btn = new cc.Sprite(options.imgPath),
-    menu,
-    mi= new cc.MenuItemSprite(btn, null, null, options.selector, sjs.echt(options.target) ? options.target : undef);
+    s1=null,
+    d1=null,
+    mi,
+    menu;
+    if (options.selPath) {
+      s1= new cc.Sprite(options.selPath);
+    }
+    if (options.disPath) {
+      d1= new cc.Sprite(options.disPath);
+    }
+    mi= new cc.MenuItemSprite(btn);
+    mi.initWithNormalSprite(btn,s1,d1,options.selector,options.target);
     mi.setScale(options.scale || 1);
     mi.setTag(1);
     menu = new cc.Menu(mi);
@@ -285,4 +306,6 @@ asterix.CCS2DX= asterix.COCOS2DX;
 
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

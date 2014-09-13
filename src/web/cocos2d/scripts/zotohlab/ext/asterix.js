@@ -15,7 +15,7 @@ var Mustache=global.Mustache,
 sjs= global.SkaroJS;
 
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//////////////////////////////////////////////////////////////////////////////
 //
 global.ZotohLab.Asterix = {
 
@@ -137,9 +137,7 @@ global.ZotohLab.Asterix = {
   },
 
   normalizeDeg: function(deg) {
-    if (deg > 360) { return deg % 360; }
-    else if (deg < 0) { return 360 + deg % 360; }
-    else { return deg; }
+    return (deg > 360) ? deg % 360 : (deg < 0) ? 360 + deg % 360 : deg;
   },
 
   radToDeg: function(rad) {
@@ -151,48 +149,38 @@ global.ZotohLab.Asterix = {
   },
 
   getImagePath: function(key) {
-    var url = this.xcfg.assets.images[key] || '';
-    return this.sanitizeUrl(url);
+    return this.fixUrl(this.xcfg.assets.images[key]);
   },
 
   getPListPath: function(key) {
-    var url = this.xcfg.assets.atlases[key] || '';
-    return this.sanitizeUrl(url + '.plist');
+    return this.fixUrl(this.xcfg.assets.atlases[key]) + '.plist';
   },
 
   getAtlasPath: function(key) {
-    var url = this.xcfg.assets.atlases[key] || '';
-    return this.sanitizeUrl(url + '.png');
+    return this.fixUrl(this.xcfg.assets.atlases[key]) + '.png';
   },
 
   getSfxPath: function(key) {
-    var url = this.xcfg.assets.sounds[key];
-    return url ? this.sanitizeUrl( url + '.' + this.xcfg.game.sfx) : '';
+    return [this.fixUrl(this.xcfg.assets.sounds[key]),
+            '.',
+            this.xcfg.game.sfx].join('');
   },
 
   getSpritePath: function(key) {
-    var obj = this.xcfg.assets.sprites[key];
-    return obj ? this.sanitizeUrl(obj[0]) : '';
+    return this.fixUrl(this.xcfg.assets.sprites[key](0));
   },
 
   getTilesPath: function(key) {
-    var url = this.xcfg.assets.tiles[key] || '';
-    return this.sanitizeUrl(url);
+    return this.fixUrl(this.xcfg.assets.tiles[key]);
   },
 
   getFontPath: function(key) {
-    var obj = this.xcfg.assets.fonts[key];
-    return obj ? this.sanitizeUrl(obj[0]) + obj[2] : '';
+    var obj= this.xcfg.assets.fonts[key];
+    return [this.fixUrl(obj[0]), '/' , obj[2]].join('');
   },
 
   setGameSize: function(sz) {
-    if (_.isString(sz)) {
-      this.xcfg.game.size = this.xcfg.devices[sz];
-    }
-    else
-    if (_.isObject(sz)) {
-      this.xcfg.game.size = sz;
-    }
+    this.xcfg.game.size = _.isString(sz) ? this.xcfg.devices[sz] : _.isObject(sz) ? sz : undef;
   },
 
   setDeviceSizes: function (obj) {
@@ -207,12 +195,8 @@ global.ZotohLab.Asterix = {
   },
 
   sfxPlay: function(key) {
-    var url;
     if (this.xcfg.sound.open) {
-      url = this.getSfxPath(key);
-      if (url) {
-        cc.audioEngine.playEffect( url, false);
-      }
+      cc.audioEngine.playEffect(this.getSfxPath(key),false);
     }
   },
 
@@ -223,6 +207,8 @@ global.ZotohLab.Asterix = {
     }
   },
 
+  fixUrl: function(url) { return this.sanitizeUrl(url); },
+
   sanitizeUrl: function(url) {
     if (cc.sys.isNative) {
       return this.sanitizeUrlForDevice(url);
@@ -232,15 +218,11 @@ global.ZotohLab.Asterix = {
   },
 
   sanitizeUrlForDevice: function(url) {
-    sjs.loggr.debug('about to sanitize url for jsb: ' + url);
-    // ensure we tell mustache not to escape html
+    //sjs.loggr.debug('about to sanitize url for jsb: ' + url);
+    //ensure we tell mustache not to escape html
     url = url || '';
     if (url.match(/^media/)) {
-      if (url.indexOf('/sfx/') > 0) {
-        url = 'audio' + url.slice(0,5);
-      } else {
-        url = 'res' + url.slice(0,5);
-      }
+      url = 'res' + url.slice(0,5);
     }
     else
     if (url.match(/^game/)) {
@@ -256,14 +238,14 @@ global.ZotohLab.Asterix = {
 
   sanitizeUrlForWeb: function(url) {
     sjs.loggr.debug('about to sanitize url for web: ' + url);
-    // ensure we tell mustache not to escape html
+    //ensure we tell mustache not to escape html
     url = url || '';
-    if (url.match(/^media/)) {
-      url = '{{{media-ref}}}/' + url;
-    }
-    else
     if (url.match(/^game/)) {
       url = '{{{gamesource-ref}}}/' + url;
+    }
+    else
+    if (url.match(/^media/)) {
+      url = '{{{media-ref}}}/' + url;
     }
     return Mustache.render( url, {
       'border-tiles' : this.xcfg.game.borderTiles,
@@ -308,7 +290,6 @@ global.ZotohLab.Asterix = {
       dirc.setDisplayStats(this.xcfg.game.showFPS);
     }
 
-    //TODO: devicewebdiff
     this.XLoader.preload( this.pvGatherPreloads(), function () {
       me.xcfg.runOnce();
       dirc.runScene( me.protos[s1].create() );
@@ -329,7 +310,7 @@ global.ZotohLab.Asterix = {
       _.reduce(assets.fonts, function(memo, v,k) {
         // value is array of [ path, image , xml ]
         p= me.sanitizeUrl(v[0]);
-        return memo.concat([ p + v[1], p + v[2] ]);
+        return memo.concat([p+'/'+v[1], p+'/'+v[2]]);
       }, []),
 
       _.reduce(assets.atlases, function(memo, v,k) {
@@ -384,27 +365,20 @@ global.ZotohLab.Asterix = {
     return rc;
   },
 
-  pvLoadSprite: function(k, v) {
-    return this.sanitizeUrl(v[0]);
-  },
+  pvLoadSprite: function(k, v) { return this.fixUrl(v[0]); },
 
-  pvLoadImage: function(k,v) {
-    return this.sanitizeUrl(v);
-  },
+  pvLoadImage: function(k,v) { return this.fixUrl(v); },
 
   pvLoadSound: function(k,v) {
-    return this.sanitizeUrl( v + '.' + this.xcfg.game.sfx );
+    return this.fixUrl( v + '.' + this.xcfg.game.sfx );
   },
 
   pvLoadAtlas: function(k,v) {
-    return [ this.sanitizeUrl( v + '.plist'),
-             this.sanitizeUrl( v + '.png') ];
+    return [ this.fixUrl( v + '.plist'),
+             this.fixUrl( v + '.png') ];
   },
 
-  pvLoadTile: function(k,v) {
-    return this.sanitizeUrl(v);
-  }
-
+  pvLoadTile: function(k,v) { return this.fixUrl(v); }
 
 };
 
@@ -415,4 +389,6 @@ sjs.loggr.debug = cc.log;
 
 }).call(this);
 
-
+//////////////////////////////////////////////////////////////////////////////
+//EOF
+//
