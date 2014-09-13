@@ -441,7 +441,7 @@ def doCompileJS(wappid) {
 //
 def doCompileLESS(wappid) {
   copy (todir: "${buildDir}/web_styles/${wappid}") {
-    fileset (dir: "${webDir}/${wappid}/styles") {
+    fileset (dir: "${webDir}/${wappid}/styles",erroronmissingdir: false) {
       include (name: '**/*.less')
     }
   }
@@ -457,7 +457,7 @@ def doCompileLESS(wappid) {
     targetfile ()
   }
   copy (todir: "${buildDir}/web_styles/${wappid}") {
-    fileset (dir: "${webDir}/${wappid}/styles") {
+    fileset (dir: "${webDir}/${wappid}/styles", erroronmissingdir: false) {
       include (name: '**/*.css')
     }
   }
@@ -473,7 +473,7 @@ def doCompileLESS(wappid) {
 //
 def doCompileSCSS(wappid) {
   copy (todir: "${buildDir}/web_styles/${wappid}") {
-    fileset (dir: "${webDir}/${wappid}/styles"){
+    fileset (dir: "${webDir}/${wappid}/styles", erroronmissingdir: false){
       include (name: '**/*.scss')
     }
   }
@@ -489,7 +489,7 @@ def doCompileSCSS(wappid) {
     targetfile ()
   }
   copy (todir: "${buildDir}/web_styles/${wappid}") {
-    fileset (dir: "${webDir}/${wappid}/styles") {
+    fileset (dir: "${webDir}/${wappid}/styles", erroronmissingdir: false) {
       include (name: '**/*.css')
     }
   }
