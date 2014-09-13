@@ -134,13 +134,14 @@ var Session= sjs.Class.xtends({
 
   send: function(evt) {
     if (this.state === Events.S_CONNECTED &&
-        _.isObject(this.ws)) {
+        sjs.echt(this.ws)) {
       this.ws.send( json_encode(evt));
     }
   },
 
   subscribe: function(eventType, code, callback, target) {
-    var h= this.ebus.on("/"+eventType+"/"+code, callback, target);
+    var h= this.ebus.on(["/",eventType,"/",code].join(''),
+                        callback, target);
     if (_.isArray(h) && h.length > 0) {
       // store the handle ids for clean up
       //this.handlers=this.handlers.concat(h);
@@ -176,7 +177,7 @@ var Session= sjs.Class.xtends({
 
   close: function () {
     this.state= Events.S_NOT_CONNECTED;
-    if (_.isObject(this.ws)) {
+    if (sjs.echt(this.ws)) {
       this.reset();
       try {
         this.ws.close();
@@ -238,7 +239,7 @@ var Session= sjs.Class.xtends({
   },
 
   onevent: function(evt) {
-    this.ebus.fire("/"+evt.type+"/"+evt.code, evt);
+    this.ebus.fire(["/",evt.type,"/",evt.code].join(''), evt);
   }
 
 });
@@ -255,4 +256,7 @@ global.ZotohLab.Odin= {
 
 
 }).call(this);
+
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

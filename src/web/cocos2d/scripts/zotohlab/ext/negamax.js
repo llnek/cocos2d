@@ -21,13 +21,15 @@ global.ZotohLab.NegaMax= {
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
+
 function negamax(board, game, maxDepth, depth, alpha, beta) {
 
-  if (depth === 0 || board.isOver(game) ) {
+  if (depth === 0 || board.isOver(game)) {
     return board.evalScore(game);
   }
 
-  var openMoves = board.getNextMoves(game), //assert(openMoves && openMoves.length > 0);
+  //assert(openMoves && openMoves.length > 0);
+  var openMoves = board.getNextMoves(game),
   bestValue = -PINF,
   rc,
   n,
@@ -35,7 +37,7 @@ function negamax(board, game, maxDepth, depth, alpha, beta) {
   bestMove = openMoves[0];
 
   if (depth === maxDepth) {
-    game.lastBestMove = openMoves[0];   // this will change overtime, most likely
+    game.lastBestMove = openMoves[0];
   }
 
   for (n=0; n < openMoves.length; ++n) {
@@ -86,4 +88,7 @@ global.ZotohLab.NegaMax.Snapshot = sjs.Class.xtends({
 
 
 }).call(this);
+
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

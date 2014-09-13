@@ -90,30 +90,13 @@ global.ZotohLab.UI = {
   Circle: Circle,
   Line: Line,
   Point: Point,
-  Area: Area,
-
-  pixelateImage: function(ctx2d,w,h,scale) {
-    var c,r, img = ctx2d.getImageData(0, 0, w,h);
-    var ix, alpha;
-    for (r = 0; r < h; ++r ) {
-      for ( c = 0; c < w; ++c) {
-        alpha = (c % scale === 0 || r % scale === 0) ? 0 : 0.9;
-        // * 4 since it is [r,g,b,alpha]
-        ix = (r * w + c) * 4;
-        img.data[ix + 3] = img.data[ix + 3] * alpha;
-      }
-    }
-    ctx2d.putImageData( img, 0, 0 );
-  }
+  Area: Area
 
 };
 
 
-
-
-
-
-
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////
+//EOF
 

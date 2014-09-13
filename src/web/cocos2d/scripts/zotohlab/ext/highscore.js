@@ -26,23 +26,25 @@ function mkScore(n,v) {
   };
 }
 
-asterix.HighScores= Skaro.Class.xtends({
 
-  reset: function() {
-    this.scores=[];
-  },
+asterix.HighScores= sjs.Class.xtends({
 
   read: function() {
-    var a, s = CKS.get(this.KEY) || '',
+    var s = CKS.get(this.KEY) || '',
     ts = _.without(s.split('|'), '');
+
     //this.reset();
     this.scores= _.reduce(ts, function(memo,z) {
-      a = _.without(z.split(':'), '');
+      var a = _.without(z.split(':'), '');
       if (a.length === 2) {
         memo.push(mkScore(a[0], a[1]));
       }
       return memo;
     }, []);
+  },
+
+  reset: function() {
+    this.scores=[];
   },
 
   write: function() {
@@ -56,10 +58,14 @@ asterix.HighScores= Skaro.Class.xtends({
     return this.scores.length < this.size;
   },
 
-  isEligible: function(score) {
-    return this.hasSlots() ? true : _.some(this.scores, function(z) {
-      return z.value < score;
-    });
+  canAdd: function(score) {
+    if (this.hasSlots()) {
+      return true;
+    } else {
+      return _.some(this.scores, function(z) {
+        return z.value < score;
+      });
+    }
   },
 
   insert: function(name, score) {
@@ -93,7 +99,8 @@ asterix.HighScores= Skaro.Class.xtends({
     last,
     ptr;
 
-    this.scores = [];
+    this.reset();
+
     while (tmp.length > 0) {
       last= undef;
       ptr= -1;
@@ -123,4 +130,7 @@ asterix.HighScores= Skaro.Class.xtends({
 
 
 }).call(this);
+
+////////////////////////////////////////////////////////////////////
+//EOF
 

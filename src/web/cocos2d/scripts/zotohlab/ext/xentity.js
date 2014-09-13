@@ -23,41 +23,65 @@ GID_SEED = 0;
 
 asterix.XEntity = sjs.Class.xtends({
 
+  //entity will wrap around the other side of the bounding enclosure,
+  //like in asteriods.
   wrapEnclosure: function() {
-    var wz = ccsx.screen(), B = { left: 0, bottom: 0,
-      right: wz.width-1, top: wz.height-1 },
-    csts = sh.xcfg.csts,
+    var B = sh.main.getEnclosureRect(), //see if this works ? 9/13/14
     sz = this.sprite.getContentSize(),
     pos = this.sprite.getPosition(),
-    //B= sh.main.getEnclosureRect(),
-    hh = sz.height / 2,
-    hw = sz.width / 2 ,
+    wz = ccsx.screen(),
+    /*
+    B = { left: 0,
+          bottom: 0,
+          right: wz.width-1,
+          top: wz.height-1 },
+          */
+    csts = sh.xcfg.csts,
+    hh = sz.height * 0.5,
+    hw = sz.width * 0.5,
     x = pos.x,
     y = pos.y,
     bx= ccsx.bbox4(this.sprite);
+
+
+    //PITCH
     if (bx.bottom >= B.top) {
       //y = 0 - hh;
-      y = hh + csts.TILE;
+      //y = hh + csts.TILE;
+      if (this.vel.y > 0) {
+        //wrap
+        y = B.bottom - hh;
+      }
     }
     else
     if (bx.top <= B.bottom) {
       //y = B.top + hh;
-      y = B.top - hh - csts.TILE;
+      //y = B.top - hh - csts.TILE;
+      if (this.vel.y < 0) {
+        //wrap
+        y = B.top + hh;
+      }
     }
-    else
+
+    //YAW
     if (bx.right <= B.left) {
       //x = B.right + hw;
-      x = B.right - hw - csts.TILE;
+      //x = B.right - hw - csts.TILE;
+      if (this.vel.x < 0) {
+        x = B.right + hw;
+      }
     }
     else
     if (bx.left >= B.right) {
       //x = B.left - hw;
-      x = B.left + hw + csts.TILE;
+      //x = B.left + hw + csts.TILE;
+      if (this.vel.x > 0) {
+        x = B.left - hw;
+      }
     }
 
-    if (x !== pos.x || y !== pos.y) {
-      this.updatePosition(x,y);
-    }
+    this.lastPos= this.sprite.getPosition();
+    this.sprite.setPosition(x,y);
   },
 
   update: function(dt) {
@@ -69,20 +93,22 @@ asterix.XEntity = sjs.Class.xtends({
   updatePosition: function(x,y) {
     var box = sh.main.getEnclosureRect(),
     sz = this.sprite.getContentSize(),
-    hh= sz.height/2,
-    hw= sz.width/2,
-    pos, x, y, b2;
+    hh= sz.height * 0.5,
+    hw= sz.width * 0.5,
+    pos,
+    x, y, b2;
 
     this.lastPos= this.sprite.getPosition();
     this.sprite.setPosition(x,y);
-
-    if (this.wrappable) { return; }
 
     pos = this.sprite.getPosition();
     b2= ccsx.bbox4(this.sprite);
     x= pos.x;
     y= pos.y;
 
+    //clamp down the entity to be inside the enclosure
+
+    //YAW
     if (b2.right > box.right) {
       x= box.right - hw;
     }
@@ -90,24 +116,23 @@ asterix.XEntity = sjs.Class.xtends({
     if (b2.left < box.left) {
       x = box.left + hw;
     }
+
+    //PITCH
+    if (b2.bottom < box.bottom) {
+      y = box.bottom + hh;
+    }
     else
     if (b2.top > box.top) {
       y = box.top - hh;
     }
-    else
-    if (b2.bottom < box.bottom) {
-      y = box.bottom + hh;
-    }
 
-    if (pos.x !== x || pos.y !== y) {
-      this.sprite.setPosition(x,y);
-    }
-  },
-
-  keypressed: function(dt) {
+    this.sprite.setPosition(x,y);
   },
 
   injured: function(damage,from) {
+  },
+
+  keypressed: function(dt) {
   },
 
   reviveSprite: function() {
@@ -118,9 +143,7 @@ asterix.XEntity = sjs.Class.xtends({
   },
 
   revive: function(x,y,options) {
-    if (_.isObject(options)) {
-      this.options = sjs.merge(this.options, options);
-    }
+    if (_.isObject(options)) { sjs.merge(this.options, options); }
     this.startPos = cc.p(x,y);
     this.reviveSprite();
   },
@@ -132,47 +155,50 @@ asterix.XEntity = sjs.Class.xtends({
     }
   },
 
+  //tests if entity is hitting boundaries.
   traceEnclosure: function(dt) {
-    var sz= this.sprite.getContentSize().height / 2,
-    sw= this.sprite.getContentSize().width / 2,
+    var sz= this.sprite.getContentSize().height * 0.5,
+    sw= this.sprite.getContentSize().width * 0.5,
     pos = this.sprite.getPosition(),
-    csts = sh.xcfg.csts,
-    hit=false,
-    wz = ccsx.screen(),
+    bbox = sh.main.getEnclosureRect(),
     y = pos.y + dt * this.vel.y,
     x = pos.x + dt * this.vel.x,
-    bbox = sh.main.getEnclosureRect();
+    csts = sh.xcfg.csts,
+    hit=false,
+    wz = ccsx.screen();
 
     if (this.fixed) { return false; }
 
-    // hitting top wall ?
     if (y + sz > bbox.top) {
+      //hitting top wall
       this.vel.y = - this.vel.y
       y = bbox.top - sz;
       hit=true;
     }
-
-    // hitting bottom wall ?
+    else
     if (y - sz < bbox.bottom) {
+      //hitting bottom wall
       this.vel.y = - this.vel.y
       y = bbox.bottom + sz;
       hit=true;
     }
 
     if (x + sw > bbox.right) {
+      //hitting right wall
       this.vel.x = - this.vel.x;
       x = bbox.right - sw;
       hit=true;
     }
-
+    else
     if (x - sw < bbox.left) {
+      //hitting left wall
       this.vel.x = - this.vel.x;
       x = bbox.left + sw;
       hit=true;
     }
 
     //this.lastPos = this.sprite.getPosition();
-    // no need to update the last pos
+    //no need to update the last pos
     if (hit) {
       this.sprite.setPosition(x, y);
     }
@@ -189,44 +215,6 @@ asterix.XEntity = sjs.Class.xtends({
 
   rtti: function() {
     return 'no-rtti-defined';
-  },
-
-  crap: function(other) {
-    var kz= other.sprite.getContentSize(),
-    bz = this.sprite.getContentSize(),
-    ks= other.sprite,
-    bs= this.sprite,
-    ka = { L: ccsx.getLeft(ks), T: ccsx.getTop(ks),
-           R: ccsx.getRight(ks), B: ccsx.getBottom(ks) },
-    ba = { L : ccsx.getLeft(bs), T: ccsx.getTop(bs),
-           R: ccsx.getRight(bs), B: ccsx.getBottom(bs) };
-
-    // coming down from top?
-    if (ba.T > ka.T &&  ka.T > ba.B) {
-      if (!other.fixed) { other.vel.y = - other.vel.y; }
-      if (!this.fixed) { this.vel.y = - this.vel.y; }
-    }
-    else
-    // coming from bottom?
-    if (ba.T > ka.B &&  ka.B > ba.B) {
-      if (!other.fixed) { other.vel.y = - other.vel.y; }
-      if (!this.fixed) { this.vel.y = - this.vel.y; }
-    }
-    else
-    // coming from left?
-    if (ka.L > ba.L && ba.R > ka.L) {
-      if (!other.fixed) { other.vel.x = - other.vel.x; }
-      if (!this.fixed) { this.vel.x = - this.vel.x; }
-    }
-    else
-    // coming from right?
-    if (ka.R > ba.L && ba.R > ka.R) {
-      if (!other.fixed) { other.vel.x = - other.vel.x; }
-      if (!this.fixed) { this.vel.x = - this.vel.x; }
-    }
-    else {
-      sjs.loggr.error("Failed to determine the collision of these 2 objects.");
-    }
   },
 
   dispose: function() {
@@ -262,26 +250,23 @@ asterix.XEntity = sjs.Class.xtends({
 });
 
 Object.defineProperty(asterix.XEntity.prototype, "gid", {
-  get: function() {
-    return this.guid;
-  }
+  get: function() { return this.guid; }
 });
 Object.defineProperty(asterix.XEntity.prototype, "height", {
   get: function() {
-    return this.sprite ? this.sprite.getContentSize().height : undef;
+    if (this.sprite) { return this.sprite.getContentSize().height; }
   }
 });
 Object.defineProperty(asterix.XEntity.prototype, "width", {
   get: function() {
-    return this.sprite ? this.sprite.getContentSize().width : undef;
+    if (this.sprite) { return this.sprite.getContentSize().width; }
   }
 });
 Object.defineProperty(asterix.XEntity.prototype, "OID", {
   get: function() {
-    return this.sprite ? this.sprite.getTag() : -1;
+    if (this.sprite) { return this.sprite.getTag(); }
   }
 });
-
 
 
 asterix.XEntityPool = sjs.Class.xtends({
@@ -335,4 +320,7 @@ asterix.XEntityPool = sjs.Class.xtends({
 
 
 }).call(this);
+
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 
