@@ -22,19 +22,20 @@ sjs = global.SkaroJS;
 //////////////////////////////////////////////////////////////////////////////
 
 var BGLayer = asterix.XLayer.extend({
+
   pkInit: function() {
     var map = cc.TMXTiledMap.create(sh.getTilesPath('gui.blank'));
     this.addItem(map);
     return this._super();
-  },
+  }
 
-  pkInput: function() {}
 });
 
 var UILayer =  asterix.XLayer.extend({
 
   pkInit: function() {
-    var qn= cc.LabelBMFont.create( sh.l10n('%quit?'), sh.getFontPath('font.TinyBoxBB')),
+    var qn= new cc.LabelBMFont(sh.l10n('%quit?'),
+                               sh.getFontPath('font.TinyBoxBB')),
     csts = sh.xcfg.csts,
     cw= ccsx.center(),
     wz= ccsx.screen(),
@@ -45,19 +46,21 @@ var UILayer =  asterix.XLayer.extend({
     qn.setOpacity(0.9*255);
     this.addItem(qn);
 
-    s2= cc.Sprite.create( sh.getImagePath('gui.mmenu.back'));
-    s1= cc.Sprite.create( sh.getImagePath('gui.mmenu.ok'));
-    t2 = cc.MenuItemSprite.create(s2, null, null, function() {
+    s2= new cc.Sprite(sh.getImagePath('gui.mmenu.back'));
+    s1= new cc.Sprite(sh.getImagePath('gui.mmenu.ok'));
+    t2 = new cc.MenuItemSprite();
+    t2.initWithNormalSprite(s2, null, null, function() {
       this.options.onBack();
     }, this);
-    t1 = cc.MenuItemSprite.create(s1, null, null, function() {
+    t1 = new cc.MenuItemSprite();
+    t1.initWithNormalSprite(s1, null, null, function() {
       this.options.yes();
     }, this);
 
-    menu= cc.Menu.create(t1,t2);
-    menu.alignItemsHorizontally(10);
-    menu.setPosition(wz.width - csts.TILE - csts.S_OFF - (s2.getContentSize().width + s1.getContentSize().width + 10) / 2,
-      csts.TILE + csts.S_OFF + s2.getContentSize().height / 2);
+    menu= new cc.Menu(t1,t2);
+    menu.alignItemsHorizontallyWithPadding(10);
+    menu.setPosition(wz.width - csts.TILE - csts.S_OFF - (s2.getContentSize().width + s1.getContentSize().width + 10) * 0.5,
+      csts.TILE + csts.S_OFF + s2.getContentSize().height * 0.5);
     this.addItem(menu);
 
     return this._super();
@@ -78,4 +81,7 @@ sh.protos['YesNo'] = {
 
 
 }).call(this);
+
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

@@ -95,6 +95,9 @@ asterix.XConfig = {
       '%mobileStart' : 'Press Anywhere To Start!',
       '%webStart' : 'Press Spacebar To Start!',
 
+      '%passwd' : 'Password',
+      '%userid' : 'UserId',
+
       "%player2" : 'Player 2',
       "%player1" : 'Player 1',
       "%computer" : 'Computer',

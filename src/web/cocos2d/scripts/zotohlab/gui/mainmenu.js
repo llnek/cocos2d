@@ -22,30 +22,29 @@ sjs= global.SkaroJS;
 //////////////////////////////////////////////////////////////////////////////
 
 asterix.XMenuBackLayer = asterix.XLayer.extend({
+
   pkInit: function() {
-    var map = new cc.TMXTiledMap(sh.getTilesPath('gui.mmenu')),
+    var title = new cc.LabelBMFont(sh.l10n('%mmenu'),
+                                   sh.getFontPath('font.JellyBelly')),
+    bgMenu = new cc.TMXTiledMap(sh.getTilesPath('gui.mmenu')),
     csts = sh.xcfg.csts,
     wz = ccsx.screen(),
-    cw= ccsx.center(),
-    title = new cc.LabelBMFont( sh.l10n('%mmenu'), sh.getFontPath('font.JellyBelly'));
+    cw= ccsx.center();
 
+    title.setPosition(cw.x, wz.height - csts.TILE * 8 / 2);
     title.setOpacity(0.9*255);
     title.setScale(0.6);
-    title.setPosition(cw.x, wz.height - csts.TILE * 8 / 2);
 
-    this.addItem(map);
+    this.addItem(bgMenu);
     this.addItem(title);
 
     return this._super();
   },
 
-  rtti: function() {
-    return 'XMenuBackLayer';
-  },
-
-  pkInput: function() {}
+  rtti: function() { return 'XMenuBackLayer'; }
 
 });
+
 
 asterix.XMenuLayer= asterix.XLayer.extend({
 
@@ -61,7 +60,7 @@ asterix.XMenuLayer= asterix.XLayer.extend({
     s1= new cc.Sprite(p, cc.rect(w,0,w,h)),
     s2= new cc.Sprite(p, cc.rect(0,0,w,h));
 
-    audio= cc.MenuItemToggle.create(new cc.MenuItemSprite(s1),
+    audio= new cc.MenuItemToggle(new cc.MenuItemSprite(s1),
                         new cc.MenuItemSprite(s2),
            function(sender) {
             if (sender.getSelectedIndex() === 0) {
@@ -78,18 +77,21 @@ asterix.XMenuLayer= asterix.XLayer.extend({
     }
 
     menu= new cc.Menu(audio);
-    menu.setPosition(csts.TILE + csts.S_OFF, csts.TILE + csts.S_OFF);
+    menu.setPosition(csts.TILE + csts.S_OFF,
+                     csts.TILE + csts.S_OFF);
     this.addItem(menu);
 
+    //all these to make 2 buttons
     s2= new cc.Sprite( sh.getImagePath('gui.mmenu.back'));
     s1= new cc.Sprite( sh.getImagePath('gui.mmenu.quit'));
-    t2 = new cc.MenuItemSprite(s2, null, null, function() {
+    t2 = new cc.MenuItemSprite();
+    t1 = new cc.MenuItemSprite();
+    t2.initWithNormalSprite(s2, null, null, function() {
       this.options.onBack();
-    }, this);
-    t1 = new cc.MenuItemSprite(s1, null, null, function() {
+    },this);
+    t1.initWithNormalSprite(s1, null, null, function() {
       this.pkQuit();
     }, this);
-
     menu= new cc.Menu(t1,t2);
     menu.alignItemsHorizontallyWithPadding(10);
     menu.setPosition(wz.width - csts.TILE - csts.S_OFF - (s2.getContentSize().width + s1.getContentSize().width + 10) / 2,
@@ -128,4 +130,6 @@ asterix.XMenuLayer.onShowMenu = function() {
 
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

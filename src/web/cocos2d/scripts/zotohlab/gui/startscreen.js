@@ -20,6 +20,7 @@ sjs = global.SkaroJS;
 //////////////////////////////////////////////////////////////////////////////
 // splash screen for the game - make it look nice please.
 //////////////////////////////////////////////////////////////////////////////
+
 asterix.XSplashLayer = asterix.XLayer.extend({
 
   pkInit: function() {
@@ -36,15 +37,14 @@ asterix.XSplashLayer = asterix.XLayer.extend({
     return this._super();
   },
 
-  rtti: function() {
-    return "SplashLayer";
-  },
-
-  pkInput: function() {}
+  rtti: function() { return "SplashLayer"; }
 
 });
 
 
 
 }).call(this);
+
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 
