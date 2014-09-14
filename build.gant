@@ -431,7 +431,7 @@ def doCompileJS(wappid) {
     break
     default:
       copy (todir: "${basedir}/public/ig/lib/game/${wappid}") {
-        fileset (dir: "${buildDir}/web_scripts/${wappid}/game")
+        fileset (dir: "${buildDir}/web_scripts/${wappid}")
       }
     break
   }
@@ -571,7 +571,7 @@ def doJiggleTheIndexFile(wappid,des,cocos) {
     bdir= ""
     cfg= FileUtils.readFileToString(new File("${srcDir}/resources/cocos2d.js"), "utf-8")
   } else {
-    cfg= FileUtils.readFileToString(new File("${webDir}/${wappid}/scripts/game/ccconfig.js"), "utf-8")
+    cfg= FileUtils.readFileToString(new File("${webDir}/${wappid}/scripts/ccconfig.js"), "utf-8")
   }
 
   html= StringUtils.replace(html, "@@BOOTDIR@@", bdir)
@@ -662,8 +662,8 @@ target (newapp: '') {
   println "Creating new game: ${appid}"
   mkdir (dir: "${webDir}/${appid}")
   ["media/game", "media/gui" , "media/sfx",
-   "scripts/game/entities" ,
-   "scripts/game/i18n", "scripts/game/levels"].each { s ->
+   "scripts/entities" ,
+   "scripts/i18n", "scripts/levels"].each { s ->
     mkdir (dir: "${webDir}/${appid}/${s}")
   }
   ["info" , "pages" , "styles"].each { s ->
@@ -678,12 +678,13 @@ target (newapp: '') {
   replace (file: "${webDir}/${appid}/info/game.mf", token: "@@PUBDATE@@", value: "${pubtime}")
   replace (file: "${webDir}/${appid}/info/game.json", token: "@@UUID@@", value: "${appkey}")
   ["game.js", "splash.js", "mmenu.js", "hud.js"].each { s ->
-    touch (file: "${webDir}/${appid}/scripts/game/${s}")
+    touch (file: "${webDir}/${appid}/scripts/${s}")
   }
-  copy (file: "${srcDir}/resources/config.js", todir: "${webDir}/${appid}/scripts/game")
-  replace (file: "${webDir}/${appid}/scripts/game/config.js", token: "@@UUID@@", value: "${appkey}")
-  copy (file: "${srcDir}/resources/l10n.js", tofile: "${webDir}/${appid}/scripts/game/i18n/game_en_US.js")
-  copy (file: "${srcDir}/resources/ccconfig.js", todir: "${webDir}/${appid}/scripts/game")
+  copy (file: "${srcDir}/resources/config.js", todir: "${webDir}/${appid}/scripts")
+  replace (file: "${webDir}/${appid}/scripts/config.js", token: "@@UUID@@", value: "${appkey}")
+  copy (file: "${srcDir}/resources/l10n.js", tofile: "${webDir}/${appid}/scripts/i18n/game_en_US.js")
+  copy (file: "${srcDir}/resources/ccconfig.js", todir: "${webDir}/${appid}/scripts")
+  echo (message: '{ "jsList" : [] }', file: "${webDir}/${appid}/scripts/project.json")
   mkdir (dir: "${basedir}/cocos")
   exec (executable: 'cocos') {
     arg (value: 'new')
@@ -735,7 +736,7 @@ target (deployapp: '') {
       fileset (dir: "${webDir}/cocos2d/scripts/zotohlab")
     }
     copy (todir: "${dd1path}/${appid}") {
-      fileset (dir: "${srcpath}/scripts/game")
+      fileset (dir: "${srcpath}/scripts")
     }
     copy (todir: "${dd1path}/helpers") {
       fileset (dir: "${vendors}/helpers") {
@@ -758,7 +759,7 @@ target (deployapp: '') {
     final j1= new JsonParser().parse(FileUtils.readFileToString(
       new File("${srcDir}/resources/project.json"),"utf-8"))
     final j2= new JsonParser().parse(FileUtils.readFileToString(
-      new File("${srcpath}/scripts/game/project.json"),"utf-8"))
+      new File("${srcpath}/scripts/project.json"),"utf-8"))
     j1.getAsJsonArray('jsList').addAll( j2.getAsJsonArray('jsList'))
     FileUtils.writeStringToFile(new File("${despath}/project.json"),
     new GsonBuilder().setPrettyPrinting().create().toJson(j1), "utf-8")

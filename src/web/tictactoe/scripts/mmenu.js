@@ -49,7 +49,7 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
       selector: function() {
         sh.fireEvent('/mmenu/controls/online',
                      sjs.mergeEx(SEED,
-                                 { mode: sh.ONLINE_GAME 3 }));
+                                 { mode: sh.ONLINE_GAME }));
       },
       target: this,
       scale: 0.5,
