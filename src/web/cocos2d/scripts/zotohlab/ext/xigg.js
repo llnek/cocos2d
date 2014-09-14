@@ -29,51 +29,48 @@ asterix.XGameLayer = asterix.XLayer.extend({
   actor: null,
 
   pkInput: function() {
-    if (_.has(cc.sys.capabilities, 'keyboard')) {
+    if (cc.sys.capabilities['keyboard']) {
       cc.log('pkInput:  keyboard supported');
       this.cfgInputKeyPad();
     }else{
       cc.log('pkInput:  keyboard not supported');
     }
-    if (_.has(cc.sys.capabilities, 'mouse')) {
+    if (cc.sys.capabilities['mouse']) {
       cc.log('pkInput:  mouse supported');
       this.cfgInputMouse();
     }else{
       cc.log('pkInput:  mouse not supported');
     }
-    if (_.has(cc.sys.capabilities, 'touches')) {
+    if (cc.sys.capabilities['touches']) {
       cc.log('pkInput:  touch supported');
       this.cfgInputTouchOne();
-      //this.setTouchEnabled(true);
-      //this.setTouchMode(cc.TOUCH_ONE_BY_ONE);
     }else{
       cc.log('pkInput:  touch not supported');
     }
   },
 
   cfgInputKeyPad: function() {
-    var me=this;
     cc.eventManager.addListener({
-      event: cc.EventListener.KEYBOARD,
-      onKeyPressed:function (key, event) {
-        me.onKeyDown(key);
+      onKeyPressed: function (key, event) {
+        event.getCurrentTarget().onKeyDown(key);
       },
       onKeyReleased:function (key, event) {
-        me.onKeyUp(key);
-      }
+        event.getCurrentTarget().onKeyUp(key);
+      },
+      event: cc.EventListener.KEYBOARD
     }, this);
   },
 
   cfgInputMouse: function() {
-    var me=this;
     cc.eventManager.addListener({
-      event: cc.EventListener.MOUSE,
       onMouseUp: function(event){
-        me.onMouseUp(event);
-      }
+        event.getCurrentTarget().onMouseUp(event);
+      },
+      event: cc.EventListener.MOUSE
     }, this);
   },
 
+  //TODO: handle touch drag and move
   processEvent:function (event) {
     cc.log('event === ' + JSON.stringify(event));
     /*
@@ -87,27 +84,27 @@ asterix.XGameLayer = asterix.XLayer.extend({
   },
 
   cfgInputTouchesAll: function() {
-    var me=this;
     cc.eventManager.addListener({
-      prevTouchId: -1,
-      event: cc.EventListener.TOUCH_ALL_AT_ONCE,
       onTouchesMoved:function (touches, event) {
         var touch = touches[0];
-        if (this.prevTouchId != touch.getId())
-            this.prevTouchId = touch.getId();
-        else event.getCurrentTarget().processEvent(touches[0]);
-    }
+        if (this.prevTouchId != touch.getId()) {
+          this.prevTouchId = touch.getId();
+        } else {
+          event.getCurrentTarget().processEvent(touches[0]);
+        }
+      },
+      prevTouchId: -1,
+      event: cc.EventListener.TOUCH_ALL_AT_ONCE
     }, this);
   },
 
   cfgInputTouchOne: function() {
-    var me=this;
     cc.eventManager.addListener({
       event: cc.EventListener.TOUCH_ONE_BY_ONE,
       swallowTouches: true,
-      onTouchBegan: function(t,e) { return me.onTouchBegan(t,e);},
-      onTouchMoved: function(t,e) { return me.onTouchMoved(t,e);},
-      onTouchEnded: function(t,e) { return me.onTouchEnded(t,e);}
+      onTouchBegan: function(t,e) { return e.getCurrentTarget().onTouchBegan(t,e);},
+      onTouchMoved: function(t,e) { return e.getCurrentTarget().onTouchMoved(t,e);},
+      onTouchEnded: function(t,e) { return e.getCurrentTarget().onTouchEnded(t,e);}
     }, this);
   },
 
@@ -162,51 +159,38 @@ asterix.XGameLayer = asterix.XLayer.extend({
   },
 
   newGame: function(mode) {
-    cc.audioEngine.stopMusic();
-    cc.audioEngine.stopAllEffects();
+    if (sh.xcfg.sound.open) {
+      cc.audioEngine.stopAllEffects();
+      cc.audioEngine.stopMusic();
+    }
     this.onNewGame(mode);
+    this.scheduleUpdate();
   },
 
   pkInit: function() {
 
-    var rc= this._super();
+    var m= this.options.mode,
+    rc= this._super();
 
     if (rc) {
-      switch (this.options.mode) {
-
-        case 2:
-          this.newGame(2);
-        break;
-
-        case 1:
-          this.newGame(1);
-        break;
-
-        case 3:
-          this.newGame(3);
-        break;
-
-        default:
-          rc= false;
-        break;
-      }
-
-      if (rc) {
-        this.scheduleUpdate();
+      if (m === sh.ONLINE_GAME ||
+          m === sh.P2_GAME ||
+          m === sh.P1_GAME) {
+        this.newGame(m);
+      } else {
+        rc=false;
       }
     }
 
     return rc;
   },
 
+  operational: function() { return true; },
+
   updateEntities: function(dt) {
   },
 
   checkEntities: function(dt) {
-  },
-
-  operational: function() {
-    return true;
   },
 
   update: function(dt) {
@@ -221,13 +205,10 @@ asterix.XGameLayer = asterix.XLayer.extend({
     sh.main = this;
   }
 
-
 });
 
 Object.defineProperty(asterix.XGameLayer.prototype, "keys", {
-  get: function() {
-    return this.keyboard;
-  }
+  get: function() { return this.keyboard; }
 });
 
 

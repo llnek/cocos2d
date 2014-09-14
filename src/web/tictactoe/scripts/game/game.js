@@ -493,7 +493,7 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   getHUD: function() {
-    var rc= this.parScene.getLayers(); //cc.director.getRunningScene().getLayers();
+    var rc= this.ptScene.getLayers(); //cc.director.getRunningScene().getLayers();
     return rc['HUD'];
   },
 

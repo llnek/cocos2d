@@ -25,45 +25,45 @@ asterix.XLoader = cc.Scene.extend({
 
   logoSprite: null,
   bgLayer: null,
-  winsz: null,
   logo: null,
 
   _instance: null,
 
   ctor: function () {
-    this.winsz = ccsx.screen();
-    this._super();
-  },
-
-  init: function() {
     this.bgLayer = new cc.LayerColor(cc.color(0,0,0, 255));
     this.bgLayer.setPosition(0, 0);
-    //this._super();
+    this._super();
     this.addChild(this.bgLayer, 0);
   },
 
   pkLoadBar: function() {
-    var me=this;
-    cc.loader.loadImg('/public/ig/media/cocos2d/game/preloader_bar.png',
+    var pfx = '/public/ig/media';
+    if (cc.sys.isNative) {
+      pfx= 'res';
+    }
+    cc.loader.loadImg(pfx+'/cocos2d/game/preloader_bar.png',
                       {isCrossOrigin : false },
       function(err, img) {
         if (err) { cc.error('failed to load progress-bar.png'); } else {
-          me.pbar= img;
-          me.pkInitStage();
+          this.pbar= img;
+          this.pkInitStage();
         }
-    });
+    }.bind(this));
   },
 
   pkLoad: function() {
-    var me=this;
-    cc.loader.loadImg('/public/ig/media/main/ZotohLab_x200.png',
+    var pfx = '/public/ig/media';
+    if (cc.sys.isNative) {
+      pfx= 'res';
+    }
+    cc.loader.loadImg(pfx+'/main/ZotohLab_x200.png',
                       {isCrossOrigin : false },
       function(err, img) {
         if (err) { cc.error('failed to load zotohlab.png'); } else {
-          me.logo= img;
-          me.pkLoadBar();
+          this.logo= img;
+          this.pkLoadBar();
         }
-    });
+    }.bind(this));
   },
 
   pkInitStage: function () {
@@ -79,16 +79,15 @@ asterix.XLoader = cc.Scene.extend({
     pbar2d.initWithElement(this.pbar);
     pbar2d.handleLoadedTexture();
 
-    this.addChild(this.bgLayer, 0);
+    this.addChild(this.bgLayer);
 
     this.logoSprite = cc.Sprite.create(logo2d);
-    this.logoSprite.setScale( cc.contentScaleFactor());
+    //this.logoSprite.setScale( cc.contentScaleFactor());
     this.logoSprite.setPosition(cw);
     this.bgLayer.addChild(this.logoSprite);
 
     s2 = cc.Sprite.create(pbar2d);
-    s2.setScale( cc.contentScaleFactor());
-
+    //s2.setScale( cc.contentScaleFactor());
     this.progress = cc.ProgressTimer.create(s2);
     this.progress.setType(cc.ProgressTimer.TYPE_BAR);
     this.progress.setScaleX(0.8);
@@ -128,6 +127,7 @@ asterix.XLoader = cc.Scene.extend({
   pkStartLoading: function () {
     var res = this.resources,
     me=this;
+
     this._length = res.length;
     this._count=0;
 
@@ -158,7 +158,6 @@ asterix.XLoader.preload = function (resources, selector, target) {
 
   if (!this._instance) {
     this._instance = new asterix.XLoader();
-    this._instance.init();
   }
 
   this._instance.initWithResources(resources, selector, target);
@@ -168,4 +167,7 @@ asterix.XLoader.preload = function (resources, selector, target) {
 
 
 }).call(this);
+
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

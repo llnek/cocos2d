@@ -59,8 +59,8 @@ asterix.XLayer = cc.Layer.extend({
       ptag = ++this.lastTag;
     }
 
-    if (n instanceof cc.Sprite &&
-        p instanceof cc.SpriteBatchNode) {
+    if (p instanceof cc.SpriteBatchNode &&
+        n instanceof cc.Sprite) {
       n.setBatchNode(p);
     }
 
@@ -68,7 +68,7 @@ asterix.XLayer = cc.Layer.extend({
   },
 
   setParent: function(par) {
-    this.parScene=par;
+    this.ptScene=par;
   },
 
   init: function() {
@@ -85,4 +85,6 @@ asterix.XLayer = cc.Layer.extend({
 
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

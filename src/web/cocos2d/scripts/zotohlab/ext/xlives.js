@@ -36,10 +36,11 @@ asterix.XHUDLives = sjs.Class.xtends({
   curLives: -1,
 
   reduce: function(howmany) {
-    this.curLives = this.curLives - howmany;
-    for (var n=0; n < howmany; ++n) {
+    var n;
+    for (n=0; n < howmany; ++n) {
       this.hud.removeItem(this.icons.pop());
     }
+    this.curLives -= howmany;
   },
 
   getLives: function() {
@@ -62,10 +63,11 @@ asterix.XHUDLives = sjs.Class.xtends({
   },
 
   drawLives: function() {
-    var n, gap= 2,
-    y= this.topLeft.y - this.lifeSize.height/2,
-    x= this.topLeft.x + this.lifeSize.width/2,
-    v;
+    var y= this.topLeft.y - this.lifeSize.height * 0.5,
+    x= this.topLeft.x + this.lifeSize.width * 0.5,
+    gap=2,
+    n, v;
+
     for (n = 0; n < this.curLives; ++n) {
       v= new asterix.XLive(x,y,this.options);
       this.hud.addItem(v);
@@ -100,4 +102,6 @@ asterix.XHUDLives = sjs.Class.xtends({
 
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 
