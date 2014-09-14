@@ -143,7 +143,6 @@ function pvLoadTile(k,v) {
 
 //////////////////////////////////////////////////////////////////////////////
 //
-
   cc.log("About to create Cocos2D HTML5 Game");
   preLaunchApp(STARTSCREEN);
   sh.l10nInit(),

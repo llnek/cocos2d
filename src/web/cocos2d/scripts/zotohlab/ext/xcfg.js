@@ -134,9 +134,10 @@ asterix.XConfig = {
     // 1 = single player
     // 2 = 2 players
     // 3 = network, multi players
-    GAME_MODE: 1,
+    GAME_MODE: sh.P1_GAME,
     TILE: 8,
-    S_OFF: 4
+    S_OFF: 4,
+    GAME_ID: ''
   },
 
   sound: {

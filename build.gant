@@ -671,17 +671,17 @@ target (newapp: '') {
   }
   copy (file: "${srcDir}/resources/game.json", todir: "${webDir}/${appid}/info")
   copy (file: "${srcDir}/resources/game.mf", todir: "${webDir}/${appid}/info")
-  //copy (file: "${srcDir}/resources/index.html", todir: "${webDir}/${appid}/pages")
-  //copy (file: "${srcDir}/resources/main.scss", todir: "${webDir}/${appid}/styles")
   final appkey= UUID.randomUUID()
   tstamp () {
     format (property: "pubtime", pattern: "yyyy-MM-dd")
   }
   replace (file: "${webDir}/${appid}/info/game.mf", token: "@@PUBDATE@@", value: "${pubtime}")
   replace (file: "${webDir}/${appid}/info/game.json", token: "@@UUID@@", value: "${appkey}")
-  ["config.js","game.js", "splash.js", "mmenu.js", "hud.js"].each { s ->
+  ["game.js", "splash.js", "mmenu.js", "hud.js"].each { s ->
     touch (file: "${webDir}/${appid}/scripts/game/${s}")
   }
+  copy (file: "${srcDir}/resources/config.js", todir: "${webDir}/${appid}/scripts/game")
+  replace (file: "${webDir}/${appid}/scripts/game/config.js", token: "@@UUID@@", value: "${appkey}")
   copy (file: "${srcDir}/resources/l10n.js", tofile: "${webDir}/${appid}/scripts/game/i18n/game_en_US.js")
   copy (file: "${srcDir}/resources/ccconfig.js", todir: "${webDir}/${appid}/scripts/game")
   mkdir (dir: "${basedir}/cocos")

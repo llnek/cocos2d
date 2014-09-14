@@ -38,7 +38,7 @@ var UILayer =  asterix.XLayer.extend({
 
   onOnlineReq: function(uid,pwd) {
     var wsurl = sjs.fmtUrl(sjs.getWebSockProtocol(), "/network/odin/websocket"),
-    gid = $('body').attr('data-gameid') || '',
+    //gid = $('body').attr('data-gameid') || '',
     wsurl,
     user = (uid || '').trim(),
     pswd = (pwd || '').trim();
@@ -46,7 +46,7 @@ var UILayer =  asterix.XLayer.extend({
     if (user.length === 0 ||
         pswd.length === 0) { return; }
 
-    this.wss= odin.newSession({ game: gid, user: user, passwd: pswd });
+    this.wss= odin.newSession({ game: sh.xcfg.appKey, user: user, passwd: pswd });
     this.wss.subscribeAll(this.onOdinEvent, this);
     this.wss.connect(wsurl);
   },

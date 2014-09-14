@@ -9,31 +9,62 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this, _ = global._ ;
+(function (undef) { "use strict"; var global= this, _ = global._ ;
 
-var asterix= global.ZotohLab.Asterix,
-sh= global.ZotohLab.Asterix,
+var asterix = global.ZotohLab.Asterix,
+sh = global.ZotohLab.Asterix,
 sjs= global.SkaroJS;
 
+//TODO: change your app name
+asterix.YOUR_APP_NAME= {};
 
 //////////////////////////////////////////////////////////////////////////////
-//
-sjs.merge(sh.xcfg.l10nTable, {
+// module def
+//////////////////////////////////////////////////////////////////////////////
 
-"en-US" : {
+sh.xcfg = sjs.mergeEx( asterix.XConfig, {
 
-  "%whosturn" : "{{who}}'s TURN...",
-  "%whodraw" : "Draw!",
-  "%whowin" : "{{who}} Wins!",
-
-  "%p2" : "P2",
-  "%p1" : "P1"
-
-}
+  appKey: '@@UUID@@',
 
 
+  appid: '',
+  color: '',
 
+  csts: {
+  },
 
+  devices: {
+    iphone:{width:320, height:480, scale:1},
+    android:{width:320, height:480, scale:1},
+    ipad:{width:320, height:480, scale:2},
+    default:{width:320, height:480, scale:1}
+  },
+
+  game: {
+    size: {width:320, height:480, scale:1}
+  },
+
+  assets: {
+    tiles: {
+    },
+    images: {
+    },
+    sounds: {
+    },
+    fonts: {
+    }
+  },
+
+  levels: {
+    "gamelevel1" : {
+      tiles: {
+      },
+      images: {
+      },
+      sprites: {
+      }
+    }
+  }
 
 });
 

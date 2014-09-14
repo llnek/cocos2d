@@ -23,6 +23,9 @@ asterix.TicTacToe= {};
 
 sh.xcfg = sjs.mergeEx( asterix.XConfig, {
 
+  appKey : "bd5f79bb-eb41-4ed5-bb44-2529dc27ed3c",
+
+
   appid: 'tictactoe',
   color: 'sky',
 
