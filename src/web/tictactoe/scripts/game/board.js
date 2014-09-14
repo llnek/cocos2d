@@ -16,38 +16,36 @@ sjs= global.SkaroJS,
 sh = global.ZotohLab.Asterix;
 
 var negax= global.ZotohLab.NegaMax;
-var Odin=global.ZotohLab.Odin,
-evts=Odin.Events;
+var odin=global.ZotohLab.Odin,
+evts=odin.Events;
 
 
 
 //////////////////////////////////////////////////////////////////////////////
-// module def
+// A Tic Tac Toe board.
 //////////////////////////////////////////////////////////////////////////////
 
 var tttBoard= sjs.Class.xtends({
 
-  gameInProgress: false,
+  running: false,
   ncells: 0,
   actors: null,
   grid : null,
   CV_Z : 0,
 
-  isActive: function() { return this.gameInProgress; },
+  isActive: function() { return this.running; },
   curActor: function() { return this.actors[0]; },
 
   isNil: function(cellv) { return cellv === this.CV_Z; },
   getNilValue: function() { return this.CV_Z; },
   getState: function() { return this.grid; },
 
-  getOtherPlayer: function(color) {
-    if (color === this.actors[1]) {
+  getOtherPlayer: function(pObj) {
+    if (pObj === this.actors[1]) {
       return this.actors[2];
     }
-    else if (color === this.actors[2]) {
+    if (pObj === this.actors[2]) {
       return this.actors[1];
-    } else {
-      return null;
     }
   },
 
@@ -55,22 +53,22 @@ var tttBoard= sjs.Class.xtends({
     this.finz();
   },
 
-  delay: function(millis) {
-    this.gameInProgress=false;
+  delay: function(msecs) {
     setTimeout(function() {
-      this.gameInProgress=true;
-      sh.fireEvent('/game/board/activated',{});
-    }.bind(this), millis);
+      this.running=true;
+      sh.fireEvent('/game/board/activated');
+    }.bind(this), msecs);
+    this.running=false;
   },
 
   registerPlayers: function(p1,p2) {
     p2.bindBoard(this);
     p1.bindBoard(this);
-    this.gameInProgress = true;
+    this.running = true;
   },
 
   onStopReset: function() {
-    this.gameInProgress = false;
+    this.running = false;
   },
 
   finz: function() {
@@ -88,11 +86,9 @@ var tttBoard= sjs.Class.xtends({
 
   enqueue: function(cmd, cb) {
     if ((cmd.cell >= 0 && cmd.cell < this.ncells) &&
-        this.actors[0] === cmd.actor &&
-        this.CV_Z === this.grid[cmd.cell]) {
+        this.CV_Z === this.grid[cmd.cell] &&
+        this.actors[0] === cmd.actor) {
       this.onEnqueue(cmd,cb);
-      //this.grid[cmd.cell] = cmd.actor.value;
-      //this.checkWin(cmd,cb);
     }
   },
 
@@ -109,7 +105,7 @@ var tttBoard= sjs.Class.xtends({
 var tttNetBoard= tttBoard.xtends({
 
   registerPlayers: function(p1,p2) {
-    this.actors= [ null, p1, p2 ];
+    this.actors= [null, p1, p2];
     this._super(p1,p2);
   },
 
@@ -120,11 +116,11 @@ var tttNetBoard= tttBoard.xtends({
       value: cmd.actor.value,
       grid: this.grid,
       cell: cmd.cell
-    };
-    var evt= {
+    },
+    evt= {
+      source: JSON.stringify(src),
       type: evts.SESSION_MSG,
-      code: evts.C_PLAY_MOVE,
-      source: JSON.stringify(src)
+      code: evts.C_PLAY_MOVE
     };
     if (this.actors[0] &&
         _.isObject(this.actors[0].wss)) {
@@ -134,7 +130,7 @@ var tttNetBoard= tttBoard.xtends({
 
   initBoard: function(bvals) {
     if (this.ncells !== bvals.length) {
-      throw new Error("invalid grid size: " + bvals.length);
+      sjs.tne("invalid grid size: " + bvals.length);
     }
     this.grid= bvals;
   },
@@ -157,7 +153,7 @@ var tttNonNetBoard= tttBoard.xtends({
   COLSPACE : null,
 
   registerPlayers: function(p1,p2) {
-    this.actors= [ sjs.randomSign() > 0 ? p1 : p2, p1, p2 ];
+    this.actors= [sjs.randomSign() > 0 ? p1 : p2, p1, p2];
     this._super(p1,p2);
   },
 
@@ -237,8 +233,8 @@ var tttNonNetBoard= tttBoard.xtends({
   },
 
   isWinner: function(actor, gameVals) {
-    var game= gameVals || this.grid;
-    var rc, combo;
+    var game= gameVals || this.grid,
+    combo,
     rc= _.some(this.GOALSPACE, function(r) {
       combo=r;
       return _.every(_.map(r, function(i) {
@@ -260,10 +256,9 @@ var tttNonNetBoard= tttBoard.xtends({
 
   poiseToWin: function(actor,gameVals) {
     var sum = this.getBoardSize() - 1,
-    m, rc,
-    lastFree = -1;
-    var game= gameVals || this.grid;
-
+    game= gameVals || this.grid,
+    lastFree = -1,
+    m,
     rc = _.some(this.GOALSPACE, function(r) {
       m = _.foldl(r, function(memo, n) {
         if (actor.isValue( game[n])) {
@@ -283,9 +278,8 @@ var tttNonNetBoard= tttBoard.xtends({
 
   freeMove: function(actor,gameVals) {
     var sum = this.getBoardSize() - 1,
-    m, rc;
-    var game= gameVals || this.grid;
-
+    game= gameVals || this.grid,
+    m,
     rc = _.some(this.GOALSPACE, function(r) {
       m = _.foldl(r, function(memo, n) {
         if (actor.isValue(game[n])) {
@@ -302,7 +296,8 @@ var tttNonNetBoard= tttBoard.xtends({
   },
 
   getNextMoves: function(snapshot) {
-    var n, g = snapshot.state,
+    var g = snapshot.state,
+    n,
     rc = [];
     for (n=0; n < g.length; ++n) {
       if (this.isNil(g[n])) {
@@ -320,7 +315,7 @@ var tttNonNetBoard= tttBoard.xtends({
     if (this.isNil( snapshot.state[move])) {
       snapshot.state[move] = snapshot.cur.value;
     } else {
-      throw new Error("Fatal Error: cell [" + move + "] is not free.");
+      sjs.tne("Fatal Error: cell [" + move + "] is not free.");
     }
   },
 
@@ -384,7 +379,8 @@ var tttNonNetBoard= tttBoard.xtends({
 });
 
 asterix.TicTacToe.NewBoard = function(mode,size) {
-  return mode === 3 ? new tttNetBoard(size) : new tttNonNetBoard(size);
+  return mode === sh.ONLINE_GAME ? new tttNetBoard(size)
+                                 : new tttNonNetBoard(size);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -394,7 +390,7 @@ asterix.TicTacToe.NewBoard = function(mode,size) {
 var negax= global.ZotohLab.NegaMax,
 Player = sjs.Class.xtends({
 
-  takeTurn: function() { throw new Error("Abstract call"); },
+  takeTurn: function() { sjs.tne("Abstract call"); },
   isRobot: function() { return !this.isHuman(); },
   isHuman: function() { return this.human; },
   isValue: function(n) { return this.value === n; },
@@ -457,9 +453,6 @@ asterix.TicTacToe.NetPlayer = Human.xtends({
 
 });
 
-asterix.TicTacToe.Human = Human;
-
-
 asterix.TicTacToe.AlgoBot = Robot.xtends({
 
   takeTurn: function() {
@@ -476,6 +469,7 @@ asterix.TicTacToe.AlgoBot = Robot.xtends({
 
 });
 
+asterix.TicTacToe.Human = Human;
 
 
 }).call(this);

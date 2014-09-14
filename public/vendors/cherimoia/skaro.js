@@ -135,6 +135,8 @@ var SkaroJS = {
     return arr;
   },
 
+  tne: function(msg) { throw new Error(msg); },
+
   echt: _echt,
 
   prettyNumber: function (num, digits) {

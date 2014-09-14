@@ -26,16 +26,12 @@ var PLAYER_THINK_TIME= 7;
 
 ttt.BackLayer = asterix.XLayer.extend({
 
+  rtti: function() { return 'tttBackLayer'; },
+
   pkInit: function() {
     var map = new cc.TMXTiledMap(sh.getTilesPath('gamelevel1.tiles.arena'));
     this.addItem(map);
     return this._super();
-  },
-
-  pkInput: NILFUNC,
-
-  rtti: function() {
-    return 'tttBackLayer';
   }
 
 });
@@ -254,5 +250,6 @@ ttt.HUDLayer = asterix.XGameHUDLayer.extend({
 
 }).call(this);
 
-
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

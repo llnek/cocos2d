@@ -13,16 +13,15 @@
 
 (function(undef) { "use strict"; var global = this, _ = global._ ;
 
-var EventBus= global.ZotohLab.EventBus,
-sjs= global.SkaroJS;
+var sjs= global.SkaroJS,
+Events = {
 
-
-var Events = {
 // Event type
-PLAYGAME_REQ          : 1,
-JOINGAME_REQ          : 2,
-NETWORK_MSG           : 3,
-SESSION_MSG           : 4,
+NETWORK_MSG           : 1,
+SESSION_MSG           : 2,
+
+PLAYGAME_REQ          : 3,
+JOINGAME_REQ          : 4,
 
 // Event code
 C_PLAYREQ_NOK         : 10,
@@ -125,8 +124,8 @@ var Session= sjs.Class.xtends({
   },
 
   ctor: function(config) {
+    this.ebus= global.ZotohLab.MakeEventBus();
     this.state= Events.S_NOT_CONNECTED;
-    this.ebus= new EventBus();
     this.handlers= [];
     this.options=config;
     this.ws = null;

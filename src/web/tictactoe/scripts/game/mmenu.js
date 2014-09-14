@@ -18,7 +18,9 @@ sjs= global.SkaroJS;
 
 var SEED= {
   seed_data: {
-    grid: [0,0,0, 0,0,0, 0,0,0],
+    grid: [0,0,0,
+           0,0,0,
+           0,0,0],
     size: 3,
     players: { }
   },
@@ -32,6 +34,8 @@ var SEED= {
 
 var MainMenuLayer = asterix.XMenuLayer.extend({
 
+  rtti: function() { return 'MainMenuLayer'; },
+
   pkInit: function() {
 
     var csts = sh.xcfg.csts,
@@ -44,7 +48,8 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
       text: sh.l10n('%online'),
       selector: function() {
         sh.fireEvent('/mmenu/controls/online',
-                     _.extend(_.extend({},SEED), { mode: 3 }));
+                     sjs.mergeEx(SEED,
+                                 { mode: sh.ONLINE_GAME 3 }));
       },
       target: this,
       scale: 0.5,
@@ -59,9 +64,9 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
       text: sh.l10n('%2players'),
       selector: function() {
         sh.fireEvent('/mmenu/controls/newgame',
-                     sjs.merge(sjs.merge({},SEED), { seed_data: {
-                       players: pobj2
-                     }, mode: 2}));
+                     sjs.mergeEx(SEED,
+                                 { seed_data: { players: pobj2 },
+                                   mode: sh.P2_GAME }));
       },
       target: this,
       scale: 0.5,
@@ -76,9 +81,9 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
       text: sh.l10n('%1player'),
       selector: function() {
         sh.fireEvent('/mmenu/controls/newgame',
-                     sjs.merge(sjs.merge({}, SEED), { seed_data: {
-                       players: pobj1
-                     }, mode: 1}));
+                     sjs.mergeEx(SEED,
+                                 { seed_data: { players: pobj1 },
+                                   mode: sh.P1_GAME }));
       },
       target: this,
       scale: 0.5,
@@ -88,11 +93,8 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
     this.doCtrlBtns();
 
     return this._super();
-  },
-
-  rtti: function() {
-    return 'MainMenuLayer';
   }
+
 
 });
 
@@ -118,7 +120,7 @@ sh.protos['MainMenu'] = {
           dir.runScene( sh.protos['MainMenu'].create());
         };
         msg.yes=function(wss,pnum,startmsg) {
-          var m= _.extend( _.omit(msg, 'yes', 'onBack'), {
+          var m= sjs.mergeEx( _.omit(msg, 'yes', 'onBack'), {
             wsock: wss,
             pnum: pnum
           });
@@ -139,4 +141,6 @@ sh.protos['MainMenu'] = {
 
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

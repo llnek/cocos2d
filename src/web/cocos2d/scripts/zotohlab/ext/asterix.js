@@ -50,7 +50,7 @@ global.ZotohLab.Asterix = {
   fireEvent: function(topic, msg) {
     var r= cc.director.getRunningScene();
     if (r) {
-      r.ebus.fire(topic,msg);
+      r.ebus.fire(topic,msg || {});
     }
   },
 

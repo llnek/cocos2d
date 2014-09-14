@@ -17,12 +17,13 @@ ccsx = asterix.COCOS2DX,
 sjs= global.SkaroJS;
 
 
-
 //////////////////////////////////////////////////////////////////////////////
 // splash screen for the game - make it look nice please.
 //////////////////////////////////////////////////////////////////////////////
 
 var UILayer = asterix.XLayer.extend({
+
+  rtti: function() { return "UILayer"; },
 
   pkInit: function() {
 
@@ -35,16 +36,12 @@ var UILayer = asterix.XLayer.extend({
         sh.fireEvent('/splash/controls/playgame');
       },
       target: this,
-      //pos: cc.p(cw.x, 56)
       pos: cc.p(cw.x, 0.12 * wz.height)
     }));
 
     return this._super();
-  },
-
-  rtti: function() {
-    return "UILayer";
   }
+
 
 });
 
@@ -81,4 +78,6 @@ sh.protos['StartScreen'] = {
 
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

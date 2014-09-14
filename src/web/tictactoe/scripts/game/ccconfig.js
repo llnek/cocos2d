@@ -1,3 +1,4 @@
+//used by web debug mode only.
 document.ccConfig = {
 
   loadExtension: false,
@@ -5,17 +6,14 @@ document.ccConfig = {
   box2d: false,
   showFPS: false,
   frameRate: 30,
-
-  // 0(default), 1(Canvas only), 2(WebGL only)
   renderMode: 0,
 
   id: 'gameArea',
-
   debugLevel: 1,
 
   engineDir: ['/public/extlibs/cocos2d-html5'],
-
   modules: [ 'cocos2d', 'editbox' ],
+
   jsList: [
     "/public/vendors/underscore/underscore-min.js",
     "/public/vendors/l10njs/l10n.min.js",

@@ -32,8 +32,6 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
   csts: {
     CV_X: 'X'.charCodeAt(0),
     CV_O: 'O'.charCodeAt(0),
-    //GRID_SIZE: 3,
-    //CELLS: 9,
     GRID_W: 40,
     GRID_H: 60,
     C_GAP: 1,
@@ -86,10 +84,8 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
 
 });
 
-//////////////////////////////////////////////////////////////////////////////
-//
-
-
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

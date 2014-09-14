@@ -51,7 +51,7 @@ var GameLayer = asterix.XGameLayer.extend({
   // get an odin event, first level callback
   onevent: function(topic, evt) {
 
-    sjs.loggr.debug(evt);
+    //sjs.loggr.debug(evt);
 
     switch (evt.type) {
       case evts.NETWORK_MSG:
@@ -80,7 +80,7 @@ var GameLayer = asterix.XGameLayer.extend({
         this.actions.push([null, 'draw' ]);
       break;
       default:
-        throw new Error("onStop has bad status.");
+        sjs.tne("onStop has bad status.");
       break;
     }
   },
@@ -173,7 +173,7 @@ var GameLayer = asterix.XGameLayer.extend({
     // clean slate
     this.reset(newFlag);
 
-    // based on mode, create the 2 players
+    //based on mode, create the 2 players
     //switch (sh.xcfg.csts.GAME_MODE) {
     switch (this.options.mode) {
       case 1:
@@ -300,7 +300,7 @@ var GameLayer = asterix.XGameLayer.extend({
       var player= this.board.curActor(),
       cell;
 
-      if (this.options.mode === 3) {
+      if (this.options.mode === sh.ONLINE_GAME) {
         if (player &&
             this.options.pnum === player.number()) {
         } else {
@@ -353,7 +353,7 @@ var GameLayer = asterix.XGameLayer.extend({
   checkEntities: function(dt) {
     if (this.actions.length > 0) {
       var n= this.actions.shift();
-      if (_.isObject(this.board)) {
+      if (sjs.echt(this.board)) {
         this.syncOneAction(n);
       }
     }
@@ -405,6 +405,7 @@ var GameLayer = asterix.XGameLayer.extend({
     h.killTimer();
     sh.sfxPlay('game_end');
     h.endGame();
+
     this.lastWinner = p;
     this.board.finz();
     this.board=null;
@@ -413,10 +414,10 @@ var GameLayer = asterix.XGameLayer.extend({
   updateHUD: function() {
     var h= this.getHUD();
 
-    if (! _.isObject(this.board)) {
-      h.drawResult(this.lastWinner);
-    } else {
+    if (this.board) {
       h.drawStatus(this.actor);
+    } else {
+      h.drawResult(this.lastWinner);
     }
   },
 
@@ -476,7 +477,7 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   playBoardReady: function() {
-    if (_.isObject(this.options.wsock)) {} else {
+    if (sjs.echt(this.options.wsock)) {} else {
       var cur = this.board.curActor(),
       h= this.getHUD();
       if (!cur.isRobot()) {
@@ -486,8 +487,9 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   playTimeExpired: function(msg) {
-    var winner=this.board.getOtherPlayer(this.board.curActor());
-    var cmd= [winner,[]];
+    var winner=this.board.getOtherPlayer(this.board.curActor()),
+    cmd= [winner,[]];
+
     this.board.forfeit();
     this.actions.push([cmd, "winner"]);
   },
@@ -497,9 +499,7 @@ var GameLayer = asterix.XGameLayer.extend({
     return rc['HUD'];
   },
 
-  rtti: function() {
-    return 'GameLayer';
-  },
+  rtti: function() { return 'GameLayer'; },
 
   setGameMode: function(mode) {
     var h= this.getHUD();
@@ -541,4 +541,7 @@ asterix.TicTacToe.Factory = {
 };
 
 }).call(this);
+
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 
