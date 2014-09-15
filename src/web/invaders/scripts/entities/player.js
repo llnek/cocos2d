@@ -22,10 +22,7 @@ sjs= global.SkaroJS;
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-
 var Ship = cc.Sprite.extend({
-
-  ammoCount: 0,
 
   coolDown: function() {
     this.setSpriteFrame(this.frame0);
@@ -40,6 +37,8 @@ var Ship = cc.Sprite.extend({
   hasAmmo: function() {
     return this.ammoCount > 0;
   },
+
+  ammoCount: 0,
 
   ctor: function(x,y,options) {
     this.options= options;
@@ -82,7 +81,9 @@ asterix.Invaders.EntityPlayer = asterix.XEntity.xtends({
 
   doFire: function() {
     var pos = this.sprite.getPosition();
-    sh.fireEvent('/game/objects/players/shoot', { x: pos.x , y: pos.y + 4 });
+    sh.fireEvent('/game/objects/players/shoot', {
+      x: pos.x , y: pos.y + 4
+    });
     this.sprite.coolDown();
     this.coolAmmo = ccsx.createTimer(this.sprite, this.options.coolDown);
   },
@@ -106,10 +107,10 @@ asterix.Invaders.EntityPlayer = asterix.XEntity.xtends({
     wz = ccsx.screen();
 
     if (ccsx.getRight(this.sprite) > wz.width - csts.TILE) {
-      this.sprite.setPosition(wz.width - csts.TILE - sz.width/2, pos.y);
+      this.sprite.setPosition(wz.width - csts.TILE - sz.width * 0.5, pos.y);
     }
     if (ccsx.getLeft(this.sprite) < csts.TILE) {
-      this.sprite.setPosition( csts.TILE + sz.width/2, pos.y);
+      this.sprite.setPosition( csts.TILE + sz.width * 0.5, pos.y);
     }
   },
 
@@ -137,4 +138,6 @@ asterix.Invaders.EntityPlayer = asterix.XEntity.xtends({
 
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

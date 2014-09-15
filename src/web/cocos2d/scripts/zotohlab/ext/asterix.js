@@ -144,6 +144,14 @@ global.ZotohLab.Asterix = {
     return (deg > 360) ? deg % 360 : (deg < 0) ? 360 + deg % 360 : deg;
   },
 
+  hh: function(r) {
+    return r.height * 0.5;
+  },
+
+  hw: function(r) {
+    return r.width * 0.5;
+  },
+
   radToDeg: function(rad) {
     return 180 * rad / Math.PI;
   },
@@ -222,7 +230,7 @@ global.ZotohLab.Asterix = {
   },
 
   sanitizeUrlForDevice: function(url) {
-    //sjs.loggr.debug('about to sanitize url for jsb: ' + url);
+    sjs.loggr.debug('about to sanitize url for jsb: ' + url);
     //ensure we tell mustache not to escape html
     url = url || '';
     if (url.match(/^media/)) {

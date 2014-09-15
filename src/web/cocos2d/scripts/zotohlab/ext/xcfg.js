@@ -62,6 +62,7 @@ asterix.XConfig = {
 
     },
     sounds: {
+      'start_game' : 'media/cocos2d/sfx/PowerUp'
     },
     fonts: {
       'font.TinyBoxBB' : [ 'media/cocos2d/fon/{{lang}}', 'TinyBoxBlackBitA8.png', 'TinyBoxBlackBitA8.fnt' ],

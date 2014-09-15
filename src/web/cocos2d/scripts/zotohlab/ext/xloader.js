@@ -33,7 +33,6 @@ asterix.XLoader = cc.Scene.extend({
     this.bgLayer = new cc.LayerColor(cc.color(0,0,0, 255));
     this.bgLayer.setPosition(0, 0);
     this._super();
-    this.addChild(this.bgLayer, 0);
   },
 
   pkLoadBar: function() {

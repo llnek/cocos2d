@@ -33,10 +33,10 @@ sh.pools['live-bombs'] = {};
 
 var GameLayer = asterix.XGameLayer.extend({
 
-  reset: function() {
+  reset: function(newFlag) {
     if (this.atlasBatch) { this.atlasBatch.removeAllChildren(); } else {
       var img = cc.textureCache.addImage( sh.getAtlasPath('game-pics'));
-      this.atlasBatch = cc.SpriteBatchNode.create(img);
+      this.atlasBatch = new cc.SpriteBatchNode(img);
       this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
     }
     sh.pools['missiles'].drain();
@@ -52,7 +52,8 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   getHUD: function() {
-    return cc.director.getRunningScene().layers['HUD'];
+    var rc= this.ptScene.getLayers();
+    return rc['HUD'];
   },
 
   initAlienSize: function() {
@@ -70,20 +71,20 @@ var GameLayer = asterix.XGameLayer.extend({
   getNode: function() { return this.atlasBatch; },
 
   initAliens: function() {
-    var csts = sh.xcfg.csts,
+    var alien = this.initAlienSize(),
+    ship = this.initShipSize(),
+    csts = sh.xcfg.csts,
     cw= ccsx.center(),
     n, x,y, me = this,
-    aa, row = 0,
-    ship = this.initShipSize(),
-    alien = this.initAlienSize();
+    aa, row = 0;
 
     for (n=0; n < csts.CELLS; ++n) {
       if (n % csts.COLS === 0) {
         y = n === 0 ? (csts.GRID_H - csts.TOP) * csts.TILE : y - alien.height - csts.OFF_Y;
-        x = csts.LEFT * csts.TILE + alien.width / 2;
+        x = csts.LEFT * csts.TILE + sh.hw(alien);
         row += 1;
       }
-      aa = new ivs.EntityAlien( x + alien.width / 2, y - alien.height / 2, {
+      aa = new ivs.EntityAlien( x + sh.hw(alien), y - sh.hh(alien), {
         frameTime: 1,
         rank: row
       });
@@ -194,9 +195,11 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   maybeShuffle: function(stepx) {
-    var ok, b = stepx > 0 ? this.findMaxX() : this.findMinX();
+    var b = stepx > 0 ? this.findMaxX() : this.findMinX(),
+    ok;
     if (sjs.echt(b) && b.status) {
-      ok = this.testDirX(b, stepx) ? this.doShuffle(stepx) : this.doForward(stepx);
+      ok = this.testDirX(b, stepx) ? this.doShuffle(stepx)
+                                   : this.doForward(stepx);
       if (ok) {
         sh.sfxPlay('bugs-march');
       }
@@ -297,16 +300,16 @@ var GameLayer = asterix.XGameLayer.extend({
     this.play();
   },
 
-  play: function() {
-    this.reset();
+  play: function(newFlag) {
+    this.reset(newFlag);
     this.initAliens();
     this.initMotionTimers();
   },
 
-  newGame: function(mode) {
-    sh.sfxPlay('start_game');
+  onNewGame: function(mode) {
+    //sh.sfxPlay('start_game');
     this.setGameMode(mode);
-    this.play();
+    this.play(true);
   },
 
   dropBombs: function(msg) {
@@ -386,8 +389,8 @@ var GameLayer = asterix.XGameLayer.extend({
 
 asterix.Invaders.Factory = {
   create: function(options) {
-    var fac = new asterix.XSceneFactory([ ivs.BackLayer, GameLayer, ivs.HUDLayer ]);
-    var scene= fac.create(options);
+    var fac = new asterix.XSceneFactory([ ivs.BackLayer, GameLayer, ivs.HUDLayer ]),
+    scene= fac.create(options);
     if (!scene) { return null; }
     scene.ebus.on('/game/objects/aliens/dropbombs', function(topic, msg) {
       sh.main.dropBombs(msg);
@@ -423,4 +426,6 @@ asterix.Invaders.Factory = {
 
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

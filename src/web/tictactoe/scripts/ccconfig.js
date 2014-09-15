@@ -6,10 +6,11 @@ document.ccConfig = {
   box2d: false,
   showFPS: false,
   frameRate: 30,
-  renderMode: 0,
 
   id: 'gameArea',
-  debugLevel: 1,
+
+  renderMode: 0,
+  debugMode: 1,
 
   engineDir: ['/public/extlibs/cocos2d-html5'],
   modules: [ 'cocos2d', 'editbox' ],

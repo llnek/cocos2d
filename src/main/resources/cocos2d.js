@@ -6,7 +6,7 @@ document.ccConfig = {
   frameRate: 30,
   // 0(default), 1(Canvas only), 2(WebGL only)
   renderMode: 0,
-  debugLevel: 1,
+  debugMode: 1,
 
   id: 'gameArea'
 

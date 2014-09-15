@@ -5,14 +5,15 @@ document.ccConfig = {
   box2d: false,
   showFPS: false,
   frameRate: 60,
+
   renderMode: 0,
+  debugMode: 1,
 
   id: 'gameArea',
-  debugLevel: 1,
 
   engineDir: ['/public/extlibs/cocos2d-html5'],
-
   modules: [ 'cocos2d', 'editbox' ],
+
   jsList: [
 
     "/public/vendors/underscore/underscore-min.js",

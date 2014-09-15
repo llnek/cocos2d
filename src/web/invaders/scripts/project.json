@@ -1,6 +1,8 @@
  {
 
     "jsList"        : [
+      "src/invaders/config.js",
+      "src/invaders/i18n/game_en_US.js",
       "src/invaders/entities/explode.js",
       "src/invaders/entities/missile.js",
       "src/invaders/entities/bomb.js",
