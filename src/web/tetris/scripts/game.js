@@ -29,7 +29,7 @@ var GameLayer = asterix.XGameLayer.extend({
   reset: function(newFlag) {
     if (this.atlasBatch) { this.atlasBatch.removeAllChildren(); } else {
       var img = cc.textureCache.addImage( sh.getAtlasPath('game-pics'));
-      this.atlasBatch = cc.SpriteBatchNode.create(img);
+      this.atlasBatch = new cc.SpriteBatchNode(img);
       this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
     }
     if (newFlag) {
@@ -43,13 +43,15 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   getHUD: function() {
-    return cc.director.getRunningScene().layers['HUD'];
+    var rc= this.ptScene.getLayers();
+    return rc['HUD'];
   },
 
   getNode: function() { return this.atlasBatch; },
 
   ops: {},
 
+  //create our own collision map using cells
   initCMap: function() {
     var r, rc, csts= sh.xcfg.csts,
     hlen = csts.GRID_H,
@@ -112,7 +114,8 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   resetOneRow: function(r) {
-    var c,row= this.collisionMap[r],
+    var row= this.collisionMap[r],
+    c,
     csts = sh.xcfg.csts,
     h= csts.FIELD_SIDE,
     len= csts.FIELD_W;
@@ -126,11 +129,13 @@ var GameLayer = asterix.XGameLayer.extend({
     var rows= this.collisionMap.length,
     csts = sh.xcfg.csts,
     top= rows - csts.FIELD_TOP,
-    r, rc=[];
+    r,
+    rc=[];
 
     for (r = csts.FIELD_BOTTOM; r < top; ++r) {
       if (this.testFilledRow(r)) { rc.push(r); }
     }
+
     if (rc.length > 0) {
       this.pauseForClearance(true, 0.5);
       this.flashFilled(rc);
@@ -138,7 +143,8 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   testFilledRow: function(r) {
-    var c, row= this.collisionMap[r],
+    var row= this.collisionMap[r],
+    c,
     csts = sh.xcfg.csts,
     h= csts.FIELD_SIDE,
     len= csts.FIELD_W;
@@ -153,7 +159,8 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   isEmptyRow: function(r) {
-    var c, row= this.collisionMap[r],
+    var row= this.collisionMap[r],
+    c,
     csts= sh.xcfg.csts,
     h= csts.FIELD_SIDE,
     len= csts.FIELD_W;
@@ -190,7 +197,8 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   findFirstDirty: function() {
-    var r, csts= sh.xcfg.csts,
+    var csts= sh.xcfg.csts,
+    r,
     t = csts.GRID_H - csts.FIELD_TOP - 1;
 
     for (r = t; r > 0; --r) {
@@ -201,7 +209,8 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   findLastDirty: function(empty) {
-    var r, csts= sh.xcfg.csts,
+    var csts= sh.xcfg.csts,
+    r,
     t = csts.GRID_H - csts.FIELD_TOP;
 
     for (r = empty+1; r < t; ++r) {
@@ -212,7 +221,8 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   findLastEmpty: function() {
-    var r, csts= sh.xcfg.csts,
+    var csts= sh.xcfg.csts,
+    r,
     t = csts.GRID_H - csts.FIELD_TOP;
 
     for (r=1; r < t;++r) {
@@ -223,7 +233,8 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   shiftDownLines: function() {
-    var r, csts= sh.xcfg.csts,
+    var csts= sh.xcfg.csts,
+    r,
     top = csts.GRID_H - csts.FIELD_TOP,
     f, e, d;
 
@@ -268,8 +279,8 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   spawnNext: function() {
-    var n= sjs.rand( EntityList.length),
-    info = this.getHUD().getNextShapeInfo(),
+    var info = this.getHUD().getNextShapeInfo(),
+    n= sjs.rand( EntityList.length),
     proto, png, formID,
     wz = ccsx.screen(),
     csts= sh.xcfg.csts,
@@ -335,17 +346,14 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   doFall: function() {
-    var ok;
-    if (this.curShape) {
-      ok = this.curShape.moveDown();
-    } else {
-      return;
-    }
-    if (!ok) {
+    if (this.curShape && ! this.curShape.moveDown()) {
+
       this.dropper= null;
+
       // lock shape in place
       this.curShape.lock();
       this.postLockCheckLine();
+
       //
       if (! this.pauseTimer) {
         this.spawnNext();
@@ -376,8 +384,8 @@ var GameLayer = asterix.XGameLayer.extend({
 
 asterix.Bricks.Factory = {
   create: function(options) {
-    var fac = new asterix.XSceneFactory([ bks.BackLayer, GameLayer, bks.HUDLayer ]);
-    var scene= fac.create(options);
+    var fac = new asterix.XSceneFactory([ bks.BackLayer, GameLayer, bks.HUDLayer ]),
+    scene= fac.create(options);
     if (!scene) { return null; }
     scene.ebus.on('/game/objects/aliens/dropbombs', function(topic, msg) {
       sh.main.dropBombs(msg);
@@ -413,4 +421,6 @@ asterix.Bricks.Factory = {
 
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

@@ -123,7 +123,7 @@ asterix.Bricks.EntityShape= asterix.XEntity.xtends({
 
   xrefTile: function (x,y) {
     var csts= sh.xcfg.csts,
-    co = csts.TILE /2;
+    co = csts.TILE * 0.5;
     // find center, instead of top left
     y -= co;
     x += co;
@@ -148,7 +148,6 @@ asterix.Bricks.EntityShape= asterix.XEntity.xtends({
 
   findBBox: function(left,top,rID, skipCollide) {
     var x, y, form= this.manifest[rID],
-    ui= global.ZotohLab.UI,
     csts= sh.xcfg.csts,
     r,c, pt,bs=[];
     skipCollide = skipCollide || false;
@@ -157,8 +156,9 @@ asterix.Bricks.EntityShape= asterix.XEntity.xtends({
       for (c=0; c < this.matrix; ++c) {
         x = left + csts.TILE * c;
         if (form[r][c] === 1) {
-          pt= new ui.Point(x,y);
-          if ( !skipCollide && this.maybeCollide(pt, new ui.Point(x + csts.TILE, y - csts.TILE))) {
+          pt= new cc.p(x,y);
+          if (!skipCollide &&
+              this.maybeCollide(pt, new cc.p(x + csts.TILE, y - csts.TILE))) {
             return [];
           }
           bs.push(pt);
@@ -232,4 +232,7 @@ asterix.Bricks.EntityShape= asterix.XEntity.xtends({
 
 
 }).call(this);
+
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

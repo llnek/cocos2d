@@ -35,16 +35,12 @@ var EntityList = [
 
 bks.BackLayer = asterix.XLayer.extend({
 
+  rtti: function() { return 'BackLayer'; },
+
   pkInit: function() {
     var map = cc.TMXTiledMap.create(sh.getTilesPath('gamelevel1.tiles.arena'));
     this.addItem(map);
     return this._super();
-  },
-
-  pkInput: NILFUNC,
-
-  rtti: function() {
-    return 'BackLayer';
   }
 
 });
@@ -56,8 +52,8 @@ bks.BackLayer = asterix.XLayer.extend({
 bks.HUDLayer = asterix.XGameHUDLayer.extend({
 
   initParentNode: function() {
-    this.atlasBatch = cc.SpriteBatchNode.create(
-                      cc.textureCache.addImage( sh.getAtlasPath('game-pics')));
+    var img= cc.textureCache.addImage( sh.getAtlasPath('game-pics'));
+    this.atlasBatch = new cc.SpriteBatchNode(img);
     this.addChild(this.atlasBatch, this.lastZix, ++this.lastTag);
   },
 
@@ -69,10 +65,11 @@ bks.HUDLayer = asterix.XGameHUDLayer.extend({
 
     this.scoreLabel = ccsx.bmfLabel({
       fontPath: sh.getFontPath('font.TinyBoxBB'),
-      text: '0',
       anchor: ccsx.AnchorBottomRight,
+      text: '0',
       scale: 12/72
     });
+
     this.scoreLabel.setPosition( wz.width - csts.TILE - csts.S_OFF,
       wz.height - csts.TILE - csts.S_OFF - ccsx.getScaledHeight(this.scoreLabel));
 
@@ -96,12 +93,12 @@ bks.HUDLayer = asterix.XGameHUDLayer.extend({
     cw= ccsx.center(),
     sz = proto.prototype.matrix * csts.TILE,
     left= (csts.FIELD_W + 2) * csts.TILE,
-    x= left + (wz.width - left - csts.TILE) / 2,
+    x= left + (wz.width - left - csts.TILE) * 0.5,
     y = cw.y;
 
     if (this.nextShape) { this.nextShape.dispose(); }
-    x -= sz/2;
-    y += sz/2;
+    x -= sz * 0.5;
+    y += sz * 0.5;
     this.nextShape= new (proto)( x, y, { wantKeys: false });
     this.nextShape.createAsOutline(this);
     this.nextShapeInfo= {
@@ -140,4 +137,6 @@ bks.HUDLayer = asterix.XGameHUDLayer.extend({
 
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

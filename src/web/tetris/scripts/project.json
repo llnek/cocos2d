@@ -1,5 +1,7 @@
  {
     "jsList"        : [
+      "src/tetris/config.js",
+
       "src/tetris/entities/block.js",
       "src/tetris/entities/shape.js",
       "src/tetris/entities/box.js",

@@ -23,6 +23,8 @@ asterix.Bricks= {};
 
 sh.xcfg = sjs.mergeEx( asterix.XConfig, {
 
+  appKey: "fb0fdd0b-1821-42d9-b6f7-26b11218b40d",
+
   appid: 'tetris',
   color: 'silver',
 
@@ -86,9 +88,9 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
 
 });
 
-//////////////////////////////////////////////////////////////////////////////
-//EOF
 
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

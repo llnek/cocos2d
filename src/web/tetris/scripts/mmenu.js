@@ -34,7 +34,7 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
       text: sh.l10n('%1player'),
       scale: 0.5,
       selector: function() {
-        sh.fireEvent('/mmenu/controls/newgame', { mode: 1});
+        sh.fireEvent('/mmenu/controls/newgame', { mode: sh.P1_GAME});
       },
       target: this,
       pos: cc.p(cw.x, wz.height * 0.5)
@@ -65,7 +65,8 @@ sh.protos['MainMenu'] = {
 };
 
 
-
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 
