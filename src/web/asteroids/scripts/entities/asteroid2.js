@@ -41,7 +41,8 @@ ast.EntityAsteroid2 = ast.EntityAster.xtends({
 
   explode: function() {
     var cfg = sh.xcfg.levels.gamelevel1.fixtures,
-    n, csts= sh.xcfg.csts,
+    csts= sh.xcfg.csts,
+    n,
     pos= this.sprite.getPosition();
     for (n=0; n < cfg.STONES; ++n) {
       sh.fireEvent('/game/objects/stones/create', {
@@ -50,8 +51,7 @@ ast.EntityAsteroid2 = ast.EntityAster.xtends({
     }
   },
 
-  check: function(other) {
-  },
+  check: function(other) {},
 
   injured: function(num,from) {
     this._super(num,from);
@@ -73,4 +73,6 @@ ast.EntityAsteroid2 = ast.EntityAster.xtends({
 }).call(this);
 
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

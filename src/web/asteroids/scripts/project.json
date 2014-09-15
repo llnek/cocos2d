@@ -1,6 +1,10 @@
  {
 
     "jsList"        : [
+
+      "src/asteroids/config.js",
+      "src/asteroids/i18n/game_en_US.js",
+
       "src/asteroids/entities/explode.js",
       "src/asteroids/entities/aster.js",
       "src/asteroids/entities/asteroid3.js",

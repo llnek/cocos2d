@@ -17,16 +17,6 @@ ccsx= asterix.COCOS2DX,
 ivs= asterix.Invaders,
 sjs= global.SkaroJS;
 
-var NILFUNC=function(){};
-
-//////////////////////////////////////////////////////////////////////////////
-// object pools
-//////////////////////////////////////////////////////////////////////////////
-
-sh.pools['missiles'] = new asterix.XEntityPool({ entityProto: ivs.EntityMissile });
-sh.pools['bombs'] = new asterix.XEntityPool({ entityProto: ivs.EntityBomb });
-sh.pools['live-missiles'] = {};
-sh.pools['live-bombs'] = {};
 
 //////////////////////////////////////////////////////////////////////////////
 // background layer

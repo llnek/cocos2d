@@ -19,9 +19,6 @@ sjs= global.SkaroJS;
 
 
 //////////////////////////////////////////////////////////////////////////////
-// game layer
-//////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
 // object pools
 //////////////////////////////////////////////////////////////////////////////
 
@@ -30,10 +27,14 @@ sh.pools['lasers'] = new asterix.XEntityPool({ entityProto: ast.EntityLaser });
 sh.pools['live-missiles'] = {};
 sh.pools['live-lasers'] = {};
 
+//////////////////////////////////////////////////////////////////////////////
+// game layer
+//////////////////////////////////////////////////////////////////////////////
 var GameLayer = asterix.XGameLayer.extend({
 
   getHUD: function() {
-    return cc.director.getRunningScene().layers['HUD'];
+    var rc= this.ptScene.getLayers();
+    return rc['HUD'];
   },
 
   getNode: function() { return this.atlasBatch; },
@@ -421,7 +422,7 @@ var GameLayer = asterix.XGameLayer.extend({
     this.getHUD().updateScore(msg.score);
   },
 
-  newGame: function(mode) {
+  onNewGame: function(mode) {
     //sh.xcfg.sfxPlay('start_game');
     this.setGameMode(mode);
     this.play(true);
@@ -479,4 +480,6 @@ asterix.Asteroids.Factory = {
 
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

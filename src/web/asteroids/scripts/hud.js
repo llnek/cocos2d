@@ -17,8 +17,6 @@ ccsx = asterix.COCOS2DX,
 ast= asterix.Asteroids,
 sjs= global.SkaroJS;
 
-var NILFUNC=function() {};
-
 
 //////////////////////////////////////////////////////////////////////////////
 // back layer
@@ -26,17 +24,14 @@ var NILFUNC=function() {};
 
 ast.BackLayer = asterix.XLayer.extend({
 
+  rtti: function() { return 'BackLayer'; },
+
   pkInit: function() {
     var map = cc.TMXTiledMap.create(sh.getTilesPath('gamelevel1.tiles.arena'));
     this.addItem(map);
     return this._super();
-  },
-
-  pkInput: NILFUNC,
-
-  rtti: function() {
-    return 'BackLayer';
   }
+
 
 });
 
@@ -62,9 +57,9 @@ ast.HUDLayer = asterix.XGameHUDLayer.extend({
   },
 
   initParentNode: function() {
-    this.atlasBatch = cc.SpriteBatchNode.create( cc.textureCache.addImage( sh.getAtlasPath('game-pics')));
+    var img= cc.textureCache.addImage( sh.getAtlasPath('game-pics'));
+    this.atlasBatch = new cc.SpriteBatchNode(img);
     this.addChild(this.atlasBatch, this.lastZix, ++this.lastTag);
-
     var map = cc.TMXTiledMap.create(sh.getTilesPath('gamelevel1.tiles.hudwall'));
     this.addChild(map,++this.lastZix, ++this.lastTag);
   },
@@ -119,12 +114,7 @@ ast.HUDLayer = asterix.XGameHUDLayer.extend({
     if (n instanceof cc.Sprite) { this._super(n); } else {
       this.addChild(n, this.lastZix, ++this.lastTag);
     }
-  },
-
-  rtti: function() {
-    return 'HUD';
   }
-
 
 });
 
@@ -132,4 +122,6 @@ ast.HUDLayer = asterix.XGameHUDLayer.extend({
 
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

@@ -69,8 +69,7 @@ ast.EntityLaser = asterix.XEntity.xtends({
     sh.fireEvent('/game/objects/lasers/killed', { entity: this } );
   },
 
-  check: function(other) {
-  },
+  check: function(other) {},
 
   ctor: function(x, y, options) {
     this._super(x, y, options);
@@ -92,6 +91,8 @@ ast.EntityLaser = asterix.XEntity.xtends({
 
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 
 
 

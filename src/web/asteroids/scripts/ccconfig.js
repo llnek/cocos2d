@@ -6,17 +6,14 @@ document.ccConfig = {
   showFPS: false,
   frameRate: 60,
 
-  // 0(default), 1(Canvas only), 2(WebGL only)
   renderMode: 0,
+  debugMode: 1,
 
   id: 'gameArea',
 
-  //0 to turn debug off, 1 for basic debug, and 2 for full debug
-  debugLevel: 2,
-
   engineDir: ['/public/extlibs/cocos2d-html5'],
+  modules: [ 'cocos2d', 'editbox' ],
 
-  modules: [ 'cocos2d' ],
   jsList: [
     "/public/vendors/underscore/underscore-min.js",
     "/public/vendors/l10njs/l10n.min.js",
@@ -43,7 +40,8 @@ document.ccConfig = {
     "/public/ig/lib/zotohlab/gui/online.js",
     "/public/ig/lib/zotohlab/gui/mainmenu.js",
 
-
+    '/public/ig/lib/game/asteroids/config.js',
+    '/public/ig/lib/game/asteroids/i18n/game_en_US.js',
 
       '/public/ig/lib/game/asteroids/entities/explode.js',
       '/public/ig/lib/game/asteroids/entities/aster.js',

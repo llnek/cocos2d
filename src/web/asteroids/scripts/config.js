@@ -23,6 +23,8 @@ asterix.Asteroids= {};
 
 sh.xcfg = sjs.mergeEx(asterix.XConfig, {
 
+  appKey: "339a5c13-24b3-4069-9a0a-661820573fb3",
+
   appid: 'asteroids',
   color: 'red',
 

@@ -144,7 +144,9 @@ ast.EntityPlayer = asterix.XEntity.xtends({
     // we want to find the ship's nose to fire the missile
     var rc= sh.calcXY(this.angle, this.sprite.getContentSize().height/2),
     pos = this.sprite.getPosition();
-    sh.fireEvent('/game/objects/players/shoot', { x: pos.x + rc[0] , y: pos.y + rc[1] , angle: this.angle });
+    sh.fireEvent('/game/objects/players/shoot', {
+      x: pos.x + rc[0] , y: pos.y + rc[1] , angle: this.angle
+    });
     this.coolDown= ccsx.createTimer(this.sprite, 0.8);
   },
 
@@ -197,6 +199,8 @@ ast.EntityPlayer = asterix.XEntity.xtends({
 
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 
 
 

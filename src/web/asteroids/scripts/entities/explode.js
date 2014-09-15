@@ -29,9 +29,9 @@ var Boom = cc.Sprite.extend({
     this._super();
     this.initWithSpriteFrameName(options.frames[0]);
     this.setPosition(x,y);
-
-    this.runAction( cc.ScaleTo.create(options.frameTime, options.frameScale),
-      cc.CallFunc.create(function() {
+    this.runAction( new cc.ScaleTo(options.frameTime,
+                                   options.frameScale),
+      new cc.CallFunc(function() {
         this.entity.dispose();
       }, this)
     );
@@ -39,14 +39,15 @@ var Boom = cc.Sprite.extend({
 
 });
 
+
 asterix.Asteroids.EntityExplode = asterix.XEntity.xtends({
 
-  update: function(dt) {
+  create: function() {
+    return this.sprite = new Boom(this, this.startPos.x,
+                                  this.startPos.y, this.options);
   },
 
-  create: function() {
-    return this.sprite = new Boom(this, this.startPos.x, this.startPos.y, this.options);
-  },
+  update: function(dt) {},
 
   ctor: function(x, y, options) {
     this._super(x, y, options);
@@ -65,4 +66,6 @@ asterix.Asteroids.EntityExplode = asterix.XEntity.xtends({
 
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

@@ -18,7 +18,6 @@ ccsx = asterix.COCOS2DX,
 sjs= global.SkaroJS;
 
 
-
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
@@ -37,7 +36,8 @@ ast.EntityAsteroid1 = ast.EntityAster.xtends({
 
   explode: function() {
     var cfg = sh.xcfg.levels.gamelevel1.fixtures,
-    n, csts= sh.xcfg.csts,
+    csts= sh.xcfg.csts,
+    n,
     pos= this.sprite.getPosition();
     for (n=0; n < cfg.ROCKS; ++n) {
       sh.fireEvent('/game/objects/rocks/create', {
@@ -55,8 +55,7 @@ ast.EntityAsteroid1 = ast.EntityAster.xtends({
     this.explode();
   },
 
-  check: function(other) {
-  },
+  check: function(other) {},
 
   ctor: function(x,y,options) {
     this._super(x,y,options);
@@ -73,4 +72,6 @@ ast.EntityAsteroid1 = ast.EntityAster.xtends({
 }).call(this);
 
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

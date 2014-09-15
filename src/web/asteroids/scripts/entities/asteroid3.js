@@ -40,8 +40,7 @@ ast.EntityAsteroid3 = ast.EntityAster.xtends({
     return this.sprite = new Astro3(this.startPos.x, this.startPos.y, this.options);
   },
 
-  check: function(other) {
-  },
+  check: function(other) {},
 
   injured: function(num,from) {
     this._super(num,from);
@@ -62,4 +61,6 @@ ast.EntityAsteroid3 = ast.EntityAster.xtends({
 }).call(this);
 
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 
