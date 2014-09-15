@@ -48,14 +48,20 @@ asterix.Invaders.EntityBomb = asterix.XEntity.xtends({
   injured: function(num,from) {
     var points = from instanceof ivs.EntityMissile,
     pos = this.sprite.getPosition();
-    sh.fireEvent('/game/objects/bombs/killed', { entity: this, x: pos.x, y: pos.y, explode: true });
+    sh.fireEvent('/game/objects/bombs/killed', {
+      entity: this,
+      x: pos.x,
+      y: pos.y,
+      explode: true });
     if (points) {
-      sh.fireEvent('/game/objects/players/earnscore', { score: this.value });
+      sh.fireEvent('/game/objects/players/earnscore', {
+        score: this.value
+      });
     }
   },
 
   check: function(other) {
-    throw new Error("not implemented.");
+    sjs.tne("not implemented.");
   },
 
   create: function() {
@@ -76,13 +82,8 @@ asterix.Invaders.EntityBomb = asterix.XEntity.xtends({
 });
 
 
-
-
-
-
-
-
-
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

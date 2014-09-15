@@ -30,13 +30,12 @@ var Alien = cc.Sprite.extend({
     this.initWithSpriteFrameName(options.frames[0]);
     this.setPosition(x,y);
 
-    var f0 = ccsx.getSpriteFrame(options.frames[0]),
-    f1 = ccsx.getSpriteFrame(options.frames[1]),
-    animFrames = [ f0, f1 ],
-    animation = cc.Animation.create(animFrames, options.frameTime),
-    animate = cc.Animate.create(animation);
+    var frames = [ ccsx.getSpriteFrame(options.frames[0]),
+                   ccsx.getSpriteFrame(options.frames[1]) ],
+    anim = cc.Animation.create(frames, options.frameTime),
+    action = new cc.Animate(anim);
 
-    this.runAction(cc.RepeatForever.create(animate));
+    this.runAction(new cc.RepeatForever(action));
   }
 
 });
@@ -70,7 +69,7 @@ asterix.Invaders.EntityAlien = asterix.XEntity.xtends({
   },
 
   check: function(other) {
-    throw new Error("not implemented.");
+    sjs.tne("not implemented.");
   },
 
   injured: function(num, from) {
@@ -90,12 +89,6 @@ asterix.Invaders.EntityAlien = asterix.XEntity.xtends({
 
   ctor: function(x, y, options) {
     this._super(x, y, options);
-    /*
-    this.maxVel.x = 100;
-    this.maxVel.y = 100;
-    this.friction.x = 150;
-    this.friction.y = 0;
-    */
     if (this.options.rank < 3) {
       this.options.frames = [ 'blue_bug_1.png', 'blue_bug_0.png' ];
       this.value=100;
@@ -114,7 +107,8 @@ asterix.Invaders.EntityAlien = asterix.XEntity.xtends({
 });
 
 
-
-
 }).call(this);
+
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 
