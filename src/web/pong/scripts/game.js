@@ -17,8 +17,8 @@ ccsx= asterix.COCOS2DX,
 png= asterix.Pong,
 sjs= global.SkaroJS;
 
-var Odin= global.ZotohLab.Odin,
-evts= Odin.Events;
+var odin= global.ZotohLab.Odin,
+evts= odin.Events;
 
 
 var BALL_SPEED=150, // 25 incremental
@@ -62,7 +62,7 @@ var GameLayer = asterix.XGameLayer.extend({
         this.actions.push([null, 'draw' ]);
       break;
       default:
-        throw new Error("onStop has bad status.");
+        sjs.tne("onStop has bad status.");
       break;
     }
   },
@@ -117,19 +117,20 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   getHUD: function() {
-    return cc.director.getRunningScene().layers['HUD'];
+    var rc= this.ptScene.getLayers();
+    return rc['HUD'];
   },
 
   players: [],
   ball: null,
 
   initPaddleSize: function() {
-    var dummy= cc.Sprite.create(sh.getImagePath('gamelevel1.images.paddle1'));
+    var dummy= new cc.Sprite(sh.getImagePath('gamelevel1.images.paddle1'));
     return this.paddleSize = dummy.getContentSize();
   },
 
   initBallSize: function() {
-    var dummy= cc.Sprite.create(sh.getImagePath('gamelevel1.images.ball'));
+    var dummy= new cc.Sprite(sh.getImagePath('gamelevel1.images.ball'));
     return this.ballSize = dummy.getContentSize();
   },
 
@@ -159,8 +160,8 @@ var GameLayer = asterix.XGameLayer.extend({
     });
 
     // position of paddles
-    p2x = Math.floor(wz.width - csts.TILE - 4 - bs.width - ps.width/2);
-    p1x = Math.floor(csts.TILE + bs.width + 4 + ps.width/2);
+    p2x = Math.floor(wz.width - csts.TILE - 4 - bs.width - ps.width * 0.5);
+    p1x = Math.floor(csts.TILE + bs.width + 4 + ps.width * 0.5);
 
     // start with clean slate
     this.reset(newFlag);
@@ -188,21 +189,21 @@ var GameLayer = asterix.XGameLayer.extend({
     // based on mode, create the 2 players
     //switch (sh.xcfg.csts.GAME_MODE) {
     switch (this.options.mode) {
-      case 1:
+      case sh.P1_GAME:
         p2 = new png.EntityRobot(p2x, cw.y,
                                  sjs.mergeEx(dfts.paddle, { color: 'O' }));
         p1 = new png.EntityHuman(p1x, cw.y,
                                  sjs.mergeEx(dfts.paddle, { color: 'X' }));
         this.arena = new png.NonNetArena(dfts);
       break;
-      case 2:
+      case sh.P2_GAME:
         p2 = new png.EntityHuman(p2x, cw.y,
                                  sjs.mergeEx(dfts.paddle, { color: 'O' }));
         p1 = new png.EntityHuman(p1x, cw.y,
                                  sjs.mergeEx(dfts.paddle, { color: 'X' }));
         this.arena = new png.NonNetArena(dfts);
       break;
-      case 3:
+      case sh.ONLINE_GAME:
         p2 = new png.NetPlayer(p2x, cw.y,
                                sjs.mergeEx(dfts.paddle, { color: 'O' }));
         p1 = new png.NetPlayer(p1x, cw.y,
@@ -322,6 +323,7 @@ asterix.Pong.Factory = {
 }).call(this);
 
 
-
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 
 

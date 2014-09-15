@@ -17,8 +17,8 @@ ccsx= asterix.COCOS2DX,
 png= asterix.Pong,
 sjs= global.SkaroJS;
 
-var Odin= global.ZotohLab.Odin,
-evts= Odin.Events;
+var odin= global.ZotohLab.Odin,
+evts= odin.Events;
 
 var Cmd= {
 
@@ -34,16 +34,16 @@ var Cmd= {
 
 var pngArena = sjs.Class.xtends({
 
-  gameInProgress: false,
+  running: false,
   actors: [],
   ball: null,
 
   onStopReset: function() {
-    this.gameInProgress = false;
+    this.running = false;
   },
 
   isActive: function() {
-    return this.gameInProgress;
+    return this.running;
   },
 
   startRumble: function() {
@@ -53,7 +53,7 @@ var pngArena = sjs.Class.xtends({
   },
 
   pause: function() {
-    this.gameInProgress=false;
+    this.running=false;
   },
 
   finz: function() {
@@ -128,7 +128,7 @@ var pngArena = sjs.Class.xtends({
   },
 
   isOnline: function() {
-    throw Error("Abstract method called.");
+    sjs.tne("Abstract method called.");
   },
 
   ctor: function(options) {
@@ -164,10 +164,11 @@ png.NetArena = pngArena.xtends({
 
   // inform the server that paddle has changed direction: up , down or stopped.
   notifyServer: function(actor,direction) {
-    var vy = direction * this.options.paddle.speed;
-    var pos = actor.sprite.getPosition();
-    var pnum= this.ctx.options.pnum;
-    var src, cmd = {
+    var vy = direction * this.options.paddle.speed,
+    pos = actor.sprite.getPosition(),
+    pnum= this.ctx.options.pnum,
+    src,
+    cmd = {
       x: Math.floor(pos.x),
       y: Math.floor(pos.y),
       dir: direction,
@@ -349,7 +350,7 @@ png.NetArena = pngArena.xtends({
   },
 
   animate: function() {
-    this.gameInProgress = true;
+    this.running = true;
   },
 
   isOnline: function() { return true; }
@@ -362,7 +363,7 @@ png.NetArena = pngArena.xtends({
 png.NonNetArena = pngArena.xtends({
 
   startRumble: function() {
-    this.gameInProgress = true;
+    this.running = true;
   },
 
   doUpdateWorld: function(dt) {
@@ -418,6 +419,6 @@ png.NonNetArena = pngArena.xtends({
 }).call(this);
 
 
-
-
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

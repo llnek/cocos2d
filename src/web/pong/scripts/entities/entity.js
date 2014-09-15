@@ -25,7 +25,7 @@ sjs= global.SkaroJS;
 png.EntityXXX = asterix.XEntity.xtends({
 
   create: function() {
-    this.sprite = cc.Sprite.create(sh.getImagePath(this.resid));
+    this.sprite = new cc.Sprite(sh.getImagePath(this.resid));
     this.sprite.setPosition(this.startPos);
     return this.sprite;
   }
@@ -46,7 +46,7 @@ png.EntityPaddle = png.EntityXXX.xtends({
     wz = ccsx.screen(),
     y2 = wz.height - csts.TILE * 6,
     y1 = csts.TILE,
-    h = ccsx.getHeight(this.sprite) / 2,
+    h = ccsx.getHeight(this.sprite) * 0.5,
     b= ccsx.getBottom(this.sprite),
     t= ccsx.getTop(this.sprite);
 
@@ -70,11 +70,11 @@ png.EntityPaddle = png.EntityXXX.xtends({
     other.vel.x = - other.vel.x;
     switch (this.options.color) {
     case 'X':
-      other.sprite.setPosition(ccsx.getRight(this.sprite) + ccsx.getWidth(other.sprite) / 2, pos.y);
+      other.sprite.setPosition(ccsx.getRight(this.sprite) + ccsx.getWidth(other.sprite) * 0.5, pos.y);
       sh.sfxPlay(this.snd);
       break;
     case 'O':
-      other.sprite.setPosition(ccsx.getLeft(this.sprite) - ccsx.getWidth(other.sprite) / 2, pos.y);
+      other.sprite.setPosition(ccsx.getLeft(this.sprite) - ccsx.getWidth(other.sprite) * 0.5, pos.y);
       sh.sfxPlay(this.snd);
       break;
     }
@@ -101,11 +101,11 @@ png.EntityPaddle = png.EntityXXX.xtends({
 });
 
 Object.defineProperty(png.EntityPaddle.prototype, "color", {
-  get: function() {
-    return this.options.color;
-  }
+  get: function() { return this.options.color; }
 });
 
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

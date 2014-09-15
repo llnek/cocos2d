@@ -25,6 +25,7 @@ png.EntityRobot = png.EntityPaddle.xtends({
 
   isRobot: function() { return true; },
 
+  //TODO: better AI please
   update: function(dt) {
     var bp= this.ball.sprite.getPosition(),
     pos = this.sprite.getPosition(),
@@ -61,4 +62,6 @@ png.EntityRobot = png.EntityPaddle.xtends({
 
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

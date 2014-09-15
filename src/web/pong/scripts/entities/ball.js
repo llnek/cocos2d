@@ -24,6 +24,7 @@ sjs= global.SkaroJS;
 
 png.EntityBall = png.EntityXXX.xtends({
 
+  //bounce the ball off the walls or just move it.
   update: function(dt) {
     var b=false;
     if (this.bounce > 0) { b= this.traceEnclosure(dt); }
@@ -47,6 +48,8 @@ png.EntityBall = png.EntityXXX.xtends({
 
 png.NetBall = png.EntityBall.xtends({
 
+  //for online game, don't move the ball until the server
+  //tells it to.
   create: function() {
     var rc= this._super();
     this.vel.y = 0;
@@ -59,4 +62,6 @@ png.NetBall = png.EntityBall.xtends({
 
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

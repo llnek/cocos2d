@@ -24,6 +24,8 @@ asterix.Pong= {};
 
 sh.xcfg = sjs.mergeEx( asterix.XConfig, {
 
+  appKey: "fa0860f9-76dc-4135-8bc7-bd5af3147d55",
+
   appid: 'pong',
   color: 'green',
 

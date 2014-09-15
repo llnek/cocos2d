@@ -27,17 +27,14 @@ var NILFUNC= function() {};
 
 png.BackLayer = asterix.XLayer.extend({
 
+  rtti: function() { return 'BackLayer'; },
+
   pkInit: function() {
     var map = cc.TMXTiledMap.create(sh.getTilesPath('gamelevel1.tiles.arena'));
     this.addItem(map);
     return this._super();
   },
 
-  pkInput: NILFUNC,
-
-  rtti: function() {
-    return 'BackLayer';
-  }
 
 });
 
@@ -141,14 +138,10 @@ png.HUDLayer = asterix.XGameHUDLayer.extend({
   },
 
   initCtrlBtns: function() {
-    this._super(28/48, cc.ALIGN_TOP);
+    this._super(28/48, 'cc.ALIGN_TOP');
   },
 
   initIcons: function() {
-  },
-
-  rtti: function() {
-    return 'HUD';
   },
 
   isDone: function() {
@@ -196,7 +189,8 @@ png.HUDLayer = asterix.XGameHUDLayer.extend({
 
 }).call(this);
 
-
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 
 
 

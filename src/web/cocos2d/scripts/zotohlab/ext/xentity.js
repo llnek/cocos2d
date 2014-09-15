@@ -225,7 +225,7 @@ asterix.XEntity = sjs.Class.xtends({
   },
 
   create: function() {
-    throw new Error("missing implementation.");
+    sjs.tne("missing implementation.");
   },
 
   ctor: function(x,y,options) {

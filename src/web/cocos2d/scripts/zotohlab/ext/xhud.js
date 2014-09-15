@@ -22,6 +22,8 @@ ccsx= asterix.COCOS2DX;
 
 asterix.XGameHUDLayer = asterix.XLayer.extend({
 
+  rtti: function() { return 'HUD'; },
+
   pkInit: function() {
     this.initParentNode();
     this.initLabels();

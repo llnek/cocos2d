@@ -13,7 +13,8 @@
 asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
 ccsx = asterix.COCOS2DX,
-SkaroJS= global.SkaroJS;
+sjs= global.SkaroJS;
+
 
 //////////////////////////////////////////////////////////////////////////////
 // splash screen for the game - make it look nice please.
@@ -22,7 +23,8 @@ SkaroJS= global.SkaroJS;
 var UILayer = asterix.XLayer.extend({
 
   pkInit: function() {
-    var cw = ccsx.center();
+    var cw = ccsx.center(),
+    wz = ccsx.screen();
 
     this.addItem(ccsx.pmenu1({
       imgPath: sh.getImagePath('splash.play-btn'),
@@ -30,7 +32,7 @@ var UILayer = asterix.XLayer.extend({
         sh.fireEvent('/splash/controls/playgame');
       },
       target: this,
-      pos: cc.p(cw.x, 56)
+      pos: cc.p(cw.x, wz.height * 0.75)
     }));
 
     return this._super();
@@ -62,4 +64,6 @@ sh.protos['StartScreen'] = {
 
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

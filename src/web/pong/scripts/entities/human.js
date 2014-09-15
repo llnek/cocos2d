@@ -31,7 +31,7 @@ png.EntityHuman = png.EntityPaddle.xtends({
   },
 
   onKeyPressed: function(dt) {
-    var sz = this.sprite.getContentSize().height / 2,
+    var sz = this.sprite.getContentSize().height * 0.5,
     pos = this.sprite.getPosition(),
     y= pos.y,
     csts = sh.xcfg.csts,
@@ -71,7 +71,7 @@ png.NetPlayer = png.EntityHuman.xtends({
   },
 
   simulateMove: function(dt) {
-    var sz = this.sprite.getContentSize().height / 2,
+    var sz = this.sprite.getContentSize().height * 0.5,
     pos = this.sprite.getPosition(),
     y= pos.y,
     csts = sh.xcfg.csts,
@@ -113,4 +113,6 @@ png.NetPlayer = png.EntityHuman.xtends({
 
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 
