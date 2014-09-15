@@ -25,7 +25,8 @@ sjs= global.SkaroJS;
 var GameLayer = asterix.XGameLayer.extend({
 
   getHUD: function() {
-    return cc.director.getRunningScene().layers['HUD'];
+    var rc= this.ptScene.getLayers();
+    return rc['HUD'];
   },
 
   getNode: function() { return this.atlasBatch; },
@@ -33,7 +34,7 @@ var GameLayer = asterix.XGameLayer.extend({
   reset: function(newFlag) {
     if (this.atlasBatch) { this.atlasBatch.removeAllChildren(); } else {
       var img = cc.textureCache.addImage( sh.getAtlasPath('game-pics'));
-      this.atlasBatch = cc.SpriteBatchNode.create(img);
+      this.atlasBatch = new cc.SpriteBatchNode(img);
       this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
     }
     this.players=[];
@@ -94,7 +95,7 @@ var GameLayer = asterix.XGameLayer.extend({
     y= wz.height - csts.TOP_ROW * csts.TILE ;
 
     for (r=0; r < csts.ROWS; ++r) {
-      x= csts.TILE + csts.LEFT_OFF + this.candySize.width/2;
+      x= csts.TILE + csts.LEFT_OFF + sh.hw(this.candySize);
       for (c=0; c < csts.COLS; ++c) {
         b= new bko.EntityBrick(x,y, {
           color: candies[cs[r]]
@@ -135,7 +136,7 @@ var GameLayer = asterix.XGameLayer.extend({
       if (this.ball.vel.x < 0) {
       } else {
       }
-      bs.setPosition(bp.x, ccsx.getTop(this.actor.sprite) + ccsx.getHeight(bs) / 2);
+      bs.setPosition(bp.x, ccsx.getTop(this.actor.sprite) + ccsx.getHeight(bs) * 0.5);
       sh.sfxPlay('ball-paddle');
     }
     else {
@@ -198,8 +199,8 @@ var GameLayer = asterix.XGameLayer.extend({
     this.getHUD().updateScore(msg.value);
   },
 
-  newGame: function(mode) {
-    sh.sfxPlay('start_game');
+  onNewGame: function(mode) {
+    //sh.sfxPlay('start_game');
     this.setGameMode(mode);
     this.play(true);
   }
@@ -242,4 +243,6 @@ asterix.BreakOut.Factory = {
 
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

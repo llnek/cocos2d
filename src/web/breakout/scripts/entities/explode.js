@@ -30,14 +30,14 @@ var Boom = cc.Sprite.extend({
     this.initWithSpriteFrameName(options.frames[0]);
     this.setPosition(x,y);
 
-    var frs = [ccsx.getSpriteFrame(options.frames[0]),
-               ccsx.getSpriteFrame(options.frames[1]),
-               ccsx.getSpriteFrame(options.frames[2]),
-               ccsx.getSpriteFrame(options.frames[3]) ],
-    animation = cc.Animation.create(frs, options.frameTime);
+    var frames = [ccsx.getSpriteFrame(options.frames[0]),
+                  ccsx.getSpriteFrame(options.frames[1]),
+                  ccsx.getSpriteFrame(options.frames[2]),
+                  ccsx.getSpriteFrame(options.frames[3]) ],
+    anim= new cc.Animation(frames, options.frameTime);
 
-    this.runAction( cc.Sequence.create(cc.Animate.create(animation),
-      cc.CallFunc.create(function() {
+    this.runAction(new cc.Sequence(new cc.Animate(anim),
+      new cc.CallFunc(function() {
         this.entity.dispose();
       }, this)
     ));
@@ -70,4 +70,6 @@ asterix.BreakOut.EntityExplode = asterix.XEntity.xtends({
 
 }).call(this);
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

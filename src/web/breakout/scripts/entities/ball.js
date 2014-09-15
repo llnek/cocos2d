@@ -23,11 +23,13 @@ sjs= global.SkaroJS;
 //////////////////////////////////////////////////////////////////////////////
 
 var Ball = cc.Sprite.extend({
+
   ctor: function(x,y,options) {
     this._super();
     this.initWithSpriteFrameName(options.frames[0]);
     this.setPosition(x,y);
   }
+
 });
 
 
@@ -100,4 +102,6 @@ bko.EntityBall = asterix.XEntity.xtends({
 }).call(this);
 
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

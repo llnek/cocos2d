@@ -23,12 +23,15 @@ sjs= global.SkaroJS;
 //////////////////////////////////////////////////////////////////////////////
 
 var Candy = cc.Sprite.extend({
+
   ctor: function(x,y,options) {
     this._super();
     this.initWithSpriteFrameName(options.frames[0]);
     this.setPosition(x,y);
   }
+
 });
+
 
 bko.EntityBrick = asterix.XEntity.xtends({
 
@@ -65,4 +68,6 @@ bko.EntityBrick = asterix.XEntity.xtends({
 }).call(this);
 
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

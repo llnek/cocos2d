@@ -23,12 +23,15 @@ sjs= global.SkaroJS;
 //////////////////////////////////////////////////////////////////////////////
 
 var Paddle = cc.Sprite.extend({
+
   ctor: function(x,y,options) {
     this._super();
     this.initWithSpriteFrameName(options.frames[0]);
     this.setPosition(x,y);
   }
+
 });
+
 
 bko.EntityPlayer = asterix.XEntity.xtends({
 
@@ -64,13 +67,12 @@ bko.EntityPlayer = asterix.XEntity.xtends({
     wz = ccsx.screen();
 
     if (ccsx.getRight(this.sprite) > wz.width - csts.TILE) {
-      this.sprite.setPosition(wz.width - csts.TILE - sz.width/2, pos.y);
+      this.sprite.setPosition(wz.width - csts.TILE - sh.hw(sz), pos.y);
     }
     if (ccsx.getLeft(this.sprite) < csts.TILE) {
-      this.sprite.setPosition( csts.TILE + sz.width/2, pos.y);
+      this.sprite.setPosition( csts.TILE + sh.hw(sz), pos.y);
     }
   },
-
 
   ctor: function(x, y, options) {
     this._super(x, y, options);
@@ -86,4 +88,6 @@ bko.EntityPlayer = asterix.XEntity.xtends({
 }).call(this);
 
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

@@ -1,14 +1,17 @@
  {
 
     "jsList"        : [
-  "src/breakout/entities/explode.js",
-  "src/breakout/entities/player.js",
-  "src/breakout/entities/ball.js",
-  "src/breakout/entities/brick.js",
-  "src/breakout/hud.js",
-  "src/breakout/game.js",
-  "src/breakout/mmenu.js",
-  "src/breakout/splash.js"
+
+        "src/breakout/config.js",
+        "src/breakout/i18n/game_en_US.js",
+        "src/breakout/entities/explode.js",
+        "src/breakout/entities/player.js",
+        "src/breakout/entities/ball.js",
+        "src/breakout/entities/brick.js",
+        "src/breakout/hud.js",
+        "src/breakout/game.js",
+        "src/breakout/mmenu.js",
+        "src/breakout/splash.js"
 
     ]
 }
