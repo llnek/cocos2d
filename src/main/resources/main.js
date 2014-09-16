@@ -20,7 +20,6 @@ if (cc.sys.isNative) {
     var searchPaths = jsb.fileUtils.getSearchPaths();
     searchPaths.push('script');
     if (cc.sys.os == cc.sys.OS_IOS || cc.sys.os == cc.sys.OS_OSX) {
-        searchPaths.push("audio");
         searchPaths.push("res");
         searchPaths.push("src");
     }
