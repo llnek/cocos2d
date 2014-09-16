@@ -233,8 +233,8 @@ global.ZotohLab.Asterix = {
     sjs.loggr.debug('about to sanitize url for jsb: ' + url);
     //ensure we tell mustache not to escape html
     url = url || '';
-    if (url.match(/^media/)) {
-      url = 'res' + url.slice(0,5);
+    if (url.match(/^res/)) {
+      //url = 'res' + url.slice(0,3);
     }
     else
     if (url.match(/^game/)) {
@@ -256,7 +256,7 @@ global.ZotohLab.Asterix = {
       url = '{{{gamesource-ref}}}/' + url;
     }
     else
-    if (url.match(/^media/)) {
+    if (url.match(/^res/)) {
       url = '{{{media-ref}}}/' + url;
     }
     return Mustache.render( url, {

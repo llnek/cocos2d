@@ -297,7 +297,7 @@ def doBuildOneWebApp (dir) {
 //////////////////////////////////////////////////////////////////////////////
 //
 def doCompileCljScript(wappid) {
-  final sdir= "${webDir}/${wappid}/scripts"
+  final sdir= "${webDir}/${wappid}/src"
   copy (todir: "${buildDir}/web_scripts/${wappid}") {
     fileset (dir: "${sdir}") {
       include (name: '**/*.cljs')
@@ -355,23 +355,23 @@ def doBuildForCC2DX() {
     fileset (file: "${basedir}/public/vendors/cherimoia/skaro.js")
     fileset (file: "${basedir}/public/vendors/cherimoia/caesar.js")
     fileset (file: "${basedir}/public/vendors/cherimoia/zlab.js")
-    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/asterix.js")
-    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/bus.js")
-    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/xcfg.js")
-    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/cs2dx.js")
-    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/odin.js")
-    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/xscene.js")
-    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/xlayer.js")
-    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/xentity.js")
-    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/xlives.js")
-    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/xhud.js")
-    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/xigg.js")
-    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/ext/xloader.js")
-    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/gui/startscreen.js")
-    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/gui/msgbox.js")
-    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/gui/ynbox.js")
-    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/gui/online.js")
-    fileset (file: "${webDir}/cocos2d/scripts/zotohlab/gui/mainmenu.js")
+    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/asterix.js")
+    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/bus.js")
+    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/xcfg.js")
+    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/cs2dx.js")
+    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/odin.js")
+    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/xscene.js")
+    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/xlayer.js")
+    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/xentity.js")
+    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/xlives.js")
+    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/xhud.js")
+    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/xigg.js")
+    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/xloader.js")
+    fileset (file: "${webDir}/cocos2d/src/zotohlab/gui/startscreen.js")
+    fileset (file: "${webDir}/cocos2d/src/zotohlab/gui/msgbox.js")
+    fileset (file: "${webDir}/cocos2d/src/zotohlab/gui/ynbox.js")
+    fileset (file: "${webDir}/cocos2d/src/zotohlab/gui/online.js")
+    fileset (file: "${webDir}/cocos2d/src/zotohlab/gui/mainmenu.js")
 
   }
 }
@@ -381,7 +381,7 @@ def doBuildForCC2DX() {
 //
 def doCompileTypeScript(wappid) {
   copy (todir: "${buildDir}/web_scripts/${wappid}") {
-    fileset (dir: "${webDir}/${wappid}/scripts") {
+    fileset (dir: "${webDir}/${wappid}/src") {
       include (name: '**/*.ts')
     }
   }
@@ -397,7 +397,7 @@ def doCompileTypeScript(wappid) {
 //
 def doCompileCoffeeScript(wappid) {
   copy (todir: "${buildDir}/web_scripts/${wappid}") {
-    fileset (dir: "${webDir}/${wappid}/scripts") {
+    fileset (dir: "${webDir}/${wappid}/src") {
       include (name: '**/*.coffee')
     }
   }
@@ -414,7 +414,7 @@ def doCompileCoffeeScript(wappid) {
 //
 def doCompileJS(wappid) {
   copy (todir: "${buildDir}/web_scripts/${wappid}") {
-    fileset (dir: "${webDir}/${wappid}/scripts")
+    fileset (dir: "${webDir}/${wappid}/src")
   }
   mkdir (dir: "${basedir}/public/ig/lib/game")
   mkdir (dir: "${basedir}/public/scripts")
@@ -504,9 +504,9 @@ def doCompileSCSS(wappid) {
 //////////////////////////////////////////////////////////////////////////////
 //
 def doCompileMedia(wappid) {
-  mkdir (dir: "${basedir}/public/ig/media/${wappid}")
-  copy (todir: "${basedir}/public/ig/media/${wappid}") {
-    fileset (dir: "${webDir}/${wappid}/media") {
+  mkdir (dir: "${basedir}/public/ig/res/${wappid}")
+  copy (todir: "${basedir}/public/ig/res/${wappid}") {
+    fileset (dir: "${webDir}/${wappid}/res") {
       include (name: '**/*')
     }
   }
@@ -571,7 +571,7 @@ def doJiggleTheIndexFile(wappid,des,cocos) {
     bdir= ""
     cfg= FileUtils.readFileToString(new File("${srcDir}/resources/cocos2d.js"), "utf-8")
   } else {
-    cfg= FileUtils.readFileToString(new File("${webDir}/${wappid}/scripts/ccconfig.js"), "utf-8")
+    cfg= FileUtils.readFileToString(new File("${webDir}/${wappid}/src/ccconfig.js"), "utf-8")
   }
 
   html= StringUtils.replace(html, "@@BOOTDIR@@", bdir)
@@ -661,9 +661,9 @@ target (newapp: '') {
   input (message: "Enter app-name: ", addproperty: 'appid')
   println "Creating new game: ${appid}"
   mkdir (dir: "${webDir}/${appid}")
-  ["media/game", "media/gui" , "media/sfx",
-   "scripts/entities" ,
-   "scripts/i18n", "scripts/levels"].each { s ->
+  ["res/game", "res/gui" , "res/sfx",
+   "src/entities" ,
+   "src/i18n", "src/levels"].each { s ->
     mkdir (dir: "${webDir}/${appid}/${s}")
   }
   ["info" , "pages" , "styles"].each { s ->
@@ -678,13 +678,13 @@ target (newapp: '') {
   replace (file: "${webDir}/${appid}/info/game.mf", token: "@@PUBDATE@@", value: "${pubtime}")
   replace (file: "${webDir}/${appid}/info/game.json", token: "@@UUID@@", value: "${appkey}")
   ["game.js", "splash.js", "mmenu.js", "hud.js"].each { s ->
-    touch (file: "${webDir}/${appid}/scripts/${s}")
+    touch (file: "${webDir}/${appid}/src/${s}")
   }
-  copy (file: "${srcDir}/resources/config.js", todir: "${webDir}/${appid}/scripts")
-  replace (file: "${webDir}/${appid}/scripts/config.js", token: "@@UUID@@", value: "${appkey}")
-  copy (file: "${srcDir}/resources/l10n.js", tofile: "${webDir}/${appid}/scripts/i18n/game_en_US.js")
-  copy (file: "${srcDir}/resources/ccconfig.js", todir: "${webDir}/${appid}/scripts")
-  echo (message: '{ "jsList" : [] }', file: "${webDir}/${appid}/scripts/project.json")
+  copy (file: "${srcDir}/resources/config.js", todir: "${webDir}/${appid}/src")
+  replace (file: "${webDir}/${appid}/src/config.js", token: "@@UUID@@", value: "${appkey}")
+  copy (file: "${srcDir}/resources/l10n.js", tofile: "${webDir}/${appid}/src/i18n/game_en_US.js")
+  copy (file: "${srcDir}/resources/ccconfig.js", todir: "${webDir}/${appid}/src")
+  echo (message: '{ "jsList" : [] }', file: "${webDir}/${appid}/src/project.json")
   mkdir (dir: "${basedir}/cocos")
   exec (executable: 'cocos') {
     arg (value: 'new')
@@ -723,20 +723,20 @@ target (deployapp: '') {
     dd1.mkdirs()
     // resources
     copy (todir: dd2path+'/main') {
-      fileset (dir: "${webDir}/main/media")
+      fileset (dir: "${webDir}/main/res")
     }
     copy (todir: dd2path+'/cocos2d') {
-      fileset (dir: "${webDir}/cocos2d/media")
+      fileset (dir: "${webDir}/cocos2d/res")
     }
     copy (todir: dd2path+"/${appid}") {
-      fileset (dir: "${srcpath}/media")
+      fileset (dir: "${srcpath}/res")
     }
     // js code
     copy (todir: "${dd1path}/zotohlab") {
-      fileset (dir: "${webDir}/cocos2d/scripts/zotohlab")
+      fileset (dir: "${webDir}/cocos2d/src/zotohlab")
     }
     copy (todir: "${dd1path}/${appid}") {
-      fileset (dir: "${srcpath}/scripts")
+      fileset (dir: "${srcpath}/src")
     }
     copy (todir: "${dd1path}/helpers") {
       fileset (dir: "${vendors}/helpers") {
@@ -759,7 +759,7 @@ target (deployapp: '') {
     final j1= new JsonParser().parse(FileUtils.readFileToString(
       new File("${srcDir}/resources/project.json"),"utf-8"))
     final j2= new JsonParser().parse(FileUtils.readFileToString(
-      new File("${srcpath}/scripts/project.json"),"utf-8"))
+      new File("${srcpath}/src/project.json"),"utf-8"))
     j1.getAsJsonArray('jsList').addAll( j2.getAsJsonArray('jsList'))
     FileUtils.writeStringToFile(new File("${despath}/project.json"),
     new GsonBuilder().setPrettyPrinting().create().toJson(j1), "utf-8")

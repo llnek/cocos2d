@@ -10,7 +10,7 @@
 
           <div>
             <a href="${pick.uri}"><span class="game-logo">
-              <img src="/public/ig/media/${pick.gamedir}/${pick.image}"
+              <img src="/public/ig/res/${pick.gamedir}/${pick.image}"
                 <#if pick.image_alt??>
                     alt="${pick.image_alt}"
                 <#else>

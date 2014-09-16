@@ -35,7 +35,7 @@ $btnBgColor: $darkBgColor;
 
 
 body {
-  //background: url('/public/ig/media/main/crosslines-pattern.png') repeat;
+  //background: url('/public/ig/res/main/crosslines-pattern.png') repeat;
   background-color: $bodyBgColor;
   line-height: $bodyLineHeight;
   color: $bodyColor;
@@ -473,7 +473,7 @@ a {
 .intro-section {
 
   /*
-  background: url('/public/ig/media/main/doors/magenta_door.png') no-repeat center center scroll;
+  background: url('/public/ig/res/main/doors/magenta_door.png') no-repeat center center scroll;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   background-size: cover;
@@ -581,7 +581,7 @@ a {
   z-index: 333;
 
   .fs-overlay-close {
-    background: url('/public/ig/media/main/cross.png') no-repeat center center;
+    background: url('/public/ig/res/main/cross.png') no-repeat center center;
     width: 80px;
     height: 80px;
     position: absolute;
@@ -897,7 +897,7 @@ a.bt-icon {
 
         &:hover,
         &:focus {
-          background: transparent url('/public/ig/media/main/menu-bullet.png') no-repeat center 85%;
+          background: transparent url('/public/ig/res/main/menu-bullet.png') no-repeat center 85%;
           text-decoration: none;
           color: $goldenColor;
           outline: none;
@@ -909,13 +909,13 @@ a.bt-icon {
 
     .active {
       a {
-        background: transparent url('/public/ig/media/main/menu-bullet.png') no-repeat center 85%;
+        background: transparent url('/public/ig/res/main/menu-bullet.png') no-repeat center 85%;
         color: $goldenColor;
         outline: none;
 
         &:hover,
         &:focus {
-          background: transparent url('/public/ig/media/main/menu-bullet.png') no-repeat center 100%;
+          background: transparent url('/public/ig/res/main/menu-bullet.png') no-repeat center 100%;
           color: #bf8726;
           outline: none;
         }

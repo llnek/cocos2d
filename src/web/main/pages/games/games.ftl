@@ -13,7 +13,7 @@
         <div class="col-lg-7 col-md-7">
           <a href="${gg.uri}">
             <img class="img-responsive"
-                 src="/public/ig/media/${gg.gamedir}/${gg.image}"
+                 src="/public/ig/res/${gg.gamedir}/${gg.image}"
                  <#if gg.image_alt?? >
                       alt= "${gg.image_alt}"
                  <#else>

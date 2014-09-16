@@ -8,7 +8,7 @@
 <meta name="${mt}" ${metatags[mt]}/>
 </#list>
 
-<link rel="shortcut icon" type="image/png" href="/public/ig/media/main/favicon.png" />
+<link rel="shortcut icon" type="image/png" href="/public/ig/res/main/favicon.png" />
 <title>${title}</title>
 
 <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,600,700,800,300' rel='stylesheet' />

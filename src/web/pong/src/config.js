@@ -15,7 +15,8 @@ var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
 sjs= global.SkaroJS;
 
-asterix.TicTacToe= {};
+
+asterix.Pong= {};
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -23,68 +24,67 @@ asterix.TicTacToe= {};
 
 sh.xcfg = sjs.mergeEx( asterix.XConfig, {
 
-  appKey : "bd5f79bb-eb41-4ed5-bb44-2529dc27ed3c",
+  appKey: "fa0860f9-76dc-4135-8bc7-bd5af3147d55",
 
-
-  appid: 'tictactoe',
-  color: 'sky',
+  appid: 'pong',
+  color: 'green',
 
   csts: {
-    CV_X: 'X'.charCodeAt(0),
-    CV_O: 'O'.charCodeAt(0),
-    GRID_W: 40,
-    GRID_H: 60,
-    C_GAP: 1,
-    R_GAP: 1,
-    LEFT: 4,
-    HOLE: 10,
-    GAP: 10
-  },
-
-  devices: {
-    iphone:{width:320, height:480, scale:1},
-    android:{width:320, height:480, scale:1},
-    ipad:{width:320, height:480, scale:2},
-    default:{width:320, height:480, scale:1}
-  },
-
-  game: {
-    size: {width:320, height:480, scale:1}
+    GRID_W: 60,
+    GRID_H: 40
   },
 
   assets: {
     tiles: {
     },
     images: {
-      'splash.play-btn' : 'media/cocos2d/btns/play_blue_x64.png'
+      'splash.play-btn' : 'res/cocos2d/btns/play_gray_x64.png'
     },
     sounds: {
-      'game_end' : 'media/cocos2d/sfx/MineExplosion',
-      'x_pick' : 'media/cocos2d/sfx/ElevatorBeep',
-      'o_pick' : 'media/cocos2d/sfx/MineBeep',
-      'game_quit' : 'media/cocos2d/sfx/Death'
+      'game_end' : 'res/cocos2d/sfx/MineExplosion',
+      'x_hit' : 'res/cocos2d/sfx/ElevatorBeep',
+      'o_hit' : 'res/cocos2d/sfx/MineBeep' ,
+      'game_quit' : 'res/cocos2d/sfx/Death'
     },
     fonts: {
     }
   },
 
+  devices: {
+    iphone:{height:320, width:480, scale:1},
+    android:{height:320, width:480, scale:1},
+    ipad:{height:320, width:480, scale:2},
+    default:{height:320, width:480, scale:1}
+  },
+
+  game: {
+    size: {height:320, width:480, scale:1}
+  },
+
   levels: {
     "gamelevel1" : {
-      tiles: {
+      'tiles' : {
         'arena' : 'game/{{appid}}/levels/arena.tmx'
       },
-      images: {
+      'images' : {
+        'paddle2' : 'res/{{appid}}/game/green_paddle.png',
+        'paddle1' : 'res/{{appid}}/game/red_paddle.png',
+        'ball' : 'res/{{appid}}/game/pongball.png',
         'arena' : 'game/{{appid}}/levels/arena.png'
       },
-      sprites: {
-        'markers' : [ 'media/{{appid}}/game/markers.png', 72,72, -1]
+      'sprites' : {
       }
     }
+  },
+
+  runOnce: function() {
   }
 
 });
 
+
 }).call(this);
+
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

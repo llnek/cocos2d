@@ -36,7 +36,7 @@ asterix.XLoader = cc.Scene.extend({
   },
 
   pkLoadBar: function() {
-    var pfx = '/public/ig/media';
+    var pfx = '/public/ig/res';
     if (cc.sys.isNative) {
       pfx= 'res';
     }
@@ -51,7 +51,7 @@ asterix.XLoader = cc.Scene.extend({
   },
 
   pkLoad: function() {
-    var pfx = '/public/ig/media';
+    var pfx = '/public/ig/res';
     if (cc.sys.isNative) {
       pfx= 'res';
     }

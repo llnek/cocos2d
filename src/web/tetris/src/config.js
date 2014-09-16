@@ -13,10 +13,9 @@
 
 var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
-sjs= global.SkaroJS;
+sjs = global.SkaroJS;
 
-
-asterix.Pong= {};
+asterix.Bricks= {};
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -24,27 +23,35 @@ asterix.Pong= {};
 
 sh.xcfg = sjs.mergeEx( asterix.XConfig, {
 
-  appKey: "fa0860f9-76dc-4135-8bc7-bd5af3147d55",
+  appKey: "fb0fdd0b-1821-42d9-b6f7-26b11218b40d",
 
-  appid: 'pong',
-  color: 'green',
+  appid: 'tetris',
+  color: 'silver',
 
   csts: {
-    GRID_W: 60,
-    GRID_H: 40
+    BLOCK_COLORS: 8,
+    FIELD_SIDE: 1,
+    FIELD_TOP: 1,
+    FIELD_W: 12,
+    FIELD_BOTTOM: 1,
+    BTN_SIZE: 32,
+    GRID_W: 30,
+    GRID_H: 20,
+    TILE: 16
   },
 
   assets: {
+    atlases: {
+      'game-pics' : 'res/{{appid}}/game/sprites'
+    },
     tiles: {
     },
     images: {
-      'splash.play-btn' : 'media/cocos2d/btns/play_gray_x64.png'
+      'splash.play-btn' : 'res/cocos2d/btns/play_gray_x64.png'
     },
     sounds: {
-      'game_end' : 'media/cocos2d/sfx/MineExplosion',
-      'x_hit' : 'media/cocos2d/sfx/ElevatorBeep',
-      'o_hit' : 'media/cocos2d/sfx/MineBeep' ,
-      'game_quit' : 'media/cocos2d/sfx/Death'
+      'game_end' : 'res/cocos2d/sfx/MineExplosion',
+      'game_quit' : 'res/cocos2d/sfx/Death'
     },
     fonts: {
     }
@@ -58,7 +65,8 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
   },
 
   game: {
-    size: {height:320, width:480, scale:1}
+    size: {height:320, width:480, scale:1},
+    borderTiles: 'cbox-borders_x16.png'
   },
 
   levels: {
@@ -67,9 +75,6 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
         'arena' : 'game/{{appid}}/levels/arena.tmx'
       },
       'images' : {
-        'paddle2' : 'media/{{appid}}/game/green_paddle.png',
-        'paddle1' : 'media/{{appid}}/game/red_paddle.png',
-        'ball' : 'media/{{appid}}/game/pongball.png',
         'arena' : 'game/{{appid}}/levels/arena.png'
       },
       'sprites' : {
@@ -78,13 +83,13 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
   },
 
   runOnce: function() {
+    cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
   }
 
 });
 
 
 }).call(this);
-
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

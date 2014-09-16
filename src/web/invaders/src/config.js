@@ -15,8 +15,7 @@ var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
 sjs= global.SkaroJS;
 
-asterix.BreakOut= {};
-
+asterix.Invaders= {};
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -24,46 +23,40 @@ asterix.BreakOut= {};
 
 sh.xcfg = sjs.mergeEx( asterix.XConfig, {
 
-  appKey :  "7d943e06-0849-4bf4-a16d-64a401f72a3e",
+  appKey: "d39bf198-518a-4de7-88a0-5e28c88571b0",
 
-  appid: 'breakout',
-  color: 'yellow',
+  appid: 'invaders',
+  color: 'red',
 
   csts: {
     GRID_W: 40,
     GRID_H: 60,
 
-    CANDIES: ['red_candy','amber_candy','white_candy','green_candy','yellow_candy','blue_candy',
-              'purple_plus_candy', 'purple_minus_candy'],
+    COLS: 7,
+    ROWS: 7,
+    CELLS: 49,
 
-    LEVELS: {
-      "1": [ 0, 1, 5, 3, 4]
-    },
-
-    ROWS: 5,
-    COLS: 9,
+    LEFT : 2,
     TOP: 6,
-
-    TOP_ROW: 10,
-
-    PADDLE_OFF: 4,
-    LEFT_OFF: 4
+    OFF_X : 4,
+    OFF_Y : 2
   },
 
   assets: {
     atlases: {
-      'game-pics' : 'media/{{appid}}/game/sprites'
+      'game-pics' : 'res/{{appid}}/game/sprites'
     },
     tiles: {
     },
     images: {
-      'splash.play-btn' : 'media/cocos2d/btns/play_gray_x64.png'
+      'splash.play-btn' : 'res/cocos2d/btns/play_gray_x64.png'
     },
     sounds: {
-      'game_end' : 'media/cocos2d/sfx/MineExplosion',
-      'game_quit' : 'media/cocos2d/sfx/Death',
-      'ball-paddle' : 'media/cocos2d/sfx/ElevatorBeep',
-      'ball-brick' : 'media/cocos2d/sfx/MineBeep'
+      'game_end' : 'res/cocos2d/sfx/MineExplosion',
+      'game_quit' : 'res/cocos2d/sfx/Death',
+      'ship-missile' : 'res/{{appid}}/sfx/missile',
+      'bugs-march' : 'res/{{appid}}/sfx/march',
+      'xxx-explode' : 'res/{{appid}}/sfx/explode'
     },
     fonts: {
     }
@@ -86,7 +79,6 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
         'arena' : 'game/{{appid}}/levels/arena.tmx'
       },
       'images' : {
-        'arena' : 'game/{{appid}}/levels/arena.png'
       },
       'sprites' : {
       }
@@ -101,7 +93,6 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
 
 
 }).call(this);
-
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

@@ -9,73 +9,86 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._ ;
+(function (undef) { "use strict"; var global= this; var _ = global._ ;
 
 var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
 sjs= global.SkaroJS;
 
-asterix.Asteroids= {};
+asterix.BreakOut= {};
+
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.xcfg = sjs.mergeEx(asterix.XConfig, {
+sh.xcfg = sjs.mergeEx( asterix.XConfig, {
 
-  appKey: "339a5c13-24b3-4069-9a0a-661820573fb3",
+  appKey :  "7d943e06-0849-4bf4-a16d-64a401f72a3e",
 
-  appid: 'asteroids',
-  color: 'red',
+  appid: 'breakout',
+  color: 'yellow',
 
   csts: {
-    GRID_W: 60,
-    GRID_H: 40
+    GRID_W: 40,
+    GRID_H: 60,
+
+    CANDIES: ['red_candy','amber_candy','white_candy','green_candy','yellow_candy','blue_candy',
+              'purple_plus_candy', 'purple_minus_candy'],
+
+    LEVELS: {
+      "1": [ 0, 1, 5, 3, 4]
+    },
+
+    ROWS: 5,
+    COLS: 9,
+    TOP: 6,
+
+    TOP_ROW: 10,
+
+    PADDLE_OFF: 4,
+    LEFT_OFF: 4
   },
 
   assets: {
     atlases: {
-      'game-pics' : 'media/{{appid}}/game/sprites'
+      'game-pics' : 'res/{{appid}}/game/sprites'
     },
     tiles: {
     },
     images: {
-      'splash.play-btn' : 'media/cocos2d/btns/play_gray_x64.png'
+      'splash.play-btn' : 'res/cocos2d/btns/play_gray_x64.png'
     },
     sounds: {
-      'game_end' : 'media/cocos2d/sfx/MineExplosion',
-      'game_quit' : 'media/cocos2d/sfx/Death'
+      'game_end' : 'res/cocos2d/sfx/MineExplosion',
+      'game_quit' : 'res/cocos2d/sfx/Death',
+      'ball-paddle' : 'res/cocos2d/sfx/ElevatorBeep',
+      'ball-brick' : 'res/cocos2d/sfx/MineBeep'
     },
     fonts: {
     }
   },
 
   devices: {
-    iphone:{height:320, width:480, scale:1},
-    android:{height:320, width:480, scale:1},
-    ipad:{height:320, width:480, scale:2},
-    default:{height:320, width:480, scale:1}
+    iphone:{width:320, height:480, scale:1},
+    android:{width:320, height:480, scale:1},
+    ipad:{width:320, height:480, scale:2},
+    default:{width:320, height:480, scale:1}
   },
 
   game: {
-    size: {height:320, width:480, scale:1}
+    size: {width:320, height:480, scale:1}
   },
 
   levels: {
     "gamelevel1" : {
-      tiles : {
-        'hudwall' : 'game/{{appid}}/levels/hudwall.tmx',
+      'tiles' : {
         'arena' : 'game/{{appid}}/levels/arena.tmx'
       },
-      images : {
+      'images' : {
         'arena' : 'game/{{appid}}/levels/arena.png'
       },
-      sprites : {
-      },
-      fixtures: {
-        BOULDERS: 5,
-        ROCKS: 5,
-        STONES: 10
+      'sprites' : {
       }
     }
   },
@@ -83,7 +96,6 @@ sh.xcfg = sjs.mergeEx(asterix.XConfig, {
   runOnce: function() {
     cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
   }
-
 
 });
 

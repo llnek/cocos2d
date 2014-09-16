@@ -9,78 +9,73 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this; var _ = global._ ;
+(function (undef) { "use strict"; var global= this, _ = global._ ;
 
 var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
 sjs= global.SkaroJS;
 
-asterix.Invaders= {};
+asterix.Asteroids= {};
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.xcfg = sjs.mergeEx( asterix.XConfig, {
+sh.xcfg = sjs.mergeEx(asterix.XConfig, {
 
-  appKey: "d39bf198-518a-4de7-88a0-5e28c88571b0",
+  appKey: "339a5c13-24b3-4069-9a0a-661820573fb3",
 
-  appid: 'invaders',
+  appid: 'asteroids',
   color: 'red',
 
   csts: {
-    GRID_W: 40,
-    GRID_H: 60,
-
-    COLS: 7,
-    ROWS: 7,
-    CELLS: 49,
-
-    LEFT : 2,
-    TOP: 6,
-    OFF_X : 4,
-    OFF_Y : 2
+    GRID_W: 60,
+    GRID_H: 40
   },
 
   assets: {
     atlases: {
-      'game-pics' : 'media/{{appid}}/game/sprites'
+      'game-pics' : 'res/{{appid}}/game/sprites'
     },
     tiles: {
     },
     images: {
-      'splash.play-btn' : 'media/cocos2d/btns/play_gray_x64.png'
+      'splash.play-btn' : 'res/cocos2d/btns/play_gray_x64.png'
     },
     sounds: {
-      'game_end' : 'media/cocos2d/sfx/MineExplosion',
-      'game_quit' : 'media/cocos2d/sfx/Death',
-      'ship-missile' : 'media/{{appid}}/sfx/missile',
-      'bugs-march' : 'media/{{appid}}/sfx/march',
-      'xxx-explode' : 'media/{{appid}}/sfx/explode'
+      'game_end' : 'res/cocos2d/sfx/MineExplosion',
+      'game_quit' : 'res/cocos2d/sfx/Death'
     },
     fonts: {
     }
   },
 
   devices: {
-    iphone:{width:320, height:480, scale:1},
-    android:{width:320, height:480, scale:1},
-    ipad:{width:320, height:480, scale:2},
-    default:{width:320, height:480, scale:1}
+    iphone:{height:320, width:480, scale:1},
+    android:{height:320, width:480, scale:1},
+    ipad:{height:320, width:480, scale:2},
+    default:{height:320, width:480, scale:1}
   },
 
   game: {
-    size: {width:320, height:480, scale:1}
+    size: {height:320, width:480, scale:1}
   },
 
   levels: {
     "gamelevel1" : {
-      'tiles' : {
+      tiles : {
+        'hudwall' : 'game/{{appid}}/levels/hudwall.tmx',
         'arena' : 'game/{{appid}}/levels/arena.tmx'
       },
-      'images' : {
+      images : {
+        'arena' : 'game/{{appid}}/levels/arena.png'
       },
-      'sprites' : {
+      sprites : {
+      },
+      fixtures: {
+        BOULDERS: 5,
+        ROCKS: 5,
+        STONES: 10
       }
     }
   },
@@ -89,10 +84,12 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
     cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
   }
 
+
 });
 
 
 }).call(this);
+
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
