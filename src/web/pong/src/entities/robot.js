@@ -13,6 +13,7 @@
 
 var asterix= global.ZotohLab.Asterix,
 sh= global.ZotohLab.Asterix,
+ccsx= asterix.COCOS2DX,
 png= asterix.Pong,
 sjs= global.SkaroJS;
 
@@ -29,26 +30,47 @@ png.EntityRobot = png.EntityPaddle.xtends({
   update: function(dt) {
     var bp= this.ball.sprite.getPosition(),
     pos = this.sprite.getPosition(),
-    y= pos.y;
+    y= undef,
+    x= undef;
 
-    if (bp.y > pos.y) {
-      if (this.ball.vel.y > 0) {
-        y += dt * this.speed;
-      } else {
-        //y -= dt * this.speed;
+    if (ccsx.isPortrait()) {
+
+      if (bp.x > pos.x) {
+        if (this.ball.vel.x > 0) {
+          x = pos.x + dt * this.speed;
+        }
       }
-    }
-    else {
-      if (this.ball.vel.y > 0) {
-        //y += dt * this.speed;
-      } else {
-        y -= dt * this.speed;
+      else {
+        if (this.ball.vel.x < 0) {
+          x = pos.x - dt * this.speed;
+        }
       }
+
+    } else {
+
+      if (bp.y > pos.y) {
+        if (this.ball.vel.y > 0) {
+          y = pos.y + dt * this.speed;
+        }
+      }
+      else {
+        if (this.ball.vel.y < 0) {
+          y = pos.y - dt * this.speed;
+        }
+      }
+
     }
-    if (y !== pos.y) {
+
+    if (sjs.echt(x)) {
+      this.updatePosition(x, pos.y);
+      this.clamp();
+    }
+
+    if (sjs.echt(y)) {
       this.updatePosition(pos.x, y);
       this.clamp();
     }
+
   },
 
   bindBall: function(ball) {

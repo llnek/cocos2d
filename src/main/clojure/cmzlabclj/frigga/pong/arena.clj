@@ -531,7 +531,8 @@
   ^cmzlabclj.frigga.pong.arena.ArenaAPI
   [engine options]
 
-  (let [maxpts (:numpts options)
+  (let [portrait (:portrait options)
+        maxpts (:numpts options)
         world (:world options)
         pd (:paddle options)
         ba (:ball options)
@@ -573,13 +574,13 @@
               pt (if (== pnum 1) p2 p1)
               src (:source evt)
               cmd (json/read-str src :key-fn keyword)
-              ;;vy (* (:dir (kw cmd)) (:speed pd))
-              vy (:vy (kw cmd))
+              ;;pv (* (:dir (kw cmd)) (:speed pd))
+              pv (:pv (kw cmd))
               ^cmzlabclj.nucleus.util.core.MubleAPI
               other (if (== pnum 2)
                       (.getf impl :paddle2)
                       (.getf impl :paddle1))]
-          (.setf! other :vy vy)
+          (.setf! other :pv pv)
           (.sendMessage pt (ReifyEvent Events/SESSION_MSG
                                        Events/C_SYNC_ARENA
                                        (json/write-str cmd)))))

@@ -31,25 +31,35 @@ png.EntityHuman = png.EntityPaddle.xtends({
   },
 
   onKeyPressed: function(dt) {
-    var sz = this.sprite.getContentSize().height * 0.5,
+    var hw2 = ccsx.halfHW(this.sprite),
     pos = this.sprite.getPosition(),
-    y= pos.y,
-    csts = sh.xcfg.csts,
-    wz = ccsx.screen(),
+    x= undef,
+    y= undef,
+    world= sh.main.getEnclosureRect(),
     keys= sh.main.keys,
-    y2 = wz.height - csts.TILE * 6,
-    y1 = csts.TILE,
     ty, delta= dt * this.speed;
 
     if (keys[ this.kcodes[0] ]) {
-        y += delta;
+      if (ccsx.isPortrait()) {
+        x = pos.x + delta;
+      } else {
+        y = pos.y + delta;
+      }
     }
 
     if (keys[ this.kcodes[1] ] ) {
-        y -= delta;
+      if (ccsx.isPortrait()) {
+        x = pos.x - delta;
+      } else {
+        y = pos.y - delta;
+      }
     }
 
-    if (y !== pos.y) {
+    if (sjs.echt(x)) {
+      this.updatePosition(x, pos.y);
+      this.clamp();
+    }
+    if (sjs.echt(y)) {
       this.updatePosition(pos.x, y);
       this.clamp();
     }
@@ -62,7 +72,6 @@ png.EntityHuman = png.EntityPaddle.xtends({
 png.NetPlayer = png.EntityHuman.xtends({
 
   setWEBSock: function(wss) {
-    //this.kcodes = [cc.KEY.up, cc.KEY.down];
     this.wss=wss;
   },
 
@@ -70,29 +79,41 @@ png.NetPlayer = png.EntityHuman.xtends({
     this.dir=dir;
   },
 
+
   simulateMove: function(dt) {
-    var sz = this.sprite.getContentSize().height * 0.5,
+    var hw2 = ccsx.halfHW(this.sprite),
     pos = this.sprite.getPosition(),
-    y= pos.y,
-    csts = sh.xcfg.csts,
-    wz = ccsx.screen(),
-    y2 = wz.height - csts.TILE * 6,
-    y1 = csts.TILE,
+    x= undef,
+    y= undef,
+    world= sh.main.getEnclosureRect(),
+    keys= sh.main.keys,
     ty, delta= dt * this.speed;
 
-    //console.log("dt === " + dt + ", dir = " + this.dir);
     if (this.dir > 0) {
-        y += delta;
+      if (ccsx.isPortrait()) {
+        x = pos.x + delta;
+      } else {
+        y = pos.y + delta;
+      }
     }
     else
     if (this.dir < 0) {
-        y -= delta;
+      if (ccsx.isPortrait()) {
+        x = pos.x - delta;
+      } else {
+        y = pos.y - delta;
+      }
     }
 
-    if (y !== pos.y) {
+    if (sjs.echt(x)) {
+      this.updatePosition(x, pos.y);
+      this.clamp();
+    }
+    if (sjs.echt(y)) {
       this.updatePosition(pos.x, y);
       this.clamp();
     }
+
   },
 
   keypressed: function(dt) {

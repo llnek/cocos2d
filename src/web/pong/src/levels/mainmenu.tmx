@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" width="60" height="40" tilewidth="8" tileheight="8">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="60" tilewidth="8" tileheight="8">
  <tileset firstgid="1" name="Borders" tilewidth="8" tileheight="8">
   <image source="cbox-borders_x8.png" trans="ff00ff" width="56" height="8"/>
  </tileset>
  <tileset firstgid="8" name="BG" tilewidth="160" tileheight="160">
-  <image source="bg.png" trans="ff00ff" width="480" height="320"/>
+  <image source="bg.png" trans="ff00ff" width="320" height="480"/>
  </tileset>
- <layer name="Back" width="60" height="40">
+ <layer name="Back" width="40" height="60">
   <data encoding="base64" compression="zlib">
-   eJztzDkNADAMBLCMffnTDYlbItkAXAUAAADAJCv87fB3wh8AAAAAs9zw98LfD38NRf4AQA==
+   eJztzDkRAEAIBDDKe/3bxcRWTCIgVQAAwBQr/O3wBwAAzHHC3w1/AADAHC/8/fDX8i4AQA==
   </data>
  </layer>
- <layer name="Front" width="60" height="40">
+ <layer name="Front" width="40" height="60">
   <data encoding="base64" compression="zlib">
-   eJztzwEJADAQxLBn/kXPR66BCui7uzfWin5t/dr6tfVr69fWr61fW7+2fm392vq19Wvr19avrV9bv7Z+bf3aVn+X+uA0AYk=
+   eJztzrEJADAMwLCQ/4/uEV5SkMC7d2b2eFf5a/w1/hp/jb/GX+Ov8df4a/w1/hp/jb/GX+Ov8df4a/w1/hp/jb/GX+Ov8df4a/w1/hp/zS9/l3vgNAGJ
   </data>
  </layer>
 </map>

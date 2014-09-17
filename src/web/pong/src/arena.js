@@ -164,7 +164,7 @@ png.NetArena = pngArena.xtends({
 
   // inform the server that paddle has changed direction: up , down or stopped.
   notifyServer: function(actor,direction) {
-    var vy = direction * this.options.paddle.speed,
+    var vv = direction * this.options.paddle.speed,
     pos = actor.sprite.getPosition(),
     pnum= this.ctx.options.pnum,
     src,
@@ -172,7 +172,7 @@ png.NetArena = pngArena.xtends({
       x: Math.floor(pos.x),
       y: Math.floor(pos.y),
       dir: direction,
-      vy: vy
+      pv: vv
     };
     if (pnum === 2) {
       src = { p2: cmd };
@@ -211,7 +211,11 @@ png.NetArena = pngArena.xtends({
       this.ctx.updatePoints(rc);
       _.each(this.actors, function(a) {
         if (a && a.wss) {
-          this.lastY = a.sprite.getPosition().y;
+          if (ccsz.isPortrait()) {
+            this.lastP = a.sprite.getPosition().x;
+          } else {
+            this.lastP = a.sprite.getPosition().y;
+          }
           this.lastDir=0;
         }
       }, this);
@@ -238,8 +242,8 @@ png.NetArena = pngArena.xtends({
       var c = evt.source.p2;
       var dir=0;
       py.sprite.setPosition(c.x, c.y);
-      if (c.vy > 0) { dir = 1;}
-      if (c.vy < 0) { dir = -1;}
+      if (c.pv > 0) { dir = 1;}
+      if (c.pv < 0) { dir = -1;}
       py.setDir(dir);
     }
 
@@ -249,8 +253,8 @@ png.NetArena = pngArena.xtends({
       var c = evt.source.p1;
       var dir=0;
       py.sprite.setPosition(c.x, c.y);
-      if (c.vy > 0) { dir = 1;}
-      if (c.vy < 0) { dir = -1;}
+      if (c.pv > 0) { dir = 1;}
+      if (c.pv < 0) { dir = -1;}
       py.setDir(dir);
     }
 
@@ -277,20 +281,26 @@ png.NetArena = pngArena.xtends({
   },
 
   maybeNotifyServer: function(a) {
-    var y= a.sprite.getPosition().y,
-    dir=0,
-    delta= Math.abs(y - this.lastY);
+    var dir=0,
+    pc,
+    delta;
+
+    if (ccsx.isPortrait()) {
+      pc= a.sprite.getPosition().x;
+    } else {
+      pc= a.sprite.getPosition().y;
+    }
+    delta= Math.abs(pc - this.lastP);
 
     if (delta >= 1) {
-      if (y > this.lastY) {
+      if (pc > this.lastP) {
         dir=1;
-        // moving up
-      } else if (y < this.lastY) {
-        // moving down
+        // moving up or right
+      } else if (pc < this.lastP) {
         dir= -1;
       }
     }
-    this.lastY=y;
+    this.lastP=pc;
     if (this.lastDir !== dir) {
       // direction changed, tell server
       this.notifyServer(a,dir);
@@ -373,30 +383,52 @@ png.NonNetArena = pngArena.xtends({
   },
 
   doCheckWorld: function(dt) {
-    var p1= this.actors[1];
-    var p2= this.actors[2];
-
-    var bs = this.ball.sprite,
+    var p1= this.actors[1],
+    p2= this.actors[2],
+    bs = this.ball.sprite,
     bp= bs.getPosition();
 
-    if ( bp.x < ccsx.getLeft(p1.sprite)) {
-      this.disposeBall();
-      this.ctx.onWinner(p2);
-    }
-    else
-    if (bp.x > ccsx.getRight(p2.sprite)) {
-      this.disposeBall();
-      this.ctx.onWinner(p1);
-    }
-    else
-    if (ccsx.collide(p2,this.ball)) {
-      p2.check(this.ball);
-    }
-    else
-    if ( ccsx.collide(p1,this.ball)) {
-      p1.check(this.ball);
-    }
+    if (ccsx.isPortrait()) {
 
+      if ( bp.y < ccsx.getBottom(p1.sprite)) {
+        this.disposeBall();
+        this.ctx.onWinner(p2);
+      }
+      else
+      if (bp.y > ccsx.getTop(p2.sprite)) {
+        this.disposeBall();
+        this.ctx.onWinner(p1);
+      }
+      else
+      if (ccsx.collide(p2,this.ball)) {
+        p2.check(this.ball);
+      }
+      else
+      if ( ccsx.collide(p1,this.ball)) {
+        p1.check(this.ball);
+      }
+
+    } else {
+
+      if ( bp.x < ccsx.getLeft(p1.sprite)) {
+        this.disposeBall();
+        this.ctx.onWinner(p2);
+      }
+      else
+      if (bp.x > ccsx.getRight(p2.sprite)) {
+        this.disposeBall();
+        this.ctx.onWinner(p1);
+      }
+      else
+      if (ccsx.collide(p2,this.ball)) {
+        p2.check(this.ball);
+      }
+      else
+      if ( ccsx.collide(p1,this.ball)) {
+        p1.check(this.ball);
+      }
+
+    }
   },
 
   onEnqueue: function(cmd) {

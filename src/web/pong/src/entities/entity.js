@@ -41,60 +41,100 @@ png.EntityPaddle = png.EntityXXX.xtends({
 
   clamp: function() {
     var pos= this.sprite.getPosition(),
-    csts = sh.xcfg.csts,
-    y= pos.y,
-    wz = ccsx.screen(),
-    y2 = wz.height - csts.TILE * 6,
-    y1 = csts.TILE,
-    h = ccsx.getHeight(this.sprite) * 0.5,
-    b= ccsx.getBottom(this.sprite),
-    t= ccsx.getTop(this.sprite);
+    world= sh.main.getEnclosureRect(),
+    x= undef,
+    y= undef,
+    hw2= ccsx.halfHW(this.sprite),
+    bb4= ccsx.bbox4(this.sprite);
 
-    if (t > y2) {
-      y = y2 - h;
+    if (ccsx.isPortrait()) {
+      if (bb4.right > world.right) {
+        x = world.right - hw2[0];
+      }
+      if (bb4.left < world.left) {
+        x = world.left + hw2[0];
+      }
+    } else {
+      if (bb4.top > world.top) {
+        y = world.top - hw2[1];
+      }
+      if (bb4.bottom < world.bottom) {
+        y = world.bottom + hw2[1];
+      }
     }
 
-    if (b < y1) {
-      y = y1 + h;
+    if (sjs.echt(x)) {
+      this.sprite.setPosition(x, pos.y);
     }
 
-    if (y !== pos.y) {
-    // no need to update last pos
+    if (sjs.echt(y)) {
       this.sprite.setPosition(pos.x, y);
     }
-
   },
 
+  //ball hits paddle
   check: function(other) {
-    var pos = other.sprite.getPosition();
-    other.vel.x = - other.vel.x;
-    switch (this.options.color) {
-    case 'X':
-      other.sprite.setPosition(ccsx.getRight(this.sprite) + ccsx.getWidth(other.sprite) * 0.5, pos.y);
-      sh.sfxPlay(this.snd);
-      break;
-    case 'O':
-      other.sprite.setPosition(ccsx.getLeft(this.sprite) - ccsx.getWidth(other.sprite) * 0.5, pos.y);
-      sh.sfxPlay(this.snd);
-      break;
+    var pos = other.sprite.getPosition(),
+    bb4 = ccsx.bbox4(this.sprite),
+    x= pos.x,
+    y= pos.y,
+    hw2= ccsx.halfHW(other.sprite);
+
+    if (ccsx.isPortrait()) {
+      other.vel.y = - other.vel.y;
+    } else {
+      other.vel.x = - other.vel.x;
     }
+
+    // X is either bottom or left.
+    if (this.options.color === 'X') {
+      if (ccsx.isPortrait()) {
+        y=bb4.top + hw2[1];
+      } else {
+        x=bb4.right + hw2[0];
+      }
+    } else {
+      if (ccsx.isPortrait()) {
+        y = bb4.bottom - hw2[1];
+      } else {
+        x = bb4.left - hw2[0];
+      }
+    }
+
+    other.sprite.setPosition(x,y);
+    sh.sfxPlay(this.snd);
   },
 
   ctor: function(x,y,options) {
     this._super(x,y,options);
     this.speed= this.options.speed;
     this.kcodes= [];
-    switch (this.options.color) {
-    case 'X':
-      this.resid = 'gamelevel1.images.paddle1';
-      this.kcodes = [cc.KEY.up, cc.KEY.down];
+
+    if (ccsx.isPortrait()) {
+
+      if (this.options.color === 'X') {
+        this.resid = 'gamelevel1.images.p.paddle1';
+        this.kcodes = [cc.KEY.right, cc.KEY.left];
+      } else {
+        this.resid = 'gamelevel1.images.p.paddle2';
+        this.kcodes = [cc.KEY.d, cc.KEY.a];
+      }
+
+    } else {
+
+      if (this.options.color === 'X') {
+        this.resid = 'gamelevel1.images.l.paddle1';
+        this.kcodes = [cc.KEY.up, cc.KEY.down];
+      } else {
+        this.resid = 'gamelevel1.images.l.paddle2';
+        this.kcodes = [cc.KEY.w, cc.KEY.s];
+      }
+    }
+
+    if (this.options.color === 'X') {
       this.snd= 'x_hit';
-      break;
-    case 'O':
-      this.resid = 'gamelevel1.images.paddle2';
-      this.kcodes = [cc.KEY.w, cc.KEY.s];
+    } else {
       this.snd= 'o_hit';
-      break;
     }
   }
 

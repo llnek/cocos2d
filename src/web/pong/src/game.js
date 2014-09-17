@@ -125,7 +125,13 @@ var GameLayer = asterix.XGameLayer.extend({
   ball: null,
 
   initPaddleSize: function() {
-    var dummy= new cc.Sprite(sh.getImagePath('gamelevel1.images.paddle1'));
+    var dummy, id;
+    if (ccsx.isPortrait()) {
+      id='gamelevel1.images.p.paddle1';
+    } else {
+      id='gamelevel1.images.l.paddle1';
+    }
+    dummy= new cc.Sprite(sh.getImagePath(id));
     return this.paddleSize = dummy.getContentSize();
   },
 
@@ -136,6 +142,7 @@ var GameLayer = asterix.XGameLayer.extend({
 
   play: function(newFlag) {
     var state0= this.options.seed_data,
+    world= this.getEnclosureRect(),
     ps = this.initPaddleSize(),
     bs = this.initBallSize(),
     csts= sh.xcfg.csts,
@@ -143,7 +150,8 @@ var GameLayer = asterix.XGameLayer.extend({
     wz= ccsx.screen(),
     p2ids,p1ids,
     p2,p1,
-    p1x,p2x;
+    p1x,p2x,
+    p1y,p2y;
 
     // in case of online play, disable all event callbacks
     if (this.options.wsock) {
@@ -160,8 +168,11 @@ var GameLayer = asterix.XGameLayer.extend({
     });
 
     // position of paddles
-    p2x = Math.floor(wz.width - csts.TILE - 4 - bs.width - ps.width * 0.5);
-    p1x = Math.floor(csts.TILE + bs.width + 4 + ps.width * 0.5);
+    p1y = Math.floor(world.bottom + bs.height + 4 + ps.height * 0.5);
+    p2y = Math.floor(world.top - 4 - bs.height - ps.height * 0.5);
+
+    p2x = Math.floor(world.right - 4 - bs.width - ps.width * 0.5);
+    p1x = Math.floor(world.left + bs.width + 4 + ps.width * 0.5);
 
     // start with clean slate
     this.reset(newFlag);
@@ -172,6 +183,7 @@ var GameLayer = asterix.XGameLayer.extend({
     // game defaults for entities and timers.
     var dfts= {
       world: this.getEnclosureRect(),
+      portrait: ccsx.isPortrait(),
       framespersec: 60,
       syncMillis: 3000,
       paddle: {height: Math.floor(ps.height),
@@ -182,31 +194,43 @@ var GameLayer = asterix.XGameLayer.extend({
              x: Math.floor(cw.x),
              y: Math.floor(cw.y),
              speed: Math.floor(BALL_SPEED) },
-      p1: {x: p1x, y: Math.floor(cw.y) },
-      p2: {x: p2x, y: Math.floor(cw.y) },
+      p1: {},
+      p2: {},
       numpts: NUM_ROUNDS};
+
+    if (ccsx.isPortrait()) {
+
+      dfts.p1= {y: p1y, x: Math.floor(cw.x) };
+      dfts.p2= {y: p2y, x: Math.floor(cw.x) };
+
+    } else {
+
+      dfts.p1= {x: p1x, y: Math.floor(cw.y) };
+      dfts.p2= {x: p2x, y: Math.floor(cw.y) };
+    }
+
 
     // based on mode, create the 2 players
     //switch (sh.xcfg.csts.GAME_MODE) {
     switch (this.options.mode) {
       case sh.P1_GAME:
-        p2 = new png.EntityRobot(p2x, cw.y,
+        p2 = new png.EntityRobot(dfts.p2.x,dfts.p2.y,
                                  sjs.mergeEx(dfts.paddle, { color: 'O' }));
-        p1 = new png.EntityHuman(p1x, cw.y,
+        p1 = new png.EntityHuman(dfts.p1.x,dfts.p1.y,
                                  sjs.mergeEx(dfts.paddle, { color: 'X' }));
         this.arena = new png.NonNetArena(dfts);
       break;
       case sh.P2_GAME:
-        p2 = new png.EntityHuman(p2x, cw.y,
+        p2 = new png.EntityHuman(dfts.p2.x,dfts.p2.y,
                                  sjs.mergeEx(dfts.paddle, { color: 'O' }));
-        p1 = new png.EntityHuman(p1x, cw.y,
+        p1 = new png.EntityHuman(dfts.p1.x,dfts.p1.y,
                                  sjs.mergeEx(dfts.paddle, { color: 'X' }));
         this.arena = new png.NonNetArena(dfts);
       break;
       case sh.ONLINE_GAME:
-        p2 = new png.NetPlayer(p2x, cw.y,
+        p2 = new png.NetPlayer(dfts.p2.x,dfts.p2.y,
                                sjs.mergeEx(dfts.paddle, { color: 'O' }));
-        p1 = new png.NetPlayer(p1x, cw.y,
+        p1 = new png.NetPlayer(dfts.p1.x,dfts.p1.y,
                                sjs.mergeEx(dfts.paddle, { color: 'X' }));
         if (this.options.pnum === 1) {
           p1.setWEBSock(this.options.wsock);

@@ -81,6 +81,10 @@ asterix.COCOS2DX = {
                                           this.bbox(b.sprite)) : false;
   },
 
+  isPortrait: function() {
+    var s=this.screen(); return s.height > s.width;
+  },
+
   outOfBound: function(ent) {
     var bx= this.bbox4(ent.sprite),
     wz = this.screen();
@@ -106,6 +110,11 @@ asterix.COCOS2DX = {
       left: this.getLeft(sprite),
       right: this.getRight(sprite)
     };
+  },
+
+  halfHW: function(sprite) {
+    var z= sprite.getContentSize();
+    return [z.width * 0.5, z.height * 0.5];
   },
 
   //return a cc-rect
@@ -183,8 +192,11 @@ asterix.COCOS2DX = {
   },
 
   screen: function() {
+    return cc.director.getWinSize();
+    /*
     return (cc.sys.isNative) ? cc.director.getWinSize()
                              : cc.director.getWinSizeInPixels();
+                            */
   },
 
   getSpriteFrame: function(frameid) {

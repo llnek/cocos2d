@@ -30,8 +30,8 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
   color: 'green',
 
   csts: {
-    GRID_W: 60,
-    GRID_H: 40
+    GRID_W: 40,
+    GRID_H: 60
   },
 
   assets: {
@@ -58,7 +58,7 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
   },
 
   game: {
-    size: {height:320, width:480, scale:1}
+    size: {height:480, width:320, scale:1}
   },
 
   levels: {
@@ -67,8 +67,8 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
         'arena' : 'game/{{appid}}/levels/arena.tmx'
       },
       'images' : {
-        'paddle2' : 'res/{{appid}}/game/green_paddle.png',
-        'paddle1' : 'res/{{appid}}/game/red_paddle.png',
+        'p.paddle2' : 'res/{{appid}}/game/green_paddle.png',
+        'p.paddle1' : 'res/{{appid}}/game/red_paddle.png',
         'ball' : 'res/{{appid}}/game/pongball.png',
         'arena' : 'game/{{appid}}/levels/arena.png'
       },
