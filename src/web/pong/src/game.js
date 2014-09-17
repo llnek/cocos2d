@@ -183,7 +183,6 @@ var GameLayer = asterix.XGameLayer.extend({
     // game defaults for entities and timers.
     var dfts= {
       world: this.getEnclosureRect(),
-      portrait: ccsx.isPortrait(),
       framespersec: 60,
       syncMillis: 3000,
       paddle: {height: Math.floor(ps.height),

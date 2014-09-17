@@ -151,7 +151,11 @@ png.NetArena = pngArena.xtends({
     // try to keep track of paddle movements
     _.each(this.actors, function(a) {
       if (a && a.wss) {
-        this.lastY = a.sprite.getPosition().y;
+        if (ccsx.isPortrait()) {
+          this.lastP = a.sprite.getPosition().x;
+        } else {
+          this.lastP = a.sprite.getPosition().y;
+        }
         this.lastDir=0;
       }
     },this);
@@ -211,7 +215,7 @@ png.NetArena = pngArena.xtends({
       this.ctx.updatePoints(rc);
       _.each(this.actors, function(a) {
         if (a && a.wss) {
-          if (ccsz.isPortrait()) {
+          if (ccsx.isPortrait()) {
             this.lastP = a.sprite.getPosition().x;
           } else {
             this.lastP = a.sprite.getPosition().y;
