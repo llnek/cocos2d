@@ -158,6 +158,10 @@ asterix.XGameLayer = asterix.XLayer.extend({
     sh.xcfg.csts.GAME_MODE=mode;
   },
 
+  cleanSlate: function() {
+    this.engine= new Ash.Engine();
+  },
+
   newGame: function(mode) {
     if (sh.xcfg.sound.open) {
       cc.audioEngine.stopAllEffects();
@@ -195,6 +199,7 @@ asterix.XGameLayer = asterix.XLayer.extend({
 
   update: function(dt) {
     if (this.operational() ) {
+      if (this.engine) { this.engine.update(dt); }
       this.updateEntities(dt);
       this.checkEntities(dt);
     }

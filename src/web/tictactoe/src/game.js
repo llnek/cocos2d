@@ -149,6 +149,8 @@ var GameLayer = asterix.XGameLayer.extend({
 
   play: function(newFlag) {
 
+    this.cleanSlate();
+
     var state0= this.options.seed_data,
     ncells= state0.size*state0.size,
     csts= sh.xcfg.csts,

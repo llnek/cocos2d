@@ -1,0 +1,21 @@
+
+(function() { "use strict"; var global = this, _ = global._ ;
+
+//////////////////////////////////////////////////////////////////////////////
+//
+
+var GameState = Ash.Class.extend({
+
+  constructor: function (board) {
+    this.board=board;
+    return this;
+  }
+
+});
+
+
+}).call(this);
+
+//////////////////////////////////////////////////////////////////////////////
+//EOF
+
