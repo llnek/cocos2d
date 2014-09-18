@@ -20,6 +20,7 @@ document.ccConfig = {
     "/public/vendors/l10njs/l10n.min.js",
     "/public/vendors/mustache/mustache.js",
     "/public/vendors/helpers/dbg.js",
+    "/public/vendors/ash-js/ash.min.js",
     "/public/vendors/cherimoia/skaro.js",
     "/public/vendors/cherimoia/caesar.js",
     "/public/vendors/cherimoia/zlab.js",

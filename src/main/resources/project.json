@@ -15,6 +15,7 @@
       "src/l10njs/l10n.min.js",
       "src/mustache/mustache.js",
       "src/helpers/dbg.js",
+      "src/ash-js/ash.min.js",
       "src/cherimoia/skaro.js",
       "src/cherimoia/caesar.js",
       "src/cherimoia/zlab.js",
