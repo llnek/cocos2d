@@ -39,16 +39,12 @@
 ;;
 
 ;; 150px/sec
-(def ^:private INITIAL_BALL_SPEED 150)
-(def ^:private BALL_SIZE 10)
-(def ^:private BALL_SPEEDUP 25) ;; pixels / sec
-(def ^:private PADDLE_HEIGHT 60)
-(def ^:private PADDLE_WIDTH 10)
-(def ^:private PADDLE_SPEED 300)
+;;(def ^:private INITIAL_BALL_SPEED 150)
+;;(def ^:private BALL_SPEEDUP 25) ;; pixels / sec
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defmacro halve [v] `(/ ~v 2))
+(defmacro halve [v] `(* ~v 0.5))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -113,16 +109,15 @@
   (not (or (< (:right ra) (:left rb))
            (< (:right rb) (:left ra))
            (< (:top ra) (:bottom rb))
-           (< (:top rb) (:bottom ra)))
-  ))
+           (< (:top rb) (:bottom ra)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- clamp "Ensure paddle does not go out of bound."
 
-  [^cmzlabclj.nucleus.util.core.MubleAPI 
+  [^cmzlabclj.nucleus.util.core.MubleAPI
    impl
-   ^cmzlabclj.nucleus.util.core.MubleAPI 
+   ^cmzlabclj.nucleus.util.core.MubleAPI
    paddle bbox]
 
   (let [h2 (halve (.getf paddle :height))
@@ -167,56 +162,48 @@
 
   [^cmzlabclj.nucleus.util.core.MubleAPI impl
    dt
-   ^cmzlabclj.nucleus.util.core.MubleAPI ball bbox]
+   ^cmzlabclj.nucleus.util.core.MubleAPI ball
+   bbox]
 
   (with-local-vars [y (+ (.getf ball :y) (* dt (.getf ball :vy)))
                     x (+ (.getf ball :x) (* dt (.getf ball :vx)))
-                    winner 0
                     hit false]
     (let [sz (halve (.getf ball :height))
-          sw (halve (.getf ball :width))
-          vert (.getf impl :portrait)]
-      ;; hitting top wall ?
-      (when (> (+ @y sz) (:top bbox))
-        (if vert 
-          (var-set winner 1)
-          (do
-            (.setf! ball :vy (- (.getf ball :vy)))
-            (var-set y (- (:top bbox) sz))
-            (var-set hit true))))
-      ;; hitting bottom wall ?
-      (when (< (- @y sz) (:bottom bbox))
-        (if vert 
-          (var-set winner 2)
-          (do
-            (.setf! ball :vy (- (.getf ball :vy)))
-            (var-set y (+ (:bottom bbox) sz))
-            (var-set hit true))))
-      ;; hitting right wall
-      (when (> (+ @x sw) (:right bbox))
-        (if-not vert 
-          (var-set winner 1)
-          (do
+          sw (halve (.getf ball :width))]
+      (if (.getf impl :portrait)
+        (do
+          ;;check left and right walls
+          (when (cond
+                  (> (+ @x sw) (:right bbox))
+                  (do (var-set x (- (:right bbox) sw))
+                      true)
+                  (< (- @x sw) (:left bbox))
+                  (do (var-set x (+ (:left bbox) sw))
+                      true)
+                  :else false)
             (.setf! ball :vx (- (.getf ball :vx)))
-            (var-set x (- (:right bbox) sw))
+            (var-set hit true)))
+        (do
+          ;;check top and bottom walls
+          (when (cond
+                  (< (- @y sz) (:bottom bbox))
+                  (do
+                    (var-set y (+ (:bottom bbox) sz))
+                    true)
+                  (> (+ @y sz) (:top bbox))
+                  (do (var-set y (- (:top bbox) sz))
+                      true)
+                  :else false)
+            (.setf! ball :vy (- (.getf ball :vy)))
             (var-set hit true))))
-      ;; hitting left wall
-      (when (< (- @x sw) (:left bbox))
-        (if-not vert 
-          (var-set winner 2)
-          (do
-            (.setf! ball :vx (- (.getf ball :vx)))
-            (var-set x (+ (:left bbox) sw))
-            (var-set hit true))))
-      (when @hit
-        (.setf! ball :x @x)
-        (.setf! ball :y @y)))
-    [@hit @winner]
+      (.setf! ball :x @x)
+      (.setf! ball :y @y))
+    @hit
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- collide? "Check if the ball has collided with anything"
+(defn- collide? "Check if the ball has collided with a paddle."
 
   [^cmzlabclj.nucleus.util.core.MubleAPI impl
    ^cmzlabclj.nucleus.util.core.MubleAPI p1
@@ -224,62 +211,45 @@
    ^cmzlabclj.nucleus.util.core.MubleAPI ball
    bbox]
 
-  (let [hh (halve (.getf ball :height))
-        hw (halve (.getf ball :width))
-        vert (.getf impl :portrait)
-        br (rect (.getf ball :x)
-                 (.getf ball :y)
-                 (.getf ball :width)
-                 (.getf ball :height)) ]
-    ;; ensure ball is not out of bound
-    (with-local-vars [x (.getf ball :x)
-                      y (.getf ball :y)]
-      (if (.getf impl :portrait)
-        (do
-          (when (> (:right br)
-                   (:right bbox))
-            (var-set x (- (:right bbox) hw)))
-          (when (< (:left br)
-                   (:left bbox))
-            (var-set x (+ (:left bbox) hw))))
-        (do
-          (when (> (:top br)
-                   (:top bbox))
-            (var-set y (- (:top bbox) hh)))
-          (when (< (:bottom br)
-                   (:bottom bbox))
-            (var-set y (+ (:bottom bbox) hh)))))
+  (with-local-vars [winner 0]
+    (let [hh (halve (.getf ball :height))
+          hw (halve (.getf ball :width))
+          vert (.getf impl :portrait)
+          br (rect (.getf ball :x)
+                   (.getf ball :y)
+                   (.getf ball :width)
+                   (.getf ball :height)) ]
 
-      (.setf! ball :x @x)
-      (.setf! ball :y @y))
+      (let [r (rect (.getf p2 :x)
+                    (.getf p2 :y)
+                    (.getf p2 :width)
+                    (.getf p2 :height))]
+        (if (rectXrect br r)
+          (if vert
+            (do
+              (.setf! ball :vy (- (.getf ball :vy)))
+              (.setf! ball :y (- (:bottom r) hh)))
+            (do
+              (.setf! ball :vx (- (.getf ball :vx)))
+              (.setf! ball :x (- (:left r) hw))))
+          (when (> (:bottom br)(:top r))
+            (var-set winner 1))))
 
-    ;; check if ball is hitting paddles
-
-    (let [r (rect (.getf p2 :x)
-                  (.getf p2 :y)
-                  (.getf p2 :width)
-                  (.getf p2 :height))]
-      (when (rectXrect br r)
-        (if vert
-          (do
-            (.setf! ball :vy (- (.getf ball :vy)))
-            (.setf! ball :y (- (:bottom r) hw)))
-          (do
-            (.setf! ball :vx (- (.getf ball :vx)))
-            (.setf! ball :x (- (:left r) hw))))))
-
-    (let [r (rect (.getf p1 :x)
-                  (.getf p1 :y)
-                  (.getf p1 :width)
-                  (.getf p1 :height))]
-      (when (rectXrect br r)
-        (if vert
-          (do
-            (.setf! ball :vy (- (.getf ball :vy)))
-            (.setf! ball :y (+ (:top r) hw)))
-          (do
-            (.setf! ball :vx (- (.getf ball :vx)))
-            (.setf! ball :x (+ (:right r) hw))))))
+      (let [r (rect (.getf p1 :x)
+                    (.getf p1 :y)
+                    (.getf p1 :width)
+                    (.getf p1 :height))]
+        (if (rectXrect br r)
+          (if vert
+            (do
+              (.setf! ball :vy (- (.getf ball :vy)))
+              (.setf! ball :y (+ (:top r) hh)))
+            (do
+              (.setf! ball :vx (- (.getf ball :vx)))
+              (.setf! ball :x (+ (:right r) hw))))
+          (when (< (:top br)(:bottom r))
+            (var-set winner 2)))))
+    @winner
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -387,19 +357,14 @@
                            (.getf pad2 :y)))
         (.setf! pad1 :y (+ (* dt (.getf pad1 :vy))
                            (.getf pad1 :y)))))
+
     (clamp impl pad2 bbox)
     (clamp impl pad1 bbox)
+    (traceEnclosure impl dt ball bbox)
 
-    (let [[hit winner] (traceEnclosure impl dt ball bbox)]
-      (if (> winner 0)
-        (updatePoint impl winner)
-        (do
-          (when-not hit
-              (.setf! ball :x (+ (* dt (.getf ball :vx))
-                                 (.getf ball :x)))
-              (.setf! ball :y (+ (* dt (.getf ball :vy))
-                                 (.getf ball :y))))
-          (collide? impl pad1 pad2 ball bbox))))
+    (let [winner (collide? impl pad1 pad2 ball bbox) ]
+      (when (> winner 0)
+        (updatePoint impl winner)))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -464,7 +429,7 @@
         (.setf! impl :lastTick now)
         ;; --- check if time to send a ball update
         (when (> lastSync waitIntv)
-          (when (true? (.getf impl :sync))
+          (when (.getf impl :sync)
             (syncClients impl))
           (.setf! impl :lastSync 0))))
   ))
@@ -640,7 +605,9 @@
               other (if (== pnum 2)
                       (.getf impl :paddle2)
                       (.getf impl :paddle1))]
-          (.setf! other :pv pv)
+          (if (.getf impl :portrait)
+            (.setf! other :vx pv)
+            (.setf! other :vy pv))
           (.sendMessage pt (ReifyEvent Events/SESSION_MSG
                                        Events/C_SYNC_ARENA
                                        (json/write-str cmd)))))

@@ -168,13 +168,14 @@ var GameLayer = asterix.XGameLayer.extend({
     });
 
     // position of paddles
-    p1y = Math.floor(world.bottom + bs.height + 4 + ps.height * 0.5);
-    p2y = Math.floor(world.top - 4 - bs.height - ps.height * 0.5);
+    // portrait
+    p1y = Math.floor(world.bottom + bs.height + sh.hh(ps));
+    p2y = Math.floor(world.top - bs.height - sh.hh(ps));
+    // landscape
+    p2x = Math.floor(world.right - bs.width - sh.hw(ps));
+    p1x = Math.floor(world.left + bs.width + sh.hw(ps));
 
-    p2x = Math.floor(world.right - 4 - bs.width - ps.width * 0.5);
-    p1x = Math.floor(world.left + bs.width + 4 + ps.width * 0.5);
-
-    // start with clean slate
+    // start with a clean slate
     this.reset(newFlag);
 
     p2=null;
@@ -182,8 +183,8 @@ var GameLayer = asterix.XGameLayer.extend({
 
     // game defaults for entities and timers.
     var dfts= {
+      framespersec: cc.game.config[cc.game.CONFIG_KEY.frameRate],
       world: this.getEnclosureRect(),
-      framespersec: 60,
       syncMillis: 3000,
       paddle: {height: Math.floor(ps.height),
                width: Math.floor(ps.width),
