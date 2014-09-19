@@ -199,9 +199,12 @@ asterix.XGameLayer = asterix.XLayer.extend({
 
   update: function(dt) {
     if (this.operational() ) {
-      if (this.engine) { this.engine.update(dt); }
-      this.updateEntities(dt);
-      this.checkEntities(dt);
+      if (this.engine) {
+        this.engine.update(dt);
+      } else {
+        this.updateEntities(dt);
+        this.checkEntities(dt);
+      }
     }
   },
 
