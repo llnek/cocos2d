@@ -20,10 +20,9 @@ ttt= sh.TicTacToe;
 
 //////////////////////////////////////////////////////////////////////////////
 //
-ttt.SelectionNode = Ash.Node.create({
+ttt.TurnBaseSystem = Ash.System.extend({
 
-  constructor: function(eventQ) {
-    this.events = eventQ;
+  constructor: function() {
     return this;
   },
 
@@ -32,22 +31,22 @@ ttt.SelectionNode = Ash.Node.create({
   },
 
   addToEngine: function(e) {
-    this.nodeList = engine.getNodeList(SelectionNode);
+    this.nodeList = engine.getNodeList(BoardNode);
   },
 
   update: function (dt) {
-    if (this.events.length > 0) {
-      var evt = this.events.shift();
-      for (var node = this.nodeList.head; node; node=node.next) {
-        this.process(node, evt);
-      }
+    for (var node = this.nodeList.head; node; node=node.next) {
+      this.process(node, dt);
     }
   },
 
   process: function(node, evt) {
-    node.px = evt.x;
-    node.py = evt.y;
-  }
+    var board= node.board,
+    sel= node.selection;
+
+  },
+
+
 
 });
 
@@ -56,7 +55,6 @@ ttt.SelectionNode = Ash.Node.create({
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
 
 
 

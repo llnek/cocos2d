@@ -17,6 +17,30 @@ sjs= global.SkaroJS,
 sh= asterix,
 ttt= sh.TicTacToe;
 
+function mapGridPos (self) {
+  // memorize the co-ordinates of each cell on the board, so
+  // we know which cell the user has clicked on.
+  var csts= sh.xcfg.csts,
+  gzh = 3 * csts.HOLE + 2 * csts.R_GAP,
+  y2, y1 = csts.TILE * ((csts.GRID_H + gzh) * 0.5),
+  x2, x1 = csts.LEFT * csts.TILE,
+  hz = csts.TILE * csts.HOLE,
+  r,c,n, _results = [];
+
+  for (n=0; n < csts.CELLS; ++n) { self.gridMap[n] = []; }
+  for (r=0; r < csts.GRID_SIZE; ++r) {
+    for (c= 0; c < csts.GRID_SIZE; ++c) {
+      x2 = x1 + hz;
+      y2 = y1 - hz;
+      self.gridMap[r * csts.GRID_SIZE + c] = [x1, y1, x2, y2];
+      x1 = x2 + csts.C_GAP * csts.TILE;
+    }
+    y1 = y1 - (csts.HOLE + csts.R_GAP) * csts.TILE;
+    x1 = csts.LEFT * csts.TILE;
+    _results.push(x1);
+  }
+}
+
 //////////////////////////////////////////////////////////////////////////////
 //
 ttt.GridView = Ash.Class.extend({
@@ -27,6 +51,7 @@ ttt.GridView = Ash.Class.extend({
     this.width= m[1];
     this.height= m[2];
     this.url= sh.sanitizeUrl(m[0]);
+    mapGridPos(this);
     return this;
   }
 

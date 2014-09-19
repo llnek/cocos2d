@@ -32,7 +32,7 @@ ttt.SelectionSystem = Ash.System.extend({
   },
 
   addToEngine: function(e) {
-    this.nodeList = engine.getNodeList(SelectionNode);
+    this.nodeList = engine.getNodeList(GUINode);
   },
 
   update: function (dt) {
@@ -45,8 +45,25 @@ ttt.SelectionSystem = Ash.System.extend({
   },
 
   process: function(node, evt) {
-    node.px = evt.x;
-    node.py = evt.y;
+    var sel = node.selection,
+    map = node.view.gridMap,
+    n,rect,
+    sz= map.length;
+
+    //set the mouse/touch position
+    sel.px = evt.x;
+    sel.py = evt.y;
+    sel.cell= -1;
+
+    //which cell did he click on?
+    for (n=0; n < sz; ++n) {
+      rect = map[n];
+      if (px >= rect[0] && px <= rect[2] &&
+          py >= rect[3] && py <= rect[1]) {
+        sel.cell= n;
+        break;
+      }
+    }
   }
 
 });

@@ -15,7 +15,10 @@ var asterix= global.ZotohLab.Asterix,
 ccsx= asterix.CCS2DX,
 sjs= global.SkaroJS,
 sh= asterix,
-ttt= sh.TicTacToe;
+ttt= sh.TicTacToe,
+
+Odin= global.ZotohLab.Odin,
+evts= Odin.Events;
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -25,26 +28,50 @@ ttt.GameSupervisor = Ash.System.extend({
   constructor: function(factory,state) {
     this.factory= factory;
     this.state= state;
+    this.inited=false;
+    this.actor=null;
     return this;
   },
 
-  removeFromEngine: function(e) {
+  removeFromEngine: function(engine) {
+    this.nodeList=null;
   },
 
   addToEngine: function(engine) {
     var b= this.factory.createBoard(this.state.size,
-                             this.state.mode,this.state);
+                                    this.state.mode,
+                                    this.state);
     this.engine.addEntity(b);
+    this.nodeList= engine.getNodeList(BoardNode);
   },
 
   update: function (dt) {
+    for (var node = this.nodeList.head; node; node = node.next) {
+      if (! this.inited) {
+        this.onceOnly(node,dt);
+        this.inited=true;
+      } else {
+        this.process(node,dt);
+      }
+    }
   },
 
-  process: function(node, dt) {
+  onceOnly: function(node,dt) {
 
+    this.actor = node.board.start();
+    if (this.state.wsock) {
+      // online play
+      sjs.loggr.debug("reply to server: session started ok");
+      this.state.wsock.unsubscribeAll();
+      this.state.wsock.subscribeAll(this.onevent,this);
+      this.state.wsock.send({
+        type: evts.SESSION_MSG,
+        code: evts.C_STARTED
+      });
+    }
+  },
 
-
-
+  process: function(node,dt) {
   }
 
 });
