@@ -17,25 +17,21 @@ sjs= global.SkaroJS,
 sh= asterix,
 ttt= sh.TicTacToe;
 
+
 //////////////////////////////////////////////////////////////////////////////
 //
-ttt.UISelection = Ash.Class.extend({
-
-  constructor: function() {
-    this.cell = -1;
-    this.px = -1;
-    this.py = -1;
-    return this;
-  }
-
+ttt.NetPlayNode = Ash.Node.create({
+  cmd: ttt.NetPlay,
+  grid: ttt.Grid
 });
-
 
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
+
+
 
 
 

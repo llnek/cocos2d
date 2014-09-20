@@ -19,12 +19,10 @@ ttt= sh.TicTacToe;
 
 //////////////////////////////////////////////////////////////////////////////
 //
-ttt.UISelection = Ash.Class.extend({
+ttt.NetPlay = Ash.Class.extend({
 
   constructor: function() {
-    this.cell = -1;
-    this.px = -1;
-    this.py = -1;
+    this.event= null;
     return this;
   }
 
