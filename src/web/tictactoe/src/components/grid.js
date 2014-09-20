@@ -23,7 +23,7 @@ ttt.Grid = Ash.Class.extend({
 
   constructor: function(size,seed) {
     //ignore seed for now
-    this.grid= sjs.makeArray(size * size, sh.xcfg.csts.CV_Z);
+    this.values= sjs.makeArray(size * size, sh.xcfg.csts.CV_Z);
     this.size=size;
     return this;
   }

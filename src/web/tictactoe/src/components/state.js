@@ -20,10 +20,10 @@ ttt= sh.TicTacToe;
 
 //////////////////////////////////////////////////////////////////////////////
 //
-ttt.SmartAlgo = Ash.Class.extend({
+ttt.GameState = Ash.Class.extend({
 
   constructor: function(board) {
-    this.algo= new negax.Algo(board);
+
     return this;
   }
 

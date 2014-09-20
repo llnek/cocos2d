@@ -170,23 +170,10 @@ var GameLayer = asterix.XGameLayer.extend({
       }
     });
 
-    var state = sjs.merge({}, this.options);
-
     // clean slate
     this.reset(newFlag);
     this.cleanSlate();
 
-    this.engine.addSystem(new ttt.GameSupervisor(state, fac),
-                          ttt.Priorities.PreUpdate);
-
-    this.engine.addSystem(new ttt.SelectionSystem(state, {}),
-                          ttt.Priorities.Movement);
-
-    this.engine.addSystem(new ttt.TurnBaseSystem(state),
-                          ttt.Priorities.Resolve);
-
-    this.engine.addSystem(new ttt.RenderSystem(state),
-                          ttt.Priorities.Render);
 
     //based on mode, create the 2 players
     //switch (sh.xcfg.csts.GAME_MODE) {

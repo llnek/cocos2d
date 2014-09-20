@@ -44,10 +44,8 @@ function mapGoalSpace (obj,size) {
 //
 ttt.Board = Ash.Class.extend({
 
-  constructor: function(size, p1, p2) {
+  constructor: function(size) {
     mapGoalSpace(this,size);
-    this.p2= p2;
-    this.p1= p1;
     return this;
   }
 

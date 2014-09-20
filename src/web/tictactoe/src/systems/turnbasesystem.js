@@ -22,7 +22,8 @@ ttt= sh.TicTacToe;
 //
 ttt.TurnBaseSystem = Ash.System.extend({
 
-  constructor: function() {
+  constructor: function(state) {
+    this.state= state;
     return this;
   },
 
@@ -41,10 +42,62 @@ ttt.TurnBaseSystem = Ash.System.extend({
   },
 
   process: function(node, evt) {
-    var board= node.board,
+    var ps= node.players.cache,
+    cp= ps[this.state.actor],
+    csts= sh.xcfg.csts,
+    board= node.board,
+    grid= node.grid,
+    bot= node.robot,
     sel= node.selection;
 
+    //handle online play
+    if (this.state.wsock) {
+
+      if (this.state.pnum === cp.pnum &&
+          sel.cell >= 0) {
+        this.enqueue(sel.cell,cp.value,grid);
+      }
+
+    }
+    else
+    if (cp.category === csts.BOT) {
+      bot.algo.getGameBoard().syncState(grid.values);
+      cell= bot.algo.eval();
+      this.enqueue(cell,cp.value,grid);
+    }
+    else
+    if (sel.cell >= 0) {
+      this.enqueue(cell,cp.value,grid);
+    }
+
+    sel.cell= -1;
   },
+
+  enqueue: function(pos, value, grid) {
+    var vs= grid.values;
+    if ((pos >= 0 && pos < vs.length) &&
+        sh.xcfg.csts.CV_Z === vs[pos]) {
+
+      if (this.state.wsock) {
+
+      } else {
+        vs[pos] = value;
+      }
+
+      this.toggleActor();
+    }
+  },
+
+  toggleActor: function() {
+    var cp= this.state.actor;
+    if (cp === 'X') {
+      this.state.actor= 'O';
+    }
+    else
+    if (cp === 'O') {
+      this.state.actor= 'X';
+    }
+  }
 
 
 

@@ -25,7 +25,7 @@ evts= Odin.Events;
 //
 ttt.GameSupervisor = Ash.System.extend({
 
-  constructor: function(factory,state) {
+  constructor: function(state,factory) {
     this.factory= factory;
     this.state= state;
     this.inited=false;
@@ -58,7 +58,6 @@ ttt.GameSupervisor = Ash.System.extend({
 
   onceOnly: function(node,dt) {
 
-    this.actor = node.board.start();
     if (this.state.wsock) {
       // online play
       sjs.loggr.debug("reply to server: session started ok");
@@ -68,11 +67,26 @@ ttt.GameSupervisor = Ash.System.extend({
         type: evts.SESSION_MSG,
         code: evts.C_STARTED
       });
+      this.state.actor= '';
+    } else {
+      this.state.actor = sjs.randomSign() > 0 ? 'X' : 'O';
     }
   },
 
   process: function(node,dt) {
-  }
+  },
+
+  onevent: function(topic, evt) {
+    //sjs.loggr.debug(evt);
+    switch (evt.type) {
+      case evts.NETWORK_MSG:
+        this.onNetworkEvent(evt);
+      break;
+      case evts.SESSION_MSG:
+        this.onSessionEvent(evt);
+      break;
+    }
+  },
 
 });
 

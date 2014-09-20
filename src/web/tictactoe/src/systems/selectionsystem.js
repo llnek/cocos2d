@@ -22,7 +22,7 @@ ttt= sh.TicTacToe;
 //
 ttt.SelectionSystem = Ash.System.extend({
 
-  constructor: function(eventQ) {
+  constructor: function(state, eventQ) {
     this.events = eventQ;
     return this;
   },
@@ -42,6 +42,7 @@ ttt.SelectionSystem = Ash.System.extend({
         this.process(node, evt);
       }
     }
+    this.events.length=0;
   },
 
   process: function(node, evt) {

@@ -63,6 +63,10 @@ function negamax(board, game, maxDepth, depth, alpha, beta) {
 
 global.ZotohLab.NegaMax.Algo = sjs.Class.xtends({
 
+  getGameBoard: function() {
+    return this.board;
+  },
+
   ctor: function(board) {
     this.board= board;
   },

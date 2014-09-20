@@ -20,21 +20,20 @@ ttt= sh.TicTacToe;
 
 //////////////////////////////////////////////////////////////////////////////
 //
-ttt.BoardNode = Ash.Node.create({
-  selection: ttt.UISelection,
-  players: ttt.Players,
-  board: ttt.Board,
-  robot: ttt.SmartAlgo,
-  grid: ttt.Grid,
-  view: ttt.GridView
-});
+ttt.Priorities = {
+
+  PreUpdate: 1,
+  Movement: 2,
+  Resolve: 3,
+  Render: 4
+
+};
 
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
 
 
 

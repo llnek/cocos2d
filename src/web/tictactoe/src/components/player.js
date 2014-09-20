@@ -22,18 +22,28 @@ ttt= sh.TicTacToe;
 //
 ttt.Player = Ash.Class.extend({
 
-  constructor: function(value,id,color,labels) {
+  constructor: function(category,value,id,color,labels) {
     this.psLongID= labels[1];
     this.psID= labels[0];
     this.color= color;
     this.pnum=id;
+    this.category= category;
     this.value= value;
     return this;
   }
 
 });
 
+ttt.Players = Ash.Class.extend({
 
+  constructor: function(p1,p2) {
+    this.players={};
+    this.players[p2.color] = p2;
+    this.players[p1.color] = p1;
+    return this;
+  }
+
+});
 
 }).call(this);
 

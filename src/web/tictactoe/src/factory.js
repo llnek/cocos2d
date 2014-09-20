@@ -26,37 +26,44 @@ ttt.EntityFactory = Ash.Class.extend({
   },
 
   createBoard: function(size,mode,options) {
-    var p = new Ash.Entity(),
-    ws2,ws1,
-    p2,p1;
+    var bd= new ttt.GameBoard(size,csts.CV_Z,csts.CV_X,csts.CV_O),
+    ent = new Ash.Entity(),
+    p,
+    csts = sh.xcfg.csts;
 
-    if (online) { p.add(new ttt.NetAware()); }
-    p.add(new ttt.Board());
-    p.add(new ttt.UISelection());
+    ent.add(new ttt.Board(options.size));
+    ent.add(new ttt.UISelection());
+    ent.add(new ttt.SmartAlgo(bd));
     switch (mode) {
       case sh.ONLINE_GAME:
-        if (options.pnum === 1) {
-          ws1= options.wsock;
-        } else {
-          ws2= options.wsock;
-        }
-        p2= new ttt.NetPlayer(csts.CV_O, 2, 'O', options.p2ids, ws2);
-        p1= new ttt.NetPlayer(csts.CV_X, 1, 'X', options.p1ids, ws1);
+        p= new ttt.Players(new ttt.Player(csts.NETP,
+                                          csts.CV_X,
+                                          1, 'X', options.p1ids),
+                           new ttt.Player(csts.NETP,
+                                          csts.CV_O,
+                                          2, 'O', options.p2ids));
       break;
       case sh.P1_GAME:
-        p2= new ttt.BotPlayer(csts.CV_O, 2, 'O', options.p2ids);
-        p1= new ttt.Player(csts.CV_X, 1, 'X', options.p1ids);
+        p = new ttt.Players(new ttt.Player(csts.HUMAN,
+                                           csts.CV_X,
+                                           1, 'X', options.p1ids);
+                            new ttt.Player(csts.BOT,
+                                           csts.CV_O,
+                                           2, 'O', options.p2ids));
       break;
       case sh.P2_GAME:
-        p1= new ttt.Player(csts.CV_X, 1, 'X', options.p1ids);
-        p2= new ttt.Player(csts.CV_O, 2, 'O', options.p2ids);
+        p= new ttt.Players(new ttt.Player(csts.HUMAN,
+                                          csts.CV_X,
+                                          1, 'X', options.p1ids),
+                           new ttt.Player(csts.HUMAN,
+                                          csts.CV_O,
+                                          2, 'O', options.p2ids));
       break;
     }
-    p.add(new ttt.Grid(size,options.seed));
-    p.add(new ttt.GridView(size));
-    p.add(p2);
-    p.add(p1);
-    return p;
+    ent.add(p);
+    ent.add(new ttt.Grid(size,options.seed));
+    ent.add(new ttt.GridView(size));
+    return ent;
   }
 
 
