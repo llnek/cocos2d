@@ -25,11 +25,10 @@ evts= Odin.Events;
 //
 ttt.GameSupervisor = Ash.System.extend({
 
-  constructor: function(state,factory) {
-    this.factory= factory;
-    this.state= state;
+  constructor: function(options) {
+    this.factory= options.factory;
+    this.state= options;
     this.inited=false;
-    this.actor=null;
     return this;
   },
 
@@ -38,9 +37,7 @@ ttt.GameSupervisor = Ash.System.extend({
   },
 
   addToEngine: function(engine) {
-    var b= this.factory.createBoard(this.state.size,
-                                    this.state.mode,
-                                    this.state);
+    var b= this.factory.createBoard(this.state);
     this.engine.addEntity(b);
     this.nodeList= engine.getNodeList(BoardNode);
   },
@@ -61,72 +58,19 @@ ttt.GameSupervisor = Ash.System.extend({
     if (this.state.wsock) {
       // online play
       sjs.loggr.debug("reply to server: session started ok");
-      this.state.wsock.unsubscribeAll();
-      this.state.wsock.subscribeAll(this.onevent,this);
       this.state.wsock.send({
         type: evts.SESSION_MSG,
         code: evts.C_STARTED
       });
-      this.state.actor= '';
+      this.state.actor= 0;
     } else {
-      this.state.actor = sjs.randomSign() > 0 ? 'X' : 'O';
+      //randomly pick a player to start the game.
+      this.state.actor = sjs.randomSign() > 0 ? 1 : 2;
     }
   },
 
   process: function(node,dt) {
-  },
-
-  onevent: function(topic, evt) {
-    //sjs.loggr.debug(evt);
-    switch (evt.type) {
-      case evts.NETWORK_MSG:
-        this.onNetworkEvent(evt);
-      break;
-      case evts.SESSION_MSG:
-        this.onSessionEvent(evt);
-      break;
-    }
-  },
-
-  onNetworkEvent: function(evt) {
-    var h= this.getHUD();
-    switch (evt.code) {
-      case evts.C_RESTART:
-        sjs.loggr.debug("restarting a new game...");
-        h.killTimer();
-        sh.main.play(false);
-      break;
-      case evts.C_STOP:
-        sjs.loggr.debug("game will stop");
-        h.killTimer();
-        this.onStop(evt);
-      break;
-      default:
-        //TODO: fix this hack
-        this.onSessionEvent(evt);
-      break;
-    }
-  },
-
-  onSessionEvent: function(evt) {
-    var pnum= _.isNumber(evt.source.pnum) ? evt.source.pnum : -1;
-    var h= this.getHUD();
-    this.maybeUpdateActions(evt);
-    switch (evt.code) {
-      case evts.C_POKE_MOVE:
-        sjs.loggr.debug("player " + pnum + ": my turn to move");
-        this.actor= this.players[pnum];
-        h.showTimer();
-        this.board.toggleActor(Cmd(this.actor));
-      break;
-      case evts.C_POKE_WAIT:
-        sjs.loggr.debug("player " + pnum + ": my turn to wait");
-        this.actor = this.players[pnum===1 ? 2 : 1];
-        h.killTimer();
-        this.board.toggleActor(Cmd(this.actor));
-      break;
-    }
-  },
+  }
 
 });
 

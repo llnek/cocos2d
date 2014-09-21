@@ -20,7 +20,7 @@ ttt= sh.TicTacToe;
 
 //////////////////////////////////////////////////////////////////////////////
 //
-ttt.TurnBaseSystem = Ash.System.extend({
+ttt.RenderSystem = Ash.System.extend({
 
   constructor: function(options) {
     this.state= options;
@@ -32,58 +32,65 @@ ttt.TurnBaseSystem = Ash.System.extend({
   },
 
   addToEngine: function(e) {
-    this.nodeList = engine.getNodeList(BoardNode);
+    this.nodeList = engine.getNodeList(ttt.BoardNode);
   },
 
   update: function (dt) {
     for (var node = this.nodeList.head; node; node=node.next) {
-      this.process(node, dt);
+      this.process(node, evt);
     }
   },
 
   process: function(node, evt) {
-    var ps= this.state.players,
-    cp= ps[this.state.actor],
+    var values= node.grid.values,
     csts= sh.xcfg.csts,
-    board= node.board,
-    grid= node.grid,
-    bot= node.robot,
-    sel= node.selection;
+    sz = values.length,
+    view = node.view,
+    cells= view.cells,
 
-    //handle online play
-    if (this.state.wsock) {
+    _.each(values, function(v,pos) {
 
-      //if the mouse click is from the valid user, handle it
-      if (this.state.pnum === cp.pnum) {
-        this.enqueue(sel.cell,cp.value,grid);
+      if (!sjs.echt(cells[pos]) &&
+          v !== csts.CV_Z) {
+        var c= this.xrefCell(pos,view.gridMap),
+        offset= v === csts.CV_X ? 0 : 1;
+        if (c) {
+          cells[pos] = [this.drawSymbol(view, c[0],c[1], offset),
+                        c[0], c[1], offset];
+        }
       }
 
-    }
-    else
-    if (cp.category === csts.BOT) {
-      //if active player is robot, run it
-      bot.algo.getGameBoard().syncState(grid.values);
-      this.enqueue(bot.algo.eval(),cp.value,grid);
-    }
-    else
-    if (sel.cell >= 0) {
-      //possibly a valid click ? handle it
-      this.enqueue(sel.cell,cp.value,grid);
-    }
+    },this);
 
-    sel.cell= -1;
   },
 
-  enqueue: function(pos, value, grid) {
+  drawSymbol: function(view, x,y,offset) {
+    var s1= new cc.Sprite(view.url,
+                          cc.rect(offset * view.width,
+                                  0,
+                                  view.width, view.height));
+    s1.setAnchorPoint(ccsx.AnchorCenter);
+    s1.setPosition(x,y);
+    view.layer.addItem(s1);
+    return s1;
+  },
 
-    if ((pos >= 0 && pos < grid.values.length) &&
-        sh.xcfg.csts.CV_Z === grid.values[pos]) {
+  xrefCell: function(pos, map) {
+    // given a cell, find the screen co-ordinates for that cell.
+    //var img2= sh.main.cache.getImage('gamelevel1.sprites.markers');
+    //var delta= 0;//72;//img2.height;
+    var csts= sh.xcfg.csts,
+    gg, x, y,
+    delta=0;
 
-      if (this.state.wsock) {
-      } else {
-        this.state.actor = this.state.actor===1 ? 2 : 1;
-        grid.values[pos] = value;
-      }
+    if (pos >= 0 && pos < csts.CELLS) {
+      gg = map[pos];
+      x = gg[0] + (gg[2] - gg[0]  - delta) / 2;
+      y = gg[1] - (gg[1] - gg[3] - delta ) / 2;
+      // the cell's center
+      return [x, y];
+    } else {
+      return null;
     }
   }
 

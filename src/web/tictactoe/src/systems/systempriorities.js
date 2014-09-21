@@ -24,8 +24,9 @@ ttt.Priorities = {
 
   PreUpdate: 1,
   Movement: 2,
-  Resolve: 3,
-  Render: 4
+  TurnBase: 3,
+  Resolve: 4,
+  Render: 5
 
 };
 

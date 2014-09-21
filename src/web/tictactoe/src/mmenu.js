@@ -17,13 +17,9 @@ ccsx = asterix.COCOS2DX,
 sjs= global.SkaroJS;
 
 var SEED= {
-  seed_data: {
-    grid: [0,0,0,
-           0,0,0,
-           0,0,0],
-    size: 3,
-    players: { }
-  },
+  grid: [0,0,0, 0,0,0, 0,0,0],
+  size: 3,
+  players: { },
   pnum: 1,
   mode: 0
 };
@@ -65,8 +61,8 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
       selector: function() {
         sh.fireEvent('/mmenu/controls/newgame',
                      sjs.mergeEx(SEED,
-                                 { seed_data: { players: pobj2 },
-                                   mode: sh.P2_GAME }));
+                                 {players: pobj2,
+                                  mode: sh.P2_GAME }));
       },
       target: this,
       scale: 0.5,
@@ -82,8 +78,8 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
       selector: function() {
         sh.fireEvent('/mmenu/controls/newgame',
                      sjs.mergeEx(SEED,
-                                 { seed_data: { players: pobj1 },
-                                   mode: sh.P1_GAME }));
+                                 {players: pobj1,
+                                  mode: sh.P1_GAME }));
       },
       target: this,
       scale: 0.5,

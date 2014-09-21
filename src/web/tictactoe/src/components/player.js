@@ -29,21 +29,12 @@ ttt.Player = Ash.Class.extend({
     this.pnum=id;
     this.category= category;
     this.value= value;
+    this.offset = id === 1 ? 0 : 1;
     return this;
   }
 
 });
 
-ttt.Players = Ash.Class.extend({
-
-  constructor: function(p1,p2) {
-    this.players={};
-    this.players[p2.color] = p2;
-    this.players[p1.color] = p1;
-    return this;
-  }
-
-});
 
 }).call(this);
 

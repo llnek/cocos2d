@@ -42,7 +42,11 @@ ttt.BackLayer = asterix.XLayer.extend({
 
 ttt.HUDLayer = asterix.XGameHUDLayer.extend({
 
-  scores: { 'O': 0, 'X': 0 },
+  scores : {
+    sh.xcfg.csts.P2_COLOR: 0,
+    sh.xcfg.csts.P1_COLOR: 0
+  },
+
   mode: 0,
 
   // these will be set by the game
@@ -185,8 +189,8 @@ ttt.HUDLayer = asterix.XGameHUDLayer.extend({
   },
 
   drawScores: function() {
-    var s2 = this.scores[this.play2.color],
-    s1 = this.scores[this.play1.color],
+    var s2 = this.scores[this.play2],
+    s1 = this.scores[this.play1],
     csts= sh.xcfg.csts,
     wz = ccsx.screen(),
     n2 = sjs.prettyNumber(s2,3),
@@ -218,9 +222,9 @@ ttt.HUDLayer = asterix.XGameHUDLayer.extend({
     }
   },
 
-  regoPlayers: function(p1,p1ids,p2,p2ids) {
-    this.play2= p2;
-    this.play1= p1;
+  regoPlayers: function(color1,p1ids,color2,p2ids) {
+    this.play2= color2;
+    this.play1= color1;
     this.p2Long= p2ids[1];
     this.p1Long= p1ids[1];
     this.p2ID= p2ids[0];
@@ -239,11 +243,8 @@ ttt.HUDLayer = asterix.XGameHUDLayer.extend({
     this.replayBtn.setVisible(false);
     this.result.setVisible(false);
     this.status.setVisible(true);
-  },
-
-  rtti: function() {
-    return 'HUD';
   }
+
 
 });
 

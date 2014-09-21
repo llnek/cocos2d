@@ -36,18 +36,6 @@ function Cmd(a,pos) {
 
 var GameLayer = asterix.XGameLayer.extend({
 
-  // map of the screen co-ords of each cell in the grid
-  gridMap: [],
-
-  // holds references to sprites
-  cells: [],
-
-  // queue for UI updates
-  actions: [],
-
-  // polymorphic board (net/non-net)
-  board: null,
-
   onStop: function(evt) {
 
     this.maybeUpdateActions(evt);
@@ -96,20 +84,15 @@ var GameLayer = asterix.XGameLayer.extend({
 
   play: function(newFlag) {
 
-    var state0= this.options.seed_data,
-    ncells= state0.size*state0.size,
-    csts= sh.xcfg.csts,
+    var csts= sh.xcfg.csts,
     h= this.getHUD(),
-    delay,
-    p1ids, p2ids,
-    p1= null,
-    p2= null;
+    p1ids, p2ids;
 
-    sh.xcfg.csts.GRID_SIZE= state0.size;
-    sh.xcfg.csts.CELLS = ncells;
+    sh.xcfg.csts.CELLS = this.options.size*this.options.size;
+    sh.xcfg.csts.GRID_SIZE= this.options.size;
 
     // sort out names of players
-    _.each(state0.players,function(v,k) {
+    _.each(this.options.players,function(v,k) {
       if (v[0] === 1) {
         p1ids= [k, v[1] ];
       } else {
@@ -123,28 +106,31 @@ var GameLayer = asterix.XGameLayer.extend({
     this.selQ = [];
     this.netQ = [];
 
-    var state = sjs.merge({p2ids: p2ids,
-                           p1ids: p1ids }, this.options),
-        fac= new ttt.EntityFactory(this.engine);
+    this.options.factory= new ttt.EntityFactory(this.engine);
 
-    this.engine.addSystem(new ttt.GameSupervisor(state, fac),
+    this.engine.addSystem(new ttt.GameSupervisor(this.options),
                           ttt.Priorities.PreUpdate);
 
-    this.engine.addSystem(new ttt.SelectionSystem(state, this.selQ),
+    this.engine.addSystem(new ttt.SelectionSystem(this.options, this.selQ),
                           ttt.Priorities.Movement);
 
-    this.engine.addSystem(new ttt.NetworkSystem(state, this.netQ),
+    this.engine.addSystem(new ttt.NetworkSystem(this.options, this.netQ),
                           ttt.Priorities.Movement);
 
-    this.engine.addSystem(new ttt.TurnBaseSystem(state),
+    this.engine.addSystem(new ttt.TurnBaseSystem(this.options),
+                          ttt.Priorities.TurnBase);
+
+    this.engine.addSystem(new ttt.ResolutionSystem(this.options),
                           ttt.Priorities.Resolve);
 
-    this.engine.addSystem(new ttt.RenderSystem(state),
+    this.engine.addSystem(new ttt.RenderSystem(this.options),
                           ttt.Priorities.Render);
 
     state.wsock.unsubscribeAll();
     state.wsock.subscribeAll(this.onevent,this);
 
+    this.getHUD().regoPlayers(csts.P1_COLOR,p1ids,
+                              csts.P2_COLOR,p2ids);
   },
 
   onNewGame: function(mode) {
@@ -157,20 +143,16 @@ var GameLayer = asterix.XGameLayer.extend({
     var h= this.getHUD();
     if (newFlag) {
       h.resetAsNew();
-      this.mapGridPos();
     } else {
       h.reset();
     }
-
+/*
     _.each(this.cells, function(z) {
       if (z) {
         this.removeItem(z[0]);
       }
     },this);
-
-    this.players=[];
-    this.cells=[];
-    this.actor=null;
+*/
   },
 
   onclicked: function(mx,my) {
@@ -262,7 +244,6 @@ var GameLayer = asterix.XGameLayer.extend({
     switch (evt.code) {
       case evts.C_POKE_MOVE:
       case evts.C_POKE_WAIT:
-        this.netQ.length = 0;
         this.netQ.push(evt);
       break;
     }
@@ -288,6 +269,15 @@ asterix.TicTacToe.Factory = {
       });
       scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
         sh.main.replay();
+      });
+      scene.ebus.on('/game/hud/timer/show',function(t,msg) {
+        sh.main.getHUD().showTimer();
+      });
+      scene.ebus.on('/game/hud/timer/hide',function(t,msg) {
+        sh.main.getHUD().killTimer();
+      });
+      scene.ebus.on('/game/hud/end',function(t,msg) {
+        sh.main.getHUD().endGame();
       });
       scene.ebus.on('/game/player/timer/expired',function(t,msg) {
         sh.main.playTimeExpired(msg);

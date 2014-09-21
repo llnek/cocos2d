@@ -21,7 +21,7 @@ ttt= sh.TicTacToe;
 //////////////////////////////////////////////////////////////////////////////
 //
 ttt.NetPlayNode = Ash.Node.create({
-  cmd: ttt.NetPlay,
+  playcmd: ttt.NetPlay,
   grid: ttt.Grid
 });
 

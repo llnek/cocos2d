@@ -25,44 +25,44 @@ ttt.EntityFactory = Ash.Class.extend({
     return this;
   },
 
-  createBoard: function(size,mode,options) {
-    var bd= new ttt.GameBoard(size,csts.CV_Z,csts.CV_X,csts.CV_O),
+  createBoard: function(options) {
+    var csts= sh.xcfg.csts, bd= new ttt.GameBoard(options.size,
+                                                  csts.CV_Z,
+                                                  csts.CV_X,
+                                                  csts.CV_O),
     ent = new Ash.Entity(),
-    p,
-    csts = sh.xcfg.csts;
+    p2cat,p1cat,
+    p2,p1;
 
     ent.add(new ttt.Board(options.size));
     ent.add(new ttt.UISelection());
     ent.add(new ttt.SmartAlgo(bd));
-    switch (mode) {
+    ent.add(new ttt.NetPlay());
+
+    switch (options.mode) {
       case sh.ONLINE_GAME:
-        p= new ttt.Players(new ttt.Player(csts.NETP,
-                                          csts.CV_X,
-                                          1, 'X', options.p1ids),
-                           new ttt.Player(csts.NETP,
-                                          csts.CV_O,
-                                          2, 'O', options.p2ids));
+        p2cat = csts.NETP;
+        p1cat = csts.NETP;
       break;
       case sh.P1_GAME:
-        p = new ttt.Players(new ttt.Player(csts.HUMAN,
-                                           csts.CV_X,
-                                           1, 'X', options.p1ids);
-                            new ttt.Player(csts.BOT,
-                                           csts.CV_O,
-                                           2, 'O', options.p2ids));
+        p1cat= csts.HUMAN;
+        p2cat= csts.BOT;
       break;
       case sh.P2_GAME:
-        p= new ttt.Players(new ttt.Player(csts.HUMAN,
-                                          csts.CV_X,
-                                          1, 'X', options.p1ids),
-                           new ttt.Player(csts.HUMAN,
-                                          csts.CV_O,
-                                          2, 'O', options.p2ids));
+        p2cat= csts.HUMAN;
+        p1cat= csts.HUMAN;
       break;
     }
-    ent.add(p);
+    p1= new ttt.Player(p1cat, csts.CV_X, 1, csts.P1_COLOR);
+    p2= new ttt.Player(p2cat, csts.CV_O, 2, csts.P2_COLOR);
+    options.players = [null,p1,p2];
+    options.colors={};
+    options.colors[csts.P1_COLOR] = p1;
+    options.colors[csts.P2_COLOR] = p2;
+
     ent.add(new ttt.Grid(size,options.seed));
-    ent.add(new ttt.GridView(size));
+    ent.add(new ttt.GridView(size,sh.main));
+
     return ent;
   }
 

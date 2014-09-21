@@ -45,9 +45,10 @@ function mapGridPos (self) {
 //
 ttt.GridView = Ash.Class.extend({
 
-  constructor: function(size) {
+  constructor: function(size, layer) {
     var m = sh.xcfg.assets.sprites['gamelevel1.sprites.markers'];
     this.cells= sjs.makeArray(size * size, null);
+    this.layer= layer;
     this.width= m[1];
     this.height= m[2];
     this.url= sh.sanitizeUrl(m[0]);

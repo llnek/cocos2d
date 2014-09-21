@@ -22,8 +22,9 @@ ttt= sh.TicTacToe;
 //
 ttt.NetworkSystem = Ash.System.extend({
 
-  constructor: function(state, eventQ) {
+  constructor: function(options, eventQ) {
     this.events = eventQ;
+    this.state= options;
     return this;
   },
 
@@ -32,7 +33,7 @@ ttt.NetworkSystem = Ash.System.extend({
   },
 
   addToEngine: function(e) {
-    this.nodeList = engine.getNodeList(NetPNode);
+    this.nodeList = engine.getNodeList(ttt.NetPlayNode);
   },
 
   update: function (dt) {
@@ -42,27 +43,25 @@ ttt.NetworkSystem = Ash.System.extend({
         this.process(node, evt);
       }
     }
-    this.events.length=0;
   },
 
   process: function(node, evt) {
     var pnum= _.isNumber(evt.source.pnum) ? evt.source.pnum : -1;
-
+    if (pnum === 1 || pnum === 2) {} else { return; }
     this.maybeUpdateActions(node, evt);
     switch (evt.code) {
       case evts.C_POKE_MOVE:
         sjs.loggr.debug("player " + pnum + ": my turn to move");
-        //h.showTimer();
-        this.state.actor= this.xrefColor(pnum);
+        sh.fireEvent('/game/hud/timer/show');
+        this.state.actor= pnum;
       break;
       case evts.C_POKE_WAIT:
         sjs.loggr.debug("player " + pnum + ": my turn to wait");
-        //h.killTimer();
+        sh.fireEvent('/game/hud/timer/hide');
         // toggle color
-        this.state.actor= this.xrefColor(pnum===1 ? 2 : 1);
+        this.state.actor= pnum===1 ? 2 : 1;
       break;
     }
-
   },
 
   maybeUpdateActions: function(node, evt) {
@@ -74,11 +73,6 @@ ttt.NetworkSystem = Ash.System.extend({
         cmd.cell >= 0 && cmd.cell < vs.length) {
       vs[cmd.cell] = cmd.value;
     }
-  },
-
-  xrefColor: function(pnum) {
-    var csts= sh.xcfg.csts;
-    return pnum === 1 ? csts.P1_COLOR : csts.P2_COLOR;
   }
 
 
