@@ -12,11 +12,11 @@
 (function (undef){ "use strict"; var global = this, _ = global._ ;
 
 var asterix= global.ZotohLab.Asterix,
+negax= global.ZotohLab.NegaMax,
 ccsx= asterix.CCS2DX,
 sjs= global.SkaroJS,
 sh= asterix,
 ttt= sh.TicTacToe;
-var negax= global.ZotohLab.NegaMax;
 
 //////////////////////////////////////////////////////////////////////////////
 //

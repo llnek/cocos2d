@@ -25,12 +25,12 @@ var ttt.GameBoard = sjs.Class.xtends({
 
   isNil: function(cellv) { return cellv === this.CV_Z; },
 
-  ctor: function(size, nilValue, p1v, p2v) {
-    this.actors= [this.CV_Z, p1v, p2v];
+  ctor: function(size, nilValue, p1v, p2v, goals) {
+    this.actors= [nilValue, p1v, p2v];
+    this.CV_Z= nilValue;
     this.grid= [];
-    this.CV_Z = nilValue;
     this.size= size;
-    this.mapGoalSpace(size);
+    this.GOALSPACE=goals;
   },
 
   syncState: function(seed) {
@@ -118,28 +118,6 @@ var ttt.GameBoard = sjs.Class.xtends({
       });
     });
     return rc ? [actor, combo] : [null, null];
-  },
-
-  mapGoalSpace: function(size) {
-    this.ROWSPACE = [];
-    this.COLSPACE = [];
-    var dx = [],
-    dy = [],
-    c, r, h, v;
-    for (r=0; r < size; ++r) {
-      h = [];
-      v = [];
-      for (c=0; c < size; ++c) {
-        h.push(r * size + c);
-        v.push(c * size + r);
-      }
-      this.ROWSPACE.push(h);
-      this.COLSPACE.push(v);
-      dx.push(r * size + r);
-      dy.push((size - r - 1) * size + r);
-    }
-    this.DAGSPACE = [dx, dy];
-    this.GOALSPACE = this.DAGSPACE.concat(this.ROWSPACE, this.COLSPACE);
   }
 
 });

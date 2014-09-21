@@ -22,7 +22,6 @@ ttt= sh.TicTacToe;
 //
 ttt.BoardNode = Ash.Node.create({
   selection: ttt.UISelection,
-  players: ttt.Players,
   board: ttt.Board,
   robot: ttt.SmartAlgo,
   grid: ttt.Grid,

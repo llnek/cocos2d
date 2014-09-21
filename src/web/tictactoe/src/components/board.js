@@ -17,53 +17,16 @@ sjs= global.SkaroJS,
 sh= asterix,
 ttt= sh.TicTacToe;
 
-function mapGoalSpace (obj,size) {
-  obj.ROWSPACE = [];
-  obj.COLSPACE = [];
-  var dx = [],
-  dy = [],
-  c, r, h, v;
-  for (r=0; r < size; ++r) {
-    h = [];
-    v = [];
-    for (c=0; c < size; ++c) {
-      h.push(r * size + c);
-      v.push(c * size + r);
-    }
-    obj.ROWSPACE.push(h);
-    obj.COLSPACE.push(v);
-    dx.push(r * size + r);
-    dy.push((size - r - 1) * size + r);
-  }
-  obj.DAGSPACE = [dx, dy];
-  obj.GOALSPACE = this.DAGSPACE.concat(this.ROWSPACE, this.COLSPACE);
-}
-
-
 //////////////////////////////////////////////////////////////////////////////
 //
 ttt.Board = Ash.Class.extend({
 
-  constructor: function(size) {
-    mapGoalSpace(this,size);
+  constructor: function(size,goals) {
+    this.GOALSPACE= goals;
     return this;
   }
 
 });
-
-
-//////////////////////////////////////////////////////////////////////////////
-//
-ttt.NetAware = Ash.Class.extend({
-
-  constructor: function() {
-    return this;
-  }
-
-});
-
-
-
 
 
 }).call(this);

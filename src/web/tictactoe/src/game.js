@@ -12,22 +12,12 @@
 (function (undef){ "use strict"; var global = this, _ = global._ ;
 
 var asterix= global.ZotohLab.Asterix,
+Odin= global.ZotohLab.Odin,
 ccsx= asterix.CCS2DX,
 sjs= global.SkaroJS,
 sh= asterix,
-ttt= sh.TicTacToe;
-
-var Odin= global.ZotohLab.Odin,
+ttt= sh.TicTacToe,
 evts= Odin.Events;
-
-
-function Cmd(a,pos) {
-  return {
-    cell: pos,
-    actor: a,
-    value: a.value
-  };
-}
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -103,18 +93,19 @@ var GameLayer = asterix.XGameLayer.extend({
     // clean slate
     this.reset(newFlag);
     this.cleanSlate();
-    this.selQ = [];
-    this.netQ = [];
 
     this.options.factory= new ttt.EntityFactory(this.engine);
+    this.initPlayers();
+    this.options.selQ = [];
+    this.options.netQ = [];
 
     this.engine.addSystem(new ttt.GameSupervisor(this.options),
                           ttt.Priorities.PreUpdate);
 
-    this.engine.addSystem(new ttt.SelectionSystem(this.options, this.selQ),
+    this.engine.addSystem(new ttt.SelectionSystem(this.options),
                           ttt.Priorities.Movement);
 
-    this.engine.addSystem(new ttt.NetworkSystem(this.options, this.netQ),
+    this.engine.addSystem(new ttt.NetworkSystem(this.options),
                           ttt.Priorities.Movement);
 
     this.engine.addSystem(new ttt.TurnBaseSystem(this.options),
@@ -157,17 +148,17 @@ var GameLayer = asterix.XGameLayer.extend({
 
   onclicked: function(mx,my) {
 
-    if (this.state.running &&
-        this.selQ.length === 0) {
+    if (this.options.running &&
+        this.options.selQ.length === 0) {
       sjs.loggr.debug("selection made at pos = " + mx + "," + my);
-      this.selQ.push({ x: mx, y: my, cell: -1 });
+      this.options.selQ.push({ x: mx, y: my, cell: -1 });
     }
   },
 
   updateHUD: function() {
     var h= this.getHUD();
 
-    if (this.state.running) {
+    if (this.options.running) {
       h.drawStatus(this.actor);
     } else {
       h.drawResult(this.lastWinner);
@@ -207,6 +198,33 @@ var GameLayer = asterix.XGameLayer.extend({
     }
   },
 
+  initPlayers: function() {
+    var csts= sh.xcfg.csts,
+    p2cat,p1cat,
+    p2,p1;
+
+    switch (this.options.mode) {
+      case sh.ONLINE_GAME:
+        p2cat = csts.NETP;
+        p1cat = csts.NETP;
+      break;
+      case sh.P1_GAME:
+        p1cat= csts.HUMAN;
+        p2cat= csts.BOT;
+      break;
+      case sh.P2_GAME:
+        p2cat= csts.HUMAN;
+        p1cat= csts.HUMAN;
+      break;
+    }
+    p1= new ttt.Player(p1cat, csts.CV_X, 1, csts.P1_COLOR);
+    p2= new ttt.Player(p2cat, csts.CV_O, 2, csts.P2_COLOR);
+    this.options.players = [null,p1,p2];
+    this.options.colors={};
+    this.options.colors[csts.P1_COLOR] = p1;
+    this.options.colors[csts.P2_COLOR] = p2;
+  },
+
   onevent: function(topic, evt) {
     //sjs.loggr.debug(evt);
     switch (evt.type) {
@@ -244,7 +262,7 @@ var GameLayer = asterix.XGameLayer.extend({
     switch (evt.code) {
       case evts.C_POKE_MOVE:
       case evts.C_POKE_WAIT:
-        this.netQ.push(evt);
+        this.options.netQ.push(evt);
       break;
     }
 

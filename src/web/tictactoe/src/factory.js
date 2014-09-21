@@ -17,6 +17,29 @@ sjs= global.SkaroJS,
 sh= asterix,
 ttt= sh.TicTacToe;
 
+function mapGoalSpace(size) {
+  var ROWSPACE = [],
+  COLSPACE = [],
+  dx = [],
+  dy = [],
+  c, r, h, v;
+
+  for (r=0; r < size; ++r) {
+    h = [];
+    v = [];
+    for (c=0; c < size; ++c) {
+      h.push(r * size + c);
+      v.push(c * size + r);
+    }
+    ROWSPACE.push(h);
+    COLSPACE.push(v);
+    dx.push(r * size + r);
+    dy.push((size - r - 1) * size + r);
+  }
+  var DAGSPACE = [dx, dy];
+  return DAGSPACE.concat(ROWSPACE, COLSPACE);
+}
+
 //////////////////////////////////////////////////////////////////////////////
 //
 ttt.EntityFactory = Ash.Class.extend({
@@ -26,45 +49,24 @@ ttt.EntityFactory = Ash.Class.extend({
   },
 
   createBoard: function(options) {
-    var csts= sh.xcfg.csts, bd= new ttt.GameBoard(options.size,
-                                                  csts.CV_Z,
-                                                  csts.CV_X,
-                                                  csts.CV_O),
-    ent = new Ash.Entity(),
-    p2cat,p1cat,
-    p2,p1;
+    var goals= mapGoalSpace(options.size),
+    csts= sh.xcfg.csts,
+    bd= new ttt.GameBoard(options.size,
+                          csts.CV_Z,
+                          csts.CV_X,
+                          csts.CV_O, goals);
+    ent = new Ash.Entity();
 
-    ent.add(new ttt.Board(options.size));
+    ent.add(new ttt.Board(options.size,goals));
+    ent.add(new ttt.Grid(size,options.seed));
     ent.add(new ttt.UISelection());
     ent.add(new ttt.SmartAlgo(bd));
     ent.add(new ttt.NetPlay());
-
-    switch (options.mode) {
-      case sh.ONLINE_GAME:
-        p2cat = csts.NETP;
-        p1cat = csts.NETP;
-      break;
-      case sh.P1_GAME:
-        p1cat= csts.HUMAN;
-        p2cat= csts.BOT;
-      break;
-      case sh.P2_GAME:
-        p2cat= csts.HUMAN;
-        p1cat= csts.HUMAN;
-      break;
-    }
-    p1= new ttt.Player(p1cat, csts.CV_X, 1, csts.P1_COLOR);
-    p2= new ttt.Player(p2cat, csts.CV_O, 2, csts.P2_COLOR);
-    options.players = [null,p1,p2];
-    options.colors={};
-    options.colors[csts.P1_COLOR] = p1;
-    options.colors[csts.P2_COLOR] = p2;
-
-    ent.add(new ttt.Grid(size,options.seed));
     ent.add(new ttt.GridView(size,sh.main));
 
     return ent;
   }
+
 
 
 });

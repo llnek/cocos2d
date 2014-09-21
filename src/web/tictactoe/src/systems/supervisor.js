@@ -12,17 +12,17 @@
 (function (undef){ "use strict"; var global = this, _ = global._ ;
 
 var asterix= global.ZotohLab.Asterix,
+Odin= global.ZotohLab.Odin,
 ccsx= asterix.CCS2DX,
 sjs= global.SkaroJS,
 sh= asterix,
 ttt= sh.TicTacToe,
-
-Odin= global.ZotohLab.Odin,
 evts= Odin.Events;
 
 
 //////////////////////////////////////////////////////////////////////////////
 //
+
 ttt.GameSupervisor = Ash.System.extend({
 
   constructor: function(options) {

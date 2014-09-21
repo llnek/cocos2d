@@ -21,8 +21,8 @@ ttt= sh.TicTacToe;
 //////////////////////////////////////////////////////////////////////////////
 //
 ttt.GUINode = Ash.Node.create({
-  selection: Selection,
-  view: GridView
+  selection: ttt.UISelection,
+  view: ttt.GridView
 });
 
 
