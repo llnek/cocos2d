@@ -57,6 +57,7 @@ document.ccConfig = {
     '/public/ig/lib/game/tictactoe/nodes/board.js',
     '/public/ig/lib/game/tictactoe/nodes/gui.js',
     '/public/ig/lib/game/tictactoe/nodes/netplay.js',
+    '/public/ig/lib/game/tictactoe/systems/util.js',
     '/public/ig/lib/game/tictactoe/systems/networksystem.js',
     '/public/ig/lib/game/tictactoe/systems/rendersystem.js',
     '/public/ig/lib/game/tictactoe/systems/resolution.js',

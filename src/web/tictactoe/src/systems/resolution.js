@@ -15,7 +15,9 @@ var asterix= global.ZotohLab.Asterix,
 ccsx= asterix.CCS2DX,
 sjs= global.SkaroJS,
 sh= asterix,
-ttt= sh.TicTacToe;
+ttt= sh.TicTacToe,
+utils= ttt.SystemUtils;
+
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -82,20 +84,9 @@ ttt.ResolutionSystem = Ash.System.extend({
     _.each(cells, function(z,n) {
       if (! _.contains(combo,n)) { if (z) {
         layer.removeItem(z[0]);
-        z[0] = this.drawSymbol(view, z[1],z[2],z[3]+2);
+        z[0] = utils.drawSymbol(view, z[1],z[2],z[3]+2);
       } }
     }, this);
-  },
-
-  drawSymbol: function(view, x,y,offset) {
-    var s1= new cc.Sprite(view.url,
-                          cc.rect(offset * view.width,
-                                  0,
-                                  view.width, view.height));
-    s1.setAnchorPoint(ccsx.AnchorCenter);
-    s1.setPosition(x,y);
-    view.layer.addItem(s1);
-    return s1;
   },
 
   doDone: function(node, pobj,combo) {

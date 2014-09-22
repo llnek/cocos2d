@@ -255,6 +255,14 @@ var GameLayer = asterix.XGameLayer.extend({
 
   onSessionEvent: function(evt) {
 
+    /*
+    if (_.isNumber(evt.source.pnum) &&
+        _.isObject(evt.source.cmd) &&
+        _.isNumber(evt.source.cmd.cell)) {
+      sjs.loggr.debug("action from server " + JSON.stringify(cmd));
+      this.options.netQ.push(evt);
+    }
+*/
     switch (evt.code) {
       case evts.C_POKE_MOVE:
       case evts.C_POKE_WAIT:

@@ -12,10 +12,13 @@
 (function (undef){ "use strict"; var global = this, _ = global._ ;
 
 var asterix= global.ZotohLab.Asterix,
+Odin= global.ZotohLab.Odin,
 ccsx= asterix.CCS2DX,
 sjs= global.SkaroJS,
+evts= Odin.Events,
 sh= asterix,
 ttt= sh.TicTacToe;
+
 
 
 //////////////////////////////////////////////////////////////////////////////

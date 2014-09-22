@@ -15,7 +15,8 @@ var asterix= global.ZotohLab.Asterix,
 ccsx= asterix.CCS2DX,
 sjs= global.SkaroJS,
 sh= asterix,
-ttt= sh.TicTacToe;
+ttt= sh.TicTacToe,
+utils= ttt.SystemUtils;
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -55,24 +56,13 @@ ttt.RenderSystem = Ash.System.extend({
         var c= this.xrefCell(pos,view.gridMap),
         offset= v === csts.CV_X ? 0 : 1;
         if (c) {
-          cells[pos] = [this.drawSymbol(view, c[0],c[1], offset),
+          cells[pos] = [utils.drawSymbol(view, c[0],c[1], offset),
                         c[0], c[1], offset];
         }
       }
 
     },this);
 
-  },
-
-  drawSymbol: function(view, x,y,offset) {
-    var s1= new cc.Sprite(view.url,
-                          cc.rect(offset * view.width,
-                                  0,
-                                  view.width, view.height));
-    s1.setAnchorPoint(ccsx.AnchorCenter);
-    s1.setPosition(x,y);
-    view.layer.addItem(s1);
-    return s1;
   },
 
   xrefCell: function(pos, map) {

@@ -52,10 +52,15 @@ ttt.SelectionSystem = Ash.System.extend({
     n,rect,
     sz= map.length;
 
+
     //set the mouse/touch position
     sel.px = evt.x;
     sel.py = evt.y;
     sel.cell= -1;
+
+    if (this.state.actor === 0) {
+      return;
+    }
 
     //which cell did he click on?
     for (n=0; n < sz; ++n) {

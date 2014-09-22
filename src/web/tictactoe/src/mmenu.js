@@ -120,7 +120,7 @@ sh.protos['MainMenu'] = {
             wsock: wss,
             pnum: pnum
           });
-          m.seed_data.players = startmsg.players;
+          sjs.merge(m, startmsg);
           dir.runScene( tttf.create(m));
         }
         dir.runScene( sh.protos['OnlinePlay'].create(msg));

@@ -55,9 +55,16 @@ ttt.TurnBaseSystem = Ash.System.extend({
 
     //handle online play
     if (this.state.wsock) {
-
+      //for local guy, check if he clicked
+      if (this.state.actor === this.state.pnum) {
+        if (sel.cell >=0) {
+          this.enqueue(sel.cell, cp.value, grid);
+        }
+      } else {
+        if ()
+      }
       //if the mouse click is from the valid user, handle it
-      if (this.state.pnum === cp.pnum) {
+      if (cp && (this.state.pnum === cp.pnum)) {
         this.enqueue(sel.cell,cp.value,grid);
       }
 

@@ -20,22 +20,28 @@ ttt= sh.TicTacToe;
 
 //////////////////////////////////////////////////////////////////////////////
 //
-ttt.Grid = Ash.Class.extend({
+ttt.SystemUtils = {
 
-  constructor: function(size,seed) {
-    //ignore seed for now
-    this.values= sjs.makeArray(size * size, sh.xcfg.csts.CV_Z);
-    this.size=size;
-    return this;
+  //pass in gridview
+  drawSymbol: function(view, x,y,offset) {
+    var s1= new cc.Sprite(view.url,
+                          cc.rect(offset * view.width,
+                                  0,
+                                  view.width, view.height));
+    s1.setAnchorPoint(ccsx.AnchorCenter);
+    s1.setPosition(x,y);
+    view.layer.addItem(s1);
+    return s1;
   }
 
-});
-
+};
 
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
+
+
 
 
