@@ -31,22 +31,22 @@ ttt.RenderSystem = Ash.System.extend({
     this.nodeList=null;
   },
 
-  addToEngine: function(e) {
+  addToEngine: function(engine) {
     this.nodeList = engine.getNodeList(ttt.BoardNode);
   },
 
   update: function (dt) {
     for (var node = this.nodeList.head; node; node=node.next) {
-      this.process(node, evt);
+      this.process(node);
     }
   },
 
-  process: function(node, evt) {
+  process: function(node) {
     var values= node.grid.values,
     csts= sh.xcfg.csts,
     sz = values.length,
     view = node.view,
-    cells= view.cells,
+    cells= view.cells;
 
     _.each(values, function(v,pos) {
 

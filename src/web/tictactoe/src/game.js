@@ -117,8 +117,10 @@ var GameLayer = asterix.XGameLayer.extend({
     this.engine.addSystem(new ttt.RenderSystem(this.options),
                           ttt.Priorities.Render);
 
-    state.wsock.unsubscribeAll();
-    state.wsock.subscribeAll(this.onevent,this);
+    if (this.options.wsock) {
+      this.options.wsock.unsubscribeAll();
+      this.options.wsock.subscribeAll(this.onevent,this);
+    }
 
     this.getHUD().regoPlayers(csts.P1_COLOR,p1ids,
                               csts.P2_COLOR,p2ids);
@@ -294,8 +296,14 @@ asterix.TicTacToe.Factory = {
       scene.ebus.on('/game/hud/timer/hide',function(t,msg) {
         sh.main.getHUD().killTimer();
       });
+      scene.ebus.on('/game/hud/score/update',function(t,msg) {
+        sh.main.getHUD().updateScore(msg.color, msg.score);
+      });
       scene.ebus.on('/game/hud/end',function(t,msg) {
         sh.main.getHUD().endGame();
+      });
+      scene.ebus.on('/game/hud/update',function(t,msg) {
+        sh.main.getHUD().update(msg.running, msg.pnum);
       });
       scene.ebus.on('/game/player/timer/expired',function(t,msg) {
         sh.main.playTimeExpired(msg);

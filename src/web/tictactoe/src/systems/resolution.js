@@ -31,13 +31,15 @@ ttt.ResolutionSystem = Ash.System.extend({
     this.nodeList=null;
   },
 
-  addToEngine: function(e) {
-    this.nodeList = engine.getNodeList(BoardNode);
+  addToEngine: function(engine) {
+    this.nodeList = engine.getNodeList(ttt.BoardNode);
   },
 
   update: function (dt) {
-    for (var node = this.nodeList.head; node; node=node.next) {
-      this.process(node, dt);
+    if (this.state.running) {
+      for (var node = this.nodeList.head; node; node=node.next) {
+        this.process(node, dt);
+      }
     }
   },
 
@@ -47,29 +49,29 @@ ttt.ResolutionSystem = Ash.System.extend({
 
     if (_.find(this.state.players,function(p) {
       if (p) {
-        var rc= this.checkWin(p);
+        var rc= this.checkWin(p,values);
         if (rc) {
           return result=[p,rc];
         }
       }
     },this)) {
-      this.doWin(result[0],result[1]);
+      this.doWin(node, result[0],result[1]);
     }
     else
-    if (this.checkDraw()) {
-      this.doDraw();
+    if (this.checkDraw(values)) {
+      this.doDraw(node);
     }
   },
 
-  doWin: function(winner, combo) {
+  doWin: function(node, winner, combo) {
     sh.fireEvent('/game/hud/score/update',
                  {color: winner.color,
                   score: 1});
-    this.doDone(winner, combo);
+    this.doDone(node, winner, combo);
   },
 
-  doDraw: function() {
-    this.doDone(null, []);
+  doDraw: function(node) {
+    this.doDone(node, null, []);
   },
 
   // flip all other icons except for the winning ones.
@@ -77,7 +79,7 @@ ttt.ResolutionSystem = Ash.System.extend({
     var cells = view.cells,
     layer= view.layer;
 
-    _.each(this.cells, function(z,n) {
+    _.each(cells, function(z,n) {
       if (! _.contains(combo,n)) { if (z) {
         layer.removeItem(z[0]);
         z[0] = this.drawSymbol(view, z[1],z[2],z[3]+2);
@@ -96,25 +98,25 @@ ttt.ResolutionSystem = Ash.System.extend({
     return s1;
   },
 
-  doDone: function(p,combo) {
+  doDone: function(node, pobj,combo) {
 
     this.showWinningIcons(node.view, combo);
     sh.fireEvent('/game/hud/timer/hide');
     sh.sfxPlay('game_end');
     sh.fireEvent('/game/hud/end');
 
-    this.state.lastWinner = p;
-    this.state.FINZ;
+    this.state.lastWinner = pobj ? pobj.pnum : null;
+    this.state.running=false;
   },
 
-  checkDraw: function(values,freev) {
-    return ! _.find(values,function(v) {
-      return (v === freev);
-    });
+  checkDraw: function(values) {
+    return ! (0 === _.find(values,function(v) {
+      return (v === sh.xcfg.csts.CV_Z);
+    }));
   },
 
   checkWin: function(actor, game) {
-    sjs.loggr.debug('checking win for ' + actor.color);
+    //sjs.loggr.debug('checking win for ' + actor.color);
     var combo,
     rc= _.some(this.state.GOALSPACE, function(r) {
       combo=r;

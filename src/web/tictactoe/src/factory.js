@@ -45,6 +45,7 @@ function mapGoalSpace(size) {
 ttt.EntityFactory = Ash.Class.extend({
 
   constructor: function(engine) {
+    this.engine=engine;
     return this;
   },
 
@@ -54,16 +55,17 @@ ttt.EntityFactory = Ash.Class.extend({
     bd= new ttt.GameBoard(options.size,
                           csts.CV_Z,
                           csts.CV_X,
-                          csts.CV_O, goals);
+                          csts.CV_O, goals),
     ent = new Ash.Entity();
 
+    ent.add(new ttt.Grid(options.size,options.seed));
     ent.add(new ttt.Board(options.size,goals));
-    ent.add(new ttt.Grid(size,options.seed));
     ent.add(new ttt.UISelection());
     ent.add(new ttt.SmartAlgo(bd));
     ent.add(new ttt.NetPlay());
-    ent.add(new ttt.GridView(size,sh.main));
+    ent.add(new ttt.GridView(options.size,sh.main));
 
+    options.GOALSPACE=goals;
     return ent;
   }
 

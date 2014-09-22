@@ -47,6 +47,7 @@ ttt.GridView = Ash.Class.extend({
 
   constructor: function(size, layer) {
     var m = sh.xcfg.assets.sprites['gamelevel1.sprites.markers'];
+    this.gridMap= sjs.makeArray(size * size, null);
     this.cells= sjs.makeArray(size * size, null);
     this.layer= layer;
     this.width= m[1];

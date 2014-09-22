@@ -13,6 +13,7 @@
 
 var asterix = global.ZotohLab.Asterix,
 sjs= global.SkaroJS,
+ttt= asterix.TicTacToe,
 sh = global.ZotohLab.Asterix;
 
 
@@ -21,7 +22,7 @@ sh = global.ZotohLab.Asterix;
 // A Tic Tac Toe board.
 //////////////////////////////////////////////////////////////////////////////
 
-var ttt.GameBoard = sjs.Class.xtends({
+ttt.GameBoard = sjs.Class.xtends({
 
   isNil: function(cellv) { return cellv === this.CV_Z; },
 
@@ -33,8 +34,9 @@ var ttt.GameBoard = sjs.Class.xtends({
     this.GOALSPACE=goals;
   },
 
-  syncState: function(seed) {
+  syncState: function(seed,actor) {
     this.grid=seed.slice(0);
+    this.actors[0] = actor;
   },
 
   getNextMoves: function(snapshot) {
@@ -55,7 +57,7 @@ var ttt.GameBoard = sjs.Class.xtends({
 
   makeMove: function(snapshot,move) {
     if (this.isNil( snapshot.state[move])) {
-      snapshot.state[move] = snapshot.cur.value;
+      snapshot.state[move] = snapshot.cur;
     } else {
       sjs.tne("Fatal Error: cell [" + move + "] is not free.");
     }

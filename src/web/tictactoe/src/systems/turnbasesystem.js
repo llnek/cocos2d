@@ -31,13 +31,15 @@ ttt.TurnBaseSystem = Ash.System.extend({
     this.nodeList=null;
   },
 
-  addToEngine: function(e) {
-    this.nodeList = engine.getNodeList(BoardNode);
+  addToEngine: function(engine) {
+    this.nodeList = engine.getNodeList(ttt.BoardNode);
   },
 
   update: function (dt) {
-    for (var node = this.nodeList.head; node; node=node.next) {
-      this.process(node, dt);
+    if (this.state.running) {
+      for (var node = this.nodeList.head; node; node=node.next) {
+        this.process(node, dt);
+      }
     }
   },
 
@@ -62,7 +64,8 @@ ttt.TurnBaseSystem = Ash.System.extend({
     else
     if (cp.category === csts.BOT) {
       //if active player is robot, run it
-      bot.algo.getGameBoard().syncState(grid.values);
+      bot.algo.getGameBoard().syncState(grid.values,
+                                        this.state.players[this.state.actor].value);
       this.enqueue(bot.algo.eval(),cp.value,grid);
     }
     else

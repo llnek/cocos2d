@@ -42,10 +42,6 @@ ttt.BackLayer = asterix.XLayer.extend({
 
 ttt.HUDLayer = asterix.XGameHUDLayer.extend({
 
-  scores : {
-    sh.xcfg.csts.P2_COLOR: 0,
-    sh.xcfg.csts.P1_COLOR: 0
-  },
 
   mode: 0,
 
@@ -55,7 +51,14 @@ ttt.HUDLayer = asterix.XGameHUDLayer.extend({
   p2ID: '',
   p1ID: '',
 
+  initScores: function() {
+    this.scores= {};
+    this.scores[sh.xcfg.csts.P2_COLOR] =  0;
+    this.scores[sh.xcfg.csts.P1_COLOR] =  0;
+  },
+
   setGameMode: function(mode) {
+    this.initScores();
     this.mode= mode;
   },
 
@@ -173,9 +176,17 @@ ttt.HUDLayer = asterix.XGameHUDLayer.extend({
     //this.countDown=null;
   },
 
-  updateScore: function(p, value) {
-    this.scores[p.color] += value;
+  updateScore: function(pcolor, value) {
+    this.scores[pcolor] += value;
     this.drawScores();
+  },
+
+  update: function(running,pnum) {
+    if (running) {
+      this.drawStatus(pnum);
+    } else {
+      this.drawResult(pnum);
+    }
   },
 
   endGame: function() {
@@ -200,11 +211,11 @@ ttt.HUDLayer = asterix.XGameHUDLayer.extend({
     this.score2.setString(n2);
   },
 
-  drawResult: function(winner) {
+  drawResult: function(pnum) {
     var msg='';
 
-    if (_.isObject(winner)) {
-      switch (winner.number() ) {
+    if (_.isNumber(pnum)) {
+      switch (pnum) {
         case 2: msg= sh.l10n('%whowin', { who: this.p2Long}); break;
         case 1: msg= sh.l10n('%whowin', { who: this.p1Long}); break;
       }
@@ -215,9 +226,9 @@ ttt.HUDLayer = asterix.XGameHUDLayer.extend({
     this.drawStatusText(this.result, msg);
   },
 
-  drawStatus: function(actor) {
-    if (_.isObject(actor)) {
-      var pfx = actor.number() === 1 ? this.p1Long : this.p2Long;
+  drawStatus: function(pnum) {
+    if (_.isNumber(pnum)) {
+      var pfx = pnum === 1 ? this.p1Long : this.p2Long;
       this.drawStatusText(this.status, sh.l10n('%whosturn', { who: pfx }));
     }
   },
@@ -235,7 +246,7 @@ ttt.HUDLayer = asterix.XGameHUDLayer.extend({
   initIcons: NILFUNC,
 
   resetAsNew: function() {
-    this.scores= { 'O': 0, 'X': 0 };
+    this.initScores();
     this.reset();
   },
 

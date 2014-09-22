@@ -23,8 +23,8 @@ ttt= sh.TicTacToe;
 ttt.Player = Ash.Class.extend({
 
   constructor: function(category,value,id,color,labels) {
-    this.psLongID= labels[1];
-    this.psID= labels[0];
+    //this.psLongID= labels[1];
+    //this.psID= labels[0];
     this.color= color;
     this.pnum=id;
     this.category= category;

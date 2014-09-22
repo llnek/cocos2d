@@ -22,8 +22,8 @@ ttt= sh.TicTacToe;
 //
 ttt.NetworkSystem = Ash.System.extend({
 
-  constructor: function(options, eventQ) {
-    this.events = eventQ;
+  constructor: function(options) {
+    this.events = options.netQ;
     this.state= options;
     return this;
   },
@@ -32,7 +32,7 @@ ttt.NetworkSystem = Ash.System.extend({
     this.nodeList=null;
   },
 
-  addToEngine: function(e) {
+  addToEngine: function(engine) {
     this.nodeList = engine.getNodeList(ttt.NetPlayNode);
   },
 

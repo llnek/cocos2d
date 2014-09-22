@@ -22,8 +22,8 @@ ttt= sh.TicTacToe;
 //
 ttt.SelectionSystem = Ash.System.extend({
 
-  constructor: function(options, eventQ) {
-    this.events = eventQ;
+  constructor: function(options) {
+    this.events= options.selQ;
     this.state= options;
     return this;
   },
@@ -32,8 +32,8 @@ ttt.SelectionSystem = Ash.System.extend({
     this.nodeList=null;
   },
 
-  addToEngine: function(e) {
-    this.nodeList = engine.getNodeList(GUINode);
+  addToEngine: function(engine) {
+    this.nodeList = engine.getNodeList(ttt.GUINode);
   },
 
   update: function (dt) {
@@ -60,8 +60,8 @@ ttt.SelectionSystem = Ash.System.extend({
     //which cell did he click on?
     for (n=0; n < sz; ++n) {
       rect = map[n];
-      if (px >= rect[0] && px <= rect[2] &&
-          py >= rect[3] && py <= rect[1]) {
+      if (sel.px >= rect[0] && sel.px <= rect[2] &&
+          sel.py >= rect[3] && sel.py <= rect[1]) {
         sel.cell= n;
         break;
       }

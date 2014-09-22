@@ -32,6 +32,7 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
   csts: {
     CV_X: 'X'.charCodeAt(0),
     CV_O: 'O'.charCodeAt(0),
+    CV_Z: 0,
 
     P2_COLOR: 'O',
     P1_COLOR: 'X',

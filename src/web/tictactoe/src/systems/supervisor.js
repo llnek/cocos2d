@@ -38,8 +38,8 @@ ttt.GameSupervisor = Ash.System.extend({
 
   addToEngine: function(engine) {
     var b= this.factory.createBoard(this.state);
-    this.engine.addEntity(b);
-    this.nodeList= engine.getNodeList(BoardNode);
+    engine.addEntity(b);
+    this.nodeList= engine.getNodeList(ttt.BoardNode);
   },
 
   update: function (dt) {
@@ -67,9 +67,22 @@ ttt.GameSupervisor = Ash.System.extend({
       //randomly pick a player to start the game.
       this.state.actor = sjs.randomSign() > 0 ? 1 : 2;
     }
+
+    this.state.running=true;
   },
 
   process: function(node,dt) {
+    var active = this.state.running,
+    actor = this.state.actor;
+
+    if (!active) {
+      actor= this.state.lastWinner;
+    }
+
+    sh.fireEvent('/game/hud/update', {
+      running: active,
+      pnum: actor
+    });
   }
 
 });
