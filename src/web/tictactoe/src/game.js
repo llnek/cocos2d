@@ -27,38 +27,8 @@ evts= Odin.Events;
 var GameLayer = asterix.XGameLayer.extend({
 
   onStop: function(evt) {
-
-    this.maybeUpdateActions(evt);
-
-    switch (evt.source.status) {
-      case 2:
-        this.actions.push([[ this.board.getPlayer2(),
-                             evt.source.combo ], 'winner'] );
-      break;
-      case 1:
-        this.actions.push([[ this.board.getPlayer1(),
-                             evt.source.combo ], 'winner'] );
-      break;
-      case 0:
-        this.actions.push([null, 'draw' ]);
-      break;
-      default:
-        sjs.tne("onStop has bad status.");
-      break;
-    }
+    this.options.netQ.push(evt);
   },
-
-
-  maybeUpdateActions: function(evt) {
-    var cmd= evt.source.cmd;
-    if (_.isObject(cmd) &&
-        _.isNumber(cmd.cell)) {
-      sjs.loggr.debug("adding one more action from server " +
-                      JSON.stringify(cmd));
-      this.actions.push([cmd, 'server']);
-    }
-  },
-
 
   replay: function() {
     if (_.isObject(this.options.wsock)) {
@@ -254,7 +224,7 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   onSessionEvent: function(evt) {
-
+    this.options.netQ.push(evt);
     /*
     if (_.isNumber(evt.source.pnum) &&
         _.isObject(evt.source.cmd) &&
@@ -262,14 +232,13 @@ var GameLayer = asterix.XGameLayer.extend({
       sjs.loggr.debug("action from server " + JSON.stringify(cmd));
       this.options.netQ.push(evt);
     }
-*/
     switch (evt.code) {
       case evts.C_POKE_MOVE:
       case evts.C_POKE_WAIT:
-        this.options.netQ.push(evt);
       break;
     }
 
+*/
   }
 
 

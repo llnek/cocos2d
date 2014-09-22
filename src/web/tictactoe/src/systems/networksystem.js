@@ -43,6 +43,7 @@ ttt.NetworkSystem = Ash.System.extend({
     if (this.events.length > 0) {
       var evt = this.events.shift();
       for (var node = this.nodeList.head; node; node=node.next) {
+        this.maybeUpdateActions(node, evt);
         this.process(node, evt);
       }
     }
@@ -51,7 +52,6 @@ ttt.NetworkSystem = Ash.System.extend({
   process: function(node, evt) {
     var pnum= _.isNumber(evt.source.pnum) ? evt.source.pnum : -1;
     if (pnum === 1 || pnum === 2) {} else { return; }
-    this.maybeUpdateActions(node, evt);
     switch (evt.code) {
       case evts.C_POKE_MOVE:
         sjs.loggr.debug("player " + pnum + ": my turn to move");

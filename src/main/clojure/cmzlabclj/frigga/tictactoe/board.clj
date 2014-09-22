@@ -189,7 +189,9 @@
 
       (drawGame [this cmd]
         (.onStopReset this)
-        (.broadcastStatus this Events/C_STOP cmd 0))
+        (.broadcastStatus this Events/C_STOP
+                               {:cmd cmd :combo []}
+                               0))
 
       (endGame [this cmd combo]
         (let [^PlayerSession pss (:session (.getCurActor this))]

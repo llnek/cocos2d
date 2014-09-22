@@ -12,10 +12,13 @@
 (function (undef){ "use strict"; var global = this, _ = global._ ;
 
 var asterix= global.ZotohLab.Asterix,
+Odin= global.ZotohLab.Odin,
 ccsx= asterix.CCS2DX,
 sjs= global.SkaroJS,
+evts= Odin.Events,
 sh= asterix,
 ttt= sh.TicTacToe;
+
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -55,14 +58,6 @@ ttt.TurnBaseSystem = Ash.System.extend({
 
     //handle online play
     if (this.state.wsock) {
-      //for local guy, check if he clicked
-      if (this.state.actor === this.state.pnum) {
-        if (sel.cell >=0) {
-          this.enqueue(sel.cell, cp.value, grid);
-        }
-      } else {
-        if ()
-      }
       //if the mouse click is from the valid user, handle it
       if (cp && (this.state.pnum === cp.pnum)) {
         this.enqueue(sel.cell,cp.value,grid);
@@ -100,6 +95,7 @@ ttt.TurnBaseSystem = Ash.System.extend({
       sh.fireEvent('/game/hud/timer/hide');
 
       if (this.state.wsock) {
+        this.onEnqueue(grid,this.state.actor,pos);
       } else {
         pnum = this.state.actor===1 ? 2 : 1;
         this.state.actor = pnum;
@@ -110,6 +106,22 @@ ttt.TurnBaseSystem = Ash.System.extend({
       }
 
     }
+  },
+
+  onEnqueue: function(grid,pnum,cell) {
+    var src= {
+      color: this.state.players[pnum].color,
+      value: this.state.players[pnum].value,
+      grid: grid.values,
+      cell: cell
+    },
+    evt= {
+      source: JSON.stringify(src),
+      type: evts.SESSION_MSG,
+      code: evts.C_PLAY_MOVE
+    };
+    this.state.wsock.send(evt);
+    this.state.actor=0;
   }
 
 
