@@ -24,6 +24,7 @@ ttt.TurnBaseSystem = Ash.System.extend({
 
   constructor: function(options) {
     this.state= options;
+    this.botTimer=null;
     return this;
   },
 
@@ -63,10 +64,15 @@ ttt.TurnBaseSystem = Ash.System.extend({
     }
     else
     if (cp.category === csts.BOT) {
-      //if active player is robot, run it
-      bot.algo.getGameBoard().syncState(grid.values,
-                                        this.state.players[this.state.actor].value);
-      this.enqueue(bot.algo.eval(),cp.value,grid);
+      //create some small delay...
+      if (this.botTimer) {} else {
+        this.botTimer = setTimeout(function() {
+          bot.algo.getGameBoard().syncState(grid.values,
+                                            this.state.players[this.state.actor].value);
+          this.enqueue(bot.algo.eval(),cp.value,grid);
+          this.botTimer=null;
+        }.bind(this), 1000);
+      }
     }
     else
     if (sel.cell >= 0) {
@@ -82,11 +88,20 @@ ttt.TurnBaseSystem = Ash.System.extend({
     if ((pos >= 0 && pos < grid.values.length) &&
         sh.xcfg.csts.CV_Z === grid.values[pos]) {
 
+      var pnum;
+
+      sh.fireEvent('/game/hud/timer/hide');
+
       if (this.state.wsock) {
       } else {
-        this.state.actor = this.state.actor===1 ? 2 : 1;
+        pnum = this.state.actor===1 ? 2 : 1;
+        this.state.actor = pnum;
         grid.values[pos] = value;
+        if (this.state.players[pnum].category === sh.xcfg.csts.HUMAN) {
+          sh.fireEvent('/game/hud/timer/show');
+        }
       }
+
     }
   }
 
