@@ -51,7 +51,7 @@
 
   [players]
 
-  {:players (reduce (fn [memo ^PlayerSession ps]
+  {:ppids (reduce (fn [memo ^PlayerSession ps]
                       (assoc memo
                              (.id (.player ps))
                              [ (.number ps) (.id (.player ps)) ]))

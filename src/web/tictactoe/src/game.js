@@ -82,7 +82,7 @@ var GameLayer = asterix.XGameLayer.extend({
     sh.xcfg.csts.GRID_SIZE= this.options.size;
 
     // sort out names of players
-    _.each(this.options.players,function(v,k) {
+    _.each(this.options.ppids,function(v,k) {
       if (v[0] === 1) {
         p1ids= [k, v[1] ];
       } else {
@@ -139,13 +139,7 @@ var GameLayer = asterix.XGameLayer.extend({
     } else {
       h.reset();
     }
-/*
-    _.each(this.cells, function(z) {
-      if (z) {
-        this.removeItem(z[0]);
-      }
-    },this);
-*/
+    this.removeAllItems();
   },
 
   onclicked: function(mx,my) {

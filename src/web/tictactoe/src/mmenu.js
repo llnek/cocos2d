@@ -19,7 +19,7 @@ sjs= global.SkaroJS;
 var SEED= {
   grid: [0,0,0, 0,0,0, 0,0,0],
   size: 3,
-  players: { },
+  ppids: { },
   pnum: 1,
   mode: 0
 };
@@ -61,7 +61,7 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
       selector: function() {
         sh.fireEvent('/mmenu/controls/newgame',
                      sjs.mergeEx(SEED,
-                                 {players: pobj2,
+                                 {ppids: pobj2,
                                   mode: sh.P2_GAME }));
       },
       target: this,
@@ -78,7 +78,7 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
       selector: function() {
         sh.fireEvent('/mmenu/controls/newgame',
                      sjs.mergeEx(SEED,
-                                 {players: pobj1,
+                                 {ppids: pobj1,
                                   mode: sh.P1_GAME }));
       },
       target: this,
