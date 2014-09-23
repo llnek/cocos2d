@@ -57,7 +57,7 @@ ttt.RenderSystem = Ash.System.extend({
         offset= v === csts.CV_X ? 0 : 1;
         if (c) {
           cells[pos] = [utils.drawSymbol(view, c[0],c[1], offset),
-                        c[0], c[1], offset];
+                        c[0], c[1], offset, v];
         }
       }
 

@@ -69,9 +69,11 @@ ttt.TurnBaseSystem = Ash.System.extend({
       //create some small delay...
       if (this.botTimer) {} else {
         this.botTimer = setTimeout(function() {
-          bot.algo.getGameBoard().syncState(grid.values,
-                                            this.state.players[this.state.actor].value);
-          this.enqueue(bot.algo.eval(),cp.value,grid);
+          var bd= bot.algo.getGameBoard();
+          bd.syncState(grid.values, this.state.players[this.state.actor].value);
+          var rc= bd.getFirstMove();
+          if (!sjs.echt(rc)) { rc = bot.algo.eval(); }
+          this.enqueue(rc,cp.value,grid);
           this.botTimer=null;
         }.bind(this), 1000);
       }

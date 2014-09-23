@@ -34,6 +34,17 @@ ttt.GameBoard = sjs.Class.xtends({
     this.GOALSPACE=goals;
   },
 
+  getFirstMove: function() {
+    var rc= _.find(this.grid,function(v) {
+      return v !== this.CV_Z;
+    },this);
+    if (! sjs.echt(rc)) {
+      return sjs.rand(this.grid.length);
+    } else {
+      return undef;
+    }
+  },
+
   syncState: function(seed,actor) {
     this.grid=seed.slice(0);
     this.actors[0] = actor;

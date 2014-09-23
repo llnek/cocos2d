@@ -79,6 +79,7 @@ ttt.GameSupervisor = Ash.System.extend({
   },
 
   process: function(node,dt) {
+
     var active = this.state.running,
     actor = this.state.actor;
 

@@ -47,6 +47,7 @@ ttt.ResolutionSystem = Ash.System.extend({
 
   process: function(node, dt) {
     var values= node.grid.values,
+    msg,
     result;
 
     if (_.find(this.state.players,function(p) {
@@ -63,6 +64,13 @@ ttt.ResolutionSystem = Ash.System.extend({
     if (this.checkDraw(values)) {
       this.doDraw(node);
     }
+    else
+    if (this.state.msgQ.length > 0) {
+      msg = this.state.msgQ.shift();
+      if ("forfeit" === msg) {
+        this.doForfeit(node);
+      }
+    }
   },
 
   doWin: function(node, winner, combo) {
@@ -76,10 +84,39 @@ ttt.ResolutionSystem = Ash.System.extend({
     this.doDone(node, null, []);
   },
 
+  doForfeit: function(node) {
+    var other = this.state.actor===1 ? 2 : this.state.actor===2 ? 1 : 0;
+    var tv = this.state.players[this.state.actor];
+    var win= this.state.players[other];
+    var cells = node.view.cells,
+    v2= -1,
+    layer= node.view.layer;
+
+    if (tv) {
+      v2 = tv.value;
+    }
+
+    sh.fireEvent('/game/hud/score/update',
+                 {color: win.color,
+                  score: 1});
+
+    //gray out the losing icons
+    _.each(cells, function(z,n) {
+      if (z && z[4] === v2) {
+        layer.removeItem(z[0]);
+        z[0] = utils.drawSymbol(node.view, z[1],z[2],z[3]+2);
+      }
+    }, this);
+
+    this.doDone(node,win,null);
+  },
+
   // flip all other icons except for the winning ones.
   showWinningIcons: function(view, combo) {
     var cells = view.cells,
     layer= view.layer;
+
+    if (combo===null) { return; }
 
     _.each(cells, function(z,n) {
       if (! _.contains(combo,n)) { if (z) {

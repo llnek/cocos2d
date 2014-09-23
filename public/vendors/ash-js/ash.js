@@ -1,6 +1,5 @@
 (function(global, define) {
   var globalDefine = global.define;
-
 /**
  * almond 0.2.3 Copyright (c) 2011-2012, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.
@@ -1656,9 +1655,11 @@ define('ash-core/engine',[
         },
 
         update : function( time ) {
+          var rc;
             this.updating = true;
             for( var system = this.systemList.head; system; system = system.next ) {
-                system.update( time );
+                rc=system.update( time );
+                if (rc===false) { break; }
             }
             this.updating = false;
             this.updateComplete.dispatch();
@@ -1862,6 +1863,7 @@ define('ash/ash-framework',['require','ash-core/engine','ash-core/componentmatch
 
     return core;
 });
+
   var library = require('ash/ash-framework');
   if(typeof module !== 'undefined' && module.exports) {
     module.exports = library;

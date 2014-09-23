@@ -68,6 +68,7 @@ var GameLayer = asterix.XGameLayer.extend({
     this.initPlayers();
     this.options.selQ = [];
     this.options.netQ = [];
+    this.options.msgQ = [];
 
     this.engine.addSystem(new ttt.GameSupervisor(this.options),
                           ttt.Priorities.PreUpdate);
@@ -131,22 +132,8 @@ var GameLayer = asterix.XGameLayer.extend({
     }
   },
 
-  playBoardReady: function() {
-    if (sjs.echt(this.options.wsock)) {} else {
-      var cur = this.board.curActor(),
-      h= this.getHUD();
-      if (!cur.isRobot()) {
-        h.showTimer();
-      }
-    }
-  },
-
   playTimeExpired: function(msg) {
-    var winner=this.board.getOtherPlayer(this.board.curActor()),
-    cmd= [winner,[]];
-
-    this.board.forfeit();
-    this.actions.push([cmd, "winner"]);
+    this.options.msgQ.push("forfeit");
   },
 
   getHUD: function() {
@@ -278,9 +265,6 @@ asterix.TicTacToe.Factory = {
       });
       scene.ebus.on('/game/player/timer/expired',function(t,msg) {
         sh.main.playTimeExpired(msg);
-      });
-      scene.ebus.on('/game/board/activated',function(t,msg) {
-        sh.main.playBoardReady();
       });
     }
     return scene;
