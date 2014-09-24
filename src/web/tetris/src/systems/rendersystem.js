@@ -17,21 +17,16 @@ bks.RenderSystem = Ash.System.extend({
   },
 
   removeFromEngine: function(engine) {
-    //this.nodeList=null;
+    this.nodeList=null;
   },
 
   addToEngine: function(engine) {
+    this.nodeList= engine.getNodeList(bks.ArenaNode);
   },
 
   update: function (dt) {
-    return;
-    for (var node= this.nodeList.head; node; node= node.next) {
-      this.process(node,dt);
-    }
-  },
-
-  process: function(node,dt) {
   }
+
 
 });
 

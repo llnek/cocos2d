@@ -33,6 +33,7 @@ bks.EntityFactory = Ash.Class.extend({
     ent.add(new bks.ShapeShell());
     ent.add(new bks.BlockGrid());
     ent.add(new bks.TileGrid());
+    ent.add(new bks.Motion());
     ent.add(new bks.Dropper());
     ent.add(new bks.Pauser());
     return ent;

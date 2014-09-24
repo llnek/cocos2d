@@ -5,7 +5,8 @@ var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
 sjs= global.SkaroJS,
 ccsx= asterix.COCOS2DX,
-bks= asterix.Bricks;
+bks= asterix.Bricks,
+utils=bks.SystemUtils;
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -21,8 +22,9 @@ bks.ShapeGenerator = Ash.System.extend({
   },
 
   addToEngine: function(engine) {
-    engine.getNodeList(bks.ArenaNode);
-    this.next= this.randNext();
+    this.nodeList=engine.getNodeList(bks.ArenaNode);
+    this.nextShapeInfo= this.randNext();
+    this.nextShape=null;
   },
 
   update: function (dt) {
@@ -31,18 +33,44 @@ bks.ShapeGenerator = Ash.System.extend({
     if (shell.shape)
     {}
     else {
-      shell.shape = this.spawnNext();
+      shell.shape = this.reifyNextShape(node);
+      //show new next shape in preview window
+      this.previewNextShape();
+      //activate drop timer
+      node.dropper.dropSpeed=1000;
+      utils.initDropper(sh.main,node.dropper);
     }
   },
 
-  spawnNext: function() {
-    var shape= new bks.Shape(5 * csts.TILE,
+  reifyNextShape: function(node) {
+    var csts= sh.xcfg.csts,
+    shape= new bks.Shape(5 * csts.TILE,
                              ccsx.screen().height - csts.FIELD_TOP * csts.TILE,
-                             this.next);
-    utils.reifyShape(sh.main,node.collision.tiles,shape);
-    this.initDropper();
-    this.getHUD().showNext();
-    return rc;
+                             this.nextShapeInfo);
+    //create new shape
+    return utils.reifyShape(sh.main,node.collision.tiles,shape);
+  },
+
+  previewNextShape: function() {
+    var info = this.randNext(),
+    csts = sh.xcfg.csts,
+    par= sh.main,
+    wz = ccsx.screen(),
+    cw = ccsx.center(),
+    shape,
+    sz = info.model.dim * csts.TILE,
+
+    left = (csts.FIELD_W + 2) * csts.TILE,
+    x = left + (wz.width - left - csts.TILE) * 0.5,
+    y = cw.y;
+
+    x -= sz * 0.5;
+    y += sz * 0.5;
+
+    this.nextShape= utils.disposeShape(this.nextShape);
+    shape= new bks.Shape(x,y, info);
+    this.nextShapeInfo= info;
+    this.nextShape= utils.previewShape(par, shape);
   },
 
   randNext: function() {

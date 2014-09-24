@@ -24,8 +24,8 @@ bks= asterix.Bricks;
 bks.Dropper= Ash.Class.extend({
 
   constructor: function() {
-    this.dropper=null;
     this.dropRate= 80 + 700/1 ;
+    this.timer=null;
     this.dropSpeed = 1000;
   }
 

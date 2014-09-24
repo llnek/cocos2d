@@ -25,7 +25,7 @@ bks.Pauser= Ash.Class.extend({
 
   constructor: function() {
     this.pauseToClear=false;
-    this.pauseTimer=null;
+    this.timer=null;
   }
 
 });

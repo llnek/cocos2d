@@ -23,6 +23,7 @@ bks= sh.Bricks;
 bks.ArenaNode = Ash.Node.create({
   collision: bks.TileGrid,
   blocks: bks.BlockGrid,
+  motion: bks.Motion,
   pauser: bks.Pauser,
   dropper: bks.Dropper,
   shell: bks.ShapeShell,

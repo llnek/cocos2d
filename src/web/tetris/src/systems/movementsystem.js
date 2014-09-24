@@ -5,7 +5,9 @@ var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
 sjs= global.SkaroJS,
 ccsx= asterix.COCOS2DX,
-bks= asterix.Bricks;
+bks= asterix.Bricks,
+utils= bks.SystemUtils;
+
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -17,36 +19,45 @@ bks.MovementSystem = Ash.System.extend({
   },
 
   removeFromEngine: function(engine) {
-    //this.nodeList=null;
+    this.nodeList=null;
   },
 
   addToEngine: function(engine) {
+    this.nodeList = engine.getNodeList(bks.ArenaNode);
   },
 
   update: function(dt) {
-    return;
-    if (ccsx.timerDone(this.state.dropper)) {
+    var node= this.nodeList.head,
+    drop=node.dropper;
+
+    if (ccsx.timerDone(drop.timer)) {
       this.doFall();
-      if (this.state.dropper) {
-        utils.initDropper();
-      }
     }
   },
 
   doFall: function() {
-    if (this.state.curShape && ! this.curShape.moveDown()) {
+    var node = this.nodeList.head,
+    cmap= node.collision.tiles,
+    emap= node.blocks.grid,
+    shape= node.shell.shape,
+    pu= node.pauser,
+    dp= node.dropper;
 
-      this.dropper= null;
+    if (shape) {
+      if (! utils.moveDown(sh.main, cmap, shape)) {
 
-      // lock shape in place
-      this.curShape.lock();
-      this.postLockCheckLine();
+        // lock shape in place
+        utils.lock(node,shape);
 
-      //
-      if (! this.pauseTimer) {
-        this.spawnNext();
+        //
+        if (! pu.timer) {
+          //utils.disposeShape(shape);
+          node.shell.shape= null;
+          shape.bricks=[];
+        }
+
       } else {
-        this.curShape=null;
+        utils.initDropper(sh.main, dp);
       }
     }
   }

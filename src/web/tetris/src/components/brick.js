@@ -62,7 +62,7 @@ bks.Brick= sjs.Class.xtends({
   ctor: function(x,y,options) {
     this.options = options || {};
     this.startPos = cc.p(x,y);
-    this.options.frames= [ options.frame,'0.png'];
+    this.options.frames= [ ''+options.frame + '.png','0.png'];
   }
 
 

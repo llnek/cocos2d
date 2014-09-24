@@ -21,7 +21,7 @@ bks.RowClearance = Ash.System.extend({
   },
 
   addToEngine: function(engine) {
-    engine.getNodeList(bks.ArenaNode);
+    this.nodeList= engine.getNodeList(bks.ArenaNode);
   },
 
   update: function(dt) {
