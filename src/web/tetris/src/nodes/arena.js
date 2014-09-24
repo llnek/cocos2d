@@ -7,38 +7,36 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
+(function (undef){ "use strict"; var global = this, _ = global._ ;
 
-(function (undef) { "use strict"; var global=this, _ = global._;
-
-var asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
+var asterix= global.ZotohLab.Asterix,
+ccsx= asterix.CCS2DX,
 sjs= global.SkaroJS,
-ccsx= asterix.COCOS2DX,
-bks= asterix.Bricks;
+sh= asterix,
+bks= sh.Bricks;
+
 
 //////////////////////////////////////////////////////////////////////////////
 //
-bks.BoxShape = {
+bks.ArenaNode = Ash.Node.create({
+  collision: bks.TileGrid,
+  blocks: bks.BlockGrid,
+  pauser: bks.Pauser,
+  dropper: bks.Dropper,
+  shell: bks.ShapeShell,
+  flines: bks.FilledLines
+});
 
-  layout: [
-    [ [1,1],
-      [1,1] ],
-    [ [1,1],
-      [1,1] ],
-    [ [1,1],
-      [1,1] ],
-    [ [1,1],
-      [1,1] ]
-  ],
-
-  dim: 2
-
-};
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
+
+
+
+
+
 

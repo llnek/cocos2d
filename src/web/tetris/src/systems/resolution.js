@@ -9,7 +9,7 @@ bks= asterix.Bricks;
 
 //////////////////////////////////////////////////////////////////////////////
 //
-bks.MotionCtrlSystem = Ash.System.extend({
+bks.ResolutionSystem = Ash.System.extend({
 
   constructor: function(options) {
     this.state = options;
@@ -31,35 +31,7 @@ bks.MotionCtrlSystem = Ash.System.extend({
   },
 
   process: function(node,dt) {
-    if (cc.sys.capabilities['keyboard']) {
-      this.processKeys(node,dt);
-    }
-    else
-    if (cc.sys.capabilities['mouse']) {
-    }
-    else
-    if (cc.sys.capabilities['touches']) {
-    }
-  },
 
-  processKeys: function(node,dt) {
-    var rc = new bks.Motion();
-    if (sh.main.keyboard[cc.KEY.right]) {
-      rc.right=true;
-    }
-    if (sh.main.keyboard[cc.KEY.left]) {
-      rc.left=true;
-    }
-    if (sh.main.keyboard[cc.KEY.down]) {
-      rc.rotr=true;
-    }
-    if (sh.main.keyboard[cc.KEY.up]) {
-      rc.rotl=true;
-    }
-    if (sh.main.keyboard[cc.KEY.space]) {
-      rc.down=true;
-    }
-    this.state.eventQ.push(rc);
   }
 
 });
@@ -70,6 +42,7 @@ bks.MotionCtrlSystem = Ash.System.extend({
 
 ///////////////////////////////////////////////////////////////////////////////
 //EOF
+
 
 
 

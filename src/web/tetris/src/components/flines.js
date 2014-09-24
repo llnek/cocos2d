@@ -18,24 +18,16 @@ sjs= global.SkaroJS,
 ccsx= asterix.COCOS2DX,
 bks= asterix.Bricks;
 
+
 //////////////////////////////////////////////////////////////////////////////
 //
-bks.BoxShape = {
+bks.FilledLines= Ash.Class.extend({
 
-  layout: [
-    [ [1,1],
-      [1,1] ],
-    [ [1,1],
-      [1,1] ],
-    [ [1,1],
-      [1,1] ],
-    [ [1,1],
-      [1,1] ]
-  ],
+  constructor: function() {
+    this.lines=[];
+  }
 
-  dim: 2
-
-};
+});
 
 }).call(this);
 

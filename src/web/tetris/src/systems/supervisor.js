@@ -19,11 +19,12 @@ bks.GameSupervisor = Ash.System.extend({
   },
 
   removeFromEngine: function(engine) {
-    //this.nodeList=null;
+    this.nodeList=null;
   },
 
   addToEngine: function(engine) {
-    this.engine=engine;
+    engine.addEntity(this.factory.createArena(this.state));
+    this.nodeList= engine.getNodeList(bks.ArenaNode);
   },
 
   update: function (dt) {
@@ -31,58 +32,26 @@ bks.GameSupervisor = Ash.System.extend({
       this.onceOnly();
       this.inited=true;
     } else {
-      this.process();
     }
-  },
-
-  process: function() {
-    var some_condition = true,
-    ent;
-
-    if (some_condition) {
-      ent= this.factory.createShape(this.state);
-      this.engine.addEntity(ent);
-    }
-
-  },
-
-  spawn: function() {
-    var info = this.state.nextShapeInfo,
-    n= sjs.rand( EntityList.length),
-    proto, png, formID,
-    wz = ccsx.screen(),
-    csts= sh.xcfg.csts,
-    c= 5;
-    if (info) {
-      formID = info.formID;
-      png = info.png;
-      proto= info.model;
-    } else {
-      proto = EntityList[n];
-    }
-    this.curShape= new (proto)(  c * csts.TILE, wz.height - csts.FIELD_TOP * csts.TILE, {
-      formID: formID,
-      png: png
-    });
-    this.curShape.create(this);
-    this.dropSpeed=1000;
-    this.initDropper();
-    this.getHUD().showNext();
   },
 
   onceOnly: function () {
-    this.state.collisionMap= this.fakeTileMap();
-    this.state.blocks = this.initBlockMap();
+    var node = this.nodeList.head,
+    tiles= this.fakeTileMap();
+
+    node.blocks.grid = this.initBlockMap(tiles);
+    node.collision.tiles = tiles;
+
+    sjs.loggr.info("collision tiles and blocks init'ed.");
   },
 
-  initBlockMap: function() {
-    var data= this.state.collisionMap,
-    grid=[],
+  initBlockMap: function(tiles) {
+    var grid=[],
     rc,
     r;
 
-    for (r= 0; r < this.collisionMap.length; ++r) {
-      rc= sjs.makeArray(this.collisionMap[r].length, undef);
+    for (r= 0; r < tiles.length; ++r) {
+      rc= sjs.makeArray(tiles[r].length, undef);
       grid.push(rc);
     }
 

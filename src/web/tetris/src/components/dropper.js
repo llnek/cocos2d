@@ -18,24 +18,18 @@ sjs= global.SkaroJS,
 ccsx= asterix.COCOS2DX,
 bks= asterix.Bricks;
 
+
 //////////////////////////////////////////////////////////////////////////////
 //
-bks.BoxShape = {
+bks.Dropper= Ash.Class.extend({
 
-  layout: [
-    [ [1,1],
-      [1,1] ],
-    [ [1,1],
-      [1,1] ],
-    [ [1,1],
-      [1,1] ],
-    [ [1,1],
-      [1,1] ]
-  ],
+  constructor: function() {
+    this.dropper=null;
+    this.dropRate= 80 + 700/1 ;
+    this.dropSpeed = 1000;
+  }
 
-  dim: 2
-
-};
+});
 
 }).call(this);
 

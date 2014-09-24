@@ -34,7 +34,7 @@ var GameLayer = asterix.XGameLayer.extend({
     }
     if (newFlag) {
       this.getHUD().resetAsNew();
-      this.initCMap();
+      //this.initCMap();
     } else {
       this.getHUD().reset();
     }
@@ -310,6 +310,7 @@ var GameLayer = asterix.XGameLayer.extend({
   dropSpeed: 1000,
 
   updateEntities: function(dt) {
+    return;
     if (this.pauseToClear) {
       if (ccsx.timerDone(this.pauseTimer)) {
         this.pauseTimer=null;
@@ -369,8 +370,22 @@ var GameLayer = asterix.XGameLayer.extend({
 
   play: function(newFlag) {
     this.reset(newFlag);
-    this.newEntityMap();
-    this.spawnNext();
+    this.cleanSlate();
+    this.options.factory = new bks.EntityFactory(this.engine);
+    this.engine.addSystem(new bks.GameSupervisor(this.options),
+                          bks.Priorities.PreUpdate);
+    this.engine.addSystem(new bks.RowClearance(this.options),
+                          bks.Priorities.Clear);
+    this.engine.addSystem(new bks.ShapeGenerator(this.options),
+                          bks.Priorities.Generate);
+    this.engine.addSystem(new bks.MovementSystem(this.options),
+                          bks.Priorities.Move);
+    this.engine.addSystem(new bks.MotionCtrlSystem(this.options),
+                          bks.Priorities.Motion);
+    this.engine.addSystem(new bks.RenderSystem(this.options),
+                          bks.Priorities.Render);
+    this.engine.addSystem(new bks.ResolutionSystem(this.options),
+                          bks.Priorities.Resolve);
   },
 
   onNewGame: function(mode) {

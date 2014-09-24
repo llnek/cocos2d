@@ -23,10 +23,12 @@ bks= sh.Bricks;
 bks.Priorities = {
 
   PreUpdate: 1,
-  Movement: 2,
-  TurnBase: 3,
-  Render: 4,
-  Resolve: 5
+  Clear: 2,
+  Generate: 3,
+  Motion: 4,
+  Move: 5,
+  Render: 6,
+  Resolve: 7
 
 };
 

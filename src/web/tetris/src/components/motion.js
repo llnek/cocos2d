@@ -18,24 +18,20 @@ sjs= global.SkaroJS,
 ccsx= asterix.COCOS2DX,
 bks= asterix.Bricks;
 
+
 //////////////////////////////////////////////////////////////////////////////
 //
-bks.BoxShape = {
+bks.Motion= Ash.Class.extend({
 
-  layout: [
-    [ [1,1],
-      [1,1] ],
-    [ [1,1],
-      [1,1] ],
-    [ [1,1],
-      [1,1] ],
-    [ [1,1],
-      [1,1] ]
-  ],
+  constructor: function() {
+    this.right=false;
+    this.left=false;
+    this.rotr= false;
+    this.rotl= false;
+    this.down=false;
+  }
 
-  dim: 2
-
-};
+});
 
 }).call(this);
 

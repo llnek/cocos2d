@@ -18,18 +18,6 @@ sh= asterix,
 bks= sh.Bricks,
 utils= bks.SystemUtils;
 
-
-var Shapes= [bks.LineShape,
-             bks.BoxShape,
-             bks.StShape,
-             bks.ElShape,
-             bks.NubShape,
-             bks.StxShape,
-             bks.ElxShape ];
-
-
-
-
 //////////////////////////////////////////////////////////////////////////////
 //
 bks.EntityFactory = Ash.Class.extend({
@@ -37,6 +25,17 @@ bks.EntityFactory = Ash.Class.extend({
   constructor: function(engine) {
     this.engine=engine;
     return this;
+  },
+
+  createArena: function(options) {
+    var ent = new Ash.Entity();
+    ent.add(new bks.FilledLines());
+    ent.add(new bks.ShapeShell());
+    ent.add(new bks.BlockGrid());
+    ent.add(new bks.TileGrid());
+    ent.add(new bks.Dropper());
+    ent.add(new bks.Pauser());
+    return ent;
   },
 
   createShape: function(options) {
