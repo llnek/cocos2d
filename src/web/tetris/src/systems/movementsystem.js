@@ -28,9 +28,11 @@ bks.MovementSystem = Ash.System.extend({
 
   update: function(dt) {
     var node= this.nodeList.head,
+    shape=node.shell.shape,
     drop=node.dropper;
 
-    if (ccsx.timerDone(drop.timer)) {
+    if (shape &&
+        ccsx.timerDone(drop.timer)) {
       this.doFall();
     }
   },
@@ -55,7 +57,8 @@ bks.MovementSystem = Ash.System.extend({
           node.shell.shape= null;
           shape.bricks=[];
         }
-
+        node.shell.shape= null;
+        shape.bricks=[];
       } else {
         utils.initDropper(sh.main, dp);
       }

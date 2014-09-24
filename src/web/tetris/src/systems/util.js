@@ -254,10 +254,12 @@ bks.SystemUtils = {
   },
 
   rotateRight: function(layer,cmap,shape) {
-    var nF = sjs.xmod(shape.rot+1, shape.model.dim),
+    var nF = sjs.xmod(shape.rot+1, shape.model.layout.length),
     bricks,
     bs= this.findBBox(cmap, shape.model, shape.x, shape.y, nF);
 
+    sjs.loggr.debug("shape.rot = " + shape.rot +
+                    ", dim = " + shape.model.dim + ", rot-right , nF = " + nF);
     if (bs.length > 0) {
       bricks=this.reifyBricks(layer,shape.png, shape.x, shape.y, bs);
       this.clearOldBricks(shape.bricks);
@@ -270,10 +272,12 @@ bks.SystemUtils = {
   },
 
   rotateLeft: function(layer,cmap,shape) {
-    var nF = sjs.xmod(shape.rot-1, shape.model.dim),
+    var nF = sjs.xmod(shape.rot-1, shape.model.layout.length),
     bricks,
     bs= this.findBBox(cmap, shape.model, shape.x, shape.y, nF);
 
+    sjs.loggr.debug("shape.rot = " + shape.rot +
+                    ", dim = " + shape.model.dim + ", rot-right , nF = " + nF);
     if (bs.length > 0) {
       bricks=this.reifyBricks(layer,shape.png, shape.x, shape.y, bs);
       this.clearOldBricks(shape.bricks);

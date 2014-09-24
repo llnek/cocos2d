@@ -29,10 +29,10 @@ bks.RowClearance = Ash.System.extend({
     ps= node.pauser;
 
     if (ps.pauseToClear) {
-      if (ccsx.timerDone(ps.pauseTimer)) {
+      if (ccsx.timerDone(ps.timer)) {
         //this.state.curShape=null;
         this.clearFilled(node);
-        ps.pauseTimer=null;
+        ps.timer=null;
         ps.pauseToClear=false;
       }
       //stop downstream processing

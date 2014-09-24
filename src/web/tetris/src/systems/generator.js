@@ -80,7 +80,7 @@ bks.ShapeGenerator = Ash.System.extend({
 
     return {
       png: sjs.rand( sh.xcfg.csts.BLOCK_COLORS) + 1,
-      rot: sjs.rand(proto.dim),
+      rot: sjs.rand(proto.layout.length),
       model: proto
     };
   }
