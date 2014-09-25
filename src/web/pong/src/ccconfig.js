@@ -48,15 +48,17 @@ document.ccConfig = {
 
       '/public/ig/lib/game/pong/components/player.js',
       '/public/ig/lib/game/pong/components/paddle.js',
+      '/public/ig/lib/game/pong/components/motion.js',
 
-
+      '/public/ig/lib/game/pong/nodes/paddle.js',
       '/public/ig/lib/game/pong/factory.js',
 
-
+      '/public/ig/lib/game/pong/systems/util.js',
       '/public/ig/lib/game/pong/systems/systempriorities.js',
+      '/public/ig/lib/game/pong/systems/motionctrlsystem.js',
       '/public/ig/lib/game/pong/systems/supervisor.js',
-
-
+      '/public/ig/lib/game/pong/systems/rendersystem.js',
+      '/public/ig/lib/game/pong/systems/movementsystem.js',
 
 
       '/public/ig/lib/game/pong/hud.js',

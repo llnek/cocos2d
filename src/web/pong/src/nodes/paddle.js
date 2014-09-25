@@ -20,46 +20,9 @@ png= sh.Pong;
 
 //////////////////////////////////////////////////////////////////////////////
 //
-png.Paddle = Ash.Class.extend({
-
-  constructor: function(layer, x,y,color,speed) {
-    this.color= color;
-    this.speed= speed;
-
-    if (ccsx.isPortrait()) {
-
-      if (this.color === 'X') {
-        this.resid = 'gamelevel1.images.p.paddle1';
-        this.kcodes = [cc.KEY.left, cc.KEY.right];
-      } else {
-        this.resid = 'gamelevel1.images.p.paddle2';
-        this.kcodes = [cc.KEY.a, cc.KEY.d];
-      }
-
-    } else {
-
-      if (this.color === 'X') {
-        this.resid = 'gamelevel1.images.l.paddle1';
-        this.kcodes = [cc.KEY.down, cc.KEY.up];
-      } else {
-        this.resid = 'gamelevel1.images.l.paddle2';
-        this.kcodes = [cc.KEY.s, cc.KEY.w];
-      }
-    }
-
-    if (this.color === 'X') {
-      this.snd= 'x_hit';
-    } else {
-      this.snd= 'o_hit';
-    }
-
-    this.sprite = new cc.Sprite(sh.getImagePath(this.resid));
-    this.sprite.setPosition(x,y);
-    layer.addItem(this.sprite);
-
-    return this;
-  }
-
+png.PaddleNode = Ash.Node.create({
+  motion: png.Motion,
+  paddle: png.Paddle
 });
 
 
@@ -67,6 +30,9 @@ png.Paddle = Ash.Class.extend({
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
+
+
+
 
 
 

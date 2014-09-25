@@ -200,6 +200,12 @@ var GameLayer = asterix.XGameLayer.extend({
     //
     this.engine.addSystem(new png.GameSupervisor(this.options),
                           png.Priorities.PreUpdate);
+    this.engine.addSystem(new png.MotionCtrlSystem(this.options),
+                          png.Priorities.Motion);
+    this.engine.addSystem(new png.MovementSystem(this.options),
+                          png.Priorities.Move);
+    this.engine.addSystem(new png.RenderSystem(this.options),
+                          png.Priorities.Render);
 
 
 

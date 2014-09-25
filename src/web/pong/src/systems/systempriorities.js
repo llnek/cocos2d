@@ -23,10 +23,11 @@ png= sh.Pong;
 png.Priorities = {
 
   PreUpdate: 1,
-  Movement: 2,
-  TurnBase: 3,
-  Render: 4,
-  Resolve: 5
+  Motion: 2,
+  Move: 3,
+  Collision: 4,
+  Render: 5,
+  Resolve: 6
 };
 
 

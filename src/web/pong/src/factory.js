@@ -28,23 +28,24 @@ png.EntityFactory = Ash.Class.extend({
   },
 
   createPaddles: function(layer, options) {
-    var p = options.players[1],
-    ent,
-    x = options.p1.x,
-    y = options.p1.y;
 
-    ent = new Ash.Entity();
-    ent.add(new png.Paddle(layer,x,y,p.color,options.paddle.speed));
+    this.createOnePaddle(layer, options.players[1],
+                         options.p1,
+                         options.paddle.speed);
+
+    this.createOnePaddle(layer, options.players[2],
+                         options.p2,
+                         options.paddle.speed);
+  },
+
+  createOnePaddle: function(layer, p, info,speed) {
+    var ent = new Ash.Entity(),
+    x = info.x,
+    y = info.y;
+
+    ent.add(new png.Paddle(layer,x,y,p.color, speed));
     ent.add(p);
-    this.engine.addEntity(ent);
-
-    p = options.players[2],
-    x = options.p2.x,
-    y = options.p2.y;
-
-    ent = new Ash.Entity();
-    ent.add(new png.Paddle(layer, x,y,p.color,options.paddle.speed));
-    ent.add(p);
+    ent.add(new png.Motion());
     this.engine.addEntity(ent);
   }
 
