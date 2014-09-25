@@ -18,6 +18,8 @@ bks.SystemUtils = {
       bricks= this.reifyBricks(layer, shape.png, shape.x, shape.y,bbox);
       this.clearOldBricks(shape.bricks);
       shape.bricks=bricks;
+    } else {
+      shape=null;
     }
     return shape;
   },

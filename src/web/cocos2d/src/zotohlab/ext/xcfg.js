@@ -109,6 +109,7 @@ asterix.XConfig = {
       "%1player" : '1 Player',
       "%online" : 'Online',
 
+      "%gameover" : 'Game Over',
       "%quit!" : 'Quit',
       "%back" : 'Back',
       "%ok" : 'OK',

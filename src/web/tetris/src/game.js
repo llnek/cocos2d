@@ -306,6 +306,10 @@ var GameLayer = asterix.XGameLayer.extend({
     this.dropper= ccsx.createTimer(this, this.dropRate / this.dropSpeed);
   },
 
+  operational: function() {
+    return this.options.running === true;
+  },
+
   dropRate: 80 + 700/1,
   dropSpeed: 1000,
 
@@ -386,6 +390,12 @@ var GameLayer = asterix.XGameLayer.extend({
                           bks.Priorities.Render);
     this.engine.addSystem(new bks.ResolutionSystem(this.options),
                           bks.Priorities.Resolve);
+    this.options.running=true;
+  },
+
+  endGame: function() {
+    this.options.running=false;
+    this.getHUD().endGame();
   },
 
   onNewGame: function(mode) {
@@ -403,11 +413,11 @@ asterix.Bricks.Factory = {
     scene= fac.create(options);
     if (!scene) { return null; }
 
-    scene.ebus.on('/game/objects/players/killed', function(topic, msg) {
-      sh.main.onPlayerKilled(msg);
+    scene.ebus.on('/game/hud/end', function(topic, msg) {
+      sh.main.endGame();
     });
-    scene.ebus.on('/game/objects/players/earnscore', function(topic, msg) {
-      sh.main.onEarnScore(msg);
+    scene.ebus.on('/game/hud/score/update', function(topic, msg) {
+      sh.main.getHUD().updateScore(msg.score);
     });
 
     scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {

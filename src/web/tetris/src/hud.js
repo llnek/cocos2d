@@ -61,6 +61,7 @@ bks.HUDLayer = asterix.XGameHUDLayer.extend({
 
   initLabels: function() {
     var csts = sh.xcfg.csts,
+    cw= ccsx.center(),
     wz = ccsx.screen();
 
     this.scoreLabel = ccsx.bmfLabel({
@@ -74,15 +75,42 @@ bks.HUDLayer = asterix.XGameHUDLayer.extend({
       wz.height - csts.TILE - csts.S_OFF - ccsx.getScaledHeight(this.scoreLabel));
 
     this.addChild(this.scoreLabel, this.lastZix, ++this.lastTag);
+
+    this.status= ccsx.bmfLabel({
+      fontPath: sh.getFontPath('font.TinyBoxBB'),
+      text: '',
+      scale: 12/72,
+      pos: cc.p(cw.x,cw.y)
+      //pos: cc.p(21 * csts.TILE, wz.height - csts.TILE * 4)
+    });
+    this.addItem(this.status);
+  },
+
+  endGame: function() {
+    this.replayBtn.setVisible(true);
+    this.status.setVisible(true);
+    this.drawStatusText(sh.l10n('%gameover'));
+  },
+
+  drawStatusText: function(msg) {
+    this.status.setString( msg);
+  },
+
+  showStatus: function() {
+
   },
 
   initIcons: function() {
   },
 
   resetAsNew: function() {
+    this.reset();
   },
 
   reset: function() {
+    this.replayBtn.setVisible(false);
+    this.status.setVisible(false);
+    this.score=0;
   },
 
   showNext: function() {
@@ -108,6 +136,11 @@ bks.HUDLayer = asterix.XGameHUDLayer.extend({
     };
   },
 
+  updateScore: function(score) {
+    this.score += score;
+    this.scoreLabel.setString('' + this.score);
+  },
+
   getNextShapeInfo: function() {
     return this.nextShapeInfo;
   },
@@ -126,10 +159,6 @@ bks.HUDLayer = asterix.XGameHUDLayer.extend({
 
   initCtrlBtns: function(s) {
     this._super(32/48);
-  },
-
-  rtti: function() {
-    return 'HUD';
   }
 
 });

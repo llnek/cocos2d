@@ -34,11 +34,15 @@ bks.ShapeGenerator = Ash.System.extend({
     {}
     else {
       shell.shape = this.reifyNextShape(node);
-      //show new next shape in preview window
-      this.previewNextShape();
-      //activate drop timer
-      node.dropper.dropSpeed=1000;
-      utils.initDropper(sh.main,node.dropper);
+      if (shell.shape) {
+        //show new next shape in preview window
+        this.previewNextShape();
+        //activate drop timer
+        node.dropper.dropSpeed=1000;
+        utils.initDropper(sh.main,node.dropper);
+      } else {
+        return false;
+      }
     }
   },
 
@@ -47,8 +51,13 @@ bks.ShapeGenerator = Ash.System.extend({
     shape= new bks.Shape(5 * csts.TILE,
                              ccsx.screen().height - csts.FIELD_TOP * csts.TILE,
                              this.nextShapeInfo);
-    //create new shape
-    return utils.reifyShape(sh.main,node.collision.tiles,shape);
+    shape= utils.reifyShape(sh.main,node.collision.tiles,shape);
+    if (! shape) {
+      sjs.loggr.debug("game over.  you lose.");
+      sh.fireEvent('/game/hud/end');
+    }
+
+    return shape;
   },
 
   previewNextShape: function() {

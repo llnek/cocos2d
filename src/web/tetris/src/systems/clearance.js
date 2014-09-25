@@ -41,6 +41,8 @@ bks.RowClearance = Ash.System.extend({
   },
 
   clearFilled: function(node) {
+    var score= node.flines.lines.length;
+    sh.fireEvent('/game/hud/score/update', { score: score * 50 });
     _.each(node.flines.lines,function(z) {
       this.clearOneRow(node,z);
       this.resetOneRow(node,z);
