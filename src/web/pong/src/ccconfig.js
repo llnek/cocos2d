@@ -20,6 +20,8 @@ document.ccConfig = {
     "/public/vendors/l10njs/l10n.min.js",
     "/public/vendors/mustache/mustache.js",
     "/public/vendors/helpers/dbg.js",
+    "/public/vendors/ash-js/ash.min.js",
+
     "/public/vendors/cherimoia/skaro.js",
     "/public/vendors/cherimoia/caesar.js",
     "/public/vendors/cherimoia/zlab.js",
@@ -43,10 +45,20 @@ document.ccConfig = {
 
       '/public/ig/lib/game/pong/config.js',
       '/public/ig/lib/game/pong/i18n/game_en_US.js',
-      '/public/ig/lib/game/pong/entities/entity.js',
-      '/public/ig/lib/game/pong/entities/ball.js',
-      '/public/ig/lib/game/pong/entities/human.js',
-      '/public/ig/lib/game/pong/entities/robot.js',
+
+      '/public/ig/lib/game/pong/components/player.js',
+      '/public/ig/lib/game/pong/components/paddle.js',
+
+
+      '/public/ig/lib/game/pong/factory.js',
+
+
+      '/public/ig/lib/game/pong/systems/systempriorities.js',
+      '/public/ig/lib/game/pong/systems/supervisor.js',
+
+
+
+
       '/public/ig/lib/game/pong/hud.js',
       '/public/ig/lib/game/pong/arena.js',
       '/public/ig/lib/game/pong/game.js',

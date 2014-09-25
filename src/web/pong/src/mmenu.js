@@ -17,9 +17,7 @@ ccsx = asterix.COCOS2DX,
 sjs= global.SkaroJS;
 
 var SEED= {
-  seed_data: {
-    players: { }
-  },
+  ppids: { },
   pnum: 1,
   mode: 0
 };
@@ -42,7 +40,8 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
       text: sh.l10n('%online'),
       selector: function() {
         sh.fireEvent('/mmenu/controls/online',
-                     sjs.mergeEx(SEED, { mode: sh.ONLINE_GAME }));
+                     sjs.mergeEx(SEED,
+                                 { mode: sh.ONLINE_GAME }));
       },
       target: this,
       scale: 0.5,
@@ -59,9 +58,9 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
       scale: 0.5,
       selector: function() {
         sh.fireEvent('/mmenu/controls/newgame',
-                     sjs.mergeEx(SEED, { seed_data: {
-                       players: pobj2
-                     }, mode: sh.P2_GAME }));
+                     sjs.mergeEx(SEED, {
+                       ppids: pobj2,
+                       mode: sh.P2_GAME }));
       },
       target: this,
       pos: cc.p(cw.x + 68, wz.height - csts.TILE * 28 - 4)
@@ -77,9 +76,9 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
       scale: 0.5,
       selector: function() {
         sh.fireEvent('/mmenu/controls/newgame',
-                     sjs.mergeEx(SEED, { seed_data: {
-                       players: pobj1
-                     }, mode: sh.P1_GAME }));
+                     sjs.mergeEx(SEED, {
+                       ppids: pobj1,
+                       mode: sh.P1_GAME }));
       },
       target: this,
       pos: cc.p(cw.x, csts.TILE * 19)

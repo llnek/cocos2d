@@ -141,18 +141,25 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   play: function(newFlag) {
-    var world= this.getEnclosureRect(),
+    var state0= this.options.seed_data,
+    world= this.getEnclosureRect(),
     ps = this.initPaddleSize(),
     bs = this.initBallSize(),
     csts= sh.xcfg.csts,
     cw= ccsx.center(),
     wz= ccsx.screen(),
     p2ids,p1ids,
+    p2,p1,
     p1x,p2x,
     p1y,p2y;
 
+    // in case of online play, disable all event callbacks
+    if (this.options.wsock) {
+      this.options.wsock.unsubscribeAll();
+    }
+
     // sort out names of players
-    _.each(this.options.ppids,function(v,k) {
+    _.each(state0.players,function(v,k) {
       if (v[0] === 1) {
         p1ids= [k, v[1] ];
       } else {
@@ -167,50 +174,82 @@ var GameLayer = asterix.XGameLayer.extend({
     // landscape
     p2x = Math.floor(world.right - bs.width - sh.hw(ps));
     p1x = Math.floor(world.left + bs.width + sh.hw(ps));
-    // game defaults for entities and timers.
-    this.options.framespersec= cc.game.config[cc.game.CONFIG_KEY.frameRate];
-    this.options.world= world;
-    this.options.syncMillis= 3000;
-    this.options.paddle= {height: Math.floor(ps.height),
-             width: Math.floor(ps.width),
-             speed: Math.floor(PADDLE_SPEED)};
-    this.options.ball= {height: Math.floor(bs.height),
-           width: Math.floor(bs.width),
-           x: Math.floor(cw.x),
-           y: Math.floor(cw.y),
-           speed: Math.floor(BALL_SPEED) };
-    if (ccsx.isPortrait()) {
-      this.options.p1= {y: p1y, x: Math.floor(cw.x) };
-      this.options.p2= {y: p2y, x: Math.floor(cw.x) };
-    } else {
-      this.options.p1= {x: p1x, y: Math.floor(cw.y) };
-      this.options.p2= {x: p2x, y: Math.floor(cw.y) };
-    }
-    this.options.numpts= NUM_ROUNDS;
-
 
     // start with a clean slate
     this.reset(newFlag);
-    this.cleanSlate();
 
-    //
-    this.options.factory= new png.EntityFactory(this.engine);
-    this.initPlayers();
+    p2=null;
+    p1=null;
 
-    //
-    this.engine.addSystem(new png.GameSupervisor(this.options),
-                          png.Priorities.PreUpdate);
+    // game defaults for entities and timers.
+    var dfts= {
+      framespersec: cc.game.config[cc.game.CONFIG_KEY.frameRate],
+      world: this.getEnclosureRect(),
+      syncMillis: 3000,
+      paddle: {height: Math.floor(ps.height),
+               width: Math.floor(ps.width),
+               speed: Math.floor(PADDLE_SPEED)},
+      ball: {height: Math.floor(bs.height),
+             width: Math.floor(bs.width),
+             x: Math.floor(cw.x),
+             y: Math.floor(cw.y),
+             speed: Math.floor(BALL_SPEED) },
+      p1: {},
+      p2: {},
+      numpts: NUM_ROUNDS};
+
+    if (ccsx.isPortrait()) {
+
+      dfts.p1= {y: p1y, x: Math.floor(cw.x) };
+      dfts.p2= {y: p2y, x: Math.floor(cw.x) };
+
+    } else {
+
+      dfts.p1= {x: p1x, y: Math.floor(cw.y) };
+      dfts.p2= {x: p2x, y: Math.floor(cw.y) };
+    }
 
 
+    // based on mode, create the 2 players
+    //switch (sh.xcfg.csts.GAME_MODE) {
+    switch (this.options.mode) {
+      case sh.P1_GAME:
+        p2 = new png.EntityRobot(dfts.p2.x,dfts.p2.y,
+                                 sjs.mergeEx(dfts.paddle, { color: 'O' }));
+        p1 = new png.EntityHuman(dfts.p1.x,dfts.p1.y,
+                                 sjs.mergeEx(dfts.paddle, { color: 'X' }));
+        this.arena = new png.NonNetArena(dfts);
+      break;
+      case sh.P2_GAME:
+        p2 = new png.EntityHuman(dfts.p2.x,dfts.p2.y,
+                                 sjs.mergeEx(dfts.paddle, { color: 'O' }));
+        p1 = new png.EntityHuman(dfts.p1.x,dfts.p1.y,
+                                 sjs.mergeEx(dfts.paddle, { color: 'X' }));
+        this.arena = new png.NonNetArena(dfts);
+      break;
+      case sh.ONLINE_GAME:
+        p2 = new png.NetPlayer(dfts.p2.x,dfts.p2.y,
+                               sjs.mergeEx(dfts.paddle, { color: 'O' }));
+        p1 = new png.NetPlayer(dfts.p1.x,dfts.p1.y,
+                               sjs.mergeEx(dfts.paddle, { color: 'X' }));
+        if (this.options.pnum === 1) {
+          p1.setWEBSock(this.options.wsock);
+        } else {
+          p2.setWEBSock(this.options.wsock);
+        }
+        this.arena = new png.NetArena(dfts);
+      break;
+    }
+
+    this.getHUD().regoPlayers(p1,p1ids,p2,p2ids);
+    this.players= [null, p1, p2];
+    this.arena.registerPlayers(this,p1,p2);
 
     if (this.options.wsock) {
-      this.options.wsock.unsubscribeAll();
       this.options.wsock.subscribeAll(this.onevent,this);
     }
 
-    this.getHUD().regoPlayers(csts.P1_COLOR,p1ids,
-                              csts.P2_COLOR,p2ids);
-    this.options.running=true;
+    this.arena.startRumble();
   },
 
   onNewGame: function(mode) {
@@ -240,34 +279,7 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   operational: function() {
-    return this.options.running;
-  },
-
-  initPlayers: function() {
-    var csts= sh.xcfg.csts,
-    p2cat,p1cat,
-    p2,p1;
-
-    switch (this.options.mode) {
-      case sh.ONLINE_GAME:
-        p2cat = csts.NETP;
-        p1cat = csts.NETP;
-      break;
-      case sh.P1_GAME:
-        p1cat= csts.HUMAN;
-        p2cat= csts.BOT;
-      break;
-      case sh.P2_GAME:
-        p2cat= csts.HUMAN;
-        p1cat= csts.HUMAN;
-      break;
-    }
-    p1= new png.Player(p1cat, csts.CV_X, 1, csts.P1_COLOR);
-    p2= new png.Player(p2cat, csts.CV_O, 2, csts.P2_COLOR);
-    this.options.players = [null,p1,p2];
-    this.options.colors={};
-    this.options.colors[csts.P1_COLOR] = p1;
-    this.options.colors[csts.P2_COLOR] = p2;
+    return this.arena && this.arena.isActive();
   },
 
   // scores is a map {'o': 0, 'x': 0}

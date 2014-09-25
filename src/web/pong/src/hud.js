@@ -145,8 +145,8 @@ png.HUDLayer = asterix.XGameHUDLayer.extend({
   },
 
   isDone: function() {
-    var s2= this.scores[this.play2.color],
-    s1= this.scores[this.play1.color],
+    var s2= this.scores[this.play2],
+    s1= this.scores[this.play1],
     rc= [false, null];
 
     if (s2 >= this.MAX_SCORE) { rc = [ true, this.play2]; }
@@ -155,8 +155,8 @@ png.HUDLayer = asterix.XGameHUDLayer.extend({
   },
 
   updateScores: function(scores) {
-    this.scores[this.play2.color] = scores[this.play2.color];
-    this.scores[this.play1.color] = scores[this.play1.color];
+    this.scores[this.play2] = scores[this.play2];
+    this.scores[this.play1] = scores[this.play1];
     this.drawScores();
   },
 
@@ -166,8 +166,8 @@ png.HUDLayer = asterix.XGameHUDLayer.extend({
   },
 
   drawScores: function() {
-    var s2 = this.play2 ? this.scores[this.play2.color] : 0,
-    s1 = this.play1 ? this.scores[this.play1.color] : 0,
+    var s2 = this.play2 ? this.scores[this.play2] : 0,
+    s1 = this.play1 ? this.scores[this.play1] : 0,
     n2 = sjs.prettyNumber(s2,1),
     n1 = sjs.prettyNumber(s1,1);
     this.score1.setString(n1);
