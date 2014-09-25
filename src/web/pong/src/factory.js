@@ -38,6 +38,23 @@ png.EntityFactory = Ash.Class.extend({
                          options.paddle.speed);
   },
 
+  createBall: function(layer, options) {
+    var ent = new Ash.Entity(),
+    info = options.ball,
+    vy = info.speed * sjs.randomSign(),
+    vx = info.speed * sjs.randomSign(),
+    x = info.x,
+    y = info.y;
+
+    if (options.mode === sh.ONLINE_GAME) {
+      vx = vy = 0;
+    }
+
+    ent.add(new png.Ball(layer,x,y,info.speed));
+    ent.add(new png.Velocity(vx,vy));
+    this.engine.addEntity(ent);
+  },
+
   createOnePaddle: function(layer, p, info,speed) {
     var ent = new Ash.Entity(),
     x = info.x,

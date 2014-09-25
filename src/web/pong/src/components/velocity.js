@@ -12,57 +12,22 @@
 (function (undef){ "use strict"; var global = this, _ = global._ ;
 
 var asterix= global.ZotohLab.Asterix,
-Odin= global.ZotohLab.Odin,
 ccsx= asterix.CCS2DX,
 sjs= global.SkaroJS,
 sh= asterix,
-png= sh.Pong,
-evts= Odin.Events;
+png= sh.Pong;
 
 
 //////////////////////////////////////////////////////////////////////////////
 //
+png.Velocity = Ash.Class.extend({
 
-png.GameSupervisor = Ash.System.extend({
-
-  constructor: function(options) {
-    this.factory= options.factory;
-    this.state= options;
-    this.inited=false;
+  constructor: function(vx,vy) {
+    this.vel = {
+      x: vx,
+      y: vy
+    };
     return this;
-  },
-
-  removeFromEngine: function(engine) {
-    this.nodeList=null;
-  },
-
-  addToEngine: function(engine) {
-    //this.nodeList= engine.getNodeList(ttt.BoardNode);
-  },
-
-  update: function (dt) {
-    if (! this.inited) {
-      this.onceOnly();
-      this.inited=true;
-    } else {
-      this.process(dt);
-    }
-  },
-
-  onceOnly: function() {
-
-    this.factory.createPaddles(sh.main, this.state);
-    this.factory.createBall(sh.main, this.state);
-    if (this.state.wsock) {
-      // online play
-      sjs.loggr.debug("reply to server: session started ok");
-    } else {
-
-    }
-
-  },
-
-  process: function(dt) {
   }
 
 });
@@ -72,7 +37,6 @@ png.GameSupervisor = Ash.System.extend({
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
 
 
 

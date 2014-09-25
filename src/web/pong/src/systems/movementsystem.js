@@ -20,17 +20,24 @@ png.MovementSystem = Ash.System.extend({
   },
 
   removeFromEngine: function(engine) {
-    this.nodeList=null;
+    this.paddles=null;
+    this.balls= null;
   },
 
   addToEngine: function(engine) {
-    this.nodeList= engine.getNodeList(png.PaddleNode);
+    this.paddles= engine.getNodeList(png.PaddleNode);
+    this.balls= engine.getNodeList(png.BallNode);
   },
 
   update: function (dt) {
-    for (var node= this.nodeList.head; node; node=node.next) {
+    for (var node= this.paddles.head; node; node=node.next) {
       this.process(node,dt);
     }
+    this.processBall(this.balls.head, dt);
+  },
+
+  processBall: function(node,dt) {
+
   },
 
   process: function(node,dt) {

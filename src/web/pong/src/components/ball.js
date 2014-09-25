@@ -20,9 +20,16 @@ png= sh.Pong;
 
 //////////////////////////////////////////////////////////////////////////////
 //
-png.Graphics = Ash.Class.extend({
+png.Ball = Ash.Class.extend({
 
-  constructor: function() {
+  constructor: function(layer, x,y,speed) {
+    this.resid= 'gamelevel1.images.ball';
+    this.speed= speed;
+    this.sprite = new cc.Sprite(sh.getImagePath(this.resid));
+    this.sprite.setPosition(x,y);
+
+    layer.addItem(this.sprite);
+
     return this;
   }
 
