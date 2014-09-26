@@ -20,7 +20,7 @@ png= sh.Pong;
 
 //////////////////////////////////////////////////////////////////////////////
 //
-png.LastPos = Ash.Class.extend({
+png.Position = Ash.Class.extend({
 
   constructor: function(lp) {
     this.lastDir= 0;

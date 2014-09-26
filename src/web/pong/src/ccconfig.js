@@ -50,8 +50,8 @@ document.ccConfig = {
       '/public/ig/lib/game/pong/components/paddle.js',
       '/public/ig/lib/game/pong/components/motion.js',
       '/public/ig/lib/game/pong/components/ball.js',
+'/public/ig/lib/game/pong/components/position.js',
 '/public/ig/lib/game/pong/components/velocity.js',
-
 
       '/public/ig/lib/game/pong/nodes/paddle.js',
 '/public/ig/lib/game/pong/nodes/ball.js',

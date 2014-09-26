@@ -21,12 +21,13 @@ png= sh.Pong;
 //////////////////////////////////////////////////////////////////////////////
 //
 png.FauxPaddleNode = Ash.Node.create({
+  lastpos: png.Position,
   paddle: png.Paddle,
   player: png.Player
 });
 
 png.PaddleNode = Ash.Node.create({
-  lastpos: png.LastPos,
+  lastpos: png.Position,
   motion: png.Motion,
   paddle: png.Paddle,
   player: png.Player

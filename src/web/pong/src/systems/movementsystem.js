@@ -53,7 +53,41 @@ png.MovementSystem = Ash.System.extend({
   },
 
   simuMove: function(dt,node,bnode) {
+    var hw2 = ccsx.halfHW(node.paddle.sprite),
+    pos = node.paddle.sprite.getPosition(),
+    world= this.state.world,
+    lastpos= node.lastpos,
+    x= undef,
+    y= undef,
+    delta= dt * this.state.paddle.speed;
+
+    if (laspos.dir > 0) {
+      if (ccsx.isPortrait()) {
+        x = pos.x + delta;
+      } else {
+        y = pos.y + delta;
+      }
+    }
+    else
+    if (lastpos.dir < 0) {
+      if (ccsx.isPortrait()) {
+        x = pos.x - delta;
+      } else {
+        y = pos.y - delta;
+      }
+    }
+
+    if (sjs.echt(x)) {
+      node.paddle.sprite.setPosition(x,pos.y);
+      this.clamp(node.paddle.sprite);
+    }
+    if (sjs.echt(y)) {
+      node.paddle.sprite.setPosition(pos.x,y);
+      this.clamp(node.paddle.sprite);
+    }
+
   },
+
 
   //TODO: better AI please
   moveRobot: function(dt,node,bnode) {

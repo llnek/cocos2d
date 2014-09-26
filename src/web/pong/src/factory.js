@@ -72,11 +72,13 @@ png.EntityFactory = Ash.Class.extend({
       lp=y;
     }
 
+    ent.add(new png.Position(lp));
+
     if (options.wsock && options.pnum !== p.pnum) {
+      //only simulate move
     }
     else
     if (p.category !== sh.xcfg.csts.BOT) {
-      ent.add(new png.LastPos(lp))
       ent.add(new png.Motion());
     }
 

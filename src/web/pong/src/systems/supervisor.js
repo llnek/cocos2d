@@ -46,6 +46,8 @@ png.GameSupervisor = Ash.System.extend({
     } else {
       this.process(dt);
     }
+
+    return this.state.wsock ? this.state.poked : true;
   },
 
   onceOnly: function() {
@@ -61,14 +63,6 @@ png.GameSupervisor = Ash.System.extend({
         code: evts.C_STARTED,
         source: JSON.stringify(this.state)
       });
-
-      // try to keep track of paddle movements
-      if (ccsx.isPortrait()) {
-        this.lastP = a.sprite.getPosition().x;
-      } else {
-        this.lastP = a.sprite.getPosition().y;
-      }
-      this.lastDir=0;
     }
 
   },

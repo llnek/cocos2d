@@ -86,7 +86,7 @@ var GameLayer = asterix.XGameLayer.extend({
       case evts.C_POKE_MOVE:
         sjs.loggr.debug("activate arena, start to rumble!");
         if (this.options.pnum === evt.source.pnum) {
-          this.arena.animate();
+          this.options.poked=true;
         } else {
           sjs.loggr.error("Got POKED but with wrong player number. " +
                           evt.source.pnum);
@@ -207,15 +207,16 @@ var GameLayer = asterix.XGameLayer.extend({
     this.engine.addSystem(new png.RenderSystem(this.options),
                           png.Priorities.Render);
 
+    this.getHUD().regoPlayers(csts.P1_COLOR,p1ids,
+                              csts.P2_COLOR,p2ids);
 
     if (this.options.wsock) {
       this.options.wsock.unsubscribeAll();
       this.options.wsock.subscribeAll(this.onevent,this);
     }
 
-    this.getHUD().regoPlayers(csts.P1_COLOR,p1ids,
-                              csts.P2_COLOR,p2ids);
     this.options.running=true;
+    this.options.poked=false;
   },
 
   onNewGame: function(mode) {
