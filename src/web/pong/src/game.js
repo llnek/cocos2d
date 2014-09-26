@@ -21,10 +21,6 @@ var odin= global.ZotohLab.Odin,
 evts= odin.Events;
 
 
-var BALL_SPEED=150, // 25 incremental
-PADDLE_SPEED=200, // 300
-NUM_ROUNDS=3;
-
 
 //////////////////////////////////////////////////////////////////////////////
 // game layer
@@ -173,12 +169,12 @@ var GameLayer = asterix.XGameLayer.extend({
     this.options.syncMillis= 3000;
     this.options.paddle= {height: Math.floor(ps.height),
              width: Math.floor(ps.width),
-             speed: Math.floor(PADDLE_SPEED)};
+             speed: Math.floor(csts.PADDLE_SPEED)};
     this.options.ball= {height: Math.floor(bs.height),
            width: Math.floor(bs.width),
            x: Math.floor(cw.x),
            y: Math.floor(cw.y),
-           speed: Math.floor(BALL_SPEED) };
+           speed: Math.floor(csts.BALL_SPEED) };
     if (ccsx.isPortrait()) {
       this.options.p1= {y: p1y, x: Math.floor(cw.x) };
       this.options.p2= {y: p2y, x: Math.floor(cw.x) };
@@ -186,7 +182,7 @@ var GameLayer = asterix.XGameLayer.extend({
       this.options.p1= {x: p1x, y: Math.floor(cw.y) };
       this.options.p2= {x: p2x, y: Math.floor(cw.y) };
     }
-    this.options.numpts= NUM_ROUNDS;
+    this.options.numpts= csts.NUM_POINTS;
 
 
     // start with a clean slate
@@ -284,21 +280,24 @@ var GameLayer = asterix.XGameLayer.extend({
     this.getHUD().updateScores(scores);
   },
 
-  onWinner: function(p) {
-    this.getHUD().updateScore(p,1);
+  onWinner: function(p,score) {
+    this.getHUD().updateScore(p,score || 1);
     var rc= this.getHUD().isDone();
     if (rc[0]) {
       this.doDone( rc[1] );
     } else {
-      this.arena.spawnNewBall();
+      //this.arena.spawnNewBall();
     }
   },
 
   doDone: function(p) {
     this.getHUD().drawResult(p);
     this.getHUD().endGame();
-    this.arena.finz();
+
+    this.removeAllItems();
     sh.sfxPlay('game_end');
+
+    this.options.running=false;
   },
 
   setGameMode: function(mode) {
@@ -334,6 +333,11 @@ asterix.Pong.Factory = {
       scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
         sh.main.replay();
       });
+
+      scene.ebus.on('/game/hud/score/update',function(t,msg) {
+        sh.main.onWinner(msg.color, msg.score);
+      });
+
     }
     return scene;
   }

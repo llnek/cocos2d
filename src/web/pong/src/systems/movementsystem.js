@@ -34,7 +34,7 @@ png.MovementSystem = Ash.System.extend({
     bnode= this.balls.head,
     node;
     for (node= this.paddles.head; node; node=node.next) {
-      if (node.paddle.category === csts.ROBOT) {
+      if (node.player.category === csts.BOT) {
         this.moveRobot(dt,node,bnode);
       } else {
         this.process(dt,node);

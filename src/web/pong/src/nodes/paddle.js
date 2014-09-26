@@ -22,7 +22,8 @@ png= sh.Pong;
 //
 png.PaddleNode = Ash.Node.create({
   motion: png.Motion,
-  paddle: png.Paddle
+  paddle: png.Paddle,
+  player: png.Player
 });
 
 

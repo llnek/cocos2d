@@ -46,7 +46,6 @@ png.HUDLayer = asterix.XGameHUDLayer.extend({
 
   scores:  { 'O': 0, 'X': 0 },
   mode: 0,
-  MAX_SCORE: 3, //11,
 
   p2Long: '',
   p1Long: '',
@@ -147,10 +146,11 @@ png.HUDLayer = asterix.XGameHUDLayer.extend({
   isDone: function() {
     var s2= this.scores[this.play2],
     s1= this.scores[this.play1],
+    csts= sh.xcfg.csts,
     rc= [false, null];
 
-    if (s2 >= this.MAX_SCORE) { rc = [ true, this.play2]; }
-    if (s1 >= this.MAX_SCORE) { rc = [ true, this.play1]; }
+    if (s2 >= csts.NUM_POINTS) { rc = [ true, this.play2]; }
+    if (s1 >= csts.NUM_POINTS) { rc = [ true, this.play1]; }
     return rc;
   },
 
@@ -160,8 +160,8 @@ png.HUDLayer = asterix.XGameHUDLayer.extend({
     this.drawScores();
   },
 
-  updateScore: function(actor,value) {
-    this.scores[actor.color] = this.scores[actor.color] + value;
+  updateScore: function(color,value) {
+    this.scores[color] = this.scores[color] + value;
     this.drawScores();
   },
 
@@ -176,7 +176,7 @@ png.HUDLayer = asterix.XGameHUDLayer.extend({
 
   drawResult: function(winner) {
     var msg="";
-    switch (winner.color) {
+    switch (winner) {
       case 'O': msg= sh.l10n('%whowin', { who: this.p2Long}); break;
       case 'X': msg= sh.l10n('%whowin', { who: this.p1Long}); break;
     }

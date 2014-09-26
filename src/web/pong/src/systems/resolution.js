@@ -38,7 +38,7 @@ png.Resolution = Ash.System.extend({
       winner =this.check(node,bnode);
       if (winner) {
         this.onWin(winner);
-        break;
+        return false;
       }
     }
   },
@@ -51,6 +51,7 @@ png.Resolution = Ash.System.extend({
     this.state.ball.y);
     bnode.velocity.vel.x = this.state.ball.speed * sjs.randomSign();
     bnode.velocity.vel.y = this.state.ball.speed * sjs.randomSign();
+    sh.fireEvent('/game/hud/score/update', { score: 1, color: winner });
   },
 
   //check win

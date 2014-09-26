@@ -36,6 +36,10 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
     P2_COLOR: 'O',
     P1_COLOR: 'X',
 
+    BALL_SPEED: 150, // 25 incremental
+    PADDLE_SPEED: 200, // 300
+    NUM_POINTS: 4,
+
     HUMAN:  1,
     BOT:    2,
     NETP:   3,
