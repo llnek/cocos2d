@@ -81,6 +81,14 @@ asterix.COCOS2DX = {
                                           this.bbox(b.sprite)) : false;
   },
 
+
+  //test collision of 2 entities using cc-rects
+  collide0: function(spriteA,spriteB) {
+    return spriteA && spriteB ? cc.rectIntersectsRect(this.bbox(spriteA),
+                                          this.bbox(spriteB)) : false;
+  },
+
+
   isPortrait: function() {
     var s=this.screen(); return s.height > s.width;
   },
@@ -197,6 +205,58 @@ asterix.COCOS2DX = {
     return (cc.sys.isNative) ? cc.director.getWinSize()
                              : cc.director.getWinSizeInPixels();
                             */
+  },
+
+  //tests if entity is hitting boundaries.
+  //rect.x & y are center positioned.
+  traceEnclosure: function(dt,bbox,rect,vel) {
+    var sz= rect.height * 0.5,
+    sw= rect.width * 0.5,
+    vx= vel.x,
+    vy= vel.y,
+    y = rect.y + dt * vel.y,
+    x = rect.x + dt * vel.x,
+    hit=false;
+
+    if (y + sz > bbox.top) {
+      //hitting top wall
+      y = bbox.top - sz;
+      vy = - vy;
+      hit=true;
+    }
+    else
+    if (y - sz < bbox.bottom) {
+      //hitting bottom wall
+      y = bbox.bottom + sz;
+      vy = - vy;
+      hit=true;
+    }
+
+    if (x + sw > bbox.right) {
+      //hitting right wall
+      x = bbox.right - sw;
+      vx = - vx;
+      hit=true;
+    }
+    else
+    if (x - sw < bbox.left) {
+      //hitting left wall
+      x = bbox.left + sw;
+      vx = - vx;
+      hit=true;
+    }
+
+    return hit ? {
+        hit: true,
+        x: x,
+        y: y,
+        vx: vx,
+        vy: vy
+      } : {
+        hit: false,
+        x: x,
+        y: y
+      };
   },
 
   getSpriteFrame: function(frameid) {

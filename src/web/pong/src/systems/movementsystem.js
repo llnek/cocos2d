@@ -37,7 +37,24 @@ png.MovementSystem = Ash.System.extend({
   },
 
   processBall: function(node,dt) {
+    var v = node.velocity,
+    b= node.ball,
+    rc,
+    pos= b.sprite.getPosition(),
+    rect= ccsx.bbox(b.sprite);
 
+    rect.x = pos.x;
+    rect.y = pos.y;
+
+    rc=ccsx.traceEnclosure(dt,this.state.world,
+                           rect,
+                           v.vel);
+    if (rc.hit) {
+      v.vel.x = rc.vx;
+      v.vel.y = rc.vy;
+    } else {
+    }
+    b.sprite.setPosition(rc.x,rc.y);
   },
 
   process: function(node,dt) {

@@ -204,9 +204,12 @@ var GameLayer = asterix.XGameLayer.extend({
                           png.Priorities.Motion);
     this.engine.addSystem(new png.MovementSystem(this.options),
                           png.Priorities.Move);
+    this.engine.addSystem(new png.Resolution(this.options),
+                          png.Priorities.Resolve);
+    this.engine.addSystem(new png.CollisionSystem(this.options),
+                          png.Priorities.Collision);
     this.engine.addSystem(new png.RenderSystem(this.options),
                           png.Priorities.Render);
-
 
 
     if (this.options.wsock) {

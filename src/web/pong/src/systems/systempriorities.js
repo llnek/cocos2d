@@ -25,9 +25,9 @@ png.Priorities = {
   PreUpdate: 1,
   Motion: 2,
   Move: 3,
-  Collision: 4,
-  Render: 5,
-  Resolve: 6
+  Resolve: 4,
+  Collision: 5,
+  Render: 6,
 };
 
 
