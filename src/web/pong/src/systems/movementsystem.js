@@ -30,13 +30,67 @@ png.MovementSystem = Ash.System.extend({
   },
 
   update: function (dt) {
-    for (var node= this.paddles.head; node; node=node.next) {
-      this.process(node,dt);
+    var csts = sh.xcfg.csts,
+    bnode= this.balls.head,
+    node;
+    for (node= this.paddles.head; node; node=node.next) {
+      if (node.paddle.category === csts.ROBOT) {
+        this.moveRobot(dt,node,bnode);
+      } else {
+        this.process(dt,node);
+      }
     }
-    this.processBall(this.balls.head, dt);
+    this.processBall(dt,bnode);
   },
 
-  processBall: function(node,dt) {
+  //TODO: better AI please
+  moveRobot: function(dt,node,bnode) {
+    var bp= bnode.ball.sprite.getPosition(),
+    pos = node.paddle.sprite.getPosition(),
+    speed= this.state.paddle.speed,
+    velo = bnode.velocity,
+    y= undef,
+    x= undef;
+
+    if (ccsx.isPortrait()) {
+
+      if (bp.x > pos.x) {
+        if (velo.vel.x > 0) {
+          x = pos.x + dt * speed;
+        }
+      } else {
+        if (velo.vel.x < 0) {
+          x = pos.x - dt * speed;
+        }
+      }
+
+    } else {
+
+      if (bp.y > pos.y) {
+        if (velo.vel.y > 0) {
+          y = pos.y + dt * speed;
+        }
+      } else {
+        if (velo.vel.y < 0) {
+          y = pos.y - dt * speed;
+        }
+      }
+
+    }
+
+    if (sjs.echt(x)) {
+      node.paddle.sprite.setPosition(x,pos.y);
+      this.clamp(node.paddle.sprite);
+    }
+
+    if (sjs.echt(y)) {
+      node.paddle.sprite.setPosition(pos.x,y);
+      this.clamp(node.paddle.sprite);
+    }
+
+  },
+
+  processBall: function(dt,node) {
     var v = node.velocity,
     b= node.ball,
     rc,
@@ -57,7 +111,7 @@ png.MovementSystem = Ash.System.extend({
     b.sprite.setPosition(rc.x,rc.y);
   },
 
-  process: function(node,dt) {
+  process: function(dt,node) {
     var p= node.paddle,
     s= p.speed * dt,
     m= node.motion,
