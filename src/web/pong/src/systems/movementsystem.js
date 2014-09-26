@@ -20,11 +20,13 @@ png.MovementSystem = Ash.System.extend({
   },
 
   removeFromEngine: function(engine) {
+    this.fauxpads= null;
     this.paddles=null;
     this.balls= null;
   },
 
   addToEngine: function(engine) {
+    this.fauxs= engine.getNodeList(png.FauxPaddleNode);
     this.paddles= engine.getNodeList(png.PaddleNode);
     this.balls= engine.getNodeList(png.BallNode);
   },
@@ -34,13 +36,23 @@ png.MovementSystem = Ash.System.extend({
     bnode= this.balls.head,
     node;
     for (node= this.paddles.head; node; node=node.next) {
+      this.process(dt,node);
+    }
+
+    for (node= this.fauxs.head; node; node=node.next) {
       if (node.player.category === csts.BOT) {
         this.moveRobot(dt,node,bnode);
-      } else {
-        this.process(dt,node);
+      }
+      else
+      if (node.player.category === csts.NETP) {
+        this.simuMove(dt,node,bnode);
       }
     }
+
     this.processBall(dt,bnode);
+  },
+
+  simuMove: function(dt,node,bnode) {
   },
 
   //TODO: better AI please

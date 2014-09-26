@@ -20,28 +20,21 @@ png= sh.Pong;
 
 //////////////////////////////////////////////////////////////////////////////
 //
-png.FauxPaddleNode = Ash.Node.create({
-  paddle: png.Paddle,
-  player: png.Player
+png.LastPos = Ash.Class.extend({
+
+  constructor: function(lp) {
+    this.lastDir= 0;
+    this.lastP= lp;
+    return this;
+  }
+
 });
-
-png.PaddleNode = Ash.Node.create({
-  lastpos: png.LastPos,
-  motion: png.Motion,
-  paddle: png.Paddle,
-  player: png.Player
-});
-
-
 
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
 
 
 

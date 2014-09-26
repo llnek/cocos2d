@@ -37,7 +37,6 @@ png.GameSupervisor = Ash.System.extend({
   },
 
   addToEngine: function(engine) {
-    //this.nodeList= engine.getNodeList(ttt.BoardNode);
   },
 
   update: function (dt) {
@@ -56,8 +55,20 @@ png.GameSupervisor = Ash.System.extend({
     if (this.state.wsock) {
       // online play
       sjs.loggr.debug("reply to server: session started ok");
-    } else {
 
+      this.state.wsock.send({
+        type: evts.SESSION_MSG,
+        code: evts.C_STARTED,
+        source: JSON.stringify(this.state)
+      });
+
+      // try to keep track of paddle movements
+      if (ccsx.isPortrait()) {
+        this.lastP = a.sprite.getPosition().x;
+      } else {
+        this.lastP = a.sprite.getPosition().y;
+      }
+      this.lastDir=0;
     }
 
   },

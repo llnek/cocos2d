@@ -31,11 +31,13 @@ png.EntityFactory = Ash.Class.extend({
 
     this.createOnePaddle(layer, options.players[1],
                          options.p1,
-                         options.paddle.speed);
+                         options.paddle.speed,
+                         options);
 
     this.createOnePaddle(layer, options.players[2],
                          options.p2,
-                         options.paddle.speed);
+                         options.paddle.speed,
+                         options);
   },
 
   createBall: function(layer, options) {
@@ -55,14 +57,29 @@ png.EntityFactory = Ash.Class.extend({
     this.engine.addEntity(ent);
   },
 
-  createOnePaddle: function(layer, p, info,speed) {
+  createOnePaddle: function(layer, p, info,speed, options) {
     var ent = new Ash.Entity(),
+    lp,
     x = info.x,
     y = info.y;
 
     ent.add(new png.Paddle(layer,x,y,p.color, speed));
     ent.add(p);
-    ent.add(new png.Motion());
+
+    if (ccsx.isPortrait()) {
+      lp = x;
+    } else {
+      lp=y;
+    }
+
+    if (options.wsock && options.pnum !== p.pnum) {
+    }
+    else
+    if (p.category !== sh.xcfg.csts.BOT) {
+      ent.add(new png.LastPos(lp))
+      ent.add(new png.Motion());
+    }
+
     this.engine.addEntity(ent);
   }
 
