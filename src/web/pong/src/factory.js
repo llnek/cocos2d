@@ -65,13 +65,7 @@ png.EntityFactory = Ash.Class.extend({
 
     ent.add(new png.Paddle(layer,x,y,p.color, speed));
     ent.add(p);
-
-    if (ccsx.isPortrait()) {
-      lp = x;
-    } else {
-      lp=y;
-    }
-
+    if (ccsx.isPortrait()) { lp = x; } else { lp=y; }
     ent.add(new png.Position(lp));
 
     if (options.wsock && options.pnum !== p.pnum) {

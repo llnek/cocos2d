@@ -33,7 +33,6 @@ png.GameSupervisor = Ash.System.extend({
   },
 
   removeFromEngine: function(engine) {
-    this.nodeList=null;
   },
 
   addToEngine: function(engine) {
@@ -54,6 +53,7 @@ png.GameSupervisor = Ash.System.extend({
 
     this.factory.createPaddles(sh.main, this.state);
     this.factory.createBall(sh.main, this.state);
+
     if (this.state.wsock) {
       // online play
       sjs.loggr.debug("reply to server: session started ok");

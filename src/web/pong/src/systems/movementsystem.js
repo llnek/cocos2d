@@ -161,7 +161,9 @@ png.MovementSystem = Ash.System.extend({
     var p= node.paddle,
     s= p.speed * dt,
     m= node.motion,
-    x,y,
+    nv, x,y,
+    ld = node.lastpos.lastDir,
+    lp = node.lastpos.lastP,
     pos= p.sprite.getPosition();
 
     if (m.right) {
@@ -190,6 +192,55 @@ png.MovementSystem = Ash.System.extend({
     m.left= false;
 
     this.clamp(p.sprite);
+
+    // below is really for wsock stuff
+
+    if (ccsx.isPortrait()) {
+      nv = p.sprite.getPosition().x;
+    } else {
+      nv = p.sprite.getPosition().y;
+    }
+
+    var delta= Math.abs(nv - lp),
+    dir=0;
+    if (delta >= 1) {
+      if (nv > lp) {
+        dir=1;
+        // moving up or right
+      } else if (nv < lp) {
+        dir= -1;
+      }
+    }
+    node.lastpos.lastP=nv;
+    if (ld !== dir) {
+      if(this.state.wsock) { this.notifyServer(a,dir); }
+      node.lastpos.lastDir=dir;
+    }
+
+  },
+
+  // inform the server that paddle has changed direction: up , down or stopped.
+  notifyServer: function(node,direction) {
+    var vv = direction * this.state.paddle.speed,
+    pos = node.paddle.sprite.getPosition(),
+    pnum= this.state.pnum,
+    src,
+    cmd = {
+      x: Math.floor(pos.x),
+      y: Math.floor(pos.y),
+      dir: direction,
+      pv: vv
+    };
+    if (pnum === 2) {
+      src = { p2: cmd };
+    } else {
+      src = { p1: cmd };
+    }
+    this.state.wsock.send({
+      type: evts.SESSION_MSG,
+      code: evts.C_PLAY_MOVE,
+      source: JSON.stringify(src)
+    });
   },
 
   clamp: function(sprite) {

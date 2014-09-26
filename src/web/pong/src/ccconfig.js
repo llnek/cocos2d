@@ -62,6 +62,7 @@ document.ccConfig = {
       '/public/ig/lib/game/pong/systems/motionctrlsystem.js',
       '/public/ig/lib/game/pong/systems/supervisor.js',
       '/public/ig/lib/game/pong/systems/movementsystem.js',
+      '/public/ig/lib/game/pong/systems/networksystem.js',
       '/public/ig/lib/game/pong/systems/collision.js',
       '/public/ig/lib/game/pong/systems/resolution.js',
       '/public/ig/lib/game/pong/systems/rendersystem.js',

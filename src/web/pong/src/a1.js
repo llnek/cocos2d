@@ -32,6 +32,111 @@ var Cmd= {
 // game layer
 //////////////////////////////////////////////////////////////////////////////
 
+var pngArena = sjs.Class.xtends({
+
+  running: false,
+  actors: [],
+  ball: null,
+
+  onStopReset: function() {
+    this.running = false;
+  },
+
+  isActive: function() {
+    return this.running;
+  },
+
+  startRumble: function() {
+  },
+
+  animate: function() {
+  },
+
+  pause: function() {
+    this.running=false;
+  },
+
+  finz: function() {
+    this.actors[2].dispose();
+    this.actors[1].dispose();
+    this.disposeBall();
+    this.ball=null;
+    this.onStopReset();
+    this.actors=[null,null,null];
+  },
+
+  getPlayer2: function() { return this.actors[2]; },
+  getPlayer1: function() { return this.actors[1]; },
+
+  registerPlayers: function(ctx,p1,p2) {
+    this.actors= [null, p1, p2];
+    this.ctx=ctx;
+    this.prepareGameEntities();
+  },
+
+  prepareGameEntities: function() {
+    this.ctx.addItem(this.actors[1].create());
+    this.ctx.addItem(this.actors[2].create());
+    this.spawnBall();
+  },
+
+  reposEntities: function() {
+  },
+
+  disposeBall: function() {
+    if (this.ball) {
+      this.ball.dispose();
+    }
+    this.ball=null;
+  },
+
+  spawnNewBall: function() {
+    this.disposeBall();
+    this.spawnBall();
+  },
+
+  spawnBall: function() {
+    var dft=this.options.ball;
+    this.doSpawnBall(dft.x, dft.y, dft);
+    this.ctx.addItem(this.ball.create());
+  },
+
+  getOtherPlayer: function(color) {
+    if (color === this.actors[1]) {
+      return this.actors[2];
+    }
+    else if (color === this.actors[2]) {
+      return this.actors[1];
+    } else {
+      return null;
+    }
+  },
+
+  updateEntities: function(dt) {
+    this.doUpdateWorld(dt);
+  },
+
+  checkEntities: function() {
+    this.doCheckWorld();
+  },
+
+  enqueue: function(cmd) {
+    if (cmd.actor === this.actors[1] ||
+        cmd.actor === this.actors[2]) {
+      this.onEnqueue(cmd);
+    }
+  },
+
+  isOnline: function() {
+    sjs.tne("Abstract method called.");
+  },
+
+  ctor: function(options) {
+    this.options=options || {};
+  }
+
+});
+
 //////////////////////////////////////////////////////////////////////////////
 // online game
 png.NetArena = pngArena.xtends({
