@@ -57,11 +57,19 @@ png.GameSupervisor = Ash.System.extend({
     if (this.state.wsock) {
       // online play
       sjs.loggr.debug("reply to server: session started ok");
-
+      var src= _.pick(this.state,
+                      'framespersec',
+                      'world',
+                      'syncMillis',
+                      'paddle',
+                      'ball',
+                      'p1',
+                      'p2',
+                      'numpts');
       this.state.wsock.send({
         type: evts.SESSION_MSG,
         code: evts.C_STARTED,
-        source: JSON.stringify(this.state)
+        source: JSON.stringify(src)
       });
     }
 

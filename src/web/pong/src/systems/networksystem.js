@@ -48,16 +48,15 @@ png.NetworkSystem = Ash.System.extend({
     sjs.loggr.debug("onEvent: => " + JSON.stringify(evt.source));
 
     var actors= this.state.players,
+    win,
     node,
     ok= true;
 
     if (_.isObject(evt.source.winner)) {
+      win= actors[evt.source.winner.pnum];
+      sjs.loggr.debug("server sent us new winner ==> " + win.color);
       this.syncScores(evt.source.winner.scores);
-      sh.fireEvent('/game/hud/end', {
-        winner: actors[evt.source.winner.pnum].color
-      });
-      //this.ctx.updatePoints(rc);
-      //this.ctx.doDone(win);
+      sh.fireEvent('/game/hud/end', { winner: win.color });
     }
 
     if (_.isObject(evt.source.scores)) {
@@ -68,7 +67,7 @@ png.NetworkSystem = Ash.System.extend({
       // tells us to begin a new point.
       this.reposEntities();
       ok=false;
-      this.state.running=false;
+      //this.state.poked=false;
     }
 
     node= this.balls.head;
@@ -80,8 +79,8 @@ png.NetworkSystem = Ash.System.extend({
       node.velocity.vel.x= c.vx;
     }
 
-    this.syncPaddles(this.paddles);
-    this.syncPaddles(this.fauxs);
+    this.syncPaddles(this.paddles,evt);
+    this.syncPaddles(this.fauxs,evt);
 
     return ok;
   },

@@ -117,7 +117,7 @@ sh.protos['MainMenu'] = {
             wsock: wss,
             pnum: pnum
           });
-          m.seed_data.players = startmsg.players;
+          m.ppids = startmsg.ppids;
           dir.runScene( fac.create(m));
         }
         dir.runScene( sh.protos['OnlinePlay'].create(msg));

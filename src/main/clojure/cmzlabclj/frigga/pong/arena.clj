@@ -299,12 +299,19 @@
                       :scores {:p2 s2 :p1 s1 }}}]
     ;; TODO: use network-msg
     ;; end game
+    (log/debug "game over: winner of this game is " src)
     (.sendMessage ps2 (ReifyEvent Events/SESSION_MSG
                                   Events/C_SYNC_ARENA
                                   (json/write-str src)))
     (.sendMessage ps1 (ReifyEvent Events/SESSION_MSG
                                   Events/C_SYNC_ARENA
                                   (json/write-str src)))
+
+    (.sendMessage ps2 (ReifyEvent Events/NETWORK_MSG
+                                  Events/C_STOP))
+    (.sendMessage ps1 (ReifyEvent Events/NETWORK_MSG
+                                  Events/C_STOP))
+
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -44,23 +44,6 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   onStop: function(evt) {
-
-    switch (evt.source.status) {
-      case 2:
-        this.actions.push([[ this.board.getPlayer2(),
-                             evt.source.combo ], 'winner'] );
-      break;
-      case 1:
-        this.actions.push([[ this.board.getPlayer1(),
-                             evt.source.combo ], 'winner'] );
-      break;
-      case 0:
-        this.actions.push([null, 'draw' ]);
-      break;
-      default:
-        sjs.tne("onStop has bad status.");
-      break;
-    }
   },
 
   onNetworkEvent: function(evt) {
@@ -95,6 +78,7 @@ var GameLayer = asterix.XGameLayer.extend({
       case evts.C_SYNC_ARENA:
         sjs.loggr.debug("synchronize ui as defined by server.");
         this.options.netQ.push(evt);
+        this.options.poked=true;
       break;
     }
   },
@@ -342,6 +326,13 @@ asterix.Pong.Factory = {
         sh.main.onWinner(msg.color, msg.score);
       });
 
+      scene.ebus.on('/game/hud/score/sync',function(t,msg) {
+        sh.main.updatePoints(msg.points);
+      });
+
+      scene.ebus.on('/game/hud/end',function(t,msg) {
+        sh.main.doDone(msg.winner);
+      });
     }
     return scene;
   }

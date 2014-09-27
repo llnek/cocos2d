@@ -3,10 +3,13 @@
 
 var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
+Odin= global.ZotohLab.Odin,
+evts= Odin.Events,
 sjs= global.SkaroJS,
 ccsx= asterix.COCOS2DX,
 png= asterix.Pong,
 utils= png.SystemUtils;
+
 
 
 
@@ -62,7 +65,7 @@ png.MovementSystem = Ash.System.extend({
     y= undef,
     delta= dt * this.state.paddle.speed;
 
-    if (laspos.dir > 0) {
+    if (lastpos.lastDir > 0) {
       if (ccsx.isPortrait()) {
         x = pos.x + delta;
       } else {
@@ -70,7 +73,7 @@ png.MovementSystem = Ash.System.extend({
       }
     }
     else
-    if (lastpos.dir < 0) {
+    if (lastpos.lastDir < 0) {
       if (ccsx.isPortrait()) {
         x = pos.x - delta;
       } else {
@@ -214,7 +217,7 @@ png.MovementSystem = Ash.System.extend({
     }
     node.lastpos.lastP=nv;
     if (ld !== dir) {
-      if(this.state.wsock) { this.notifyServer(a,dir); }
+      if(this.state.wsock) { this.notifyServer(node,dir); }
       node.lastpos.lastDir=dir;
     }
 
