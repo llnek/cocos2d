@@ -13,7 +13,7 @@ document.ccConfig = {
 
   engineDir: ['/public/extlibs/cocos2d-html5'],
 
-  modules: [ 'cocos2d', 'editbox' ],
+  modules: [ 'cocos2d', 'editbox', 'ccpool' ],
   jsList: [
 
     "/public/vendors/underscore/underscore-min.js",
