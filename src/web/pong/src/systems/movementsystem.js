@@ -35,6 +35,7 @@ png.MovementSystem = Ash.System.extend({
     var csts = sh.xcfg.csts,
     bnode= this.balls.head,
     node;
+
     for (node= this.paddles.head; node; node=node.next) {
       this.process(dt,node);
     }

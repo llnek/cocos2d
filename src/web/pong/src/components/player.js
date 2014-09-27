@@ -17,7 +17,6 @@ sjs= global.SkaroJS,
 sh= asterix,
 png= sh.Pong;
 
-
 //////////////////////////////////////////////////////////////////////////////
 //
 png.Player = Ash.Class.extend({
@@ -27,6 +26,16 @@ png.Player = Ash.Class.extend({
     this.pnum=id;
     this.category= category;
     this.value= value;
+    return this;
+  }
+
+});
+
+//////////////////////////////////////////////////////////////////////////////
+//
+png.Faux= Ash.Class.extend({
+
+  constructor: function() {
     return this;
   }
 

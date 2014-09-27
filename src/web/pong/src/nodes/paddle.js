@@ -23,6 +23,7 @@ png= sh.Pong;
 png.FauxPaddleNode = Ash.Node.create({
   lastpos: png.Position,
   paddle: png.Paddle,
+  faux: png.Faux,
   player: png.Player
 });
 

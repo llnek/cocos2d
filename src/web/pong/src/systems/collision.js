@@ -21,10 +21,12 @@ png.CollisionSystem = Ash.System.extend({
 
   removeFromEngine: function(engine) {
     this.nodeList=null;
+    this.fauxs=null;
     this.balls=null;
   },
 
   addToEngine: function(engine) {
+    this.fauxs= engine.getNodeList(png.FauxPaddleNode);
     this.nodeList= engine.getNodeList(png.PaddleNode);
     this.balls= engine.getNodeList(png.BallNode);
   },
@@ -32,7 +34,12 @@ png.CollisionSystem = Ash.System.extend({
   update: function (dt) {
     var bnode = this.balls.head;
 
-    for (var node=this.nodeList.head; node; node=node.next) {
+    this.checkNodes(this.nodeList,bnode);
+    this.checkNodes(this.fauxs,bnode);
+  },
+
+  checkNodes: function(nl,bnode) {
+    for (var node=nl.head; node; node=node.next) {
       if (ccsx.collide0(node.paddle.sprite,
                         bnode.ball.sprite)) {
         this.check(node,bnode);
@@ -56,7 +63,7 @@ png.CollisionSystem = Ash.System.extend({
       velo.vel.x = - velo.vel.x;
     }
 
-    if (node.paddle.color == csts.P1_COLOR) {
+    if (node.paddle.color === csts.P1_COLOR) {
       if (ccsx.isPortrait()) {
         y=bb4.top + hw2[1];
       } else {

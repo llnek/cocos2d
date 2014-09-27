@@ -21,10 +21,12 @@ png.Resolution = Ash.System.extend({
 
   removeFromEngine: function(engine) {
     this.nodeList=null;
+    this.fauxs=null;
     this.balls=null;
   },
 
   addToEngine: function(engine) {
+    this.fauxs= engine.getNodeList(png.FauxPaddleNode);
     this.nodeList= engine.getNodeList(png.PaddleNode);
     this.balls= engine.getNodeList(png.BallNode);
     this.engine=engine;
@@ -32,10 +34,22 @@ png.Resolution = Ash.System.extend({
 
   update: function (dt) {
     var bnode = this.balls.head,
-    winner;
+    rc;
 
-    for (var node=this.nodeList.head; node; node=node.next) {
-      winner =this.check(node,bnode);
+    if (this.state.mode === sh.ONLINE_GAME) {
+      return;
+    }
+
+    rc=this.checkNodes(this.nodeList,bnode);
+    if (rc !==false) {
+      rc=this.checkNodes(this.fauxs,bnode);
+    }
+    return rc;
+  },
+
+  checkNodes: function(nl,bnode) {
+    for (var node=nl.head; node; node=node.next) {
+      var winner =this.check(node,bnode);
       if (winner) {
         this.onWin(winner);
         return false;

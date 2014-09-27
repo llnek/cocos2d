@@ -92,14 +92,14 @@ png.NetworkSystem = Ash.System.extend({
       if (node.player.pnum ===2) {
         node.paddle.sprite.setPosition(
           this.state.p2.x,
-          this.state.p2.y,
+          this.state.p2.y
         )
         node.lastpos.lastDir=0;
       }
       if (node.player.pnum ===1) {
         node.paddle.sprite.setPosition(
           this.state.p1.x,
-          this.state.p1.y,
+          this.state.p1.y
         )
         node.lastpos.lastDir=0;
       }
@@ -115,7 +115,7 @@ png.NetworkSystem = Ash.System.extend({
     node=this.balls.head;
     node.ball.sprite.setPosition(
       this.state.ball.x,
-      this.state.ball.y,
+      this.state.ball.y
     )
     node.velocity.vel.y=0;
     node.velocity.vel.x=0;
