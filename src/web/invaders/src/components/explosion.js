@@ -17,47 +17,12 @@ sjs= global.SkaroJS,
 sh= asterix,
 ivs= sh.Invaders;
 
-
 //////////////////////////////////////////////////////////////////////////////
 //
+ivs.Explosion = Ash.Class.extend({
 
-ivs.GameSupervisor = Ash.System.extend({
-
-  constructor: function(options) {
-    this.factory= options.factory;
-    this.state= options;
-    this.inited=false;
+  constructor: function() {
     return this;
-  },
-
-  removeFromEngine: function(engine) {
-    this.nodeList=null;
-  },
-
-  addToEngine: function(engine) {
-  },
-
-  update: function (dt) {
-    for (var node = this.nodeList.head; node; node = node.next) {
-      if (! this.inited) {
-        this.onceOnly(node,dt);
-        this.inited=true;
-      } else {
-        this.process(node,dt);
-      }
-    }
-  },
-
-  onceOnly: function(node,dt) {
-    sh.pools['missiles'] = new asterix.XEntityPool({ entityProto: ivs.EntityMissile });
-    sh.pools['bombs'] = new asterix.XEntityPool({ entityProto: ivs.EntityBomb });
-    sh.pools['live-missiles'] = {};
-    sh.pools['live-bombs'] = {};
-
-  },
-
-  process: function(node,dt) {
-
   }
 
 });
@@ -67,7 +32,6 @@ ivs.GameSupervisor = Ash.System.extend({
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
 
 
 
