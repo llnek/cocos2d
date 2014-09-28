@@ -17,37 +17,25 @@ sjs= global.SkaroJS,
 sh= asterix,
 ivs= sh.Invaders;
 
-//////////////////////////////////////////////////////////////////////////////
-//
-ivs.AlienSqad = Ash.Class.extend({
-
-  constructor: function(aliens,step) {
-    this.aliens=aliens;
-    this.stepx=step;
-    return this;
-  }
-
-});
 
 //////////////////////////////////////////////////////////////////////////////
 //
-ivs.Alien = Ash.Class.extend({
+ivs.Priorities = {
 
-  constructor: function(sprite,value,rank) {
-    this.sprite=sprite;
-    this.value=value;
-    this.rank=rank;
-    this.status=true;
-    return this;
-  }
-
-});
+  PreUpdate: 1,
+  Motion: 2,
+  Movement: 3,
+  Collision: 4,
+  Resolve: 5,
+  Render: 6
+};
 
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
+
 
 
 

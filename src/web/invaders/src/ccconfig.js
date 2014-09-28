@@ -20,6 +20,7 @@ document.ccConfig = {
     "/public/vendors/l10njs/l10n.min.js",
     "/public/vendors/mustache/mustache.js",
     "/public/vendors/helpers/dbg.js",
+"/public/vendors/ash-js/ash.min.js",
     "/public/vendors/cherimoia/skaro.js",
     "/public/vendors/cherimoia/caesar.js",
     "/public/vendors/cherimoia/zlab.js",
@@ -43,11 +44,18 @@ document.ccConfig = {
 
       '/public/ig/lib/game/invaders/config.js',
       '/public/ig/lib/game/invaders/i18n/game_en_US.js',
-      '/public/ig/lib/game/invaders/entities/explode.js',
-      '/public/ig/lib/game/invaders/entities/missile.js',
-      '/public/ig/lib/game/invaders/entities/bomb.js',
-      '/public/ig/lib/game/invaders/entities/player.js',
-      '/public/ig/lib/game/invaders/entities/alien.js',
+
+'/public/ig/lib/game/invaders/components/alien.js',
+
+'/public/ig/lib/game/invaders/factory.js',
+
+'/public/ig/lib/game/invaders/systems/systempriorities.js',
+'/public/ig/lib/game/invaders/systems/util.js',
+'/public/ig/lib/game/invaders/systems/motionctrlsystem.js',
+'/public/ig/lib/game/invaders/systems/supervisor.js',
+
+
+
       '/public/ig/lib/game/invaders/hud.js',
       '/public/ig/lib/game/invaders/game.js',
       '/public/ig/lib/game/invaders/mmenu.js',

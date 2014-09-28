@@ -19,30 +19,15 @@ ivs= sh.Invaders;
 
 //////////////////////////////////////////////////////////////////////////////
 //
-ivs.AlienSqad = Ash.Class.extend({
+ivs.Looper = Ash.Class.extend({
 
-  constructor: function(aliens,step) {
-    this.aliens=aliens;
-    this.stepx=step;
+  constructor: function(timerFunc) {
+    this.timerFunc= timerFunc;
+    this.timer=null;
     return this;
   }
 
 });
-
-//////////////////////////////////////////////////////////////////////////////
-//
-ivs.Alien = Ash.Class.extend({
-
-  constructor: function(sprite,value,rank) {
-    this.sprite=sprite;
-    this.value=value;
-    this.rank=rank;
-    this.status=true;
-    return this;
-  }
-
-});
-
 
 }).call(this);
 

@@ -281,7 +281,7 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   operational: function() {
-    return this.players.length > 0;
+    return this.options.running;
   },
 
   spawnPlayer: function() {
@@ -297,13 +297,21 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   replay: function() {
-    this.play();
+    this.play(false);
   },
 
   play: function(newFlag) {
     this.reset(newFlag);
-    this.initAliens();
-    this.initMotionTimers();
+
+    this.cleanSlate();
+    this.options.factory=new ivs.EntityFactory(this.engine);
+    this.engine.addSystem(new ivs.GameSupervisor(this.options),
+                          ivs.Priorities.PreUpdate);
+
+
+    this.options.running = true;
+    //this.initAliens();
+    //this.initMotionTimers();
   },
 
   onNewGame: function(mode) {

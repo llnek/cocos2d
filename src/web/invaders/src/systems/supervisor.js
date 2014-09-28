@@ -37,27 +37,43 @@ ivs.GameSupervisor = Ash.System.extend({
   addToEngine: function(engine) {
   },
 
+  initAlienSize: function() {
+    var s= new cc.Sprite();
+    s.initWithSpriteFrameName( 'green_bug_0.png');
+    return this.state.alienSize= s.getContentSize();
+
+  },
+
+  initShipSize: function() {
+    var s= new cc.Sprite();
+    s.initWithSpriteFrameName( 'ship_0.png');
+    return this.state.shipSize= s.getContentSize();
+  },
+
+  spawnAliens: function() {
+    this.factory.createAliens(sh.main,this.state);
+  },
+
   update: function (dt) {
-    for (var node = this.nodeList.head; node; node = node.next) {
-      if (! this.inited) {
-        this.onceOnly(node,dt);
-        this.inited=true;
-      } else {
-        this.process(node,dt);
-      }
+    if (! this.inited) {
+      this.onceOnly();
+      this.spawnAliens();
+      this.inited=true;
+    } else {
+      this.process();
     }
   },
 
-  onceOnly: function(node,dt) {
+  onceOnly: function() {
     sh.pools['missiles'] = new asterix.XEntityPool({ entityProto: ivs.EntityMissile });
     sh.pools['bombs'] = new asterix.XEntityPool({ entityProto: ivs.EntityBomb });
     sh.pools['live-missiles'] = {};
     sh.pools['live-bombs'] = {};
-
+    this.initAlienSize();
+    this.initShipSize();
   },
 
-  process: function(node,dt) {
-
+  process: function() {
   }
 
 });
