@@ -70,9 +70,7 @@ ivs.EntityFactory = Ash.Class.extend({
     }
 
     ent.add(new ivs.AlienSqad(aliens,stepx));
-    ent.add(new ivs.Looper(function() {
-      ccsx.createTimer(layer, 1);
-    }));
+    ent.add(new ivs.Looper(2));
 
     this.engine.addEntity(ent);
   }

@@ -32,6 +32,12 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
     GRID_W: 40,
     GRID_H: 60,
 
+    P_MS: 'missiles',
+    P_BS: 'bombs',
+    P_ES: 'explosions',
+    P_LMS: 'live-missiles',
+    P_LBS: 'live-bombs',
+
     COLS: 7,
     ROWS: 7,
     CELLS: 49,

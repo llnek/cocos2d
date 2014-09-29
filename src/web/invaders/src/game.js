@@ -307,6 +307,14 @@ var GameLayer = asterix.XGameLayer.extend({
     this.options.factory=new ivs.EntityFactory(this.engine);
     this.engine.addSystem(new ivs.GameSupervisor(this.options),
                           ivs.Priorities.PreUpdate);
+    this.engine.addSystem(new ivs.MotionCtrlSystem(this.options),
+                          ivs.Priorities.Motion);
+    this.engine.addSystem(new ivs.MovementAliens(this.options),
+                          ivs.Priorities.Movement);
+    this.engine.addSystem(new ivs.MovementBombs(this.options),
+                          ivs.Priorities.Movement);
+
+
 
 
     this.options.running = true;

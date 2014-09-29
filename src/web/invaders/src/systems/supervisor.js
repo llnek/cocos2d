@@ -15,7 +15,8 @@ var asterix= global.ZotohLab.Asterix,
 ccsx= asterix.CCS2DX,
 sjs= global.SkaroJS,
 sh= asterix,
-ivs= sh.Invaders;
+ivs= sh.Invaders,
+utils=ivs.SystemUtils;
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -65,12 +66,17 @@ ivs.GameSupervisor = Ash.System.extend({
   },
 
   onceOnly: function() {
-    sh.pools['missiles'] = new asterix.XEntityPool({ entityProto: ivs.EntityMissile });
-    sh.pools['bombs'] = new asterix.XEntityPool({ entityProto: ivs.EntityBomb });
-    sh.pools['live-missiles'] = {};
-    sh.pools['live-bombs'] = {};
+    var csts=sh.xcfg.csts;
+    sh.pools[csts.P_MS] = new asterix.XEntityPool({ entityProto: ivs.Missile });
+    sh.pools[csts.P_BS] = new asterix.XEntityPool({ entityProto: ivs.Bomb });
+    sh.pools[csts.P_ES] = new asterix.XEntityPool({ entityProto: ivs.Explosion });
+    sh.pools[csts.P_LMS] = {};
+    sh.pools[csts.P_LBS] = {};
     this.initAlienSize();
     this.initShipSize();
+    utils.createMissiles(sh.main,this.state,50);
+    utils.createBombs(sh.main,this.state,50);
+    utils.createExplosions(sh.main,this.state,50);
   },
 
   process: function() {

@@ -21,8 +21,31 @@ ivs= sh.Invaders;
 //
 ivs.Missile = Ash.Class.extend({
 
-  constructor: function() {
+  constructor: function(sprite,value) {
+    this.value=value || 0;
+    this.sprite=sprite;
+    this.status=false;
     return this;
+  },
+
+  rtti: function() {
+    return "Missile";
+  },
+
+  pid: function() {
+    return this.sprite.getTag();
+  },
+
+  hibernate: function() {
+    this.sprite.setVisible(false);
+    this.sprite.setPosition(0,0);
+    this.status=false;
+  },
+
+  revive: function(x,y) {
+    this.sprite.setVisible(true);
+    this.sprite.setPosition(x,y);
+    this.status=true;
   }
 
 });

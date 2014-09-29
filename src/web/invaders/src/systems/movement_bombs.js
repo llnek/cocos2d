@@ -15,13 +15,14 @@ var asterix= global.ZotohLab.Asterix,
 ccsx= asterix.CCS2DX,
 sjs= global.SkaroJS,
 sh= asterix,
-ivs= sh.Invaders;
+ivs= sh.Invaders,
+utils= ivs.SystemUtils;
 
 
 //////////////////////////////////////////////////////////////////////////////
 //
 
-ivs.MotionCtrlSystem = Ash.System.extend({
+ivs.MovementBombs = Ash.System.extend({
 
   constructor: function(options) {
     this.state= options;
@@ -32,28 +33,57 @@ ivs.MotionCtrlSystem = Ash.System.extend({
   },
 
   addToEngine: function(engine) {
-    this.alienMotions = engine.getNodeList(ivs.AlienMotionNode)
   },
 
   update: function (dt) {
-    var node;
-    for (node=this.alienMotions.head;node;node=node.next) {
-      this.processAlienMotions(node,dt);
+    var csts= sh.xcfg.csts,
+    aa=[],
+    pos,
+    y;
+    _.each(sh.pools[csts.P_LBS],function(b) {
+      pos= b.sprite.getPosition();
+      y = pos.y + dt * b.vel.y;
+      b.sprite.setPosition(pos.x, y);
+      if (ccsx.getBottom(b.sprite) <= csts.TILE) {
+        pos= b.sprite.getPosition();
+        b.sprite.setPosition(pos.x,csts.TILE);
+        aa.push(b);
+      }
+    },this);
+    _.each(aa,function(b) {
+      this.killBomb(b);
+    },this);
+  },
+
+  killBomb: function(b) {
+    var csts = sh.xcfg.csts,
+    p = sh.pools[csts.P_LBS],
+    ent,
+    tag= b.sprite.getTag(),
+    pos = b.sprite.getPosition();
+
+    delete p[tag];
+    sjs.loggr.debug('put back one bomb into pool');
+    sh.pools[csts.P_BS].add(b);
+    // explosion?
+    if (true) {
+      this.showExplosion(pos.x,pos.y);
     }
   },
 
-  processAlienMotions: function(node,dt) {
-    var lpr = node.looper,
-    sqad= node.aliens;
+  showExplosion: function(x,y) {
+    var csts = sh.xcfg.csts,
+    p= sh.pools[csts.P_ES],
+    ent = p.get();
 
-    if (! sjs.echt(lpr.timers[0])) {
-      lpr.timers[0]= ccsx.createTimer(sh.main,1);
+    if (! sjs.echt(ent)) {
+      utils.createExplosions();
+      ent= p.get();
     }
-
-    if (! sjs.echt(lpr.timers[1])) {
-      lpr.timers[1]= ccsx.createTimer(sh.main,2);
-    }
+    ent.revive(x,y);
+    sh.sfxPlay('xxx-explode');
   }
+
 
 });
 

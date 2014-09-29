@@ -288,14 +288,14 @@ asterix.XEntityPool = sjs.Class.xtends({
     if (this.curSize > 0) {
       rc = this.pool.pop();
       --this.curSize;
-      sjs.loggr.debug('getting object "' + rc.rtti() + '" from pool: oid = ' + rc.OID);
+      sjs.loggr.debug('getting object "' + rc.rtti() + '" from pool: oid = ' + rc.pid() );
     }
     return rc;
   },
 
   add: function(ent) {
     if (this.checkEntity(ent) && this.curSize < this.maxSize) {
-      sjs.loggr.debug('putting object "' + ent.rtti() + '" into pool: oid = ' + ent.OID);
+      sjs.loggr.debug('putting object "' + ent.rtti() + '" into pool: oid = ' + ent.pid() );
       this.pool.push(ent);
       ent.hibernate();
       ++this.curSize;
@@ -305,15 +305,14 @@ asterix.XEntityPool = sjs.Class.xtends({
     }
   },
 
-  maxSize: 1000,
-  curSize: 0,
-
-  pool: [],
 
   ctor: function(options) {
     this.options = options || {};
     this.maxSize = this.options.maxSize || 1000;
     this.entType = this.options.entityProto;
+    this.maxSize= 1000;
+    this.curSize= 0;
+    this.pool= [];
   }
 
 });

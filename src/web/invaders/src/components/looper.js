@@ -21,9 +21,8 @@ ivs= sh.Invaders;
 //
 ivs.Looper = Ash.Class.extend({
 
-  constructor: function(timerFunc) {
-    this.timerFunc= timerFunc;
-    this.timer=null;
+  constructor: function(count) {
+    this.timers=sjs.makeArray(count,null);
     return this;
   }
 

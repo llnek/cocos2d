@@ -21,9 +21,38 @@ ivs= sh.Invaders;
 //
 ivs.Explosion = Ash.Class.extend({
 
-  constructor: function() {
+  constructor: function(sprite) {
+    this.sprite = sprite;
+    this.frameTime= 0.1;
+    this.status=false;
     return this;
-  }
+  },
+
+  revive: function(x,y) {
+    var frames = [ccsx.getSpriteFrame('boom_0.png'),
+                  ccsx.getSpriteFrame('boom_1.png'),
+                  ccsx.getSpriteFrame('boom_2.png'),
+                  ccsx.getSpriteFrame('boom_3.png') ],
+    anim= new cc.Animation(frames, this.frameTime);
+    this.sprite.runAction(new cc.Sequence(new cc.Animate(anim),
+      new cc.CallFunc(function() {
+        sjs.loggr.debug('explosion done.!');
+        sh.pools[sh.xcfg.csts.P_ES].add(this);
+      }, this)
+    ));
+  },
+
+  hibernate: function() {
+    this.sprite.setPosition(0,0);
+    this.sprite.setVisible(false);
+    this.status=false;
+  },
+
+  rtti: function() {
+    return "Explosion";
+  },
+
+  pid: function() { return this.sprite.getTag(); }
 
 });
 

@@ -21,8 +21,35 @@ ivs= sh.Invaders;
 //
 ivs.Bomb = Ash.Class.extend({
 
-  constructor: function() {
+  constructor: function(sprite,value) {
+    this.sprite=sprite;
+    this.value=value;
+    this.vel={
+      x:0,
+      y: -50
+    };
+    this.status=false;
     return this;
+  },
+
+  rtti: function() {
+    return "Bomb";
+  },
+
+  pid: function() {
+    return this.sprite.getTag();
+  },
+
+  hibernate: function() {
+    this.sprite.setVisible(false);
+    this.sprite.setPosition(0,0);
+    this.status=false;
+  },
+
+  revive: function(x,y) {
+    this.sprite.setVisible(true);
+    this.sprite.setPosition(x,y);
+    this.status=true;
   }
 
 });

@@ -17,47 +17,25 @@ sjs= global.SkaroJS,
 sh= asterix,
 ivs= sh.Invaders;
 
-
 //////////////////////////////////////////////////////////////////////////////
 //
-ivs.SystemUtils = {
+ivs.Motion = Ash.Class.extend({
 
-  createMissiles: function(layer,options,count) {
-    for (var n=0; n < count; ++n) {
-      var b= new ivs.Missile(new cc.Sprite());
-      b.sprite.initWithSpriteFrameName('missile.png');
-      layer.addItem(b.sprite);
-      sh.pools[sh.xcfg.csts.P_MS].add(b);
-    }
-  },
-
-  createExplosions: function(layer,options,count) {
-    for (var n=0; n < count; ++n) {
-      var b= new ivs.Explosion(new cc.Sprite());
-      b.sprite.initWithSpriteFrameName('boom_0.png');
-      layer.addItem(b.sprite);
-      sh.pools[sh.xcfg.csts.P_ES].add(b);
-    }
-  },
-
-  createBombs: function(layer,options,count) {
-    for (var n=0; n < count; ++n) {
-      var b= new ivs.Bomb(new cc.Sprite(), 10);
-      b.sprite.initWithSpriteFrameName('bomb.png');
-      layer.addItem(b.sprite);
-      sh.pools[sh.xcfg.csts.P_BS].add(b);
-    }
+  constructor: function() {
+    this.right = false;
+    this.left = false;
+    this.top = false;
+    this.down = false;
+    return this;
   }
 
-
-};
+});
 
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
 
 
 
