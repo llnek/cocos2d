@@ -309,14 +309,16 @@ var GameLayer = asterix.XGameLayer.extend({
                           ivs.Priorities.PreUpdate);
     this.engine.addSystem(new ivs.MotionCtrlSystem(this.options),
                           ivs.Priorities.Motion);
+    this.engine.addSystem(new ivs.CannonControl(this.options),
+                          ivs.Priorities.Motion);
     this.engine.addSystem(new ivs.MovementAliens(this.options),
                           ivs.Priorities.Movement);
     this.engine.addSystem(new ivs.MovementBombs(this.options),
                           ivs.Priorities.Movement);
     this.engine.addSystem(new ivs.MovementShip(this.options),
                           ivs.Priorities.Movement);
-
-
+    this.engine.addSystem(new ivs.MovementMissiles(this.options),
+                          ivs.Priorities.Movement);
 
     this.options.running = true;
     //this.initAliens();

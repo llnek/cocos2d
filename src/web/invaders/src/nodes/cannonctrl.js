@@ -17,41 +17,13 @@ sjs= global.SkaroJS,
 sh= asterix,
 ivs= sh.Invaders;
 
+
 //////////////////////////////////////////////////////////////////////////////
 //
-ivs.Missile = Ash.Class.extend({
-
-  constructor: function(sprite,value) {
-    this.value=value || 0;
-    this.sprite=sprite;
-    this.vel= {
-      x: 0,
-      y: 150
-    };
-    this.status=false;
-    return this;
-  },
-
-  rtti: function() {
-    return "Missile";
-  },
-
-  pid: function() {
-    return this.sprite.getTag();
-  },
-
-  hibernate: function() {
-    this.sprite.setVisible(false);
-    this.sprite.setPosition(0,0);
-    this.status=false;
-  },
-
-  revive: function(x,y) {
-    this.sprite.setVisible(true);
-    this.sprite.setPosition(x,y);
-    this.status=true;
-  }
-
+ivs.CannonCtrlNode = Ash.Node.create({
+  looper: ivs.Looper,
+  cannon: ivs.Cannon,
+  ship: ivs.Ship
 });
 
 
@@ -59,6 +31,8 @@ ivs.Missile = Ash.Class.extend({
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
+
+
 
 
 

@@ -82,11 +82,13 @@ ivs.EntityFactory = Ash.Class.extend({
     y = 5 * csts.TILE + options.shipSize.height,
     s= new cc.Sprite();
 
-    s.initWithSpriteFrameName('ship_0.png');
+    s.initWithSpriteFrameName('ship_1.png');
     s.setPosition(x,y);
     layer.addItem(s);
-    ent.add(new ivs.Ship(s, ['ship_0.png', 'ship_1.png']));
+    ent.add(new ivs.Ship(s, ['ship_1.png', 'ship_0.png']));
     ent.add(new ivs.Velocity(150,0));
+    ent.add(new ivs.Looper(1));
+    ent.add(new ivs.Cannon());
     ent.add(new ivs.Motion());
     this.engine.addEntity(ent);
   }

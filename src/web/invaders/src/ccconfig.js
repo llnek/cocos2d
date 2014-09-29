@@ -53,7 +53,10 @@ document.ccConfig = {
 '/public/ig/lib/game/invaders/components/ship.js',
 '/public/ig/lib/game/invaders/components/missile.js',
 '/public/ig/lib/game/invaders/components/explosion.js',
+'/public/ig/lib/game/invaders/components/cannon.js',
 
+
+'/public/ig/lib/game/invaders/nodes/cannonctrl.js',
 '/public/ig/lib/game/invaders/nodes/alienmotion.js',
 '/public/ig/lib/game/invaders/nodes/shipmotion.js',
 
@@ -62,8 +65,10 @@ document.ccConfig = {
 '/public/ig/lib/game/invaders/systems/systempriorities.js',
 '/public/ig/lib/game/invaders/systems/util.js',
 '/public/ig/lib/game/invaders/systems/motionctrlsystem.js',
+'/public/ig/lib/game/invaders/systems/cannon-control.js',
 '/public/ig/lib/game/invaders/systems/movement_aliens.js',
 '/public/ig/lib/game/invaders/systems/movement_bombs.js',
+'/public/ig/lib/game/invaders/systems/move-missiles.js',
 '/public/ig/lib/game/invaders/systems/movement_ship.js',
 '/public/ig/lib/game/invaders/systems/supervisor.js',
 

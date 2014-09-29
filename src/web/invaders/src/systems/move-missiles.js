@@ -15,13 +15,14 @@ var asterix= global.ZotohLab.Asterix,
 ccsx= asterix.CCS2DX,
 sjs= global.SkaroJS,
 sh= asterix,
-ivs= sh.Invaders;
+ivs= sh.Invaders,
+utils= ivs.SystemUtils;
 
 
 //////////////////////////////////////////////////////////////////////////////
 //
 
-ivs.MovementShip = Ash.System.extend({
+ivs.MovementMissiles = Ash.System.extend({
 
   constructor: function(options) {
     this.state= options;
@@ -32,51 +33,56 @@ ivs.MovementShip = Ash.System.extend({
   },
 
   addToEngine: function(engine) {
-    this.shipMotions = engine.getNodeList(ivs.ShipMotionNode)
   },
 
   update: function (dt) {
-    var node;
-    for (node=this.shipMotions.head;node;node=node.next) {
-      this.processShipMotions(node,dt);
+    var csts= sh.xcfg.csts,
+    h = ccsx.screen().height - csts.TILE,
+    aa=[],
+    pos,
+    y;
+    _.each(sh.pools[csts.P_LMS],function(b) {
+      pos= b.sprite.getPosition();
+      y = pos.y + dt * b.vel.y;
+      b.sprite.setPosition(pos.x, y);
+      if (ccsx.getTop(b.sprite) >= h) {
+        pos= b.sprite.getPosition();
+        b.sprite.setPosition(pos.x,h);
+        aa.push(b);
+      }
+    },this);
+    _.each(aa,function(b) {
+      this.killMissile(b);
+    },this);
+  },
+
+  killMissile: function(b) {
+    var csts = sh.xcfg.csts,
+    p = sh.pools[csts.P_LMS],
+    ent,
+    tag= b.sprite.getTag(),
+    pos = b.sprite.getPosition();
+
+    delete p[tag];
+    sjs.loggr.debug('put back one missile into pool');
+    sh.pools[csts.P_MS].add(b);
+    // explosion?
+    if (false) {
+      this.showExplosion(pos.x,pos.y);
     }
   },
 
-  processShipMotions: function(node,dt) {
-    var motion = node.motion,
-    sv = node.velocity,
-    ship= node.ship,
-    pos = ship.sprite.getPosition(),
-    x= pos.x,
-    y= pos.y;
+  showExplosion: function(x,y) {
+    var csts = sh.xcfg.csts,
+    p= sh.pools[csts.P_ES],
+    ent = p.get();
 
-    if (motion.right) {
-      x = pos.x + dt * sv.vel.x;
+    if (! sjs.echt(ent)) {
+      utils.createExplosions();
+      ent= p.get();
     }
-
-    if (motion.left) {
-      x = pos.x - dt * sv.vel.x;
-    }
-
-    ship.sprite.setPosition(x,y);
-    this.clamp(ship);
-
-    motion.right=false;
-    motion.left=false;
-  },
-
-  clamp: function(ship) {
-    var sz= ship.sprite.getContentSize(),
-    pos= ship.sprite.getPosition(),
-    csts = sh.xcfg.csts,
-    wz = ccsx.screen();
-
-    if (ccsx.getRight(ship.sprite) > wz.width - csts.TILE) {
-      ship.sprite.setPosition(wz.width - csts.TILE - sz.width * 0.5, pos.y);
-    }
-    if (ccsx.getLeft(ship.sprite) < csts.TILE) {
-      ship.sprite.setPosition( csts.TILE + sz.width * 0.5, pos.y);
-    }
+    ent.revive(x,y);
+    sh.sfxPlay('xxx-explode');
   }
 
 
