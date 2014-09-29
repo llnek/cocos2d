@@ -319,6 +319,9 @@ var GameLayer = asterix.XGameLayer.extend({
                           ivs.Priorities.Movement);
     this.engine.addSystem(new ivs.MovementMissiles(this.options),
                           ivs.Priorities.Movement);
+    this.engine.addSystem(new ivs.CollisionSystem(this.options),
+                          ivs.Priorities.Collision);
+
 
     this.options.running = true;
     //this.initAliens();

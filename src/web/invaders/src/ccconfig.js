@@ -70,8 +70,8 @@ document.ccConfig = {
 '/public/ig/lib/game/invaders/systems/movement_bombs.js',
 '/public/ig/lib/game/invaders/systems/move-missiles.js',
 '/public/ig/lib/game/invaders/systems/movement_ship.js',
+'/public/ig/lib/game/invaders/systems/collision.js',
 '/public/ig/lib/game/invaders/systems/supervisor.js',
-
 
 
       '/public/ig/lib/game/invaders/hud.js',
