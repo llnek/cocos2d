@@ -77,6 +77,7 @@ ivs.GameSupervisor = Ash.System.extend({
     utils.createMissiles(sh.main,this.state,50);
     utils.createBombs(sh.main,this.state,50);
     utils.createExplosions(sh.main,this.state,50);
+    this.factory.createShip(sh.main,this.state);
   },
 
   process: function() {

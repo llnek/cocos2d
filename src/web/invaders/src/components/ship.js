@@ -21,7 +21,9 @@ ivs= sh.Invaders;
 //
 ivs.Ship = Ash.Class.extend({
 
-  constructor: function() {
+  constructor: function(sprite,frames) {
+    this.sprite=sprite;
+    this.frames=frames;
     return this;
   }
 

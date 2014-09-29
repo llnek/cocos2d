@@ -50,11 +50,12 @@ document.ccConfig = {
 '/public/ig/lib/game/invaders/components/velocity.js',
 '/public/ig/lib/game/invaders/components/motion.js',
 '/public/ig/lib/game/invaders/components/bomb.js',
+'/public/ig/lib/game/invaders/components/ship.js',
 '/public/ig/lib/game/invaders/components/missile.js',
 '/public/ig/lib/game/invaders/components/explosion.js',
 
 '/public/ig/lib/game/invaders/nodes/alienmotion.js',
-
+'/public/ig/lib/game/invaders/nodes/shipmotion.js',
 
 '/public/ig/lib/game/invaders/factory.js',
 
@@ -63,7 +64,7 @@ document.ccConfig = {
 '/public/ig/lib/game/invaders/systems/motionctrlsystem.js',
 '/public/ig/lib/game/invaders/systems/movement_aliens.js',
 '/public/ig/lib/game/invaders/systems/movement_bombs.js',
-
+'/public/ig/lib/game/invaders/systems/movement_ship.js',
 '/public/ig/lib/game/invaders/systems/supervisor.js',
 
 

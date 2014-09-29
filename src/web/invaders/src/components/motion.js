@@ -24,8 +24,6 @@ ivs.Motion = Ash.Class.extend({
   constructor: function() {
     this.right = false;
     this.left = false;
-    this.top = false;
-    this.down = false;
     return this;
   }
 

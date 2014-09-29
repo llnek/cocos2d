@@ -313,7 +313,8 @@ var GameLayer = asterix.XGameLayer.extend({
                           ivs.Priorities.Movement);
     this.engine.addSystem(new ivs.MovementBombs(this.options),
                           ivs.Priorities.Movement);
-
+    this.engine.addSystem(new ivs.MovementShip(this.options),
+                          ivs.Priorities.Movement);
 
 
 

@@ -32,13 +32,25 @@ ivs.MotionCtrlSystem = Ash.System.extend({
   },
 
   addToEngine: function(engine) {
-    this.alienMotions = engine.getNodeList(ivs.AlienMotionNode)
+    this.alienMotions = engine.getNodeList(ivs.AlienMotionNode);
+    this.shipMotions = engine.getNodeList(ivs.ShipMotionNode);
   },
 
   update: function (dt) {
     var node;
     for (node=this.alienMotions.head;node;node=node.next) {
       this.processAlienMotions(node,dt);
+    }
+    for (node=this.shipMotions.head;node;node=node.next) {
+      if (cc.sys.capabilities['keyboard']) {
+        this.processKeys(node,dt);
+      }
+      else
+      if (cc.sys.capabilities['mouse']) {
+      }
+      else
+      if (cc.sys.capabilities['touches']) {
+      }
     }
   },
 
@@ -53,7 +65,21 @@ ivs.MotionCtrlSystem = Ash.System.extend({
     if (! sjs.echt(lpr.timers[1])) {
       lpr.timers[1]= ccsx.createTimer(sh.main,2);
     }
+  },
+
+  processKeys: function(node,dt) {
+    var s= node.ship,
+    m= node.motion;
+
+    if (sh.main.keyboard[cc.KEY.right]) {
+      m.right=true;
+    }
+    if (sh.main.keyboard[cc.KEY.left]) {
+      m.left=true;
+    }
+
   }
+
 
 });
 

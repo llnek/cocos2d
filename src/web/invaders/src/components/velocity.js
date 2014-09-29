@@ -19,13 +19,13 @@ ivs= sh.Invaders;
 
 //////////////////////////////////////////////////////////////////////////////
 //
-ivs.Motion = Ash.Class.extend({
+ivs.Velocity = Ash.Class.extend({
 
-  constructor: function() {
-    this.right = false;
-    this.left = false;
-    this.top = false;
-    this.down = false;
+  constructor: function(vx,vy) {
+    this.vel = {
+      x: vx || 0,
+      y: vy || 0
+    };
     return this;
   }
 

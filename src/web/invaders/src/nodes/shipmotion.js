@@ -20,52 +20,10 @@ ivs= sh.Invaders;
 
 //////////////////////////////////////////////////////////////////////////////
 //
-
-ivs.MovementShip = Ash.System.extend({
-
-  constructor: function(options) {
-    this.state= options;
-    return this;
-  },
-
-  removeFromEngine: function(engine) {
-  },
-
-  addToEngine: function(engine) {
-    this.shipMotions = engine.getNodeList(ivs.ShipMotionNode)
-  },
-
-  update: function (dt) {
-    var node;
-    for (node=this.shipMotions.head;node;node=node.next) {
-      this.processShipMotions(node,dt);
-    }
-  },
-
-  processShipMotions: function(node,dt) {
-    var motion = node.motion,
-    sv = node.velocity,
-    ship= node.ship,
-    pos = ship.sprite.getPosition(),
-    x= pos.x,
-    y= pos.y;
-
-    if (motion.right) {
-      x = pos.x + dt * sv.vel.x;
-    }
-
-    if (motion.left) {
-      x = pos.x - dt * sv.vel.x;
-    }
-
-    ship.sprite.setPosition(x,y);
-
-    motion.right=false;
-    motion.left=false;
-  }
-
-
-
+ivs.ShipMotionNode = Ash.Node.create({
+  velocity: ivs.Velocity,
+  motion: ivs.Motion,
+  ship: ivs.Ship
 });
 
 
@@ -73,6 +31,7 @@ ivs.MovementShip = Ash.System.extend({
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
+
 
 
 
