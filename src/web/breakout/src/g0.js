@@ -49,7 +49,7 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   operational: function() {
-    return this.options.running;
+    return this.players.length > 0;
   },
 
   spawnPlayer: function() {
@@ -182,14 +182,7 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   play: function(newFlag) {
-
     this.reset(newFlag);
-    this.cleanSlate();
-
-    this.engine.addSystem(new bko.GameSupervisor(this.options),
-                          bko.Priorities.PreUpdate);
-
-
     //this.initPlayerSize();
     this.initBrickSize();
     this.initBricks();
