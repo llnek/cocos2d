@@ -21,12 +21,10 @@ bko= sh.BreakOut;
 //////////////////////////////////////////////////////////////////////////////
 //
 
-bko.GameSupervisor = Ash.System.extend({
+bko.MovementPaddle = Ash.System.extend({
 
   constructor: function(options) {
-    this.factory= options.factory;
     this.state= options;
-    this.inited=false;
     return this;
   },
 
@@ -34,41 +32,53 @@ bko.GameSupervisor = Ash.System.extend({
   },
 
   addToEngine: function(engine) {
+    this.paddleMotions = engine.getNodeList(bko.PaddleMotionNode)
   },
 
   update: function (dt) {
-    if (! this.inited) {
-      this.onceOnly();
-      this.inited=true;
-    } else {
-      this.process();
+    var node;
+    for (node=this.paddleMotions.head;node;node=node.next) {
+      this.processPaddleMotions(node,dt);
     }
   },
 
-  initBrickSize: function() {
-    var s= new cc.Sprite();
-    s.initWithSpriteFrameName('red_candy.png');
-    this.state.candySize= s.getContentSize();
+  processPaddleMotions: function(node,dt) {
+    var motion = node.motion,
+    sv = node.velocity,
+    pad= node.paddle,
+    pos = pad.sprite.getPosition(),
+    x= pos.x,
+    y= pos.y;
+
+    if (motion.right) {
+      x = pos.x + dt * sv.vel.x;
+    }
+
+    if (motion.left) {
+      x = pos.x - dt * sv.vel.x;
+    }
+
+    pad.sprite.setPosition(x,y);
+    this.clamp(pad);
+
+    motion.right=false;
+    motion.left=false;
   },
 
-  initBallSize: function() {
-    var s= new cc.Sprite();
-    s.initWithSpriteFrameName('ball.png');
-    this.state.ballSize= s.getContentSize();
-  },
+  clamp: function(pad) {
+    var sz= pad.sprite.getContentSize(),
+    pos= pad.sprite.getPosition(),
+    csts = sh.xcfg.csts,
+    wz = ccsx.screen();
 
-  onceOnly: function() {
-    this.initBrickSize();
-    this.initBallSize();
-    this.factory.createBricks(sh.main,this.state);
-    this.factory.createPaddle(sh.main,this.state);
-    this.factory.createBall(sh.main,this.state);
-    this.state.running=true;
-  },
-
-  process: function(node,dt) {
-
+    if (ccsx.getRight(pad.sprite) > wz.width - csts.TILE) {
+      pad.sprite.setPosition(wz.width - csts.TILE - sh.hw(sz), pos.y);
+    }
+    if (ccsx.getLeft(pad.sprite) < csts.TILE) {
+      pad.sprite.setPosition( csts.TILE + sh.hw(sz), pos.y);
+    }
   }
+
 
 });
 

@@ -185,15 +185,21 @@ var GameLayer = asterix.XGameLayer.extend({
 
     this.reset(newFlag);
     this.cleanSlate();
+    this.options.world= this.getEnclosureRect();
 
+    this.options.factory= new bko.EntityFactory(this.engine);
     this.engine.addSystem(new bko.GameSupervisor(this.options),
                           bko.Priorities.PreUpdate);
+    this.engine.addSystem(new bko.MotionControl(this.options),
+                          bko.Priorities.Motion);
+    this.engine.addSystem(new bko.MovementPaddle(this.options),
+                          bko.Priorities.Movement);
+    this.engine.addSystem(new bko.MovementBall(this.options),
+                          bko.Priorities.Movement);
+    this.engine.addSystem(new bko.CollisionSystem(this.options),
+                          bko.Priorities.Collision);
 
-
-    //this.initPlayerSize();
-    this.initBrickSize();
-    this.initBricks();
-    this.spawnPlayer();
+    this.options.running=true;
   },
 
   onBrickKilled: function(msg) {

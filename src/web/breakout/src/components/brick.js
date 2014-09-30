@@ -20,54 +20,25 @@ bko= sh.BreakOut;
 
 //////////////////////////////////////////////////////////////////////////////
 //
+bko.BrickFence = Ash.Class.extend({
 
-bko.GameSupervisor = Ash.System.extend({
-
-  constructor: function(options) {
-    this.factory= options.factory;
-    this.state= options;
-    this.inited=false;
+  constructor: function(bricks) {
+    this.bricks=bricks;
     return this;
-  },
+  }
 
-  removeFromEngine: function(engine) {
-  },
+});
 
-  addToEngine: function(engine) {
-  },
+//////////////////////////////////////////////////////////////////////////////
+//
+bko.Brick = Ash.Class.extend({
 
-  update: function (dt) {
-    if (! this.inited) {
-      this.onceOnly();
-      this.inited=true;
-    } else {
-      this.process();
-    }
-  },
-
-  initBrickSize: function() {
-    var s= new cc.Sprite();
-    s.initWithSpriteFrameName('red_candy.png');
-    this.state.candySize= s.getContentSize();
-  },
-
-  initBallSize: function() {
-    var s= new cc.Sprite();
-    s.initWithSpriteFrameName('ball.png');
-    this.state.ballSize= s.getContentSize();
-  },
-
-  onceOnly: function() {
-    this.initBrickSize();
-    this.initBallSize();
-    this.factory.createBricks(sh.main,this.state);
-    this.factory.createPaddle(sh.main,this.state);
-    this.factory.createBall(sh.main,this.state);
-    this.state.running=true;
-  },
-
-  process: function(node,dt) {
-
+  constructor: function(sprite,value,color) {
+    this.sprite=sprite;
+    this.value=value;
+    this.color=color;
+    this.status=true;
+    return this;
   }
 
 });

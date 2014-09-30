@@ -21,12 +21,10 @@ bko= sh.BreakOut;
 //////////////////////////////////////////////////////////////////////////////
 //
 
-bko.GameSupervisor = Ash.System.extend({
+bko.MovementBall = Ash.System.extend({
 
   constructor: function(options) {
-    this.factory= options.factory;
     this.state= options;
-    this.inited=false;
     return this;
   },
 
@@ -34,41 +32,37 @@ bko.GameSupervisor = Ash.System.extend({
   },
 
   addToEngine: function(engine) {
+    this.ballMotions = engine.getNodeList(bko.BallMotionNode)
   },
 
   update: function (dt) {
-    if (! this.inited) {
-      this.onceOnly();
-      this.inited=true;
-    } else {
-      this.process();
+    var node;
+    for (node=this.ballMotions.head;node;node=node.next) {
+      this.processBallMotions(node,dt);
     }
   },
 
-  initBrickSize: function() {
-    var s= new cc.Sprite();
-    s.initWithSpriteFrameName('red_candy.png');
-    this.state.candySize= s.getContentSize();
-  },
+  processBallMotions: function(node,dt) {
+    var v = node.velocity,
+    b= node.ball,
+    rc,
+    pos= b.sprite.getPosition(),
+    rect= ccsx.bbox(b.sprite);
 
-  initBallSize: function() {
-    var s= new cc.Sprite();
-    s.initWithSpriteFrameName('ball.png');
-    this.state.ballSize= s.getContentSize();
-  },
+    rect.x = pos.x;
+    rect.y = pos.y;
 
-  onceOnly: function() {
-    this.initBrickSize();
-    this.initBallSize();
-    this.factory.createBricks(sh.main,this.state);
-    this.factory.createPaddle(sh.main,this.state);
-    this.factory.createBall(sh.main,this.state);
-    this.state.running=true;
-  },
-
-  process: function(node,dt) {
-
+    rc=ccsx.traceEnclosure(dt,this.state.world,
+                           rect,
+                           v.vel);
+    if (rc.hit) {
+      v.vel.x = rc.vx;
+      v.vel.y = rc.vy;
+    } else {
+    }
+    b.sprite.setPosition(rc.x,rc.y);
   }
+
 
 });
 

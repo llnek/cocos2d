@@ -21,12 +21,10 @@ bko= sh.BreakOut;
 //////////////////////////////////////////////////////////////////////////////
 //
 
-bko.GameSupervisor = Ash.System.extend({
+bko.MotionControl = Ash.System.extend({
 
   constructor: function(options) {
-    this.factory= options.factory;
     this.state= options;
-    this.inited=false;
     return this;
   },
 
@@ -34,41 +32,37 @@ bko.GameSupervisor = Ash.System.extend({
   },
 
   addToEngine: function(engine) {
+    this.paddleMotions = engine.getNodeList(bko.PaddleMotionNode);
   },
 
   update: function (dt) {
-    if (! this.inited) {
-      this.onceOnly();
-      this.inited=true;
-    } else {
-      this.process();
+    var node;
+    for (node=this.paddleMotions.head;node;node=node.next) {
+      if (cc.sys.capabilities['keyboard']) {
+        this.processKeys(node,dt);
+      }
+      else
+      if (cc.sys.capabilities['mouse']) {
+      }
+      else
+      if (cc.sys.capabilities['touches']) {
+      }
     }
   },
 
-  initBrickSize: function() {
-    var s= new cc.Sprite();
-    s.initWithSpriteFrameName('red_candy.png');
-    this.state.candySize= s.getContentSize();
-  },
+  processKeys: function(node,dt) {
+    var s= node.paddle,
+    m= node.motion;
 
-  initBallSize: function() {
-    var s= new cc.Sprite();
-    s.initWithSpriteFrameName('ball.png');
-    this.state.ballSize= s.getContentSize();
-  },
-
-  onceOnly: function() {
-    this.initBrickSize();
-    this.initBallSize();
-    this.factory.createBricks(sh.main,this.state);
-    this.factory.createPaddle(sh.main,this.state);
-    this.factory.createBall(sh.main,this.state);
-    this.state.running=true;
-  },
-
-  process: function(node,dt) {
+    if (sh.main.keyboard[cc.KEY.right]) {
+      m.right=true;
+    }
+    if (sh.main.keyboard[cc.KEY.left]) {
+      m.left=true;
+    }
 
   }
+
 
 });
 

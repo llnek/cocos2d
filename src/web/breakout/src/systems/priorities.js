@@ -20,63 +20,22 @@ bko= sh.BreakOut;
 
 //////////////////////////////////////////////////////////////////////////////
 //
+bko.Priorities = {
 
-bko.GameSupervisor = Ash.System.extend({
-
-  constructor: function(options) {
-    this.factory= options.factory;
-    this.state= options;
-    this.inited=false;
-    return this;
-  },
-
-  removeFromEngine: function(engine) {
-  },
-
-  addToEngine: function(engine) {
-  },
-
-  update: function (dt) {
-    if (! this.inited) {
-      this.onceOnly();
-      this.inited=true;
-    } else {
-      this.process();
-    }
-  },
-
-  initBrickSize: function() {
-    var s= new cc.Sprite();
-    s.initWithSpriteFrameName('red_candy.png');
-    this.state.candySize= s.getContentSize();
-  },
-
-  initBallSize: function() {
-    var s= new cc.Sprite();
-    s.initWithSpriteFrameName('ball.png');
-    this.state.ballSize= s.getContentSize();
-  },
-
-  onceOnly: function() {
-    this.initBrickSize();
-    this.initBallSize();
-    this.factory.createBricks(sh.main,this.state);
-    this.factory.createPaddle(sh.main,this.state);
-    this.factory.createBall(sh.main,this.state);
-    this.state.running=true;
-  },
-
-  process: function(node,dt) {
-
-  }
-
-});
+  PreUpdate: 1,
+  Motion: 2,
+  Movement: 3,
+  Collision: 4,
+  Resolve: 5,
+  Render: 6
+};
 
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
+
 
 
 

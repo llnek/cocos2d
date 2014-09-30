@@ -19,6 +19,7 @@ document.ccConfig = {
     "/public/vendors/l10njs/l10n.min.js",
     "/public/vendors/mustache/mustache.js",
     "/public/vendors/helpers/dbg.js",
+"/public/vendors/ash-js/ash.min.js",
     "/public/vendors/cherimoia/skaro.js",
     "/public/vendors/cherimoia/caesar.js",
     "/public/vendors/cherimoia/zlab.js",
@@ -42,10 +43,25 @@ document.ccConfig = {
 
   '/public/ig/lib/game/breakout/config.js',
   '/public/ig/lib/game/breakout/i18n/game_en_US.js',
-  '/public/ig/lib/game/breakout/entities/explode.js',
-  '/public/ig/lib/game/breakout/entities/player.js',
-  '/public/ig/lib/game/breakout/entities/ball.js',
-  '/public/ig/lib/game/breakout/entities/brick.js',
+
+'/public/ig/lib/game/breakout/components/paddle.js',
+'/public/ig/lib/game/breakout/components/ball.js',
+'/public/ig/lib/game/breakout/components/brick.js',
+'/public/ig/lib/game/breakout/components/motion.js',
+'/public/ig/lib/game/breakout/components/velocity.js',
+
+'/public/ig/lib/game/breakout/nodes/motion-paddle.js',
+
+
+'/public/ig/lib/game/breakout/factory.js',
+'/public/ig/lib/game/breakout/systems/priorities.js',
+
+'/public/ig/lib/game/breakout/systems/motion-control.js',
+'/public/ig/lib/game/breakout/systems/move-paddle.js',
+'/public/ig/lib/game/breakout/systems/move-ball.js',
+'/public/ig/lib/game/breakout/systems/collision.js',
+'/public/ig/lib/game/breakout/systems/supervisor.js',
+
   '/public/ig/lib/game/breakout/hud.js',
   '/public/ig/lib/game/breakout/game.js',
   '/public/ig/lib/game/breakout/mmenu.js',

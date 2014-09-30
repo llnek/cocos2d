@@ -20,37 +20,75 @@ bko= sh.BreakOut;
 
 //////////////////////////////////////////////////////////////////////////////
 //
-ivs.EntityFactory = Ash.Class.extend({
+bko.EntityFactory = Ash.Class.extend({
 
   constructor: function(engine) {
     this.engine=engine;
     return this;
   },
 
-  createBricks: function(options) {
+  createBricks: function(layer, options) {
     var csts = sh.xcfg.csts,
     wz = ccsx.screen(),
     cw= ccsx.center(),
     candies= csts.CANDIES,
+    bks=[],
     cs= csts.LEVELS["1"],
-    b, w, r, c,
+    ent, sp, b, w, r, c,
     x,
     y= wz.height - csts.TOP_ROW * csts.TILE ;
 
     for (r=0; r < csts.ROWS; ++r) {
       x= csts.TILE + csts.LEFT_OFF + sh.hw(options.candySize);
       for (c=0; c < csts.COLS; ++c) {
-        b= new bko.EntityBrick(x,y, {
-          color: candies[cs[r]]
-        });
-        this.addItem(b.create());
-        this.bricks.push(b);
+        sp= new cc.Sprite();
+        sp.initWithSpriteFrameName( candies[cs[r]] + ".png");
+        sp.setPosition(x,y);
+        layer.addItem(sp);
+        bks.push(new bko.Brick(sp,10));
         x += options.candySize.width + 1;
       }
       y -= options.candySize.height - 2;
     }
 
+    ent= new Ash.Entity();
+    ent.add(new bko.BrickFence(bks));
+    this.engine.addEntity(ent);
+  },
+
+  createPaddle: function(layer,options) {
+    var csts= sh.xcfg.csts,
+    cw= ccsx.center(),
+    ent,
+    sp= new cc.Sprite();
+
+    sp.initWithSpriteFrameName('paddle.png');
+    sp.setPosition(cw.x, 56);
+    layer.addItem(sp);
+    ent= new Ash.Entity();
+    ent.add(new bko.Paddle(sp));
+    ent.add(new bko.Motion());
+    ent.add(new bko.Velocity(150,0));
+    this.engine.addEntity(ent);
+  },
+
+  createBall: function(layer,options) {
+    var csts= sh.xcfg.csts,
+    vy = 200 * sjs.randomSign(),
+    vx = 200 * sjs.randomSign(),
+    cw= ccsx.center(),
+    ent,
+    sp= new cc.Sprite();
+
+    sp.initWithSpriteFrameName('ball.png');
+    sp.setPosition(cw.x, 250);
+    layer.addItem(sp);
+    ent= new Ash.Entity();
+    ent.add(new bko.Ball(sp,200));
+    ent.add(new bko.Velocity(vx,vy));
+    this.engine.addEntity(ent);
   }
+
 
 });
 
