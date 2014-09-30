@@ -102,6 +102,8 @@ ivs.CannonControl = Ash.System.extend({
     lpr.timers[0] = ccsx.createTimer(sh.main, gun.coolDownWindow);
     gun.hasAmmo=false;
     sp.sprite.setSpriteFrame(sp.frames[1]);
+    sh.sfxPlay('ship-missile');
+
   }
 
 });

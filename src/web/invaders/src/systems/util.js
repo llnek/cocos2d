@@ -47,7 +47,52 @@ ivs.SystemUtils = {
       layer.addItem(b.sprite);
       sh.pools[sh.xcfg.csts.P_BS].add(b);
     }
+  },
+
+  killBomb: function(bb,explode) {
+    sh.fireEvent('/game/objects/players/earnscore', {score: bb.value});
+    var pos= bb.sprite.getPosition(),
+    tag= bb.sprite.getTag(),
+    csts= sh.xcfg.csts,
+    x= pos.x,
+    y= pos.y,
+    p = sh.pools[csts.P_LBS];
+
+    delete p[tag];
+    sh.pools[csts.P_BS].add(bb);
+
+    if (explode) {
+    }
+  },
+
+  killMissile: function(mm,explode) {
+    var pos= mm.sprite.getPosition(),
+    tag= mm.sprite.getTag(),
+    csts= sh.xcfg.csts,
+    x= pos.x,
+    y= pos.y,
+    p = sh.pools[csts.P_LMS];
+
+    delete p[tag];
+    sh.pools[csts.P_MS].add(mm);
+
+    if (explode) {
+    }
+  },
+
+  killShip: function(ship, explode) {
+    sh.fireEvent('/game/objects/players/killed');
+    sh.sfxPlay('xxx-explode');
+  },
+
+  killAlien: function(alien,explode) {
+    sh.fireEvent('/game/objects/players/earnscore', {score: alien.value});
+    alien.sprite.setVisible(false);
+    alien.sprite.setPosition(0,0);
+    alien.status=false;
+    sh.sfxPlay('xxx-explode');
   }
+
 
 
 };

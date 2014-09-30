@@ -15,7 +15,8 @@ var asterix = global.ZotohLab.Asterix,
 sh = global.ZotohLab.Asterix,
 ccsx= asterix.COCOS2DX,
 ivs= asterix.Invaders,
-sjs= global.SkaroJS;
+sjs= global.SkaroJS,
+utils= sh.SystemUtils;
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -285,15 +286,7 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   spawnPlayer: function() {
-    var csts= sh.xcfg.csts,
-    y =  5 * csts.TILE + this.shipSize.height,
-    cw= ccsx.center(),
-    aa= new ivs.EntityPlayer(cw.x, y, { coolDown: 0.8});
-
-    this.addItem(aa.create());
-    this.players=[];
-    this.players.push( aa);
-    this.actor=aa;
+    this.options.factory.createShip(sh.main,this.options);
   },
 
   replay: function() {
@@ -403,6 +396,7 @@ var GameLayer = asterix.XGameLayer.extend({
 
   onDone: function() {
     this.reset();
+    this.options.running=false;
     this.getHUD().enableReplay();
   }
 
