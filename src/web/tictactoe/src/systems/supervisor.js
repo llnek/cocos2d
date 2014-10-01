@@ -65,7 +65,7 @@ ttt.GameSupervisor = Ash.System.extend({
       this.state.actor= 0;
     } else {
       //randomly pick a player to start the game.
-      var pnum = sjs.randomSign() > 0 ? 1 : 2;
+      var pnum = sjs.randSign() > 0 ? 1 : 2;
       this.state.actor=pnum;
       if (this.state.players[pnum].category === sh.xcfg.csts.HUMAN) {
         sh.fireEvent('/game/hud/timer/show');

@@ -74,8 +74,8 @@ bko.EntityFactory = Ash.Class.extend({
 
   createBall: function(layer,options) {
     var csts= sh.xcfg.csts,
-    vy = 200 * sjs.randomSign(),
-    vx = 200 * sjs.randomSign(),
+    vy = 200 * sjs.randSign(),
+    vx = 200 * sjs.randSign(),
     cw= ccsx.center(),
     ent,
     sp= new cc.Sprite();

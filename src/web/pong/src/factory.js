@@ -43,8 +43,8 @@ png.EntityFactory = Ash.Class.extend({
   createBall: function(layer, options) {
     var ent = new Ash.Entity(),
     info = options.ball,
-    vy = info.speed * sjs.randomSign(),
-    vx = info.speed * sjs.randomSign(),
+    vy = info.speed * sjs.randSign(),
+    vx = info.speed * sjs.randSign(),
     x = info.x,
     y = info.y;
 

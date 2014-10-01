@@ -17,6 +17,16 @@ ccsx = asterix.COCOS2DX,
 ast= asterix.Asteroids,
 sjs= global.SkaroJS;
 
+
+//////////////////////////////////////////////////////////////////////////////
+// object pools
+//////////////////////////////////////////////////////////////////////////////
+
+sh.pools['missiles'] = new asterix.XEntityPool({ entityProto: ast.EntityMissile });
+sh.pools['lasers'] = new asterix.XEntityPool({ entityProto: ast.EntityLaser });
+sh.pools['live-missiles'] = {};
+sh.pools['live-lasers'] = {};
+
 //////////////////////////////////////////////////////////////////////////////
 // game layer
 //////////////////////////////////////////////////////////////////////////////
@@ -35,17 +45,8 @@ var GameLayer = asterix.XGameLayer.extend({
 
   play: function(newFlag) {
     this.reset(newFlag);
-    this.cleanSlate();
-
-    this.options.factory=new ast.EntityFactory(this.engine);
-    this.options.level=1;
-    this.options.world= this.getEnclosureRect();
-
-
-    this.engine.addSystem(new ast.GameSupervisor(this.options),
-                          ast.Priorities.PreUpdate);
-
-    this.options.running=true;
+    this.initRocks();
+    this.spawnPlayer();
   },
 
   reset: function(newFlag) {
@@ -54,7 +55,6 @@ var GameLayer = asterix.XGameLayer.extend({
       this.atlasBatch = cc.SpriteBatchNode.create(img);
       this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
     }
-    /*
     sh.pools['missiles'].drain();
     sh.pools['lasers'].drain();
     sh.pools['live-missiles'] = {};
@@ -65,7 +65,6 @@ var GameLayer = asterix.XGameLayer.extend({
     this.players=[];
     this.ufos=[];
     this.actor=null;
-    */
     if (newFlag) {
       this.getHUD().resetAsNew();
     } else {
@@ -74,7 +73,7 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   operational: function() {
-    return this.options.running;
+    return this.players.length > 0;
   },
 
   updateEntities: function(dt) {

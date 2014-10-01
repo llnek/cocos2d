@@ -29,6 +29,16 @@ sh.xcfg = sjs.mergeEx(asterix.XConfig, {
   color: 'red',
 
   csts: {
+    P_LMS: 'live-missiles',
+    P_LLS: 'live-lasers',
+    P_MS: 'missiles',
+    P_LS: 'lasers',
+
+    P_LAS: 'live-asteroids',
+    P_AS3: 'aster3',
+    P_AS2: 'aster2',
+    P_AS1: 'aster1',
+
     GRID_W: 60,
     GRID_H: 40
   },

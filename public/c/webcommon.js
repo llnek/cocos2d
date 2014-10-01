@@ -1004,7 +1004,7 @@ var SkaroJS = {
     }
   },
 
-  randomSign: function() {
+  randSign: function() {
     if (this.rand(10) % 2 === 0) {
       return -1;
     } else {

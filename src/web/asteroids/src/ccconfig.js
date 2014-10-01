@@ -19,6 +19,7 @@ document.ccConfig = {
     "/public/vendors/l10njs/l10n.min.js",
     "/public/vendors/mustache/mustache.js",
     "/public/vendors/helpers/dbg.js",
+"/public/vendors/ash-js/ash.min.js",
     "/public/vendors/cherimoia/skaro.js",
     "/public/vendors/cherimoia/caesar.js",
     "/public/vendors/cherimoia/zlab.js",
@@ -43,15 +44,21 @@ document.ccConfig = {
     '/public/ig/lib/game/asteroids/config.js',
     '/public/ig/lib/game/asteroids/i18n/game_en_US.js',
 
-      '/public/ig/lib/game/asteroids/entities/explode.js',
-      '/public/ig/lib/game/asteroids/entities/aster.js',
-      '/public/ig/lib/game/asteroids/entities/asteroid3.js',
-      '/public/ig/lib/game/asteroids/entities/asteroid2.js',
-      '/public/ig/lib/game/asteroids/entities/asteroid1.js',
-      '/public/ig/lib/game/asteroids/entities/missile.js',
-      '/public/ig/lib/game/asteroids/entities/player.js',
-      '/public/ig/lib/game/asteroids/entities/laser.js',
-      '/public/ig/lib/game/asteroids/entities/ufo.js',
+'/public/ig/lib/game/asteroids/components/velocity.js',
+'/public/ig/lib/game/asteroids/components/asteroid.js',
+
+
+'/public/ig/lib/game/asteroids/nodes/motion-astro.js',
+
+
+
+    '/public/ig/lib/game/asteroids/factory.js',
+'/public/ig/lib/game/asteroids/systems/priorities.js',
+'/public/ig/lib/game/asteroids/systems/supervisor.js',
+
+
+
+
       '/public/ig/lib/game/asteroids/hud.js',
       '/public/ig/lib/game/asteroids/game.js',
       '/public/ig/lib/game/asteroids/mmenu.js',
