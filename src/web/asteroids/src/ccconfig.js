@@ -45,7 +45,10 @@ document.ccConfig = {
     '/public/ig/lib/game/asteroids/i18n/game_en_US.js',
 
 '/public/ig/lib/game/asteroids/components/velocity.js',
+'/public/ig/lib/game/asteroids/components/motion.js',
 '/public/ig/lib/game/asteroids/components/asteroid.js',
+'/public/ig/lib/game/asteroids/components/ship.js',
+
 
 
 '/public/ig/lib/game/asteroids/nodes/motion-astro.js',
@@ -54,6 +57,9 @@ document.ccConfig = {
 
     '/public/ig/lib/game/asteroids/factory.js',
 '/public/ig/lib/game/asteroids/systems/priorities.js',
+'/public/ig/lib/game/asteroids/systems/move-asteroids.js',
+
+
 '/public/ig/lib/game/asteroids/systems/supervisor.js',
 
 

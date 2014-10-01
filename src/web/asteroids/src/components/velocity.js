@@ -36,11 +36,25 @@ ast.Velocity = Ash.Class.extend({
 ast.Rotation = Ash.Class.extend({
 
   constructor: function(deg) {
-    this.deg = deg;
+    this.angle = deg;
     return this;
   }
 
 });
+
+//////////////////////////////////////////////////////////////////////////////
+//
+ast.Thrust = Ash.Class.extend({
+
+  constructor: function(t) {
+    this.thrust = t;
+    return this;
+  }
+
+});
+
+
+
 
 }).call(this);
 

@@ -27,6 +27,43 @@ ast.EntityFactory = Ash.Class.extend({
     return this;
   },
 
+  createShip: function(layer,options) {
+    var h = options.playerSize.height,
+    w = options.playerSize.width,
+    B= options.world,
+    wz = ccsx.screen(),
+    cw = ccsx.center(),
+    deg,test=true,
+    sp,aa,x,y,r,
+    ent= new Ash.Entity(),
+    p= sh.pools[sh.xcfg.csts.P_LAS];
+
+    while (test) {
+      r= { left: sjs.randPercent() * wz.width,
+           top: sjs.randPercent() * wz.height };
+      r.bottom = r.top - h;
+      r.right = r.left + w;
+      if (!this.maybeOverlap(p,r) &&
+          !sh.outOfBound(r,B)) {
+        x = r.left + w/2;
+        y = r.top - h/2;
+        deg = sjs.randPercent() * 360;
+        sp= new cc.Sprite();
+        sp.initWithSpriteFrameName('rship_0.png');
+        sp.setPosition(x,y);
+        sp.setRotation(deg);
+        layer.addItem(sp);
+        ent.add(new ast.Ship(sp,['rship_0.png','rship_1.png']));
+        ent.add(new ast.Motion());
+        ent.add(new ast.Velocity(0,0));
+        ent.add(new ast.Thrust(30));
+        ent.add(new ast.Rotation(deg));
+        this.engine.addEntity(ent);
+        test=false;
+      }
+    }
+  },
+
   createAsteroids: function(layer,options) {
     var cfg = sh.xcfg.levels['gamelevel' + options.level]['fixtures'],
     h = options.astro1.height,
@@ -43,18 +80,19 @@ ast.EntityFactory = Ash.Class.extend({
 
     n=0;
     while (n < cfg.BOULDERS) {
-      r= { left: sjs.randPercentage() * wz.width,
-           top: sjs.randPercentage() * wz.height };
+      r= { left: sjs.randPercent() * wz.width,
+           top: sjs.randPercent() * wz.height };
       r.bottom = r.top - h;
       r.right = r.left + w;
       if (!this.maybeOverlap(p,r) &&
           !sh.outOfBound(r,B)) {
-        deg = sjs.randPercentage() * 360;
+        deg = sjs.randPercent() * 360;
         x = r.left + w/2;
         y = r.top - h/2;
         sp= new cc.Sprite();
         sp.initWithSpriteFrameName('rock_large.png');
         sp.setPosition(x,y);
+        sp.setRotation(deg);
         layer.addItem(sp);
         tag=sp.getTag();
         aa= new ast.AstroMotionNode(
