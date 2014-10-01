@@ -56,13 +56,14 @@ bko.HUDLayer = asterix.XGameHUDLayer.extend({
   },
 
   resetAsNew: function() {
-    this.score = 0;
+    //this.score = 0;
     this.reset();
   },
 
   reset: function() {
     this.replayBtn.setVisible(false);
     this.lives.resurrect();
+    this.score=0;
   },
 
   initLabels: function() {

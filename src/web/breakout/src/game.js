@@ -53,21 +53,11 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   spawnPlayer: function() {
-    var csts= sh.xcfg.csts,
-    cw= ccsx.center(),
-    aa = new bko.EntityPlayer(cw.x, 56, {});
-    this.addItem(aa.create());
-    this.players.push(aa);
-    this.actor= aa;
-    this.spawnBall();
+    this.options.factory.createPaddle(sh.main,this.options);
   },
 
   spawnBall: function() {
-    var csts = sh.xcfg.csts,
-    cw= ccsx.center(),
-    aa= new bko.EntityBall(cw.x, 250, {});
-    this.addItem(aa.create());
-    this.ball=aa;
+    this.options.factory.createBall(sh.main,this.options);
   },
 
   initBrickSize: function() {
@@ -160,20 +150,17 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   onPlayerKilled: function() {
-    this.ball.dispose();
-    this.ball=null;
-    this.actor.dispose();
-    this.players=[];
-    this.actor=null;
     if ( this.getHUD().reduceLives(1)) {
       this.onDone();
     } else {
       this.spawnPlayer();
+this.spawnBall();
     }
   },
 
   onDone: function() {
     this.reset();
+    this.options.running=false;
     this.getHUD().enableReplay();
   },
 

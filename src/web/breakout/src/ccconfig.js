@@ -51,7 +51,7 @@ document.ccConfig = {
 '/public/ig/lib/game/breakout/components/velocity.js',
 
 '/public/ig/lib/game/breakout/nodes/motion-paddle.js',
-
+'/public/ig/lib/game/breakout/nodes/bricks.js',
 
 '/public/ig/lib/game/breakout/factory.js',
 '/public/ig/lib/game/breakout/systems/priorities.js',
