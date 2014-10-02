@@ -22,7 +22,7 @@ ast= sh.Asteroids;
 ast.Missile = Ash.Class.extend({
 
   constructor: function(sprite,speed) {
-    this.speed=speed || 100;
+    this.speed=speed || 20;
     this.sprite=sprite;
     this.vel= {
       x: 0,

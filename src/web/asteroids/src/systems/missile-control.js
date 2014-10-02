@@ -101,8 +101,8 @@ ast.MissileControl = Ash.System.extend({
     sh.pools[csts.P_LMS][tag] = ent;
 
     var rc= sh.calcXY(deg, sz.height * 0.5);
-    //ent.vel.x = rc[0];
-    //ent.vel.y = rc[1];
+    ent.vel.x = rc[0];
+    ent.vel.y = rc[1];
     ent.revive( pos.x + rc[0], pos.y + rc[1]);
     ent.sprite.setRotation(deg);
 

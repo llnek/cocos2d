@@ -66,7 +66,10 @@ document.ccConfig = {
 '/public/ig/lib/game/asteroids/systems/motion-control.js',
 '/public/ig/lib/game/asteroids/systems/missile-control.js',
 '/public/ig/lib/game/asteroids/systems/move-asteroids.js',
+'/public/ig/lib/game/asteroids/systems/move-missiles.js',
 '/public/ig/lib/game/asteroids/systems/move-ship.js',
+'/public/ig/lib/game/asteroids/systems/collision.js',
+
 
 '/public/ig/lib/game/asteroids/systems/supervisor.js',
 
