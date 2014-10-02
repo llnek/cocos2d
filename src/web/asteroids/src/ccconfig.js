@@ -47,18 +47,26 @@ document.ccConfig = {
 '/public/ig/lib/game/asteroids/components/velocity.js',
 '/public/ig/lib/game/asteroids/components/motion.js',
 '/public/ig/lib/game/asteroids/components/asteroid.js',
+'/public/ig/lib/game/asteroids/components/cannon.js',
+'/public/ig/lib/game/asteroids/components/looper.js',
 '/public/ig/lib/game/asteroids/components/ship.js',
+'/public/ig/lib/game/asteroids/components/missile.js',
 
 
 
+
+'/public/ig/lib/game/asteroids/nodes/motion-cannon.js',
 '/public/ig/lib/game/asteroids/nodes/motion-astro.js',
-
-
+'/public/ig/lib/game/asteroids/nodes/motion-ship.js',
 
     '/public/ig/lib/game/asteroids/factory.js',
-'/public/ig/lib/game/asteroids/systems/priorities.js',
-'/public/ig/lib/game/asteroids/systems/move-asteroids.js',
+'/public/ig/lib/game/asteroids/systems/util.js',
 
+'/public/ig/lib/game/asteroids/systems/priorities.js',
+'/public/ig/lib/game/asteroids/systems/motion-control.js',
+'/public/ig/lib/game/asteroids/systems/missile-control.js',
+'/public/ig/lib/game/asteroids/systems/move-asteroids.js',
+'/public/ig/lib/game/asteroids/systems/move-ship.js',
 
 '/public/ig/lib/game/asteroids/systems/supervisor.js',
 

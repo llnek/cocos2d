@@ -15,16 +15,26 @@ var asterix= global.ZotohLab.Asterix,
 ccsx= asterix.CCS2DX,
 sjs= global.SkaroJS,
 sh= asterix,
-ast= sh.Asteroids,
-utils=ast.SystemUtils;
+ast= sh.Asteroids;
 
 
 //////////////////////////////////////////////////////////////////////////////
 //
-
 ast.SystemUtils = {
 
+  createMissiles: function(layer,options,count) {
+    for (var n=0; n < count; ++n) {
+      var b= new ast.Missile(new cc.Sprite());
+      b.sprite.initWithSpriteFrameName('laserGreen.png');
+      layer.addItem(b.sprite);
+      sh.pools[sh.xcfg.csts.P_MS].add(b);
+    }
+  }
+
+
+
 };
+
 
 }).call(this);
 

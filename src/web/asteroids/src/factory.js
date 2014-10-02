@@ -47,16 +47,18 @@ ast.EntityFactory = Ash.Class.extend({
           !sh.outOfBound(r,B)) {
         x = r.left + w/2;
         y = r.top - h/2;
-        deg = sjs.randPercent() * 360;
+        deg = 90;//sjs.randPercent() * 360;
         sp= new cc.Sprite();
         sp.initWithSpriteFrameName('rship_0.png');
         sp.setPosition(x,y);
         sp.setRotation(deg);
         layer.addItem(sp);
         ent.add(new ast.Ship(sp,['rship_0.png','rship_1.png']));
+        ent.add(new ast.Velocity(0,0,150,150));
         ent.add(new ast.Motion());
-        ent.add(new ast.Velocity(0,0));
-        ent.add(new ast.Thrust(30));
+        ent.add(new ast.Looper(1));
+        ent.add(new ast.Cannon());
+        ent.add(new ast.Thrust(25));
         ent.add(new ast.Rotation(deg));
         this.engine.addEntity(ent);
         test=false;

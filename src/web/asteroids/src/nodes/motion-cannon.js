@@ -17,57 +17,21 @@ sjs= global.SkaroJS,
 sh= asterix,
 ast= sh.Asteroids;
 
-//////////////////////////////////////////////////////////////////////////////
-//
-ast.Velocity = Ash.Class.extend({
-
-  constructor: function(vx,vy,mx,my) {
-    this.vel = {
-      x: vx || 0,
-      y: vy || 0
-    };
-    this.max = {
-      x: mx || 0,
-      y: my || 0
-    };
-    this.acc = {
-      x: 0,
-      y: 0
-    };
-    return this;
-  }
-
-});
 
 //////////////////////////////////////////////////////////////////////////////
 //
-ast.Rotation = Ash.Class.extend({
-
-  constructor: function(deg) {
-    this.angle = deg;
-    return this;
-  }
-
+ast.CannonCtrlNode = Ash.Node.create({
+  looper: ast.Looper,
+  cannon: ast.Cannon,
+  ship: ast.Ship
 });
-
-//////////////////////////////////////////////////////////////////////////////
-//
-ast.Thrust = Ash.Class.extend({
-
-  constructor: function(t) {
-    this.power = t;
-    return this;
-  }
-
-});
-
-
 
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
+
 
 
 

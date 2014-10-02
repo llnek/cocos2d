@@ -21,6 +21,11 @@ ast= sh.Asteroids;
 //////////////////////////////////////////////////////////////////////////////
 //
 ast.ShipMotionNode = Ash.Node.create({
+  velocity: ast.Velocity,
+  rotation: ast.Rotation,
+  thrust: ast.Thrust,
+  motion: ast.Motion,
+  ship: ast.Ship
 });
 
 

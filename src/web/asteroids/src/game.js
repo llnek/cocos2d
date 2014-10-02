@@ -45,8 +45,17 @@ var GameLayer = asterix.XGameLayer.extend({
     this.engine.addSystem(new ast.GameSupervisor(this.options),
                           ast.Priorities.PreUpdate);
 
+    this.engine.addSystem(new ast.MotionControls(this.options),
+                          ast.Priorities.Motion);
+    this.engine.addSystem(new ast.MissileControl(this.options),
+                          ast.Priorities.Motion);
+
     this.engine.addSystem(new ast.MoveAsteroids(this.options),
                           ast.Priorities.Movement);
+    this.engine.addSystem(new ast.MovementShip(this.options),
+                          ast.Priorities.Movement);
+
+
 
 
     this.options.running=true;

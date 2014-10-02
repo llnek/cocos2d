@@ -70,6 +70,44 @@ global.ZotohLab.Asterix = {
   },
 
   calcXY: function(angle,hypot) {
+  // quadrants =  4 | 1
+  //             --------
+  //              3 | 2
+    var theta, q, x, y;
+    if (angle >= 0 && angle <= 90) {
+      theta = this.degToRad(90 - angle);
+      x = Math.cos(theta);
+      y = Math.sin(theta);
+      q=1;
+    }
+    else
+    if (angle >= 90 && angle <= 180 ) {
+      theta = this.degToRad(angle - 90);
+      x = Math.cos(theta);
+      y =  - Math.sin(theta);
+      q=2;
+    }
+    else
+    if (angle >= 180 && angle <= 270) {
+      theta = this.degToRad(270 - angle);
+      x = - Math.cos(theta);
+      y = - Math.sin(theta);
+      q=3;
+    }
+    else
+    if (angle >= 270 && angle <= 360) {
+      theta= this.degToRad(angle - 270);
+      x = - Math.cos(theta);
+      y = Math.sin(theta);
+      q=4;
+    }
+    else {
+    }
+
+    return [ x * hypot, y * hypot, q ];
+  },
+
+  XXXcalcXY: function(angle,hypot) {
   // quadrants =  3 | 4
   //             --------
   //              2 | 1

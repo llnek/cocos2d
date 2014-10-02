@@ -19,56 +19,19 @@ ast= sh.Asteroids;
 
 //////////////////////////////////////////////////////////////////////////////
 //
-ast.Velocity = Ash.Class.extend({
+ast.Looper = Ash.Class.extend({
 
-  constructor: function(vx,vy,mx,my) {
-    this.vel = {
-      x: vx || 0,
-      y: vy || 0
-    };
-    this.max = {
-      x: mx || 0,
-      y: my || 0
-    };
-    this.acc = {
-      x: 0,
-      y: 0
-    };
+  constructor: function(count) {
+    this.timers=sjs.makeArray(count,null);
     return this;
   }
 
 });
-
-//////////////////////////////////////////////////////////////////////////////
-//
-ast.Rotation = Ash.Class.extend({
-
-  constructor: function(deg) {
-    this.angle = deg;
-    return this;
-  }
-
-});
-
-//////////////////////////////////////////////////////////////////////////////
-//
-ast.Thrust = Ash.Class.extend({
-
-  constructor: function(t) {
-    this.power = t;
-    return this;
-  }
-
-});
-
-
-
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
 
 
 
