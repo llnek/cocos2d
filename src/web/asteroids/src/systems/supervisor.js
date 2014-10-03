@@ -61,7 +61,8 @@ ast.GameSupervisor = Ash.System.extend({
     this.initAsteroidSizes();
     this.initPlayerSize();
     this.initUfoSize();
-    this.factory.createAsteroids(sh.main,this.state);
+    this.factory.createAsteroids(sh.main,this.state,
+                                sh.xcfg.csts.P_AS1);
     this.factory.createShip(sh.main,this.state);
 
   },

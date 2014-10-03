@@ -17,6 +17,11 @@ sjs= global.SkaroJS;
 
 asterix.Asteroids= {};
 
+var P_AS3= 'aster3',
+P_AS2= 'aster2',
+P_AS1= 'aster1';
+
+
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
@@ -35,9 +40,9 @@ sh.xcfg = sjs.mergeEx(asterix.XConfig, {
     P_LS: 'lasers',
 
     P_LAS: 'live-asteroids',
-    P_AS3: 'aster3',
-    P_AS2: 'aster2',
-    P_AS1: 'aster1',
+    P_AS3: 3,
+    P_AS2: 2,
+    P_AS1: 1,
 
     GRID_W: 60,
     GRID_H: 40
@@ -82,11 +87,12 @@ sh.xcfg = sjs.mergeEx(asterix.XConfig, {
       },
       sprites : {
       },
-      fixtures: {
-        BOULDERS: 5,
-        ROCKS: 5,
-        STONES: 10
-      }
+      fixtures: [
+        null,
+        [5, 'rock_large.png'],
+        [5, 'rock_med.png'],
+        [10, 'rock_small.png']
+      ]
     }
   },
 

@@ -61,21 +61,26 @@ ast.SystemUtils = {
 
     if (explode) {
     }
+    sjs.loggr.debug("missile killed - pid = " + tag);
   },
 
   killShip: function(ship, explode) {
     sh.fireEvent('/game/objects/players/killed');
-    sh.sfxPlay('xxx-explode');
+    //sh.sfxPlay('xxx-explode');
   },
 
-  killRock: function(pid,explode) {
+  killRock: function(rock,explode) {
     var ps= sh.pools[sh.xcfg.csts.P_LAS],
+    sp= rock.sprite,
+    pid= sp.getTag(),
     r= ps[pid];
 
-    sh.main.removeItem(r.astro.sprite);
+    sh.main.removeItem(sp);
     delete ps[pid];
 
-    //sh.fireEvent('/game/objects/players/earnscore', {score: alien.value});
+    sjs.loggr.debug("rock killed - " + rock.rank);
+    sh.fireEvent('/game/objects/players/earnscore',
+                 {score: rock.value});
     //rock.status=false;
     //rock.sfxPlay('xxx-explode');
   }

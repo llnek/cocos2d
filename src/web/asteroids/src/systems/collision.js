@@ -53,7 +53,7 @@ ast.CollisionSystem = Ash.System.extend({
       // 3. ship ok?
       //this.checkShipBombs(ship);
       // 4. overruned by aliens ?
-      //this.checkShipAliens(aliens, ship);
+      this.checkShipRocks(p, ship);
     }
 
   },
@@ -80,21 +80,23 @@ ast.CollisionSystem = Ash.System.extend({
   checkMissilesRocks: function(ps,mss) {
     var m, n, csts= sh.xcfg.csts,
     arr= _.values(ps),
+    a,r,
     sz= arr.length;
 
     _.each(_.keys(mss), function(z) {
       m = mss[z];
       for (n=0; n < sz; ++n) {
-        if (arr[n].astro.status !== true) {
-          continue;
-        }
-        if (ccsx.collide0(m.sprite, arr[n].astro.sprite)) {
+        a= arr[n].astro;
+        if (a.status !== true) { continue; }
+        if (ccsx.collide0(m.sprite, a.sprite)) {
+          r=a.rank;
           utils.killMissile(m);
-          utils.killRock(arr[n].astro.sprite.getTag(),true);
+          utils.killRock(a,true);
+          this.factory.createAsteroids(sh.main,this.state,r+1);
           break;
         }
       }
-    });
+    },this);
   },
 
   checkShipBombs: function(node) {
@@ -124,19 +126,21 @@ ast.CollisionSystem = Ash.System.extend({
     utils.killShip(node.ship,true);
   },
 
-  checkShipAliens: function(anode,snode) {
-    var n, sqad= anode.aliens,
+  checkShipRocks: function(p,snode) {
+    var n, rocks= _.values(p),
     ship = snode.ship,
-    sz= sqad.aliens.length;
+    a,r,
+    sz= rocks.length;
 
     for (n=0; n < sz; ++n) {
-      if (sqad.aliens[n].status !== true) {
-        continue;
-      }
+      a=rocks[n].astro;
+      r= a.rank;
+      if (a.status !== true) { continue; }
       if (ccsx.collide0(ship.sprite,
-                        sqad.aliens[n].sprite)) {
-        utils.killAlien(sqad.aliens[n]);
+                        a.sprite)) {
+        utils.killRock(a,true);
         this.eraseShip(snode);
+        this.factory.createAsteroids(sh.main,this.state,r+1);
         break;
       }
     }

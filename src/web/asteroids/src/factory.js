@@ -66,7 +66,7 @@ ast.EntityFactory = Ash.Class.extend({
     }
   },
 
-  createAsteroids: function(layer,options) {
+  createAsteroids: function(layer,options,rank) {
     var cfg = sh.xcfg.levels['gamelevel' + options.level]['fixtures'],
     h = options.astro1.height,
     w = options.astro1.width,
@@ -79,26 +79,32 @@ ast.EntityFactory = Ash.Class.extend({
     B= options.world,
     p= sh.pools[sh.xcfg.csts.P_LAS];
 
+    if (rank >= csts.P_AS1 &&
+        rank <= csts.P_AS3) {} else { return; }
 
+    sjs.loggr.debug('about to create more asteroids - ' + rank);
     n=0;
-    while (n < cfg.BOULDERS) {
-      r= { left: sjs.randPercent() * wz.width,
-           top: sjs.randPercent() * wz.height };
+    while (n < cfg[rank][0]) {
+      r= { left: sjs.rand(wz.width),
+           top: sjs.rand(wz.height) };
       r.bottom = r.top - h;
       r.right = r.left + w;
+      /*
       if (!this.maybeOverlap(p,r) &&
           !sh.outOfBound(r,B)) {
+          */
+      if ( !sh.outOfBound(r,B)) {
         deg = sjs.randPercent() * 360;
         x = r.left + w/2;
         y = r.top - h/2;
         sp= new cc.Sprite();
-        sp.initWithSpriteFrameName('rock_large.png');
+        sp.initWithSpriteFrameName(cfg[rank][1]);
         sp.setPosition(x,y);
         sp.setRotation(deg);
         layer.addItem(sp);
         tag=sp.getTag();
         aa= new ast.AstroMotionNode(
-          new ast.Asteroid(sp, 25,1),
+          new ast.Asteroid(sp, 25,rank),
           new ast.Rotation(deg),
           new ast.Velocity(20 * sjs.randSign(),
                            20 * sjs.randSign()));
@@ -106,6 +112,8 @@ ast.EntityFactory = Ash.Class.extend({
         ++n;
       }
     }
+
+    sjs.loggr.debug('CREATED more asteroids - ' + rank);
   },
 
   maybeOverlap: function (p, a) {

@@ -67,7 +67,7 @@ var GameLayer = asterix.XGameLayer.extend({
   reset: function(newFlag) {
     if (this.atlasBatch) { this.atlasBatch.removeAllChildren(); } else {
       var img = cc.textureCache.addImage( sh.getAtlasPath('game-pics'));
-      this.atlasBatch = cc.SpriteBatchNode.create(img);
+      this.atlasBatch = cc.SpriteBatchNode.create(img,320);
       this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
     }
     /*
@@ -282,7 +282,7 @@ var GameLayer = asterix.XGameLayer.extend({
     x,y, deg,
     B= this.getEnclosureRect();
     this.rocks= [];
-    while (this.rocks.length < cfg.BOULDERS) {
+    while (this.rocks.length < cfg[csts.P_AS1]) {
       r= { left: sjs.randPercentage() * wz.width,
            top: sjs.randPercentage() * wz.height };
       r.bottom = r.top - h;
@@ -299,30 +299,7 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   spawnPlayer: function() {
-    var h = this.playerSize.height,
-    w = this.playerSize.width,
-    B= this.getEnclosureRect(),
-    wz = ccsx.screen(),
-    cw = ccsx.center(),
-    test=true,
-    aa,x,y,r;
-
-    while (test) {
-      r= { left: sjs.randPercentage() * wz.width,
-           top: sjs.randPercentage() * wz.height };
-      r.bottom = r.top - h;
-      r.right = r.left + w;
-      if (!this.maybeOverlap(r) && !sh.outOfBound(r,B)) {
-        x = r.left + w/2;
-        y = r.top - h/2;
-        aa = new ast.EntityPlayer( x, y, {});
-        this.addItem(aa.create());
-        this.players=[];
-        this.players.push(aa);
-        this.actor=aa;
-        test=false;
-      }
-    }
+    this.options.factory.createShip(sh.main, this.options);
   },
 
   spawnUfo: function() {
@@ -387,8 +364,6 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   onPlayerKilled: function(msg) {
-    this.players=[];
-    this.actor=null;
     if ( this.getHUD().reduceLives(1)) {
       this.onDone();
     } else {
