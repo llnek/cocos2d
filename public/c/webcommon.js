@@ -30,7 +30,7 @@
     }
   }
 }(this, function (mustache) {
-
+window.Mustache=mustache;
   // Workaround for https://issues.apache.org/jira/browse/COUCHDB-577
   // See https://github.com/janl/mustache.js/issues/189
   var RegExp_test = RegExp.prototype.test;
