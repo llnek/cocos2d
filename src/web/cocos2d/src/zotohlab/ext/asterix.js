@@ -9,15 +9,9 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._ ;
+function moduleFactory(Mustache,sjs,zotohlab, undef) { "use strict";
 
-var Mustache=global.Mustache,
-sjs= global.SkaroJS;
-
-
-//////////////////////////////////////////////////////////////////////////////
-//
-global.ZotohLab.Asterix = {
+var asterix = {
 
   l10nInit: function(table) {
     //String.defaultLocale="en-US";
@@ -28,7 +22,7 @@ global.ZotohLab.Asterix = {
 
   l10n: function(s,pms) {
     var t= s.toLocaleString();
-    return _.isObject(pms) ? Mustache.render(t,pms) : t;
+    return sjs.isObject(pms) ? Mustache.render(t,pms) : t;
   },
 
   lang: cc.sys.language || 'en',
@@ -230,11 +224,11 @@ global.ZotohLab.Asterix = {
   },
 
   setGameSize: function(sz) {
-    this.xcfg.game.size = _.isString(sz) ? this.xcfg.devices[sz] : _.isObject(sz) ? sz : undef;
+    this.xcfg.game.size = sjs.isString(sz) ? this.xcfg.devices[sz] : sjs.isObject(sz) ? sz : undef;
   },
 
   setDeviceSizes: function (obj) {
-    if (_.isObject(obj)) { this.xcfg.devices= obj; }
+    if (sjs.isObject(obj)) { this.xcfg.devices= obj; }
   },
 
   toggleSfx: function(override) {
@@ -309,13 +303,53 @@ global.ZotohLab.Asterix = {
 
 };
 
+
 // monkey patch logger to use cocos2d's log functions.
-sjs.loggr= cc;
-sjs.loggr.info = cc.log;
-sjs.loggr.debug = cc.log;
+if (sjs.echt(cc)) {
+  sjs.logger= cc;
+  sjs.loggr= cc;
+  sjs.loggr.info = cc.log;
+  sjs.loggr.debug = cc.log;
+  sjs.loggr.info('Monkey patched skarojs#loggr to cc.log');
+}
+
+
+
+return zotohlab.asterix = asterix;
+}
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+
+  if(typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("cherimoia/zotohlab/asterix",
+              ['mustache','cherimoia/skarojs','cherimoia/zotohlab'],
+              moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+
+    module.exports = moduleFactory(require('mustache'),
+                                     require('cherimoia/skarojs'),
+                                     require('cherimoia/zotohlab'));
+  } else {
+
+    global['cherimoia']['zotohlab']['asterix'] = moduleFactory(global.Mustache,
+                                                           global.cherimoia.skarojs,
+                                                           global.cherimoia.zotohlab);
+  }
+
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-//
+
+
+
+
+

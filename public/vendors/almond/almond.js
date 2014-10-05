@@ -9,7 +9,8 @@
 /*global setTimeout: false */
 
 var requirejs, require, define;
-(function (undef) {
+var global=
+  (function (undef) {
     var main, req, makeMap, handlers,
         defined = {},
         waiting = {},
@@ -426,4 +427,13 @@ var requirejs, require, define;
     define.amd = {
         jQuery: true
     };
-}());
+
+    return this;
+}).call(this);
+
+
+define("global/window",[],function() {
+  return global;
+});
+
+

@@ -10,11 +10,10 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 cc.game.onStart= function() { "use strict"; var global=window, _ = global._ ;
-
-var asterix= global.ZotohLab.Asterix,
+var asterix= require('cherimoia/zotohlab/asterix'),
 STARTSCREEN= 'StartScreen',
 sh = asterix,
-sjs = global.SkaroJS;
+sjs = require('cherimoia/skarojs');
 
 if (cc.sys.isNative) {
     var searchPaths = jsb.fileUtils.getSearchPaths();

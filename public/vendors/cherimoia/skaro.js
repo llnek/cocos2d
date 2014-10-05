@@ -9,7 +9,9 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._ ;
+
+function moduleFactory(global, DBG, R, undef) { "use strict";
+
 var fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
 var ZEROS= "00000000000000000000000000000000";  //32
 
@@ -104,12 +106,16 @@ klass.xtends = function (other) {
 
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-var SkaroJS = {
+var skarojs = {
 
   padstr: function(str, len, s) {
     return (len -= str.length) > 0
           ? (s = new Array(Math.ceil(len / s.length) + 1).join(s)).substr(0, s.length) + str + s.substr(0, len - s.length)
           : str;
+  },
+
+  now: function() {
+    return Date.now || new Date().getTime();
   },
 
   capitalize: function(str) {
@@ -271,7 +277,7 @@ var SkaroJS = {
   },
 
   removeFromArray: function(arr, item) {
-    if (_.isArray(arr)) {
+    if (arr && arr.indexOf && arr.splice) {
       var index = arr.indexOf(item);
       while (index !== -1) {
         arr.splice(index,1);
@@ -280,23 +286,94 @@ var SkaroJS = {
     }
   },
 
-  logger: global.dbg,
-  loggr: global.dbg,
+  isUndef: function(obj) {
+    return obj === void 0;
+  },
+
+  isNull: function(obj) {
+    return obj === null;
+  },
+
+  isNumber: function(obj) {
+    return toString.call(obj) === '[object Number]';
+  },
+
+  isDate: function(obj) {
+    return toString.call(obj) === '[object Date]';
+  },
+
+  isFunction: function(obj) {
+    return toString.call(obj) === '[object Function]';
+  },
+
+  isString: function(obj) {
+    return toString.call(obj) === '[object String]';
+  },
+
+  isArray: function(obj) {
+    return !!obj && toString.call(obj) === '[object Array]';
+  },
+
+  isObject: function(obj) {
+    var type = typeof obj;
+    return type === 'function' || type === 'object' && !!obj;
+  },
+
+  isEmpty: function(obj) {
+    if (this.isObject(obj)) {
+      return Object.keys(obj).length === 0;
+    }
+
+    if (!!obj && typeof obj.length === 'number') {
+      return obj.length === 0;
+    }
+
+    return false;
+  },
+
+  hasKey: function(obj, key) {
+    return !!obj && Object.prototype.hasOwnProperty.call(obj, key);
+  },
+
+  logger: DBG,
+  loggr: DBG,
+
+  ramda: R,
+  R: R,
+
   Class : klass
 };
 
 
-/////////////////////////////////////////////////////////
-//// export your stuff
-/////////////////////////////////////////////////////////
-if (typeof exports !== 'undefined') {
-  if (typeof module !== 'undefined' &&  module.exports) {
-    exports = module.exports = SkaroJS;
-  }
-  exports.SkaroJS= SkaroJS;
-} else {
-  global.SkaroJS= SkaroJS;
+return skarojs;
 }
 
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+
+    if(typeof gDefine === 'function' && gDefine.amd) {
+
+        gDefine("cherimoia/skarojs",
+                ['global/window','console/dbg','ramda'],
+                moduleFactory);
+
+    } else if (typeof module !== 'undefined' && module.exports) {
+
+        module.exports = moduleFactory(global, console, require('ramda'));
+
+    } else {
+
+        global['cherimoia'] = {};
+        global['cherimoia']['skarojs'] = moduleFactory(global, global.dbg, global.R);
+    }
+
+
 }).call(this);
+
+//////////////////////////////////////////////////////////////////////////////
+//EOF
+
 

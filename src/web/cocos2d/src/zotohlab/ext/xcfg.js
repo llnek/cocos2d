@@ -9,18 +9,11 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global= this, _ = global._ ;
+function(sjs,asterix,undef) { "use strict";
 
-var asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
-sjs= global.SkaroJS;
-
-
-//////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
-
-asterix.XConfig = {
+var sh= asterix,
+R= sjs.ramda,
+config = {
 
   urlPrefix: '/public/ig/',
   appid: '',
@@ -157,8 +150,37 @@ asterix.XConfig = {
 };
 
 
+return config;
+
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+
+  if(typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("cherimoia/zotohlab/asterix/xcfg",
+              ['cherimoia/skarojs', 'cherimoia/zotohlab/asterix'],
+              moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+
+    module.exports = moduleFactory( require('cherimoia/skarojs'),
+                                     require('cherimoia/zotohlab/asterix'));
+  } else {
+
+    global['cherimoia']['zotohlab']['asterix']['xcfg'] = moduleFactory(global.cherimoia.skarojs, global.cherimoia.zotohlab.asterix);
+  }
+
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
+
+
+
+
 

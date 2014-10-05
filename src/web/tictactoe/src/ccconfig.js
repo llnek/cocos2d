@@ -16,16 +16,26 @@ document.ccConfig = {
   modules: [ 'cocos2d', 'editbox' ],
 
   jsList: [
-    "/public/vendors/underscore/underscore-min.js",
-    "/public/vendors/l10njs/l10n.min.js",
+
+    "/public/vendors/almond/almond.js",
+    "/public/vendors/ramda/ramda.js",
+    "/public/vendors/l10njs/l10n.js",
     "/public/vendors/mustache/mustache.js",
     "/public/vendors/helpers/dbg.js",
-    "/public/vendors/ash-js/ash.min.js",
+
+    "/public/vendors/js_signals/signals.js",
+    "/public/vendors/ash-js/ash.js",
+
+
     "/public/vendors/cherimoia/skaro.js",
     "/public/vendors/cherimoia/caesar.js",
-    "/public/vendors/cherimoia/zlab.js",
     "/public/vendors/cherimoia/bus.js",
+
+
+    "/public/vendors/cherimoia/zlab.js",
     "/public/ig/lib/zotohlab/ext/asterix.js",
+
+
     "/public/ig/lib/zotohlab/ext/xcfg.js",
     "/public/ig/lib/zotohlab/ext/cs2dx.js",
     "/public/ig/lib/zotohlab/ext/odin.js",

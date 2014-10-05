@@ -9,18 +9,15 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use stricts"; var global = this, _ = global._ ;
+function moduleFactory(sjs, EventBus, asterix, xlayers, undef) { "use stricts";
 
-var asterix= global.ZotohLab.Asterix,
-sh= global.ZotohLab.Asterix,
-sjs= global.SkaroJS;
+var R = sjs.ramda,
+sh= asterix;
 
 
 //////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
-
-asterix.XScene = cc.Scene.extend({
+//
+var XScene = cc.Scene.extend({
 
   //ebus: global.ZotohLab.MakeEventBus(),
   //layers: {},
@@ -42,10 +39,10 @@ asterix.XScene = cc.Scene.extend({
     rc,
     obj;
     // look for failures, hold off init'ing game layer, leave that as last
-    rc = _.some(a, function(proto) {
+    rc = R.some(function(proto) {
       obj= new (proto)(this.options);
       obj.setParent(this);
-      if ( obj instanceof asterix.XGameLayer ) {
+      if ( obj instanceof xlayers.XGameLayer ) {
         glptr = obj;
         ok=true
       } else {
@@ -56,39 +53,40 @@ asterix.XScene = cc.Scene.extend({
         this.addChild(obj);
         return false;
       }
-    }, this);
+    }.bind(this), a);
 
     if (a.length > 0 && rc===false ) {
-      return sjs.echt(glptr) ? glptr.init() : true;
+      return !!glptr ? glptr.init() : true;
     } else {
       return false;
     }
   },
 
   ctor: function(ls, options) {
-    this.ebus= global.ZotohLab.MakeEventBus();
     this.options = options || {};
     this.lays= ls || [];
     this.layers= {};
+    this.ebus= new EventBus();
     this._super();
   }
 
 
 });
 
-asterix.XSceneFactory = sjs.Class.xtends({
+var XSceneFactory = sjs.Class.xtends({
 
   create: function(options) {
-    var arr= this.layers,
+    var itemKey= 'layers',
+    arr= this.layers,
     cfg;
-    if (options && _.has(options,'layers') &&
-        _.isArray(options.layers)) {
+    if (options && sjs.hasKey(options, itemKey ) &&
+        sjs.isArray(options.layers)) {
       arr= options.layers;
-      cfg= _.omit(options, 'layers');
+      cfg= R.omit(itemKey, options);
     } else {
       cfg= options || {};
     }
-    var scene = new asterix.XScene(arr, cfg);
+    var scene = new XScene(arr, cfg);
     return scene.init() ? scene : null;
   },
 
@@ -99,9 +97,47 @@ asterix.XSceneFactory = sjs.Class.xtends({
 });
 
 
+return {
+  XSceneFactory: XSceneFactory,
+  XScene: XScene
+};
+
+
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+
+  if (typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("cherimoia/zotohlab/asterix/xscenes",
+            ['cherimoia/skarojs',
+             'cherimoia/ebus',
+             'cherimoia/zotohlab/asterix',
+             'cherimoia/zotohlab/asterix/xlayers'],
+            moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+
+    module.exports = moduleFactory(require('cherimoia/skarojs'),
+                                   require('cherimoia/ebus'),
+                                   require('cherimoia/zotohlab/asterix')
+                                   require('cherimoia/zotohlab/asterix/xlayers'));
+  } else {
+
+    global['cherimoia']['zotohlab']['asterix']['xscene'] =
+      moduleFactory(global.cherimoia.skarojs,
+                    global.cherimoia.ebus,
+                    global.cherimoia.zotohlab.asterix,
+                    global.cherimoia.zotohlab.asterix.xlayers);
+  }
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
+
 

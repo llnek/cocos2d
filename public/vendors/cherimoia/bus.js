@@ -9,9 +9,9 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this, _ = global._ ;
+function moduleFactory(sjs,undef) { "use strict";
 
-var sjs=global.SkaroJS,
+var R = sjs.ramda,
 _SEED=0;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -40,7 +40,10 @@ function mkTreeNode() {
 //////////////////////////////////////////////////////////////////////////////
 //
 function safeSplit(s) {
-  return _.without(s.trim().split('/'), '');
+  return R.reject(function(z) {
+    return !z || z.length===0;
+  },
+  s.trim().split('/'));
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -99,13 +102,6 @@ var EventBus = sjs.Class.xtends({
   },
 
   removeAll: function() {
-    /*
-    _.each(_.keys(this.allSubs), function(id) {
-      this.off(id);
-    }, this);
-    */
-    // really no point in doing a nice cleanup, just clear everything since
-    // we are removing all subscribers anyway.
     this.rootNode = mkTreeNode();
     this.allSubs = {};
   },
@@ -117,10 +113,12 @@ var EventBus = sjs.Class.xtends({
   pkListen: function(repeat, topics, selector, target, more) {
     var ts= topics.trim().split(/\s+/);
     // for each topic, subscribe to it.
-    var rc= _.map(ts, function(t) {
+    var rc= R.map(function(t) {
       return this.pkAddSub(repeat,t,selector,target,more);
-    }, this);
-    return _.without(rc, '');
+    }.bind(this), ts);
+    return R.reject(function(z) {
+      return !z || z.length===0;
+    }, rc);
   },
 
   // register a subscriber to the topic leaf node, creating the path
@@ -129,9 +127,9 @@ var EventBus = sjs.Class.xtends({
     var tkns= safeSplit(topic);
     if (tkns.length > 0) {
       var rc= mkSubSCR(topic, selector, target, repeat, more),
-      node= _.reduce(tkns, function(memo, z) {
+      node= R.reduce(function(memo, z) {
         return this.pkDoSub(memo,z);
-      }, this.rootNode, this);
+      }.bind(this), this.rootNode, tkns);
       this.allSubs[rc.id] = rc;
       node.subs.push(rc);
       return rc.id;
@@ -147,19 +145,21 @@ var EventBus = sjs.Class.xtends({
       var k= tokens[pos],
       cn= node.tree[k];
       this.pkUnSub(cn, tokens, pos+1, sub);
-      if (_.isEmpty(cn.tree) &&
+      if (R.keys(cn.tree).length === 0 &&
           cn.subs.length === 0) {
         delete node.tree[k];
       }
     } else {
-      _.find(node.subs, function(z,n) {
+      pos= -1;
+      R.find(function(z) {
+        pos += 1;
         if (z.id === sub.id) {
           delete this.allSubs[z.id];
-          node.subs.splice(n,1);
+          node.subs.splice(pos,1);
           return true;
         }
         return false;
-      }, this);
+      }.bind(this), node.subs);
     }
   },
 
@@ -178,10 +178,10 @@ var EventBus = sjs.Class.xtends({
   // invoke subscribers, and for non repeating ones, remove them from
   // the list.
   pkRun: function(topic, node, msg) {
-    var cs= _.isObject(node) ? node.subs : [],
+    var cs= sjs.echt(node) ? node.subs : [],
     rc=false,
     purge=false;
-    _.each(cs, function (z) {
+    R.forEach(function (z) {
       if (z.active &&
           sjs.echt(z.action)) {
         // pass along any extra parameters, if any.
@@ -195,19 +195,19 @@ var EventBus = sjs.Class.xtends({
         }
         rc = true;
       }
-    }, this);
+    }.bind(this), cs);
     // get rid of unwanted ones, and reassign new set to the node.
     if (purge && cs.length > 0) {
-      node.subs= _.filter(cs,function(z) {
+      node.subs= R.filter(function(z) {
         if (z.action) { return true; } else { return false; }
-      });
+      },cs);
     }
     return rc;
   },
 
   // find or create a new child node.
   pkDoSub: function(node,token) {
-    if ( ! _.has(node.tree, token)) {
+    if ( ! sjs.hasKey(node.tree, token)) {
       node.tree[token] = mkTreeNode();
     }
     return node.tree[token];
@@ -220,12 +220,35 @@ var EventBus = sjs.Class.xtends({
 
 });
 
-global.ZotohLab.MakeEventBus = function() {
-  return new EventBus();
+return EventBus;
+
 }
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+
+    if(typeof gDefine === 'function' && gDefine.amd) {
+
+        gDefine("cherimoia/ebus", ['cherimoia/skarojs'], moduleFactory);
+
+    } else if (typeof module !== 'undefined' && module.exports) {
+
+        module.exports = moduleFactory(require('cherimoia/skarojs'));
+
+    } else {
+
+        global['cherimoia']['ebus'] = moduleFactory(global.cherimoia.skarojs);
+
+    }
+
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
+
 

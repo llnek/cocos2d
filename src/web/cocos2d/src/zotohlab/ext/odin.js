@@ -11,10 +11,9 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
  ??*/
 
-(function(undef) { "use strict"; var global = this, _ = global._ ;
+function moduleFactory(sjs, asterix, undef) { "use strict";
 
-var sjs= global.SkaroJS,
-Events = {
+var Events = {
 
 // Event type
 NETWORK_MSG           : 1,
@@ -62,7 +61,7 @@ S_CONNECTED           : 1
 //
 function mkEvent(eventType, code, payload) {
   return {
-    timeStamp: _.now(),
+    timeStamp: sjs.now(),
     type: eventType,
     code: code,
     source: payload
@@ -101,14 +100,14 @@ function json_decode(e) {
   } catch (e) {
     evt= {};
   }
-  if (! _.has(evt, 'type')) {
+  if (! sjs.hasKey(evt, 'type')) {
     evt.type= -1;
   }
-  if (! _.has(evt, 'code')) {
+  if (! sjs.hasKey(evt, 'code')) {
     evt.code= -1;
   }
-  if (_.has(evt, 'source') &&
-      _.isString(evt.source)) {
+  if (sjs.hasKey(evt, 'source') &&
+      sjs.isString(evt.source)) {
     // assume json for now
     evt.source = JSON.parse(evt.source);
   }
@@ -141,7 +140,7 @@ var Session= sjs.Class.xtends({
   subscribe: function(eventType, code, callback, target) {
     var h= this.ebus.on(["/",eventType,"/",code].join(''),
                         callback, target);
-    if (_.isArray(h) && h.length > 0) {
+    if (sjs.isArray(h) && h.length > 0) {
       // store the handle ids for clean up
       //this.handlers=this.handlers.concat(h);
       this.handlers.push(h[0]);
@@ -244,18 +243,39 @@ var Session= sjs.Class.xtends({
 });
 
 
-global.ZotohLab.Odin= {
-
-  newSession: function(config) {
-    return new Session(config);
-  },
-
+return {
+  newSession: function(cfg) { return new Session(cfg); },
   Events: Events
 };
+
+
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+
+  if(typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("cherimoia/zotohlab/asterix/odin",
+            ['cherimoia/skarojs','cherimoia/zotohlab/asterix'],
+            moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+
+    module.exports = moduleFactory(require('cherimoia/skarojs'),
+                                   require('cherimoia/zotohlab/asterix'));
+  } else {
+
+    global['cherimoia']['zotohlab']['asterix']['odin'] = moduleFactory(global.cherimoia.skarojs, global.cherimoia.zotohlab.asterix);
+  }
 
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
+
 

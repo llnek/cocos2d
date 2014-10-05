@@ -9,13 +9,10 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this, _ = global._ ;
+function moduleFactory(sjs,asterix,undef) { "use strict";
 
-var asterix= global.ZotohLab.Asterix,
-sh= global.ZotohLab.Asterix,
-sjs=global.SkaroJS,
-STICKY_THRESHOLD= 0.0004;
-
+var R = sjs.ramda,
+sh= asterix;
 
 //////////////////////////////////////////////////////////////////////////////
 // monkey patch stuff that we want to extend
@@ -43,10 +40,8 @@ cc.Director.prototype.replaceRootScene = function(scene) {
 
 
 //////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
-
-asterix.COCOS2DX = {
+//
+var ccsx = {
 
   //test collision of 2 entities
   collide2: function(a,b) {
@@ -373,11 +368,35 @@ asterix.COCOS2DX = {
 
 };
 
-asterix.CCS2DX= asterix.COCOS2DX;
+return ccsx;
+}
 
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+
+  if(typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("cherimoia/zotohlab/asterix/ccsx",
+              ['cherimoia/skarojs', 'cherimoia/zotohlab/asterix'],
+              moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+
+    module.exports = moduleFactory( require('cherimoia/skarojs'),
+                                     require('cherimoia/zotohlab/asterix'));
+  } else {
+
+    global['cherimoia']['zotohlab']['asterix']['ccsx'] = moduleFactory(global.cherimoia.skarojs, global.cherimoia.zotohlab.asterix);
+  }
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
+
+
+
 

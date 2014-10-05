@@ -1,60 +1,71 @@
 /*
  *
- *	name: dbg
+ *  name: dbg
  *
- *	description: A bad ass little console utility, check the README for deets
+ *  description: A bad ass little console utility, check the README for deets
  *
- *	license: MIT-style license
+ *  license: MIT-style license
  *
- *	author: Amadeus Demarzi
+ *  author: Amadeus Demarzi
  *
- *	provides: window.dbg
+ *  provides: window.dbg
  *
  */
+(function(undef) { "use strict"; var global=this, gDefine=global.define;
 
-(function(){
+  // Get the real console or set to null for easy boolean checks
+  var realConsole = global.console || null,
 
-	var global = this,
+  // Backup / Disabled Lambda
+  fn = function(){},
+  DBG= {},
 
-		// Get the real console or set to null for easy boolean checks
-		realConsole = global.console || null,
+  // Supported console methods
+  methodNames = ['log', 'error', 'warn', 'info', 'count', 'debug', 'profileEnd', 'trace', 'dir', 'dirxml', 'assert', 'time', 'profile', 'timeEnd', 'group', 'groupEnd'],
 
-		// Backup / Disabled Lambda
-		fn = function(){},
+  // Disabled Console
+  disabledConsole = {
 
-		// Supported console methods
-		methodNames = ['log', 'error', 'warn', 'info', 'count', 'debug', 'profileEnd', 'trace', 'dir', 'dirxml', 'assert', 'time', 'profile', 'timeEnd', 'group', 'groupEnd'],
+    // Enables dbg, if it exists, otherwise it just provides disabled
+    enable: function(quiet){
+      DBG = realConsole ? realConsole : disabledConsole;
+    },
 
-		// Disabled Console
-		disabledConsole = {
+    // Disable dbg
+    disable: function(){
+      DBG = disabledConsole;
+    }
 
-			// Enables dbg, if it exists, otherwise it just provides disabled
-			enable: function(quiet){
-				global.dbg = realConsole ? realConsole : disabledConsole;
-			},
+  }, name, i;
 
-			// Disable dbg
-			disable: function(){
-				global.dbg = disabledConsole;
-			}
+  // Setup disabled console and provide fallbacks on the real console
+  for (i = 0; i < methodNames.length;i++){
+    name = methodNames[i];
+    disabledConsole[name] = fn;
+    if (realConsole && !realConsole[name])
+      realConsole[name] = fn;
+  }
 
-		}, name, i;
+  // Add enable/disable methods
+  if (realConsole) {
+    realConsole.disable = disabledConsole.disable;
+    realConsole.enable = disabledConsole.enable;
+  }
 
-	// Setup disabled console and provide fallbacks on the real console
-	for (i = 0; i < methodNames.length;i++){
-		name = methodNames[i];
-		disabledConsole[name] = fn;
-		if (realConsole && !realConsole[name])
-			realConsole[name] = fn;
-	}
+  // Enable dbg
+  disabledConsole.enable();
 
-	// Add enable/disable methods
-	if (realConsole) {
-		realConsole.disable = disabledConsole.disable;
-		realConsole.enable = disabledConsole.enable;
-	}
-
-	// Enable dbg
-	disabledConsole.enable();
+//kenl
+//exports to multiple environments
+if(typeof gDefine === 'function' && gDefine.amd){ //AMD
+    gDefine('console/dbg',[], function() { return DBG; });
+} else if (typeof module !== 'undefined' && module.exports){ //node
+    module.exports = DBG;
+} else { //browser
+    global['dbg'] = DBG;
+}
 
 }).call(this);
+
+
+
