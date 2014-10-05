@@ -9,7 +9,7 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function(sjs,asterix,undef) { "use strict";
+function moduleFactory(sjs, asterix, undef) { "use strict";
 
 var sh= asterix,
 R= sjs.ramda,
@@ -162,17 +162,16 @@ return config;
 
   if(typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("cherimoia/zotohlab/asterix/xcfg",
-              ['cherimoia/skarojs', 'cherimoia/zotohlab/asterix'],
+    gDefine("cherimoia/zlab/asterix/xcfg",
+              ['cherimoia/skarojs', 'cherimoia/zlab/asterix'],
               moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {
-
-    module.exports = moduleFactory( require('cherimoia/skarojs'),
-                                     require('cherimoia/zotohlab/asterix'));
   } else {
 
-    global['cherimoia']['zotohlab']['asterix']['xcfg'] = moduleFactory(global.cherimoia.skarojs, global.cherimoia.zotohlab.asterix);
+    global['cherimoia']['zlab']['asterix']['xcfg'] =
+      moduleFactory(global.cherimoia.skarojs,
+                    global.cherimoia.zlab.asterix);
   }
 
 }).call(this);

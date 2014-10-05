@@ -9,14 +9,10 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this, _ = global._ ;
-
-var sjs= global.SkaroJS;
+function moduleFactory(sjs, undef) { "use strict";
 
 //////////////////////////////////////////////////////////////////////
-// classes
-//////////////////////////////////////////////////////////////////////
-
+//
 var Circle = sjs.Class.xtends({
 
   draw: function(ctx, styleObj) {
@@ -84,7 +80,7 @@ var TextStyle = sjs.Class.xtends({
 
 });
 
-global.ZotohLab.UI = {
+return {
 
   TextStyle: TextStyle,
   Circle: Circle,
@@ -95,8 +91,29 @@ global.ZotohLab.UI = {
 };
 
 
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+
+  if(typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("cherimoia/uiwigets", ['cherimoia/skarojs'], moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+
+    global['cherimoia']['uiwidgets'] = moduleFactory(global.cherimoia.skarojs);
+
+  }
+
+
 }).call(this);
 
-//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 //EOF
+
 

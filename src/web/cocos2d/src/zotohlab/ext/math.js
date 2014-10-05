@@ -9,11 +9,17 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global= this, _ = global._ ;
+function moduleFactory(sjs, undef) { "use strict";
 
-var asterix= global.ZotohLab.Asterix,
-sjs= global.SkaroJS;
+//////////////////////////////////////////////////////////////////////////////
+//
+function radToDeg(rad) {
+  return 180 * rad / Math.PI;
+}
 
+function degToRad(deg) {
+  return deg * Math.PI / 180;
+}
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -27,7 +33,7 @@ var Vector2 = sjs.Class.xtends({
   },
 
   rotate: function(cx, cy, deg) {
-    var rad = asterix.degToRad(deg);
+    var rad = degToRad(deg);
     var a= [cx + (Math.cos(rad) * (this.x - cx) - Math.sin(rad) * (this.y - y0)),
             cy + (Math.sin(rad) * (this.x - cx) + Math.cos(rad) * (this.y - y0)) ];
     this.x= a[0];
@@ -63,11 +69,36 @@ var Vector2 = sjs.Class.xtends({
 
 });
 
-asterix.Vector2= Vector2;
+
+
+return {
+  Vector2: Vector2
+};
+
+
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+
+  if(typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("cherimoia/math", ['cherimoia/skarojs'], moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+
+    global['cherimoia']['math'] = moduleFactory(global.cherimoia.skarojs);
+
+  }
 
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
+
 

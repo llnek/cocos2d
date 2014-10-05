@@ -11,7 +11,7 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
  ??*/
 
-function moduleFactory(sjs, asterix, undef) { "use strict";
+function moduleFactory(sjs, EventBus, asterix, undef) { "use strict";
 
 var Events = {
 
@@ -123,8 +123,8 @@ var Session= sjs.Class.xtends({
   },
 
   ctor: function(config) {
-    this.ebus= global.ZotohLab.MakeEventBus();
     this.state= Events.S_NOT_CONNECTED;
+    this.ebus= new EventBus();
     this.handlers= [];
     this.options=config;
     this.ws = null;
@@ -175,7 +175,7 @@ var Session= sjs.Class.xtends({
 
   close: function () {
     this.state= Events.S_NOT_CONNECTED;
-    if (sjs.echt(this.ws)) {
+    if (!!this.ws) {
       this.reset();
       try {
         this.ws.close();
@@ -259,17 +259,17 @@ return {
 
   if(typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("cherimoia/zotohlab/asterix/odin",
-            ['cherimoia/skarojs','cherimoia/zotohlab/asterix'],
+    gDefine("cherimoia/zlab/asterix/odin",
+            ['cherimoia/skarojs','cherimoia/ebus','cherimoia/zlab/asterix'],
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {
-
-    module.exports = moduleFactory(require('cherimoia/skarojs'),
-                                   require('cherimoia/zotohlab/asterix'));
   } else {
 
-    global['cherimoia']['zotohlab']['asterix']['odin'] = moduleFactory(global.cherimoia.skarojs, global.cherimoia.zotohlab.asterix);
+    global['cherimoia']['zlab']['asterix']['odin'] =
+      moduleFactory(global.cherimoia.skarojs,
+                    global.cherimoia.ebus,
+                    global.cherimoia.zlab.asterix);
   }
 
 

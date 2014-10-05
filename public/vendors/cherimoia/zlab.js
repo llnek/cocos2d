@@ -22,19 +22,16 @@ return {};
 (function () { "use strict"; var global=this, gDefine=global.define;
 
 
-    if(typeof gDefine === 'function' && gDefine.amd) {
+  if(typeof gDefine === 'function' && gDefine.amd) {
 
-        gDefine("cherimoia/zotohlab", ['cherimoia/skarojs'], moduleFactory);
+    gDefine("cherimoia/zlab", ['cherimoia/skarojs'], moduleFactory);
 
-    } else if (typeof module !== 'undefined' && module.exports) {
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
 
-        module.exports = moduleFactory(require('cherimoia/skarojs'));
+    global['cherimoia']['zlab'] = moduleFactory(global.cherimoia.skarojs);
 
-    } else {
-
-        global['cherimoia']['zotohlab'] = moduleFactory(global.cherimoia.skarojs);
-
-    }
+  }
 
 
 }).call(this);

@@ -9,19 +9,11 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global = this, _ = global._ ;
-
-var sjs= global.SkaroJS,
-PINF = 1000000;
-
-global.ZotohLab.NegaMax= {
-  INF: PINF
-};
+function moduleFactory(sjs, undef) { "use strict";
+var PINF = 1000000;
 
 //////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
-
+//
 function negamax(board, game, maxDepth, depth, alpha, beta) {
 
   if (depth === 0 || board.isOver(game)) {
@@ -61,38 +53,62 @@ function negamax(board, game, maxDepth, depth, alpha, beta) {
   return bestValue;
 };
 
-global.ZotohLab.NegaMax.Algo = sjs.Class.xtends({
 
-  getGameBoard: function() {
-    return this.board;
-  },
 
-  ctor: function(board) {
-    this.board= board;
-  },
+return {
 
-  eval: function() {
-    var snapshot= this.board.takeSnapshot();
-    negamax(this.board, snapshot, 10, 10, -PINF, PINF);
-    return snapshot.lastBestMove;
+  Algo: sjs.Class.xtends({
+
+    getGameBoard: function() { return this.board; },
+    ctor: function(board) { this.board= board; },
+    eval: function() {
+      var snapshot= this.board.takeSnapshot();
+      negamax(this.board, snapshot, 10, 10, -PINF, PINF);
+      return snapshot.lastBestMove;
+    }
+
+  }),
+
+  Snapshot: sjs.Class.xtends({
+
+    ctor: function() {
+      this.lastBestMove= null;
+      this.other= null;
+      this.cur= null;
+      this.state= null;
+    }
+
+  }),
+
+  INF: PINF
+
+};
+
+
+
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+
+  if(typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("cherimoia/negamax", ['cherimoia/skarojs'], moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+
+    global['cherimoia']['negamax'] = moduleFactory(global.cherimoia.skarojs);
+
   }
-
-});
-
-global.ZotohLab.NegaMax.Snapshot = sjs.Class.xtends({
-
-  lastBestMove: null,
-  other: null,
-  cur: null,
-  state: null,
-
-  ctor: function() {}
-
-});
 
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
+
 

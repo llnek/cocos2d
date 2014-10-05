@@ -379,17 +379,15 @@ return ccsx;
 
   if(typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("cherimoia/zotohlab/asterix/ccsx",
-              ['cherimoia/skarojs', 'cherimoia/zotohlab/asterix'],
+    gDefine("cherimoia/zlab/asterix/ccsx",
+              ['cherimoia/skarojs', 'cherimoia/zlab/asterix'],
               moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {
-
-    module.exports = moduleFactory( require('cherimoia/skarojs'),
-                                     require('cherimoia/zotohlab/asterix'));
   } else {
 
-    global['cherimoia']['zotohlab']['asterix']['ccsx'] = moduleFactory(global.cherimoia.skarojs, global.cherimoia.zotohlab.asterix);
+    global['cherimoia']['zlab']['asterix']['ccsx'] =
+      moduleFactory(global.cherimoia.skarojs, global.cherimoia.zlab.asterix);
   }
 
 }).call(this);

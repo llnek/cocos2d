@@ -354,21 +354,23 @@ return skarojs;
 (function () { "use strict"; var global=this, gDefine=global.define;
 
 
-    if(typeof gDefine === 'function' && gDefine.amd) {
+  if(typeof gDefine === 'function' && gDefine.amd) {
 
-        gDefine("cherimoia/skarojs",
-                ['global/window','console/dbg','ramda'],
-                moduleFactory);
+    gDefine("cherimoia/skarojs",
+            ['global/window','console/dbg','ramda'],
+            moduleFactory);
 
-    } else if (typeof module !== 'undefined' && module.exports) {
+  } else if (typeof module !== 'undefined' && module.exports) {
 
-        module.exports = moduleFactory(global, console, require('ramda'));
+    //module.exports = moduleFactory(global, console, require('ramda'));
 
-    } else {
+  } else {
 
-        global['cherimoia'] = {};
-        global['cherimoia']['skarojs'] = moduleFactory(global, global.dbg, global.R);
-    }
+    global['cherimoia'] = {
+      skarojs: moduleFactory(global, global.dbg, global.R)
+    };
+
+  }
 
 
 }).call(this);

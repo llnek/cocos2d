@@ -9,16 +9,15 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global=this, _ = global._ ;
+function moduleFactory(sjs, asterix, Cookies, undef) { "use strict";
 
-var asterix= global.ZotohLab.Asterix,
-sjs= global.SkaroJS,
-CKS= global.Cookies;
+var R = sjs.ramda,
+sh= asterix,
+CKS= Cookies;
+
 
 ////////////////////////////////////////////////////////////////////
-//// score class
-///////////////////////////////////////////////////////////////////
-
+//
 function mkScore(n,v) {
   return {
     value: Number(v.trim()),
@@ -26,21 +25,24 @@ function mkScore(n,v) {
   };
 }
 
-
-asterix.HighScores= sjs.Class.xtends({
+////////////////////////////////////////////////////////////////////
+//
+var HighScores= sjs.Class.xtends({
 
   read: function() {
     var s = CKS.get(this.KEY) || '',
-    ts = _.without(s.split('|'), '');
+    ts = R.reject(function(z) {
+      return z.length===0;
+    }, s.split('|'));
 
     //this.reset();
-    this.scores= _.reduce(ts, function(memo,z) {
-      var a = _.without(z.split(':'), '');
+    this.scores= R.reduce(function(memo,z) {
+      var a = R.reject(function (z) { return z.length===0; }, z.split(':'));
       if (a.length === 2) {
         memo.push(mkScore(a[0], a[1]));
       }
       return memo;
-    }, []);
+    }.bind(this), [], ts);
   },
 
   reset: function() {
@@ -48,9 +50,9 @@ asterix.HighScores= sjs.Class.xtends({
   },
 
   write: function() {
-    var rc= _.map(this.scores, function(z) {
+    var rc= R.map(function(z) {
       return z.name + ':' + n.value;
-    });
+    }, this.scores);
     CKS.set(this.KEY, rc.join('|'), this.duration);
   },
 
@@ -62,9 +64,9 @@ asterix.HighScores= sjs.Class.xtends({
     if (this.hasSlots()) {
       return true;
     } else {
-      return _.some(this.scores, function(z) {
+      return R.some(function(z) {
         return z.value < score;
-      });
+      }, this.scores);
     }
   },
 
@@ -128,9 +130,34 @@ asterix.HighScores= sjs.Class.xtends({
 
 
 
+return HighScores;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+
+  if(typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("cherimoia/zlab/asterix/highscores",
+              ['cherimoia/skarojs', 'cherimoia/zlab/asterix','Cookies'],
+              moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+
+    global['cherimoia']['zlab']['asterix']['highscores'] =
+      moduleFactory(global.cherimoia.skarojs,
+                    global.cherimoia.zlab.asterix,
+                    global.Cookies);
+  }
 
 }).call(this);
 
-////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
 //EOF
+
+
 

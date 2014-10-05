@@ -231,11 +231,11 @@ if (typeof document !== undef_type) {
 //kenl
 //exports to multiple environments
 if(typeof gDefine === 'function' && gDefine.amd){ //AMD
-    gDefine('eligrey/l10n',[], function() {});
+    gDefine('eligrey/l10njs',[], function() {});
 } else if (typeof module !== 'undefined' && module.exports){ //node
     module.exports = {};
 } else { //browser
-    //global[''] = {};
+    global['l10njs'] = {};
 }
 
 

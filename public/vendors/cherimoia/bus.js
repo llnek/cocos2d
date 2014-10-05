@@ -231,19 +231,16 @@ return EventBus;
 (function () { "use strict"; var global=this, gDefine=global.define;
 
 
-    if(typeof gDefine === 'function' && gDefine.amd) {
+  if(typeof gDefine === 'function' && gDefine.amd) {
 
-        gDefine("cherimoia/ebus", ['cherimoia/skarojs'], moduleFactory);
+    gDefine("cherimoia/ebus", ['cherimoia/skarojs'], moduleFactory);
 
-    } else if (typeof module !== 'undefined' && module.exports) {
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
 
-        module.exports = moduleFactory(require('cherimoia/skarojs'));
+    global['cherimoia']['ebus'] = moduleFactory(global.cherimoia.skarojs);
 
-    } else {
-
-        global['cherimoia']['ebus'] = moduleFactory(global.cherimoia.skarojs);
-
-    }
+  }
 
 
 }).call(this);

@@ -9,19 +9,77 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use stricts"; var global = this, _ = global._ ;
-
-var asterix= global.ZotohLab.Asterix,
-sh= global.ZotohLab.Asterix,
-ccsx = asterix.COCOS2DX,
-sjs = global.SkaroJS;
+function moduleFactory(sjs, asterix, ccsx, xcfg, Ash, undef) { "use stricts";
+var sh = asterix,
+SEED = 0;
 
 
 //////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
+//
+var XLayer = cc.Layer.extend({
 
-asterix.XGameLayer = asterix.XLayer.extend({
+  lastTag: 0,
+  lastZix: 0,
+
+  pkInit: function() {
+    this.pkInput();
+    return true;
+  },
+
+  pkInput: function() {
+  },
+
+  rtti: function() {
+    return "" + Number(SEED++);
+  },
+
+  getNode: function() {
+    return this;
+  },
+
+  removeAllItems: function(c) {
+    this.getNode().removeAllChildren(c || true);
+  },
+
+  removeItem: function(n,c) {
+    this.getNode().removeChild(n,c || true);
+  },
+
+  addItem: function(n,zx,tag) {
+    var zOrder = sjs.echt(zx) ? zx : this.lastZix,
+    p= this.getNode(),
+    ptag = tag;
+
+    if (! sjs.echt(ptag)) {
+      ptag = ++this.lastTag;
+    }
+
+    if (p instanceof cc.SpriteBatchNode &&
+        n instanceof cc.Sprite) {
+      n.setBatchNode(p);
+    }
+
+    p.addChild(n, zOrder, ptag);
+  },
+
+  setParent: function(par) {
+    this.ptScene=par;
+  },
+
+  init: function() {
+    return this._super() ? this.pkInit() : false;
+  },
+
+  ctor: function(options) {
+    this.options = options || {};
+    this._super();
+  }
+
+});
+
+//////////////////////////////////////////////////////////////////////////////
+//
+var XGameLayer = XLayer.extend({
 
   keyboard: [],
   players: [],
@@ -30,22 +88,22 @@ asterix.XGameLayer = asterix.XLayer.extend({
 
   pkInput: function() {
     if (cc.sys.capabilities['keyboard']) {
-      cc.log('pkInput:  keyboard supported');
+      sjs.loggr.debug('pkInput:  keyboard supported');
       this.cfgInputKeyPad();
     }else{
-      cc.log('pkInput:  keyboard not supported');
+      sjs.loggr.debug('pkInput:  keyboard not supported');
     }
     if (cc.sys.capabilities['mouse']) {
-      cc.log('pkInput:  mouse supported');
+      sjs.loggr.debug('pkInput:  mouse supported');
       this.cfgInputMouse();
     }else{
-      cc.log('pkInput:  mouse not supported');
+      sjs.loggr.debug('pkInput:  mouse not supported');
     }
     if (cc.sys.capabilities['touches']) {
-      cc.log('pkInput:  touch supported');
+      sjs.loggr.debug('pkInput:  touch supported');
       this.cfgInputTouchOne();
     }else{
-      cc.log('pkInput:  touch not supported');
+      sjs.loggr.debug('pkInput:  touch not supported');
     }
   },
 
@@ -72,7 +130,7 @@ asterix.XGameLayer = asterix.XLayer.extend({
 
   //TODO: handle touch drag and move
   processEvent:function (event) {
-    cc.log('event === ' + JSON.stringify(event));
+    sjs.loggr.debug('event === ' + JSON.stringify(event));
     /*
     var delta = event.getDelta();
     var curPos = cc.p(this._ship.x, this._ship.y);
@@ -113,7 +171,7 @@ asterix.XGameLayer = asterix.XLayer.extend({
 
   onTouchBegan: function(touch,event) {
     var pt= touch.getLocation();
-    cc.log("touch location [" + pt.x + "," + pt.y + "]");
+    sjs.loggr.debug("touch location [" + pt.x + "," + pt.y + "]");
     this.onclicked(pt.x, pt.y);
     return true;
   },
@@ -133,7 +191,7 @@ asterix.XGameLayer = asterix.XLayer.extend({
 
   onMouseUp: function(evt) {
     var pt= evt.getLocation();
-    cc.log("mouse location [" + pt.x + "," + pt.y + "]");
+    sjs.loggr.debug("mouse location [" + pt.x + "," + pt.y + "]");
     this.onclicked(pt.x, pt.y);
   },
 
@@ -146,7 +204,7 @@ asterix.XGameLayer = asterix.XLayer.extend({
   },
 
   getEnclosureRect: function() {
-    var csts = sh.xcfg.csts,
+    var csts = xcfg.csts,
     wz = ccsx.screen();
     return { top: wz.height - csts.TILE,
              left: csts.TILE,
@@ -155,7 +213,7 @@ asterix.XGameLayer = asterix.XLayer.extend({
   },
 
   setGameMode: function(mode) {
-    sh.xcfg.csts.GAME_MODE=mode;
+    xcfg.csts.GAME_MODE=mode;
   },
 
   cleanSlate: function() {
@@ -163,7 +221,7 @@ asterix.XGameLayer = asterix.XLayer.extend({
   },
 
   newGame: function(mode) {
-    if (sh.xcfg.sound.open) {
+    if (xcfg.sound.open) {
       cc.audioEngine.stopAllEffects();
       cc.audioEngine.stopMusic();
     }
@@ -215,13 +273,50 @@ asterix.XGameLayer = asterix.XLayer.extend({
 
 });
 
-Object.defineProperty(asterix.XGameLayer.prototype, "keys", {
+Object.defineProperty(XGameLayer.prototype, "keys", {
   get: function() { return this.keyboard; }
 });
 
+
+return {
+  XGameLayer: XGameLayer,
+  XLayer: XLayer
+};
+
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+
+  if(typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("cherimoia/zlab/asterix/xlayers",
+            ['cherimoia/skarojs',
+             'cherimoia/zlab/asterix',
+             'cherimoia/zlab/asterix/ccsx',
+             'cherimoia/zlab/asterix/xcfg',
+             'ash-js'],
+            moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+
+    global['cherimoia']['zlab']['asterix']['xlayers'] =
+      moduleFactory(global.cherimoia.skarojs,
+                    global.cherimoia.zlab.asterix,
+                    global.cherimoia.zlab.asterix.ccsx,
+                    global.cherimoia.zlab.asterix.xcfg,
+                    global.Ash);
+
+  }
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
+
+
 
