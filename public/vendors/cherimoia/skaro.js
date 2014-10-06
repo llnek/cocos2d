@@ -9,10 +9,9 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
+function moduleFactory(global, DBG, R) { "use strict";
 
-function moduleFactory(global, DBG, R, undef) { "use strict";
-
-var fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
+var undef, fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
 var ZEROS= "00000000000000000000000000000000";  //32
 
 if (typeof HTMLElement === 'undefined') {
@@ -337,6 +336,15 @@ var skarojs = {
 
   hasKey: function(obj, key) {
     return !!obj && Object.prototype.hasOwnProperty.call(obj, key);
+  },
+
+  //since R doesn't handle object :(
+  reduceObj: function(f, memo, obj) {
+    return R.reduce(function(sum, pair) {
+      return f(sum, pair[1], pair[0]);
+    },
+    memo,
+    R.toPairs(obj));
   },
 
   logger: DBG,

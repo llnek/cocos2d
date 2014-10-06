@@ -9,24 +9,20 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this, _ = global._ ;
-
-var asterix= global.ZotohLab.Asterix,
-ccsx= asterix.CCS2DX,
-sjs= global.SkaroJS,
-sh= asterix,
-ttt= sh.TicTacToe,
-utils= ttt.SystemUtils;
-
+function moduleFactory(sjs, sh, xcfg, ccsx,
+                       gnodes,
+                       utils,
+                       Ash) { "use strict";
+var csts= xcfg.csts,
+undef;
 
 
 //////////////////////////////////////////////////////////////////////////////
 //
-ttt.ResolutionSystem = Ash.System.extend({
+var ResolutionSystem = Ash.System.extend({
 
   constructor: function(options) {
     this.state= options;
-    return this;
   },
 
   removeFromEngine: function(engine) {
@@ -34,31 +30,31 @@ ttt.ResolutionSystem = Ash.System.extend({
   },
 
   addToEngine: function(engine) {
-    this.nodeList = engine.getNodeList(ttt.BoardNode);
+    this.nodeList = engine.getNodeList(gnodes.BoardNode);
   },
 
   update: function (dt) {
-    if (this.state.running) {
-      for (var node = this.nodeList.head; node; node=node.next) {
-        this.process(node, dt);
-      }
+    if (!!this.nodeList.head &&
+        this.state.running) {
+      this.process(this.nodeList.head, dt);
     }
   },
 
   process: function(node, dt) {
     var values= node.grid.values,
     msg,
+    rc,
     result;
 
-    if (_.find(this.state.players,function(p) {
+    if (R.find(function(p) {
       if (p) {
-        var rc= this.checkWin(p,values);
+        rc= this.checkWin(p,values);
         if (rc) {
-          return result=[p,rc];
+          return result=[p, rc];
         }
       }
-    },this)) {
-      this.doWin(node, result[0],result[1]);
+    }.bind(this), this.state.players)) {
+      this.doWin(node, result[0], result[1]);
     }
     else
     if (this.checkDraw(values)) {
@@ -88,7 +84,7 @@ ttt.ResolutionSystem = Ash.System.extend({
     var other = this.state.actor===1 ? 2 : this.state.actor===2 ? 1 : 0;
     var tv = this.state.players[this.state.actor];
     var win= this.state.players[other];
-    var cells = node.view.cells,
+    var cs = node.view.cells,
     v2= -1,
     layer= node.view.layer;
 
@@ -101,69 +97,93 @@ ttt.ResolutionSystem = Ash.System.extend({
                   score: 1});
 
     //gray out the losing icons
-    _.each(cells, function(z,n) {
-      if (z && z[4] === v2) {
+    R.forEach.idx(function(z, n) {
+      if (!!z && z[4] === v2) {
         layer.removeItem(z[0]);
-        z[0] = utils.drawSymbol(node.view, z[1],z[2],z[3]+2);
+        z[0] = utils.drawSymbol(node.view, z[1], z[2], z[3]+2);
       }
-    }, this);
+    }.bind(this), cs);
 
-    this.doDone(node,win,null);
+    this.doDone(node, win, null);
   },
 
   // flip all other icons except for the winning ones.
   showWinningIcons: function(view, combo) {
-    var cells = view.cells,
-    layer= view.layer;
+    var layer= view.layer,
+    cs = view.cells;
 
     if (combo===null) { return; }
 
-    _.each(cells, function(z,n) {
-      if (! _.contains(combo,n)) { if (z) {
+    R.forEach.idx(function(z, n) {
+      if (! R.contains(n, combo)) { if (z) {
         layer.removeItem(z[0]);
-        z[0] = utils.drawSymbol(view, z[1],z[2],z[3]+2);
+        z[0] = utils.drawSymbol(view, z[1], z[2], z[3]+2);
       } }
-    }, this);
+    }.bind(this), cs);
   },
 
-  doDone: function(node, pobj,combo) {
+  doDone: function(node, pobj, combo) {
 
     this.showWinningIcons(node.view, combo);
     sh.fireEvent('/game/hud/timer/hide');
     sh.sfxPlay('game_end');
     sh.fireEvent('/game/hud/end');
 
-    this.state.lastWinner = pobj ? pobj.pnum : null;
+    this.state.lastWinner = !!pobj ? pobj.pnum : null;
     this.state.running=false;
   },
 
   checkDraw: function(values) {
-    return ! (0 === _.find(values,function(v) {
-      return (v === sh.xcfg.csts.CV_Z);
-    }));
+    return ! (0 === R.find(function(v) {
+      return (v === csts.CV_Z);
+    }, values));
   },
 
   checkWin: function(actor, game) {
     //sjs.loggr.debug('checking win for ' + actor.color);
     var combo,
-    rc= _.some(this.state.GOALSPACE, function(r) {
+    rc= R.some(function(r) {
       combo=r;
-      return _.every(_.map(r, function(i) {
-        return game[i];
-      }), function(n) {
+      return R.every(function(n) {
         return actor.value === n;
-      });
-    });
+      },
+      R.map(function(i) {
+        return game[i];
+      }, r));
+    }, this.state.GOALSPACE);
     return rc ? combo : null;
   }
 
 });
 
+return ResolutionSystem;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+  if (typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("zotohlab/p/s/resolution",
+            ['cherimoia/skarojs',
+             'zotohlab/asterix',
+             'zotohlab/asx/xcfg',
+             'zotohlab/asx/ccsx',
+             'zotohlab/p/gnodes',
+             'zotohlab/p/s/utils',
+             'ash-js'],
+            moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+  }
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
+
 
 
 

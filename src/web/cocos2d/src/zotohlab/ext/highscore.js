@@ -9,10 +9,9 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, asterix, Cookies, undef) { "use strict";
-
+function moduleFactory(sjs, sh, Cookies) { "use strict";
 var R = sjs.ramda,
-sh= asterix;
+undef;
 
 ////////////////////////////////////////////////////////////////////
 //
@@ -134,8 +133,8 @@ return HighScores;
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("cherimoia/zlab/asterix/highscores",
-            ['cherimoia/skarojs', 'cherimoia/zlab/asterix','Cookies'],
+    gDefine("zotohlab/asx/highscores",
+            ['cherimoia/skarojs', 'zotohlab/asterix','Cookies'],
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

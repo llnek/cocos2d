@@ -9,29 +9,31 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this, _ = global._ ;
-
-var asterix= global.ZotohLab.Asterix,
-Odin= global.ZotohLab.Odin,
-ccsx= asterix.CCS2DX,
-sjs= global.SkaroJS,
-sh= asterix,
-ttt= sh.TicTacToe,
-evts= Odin.Events;
-
+function moduleFactory(sjs, sh, xcfg, ccsx,
+                       layers,
+                       scenes,
+                       mmenus,
+                       odin,
+                       huds,
+                       entobjs,
+                       sysobjs) { "use strict";
+var Priorities= sysobjs.Priorities,
+evts= odin.Events,
+R = sjs.ramda,
+undef;
 
 //////////////////////////////////////////////////////////////////////////////
 // game layer
 //////////////////////////////////////////////////////////////////////////////
 
-var GameLayer = asterix.XGameLayer.extend({
+var GameLayer = layers.XGameLayer.extend({
 
   onStop: function(evt) {
     this.options.netQ.push(evt);
   },
 
   replay: function() {
-    if (_.isObject(this.options.wsock)) {
+    if (sjs.isObject(this.options.wsock)) {
       // request server to restart a new game
       this.options.wsock.send({
         type: evts.SESSION_MSG,
@@ -44,49 +46,54 @@ var GameLayer = asterix.XGameLayer.extend({
 
   play: function(newFlag) {
 
-    var csts= sh.xcfg.csts,
+    var csts= xcfg.csts,
+    popts,
     h= this.getHUD(),
     p1ids, p2ids;
 
-    sh.xcfg.csts.CELLS = this.options.size*this.options.size;
-    sh.xcfg.csts.GRID_SIZE= this.options.size;
+    xcfg.csts.CELLS = this.options.size*this.options.size;
+    xcfg.csts.GRID_SIZE= this.options.size;
 
     // sort out names of players
-    _.each(this.options.ppids,function(v,k) {
+    R.forEach(function(pair) {
+      var v=pair[1],
+      k=pair[0];
       if (v[0] === 1) {
         p1ids= [k, v[1] ];
       } else {
         p2ids= [k, v[1] ];
       }
-    });
+    },
+    R.toPairs(this.options.ppids));
 
     // clean slate
     this.reset(newFlag);
     this.cleanSlate();
 
-    this.options.factory= new ttt.EntityFactory(this.engine);
+    this.options.factory= new sysobjs.EntityFactory(this.engine);
     this.initPlayers();
     this.options.selQ = [];
     this.options.netQ = [];
     this.options.msgQ = [];
+    popts=this.options;
 
-    this.engine.addSystem(new ttt.GameSupervisor(this.options),
-                          ttt.Priorities.PreUpdate);
+    this.engine.addSystem(new sysobjs.GameSupervisor(popts),
+                          Priorities.PreUpdate);
 
-    this.engine.addSystem(new ttt.SelectionSystem(this.options),
-                          ttt.Priorities.Movement);
+    this.engine.addSystem(new sysobjs.SelectionSystem(popts),
+                          Priorities.Movement);
 
-    this.engine.addSystem(new ttt.NetworkSystem(this.options),
-                          ttt.Priorities.Movement);
+    this.engine.addSystem(new sysobjs.NetworkSystem(popts),
+                          Priorities.Movement);
 
-    this.engine.addSystem(new ttt.TurnBaseSystem(this.options),
-                          ttt.Priorities.TurnBase);
+    this.engine.addSystem(new sysobjs.TurnBaseSystem(popts),
+                          Priorities.TurnBase);
 
-    this.engine.addSystem(new ttt.ResolutionSystem(this.options),
-                          ttt.Priorities.Resolve);
+    this.engine.addSystem(new sysobjs.ResolutionSystem(popts),
+                          Priorities.Resolve);
 
-    this.engine.addSystem(new ttt.RenderSystem(this.options),
-                          ttt.Priorities.Render);
+    this.engine.addSystem(new sysobjs.RenderSystem(popts),
+                          Priorities.Render);
 
     if (this.options.wsock) {
       this.options.wsock.unsubscribeAll();
@@ -152,7 +159,7 @@ var GameLayer = asterix.XGameLayer.extend({
   },
 
   initPlayers: function() {
-    var csts= sh.xcfg.csts,
+    var csts= xcfg.csts,
     p2cat,p1cat,
     p2,p1;
 
@@ -170,8 +177,8 @@ var GameLayer = asterix.XGameLayer.extend({
         p1cat= csts.HUMAN;
       break;
     }
-    p1= new ttt.Player(p1cat, csts.CV_X, 1, csts.P1_COLOR);
-    p2= new ttt.Player(p2cat, csts.CV_O, 2, csts.P2_COLOR);
+    p1= new entobjs.Player(p1cat, csts.CV_X, 1, csts.P1_COLOR);
+    p2= new entobjs.Player(p2cat, csts.CV_O, 2, csts.P2_COLOR);
     this.options.players = [null,p1,p2];
     this.options.colors={};
     this.options.colors[csts.P1_COLOR] = p1;
@@ -232,45 +239,75 @@ var GameLayer = asterix.XGameLayer.extend({
 });
 
 
-asterix.TicTacToe.Factory = {
 
-  create: function(options) {
-    var scene = new asterix.XSceneFactory([
-      ttt.BackLayer,
-      GameLayer,
-      ttt.HUDLayer
-    ]).create(options);
+return {
 
-    if (scene) {
-      scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
-        asterix.XMenuLayer.onShowMenu();
-      });
-      scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
-        sh.main.replay();
-      });
-      scene.ebus.on('/game/hud/timer/show',function(t,msg) {
-        sh.main.getHUD().showTimer();
-      });
-      scene.ebus.on('/game/hud/timer/hide',function(t,msg) {
-        sh.main.getHUD().killTimer();
-      });
-      scene.ebus.on('/game/hud/score/update',function(t,msg) {
-        sh.main.getHUD().updateScore(msg.color, msg.score);
-      });
-      scene.ebus.on('/game/hud/end',function(t,msg) {
-        sh.main.getHUD().endGame();
-      });
-      scene.ebus.on('/game/hud/update',function(t,msg) {
-        sh.main.getHUD().update(msg.running, msg.pnum);
-      });
-      scene.ebus.on('/game/player/timer/expired',function(t,msg) {
-        sh.main.playTimeExpired(msg);
-      });
+  'GameArena' : {
+
+    create: function(options) {
+      var scene = new scenes.XSceneFactory([
+        huds.BackLayer,
+        GameLayer,
+        huds.HUDLayer
+      ]).create(options);
+
+      if (scene) {
+        scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
+          mmenus.XMenuLayer.onShowMenu();
+        });
+        scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
+          sh.main.replay();
+        });
+        scene.ebus.on('/game/hud/timer/show',function(t,msg) {
+          sh.main.getHUD().showTimer();
+        });
+        scene.ebus.on('/game/hud/timer/hide',function(t,msg) {
+          sh.main.getHUD().killTimer();
+        });
+        scene.ebus.on('/game/hud/score/update',function(t,msg) {
+          sh.main.getHUD().updateScore(msg.color, msg.score);
+        });
+        scene.ebus.on('/game/hud/end',function(t,msg) {
+          sh.main.getHUD().endGame();
+        });
+        scene.ebus.on('/game/hud/update',function(t,msg) {
+          sh.main.getHUD().update(msg.running, msg.pnum);
+        });
+        scene.ebus.on('/game/player/timer/expired',function(t,msg) {
+          sh.main.playTimeExpired(msg);
+        });
+      }
+      return scene;
     }
-    return scene;
   }
 
 };
+
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+  if (typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("zotohlab/p/arena",
+            ['cherimoia/skarojs',
+             'zotohlab/asterix',
+             'zotohlab/asx/xcfg',
+             'zotohlab/asx/ccsx',
+             'zotohlab/asx/xlayers',
+             'zotohlab/asx/xscenes',
+             'zotohlab/asx/xmmenus',
+             'zotohlab/asx/odin',
+             'zotohlab/p/hud',
+             'zotohlab/p/entobjs',
+             'zotohlab/p/sysobjs'],
+            moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+  }
 
 }).call(this);
 

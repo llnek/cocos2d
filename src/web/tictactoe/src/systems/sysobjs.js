@@ -9,31 +9,43 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this, _ = global._ ;
+function moduleFactory(sjs, sh, xcfg, ccsx,
+                       entobjs,
+                       sysnodes,
+                       Ash) { "use strict";
+var lib= {},
+undef;
 
-var asterix= global.ZotohLab.Asterix,
-negax= global.ZotohLab.NegaMax,
-ccsx= asterix.CCS2DX,
-sjs= global.SkaroJS,
-sh= asterix,
-ttt= sh.TicTacToe;
+
+
+
+
+
+
+
+return lib;
+}
 
 //////////////////////////////////////////////////////////////////////////////
-//
-ttt.SmartAlgo = Ash.Class.extend({
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
 
-  constructor: function(board) {
-    this.algo= new negax.Algo(board);
-    return this;
+  if (typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("zotohlab/p/sysnodes",
+            ['cherimoia/skarojs',
+             'zotohlab/asterix',
+             'zotohlab/asx/xcfg',
+             'zotohlab/p/entobjs',
+             'ash-js'],
+            moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
   }
-
-});
-
-
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
 

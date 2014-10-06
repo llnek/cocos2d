@@ -9,11 +9,10 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, asterix, xcfg, ccsx,
+function moduleFactory(sjs, sh, xcfg, ccsx,
                        layers, scenes,
-                       mmenus, undef) { "use strict";
-var sh = asterix,
-SEED= {
+                       mmenus) { "use strict";
+var undef, SEED= {
   grid: [0,0,0, 0,0,0, 0,0,0],
   size: 3,
   ppids: { },
@@ -137,14 +136,14 @@ return {
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("cherimoia/games/mmenu",
+    gDefine("zotohlab/p/mmenu",
             ['cherimoia/skarojs',
-             'cherimoia/zlab/asterix',
-             'cherimoia/zlab/asterix/xcfg',
-             'cherimoia/zlab/asterix/ccsx',
-             'cherimoia/zlab/asterix/xlayers',
-             'cherimoia/zlab/asterix/xscenes',
-             'cherimoia/zlab/asterix/xmmenus'],
+             'zotohlab/asterix',
+             'zotohlab/asx/xcfg',
+             'zotohlab/asx/ccsx',
+             'zotohlab/asx/xlayers',
+             'zotohlab/asx/xscenes',
+             'zotohlab/asx/xmmenus'],
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

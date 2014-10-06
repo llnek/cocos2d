@@ -9,10 +9,9 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, asterix, undef) { "use strict";
-
-var sh= asterix,
-R= sjs.ramda,
+function moduleFactory(sjs, sh) { "use strict";
+var R= sjs.ramda,
+undef,
 config = {
 
   urlPrefix: '/public/ig/',
@@ -151,7 +150,6 @@ config = {
 
 
 return config;
-
 }
 
 
@@ -161,8 +159,8 @@ return config;
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("cherimoia/zlab/asterix/xcfg",
-            ['cherimoia/skarojs', 'cherimoia/zlab/asterix'],
+    gDefine("zotohlab/asx/xcfg",
+            ['cherimoia/skarojs', 'zotohlab/asterix'],
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

@@ -9,8 +9,8 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, asterix, xcfg, ccsx, layers, undef) { "use strict";
-var sh= asterix;
+function moduleFactory(sjs, sh, xcfg, ccsx, layers) { "use strict";
+var undef;
 
 //////////////////////////////////////////////////////////////////////////////
 // Main menu.
@@ -58,9 +58,9 @@ var XMenuLayer= layers.XLayer.extend({
                         new cc.MenuItemSprite(s2),
            function(sender) {
             if (sender.getSelectedIndex() === 0) {
-              xcfg.toggleSfx(true);
+              sh.toggleSfx(true);
             } else {
-              xcfg.toggleSfx(false);
+              sh.toggleSfx(false);
             }
            });
     audio.setAnchorPoint(cc.p(0,0));
@@ -88,8 +88,8 @@ var XMenuLayer= layers.XLayer.extend({
     }, this);
     menu= new cc.Menu(t1,t2);
     menu.alignItemsHorizontallyWithPadding(10);
-    menu.setPosition(wz.width - csts.TILE - csts.S_OFF - (s2.getContentSize().width + s1.getContentSize().width + 10) / 2,
-      csts.TILE + csts.S_OFF + s2.getContentSize().height / 2);
+    menu.setPosition(wz.width - csts.TILE - csts.S_OFF - (s2.getContentSize().width + s1.getContentSize().width + 10) * 0.5,
+      csts.TILE + csts.S_OFF + s2.getContentSize().height * 0.5);
     this.addItem(menu);
   },
 
@@ -133,12 +133,12 @@ return {
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("cherimoia/zlab/asterix/xmmenus",
+    gDefine("zotohlab/asx/xmmenus",
             ['cherimoia/skarojs',
-             'cherimoia/zlab/asterix',
-             'cherimoia/zlab/asterix/xcfg',
-             'cherimoia/zlab/asterix/ccsx',
-             'cherimoia/zlab/asterix/xlayers'],
+             'zotohlab/asterix',
+             'zotohlab/asx/xcfg',
+             'zotohlab/asx/ccsx',
+             'zotohlab/asx/xlayers'],
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

@@ -9,23 +9,20 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this, _ = global._ ;
-
-var asterix= global.ZotohLab.Asterix,
-ccsx= asterix.CCS2DX,
-sjs= global.SkaroJS,
-sh= asterix,
-ttt= sh.TicTacToe,
-utils= ttt.SystemUtils;
-
+function moduleFactory(sjs, sh, xcfg, ccsx,
+                       gnodes,
+                       utils,
+                       Ash) { "use strict";
+var R = sjs.ramda,
+csts= xcfg.csts,
+undef;
 
 //////////////////////////////////////////////////////////////////////////////
 //
-ttt.RenderSystem = Ash.System.extend({
+var RenderSystem = Ash.System.extend({
 
   constructor: function(options) {
     this.state= options;
-    return this;
   },
 
   removeFromEngine: function(engine) {
@@ -33,35 +30,34 @@ ttt.RenderSystem = Ash.System.extend({
   },
 
   addToEngine: function(engine) {
-    this.nodeList = engine.getNodeList(ttt.BoardNode);
+    this.nodeList = engine.getNodeList(gnodes.BoardNode);
   },
 
   update: function (dt) {
-    for (var node = this.nodeList.head; node; node=node.next) {
-      this.process(node);
+    if (this.nodeList.head) {
+      this.process(this.nodeList.head);
     }
   },
 
   process: function(node) {
     var values= node.grid.values,
-    csts= sh.xcfg.csts,
-    sz = values.length,
     view = node.view,
-    cells= view.cells;
+    cs= view.cells,
+    c, offset;
 
-    _.each(values, function(v,pos) {
+    R.forEach.idx(function(v, pos) {
 
-      if (!sjs.echt(cells[pos]) &&
+      if (!sjs.echt(cs[pos]) &&
           v !== csts.CV_Z) {
-        var c= this.xrefCell(pos,view.gridMap),
+        c= this.xrefCell(pos, view.gridMap);
         offset= v === csts.CV_X ? 0 : 1;
-        if (c) {
-          cells[pos] = [utils.drawSymbol(view, c[0],c[1], offset),
+        if (!!c) {
+          cells[pos] = [utils.drawSymbol(view, c[0], c[1], offset),
                         c[0], c[1], offset, v];
         }
       }
 
-    },this);
+    }.bind(this), values);
 
   },
 
@@ -69,8 +65,7 @@ ttt.RenderSystem = Ash.System.extend({
     // given a cell, find the screen co-ordinates for that cell.
     //var img2= sh.main.cache.getImage('gamelevel1.sprites.markers');
     //var delta= 0;//72;//img2.height;
-    var csts= sh.xcfg.csts,
-    gg, x, y,
+    var gg, x, y,
     delta=0;
 
     if (pos >= 0 && pos < csts.CELLS) {
@@ -87,6 +82,29 @@ ttt.RenderSystem = Ash.System.extend({
 
 });
 
+
+return RenderSystem;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+  if (typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("zotohlab/p/s/rendering",
+            ['cherimoia/skarojs',
+             'zotohlab/asterix',
+             'zotohlab/asx/xcfg',
+             'zotohlab/asx/ccsx',
+             'zotohlab/p/gnodes',
+             'zotohlab/p/s/utils',
+             'ash-js'],
+            moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+  }
 
 }).call(this);
 

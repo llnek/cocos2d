@@ -9,22 +9,16 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this, _ = global._ ;
-
-var asterix = global.ZotohLab.Asterix,
-ccsx = asterix.COCOS2DX,
-sh= asterix,
-sjs = global.SkaroJS,
-ttt= asterix.TicTacToe;
-
-var NILFUNC=function() {};
-var PLAYER_THINK_TIME= 7;
+function moduleFactory(sjs, sh, xcfg, ccsx, layers, scenes) { "use strict";
+var NILFUNC=function() {},
+undef,
+PLAYER_THINK_TIME= 7;
 
 //////////////////////////////////////////////////////////////////////////////
 // back layer
 //////////////////////////////////////////////////////////////////////////////
 
-ttt.BackLayer = asterix.XLayer.extend({
+var BackLayer = layers.XLayer.extend({
 
   rtti: function() { return 'tttBackLayer'; },
 
@@ -40,21 +34,21 @@ ttt.BackLayer = asterix.XLayer.extend({
 // HUD layer
 //////////////////////////////////////////////////////////////////////////////
 
-ttt.HUDLayer = asterix.XGameHUDLayer.extend({
+var HUDLayer = layers.XGameHUDLayer.extend({
 
-
-  mode: 0,
-
-  // these will be set by the game
-  p2Long: '',
-  p1Long: '',
-  p2ID: '',
-  p1ID: '',
+  ctor: function(options) {
+    this._super(options);
+    this.mode= 0;
+    this.p2Long= '';
+    this.p1Long= '';
+    this.p2ID= '';
+    this.p1ID= '';
+  },
 
   initScores: function() {
     this.scores= {};
-    this.scores[sh.xcfg.csts.P2_COLOR] =  0;
-    this.scores[sh.xcfg.csts.P1_COLOR] =  0;
+    this.scores[xcfg.csts.P2_COLOR] =  0;
+    this.scores[xcfg.csts.P1_COLOR] =  0;
   },
 
   setGameMode: function(mode) {
@@ -65,7 +59,7 @@ ttt.HUDLayer = asterix.XGameHUDLayer.extend({
   initParentNode: NILFUNC,
 
   initLabels: function() {
-    var csts = sh.xcfg.csts,
+    var csts = xcfg.csts,
     cw= ccsx.center(),
     wz= ccsx.screen();
 
@@ -120,7 +114,7 @@ ttt.HUDLayer = asterix.XGameHUDLayer.extend({
   },
 
   showTimer: function() {
-    var csts = sh.xcfg.csts,
+    var csts = xcfg.csts,
     cw= ccsx.center(),
     wz= ccsx.screen();
 
@@ -202,7 +196,7 @@ ttt.HUDLayer = asterix.XGameHUDLayer.extend({
   drawScores: function() {
     var s2 = this.scores[this.play2],
     s1 = this.scores[this.play1],
-    csts= sh.xcfg.csts,
+    csts= xcfg.csts,
     wz = ccsx.screen(),
     n2 = sjs.prettyNumber(s2,3),
     n1 = sjs.prettyNumber(s1,3);
@@ -259,6 +253,33 @@ ttt.HUDLayer = asterix.XGameHUDLayer.extend({
 
 });
 
+
+return {
+  BackLayer: BackLayer,
+  HUDLayer: HUDLayer
+};
+
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+  if (typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("zotohlab/p/hud",
+            ['cherimoia/skarojs',
+             'zotohlab/asterix',
+             'zotohlab/asx/xcfg',
+             'zotohlab/asx/ccsx',
+             'zotohlab/asx/xlayers',
+             'zotohlab/asx/xscenes'],
+            moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+  }
 
 }).call(this);
 

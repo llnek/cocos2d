@@ -9,14 +9,13 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this, _ = global._ ;
+function moduleFactory(sjs, sh, xcfg, ccsx,
+                      entobjs,
+                      gnodes) { "use strict";
+var undef;
 
-var asterix= global.ZotohLab.Asterix,
-ccsx= asterix.CCS2DX,
-sjs= global.SkaroJS,
-sh= asterix,
-ttt= sh.TicTacToe;
-
+//////////////////////////////////////////////////////////////////////////////
+//
 function mapGoalSpace(size) {
   var ROWSPACE = [],
   COLSPACE = [],
@@ -42,38 +41,55 @@ function mapGoalSpace(size) {
 
 //////////////////////////////////////////////////////////////////////////////
 //
-ttt.EntityFactory = Ash.Class.extend({
+var EntityFactory = Ash.Class.extend({
 
   constructor: function(engine) {
     this.engine=engine;
-    return this;
   },
 
-  createBoard: function(options) {
+  createBoard: function(layer, options) {
     var goals= mapGoalSpace(options.size),
-    csts= sh.xcfg.csts,
-    bd= new ttt.GameBoard(options.size,
+    csts= xcfg.csts,
+    bd= new entobjs.GameBoard(options.size,
                           csts.CV_Z,
                           csts.CV_X,
                           csts.CV_O, goals),
     ent = new Ash.Entity();
 
-    ent.add(new ttt.Grid(options.size,options.seed));
-    ent.add(new ttt.Board(options.size,goals));
-    ent.add(new ttt.UISelection());
-    ent.add(new ttt.SmartAlgo(bd));
-    ent.add(new ttt.NetPlay());
-    ent.add(new ttt.GridView(options.size,sh.main));
+    ent.add(new gnodes.Grid(options.size, options.seed));
+    ent.add(new gnodes.Board(options.size, goals));
+    ent.add(new gnodes.UISelection());
+    ent.add(new gnodes.SmartAlgo(bd));
+    ent.add(new gnodes.NetPlay());
+    ent.add(new gnodes.GridView(options.size, layer));
 
     options.GOALSPACE=goals;
     return ent;
   }
 
-
-
 });
 
+return EntityFactory;
+}
 
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+  if (typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("zotohlab/p/s/factory",
+            ['cherimoia/skarojs',
+             'zotohlab/asterix',
+             'zotohlab/asx/xcfg',
+             'zotohlab/p/entobjs',
+             'zotohlab/p/gnodes',
+             'ash-js'],
+            moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+  }
 
 }).call(this);
 

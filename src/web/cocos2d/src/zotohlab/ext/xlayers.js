@@ -9,9 +9,10 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, asterix, xcfg, ccsx, Ash, undef) { "use stricts";
-var sh = asterix,
-SEED = 0;
+function moduleFactory(sjs, sh, xcfg, ccsx, Ash) { "use stricts";
+var R= sjs.ramda,
+SEED = 0,
+undef;
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -42,7 +43,11 @@ var XHUDLives = sjs.Class.xtends({
   getLives: function() { return this.curLives; },
 
   reset:function() {
-    _.each(this.icons, function(z) { this.hud.removeItem(z); }, this);
+    R.forEach(function(z) {
+      this.hud.removeItem(z);
+    }.bind(this),
+    this.icons);
+
     this.curLives = this.options.totalLives;
     this.icons=[];
   },
@@ -454,11 +459,11 @@ return {
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("cherimoia/zlab/asterix/xlayers",
+    gDefine("zotohlab/asx/xlayers",
             ['cherimoia/skarojs',
-             'cherimoia/zlab/asterix',
-             'cherimoia/zlab/asterix/xcfg',
-             'cherimoia/zlab/asterix/ccsx',
+             'zotohlab/asterix',
+             'zotohlab/asx/xcfg',
+             'zotohlab/asx/ccsx',
              'ash-js'],
             moduleFactory);
 

@@ -9,8 +9,8 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, asterix, xcfg, undef) { "use strict";
-var sh = asterix;
+function moduleFactory(sjs, sh, xcfg) { "use strict";
+var undef;
 
 //////////////////////////////////////////////////////////////////////////////
 //merge stuff in-place.
@@ -94,10 +94,10 @@ return xcfg;
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("cherimoia/games/config",
+    gDefine("zotohlab/p/config",
             ['cherimoia/skarojs',
-             'cherimoia/zlab/asterix',
-             'cherimoia/zlab/asterix/xcfg'],
+             'zotohlab/asterix',
+             'zotohlab/asx/xcfg'],
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

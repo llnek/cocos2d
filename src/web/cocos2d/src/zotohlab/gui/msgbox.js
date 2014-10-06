@@ -9,8 +9,8 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, asterix,  xcfg, ccsx, layers, scenes, undef) { "use strict";
-var sh = asterix;
+function moduleFactory(sjs, sh,  xcfg, ccsx, layers, scenes) { "use strict";
+var undef;
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -58,17 +58,12 @@ var UILayer =  layers.XLayer.extend({
 
 });
 
-/*
-sh.protos['MsgBox'] = {
-  create: function(options) {
-    return new asterix.XSceneFactory([ BGLayer, UILayer ]).create(options);
-  }
-};
-*/
 
 return {
-   create: function(options) {
-    return new scenes.XSceneFactory([ BGLayer, UILayer ]).create(options);
+  'MsgBox' : {
+    create: function(options) {
+      return new scenes.XSceneFactory([ BGLayer, UILayer ]).create(options);
+    }
   }
 };
 
@@ -80,13 +75,13 @@ return {
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("cherimoia/zlab/asterix/msgbox",
+    gDefine("zotohlab/asx/msgbox",
             ['cherimoia/skarojs',
-             'cherimoia/zlab/asterix',
-             'cherimoia/zlab/asterix/xcfg',
-             'cherimoia/zlab/asterix/ccsx',
-             'cherimoia/zlab/asterix/xlayers',
-             'cherimoia/zlab/asterix/xscenes'],
+             'zotohlab/asterix',
+             'zotohlab/asx/xcfg',
+             'zotohlab/asx/ccsx',
+             'zotohlab/asx/xlayers',
+             'zotohlab/asx/xscenes'],
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

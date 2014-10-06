@@ -11,9 +11,9 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
  ??*/
 
-function moduleFactory(sjs, EventBus, asterix, undef) { "use strict";
+function moduleFactory(sjs, EventBus, sh) { "use strict";
 
-var Events = {
+var undef, Events = {
 
 // Event type
 NETWORK_MSG           : 1,
@@ -257,8 +257,8 @@ return {
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("cherimoia/zlab/asterix/odin",
-            ['cherimoia/skarojs','cherimoia/ebus','cherimoia/zlab/asterix'],
+    gDefine("zotohlab/asx/odin",
+            ['cherimoia/skarojs','cherimoia/ebus','zotohlab/asterix'],
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

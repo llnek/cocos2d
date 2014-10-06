@@ -9,10 +9,10 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, asterix, xcfg, ccsx,
+function moduleFactory(sjs, sh, xcfg, ccsx,
                        layers, scenes,
-                       XSplashLayer, undef) { "use strict";
-var sh = asterix;
+                       XSplashLayer) { "use strict";
+var undef;
 
 //////////////////////////////////////////////////////////////////////////////
 // splash screen for the game - make it look nice please.
@@ -43,23 +43,23 @@ var UILayer = layers.XLayer.extend({
 //
 return {
   'StartScreen' : {
-        create: function(options) {
-          var scene = new scenes.XSceneFactory([
-            XSplashLayer,
-            UILayer
-          ]).create(options);
-          if (scene) {
-            scene.ebus.on('/splash/controls/playgame', function() {
-              var ss= sh.protos['StartScreen'],
-              mm= sh.protos['MainMenu'],
-              dir= cc.director;
-              dir.runScene( mm.create({
-                onBack: function() { dir.runScene( ss.create() ); }
-              }));
-            });
-          }
-          return scene;
-        }
+    create: function(options) {
+      var scene = new scenes.XSceneFactory([
+        XSplashLayer,
+        UILayer
+      ]).create(options);
+      if (scene) {
+        scene.ebus.on('/splash/controls/playgame', function() {
+          var ss= sh.protos['StartScreen'],
+          mm= sh.protos['MainMenu'],
+          dir= cc.director;
+          dir.runScene( mm.create({
+            onBack: function() { dir.runScene( ss.create() ); }
+          }));
+        });
+      }
+      return scene;
+    }
   }
 };
 
@@ -71,14 +71,14 @@ return {
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("cherimoia/games/splash",
+    gDefine("zotohlab/p/splash",
             ['cherimoia/skarojs',
-             'cherimoia/zlab/asterix',
-             'cherimoia/zlab/asterix/xcfg',
-             'cherimoia/zlab/asterix/ccsx',
-             'cherimoia/zlab/asterix/xlayers',
-             'cherimoia/zlab/asterix/xscenes',
-             'cherimoia/zlab/asterix/xsplash'],
+             'zotohlab/asterix',
+             'zotohlab/asx/xcfg',
+             'zotohlab/asx/ccsx',
+             'zotohlab/asx/xlayers',
+             'zotohlab/asx/xscenes',
+             'zotohlab/asx/xsplash'],
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

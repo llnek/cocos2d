@@ -9,13 +9,13 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, undef) { "use strict";
+function moduleFactory(sjs) { "use strict";
 
- /////////////////////////////////////////////////////////////////////////////
- //
-var VISCHS= " @N/\\Ri2}aP`(xeT4F3mt;8~%r0v:L5$+Z{'V)\"CKIc>z.*" +
-            "fJEwSU7juYg<klO&1?[h9=n,yoQGsW]BMHpXb6A|D#q^_d!-";
-var VISCHS_LEN=  VISCHS.length;
+//////////////////////////////////////////////////////////////////////////////
+//
+var undef, VISCHS= " @N/\\Ri2}aP`(xeT4F3mt;8~%r0v:L5$+Z{'V)\"CKIc>z.*" +
+            "fJEwSU7juYg<klO&1?[h9=n,yoQGsW]BMHpXb6A|D#q^_d!-",
+VISCHS_LEN=  VISCHS.length;
 
 /////////////////////////////////////////////////////////////////////////////
 //

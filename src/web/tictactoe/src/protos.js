@@ -13,14 +13,17 @@ function moduleFactory(sjs, sh, xcfg,
                        online,
                        splash,
                        mmenu,
-                       arena,
-                       undef) { "use strict";
-  var protos= sh.protos;
+                       msgbox,
+                       ynbox,
+                       arena) { "use strict";
+  var ps= [online, splash, mmenu, msgbox, ynbox, arena],
+  R = sjs.ramda,
+  undef,
+  protos= sh.protos;
 
-  protos[online.id] = online.proto;
-  protos[splash.id] = splash.proto;
-  protos[mmenu.id] = mmenu.proto;
-  protos[arena.id] = arena.proto;
+  R.forEach(function(obj) {
+    protos[obj.id] = obj.proto;
+  }, ps);
 
   return protos;
 }
@@ -31,14 +34,16 @@ function moduleFactory(sjs, sh, xcfg,
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("cherimoia/games/protodefs",
+    gDefine("zotohlab/asx/protodefs",
             ['cherimoia/skarojs',
-             'cherimoia/zlab/asterix',
-             'cherimoia/zlab/asterix/xcfg',
-             'cherimoia/zlab/asterix/online',
-             'cherimoia/games/splash',
-             'cherimoia/games/mmenu',
-             'cherimoia/games/tictactoe']
+             'zotohlab/asterix',
+             'zotohlab/asx/xcfg',
+             'zotohlab/asx/online',
+             'zotohlab/asx/msgbox',
+             'zotohlab/asx/ynbox',
+             'zotohlab/p/splash',
+             'zotohlab/p/mmenu',
+             'zotohlab/p/arena']
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

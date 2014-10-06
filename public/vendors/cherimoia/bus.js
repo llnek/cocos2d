@@ -9,9 +9,8 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs,undef) { "use strict";
-
-var R = sjs.ramda,
+function moduleFactory(sjs) { "use strict";
+var undef, R = sjs.ramda,
 _SEED=0;
 
 //////////////////////////////////////////////////////////////////////////////

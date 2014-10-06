@@ -9,10 +9,8 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs,asterix,undef) { "use strict";
-
-var R = sjs.ramda,
-sh= asterix;
+function moduleFactory(sjs,sh) { "use strict";
+var undef, R = sjs.ramda;
 
 //////////////////////////////////////////////////////////////////////////////
 // monkey patch stuff that we want to extend
@@ -374,8 +372,8 @@ return ccsx;
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("cherimoia/zlab/asterix/ccsx",
-            ['cherimoia/skarojs', 'cherimoia/zlab/asterix'],
+    gDefine("zotohlab/asx/ccsx",
+            ['cherimoia/skarojs', 'zotohlab/asterix'],
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

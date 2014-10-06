@@ -9,9 +9,9 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, asterix, xcfg, ccsx, layers, scenes, odin, undef) { "use strict";
+function moduleFactory(sjs, sh, xcfg, ccsx, layers, scenes, odin) { "use strict";
 var events= odin.Events,
-sh = asterix;
+undef;
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -177,17 +177,11 @@ var UILayer =  layers.XLayer.extend({
 
 });
 
-/*
-sh.protos['OnlinePlay'] = {
-  create: function(options) {
-    return new scenes.XSceneFactory([ BGLayer, UILayer ]).create(options);
-  }
-};
-*/
-
 return {
-  create: function(options) {
-    return new scenes.XSceneFactory([ BGLayer, UILayer ]).create(options);
+  'OnlinePlay' : {
+    create: function(options) {
+      return new scenes.XSceneFactory([ BGLayer, UILayer ]).create(options);
+    }
   }
 };
 
@@ -199,14 +193,14 @@ return {
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("cherimoia/zlab/asterix/online",
+    gDefine("zotohlab/asx/onlineplay",
             ['cherimoia/skarojs',
-             'cherimoia/zlab/asterix',
-             'cherimoia/zlab/asterix/xcfg',
-             'cherimoia/zlab/asterix/ccsx',
-             'cherimoia/zlab/asterix/xlayers',
-             'cherimoia/zlab/asterix/xscenes',
-             'cherimoia/zlab/asterix/odin'],
+             'zotohlab/asterix',
+             'zotohlab/asx/xcfg',
+             'zotohlab/asx/ccsx',
+             'zotohlab/asx/xlayers',
+             'zotohlab/asx/xscenes',
+             'zotohlab/asx/odin'],
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

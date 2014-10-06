@@ -9,9 +9,9 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, Mustache, l10n, undef) { "use strict";
+function moduleFactory(sjs, Mustache, l10n) { "use strict";
 
-var asterix = {
+var undef, asterix = {
 
   l10nInit: function(table) {
     //String.defaultLocale="en-US";
@@ -250,7 +250,7 @@ return asterix;
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("cherimoia/zlab/asterix",
+    gDefine("zotohlab/asterix",
             ['cherimoia/skarojs','mustache','eligrey/l10njs'],
             moduleFactory);
 

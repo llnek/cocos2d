@@ -9,8 +9,8 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, undef) { "use strict";
-
+function moduleFactory(sjs) { "use strict";
+var undef;
 //////////////////////////////////////////////////////////////////////////////
 //
 function radToDeg(rad) {
@@ -75,7 +75,6 @@ return {
   Vector2: Vector2
 };
 
-
 }
 
 
@@ -85,7 +84,7 @@ return {
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("cherimoia/math", ['cherimoia/skarojs'], moduleFactory);
+    gDefine("zotohlab/asx/math", ['cherimoia/skarojs'], moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {
   } else {

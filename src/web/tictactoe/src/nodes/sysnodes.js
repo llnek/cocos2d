@@ -9,34 +9,41 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, sh, ccsx, layers) { "use strict";
-var undef;
+function moduleFactory(sjs, sh, xcfg, entobjs, Ash) { "use strict";
+var lib= {},
+undef;
 
 //////////////////////////////////////////////////////////////////////////////
-// splash screen for the game - make it look nice please.
+//
+lib.BoardNode = Ash.Node.create({
+  selection: entobjs.UISelection,
+  board: entobjs.Board,
+  robot: entobjs.SmartAlgo,
+  grid: entobjs.Grid,
+  view: entobjs.GridView
+});
+
 //////////////////////////////////////////////////////////////////////////////
-var XSplashLayer = layers.XLayer.extend({
+//
+lib.GUINode = Ash.Node.create({
+  selection: entobjs.UISelection,
+  view: entobjs.GridView
+});
 
-  pkInit: function() {
-    var imgUrl= sh.getImagePath('splash.splash'),
-    wz = ccsx.screen(),
-    cw = ccsx.center();
-
-    if (imgUrl) {
-      var s= new cc.Sprite(imgUrl);
-      s.setPosition(cw);
-      this.addItem(s);
-    }
-
-    return this._super();
-  },
-
-  rtti: function() { return "SplashLayer"; }
-
+//////////////////////////////////////////////////////////////////////////////
+//
+lib.NetPlayNode = Ash.Node.create({
+  playcmd: entobjs.NetPlay,
+  grid: entobjs.Grid
 });
 
 
-return XSplashLayer;
+
+
+
+
+
+return lib;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -45,11 +52,12 @@ return XSplashLayer;
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("zotohlab/asx/xsplash",
+    gDefine("zotohlab/p/sysnodes",
             ['cherimoia/skarojs',
              'zotohlab/asterix',
-             'zotohlab/asx/ccsx',
-             'zotohlab/asx/xlayers'],
+             'zotohlab/asx/xcfg',
+             'zotohlab/p/entobjs',
+             'ash-js'],
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

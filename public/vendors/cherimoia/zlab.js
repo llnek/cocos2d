@@ -9,7 +9,7 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs,undef) { "use strict";
+function moduleFactory(sjs) { "use strict";
 return {};
 }
 
@@ -19,7 +19,7 @@ return {};
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("cherimoia/zlab", ['cherimoia/skarojs'], moduleFactory);
+    gDefine("zotohlab", ['cherimoia/skarojs'], moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {
   } else {

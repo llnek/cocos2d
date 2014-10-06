@@ -9,8 +9,9 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, undef) { "use strict";
-var PINF = 1000000;
+function moduleFactory(sjs) { "use strict";
+var PINF = 1000000,
+undef;
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -92,7 +93,7 @@ return {
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("cherimoia/negamax", ['cherimoia/skarojs'], moduleFactory);
+    gDefine("zotohlab/asx/negamax", ['cherimoia/skarojs'], moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {
   } else {
