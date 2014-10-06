@@ -39,15 +39,6 @@ function mkTreeNode() {
 
 //////////////////////////////////////////////////////////////////////////////
 //
-function safeSplit(s) {
-  return R.reject(function(z) {
-    return !z || z.length===0;
-  },
-  s.trim().split('/'));
-}
-
-//////////////////////////////////////////////////////////////////////////////
-//
 var EventBus = sjs.Class.xtends({
 
   // subscribe to 1+ topics, returning a list of subscriber handles.
@@ -74,7 +65,7 @@ var EventBus = sjs.Class.xtends({
 
   // trigger event on this topic.
   fire: function(topic, msg) {
-    var tokens= safeSplit(topic);
+    var tokens= sjs.safeSplit(topic,'/');
     if (tokens.length > 0 ) {
       return this.pkDoPub(topic, this.rootNode, tokens, 0, msg || {} );
     }
@@ -97,7 +88,7 @@ var EventBus = sjs.Class.xtends({
   off: function(handle) {
     var sub= this.allSubs[handle];
     if (sub) {
-      this.pkUnSub(this.rootNode, safeSplit(sub.topic), 0, sub);
+      this.pkUnSub(this.rootNode, sjs.safeSplit(sub.topic,'/'), 0, sub);
     }
   },
 
@@ -116,15 +107,13 @@ var EventBus = sjs.Class.xtends({
     var rc= R.map(function(t) {
       return this.pkAddSub(repeat,t,selector,target,more);
     }.bind(this), ts);
-    return R.reject(function(z) {
-      return !z || z.length===0;
-    }, rc);
+    return R.reject(function(z) { return z.length===0; }, rc);
   },
 
   // register a subscriber to the topic leaf node, creating the path
   // when necessary.
   pkAddSub: function(repeat, topic, selector, target, more) {
-    var tkns= safeSplit(topic);
+    var tkns= sjs.safeSplit(topic,'/');
     if (tkns.length > 0) {
       var rc= mkSubSCR(topic, selector, target, repeat, more),
       node= R.reduce(function(memo, z) {
@@ -178,7 +167,7 @@ var EventBus = sjs.Class.xtends({
   // invoke subscribers, and for non repeating ones, remove them from
   // the list.
   pkRun: function(topic, node, msg) {
-    var cs= sjs.echt(node) ? node.subs : [],
+    var cs= !!node ? node.subs : [],
     rc=false,
     purge=false;
     R.forEach(function (z) {
@@ -221,27 +210,19 @@ var EventBus = sjs.Class.xtends({
 });
 
 return EventBus;
-
 }
-
-
 
 //////////////////////////////////////////////////////////////////////////////
 // export
 (function () { "use strict"; var global=this, gDefine=global.define;
 
-
-  if(typeof gDefine === 'function' && gDefine.amd) {
+  if (typeof gDefine === 'function' && gDefine.amd) {
 
     gDefine("cherimoia/ebus", ['cherimoia/skarojs'], moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {
   } else {
-
-    global['cherimoia']['ebus'] = moduleFactory(global.cherimoia.skarojs);
-
   }
-
 
 }).call(this);
 

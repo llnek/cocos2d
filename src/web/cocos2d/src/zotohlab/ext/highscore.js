@@ -12,9 +12,7 @@
 function moduleFactory(sjs, asterix, Cookies, undef) { "use strict";
 
 var R = sjs.ramda,
-sh= asterix,
-CKS= Cookies;
-
+sh= asterix;
 
 ////////////////////////////////////////////////////////////////////
 //
@@ -30,14 +28,12 @@ function mkScore(n,v) {
 var HighScores= sjs.Class.xtends({
 
   read: function() {
-    var s = CKS.get(this.KEY) || '',
-    ts = R.reject(function(z) {
-      return z.length===0;
-    }, s.split('|'));
-
+    var s = Cookies.get(this.KEY) || '',
+    a,
+    ts = sjs.safeSplit(s, '|');
     //this.reset();
     this.scores= R.reduce(function(memo,z) {
-      var a = R.reject(function (z) { return z.length===0; }, z.split(':'));
+      a = sjs.safeSplit(z, ':');
       if (a.length === 2) {
         memo.push(mkScore(a[0], a[1]));
       }
@@ -53,7 +49,7 @@ var HighScores= sjs.Class.xtends({
     var rc= R.map(function(z) {
       return z.name + ':' + n.value;
     }, this.scores);
-    CKS.set(this.KEY, rc.join('|'), this.duration);
+    Cookies.set(this.KEY, rc.join('|'), this.duration);
   },
 
   hasSlots: function() {
@@ -129,35 +125,25 @@ var HighScores= sjs.Class.xtends({
 });
 
 
-
 return HighScores;
 }
-
 
 //////////////////////////////////////////////////////////////////////////////
 // export
 (function () { "use strict"; var global=this, gDefine=global.define;
 
-
-  if(typeof gDefine === 'function' && gDefine.amd) {
+  if (typeof gDefine === 'function' && gDefine.amd) {
 
     gDefine("cherimoia/zlab/asterix/highscores",
-              ['cherimoia/skarojs', 'cherimoia/zlab/asterix','Cookies'],
-              moduleFactory);
+            ['cherimoia/skarojs', 'cherimoia/zlab/asterix','Cookies'],
+            moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {
   } else {
-
-    global['cherimoia']['zlab']['asterix']['highscores'] =
-      moduleFactory(global.cherimoia.skarojs,
-                    global.cherimoia.zlab.asterix,
-                    global.Cookies);
   }
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
 

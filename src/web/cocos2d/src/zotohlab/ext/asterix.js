@@ -17,7 +17,7 @@ var asterix = {
     //String.defaultLocale="en-US";
     String.toLocaleString(table || this.xcfg.l10nTable);
     String.defaultLocale= this.lang;
-    sjs.loggr.info("loaded l10n strings.  locale = " + String.locale);
+    sjs.loggr.info("Loaded l10n strings.  locale = " + String.locale);
   },
 
   l10n: function(s,pms) {
@@ -98,77 +98,6 @@ var asterix = {
     else {
     }
 
-    return [ x * hypot, y * hypot, q ];
-  },
-
-  XXXcalcXY: function(angle,hypot) {
-  // quadrants =  3 | 4
-  //             --------
-  //              2 | 1
-    var theta, q, x, y;
-    if (angle >= 0 && angle <= 90) {
-      theta = this.degToRad(90 - angle);
-      x = Math.cos(theta);
-      y = Math.sin(theta);
-      q=1;
-    }
-    else
-    if (angle >= 90 && angle <= 180 ) {
-      theta = this.degToRad(angle - 90);
-      x = Math.cos(theta);
-      y =  - Math.sin(theta);
-      q=2;
-    }
-    else
-    if (angle >= 180 && angle <= 270) {
-      theta = this.degToRad(270 - angle);
-      x = - Math.cos(theta);
-      y = - Math.sin(theta);
-      q=3;
-    }
-    else
-    if (angle >= 270 && angle <= 360) {
-      theta= this.degToRad(angle - 270);
-      x = - Math.cos(theta);
-      y = Math.sin(theta);
-      q=4;
-    }
-    else {
-    }
-
-    return [ x * hypot, y * hypot, q ];
-  },
-
-  XXcalcXY: function(angle,hypot) {
-  // quadrants =  3 | 4
-  //             --------
-  //              2 | 1
-    var theta, q, x, y;
-    if (angle >= 90 && angle <= 180) {
-      theta= this.degToRad(180 - angle);
-      x = - Math.cos(theta);
-      y = Math.sin(theta);
-      q=2;
-    }
-    else
-    if (angle >= 180 && angle <= 270) {
-      theta = this.degToRad(angle - 180);
-      x = - Math.cos(theta);
-      y = - Math.sin(theta);
-      q=3;
-    }
-    else
-    if (angle >= 270 && angle <= 360) {
-      theta = this.degToRad(360 - angle);
-      x = Math.cos(theta);
-      y = - Math.sin(theta);
-      q=4;
-    } else {
-      theta = this.degToRad(angle);
-      x = Math.cos(theta);
-      y = Math.sin(theta);
-      q=1;
-    }
     return [ x * hypot, y * hypot, q ];
   },
 
@@ -262,7 +191,7 @@ var asterix = {
   },
 
   sanitizeUrlForDevice: function(url) {
-    sjs.loggr.debug('about to sanitize url for jsb: ' + url);
+    sjs.loggr.debug('About to sanitize url for jsb: ' + url);
     //ensure we tell mustache not to escape html
     url = url || '';
     if (url.match(/^res/)) {
@@ -281,7 +210,7 @@ var asterix = {
   },
 
   sanitizeUrlForWeb: function(url) {
-    sjs.loggr.debug('about to sanitize url for web: ' + url);
+    sjs.loggr.debug('About to sanitize url for web: ' + url);
     //ensure we tell mustache not to escape html
     url = url || '';
     if (url.match(/^game/)) {
@@ -303,9 +232,8 @@ var asterix = {
 
 };
 
-
 // monkey patch logger to use cocos2d's log functions.
-if (sjs.echt(cc)) {
+if (!!cc) {
   sjs.logger= cc;
   sjs.loggr= cc;
   sjs.loggr.info = cc.log;
@@ -313,19 +241,14 @@ if (sjs.echt(cc)) {
   sjs.loggr.info('Monkey patched skarojs#loggr to cc.log');
 }
 
-
-
 return asterix;
 }
-
-
 
 //////////////////////////////////////////////////////////////////////////////
 // export
 (function () { "use strict"; var global=this, gDefine=global.define;
 
-
-  if(typeof gDefine === 'function' && gDefine.amd) {
+  if (typeof gDefine === 'function' && gDefine.amd) {
 
     gDefine("cherimoia/zlab/asterix",
             ['cherimoia/skarojs','mustache','eligrey/l10njs'],
@@ -333,20 +256,10 @@ return asterix;
 
   } else if (typeof module !== 'undefined' && module.exports) {
   } else {
-
-    global['cherimoia']['zlab']['asterix'] =
-      moduleFactory(global.cherimoia.skarojs,
-                    global.Mustache,
-                    global.l10njs);
   }
-
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
-
 

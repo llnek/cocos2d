@@ -76,13 +76,11 @@ var ccsx = {
                                           this.bbox(b.sprite)) : false;
   },
 
-
   //test collision of 2 entities using cc-rects
   collide0: function(spriteA,spriteB) {
     return spriteA && spriteB ? cc.rectIntersectsRect(this.bbox(spriteA),
                                           this.bbox(spriteB)) : false;
   },
-
 
   isPortrait: function() {
     var s=this.screen(); return s.height > s.width;
@@ -190,8 +188,7 @@ var ccsx = {
 
   center: function() {
     var wz = this.screen();
-    return cc.p(wz.width * 0.5,
-                wz.height * 0.5);
+    return cc.p(wz.width * 0.5, wz.height * 0.5);
   },
 
   screen: function() {
@@ -273,8 +270,8 @@ var ccsx = {
     pos1= obj1.sprite.getPosition(),
     sz2= obj2.sprite.getContentSize(),
     sz1= obj1.sprite.getContentSize(),
-    hh1= sz1.height/2,
-    hw1= sz1.width/2,
+    hh1= sz1.height * 0.5,
+    hw1= sz1.width * 0.5,
     x = pos1.x,
     y= pos1.y,
     bx2 = this.bbox4(obj2.sprite),
@@ -371,30 +368,22 @@ var ccsx = {
 return ccsx;
 }
 
-
 //////////////////////////////////////////////////////////////////////////////
 // export
 (function () { "use strict"; var global=this, gDefine=global.define;
 
-
-  if(typeof gDefine === 'function' && gDefine.amd) {
+  if (typeof gDefine === 'function' && gDefine.amd) {
 
     gDefine("cherimoia/zlab/asterix/ccsx",
-              ['cherimoia/skarojs', 'cherimoia/zlab/asterix'],
-              moduleFactory);
+            ['cherimoia/skarojs', 'cherimoia/zlab/asterix'],
+            moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {
   } else {
-
-    global['cherimoia']['zlab']['asterix']['ccsx'] =
-      moduleFactory(global.cherimoia.skarojs, global.cherimoia.zlab.asterix);
   }
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
 

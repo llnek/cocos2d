@@ -9,22 +9,13 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global = this, _ = global._ ;
-
-var asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
-odin= global.ZotohLab.Odin,
-sjs = global.SkaroJS,
-$ = global.jQuery,
-events= odin.Events,
-ccsx = asterix.COCOS2DX;
-
+function moduleFactory(sjs, asterix, xcfg, ccsx, layers, scenes, odin, undef) { "use strict";
+var events= odin.Events,
+sh = asterix;
 
 //////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
-
-var BGLayer = asterix.XLayer.extend({
+//
+var BGLayer = layers.XLayer.extend({
 
   pkInit: function() {
     var map = cc.TMXTiledMap.create(sh.getTilesPath('gui.blank'));
@@ -34,7 +25,9 @@ var BGLayer = asterix.XLayer.extend({
 
 });
 
-var UILayer =  asterix.XLayer.extend({
+//////////////////////////////////////////////////////////////////////////////
+//
+var UILayer =  layers.XLayer.extend({
 
   onOnlineReq: function(uid,pwd) {
     var wsurl = sjs.fmtUrl(sjs.getWebSockProtocol(), "/network/odin/websocket"),
@@ -46,7 +39,7 @@ var UILayer =  asterix.XLayer.extend({
     if (user.length === 0 ||
         pswd.length === 0) { return; }
 
-    this.wss= odin.newSession({ game: sh.xcfg.appKey, user: user, passwd: pswd });
+    this.wss= odin.newSession({ game: xcfg.appKey, user: user, passwd: pswd });
     this.wss.subscribeAll(this.onOdinEvent, this);
     this.wss.connect(wsurl);
   },
@@ -98,7 +91,7 @@ var UILayer =  asterix.XLayer.extend({
     this.removeAllItems();
     var qn= new cc.LabelBMFont(sh.l10n('%waitothers'),
                                sh.getFontPath('font.TinyBoxBB')),
-    csts = sh.xcfg.csts,
+    csts = xcfg.csts,
     cw= ccsx.center(),
     wz= ccsx.screen(),
     s1, s2, t1, t2, menu;
@@ -124,7 +117,7 @@ var UILayer =  asterix.XLayer.extend({
   pkInit: function() {
     var qn= new cc.LabelBMFont(sh.l10n('%signinplay'),
                                sh.getFontPath('font.TinyBoxBB')),
-    csts = sh.xcfg.csts,
+    csts = xcfg.csts,
     cw= ccsx.center(),
     wz= ccsx.screen(),
     uid,pwd,
@@ -135,7 +128,7 @@ var UILayer =  asterix.XLayer.extend({
     qn.setOpacity(0.9*255);
     this.addItem(qn);
 
-    var url = sh.sanitizeUrl(sh.xcfg.assets.images['gui.edit.orange']),
+    var url = sh.sanitizeUrl(xcfg.assets.images['gui.edit.orange']),
     s9= new cc.Scale9Sprite(url),
     wcc= cc.color(255,255,255),
     bxz= cc.size(100,36);
@@ -184,14 +177,41 @@ var UILayer =  asterix.XLayer.extend({
 
 });
 
+/*
 sh.protos['OnlinePlay'] = {
-
   create: function(options) {
-    return new asterix.XSceneFactory([ BGLayer, UILayer ]).create(options);
+    return new scenes.XSceneFactory([ BGLayer, UILayer ]).create(options);
   }
+};
+*/
 
+return {
+  create: function(options) {
+    return new scenes.XSceneFactory([ BGLayer, UILayer ]).create(options);
+  }
 };
 
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+  if (typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("cherimoia/zlab/asterix/online",
+            ['cherimoia/skarojs',
+             'cherimoia/zlab/asterix',
+             'cherimoia/zlab/asterix/xcfg',
+             'cherimoia/zlab/asterix/ccsx',
+             'cherimoia/zlab/asterix/xlayers',
+             'cherimoia/zlab/asterix/xscenes',
+             'cherimoia/zlab/asterix/odin'],
+            moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+  }
 
 }).call(this);
 

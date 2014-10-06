@@ -14,7 +14,6 @@ function moduleFactory(sjs, EventBus, asterix, xlayers, undef) { "use stricts";
 var R = sjs.ramda,
 sh= asterix;
 
-
 //////////////////////////////////////////////////////////////////////////////
 //
 var XScene = cc.Scene.extend({
@@ -73,6 +72,8 @@ var XScene = cc.Scene.extend({
 
 });
 
+//////////////////////////////////////////////////////////////////////////////
+//
 var XSceneFactory = sjs.Class.xtends({
 
   create: function(options) {
@@ -97,10 +98,12 @@ var XSceneFactory = sjs.Class.xtends({
 });
 
 
+
 return {
   XSceneFactory: XSceneFactory,
   XScene: XScene
 };
+
 
 
 }
@@ -109,7 +112,6 @@ return {
 //////////////////////////////////////////////////////////////////////////////
 // export
 (function () { "use strict"; var global=this, gDefine=global.define;
-
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
@@ -121,23 +123,11 @@ return {
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {
-
-    module.exports = moduleFactory(require('cherimoia/skarojs'),
-                                   require('cherimoia/ebus'),
-                                   require('cherimoia/zotohlab/asterix')
-                                   require('cherimoia/zotohlab/asterix/xlayers'));
   } else {
-
-    global['cherimoia']['zotohlab']['asterix']['xscene'] =
-      moduleFactory(global.cherimoia.skarojs,
-                    global.cherimoia.ebus,
-                    global.cherimoia.zotohlab.asterix,
-                    global.cherimoia.zotohlab.asterix.xlayers);
   }
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
 

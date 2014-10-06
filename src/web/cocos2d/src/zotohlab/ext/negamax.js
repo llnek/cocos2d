@@ -53,8 +53,6 @@ function negamax(board, game, maxDepth, depth, alpha, beta) {
   return bestValue;
 };
 
-
-
 return {
 
   Algo: sjs.Class.xtends({
@@ -88,27 +86,20 @@ return {
 
 }
 
-
 //////////////////////////////////////////////////////////////////////////////
 // export
 (function () { "use strict"; var global=this, gDefine=global.define;
 
-
-  if(typeof gDefine === 'function' && gDefine.amd) {
+  if (typeof gDefine === 'function' && gDefine.amd) {
 
     gDefine("cherimoia/negamax", ['cherimoia/skarojs'], moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {
   } else {
-
-    global['cherimoia']['negamax'] = moduleFactory(global.cherimoia.skarojs);
-
   }
-
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
 

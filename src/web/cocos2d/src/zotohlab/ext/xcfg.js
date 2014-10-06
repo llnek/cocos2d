@@ -159,27 +159,18 @@ return config;
 // export
 (function () { "use strict"; var global=this, gDefine=global.define;
 
-
-  if(typeof gDefine === 'function' && gDefine.amd) {
+  if (typeof gDefine === 'function' && gDefine.amd) {
 
     gDefine("cherimoia/zlab/asterix/xcfg",
-              ['cherimoia/skarojs', 'cherimoia/zlab/asterix'],
-              moduleFactory);
+            ['cherimoia/skarojs', 'cherimoia/zlab/asterix'],
+            moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {
   } else {
-
-    global['cherimoia']['zlab']['asterix']['xcfg'] =
-      moduleFactory(global.cherimoia.skarojs,
-                    global.cherimoia.zlab.asterix);
   }
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
-
 

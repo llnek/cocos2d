@@ -9,31 +9,24 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use stricts"; var global = this, _ = global._ ;
-
-var asterix= global.ZotohLab.Asterix,
-sh= global.ZotohLab.Asterix,
-ccsx= asterix.COCOS2DX,
-sjs= global.SkaroJS;
-
+function moduleFactory(sjs, asterix, ccsx, undef) { "use stricts";
+var sh = asterix;
 
 //////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
-
-asterix.XLoader = cc.Scene.extend({
-
-  logoSprite: null,
-  bgLayer: null,
-  logo: null,
-
-  _instance: null,
+//
+var XLoader = cc.Scene.extend({
 
   ctor: function () {
     this.bgLayer = new cc.LayerColor(cc.color(0,0,0, 255));
     this.bgLayer.setPosition(0, 0);
+    this.logoSprite= null;
+    this.bgLayer= null;
+    this.logo= null;
     this._super();
   },
+
+  _instance: null,
+
 
   pkLoadBar: function() {
     var pfx = '/public/ig/res';
@@ -152,11 +145,14 @@ asterix.XLoader = cc.Scene.extend({
 
 });
 
-asterix.XLoader.preload = function (resources, selector, target) {
+
+//////////////////////////////////////////////////////////////////////////////
+//
+XLoader.preload = function (resources, selector, target) {
   var director = cc.director;
 
   if (!this._instance) {
-    this._instance = new asterix.XLoader();
+    this._instance = new XLoader();
   }
 
   this._instance.initWithResources(resources, selector, target);
@@ -164,6 +160,26 @@ asterix.XLoader.preload = function (resources, selector, target) {
   return this._instance;
 };
 
+
+return XLoader;
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+  if (typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("cherimoia/zotohlab/asterix/xloader",
+            ['cherimoia/skarojs',
+             'cherimoia/zotohlab/asterix',
+             'cherimoia/zotohlab/asterix/ccsx'],
+            moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+  }
 
 }).call(this);
 

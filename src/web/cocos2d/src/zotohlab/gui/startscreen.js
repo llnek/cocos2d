@@ -9,19 +9,13 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._  ;
-
-var asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
-ccsx= asterix.COCOS2DX,
-sjs = global.SkaroJS;
-
+function moduleFactory(sjs, asterix, ccsx, xlayers, undef) { "use strict";
+var sh= asterix;
 
 //////////////////////////////////////////////////////////////////////////////
 // splash screen for the game - make it look nice please.
 //////////////////////////////////////////////////////////////////////////////
-
-asterix.XSplashLayer = asterix.XLayer.extend({
+var XSplashLayer = xlayers.XLayer.extend({
 
   pkInit: function() {
     var imgUrl= sh.getImagePath('splash.splash'),
@@ -42,6 +36,25 @@ asterix.XSplashLayer = asterix.XLayer.extend({
 });
 
 
+return XSplashLayer;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+  if (typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("cherimoia/zlab/asterix/xsplash",
+            ['cherimoia/skarojs',
+             'cherimoia/zlab/asterix',
+             'cherimoia/zlab/asterix/ccsx',
+             'cherimoia/zlab/asterix/xlayers'],
+            moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+  }
 
 }).call(this);
 

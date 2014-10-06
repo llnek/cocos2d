@@ -9,22 +9,14 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._ ;
-
-var asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
-sjs= global.SkaroJS;
-
-asterix.TicTacToe= {};
+function moduleFactory(sjs, asterix, xcfg, undef) { "use strict";
+var sh = asterix;
 
 //////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
-
-sh.xcfg = sjs.mergeEx( asterix.XConfig, {
+//merge stuff in-place.
+sjs.merge( xcfg, {
 
   appKey : "bd5f79bb-eb41-4ed5-bb44-2529dc27ed3c",
-
 
   appid: 'tictactoe',
   color: 'sky',
@@ -92,6 +84,25 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
   }
 
 });
+
+return xcfg;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+  if (typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("cherimoia/games/config",
+            ['cherimoia/skarojs',
+             'cherimoia/zlab/asterix',
+             'cherimoia/zlab/asterix/xcfg'],
+            moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+  }
 
 }).call(this);
 

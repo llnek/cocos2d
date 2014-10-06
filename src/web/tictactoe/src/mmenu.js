@@ -9,14 +9,11 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._ ;
-
-var asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
-ccsx = asterix.COCOS2DX,
-sjs= global.SkaroJS;
-
-var SEED= {
+function moduleFactory(sjs, asterix, xcfg, ccsx,
+                       layers, scenes,
+                       mmenus, undef) { "use strict";
+var sh = asterix,
+SEED= {
   grid: [0,0,0, 0,0,0, 0,0,0],
   size: 3,
   ppids: { },
@@ -25,17 +22,16 @@ var SEED= {
 };
 
 //////////////////////////////////////////////////////////////////////////////
-// Main menu.
-//////////////////////////////////////////////////////////////////////////////
-
-var MainMenuLayer = asterix.XMenuLayer.extend({
+//
+var MainMenuLayer = mmenus.XMenuLayer.extend({
 
   rtti: function() { return 'MainMenuLayer'; },
 
   pkInit: function() {
 
-    var csts = sh.xcfg.csts,
-    pobj2, pobj1,
+    var csts = xcfg.csts,
+    pobj2,
+    pobj1,
     cw = ccsx.center(),
     wz = ccsx.screen();
 
@@ -91,49 +87,69 @@ var MainMenuLayer = asterix.XMenuLayer.extend({
     return this._super();
   }
 
-
 });
 
 //////////////////////////////////////////////////////////////////////////////
 //
-sh.protos['MainMenu'] = {
+return {
 
-  create: function(options) {
-
-    var tttf= asterix.TicTacToe.Factory,
-    dir=cc.director,
-    scene = new asterix.XSceneFactory([
-      asterix.XMenuBackLayer,
-      MainMenuLayer
-    ]).create(options);
-
-    if (scene) {
-      scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
-        dir.runScene( tttf.create(msg));
-      });
-      scene.ebus.on('/mmenu/controls/online', function(topic, msg) {
-        msg.onBack=function() {
-          dir.runScene( sh.protos['MainMenu'].create());
-        };
-        msg.yes=function(wss,pnum,startmsg) {
-          var m= sjs.mergeEx( _.omit(msg, 'yes', 'onBack'), {
-            wsock: wss,
-            pnum: pnum
+  'MainMenu' : {
+      create = function (options) {
+        var gl = sh.protos['GameArena'],
+        mm= sh.protos['MainMenu'],
+        ol= sh.protos['OnlinePlay'],
+        dir= cc.director,
+        scene = new scenes.XSceneFactory([
+          mmenus.XMenuBackLayer,
+          MainMenuLayer
+        ]).create(options);
+        if (scene) {
+          scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
+            dir.runScene( gl.create(msg));
           });
-          sjs.merge(m, startmsg);
-          dir.runScene( tttf.create(m));
+          scene.ebus.on('/mmenu/controls/online', function(topic, msg) {
+            msg.onBack=function() {
+              dir.runScene( mm.create());
+            };
+            msg.yes=function(wss,pnum,startmsg) {
+              var m= sjs.mergeEx( R.omit(['yes', 'onBack'], msg), {
+                wsock: wss,
+                pnum: pnum
+              });
+              sjs.merge(m, startmsg);
+              dir.runScene( gl.create(m));
+            }
+            dir.runScene( ol.create(msg));
+          });
         }
-        dir.runScene( sh.protos['OnlinePlay'].create(msg));
-      });
+        return scene;
     }
-
-    return scene;
   }
 
 };
 
 
+}
 
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+  if (typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("cherimoia/games/mmenu",
+            ['cherimoia/skarojs',
+             'cherimoia/zlab/asterix',
+             'cherimoia/zlab/asterix/xcfg',
+             'cherimoia/zlab/asterix/ccsx',
+             'cherimoia/zlab/asterix/xlayers',
+             'cherimoia/zlab/asterix/xscenes',
+             'cherimoia/zlab/asterix/xmmenus'],
+            moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+  }
 
 }).call(this);
 

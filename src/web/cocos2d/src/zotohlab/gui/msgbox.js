@@ -9,19 +9,12 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._ ;
-
-var asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
-ccsx = asterix.COCOS2DX,
-sjs = global.SkaroJS;
-
+function moduleFactory(sjs, asterix,  xcfg, ccsx, layers, scenes, undef) { "use strict";
+var sh = asterix;
 
 //////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
-
-var BGLayer = asterix.XLayer.extend({
+//
+var BGLayer = layers.XLayer.extend({
 
   pkInit: function() {
     var map = cc.TMXTiledMap.create(sh.getTilesPath('gui.blank'));
@@ -31,12 +24,14 @@ var BGLayer = asterix.XLayer.extend({
 
 });
 
-var UILayer =  asterix.XLayer.extend({
+//////////////////////////////////////////////////////////////////////////////
+//
+var UILayer =  layers.XLayer.extend({
 
   pkInit: function() {
     var qn= new cc.LabelBMFont(sh.l10n(this.options.msg),
                                sh.getFontPath('font.TinyBoxBB')),
-    csts = sh.xcfg.csts,
+    csts = xcfg.csts,
     cw= ccsx.center(),
     wz= ccsx.screen(),
     s1, s2, t1, t2, menu;
@@ -63,14 +58,40 @@ var UILayer =  asterix.XLayer.extend({
 
 });
 
+/*
 sh.protos['MsgBox'] = {
-
   create: function(options) {
     return new asterix.XSceneFactory([ BGLayer, UILayer ]).create(options);
   }
+};
+*/
 
+return {
+   create: function(options) {
+    return new scenes.XSceneFactory([ BGLayer, UILayer ]).create(options);
+  }
 };
 
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+  if (typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("cherimoia/zlab/asterix/msgbox",
+            ['cherimoia/skarojs',
+             'cherimoia/zlab/asterix',
+             'cherimoia/zlab/asterix/xcfg',
+             'cherimoia/zlab/asterix/ccsx',
+             'cherimoia/zlab/asterix/xlayers',
+             'cherimoia/zlab/asterix/xscenes'],
+            moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+  }
 
 }).call(this);
 

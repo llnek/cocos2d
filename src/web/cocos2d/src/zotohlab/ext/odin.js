@@ -251,13 +251,11 @@ return {
 
 }
 
-
 //////////////////////////////////////////////////////////////////////////////
 // export
 (function () { "use strict"; var global=this, gDefine=global.define;
 
-
-  if(typeof gDefine === 'function' && gDefine.amd) {
+  if (typeof gDefine === 'function' && gDefine.amd) {
 
     gDefine("cherimoia/zlab/asterix/odin",
             ['cherimoia/skarojs','cherimoia/ebus','cherimoia/zlab/asterix'],
@@ -265,17 +263,10 @@ return {
 
   } else if (typeof module !== 'undefined' && module.exports) {
   } else {
-
-    global['cherimoia']['zlab']['asterix']['odin'] =
-      moduleFactory(global.cherimoia.skarojs,
-                    global.cherimoia.ebus,
-                    global.cherimoia.zlab.asterix);
   }
-
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
 

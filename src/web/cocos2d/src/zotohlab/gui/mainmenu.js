@@ -9,25 +9,18 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._ ;
-
-var asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
-ccsx = asterix.COCOS2DX,
-sjs= global.SkaroJS;
-
+function moduleFactory(sjs, asterix, xcfg, ccsx, layers, undef) { "use strict";
+var sh= asterix;
 
 //////////////////////////////////////////////////////////////////////////////
 // Main menu.
-//////////////////////////////////////////////////////////////////////////////
-
-asterix.XMenuBackLayer = asterix.XLayer.extend({
+var XMenuBackLayer = layers.XLayer.extend({
 
   pkInit: function() {
     var title = new cc.LabelBMFont(sh.l10n('%mmenu'),
                                    sh.getFontPath('font.JellyBelly')),
     bgMenu = new cc.TMXTiledMap(sh.getTilesPath('gui.mmenu')),
-    csts = sh.xcfg.csts,
+    csts = xcfg.csts,
     wz = ccsx.screen(),
     cw= ccsx.center();
 
@@ -45,12 +38,13 @@ asterix.XMenuBackLayer = asterix.XLayer.extend({
 
 });
 
-
-asterix.XMenuLayer= asterix.XLayer.extend({
+//////////////////////////////////////////////////////////////////////////////
+// Main menu.
+var XMenuLayer= layers.XLayer.extend({
 
   doCtrlBtns: function() {
-    var audio = sh.xcfg.assets.sprites['gui.audio'],
-    csts = sh.xcfg.csts,
+    var audio = xcfg.assets.sprites['gui.audio'],
+    csts = xcfg.csts,
     wz = ccsx.screen(),
     cw = ccsx.center(),
     menu, t2,t1,
@@ -64,13 +58,13 @@ asterix.XMenuLayer= asterix.XLayer.extend({
                         new cc.MenuItemSprite(s2),
            function(sender) {
             if (sender.getSelectedIndex() === 0) {
-              sh.xcfg.toggleSfx(true);
+              xcfg.toggleSfx(true);
             } else {
-              sh.xcfg.toggleSfx(false);
+              xcfg.toggleSfx(false);
             }
            });
     audio.setAnchorPoint(cc.p(0,0));
-    if (sh.xcfg.sound.open) {
+    if (xcfg.sound.open) {
       audio.setSelectedIndex(0);
     } else {
       audio.setSelectedIndex(1);
@@ -99,9 +93,7 @@ asterix.XMenuLayer= asterix.XLayer.extend({
     this.addItem(menu);
   },
 
-  rtti: function() {
-    return 'XMenuLayer';
-  },
+  rtti: function() { return 'XMenuLayer'; },
 
   pkQuit: function() {
     var ss= sh.protos['StartScreen'],
@@ -119,7 +111,7 @@ asterix.XMenuLayer= asterix.XLayer.extend({
 
 });
 
-asterix.XMenuLayer.onShowMenu = function() {
+XMenuLayer.onShowMenu = function() {
   var dir= cc.director;
   dir.pushScene( sh.protos['MainMenu'].create({
     onBack: function() {
@@ -127,6 +119,31 @@ asterix.XMenuLayer.onShowMenu = function() {
     }
   }));
 };
+
+return {
+  XMenuBackLayer: XMenuBackLayer,
+  XMenuLayer: XMenuLayer
+};
+
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+  if (typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("cherimoia/zlab/asterix/xmmenus",
+            ['cherimoia/skarojs',
+             'cherimoia/zlab/asterix',
+             'cherimoia/zlab/asterix/xcfg',
+             'cherimoia/zlab/asterix/ccsx',
+             'cherimoia/zlab/asterix/xlayers'],
+            moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+  }
 
 }).call(this);
 

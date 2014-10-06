@@ -9,19 +9,14 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._ ;
-
-var asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
-ccsx = asterix.COCOS2DX,
-sjs= global.SkaroJS;
-
+function moduleFactory(sjs, asterix, xcfg, ccsx,
+                       layers, scenes,
+                       XSplashLayer, undef) { "use strict";
+var sh = asterix;
 
 //////////////////////////////////////////////////////////////////////////////
 // splash screen for the game - make it look nice please.
-//////////////////////////////////////////////////////////////////////////////
-
-var UILayer = asterix.XLayer.extend({
+var UILayer = layers.XLayer.extend({
 
   rtti: function() { return "UILayer"; },
 
@@ -42,39 +37,53 @@ var UILayer = asterix.XLayer.extend({
     return this._super();
   }
 
-
 });
-
 
 //////////////////////////////////////////////////////////////////////////////
 //
-sh.protos['StartScreen'] = {
-
-  create: function(options) {
-
-    var scene = new asterix.XSceneFactory([
-      asterix.XSplashLayer,
-      UILayer
-    ]).create(options);
-
-    if (scene) {
-      scene.ebus.on('/splash/controls/playgame', function() {
-        var ss= sh.protos['StartScreen'],
-        mm= sh.protos['MainMenu'],
-        dir= cc.director;
-        dir.runScene( mm.create({
-          onBack: function() { dir.runScene( ss.create() ); }
-        }));
-      });
-    }
-
-    return scene;
-
+return {
+  'StartScreen' : {
+        create: function(options) {
+          var scene = new scenes.XSceneFactory([
+            XSplashLayer,
+            UILayer
+          ]).create(options);
+          if (scene) {
+            scene.ebus.on('/splash/controls/playgame', function() {
+              var ss= sh.protos['StartScreen'],
+              mm= sh.protos['MainMenu'],
+              dir= cc.director;
+              dir.runScene( mm.create({
+                onBack: function() { dir.runScene( ss.create() ); }
+              }));
+            });
+          }
+          return scene;
+        }
   }
-
 };
 
+}
 
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+  if (typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("cherimoia/games/splash",
+            ['cherimoia/skarojs',
+             'cherimoia/zlab/asterix',
+             'cherimoia/zlab/asterix/xcfg',
+             'cherimoia/zlab/asterix/ccsx',
+             'cherimoia/zlab/asterix/xlayers',
+             'cherimoia/zlab/asterix/xscenes',
+             'cherimoia/zlab/asterix/xsplash'],
+            moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+  }
 
 }).call(this);
 

@@ -114,6 +114,10 @@ var skarojs = {
           : str;
   },
 
+  safeSplit: function(s, ch) {
+    return !!s ? R.reject(function(z) { return z.length===0; }, s.trim().split(ch)) : [];
+  },
+
   now: function() {
     return Date.now || new Date().getTime();
   },
@@ -348,34 +352,24 @@ var skarojs = {
 return skarojs;
 }
 
-
 //////////////////////////////////////////////////////////////////////////////
 // export
 (function () { "use strict"; var global=this, gDefine=global.define;
 
-
-  if(typeof gDefine === 'function' && gDefine.amd) {
+  if (typeof gDefine === 'function' && gDefine.amd) {
 
     gDefine("cherimoia/skarojs",
             ['global/window','console/dbg','ramda'],
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {
-
     //module.exports = moduleFactory(global, console, require('ramda'));
-
   } else {
-
-    global['cherimoia'] = {
-      skarojs: moduleFactory(global, global.dbg, global.R)
-    };
-
+    //global['cherimoia'] = { skarojs: moduleFactory(global, global.dbg, global.R) };
   }
-
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
 

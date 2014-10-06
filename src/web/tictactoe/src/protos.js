@@ -9,8 +9,20 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs,undef) { "use strict";
-return {};
+function moduleFactory(sjs, sh, xcfg,
+                       online,
+                       splash,
+                       mmenu,
+                       arena,
+                       undef) { "use strict";
+  var protos= sh.protos;
+
+  protos[online.id] = online.proto;
+  protos[splash.id] = splash.proto;
+  protos[mmenu.id] = mmenu.proto;
+  protos[arena.id] = arena.proto;
+
+  return protos;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -19,7 +31,15 @@ return {};
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("cherimoia/zlab", ['cherimoia/skarojs'], moduleFactory);
+    gDefine("cherimoia/games/protodefs",
+            ['cherimoia/skarojs',
+             'cherimoia/zlab/asterix',
+             'cherimoia/zlab/asterix/xcfg',
+             'cherimoia/zlab/asterix/online',
+             'cherimoia/games/splash',
+             'cherimoia/games/mmenu',
+             'cherimoia/games/tictactoe']
+            moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {
   } else {

@@ -30,22 +30,17 @@ document.ccConfig = {
     "/public/vendors/cherimoia/skaro.js",
     "/public/vendors/cherimoia/caesar.js",
     "/public/vendors/cherimoia/bus.js",
-
-
     "/public/vendors/cherimoia/zlab.js",
     "/public/ig/lib/zotohlab/ext/asterix.js",
-
-
     "/public/ig/lib/zotohlab/ext/xcfg.js",
     "/public/ig/lib/zotohlab/ext/cs2dx.js",
     "/public/ig/lib/zotohlab/ext/odin.js",
-    "/public/ig/lib/zotohlab/ext/xscene.js",
-    "/public/ig/lib/zotohlab/ext/xlayer.js",
+
+    "/public/ig/lib/zotohlab/ext/xlayers.js",
+    "/public/ig/lib/zotohlab/ext/xscenes.js",
     "/public/ig/lib/zotohlab/ext/xentity.js",
-    "/public/ig/lib/zotohlab/ext/xlives.js",
-    "/public/ig/lib/zotohlab/ext/xhud.js",
-    "/public/ig/lib/zotohlab/ext/xigg.js",
     "/public/ig/lib/zotohlab/ext/xloader.js",
+
     "/public/ig/lib/zotohlab/gui/startscreen.js",
     "/public/ig/lib/zotohlab/gui/msgbox.js",
     "/public/ig/lib/zotohlab/gui/ynbox.js",
@@ -53,6 +48,8 @@ document.ccConfig = {
     "/public/ig/lib/zotohlab/gui/mainmenu.js",
 
     '/public/ig/lib/zotohlab/ext/negamax.js',
+
+
     '/public/ig/lib/game/tictactoe/config.js',
     '/public/ig/lib/game/tictactoe/i18n/game_en_US.js',
 

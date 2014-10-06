@@ -9,7 +9,6 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-
 function moduleFactory(sjs, undef) { "use strict";
 
  /////////////////////////////////////////////////////////////////////////////
@@ -19,10 +18,8 @@ var VISCHS= " @N/\\Ri2}aP`(xeT4F3mt;8~%r0v:L5$+Z{'V)\"CKIc>z.*" +
 var VISCHS_LEN=  VISCHS.length;
 
 /////////////////////////////////////////////////////////////////////////////
- //
-function identifyChar( pos) {
-  return VISCHS.charAt(pos);
-}
+//
+function identifyChar( pos) { return VISCHS.charAt(pos); }
 
 function locateChar(ch) {
   var n;
@@ -79,7 +76,7 @@ function shiftDec( shiftpos, delta, cpos) {
   if (sjs.isString(str) && str.length > 0 && shiftpos !== 0) {} else {
     return "";
   }
-  var delta =  SkaroJS.xmod(Math.abs(shiftpos), VISCHS_LEN);
+  var delta =  sjs.xmod(Math.abs(shiftpos), VISCHS_LEN);
   var p, ch, n, len= str.length;
   var out=[];
   for (n=0; n < len; ++n) {
@@ -102,7 +99,7 @@ function shiftDec( shiftpos, delta, cpos) {
   if (sjs.isString(cipherText) && cipherText.length > 0 && shiftpos !== 0) {} else {
     return "";
   }
-  var delta = SkaroJS.xmod(Math.abs(shiftpos),VISCHS_LEN);
+  var delta = sjs.xmod(Math.abs(shiftpos),VISCHS_LEN);
   var ch, n, len= cipherText.length;
   var p, out=[];
   for (n=0; n < len; ++n) {
@@ -124,35 +121,22 @@ return {
   encrypt: caesarEncrypt
 };
 
-
 }
-
-
-
-
 
 //////////////////////////////////////////////////////////////////////////////
 // export
 (function () { "use strict"; var global=this, gDefine=global.define;
 
-
-  if(typeof gDefine === 'function' && gDefine.amd) {
+  if (typeof gDefine === 'function' && gDefine.amd) {
 
     gDefine("cherimoia/caesar", ['cherimoia/skarojs'], moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {
   } else {
-
-    global['cherimoia']['caesar'] = moduleFactory(global.cherimoia.skarojs);
-
   }
-
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
 

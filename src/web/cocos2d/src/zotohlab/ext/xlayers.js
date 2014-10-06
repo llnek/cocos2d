@@ -9,9 +9,85 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, asterix, ccsx, xcfg, Ash, undef) { "use stricts";
+function moduleFactory(sjs, asterix, xcfg, ccsx, Ash, undef) { "use stricts";
 var sh = asterix,
 SEED = 0;
+
+//////////////////////////////////////////////////////////////////////////////
+//
+var XLive = cc.Sprite.extend({
+  ctor: function(x, y, options) {
+    this._super();
+    this.initWithSpriteFrameName(options.frames[0]);
+    if ( sjs.echt(options.scale)) {
+      this.setScale(options.scale);
+    }
+    this.setPosition(x,y);
+  }
+});
+
+//////////////////////////////////////////////////////////////////////////////
+//
+var XHUDLives = sjs.Class.xtends({
+
+  reduce: function(howmany) {
+    var n;
+    for (n=0; n < howmany; ++n) {
+      this.hud.removeItem(this.icons.pop());
+    }
+    this.curLives -= howmany;
+  },
+
+  isDead: function() { return this.curLives < 0; },
+  getLives: function() { return this.curLives; },
+
+  reset:function() {
+    _.each(this.icons, function(z) { this.hud.removeItem(z); }, this);
+    this.curLives = this.options.totalLives;
+    this.icons=[];
+  },
+
+  resurrect: function() {
+    this.reset();
+    this.drawLives();
+  },
+
+  drawLives: function() {
+    var y= this.topLeft.y - this.lifeSize.height * 0.5,
+    x= this.topLeft.x + this.lifeSize.width * 0.5,
+    gap=2,
+    n, v;
+
+    for (n = 0; n < this.curLives; ++n) {
+      v= new XLive(x,y,this.options);
+      this.hud.addItem(v);
+      this.icons.push(v);
+      if (this.options.direction > 0) {
+        x += this.lifeSize.width + gap;
+      } else {
+        x -= this.lifeSize.width - gap;
+      }
+    }
+  },
+
+  create: function() {
+    var dummy = new XLive(0,0,this.options);
+    this.lifeSize = { width: ccsx.getScaledWidth(dummy), height: ccsx.getScaledHeight(dummy) } ;
+    this.drawLives();
+  },
+
+  ctor: function(hud, x, y, options) {
+    this.options = options || {};
+    this.hud= hud;
+    this.curLives= -1;
+    this.topLeft= cc.p(x,y);
+    this.reset();
+    if ( !sjs.echt(this.options.direction)) {
+      this.options.direction = 1;
+    }
+  }
+
+});
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -79,14 +155,103 @@ var XLayer = cc.Layer.extend({
 
 //////////////////////////////////////////////////////////////////////////////
 //
+var XGameHUDLayer = XLayer.extend({
+
+  rtti: function() { return 'HUD'; },
+
+  pkInit: function() {
+    this.scoreLabel = null;
+    this.lives= null;
+    this.score= 0;
+    this.replayBtn = null;
+
+    this.initParentNode();
+    this.initLabels();
+    this.initIcons();
+    this.initCtrlBtns();
+
+    return this._super();
+  },
+
+  getScore: function() {
+    return this.score;
+  },
+
+  reset: function() {
+    this.disableReplay();
+    this.score= 0;
+    if (this.lives) { this.lives.resurrect(); }
+  },
+
+  reduceLives: function(n) {
+    this.lives.reduce(n);
+    return this.lives.isDead();
+  },
+
+  updateScore: function(num) {
+    this.score += num;
+    this.scoreLabel.setString(Number(this.score).toString());
+  },
+
+  disableReplay: function() {
+    this.replayBtn.setVisible(false);
+  },
+
+  enableReplay: function() {
+    this.replayBtn.setVisible(true);
+  },
+
+  initCtrlBtns: function(scale, where) {
+    var csts = xcfg.csts,
+    wz= ccsx.screen(),
+    cw= ccsx.center(),
+    y, c, menu;
+
+    where = where || 'cc.ALIGN_BOTTOM';
+    scale = scale || 1;
+
+    menu= ccsx.pmenu1({
+      imgPath: sh.getImagePath('gui.mmenu.menu'),
+      scale: scale,
+      selector: function() {
+        sh.fireEvent('/game/hud/controls/showmenu'); }
+    });
+    c= menu.getChildByTag(1);
+    if (where === 'cc.ALIGN_TOP') {
+      y = wz.height - csts.TILE  - ccsx.getScaledHeight(c) / 2
+    } else {
+      y = csts.TILE  + ccsx.getScaledHeight(c) / 2
+    }
+    menu.setPosition(wz.width - csts.TILE - ccsx.getScaledWidth(c)/2, y);
+    this.addItem(menu);
+
+    menu = ccsx.pmenu1({
+      imgPath: sh.getImagePath('gui.mmenu.replay'),
+      scale : scale,
+      visible: false,
+      selector: function() {
+        sh.fireEvent('/game/hud/controls/replay'); }
+    });
+    c= menu.getChildByTag(1);
+    if (where === 'cc.ALIGN_TOP') {
+      y = wz.height - csts.TILE  - ccsx.getScaledHeight(c) / 2
+    } else {
+      y = csts.TILE  + ccsx.getScaledHeight(c) / 2
+    }
+    menu.setPosition(csts.TILE + ccsx.getScaledWidth(c)/2, y);
+    this.replayBtn=menu;
+    this.addItem(menu);
+  }
+
+});
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
 var XGameLayer = XLayer.extend({
 
-  keyboard: [],
-  players: [],
-  level: 1,
-  actor: null,
-
   pkInput: function() {
+
     if (cc.sys.capabilities['keyboard']) {
       sjs.loggr.debug('pkInput:  keyboard supported');
       this.cfgInputKeyPad();
@@ -256,67 +421,53 @@ var XGameLayer = XLayer.extend({
   },
 
   update: function(dt) {
-    if (this.operational() ) {
-      if (this.engine) {
-        this.engine.update(dt);
-      } else {
-        this.updateEntities(dt);
-        this.checkEntities(dt);
-      }
+    if (this.operational()  && !!this.engine) {
+      this.engine.update(dt);
     }
   },
 
+  keys: function() { return this.keyboard; },
+
   ctor: function(options) {
     this._super(options);
+    this.keyboard= [];
+    this.players= [];
+    this.level= 1;
+    this.actor= null;
     sh.main = this;
   }
 
 });
 
-Object.defineProperty(XGameLayer.prototype, "keys", {
-  get: function() { return this.keyboard; }
-});
-
-
 return {
+  XGameHUDLayer: XGameHUDLayer,
   XGameLayer: XGameLayer,
-  XLayer: XLayer
+  XLayer: XLayer,
+  XHUDLives: XHUDLives
 };
 
 }
-
 
 //////////////////////////////////////////////////////////////////////////////
 // export
 (function () { "use strict"; var global=this, gDefine=global.define;
 
-
-  if(typeof gDefine === 'function' && gDefine.amd) {
+  if (typeof gDefine === 'function' && gDefine.amd) {
 
     gDefine("cherimoia/zlab/asterix/xlayers",
             ['cherimoia/skarojs',
              'cherimoia/zlab/asterix',
-             'cherimoia/zlab/asterix/ccsx',
              'cherimoia/zlab/asterix/xcfg',
+             'cherimoia/zlab/asterix/ccsx',
              'ash-js'],
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {
   } else {
-
-    global['cherimoia']['zlab']['asterix']['xlayers'] =
-      moduleFactory(global.cherimoia.skarojs,
-                    global.cherimoia.zlab.asterix,
-                    global.cherimoia.zlab.asterix.ccsx,
-                    global.cherimoia.zlab.asterix.xcfg,
-                    global.Ash);
-
   }
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
 
