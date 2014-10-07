@@ -13,7 +13,7 @@ document.ccConfig = {
   debugMode: 1,
 
   engineDir: ['/public/extlibs/cocos2d-html5'],
-  modules: [ 'cocos2d', 'editbox' ],
+  modules: [ 'cocos2d', 'editbox', 'ccpool' ],
 
   jsList: [
 
@@ -22,7 +22,7 @@ document.ccConfig = {
     "/public/vendors/mustache/mustache.js",
     "/public/vendors/helpers/dbg.js",
 
-    "/public/vendors/js_signals/signals.js",
+    "/public/vendors/js-signals/signals.js",
     "/public/vendors/ash-js/ash.js",
 
 

@@ -12,13 +12,13 @@
 
     "jsList"        : [
 
-
+"src/almond/almond.js",
     "src/ramda/ramda.js",
     "src/l10njs/l10n.js",
     "src/mustache/mustache.js",
     "src/helpers/dbg.js",
 
-    "src/js_signals/signals.js",
+    "src/js-signals/signals.js",
     "src/ash-js/ash.js",
 
     "src/cherimoia/skaro.js",

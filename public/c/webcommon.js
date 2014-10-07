@@ -820,7 +820,10 @@ e;d++)if(d%4){var g=f.indexOf(b.charAt(d-1))<<2*(d%4),h=f.indexOf(b.charAt(d))>>
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(global, DBG, R) { "use strict";
+(function () { "use strict"; var global=this, gDefine=global.define;
+//////////////////////////////////////////////////////////////////////////////
+//
+function moduleFactory(global, DBG, R) {
 
 var undef, fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
 var ZEROS= "00000000000000000000000000000000";  //32
@@ -1179,19 +1182,18 @@ return skarojs;
 
 //////////////////////////////////////////////////////////////////////////////
 // export
-(function () { "use strict"; var global=this, gDefine=global.define;
+if (typeof module !== 'undefined' && module.exports) {}
+else
+if (typeof gDefine === 'function' && gDefine.amd) {
 
-  if (typeof gDefine === 'function' && gDefine.amd) {
+  gDefine("cherimoia/skarojs",
+          ['global/window','console/dbg','ramda'],
+          moduleFactory);
 
-    gDefine("cherimoia/skarojs",
-            ['global/window','console/dbg','ramda'],
-            moduleFactory);
-
-  } else if (typeof module !== 'undefined' && module.exports) {
-    //module.exports = moduleFactory(global, console, require('ramda'));
-  } else {
-    //global['cherimoia'] = { skarojs: moduleFactory(global, global.dbg, global.R) };
-  }
+  //module.exports = moduleFactory(global, console, require('ramda'));
+} else {
+  //global['cherimoia'] = { skarojs: moduleFactory(global, global.dbg, global.R) };
+}
 
 }).call(this);
 
@@ -1209,7 +1211,10 @@ return skarojs;
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs) { "use strict";
+(function () { "use strict"; var global=this, gDefine=global.define;
+//////////////////////////////////////////////////////////////////////////////
+//
+function moduleFactory(sjs) {
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -1325,15 +1330,14 @@ return {
 
 //////////////////////////////////////////////////////////////////////////////
 // export
-(function () { "use strict"; var global=this, gDefine=global.define;
+if (typeof module !== 'undefined' && module.exports) {}
+else
+if (typeof gDefine === 'function' && gDefine.amd) {
 
-  if (typeof gDefine === 'function' && gDefine.amd) {
+  gDefine("cherimoia/caesar", ['cherimoia/skarojs'], moduleFactory);
 
-    gDefine("cherimoia/caesar", ['cherimoia/skarojs'], moduleFactory);
-
-  } else if (typeof module !== 'undefined' && module.exports) {
-  } else {
-  }
+} else {
+}
 
 }).call(this);
 

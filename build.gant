@@ -333,8 +333,8 @@ def doFinzBuild() {
     fileset (file: "${basedir}/public/vendors/l10njs/l10n.min.js")
     fileset (file: "${basedir}/public/vendors/mustache/mustache.js")
     fileset (file: "${basedir}/public/vendors/helpers/dbg.js")
-    fileset (file: "${basedir}/public/vendors/jquery_plugins/detectmobilebrowser.js")
-    fileset (file: "${basedir}/public/vendors/jquery_plugins/jquery.cookie.js")
+    fileset (file: "${basedir}/public/vendors/jquery-plugins/detectmobilebrowser.js")
+    fileset (file: "${basedir}/public/vendors/jquery-plugins/jquery.cookie.js")
     fileset (file: "${basedir}/public/vendors/crypto-js/components/core-min.js")
     fileset (file: "${basedir}/public/vendors/crypto-js/components/enc-utf16-min.js")
     fileset (file: "${basedir}/public/vendors/crypto-js/components/enc-base64-min.js")
@@ -564,16 +564,19 @@ def doJiggleTheIndexFile(wappid,des,cocos) {
 
   def bdir= "/public/ig/lib/game/${wappid}/"
   def ccdir= "/public/extlibs/"
+  def pubdir= "/public/vendors/"
   def cfg= ""
 
   if (cocos || "${pmode}" == "release") {
     ccdir= "frameworks/"
     bdir= ""
+    pubdir="src/"
     cfg= FileUtils.readFileToString(new File("${srcDir}/resources/cocos2d.js"), "utf-8")
   } else {
     cfg= FileUtils.readFileToString(new File("${webDir}/${wappid}/src/ccconfig.js"), "utf-8")
   }
 
+  html= StringUtils.replace(html, "@@PUBDIR@@", pubdir)
   html= StringUtils.replace(html, "@@BOOTDIR@@", bdir)
   html= StringUtils.replace(html, "@@CCDIR@@", ccdir)
   html= StringUtils.replace(html, "@@CCCONFIG@@", cfg)
@@ -745,7 +748,7 @@ target (deployapp: '') {
         include (name: 'dbg.js')
       }
     }
-    ['underscore','cherimoia', 'l10njs', 'mustache'].each { d ->
+    ['almond','js-signals','ash-js','ramda','cherimoia', 'l10njs', 'cookies','mustache'].each { d ->
       copy (todir: "${dd1path}/${d}") {
         fileset (dir: "${vendors}/${d}")
       }

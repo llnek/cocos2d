@@ -13,7 +13,7 @@ document.ccConfig = {
   id: 'gameArea',
 
   engineDir: ['/public/extlibs/cocos2d-html5'],
-  modules: [ 'cocos2d', 'editbox', 'ccpool' ],
+  modules: [ 'cocos2d', 'editbox', 'ccpool', 'almond' ],
 
   jsList: [
 
@@ -22,7 +22,7 @@ document.ccConfig = {
     "/public/vendors/mustache/mustache.js",
     "/public/vendors/helpers/dbg.js",
 
-    "/public/vendors/js_signals/signals.js",
+    "/public/vendors/js-signals/signals.js",
     "/public/vendors/ash-js/ash.js",
 
     "/public/vendors/cherimoia/skaro.js",
