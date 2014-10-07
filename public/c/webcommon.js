@@ -820,10 +820,9 @@ e;d++)if(d%4){var g=f.indexOf(b.charAt(d-1))<<2*(d%4),h=f.indexOf(b.charAt(d))>>
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
+function moduleFactory(global, DBG, R) { "use strict";
 
-function moduleFactory(global, DBG, R, undef) { "use strict";
-
-var fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
+var undef, fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
 var ZEROS= "00000000000000000000000000000000";  //32
 
 if (typeof HTMLElement === 'undefined') {
@@ -917,12 +916,20 @@ klass.xtends = function (other) {
 
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-var SkaroJS = {
+var skarojs = {
 
   padstr: function(str, len, s) {
     return (len -= str.length) > 0
           ? (s = new Array(Math.ceil(len / s.length) + 1).join(s)).substr(0, s.length) + str + s.substr(0, len - s.length)
           : str;
+  },
+
+  safeSplit: function(s, ch) {
+    return !!s ? R.reject(function(z) { return z.length===0; }, s.trim().split(ch)) : [];
+  },
+
+  now: function() {
+    return Date.now || new Date().getTime();
   },
 
   capitalize: function(str) {
@@ -1142,6 +1149,21 @@ var SkaroJS = {
     return !!obj && Object.prototype.hasOwnProperty.call(obj, key);
   },
 
+  //since R doesn't handle object :(
+  reduceObj: function(f, memo, obj) {
+    return R.reduce(function(sum, pair) {
+      return f(sum, pair[1], pair[0]);
+    },
+    memo,
+    R.toPairs(obj));
+  },
+  eachObj: function(f, obj) {
+    return R.forEach(function(pair) {
+      return f(pair[1], pair[0]);
+    },
+    R.toPairs(obj));
+  },
+
   logger: DBG,
   loggr: DBG,
 
@@ -1152,37 +1174,29 @@ var SkaroJS = {
 };
 
 
-return SkaroJS;
+return skarojs;
 }
-
 
 //////////////////////////////////////////////////////////////////////////////
 // export
 (function () { "use strict"; var global=this, gDefine=global.define;
 
+  if (typeof gDefine === 'function' && gDefine.amd) {
 
-    if(typeof gDefine === 'function' && gDefine.amd) {
+    gDefine("cherimoia/skarojs",
+            ['global/window','console/dbg','ramda'],
+            moduleFactory);
 
-        gDefine("cherimoia/skarojs",
-                ['global/window','console/dbg','ramda'],
-                moduleFactory);
-
-    } else if (typeof module !== 'undefined' && module.exports) {
-
-        module.exports = moduleFactory(global, console, require('ramda'));
-
-    } else {
-
-        global['cherimoia$skarojs'] = moduleFactory(global, global.dbg, global.R);
-
-    }
-
+  } else if (typeof module !== 'undefined' && module.exports) {
+    //module.exports = moduleFactory(global, console, require('ramda'));
+  } else {
+    //global['cherimoia'] = { skarojs: moduleFactory(global, global.dbg, global.R) };
+  }
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
 
 // This library is distributed in  the hope that it will be useful but without
 // any  warranty; without  even  the  implied  warranty of  merchantability or
@@ -1195,20 +1209,17 @@ return SkaroJS;
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
+function moduleFactory(sjs) { "use strict";
 
-function moduleFactory(sjs, undef) { "use strict";
-
- /////////////////////////////////////////////////////////////////////////////
- //
-var VISCHS= " @N/\\Ri2}aP`(xeT4F3mt;8~%r0v:L5$+Z{'V)\"CKIc>z.*" +
-            "fJEwSU7juYg<klO&1?[h9=n,yoQGsW]BMHpXb6A|D#q^_d!-";
-var VISCHS_LEN=  VISCHS.length;
+//////////////////////////////////////////////////////////////////////////////
+//
+var undef, VISCHS= " @N/\\Ri2}aP`(xeT4F3mt;8~%r0v:L5$+Z{'V)\"CKIc>z.*" +
+            "fJEwSU7juYg<klO&1?[h9=n,yoQGsW]BMHpXb6A|D#q^_d!-",
+VISCHS_LEN=  VISCHS.length;
 
 /////////////////////////////////////////////////////////////////////////////
- //
-function identifyChar( pos) {
-  return VISCHS.charAt(pos);
-}
+//
+function identifyChar( pos) { return VISCHS.charAt(pos); }
 
 function locateChar(ch) {
   var n;
@@ -1265,7 +1276,7 @@ function shiftDec( shiftpos, delta, cpos) {
   if (sjs.isString(str) && str.length > 0 && shiftpos !== 0) {} else {
     return "";
   }
-  var delta =  SkaroJS.xmod(Math.abs(shiftpos), VISCHS_LEN);
+  var delta =  sjs.xmod(Math.abs(shiftpos), VISCHS_LEN);
   var p, ch, n, len= str.length;
   var out=[];
   for (n=0; n < len; ++n) {
@@ -1288,7 +1299,7 @@ function shiftDec( shiftpos, delta, cpos) {
   if (sjs.isString(cipherText) && cipherText.length > 0 && shiftpos !== 0) {} else {
     return "";
   }
-  var delta = SkaroJS.xmod(Math.abs(shiftpos),VISCHS_LEN);
+  var delta = sjs.xmod(Math.abs(shiftpos),VISCHS_LEN);
   var ch, n, len= cipherText.length;
   var p, out=[];
   for (n=0; n < len; ++n) {
@@ -1310,38 +1321,22 @@ return {
   encrypt: caesarEncrypt
 };
 
-
 }
-
-
-
-
 
 //////////////////////////////////////////////////////////////////////////////
 // export
 (function () { "use strict"; var global=this, gDefine=global.define;
 
+  if (typeof gDefine === 'function' && gDefine.amd) {
 
-    if(typeof gDefine === 'function' && gDefine.amd) {
+    gDefine("cherimoia/caesar", ['cherimoia/skarojs'], moduleFactory);
 
-        gDefine("cherimoia/caesar", ['cherimoia/skarojs'], moduleFactory);
-
-    } else if (typeof module !== 'undefined' && module.exports) {
-
-        module.exports = moduleFactory(require('cherimoia/skarojs'));
-
-    } else {
-
-        global['cherimoia$caesar'] = moduleFactory(global.cherimoia$skarojs);
-
-    }
-
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+  }
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
 

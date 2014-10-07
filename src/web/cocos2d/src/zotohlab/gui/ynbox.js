@@ -10,7 +10,8 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 function moduleFactory(sjs, sh, xcfg, ccsx, layers, scenes) { "use strict";
-var undef;
+var csts= xcfg.csts,
+undef;
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -31,7 +32,6 @@ var UILayer =  layers.XLayer.extend({
   pkInit: function() {
     var qn= new cc.LabelBMFont(sh.l10n('%quit?'),
                                sh.getFontPath('font.TinyBoxBB')),
-    csts = xcfg.csts,
     cw= ccsx.center(),
     wz= ccsx.screen(),
     s1, s2, t1, t2, menu;
@@ -81,12 +81,14 @@ return {
   if (typeof gDefine === 'function' && gDefine.amd) {
 
     gDefine("zotohlab/asx/ynbox",
+
             ['cherimoia/skarojs',
              'zotohlab/asterix',
              'zotohlab/asx/xcfg',
              'zotohlab/asx/ccsx',
              'zotohlab/asx/xlayers',
              'zotohlab/asx/xscenes'],
+
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

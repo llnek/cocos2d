@@ -15,10 +15,11 @@ function moduleFactory(sjs, sh, xcfg, ccsx,
                        mmenus,
                        odin,
                        huds,
-                       entobjs,
-                       sysobjs) { "use strict";
-var Priorities= sysobjs.Priorities,
+                       cobjs,
+                       sobjs) { "use strict";
+var prrs= sobjs.Priorities,
 evts= odin.Events,
+csts= xcfg.csts,
 R = sjs.ramda,
 undef;
 
@@ -46,62 +47,68 @@ var GameLayer = layers.XGameLayer.extend({
 
   play: function(newFlag) {
 
-    var csts= xcfg.csts,
-    popts,
-    h= this.getHUD(),
+    var h= this.getHUD(),
     p1ids, p2ids;
 
-    xcfg.csts.CELLS = this.options.size*this.options.size;
-    xcfg.csts.GRID_SIZE= this.options.size;
+    csts.CELLS = this.options.size*this.options.size;
+    csts.GRID_SIZE= this.options.size;
 
     // sort out names of players
-    R.forEach(function(pair) {
-      var v=pair[1],
-      k=pair[0];
+    sjs.eachObj(function(v,k) {
       if (v[0] === 1) {
         p1ids= [k, v[1] ];
       } else {
         p2ids= [k, v[1] ];
       }
     },
-    R.toPairs(this.options.ppids));
+    this.options.ppids);
 
     // clean slate
     this.reset(newFlag);
     this.cleanSlate();
 
-    this.options.factory= new sysobjs.EntityFactory(this.engine);
+    this.options.factory= new sobjs.EntityFactory(this.engine);
     this.initPlayers();
     this.options.selQ = [];
     this.options.netQ = [];
     this.options.msgQ = [];
-    popts=this.options;
 
-    this.engine.addSystem(new sysobjs.GameSupervisor(popts),
-                          Priorities.PreUpdate);
+    /*
+    this.engine.addSystem(new sobjs.GameSupervisor(popts),
+                          prrs.PreUpdate);
 
-    this.engine.addSystem(new sysobjs.SelectionSystem(popts),
-                          Priorities.Movement);
+    this.engine.addSystem(new sobjs.SelectionSystem(popts),
+                          prrs.Movement);
 
-    this.engine.addSystem(new sysobjs.NetworkSystem(popts),
-                          Priorities.Movement);
+    this.engine.addSystem(new sobjs.NetworkSystem(popts),
+                          prrs.Movement);
 
-    this.engine.addSystem(new sysobjs.TurnBaseSystem(popts),
-                          Priorities.TurnBase);
+    this.engine.addSystem(new sobjs.TurnBaseSystem(popts),
+                          prrs.TurnBase);
 
-    this.engine.addSystem(new sysobjs.ResolutionSystem(popts),
-                          Priorities.Resolve);
+    this.engine.addSystem(new sobjs.ResolutionSystem(popts),
+                          prrs.Resolve);
 
-    this.engine.addSystem(new sysobjs.RenderSystem(popts),
-                          Priorities.Render);
+    this.engine.addSystem(new sobjs.RenderSystem(popts),
+                          prrs.Render);
+*/
+    R.forEach(function(z) {
+      this.engine.addSystem(new (z[0])(this.options), z[1]);
+    }.bind(this),
+    [[sobjs.GameSupervisor, prrs.PreUpdate],
+     [sobjs.SelectionSystem, prrs.Movement],
+     [sobjs.NetworkSystem, prrs.Movement],
+     [sobjs.TurnBaseSystem, prrs.TurnBase],
+     [sobjs.ResolutionSystem, prrs.Resolve],
+     [sobjs.RenderSystem, prrs.Render]]);
 
     if (this.options.wsock) {
       this.options.wsock.unsubscribeAll();
       this.options.wsock.subscribeAll(this.onevent,this);
     }
 
-    this.getHUD().regoPlayers(csts.P1_COLOR,p1ids,
-                              csts.P2_COLOR,p2ids);
+    this.getHUD().regoPlayers(csts.P1_COLOR, p1ids,
+                              csts.P2_COLOR, p2ids);
   },
 
   onNewGame: function(mode) {
@@ -159,9 +166,8 @@ var GameLayer = layers.XGameLayer.extend({
   },
 
   initPlayers: function() {
-    var csts= xcfg.csts,
-    p2cat,p1cat,
-    p2,p1;
+    var p2cat, p1cat,
+    p2, p1;
 
     switch (this.options.mode) {
       case sh.ONLINE_GAME:
@@ -177,8 +183,8 @@ var GameLayer = layers.XGameLayer.extend({
         p1cat= csts.HUMAN;
       break;
     }
-    p1= new entobjs.Player(p1cat, csts.CV_X, 1, csts.P1_COLOR);
-    p2= new entobjs.Player(p2cat, csts.CV_O, 2, csts.P2_COLOR);
+    p1= new cobjs.Player(p1cat, csts.CV_X, 1, csts.P1_COLOR);
+    p2= new cobjs.Player(p2cat, csts.CV_O, 2, csts.P2_COLOR);
     this.options.players = [null,p1,p2];
     this.options.colors={};
     this.options.colors[csts.P1_COLOR] = p1;
@@ -292,6 +298,7 @@ return {
   if (typeof gDefine === 'function' && gDefine.amd) {
 
     gDefine("zotohlab/p/arena",
+
             ['cherimoia/skarojs',
              'zotohlab/asterix',
              'zotohlab/asx/xcfg',
@@ -301,8 +308,9 @@ return {
              'zotohlab/asx/xmmenus',
              'zotohlab/asx/odin',
              'zotohlab/p/hud',
-             'zotohlab/p/entobjs',
+             'zotohlab/p/components',
              'zotohlab/p/sysobjs'],
+
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

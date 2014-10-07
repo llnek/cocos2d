@@ -9,27 +9,18 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this, _ = global._ ;
-
-var asterix= global.ZotohLab.Asterix,
-Odin= global.ZotohLab.Odin,
-ccsx= asterix.CCS2DX,
-sjs= global.SkaroJS,
-sh= asterix,
-ttt= sh.TicTacToe,
-evts= Odin.Events;
-
+function moduleFactory(gnodes, sjs, sh, xcfg, ccsx, odin, Ash){ "use strict";
+var evts= odin.Events,
+undef;
 
 //////////////////////////////////////////////////////////////////////////////
 //
-
-ttt.GameSupervisor = Ash.System.extend({
+var GameSupervisor = Ash.System.extend({
 
   constructor: function(options) {
     this.factory= options.factory;
     this.state= options;
     this.inited=false;
-    return this;
   },
 
   removeFromEngine: function(engine) {
@@ -37,15 +28,16 @@ ttt.GameSupervisor = Ash.System.extend({
   },
 
   addToEngine: function(engine) {
-    var b= this.factory.createBoard(this.state);
+    var b= this.factory.createBoard(sh.main, this.state);
     engine.addEntity(b);
-    this.nodeList= engine.getNodeList(ttt.BoardNode);
+    this.nodeList= engine.getNodeList(gnodes.BoardNode);
   },
 
   update: function (dt) {
-    for (var node = this.nodeList.head; node; node = node.next) {
+    var node= this.nodeList.head;
+    if (!!node) {
       if (! this.inited) {
-        this.onceOnly(node,dt);
+        this.onceOnly(node, dt);
         this.inited=true;
       } else {
         this.process(node,dt);
@@ -95,11 +87,36 @@ ttt.GameSupervisor = Ash.System.extend({
 
 });
 
+return GameSupervisor;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+  if (typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("zotohlab/p/s/supervisor",
+
+            ['zotohlab/p/gnodes',
+             'cherimoia/skarojs',
+             'zotohlab/asterix',
+             'zotohlab/asx/xcfg',
+             'zotohlab/asx/ccsx',
+             'zotohlab/asx/odin',
+             'ash-js'],
+
+            moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+  }
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
+
 
 
 

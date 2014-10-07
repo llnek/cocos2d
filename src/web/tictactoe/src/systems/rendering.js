@@ -9,10 +9,7 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, sh, xcfg, ccsx,
-                       gnodes,
-                       utils,
-                       Ash) { "use strict";
+function moduleFactory(utils, gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
 var R = sjs.ramda,
 csts= xcfg.csts,
 undef;
@@ -34,14 +31,15 @@ var RenderSystem = Ash.System.extend({
   },
 
   update: function (dt) {
-    if (this.nodeList.head) {
-      this.process(this.nodeList.head);
+    var node = this.nodeList.head;
+    if (!!node) {
+      this.process(node);
     }
   },
 
   process: function(node) {
     var values= node.grid.values,
-    view = node.view,
+    view= node.view,
     cs= view.cells,
     c, offset;
 
@@ -52,8 +50,8 @@ var RenderSystem = Ash.System.extend({
         c= this.xrefCell(pos, view.gridMap);
         offset= v === csts.CV_X ? 0 : 1;
         if (!!c) {
-          cells[pos] = [utils.drawSymbol(view, c[0], c[1], offset),
-                        c[0], c[1], offset, v];
+          cs[pos] = [utils.drawSymbol(view, c[0], c[1], offset),
+                     c[0], c[1], offset, v];
         }
       }
 
@@ -93,13 +91,15 @@ return RenderSystem;
   if (typeof gDefine === 'function' && gDefine.amd) {
 
     gDefine("zotohlab/p/s/rendering",
-            ['cherimoia/skarojs',
+
+            ['zotohlab/p/s/utils',
+             'zotohlab/p/gnodes',
+             'cherimoia/skarojs',
              'zotohlab/asterix',
              'zotohlab/asx/xcfg',
              'zotohlab/asx/ccsx',
-             'zotohlab/p/gnodes',
-             'zotohlab/p/s/utils',
              'ash-js'],
+
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {
@@ -110,7 +110,4 @@ return RenderSystem;
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
 

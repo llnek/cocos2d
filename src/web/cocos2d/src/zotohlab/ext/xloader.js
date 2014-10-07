@@ -10,7 +10,9 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 function moduleFactory(sjs, sh, ccsx) { "use stricts";
-var undef;
+var _instance= null,
+undef;
+
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -20,13 +22,9 @@ var XLoader = cc.Scene.extend({
     this.bgLayer = new cc.LayerColor(cc.color(0,0,0, 255));
     this.bgLayer.setPosition(0, 0);
     this.logoSprite= null;
-    this.bgLayer= null;
     this.logo= null;
     this._super();
   },
-
-  _instance: null,
-
 
   pkLoadBar: function() {
     var pfx = '/public/ig/res';
@@ -151,13 +149,12 @@ var XLoader = cc.Scene.extend({
 XLoader.preload = function (resources, selector, target) {
   var director = cc.director;
 
-  if (!this._instance) {
-    this._instance = new XLoader();
-  }
+  if (!_instance) { _instance = new XLoader(); }
 
-  this._instance.initWithResources(resources, selector, target);
-  director.runScene(this._instance);
-  return this._instance;
+  _instance.initWithResources(resources, selector, target);
+  director.runScene(_instance);
+
+  return _instance;
 };
 
 

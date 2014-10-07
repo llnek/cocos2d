@@ -10,7 +10,8 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 function moduleFactory(sjs, sh, xcfg, ccsx, layers) { "use strict";
-var undef;
+var csts= xcfg.csts,
+undef;
 
 //////////////////////////////////////////////////////////////////////////////
 // Main menu.
@@ -20,7 +21,6 @@ var XMenuBackLayer = layers.XLayer.extend({
     var title = new cc.LabelBMFont(sh.l10n('%mmenu'),
                                    sh.getFontPath('font.JellyBelly')),
     bgMenu = new cc.TMXTiledMap(sh.getTilesPath('gui.mmenu')),
-    csts = xcfg.csts,
     wz = ccsx.screen(),
     cw= ccsx.center();
 
@@ -44,7 +44,6 @@ var XMenuLayer= layers.XLayer.extend({
 
   doCtrlBtns: function() {
     var audio = xcfg.assets.sprites['gui.audio'],
-    csts = xcfg.csts,
     wz = ccsx.screen(),
     cw = ccsx.center(),
     menu, t2,t1,
@@ -134,11 +133,13 @@ return {
   if (typeof gDefine === 'function' && gDefine.amd) {
 
     gDefine("zotohlab/asx/xmmenus",
+
             ['cherimoia/skarojs',
              'zotohlab/asterix',
              'zotohlab/asx/xcfg',
              'zotohlab/asx/ccsx',
              'zotohlab/asx/xlayers'],
+
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

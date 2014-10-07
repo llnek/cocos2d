@@ -9,8 +9,9 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, sh, xcfg, odin, gnodes, Ash) { "use strict";
+function moduleFactory(gnodes, sjs, sh, xcfg, odin, Ash) { "use strict";
 var evts= odin.Events,
+csts= xcfg.csts,
 undef;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -32,8 +33,9 @@ var NetworkSystem = Ash.System.extend({
 
   update: function (dt) {
     if (this.events.length > 0) {
-      var evt = this.events.shift();
-      for (var node = this.nodeList.head; node; node=node.next) {
+      var evt = this.events.shift(),
+      node= this.nodeList.head;
+      if (!!node) {
         this.maybeUpdateActions(node, evt);
         this.process(node, evt);
       }
@@ -60,11 +62,14 @@ var NetworkSystem = Ash.System.extend({
 
   maybeUpdateActions: function(node, evt) {
     var cmd= evt.source.cmd,
-    grid= node.grid,
-    vs= grid.values;
+    grid=node.grid,
+    vs=grid.values;
 
-    if (sjs.isObject(cmd) && sjs.isNumber(cmd.cell) &&
-        cmd.cell >= 0 && cmd.cell < vs.length) {
+    if (sjs.isObject(cmd) &&
+        sjs.isNumber(cmd.cell) &&
+        cmd.cell >= 0 &&
+        cmd.cell < vs.length) {
+
       vs[cmd.cell] = cmd.value;
     }
   }
@@ -83,12 +88,14 @@ return NetworkSystem;
   if (typeof gDefine === 'function' && gDefine.amd) {
 
     gDefine("zotohlab/p/s/network",
-            ['cherimoia/skarojs',
+
+            ['zotohlab/p/gnodes',
+             'cherimoia/skarojs',
              'zotohlab/asterix',
              'zotohlab/asx/xcfg',
              'zotohlab/asx/odin',
-             'zotohlab/p/gnodes',
              'ash-js'],
+
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

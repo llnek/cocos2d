@@ -17,7 +17,6 @@ document.ccConfig = {
 
   jsList: [
 
-    "/public/vendors/almond/almond.js",
     "/public/vendors/ramda/ramda.js",
     "/public/vendors/l10njs/l10n.js",
     "/public/vendors/mustache/mustache.js",
@@ -53,31 +52,28 @@ document.ccConfig = {
     '/public/ig/lib/game/tictactoe/config.js',
     '/public/ig/lib/game/tictactoe/i18n/game_en_US.js',
 
-    '/public/ig/lib/game/tictactoe/components/algo.js',
     '/public/ig/lib/game/tictactoe/components/board.js',
-    '/public/ig/lib/game/tictactoe/components/grid.js',
-    '/public/ig/lib/game/tictactoe/components/gridview.js',
-    '/public/ig/lib/game/tictactoe/components/netcmd.js',
-    '/public/ig/lib/game/tictactoe/components/player.js',
-    '/public/ig/lib/game/tictactoe/components/selection.js',
-    '/public/ig/lib/game/tictactoe/factory.js',
-    '/public/ig/lib/game/tictactoe/nodes/board.js',
-    '/public/ig/lib/game/tictactoe/nodes/gui.js',
-    '/public/ig/lib/game/tictactoe/nodes/netplay.js',
-    '/public/ig/lib/game/tictactoe/systems/util.js',
-    '/public/ig/lib/game/tictactoe/systems/networksystem.js',
-    '/public/ig/lib/game/tictactoe/systems/rendersystem.js',
+    '/public/ig/lib/game/tictactoe/components/cobjs.js',
+
+    '/public/ig/lib/game/tictactoe/nodes/gnodes.js',
+
+    '/public/ig/lib/game/tictactoe/systems/priorities.js',
+    '/public/ig/lib/game/tictactoe/systems/factory.js',
+    '/public/ig/lib/game/tictactoe/systems/utils.js',
+    '/public/ig/lib/game/tictactoe/systems/network.js',
+    '/public/ig/lib/game/tictactoe/systems/rendering.js',
     '/public/ig/lib/game/tictactoe/systems/resolution.js',
     '/public/ig/lib/game/tictactoe/systems/supervisor.js',
-    '/public/ig/lib/game/tictactoe/systems/systempriorities.js',
-    '/public/ig/lib/game/tictactoe/systems/turnbasesystem.js',
-    '/public/ig/lib/game/tictactoe/systems/uiselectsystem.js',
+    '/public/ig/lib/game/tictactoe/systems/turnbase.js',
+    '/public/ig/lib/game/tictactoe/systems/uiselect.js',
+    '/public/ig/lib/game/tictactoe/systems/sysobjs.js',
 
-    '/public/ig/lib/game/tictactoe/board.js',
+    '/public/ig/lib/game/tictactoe/splash.js',
+    '/public/ig/lib/game/tictactoe/mmenu.js',
     '/public/ig/lib/game/tictactoe/hud.js',
     '/public/ig/lib/game/tictactoe/game.js',
-    '/public/ig/lib/game/tictactoe/mmenu.js',
-    '/public/ig/lib/game/tictactoe/splash.js'
+
+    '/public/ig/lib/game/tictactoe/protos.js'
   ]
 
 };

@@ -9,20 +9,15 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this, _ = global._ ;
-
-var asterix = global.ZotohLab.Asterix,
-sjs= global.SkaroJS,
-ttt= asterix.TicTacToe,
-sh = global.ZotohLab.Asterix;
-
-
+function moduleFactory(sjs) { "use strict";
+var R = sjs.ramda,
+undef;
 
 //////////////////////////////////////////////////////////////////////////////
 // A Tic Tac Toe board.
 //////////////////////////////////////////////////////////////////////////////
 
-ttt.GameBoard = sjs.Class.xtends({
+var GameBoard = sjs.Class.xtends({
 
   isNil: function(cellv) { return cellv === this.CV_Z; },
 
@@ -35,9 +30,9 @@ ttt.GameBoard = sjs.Class.xtends({
   },
 
   getFirstMove: function() {
-    var rc= _.find(this.grid,function(v) {
+    var rc= R.find(function(v) {
       return v !== this.CV_Z;
-    },this);
+    }.bind(this), this.grid );
     if (! sjs.echt(rc)) {
       return sjs.rand(this.grid.length);
     } else {
@@ -104,37 +99,51 @@ ttt.GameBoard = sjs.Class.xtends({
 
   evalScore: function(snapshot) {
     // if we lose, return a nega value
-    return _.isNumber(this.isWinner(snapshot.other, snapshot.state )[0]) ? -100 : 0;
+    return sjs.isNumber(this.isWinner(snapshot.other, snapshot.state )[0]) ? -100 : 0;
   },
 
   isOver: function(snapshot) {
-    return _.isNumber(this.isWinner(snapshot.cur,snapshot.state)[0]) ||
-           _.isNumber(this.isWinner(snapshot.other, snapshot.state)[0]) ||
+    return sjs.isNumber(this.isWinner(snapshot.cur,snapshot.state)[0]) ||
+           sjs.isNumber(this.isWinner(snapshot.other, snapshot.state)[0]) ||
            this.isStalemate(snapshot.state);
   },
 
   isStalemate: function(game) {
-    return ! _.some(game || this.grid, function(n) {
+    return ! R.some(function(n) {
       return n === this.CV_Z;
-    }, this);
+    }.bind(this),
+    game || this.grid);
   },
 
   isWinner: function(actor, gameVals) {
     var game= gameVals || this.grid,
     combo,
-    rc= _.some(this.GOALSPACE, function(r) {
+    rc= R.some(function(r) {
       combo=r;
-      return _.every(_.map(r, function(i) {
+      return R.every(function (n) { return n === actor; }, R.map(function(i) {
         return game[i];
-      }), function(n) {
-        return n === actor;
-      });
-    });
+      }, r) );
+    }, this.GOALSPACE);
     return rc ? [actor, combo] : [null, null];
   }
 
 });
 
+
+return GameBoard;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+  if (typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("zotohlab/p/c/board", ['cherimoia/skarojs'], moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+  }
 
 }).call(this);
 

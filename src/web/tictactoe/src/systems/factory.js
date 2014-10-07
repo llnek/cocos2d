@@ -9,10 +9,9 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, sh, xcfg, ccsx,
-                      entobjs,
-                      gnodes) { "use strict";
-var undef;
+function moduleFactory(cobjs, gnodes, sjs, sh, xcfg, Ash) { "use strict";
+var csts= xcfg.csts,
+undef;
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -49,25 +48,25 @@ var EntityFactory = Ash.Class.extend({
 
   createBoard: function(layer, options) {
     var goals= mapGoalSpace(options.size),
-    csts= xcfg.csts,
-    bd= new entobjs.GameBoard(options.size,
-                          csts.CV_Z,
-                          csts.CV_X,
-                          csts.CV_O, goals),
+    bd= new cobjs.GameBoard(options.size,
+                            csts.CV_Z,
+                            csts.CV_X,
+                            csts.CV_O, goals),
     ent = new Ash.Entity();
 
-    ent.add(new gnodes.Grid(options.size, options.seed));
-    ent.add(new gnodes.Board(options.size, goals));
-    ent.add(new gnodes.UISelection());
-    ent.add(new gnodes.SmartAlgo(bd));
-    ent.add(new gnodes.NetPlay());
-    ent.add(new gnodes.GridView(options.size, layer));
+    ent.add(new cobjs.Grid(options.size, options.seed));
+    ent.add(new cobjs.Board(options.size, goals));
+    ent.add(new cobjs.UISelection());
+    ent.add(new cobjs.SmartAlgo(bd));
+    ent.add(new cobjs.NetPlay());
+    ent.add(new cobjs.GridView(options.size, layer));
 
     options.GOALSPACE=goals;
     return ent;
   }
 
 });
+
 
 return EntityFactory;
 }
@@ -79,12 +78,14 @@ return EntityFactory;
   if (typeof gDefine === 'function' && gDefine.amd) {
 
     gDefine("zotohlab/p/s/factory",
-            ['cherimoia/skarojs',
+
+            ['zotohlab/p/components',
+             'zotohlab/p/gnodes',
+             'cherimoia/skarojs',
              'zotohlab/asterix',
              'zotohlab/asx/xcfg',
-             'zotohlab/p/entobjs',
-             'zotohlab/p/gnodes',
              'ash-js'],
+
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

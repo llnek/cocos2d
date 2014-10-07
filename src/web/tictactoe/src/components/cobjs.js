@@ -9,9 +9,12 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, sh, xcfg, negax, Ash) { "use strict";
-var lib= {},
-undef;
+function moduleFactory(sjs, sh, xcfg, negax, GameBoard, Ash) { "use strict";
+var csts= xcfg.csts,
+undef,
+lib= {
+  GameBoard: GameBoard
+};
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -40,7 +43,7 @@ lib.Grid = Ash.Class.extend({
 
   constructor: function(size,seed) {
     //ignore seed for now
-    this.values= sjs.makeArray(size * size, xcfg.csts.CV_Z);
+    this.values= sjs.makeArray(size * size, csts.CV_Z);
     this.size=size;
   }
 
@@ -52,8 +55,7 @@ lib.Grid = Ash.Class.extend({
 function mapGridPos (self) {
   // memorize the co-ordinates of each cell on the board, so
   // we know which cell the user has clicked on.
-  var csts= xcfg.csts,
-  gzh = 3 * csts.HOLE + 2 * csts.R_GAP,
+  var gzh = 3 * csts.HOLE + 2 * csts.R_GAP,
   y2, y1 = csts.TILE * ((csts.GRID_H + gzh) * 0.5),
   x2, x1 = csts.LEFT * csts.TILE,
   hz = csts.TILE * csts.HOLE,
@@ -135,11 +137,12 @@ return lib;
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("zotohlab/p/entobjs",
+    gDefine("zotohlab/p/components",
             ['cherimoia/skarojs',
              'zotohlab/asterix',
              'zotohlab/asx/xcfg',
              'zotohlab/asx/negamax',
+             'zotohlab/p/c/board',
              'ash-js'],
             moduleFactory);
 

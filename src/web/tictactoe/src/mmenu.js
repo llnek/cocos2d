@@ -12,7 +12,9 @@
 function moduleFactory(sjs, sh, xcfg, ccsx,
                        layers, scenes,
                        mmenus) { "use strict";
-var undef, SEED= {
+var csts= xcfg.csts,
+undef,
+SEED= {
   grid: [0,0,0, 0,0,0, 0,0,0],
   size: 3,
   ppids: { },
@@ -28,10 +30,9 @@ var MainMenuLayer = mmenus.XMenuLayer.extend({
 
   pkInit: function() {
 
-    var csts = xcfg.csts,
+    var cw = ccsx.center(),
     pobj2,
     pobj1,
-    cw = ccsx.center(),
     wz = ccsx.screen();
 
     this.addItem(ccsx.tmenu1({
@@ -93,7 +94,7 @@ var MainMenuLayer = mmenus.XMenuLayer.extend({
 return {
 
   'MainMenu' : {
-      create = function (options) {
+      create: function (options) {
         var gl = sh.protos['GameArena'],
         mm= sh.protos['MainMenu'],
         ol= sh.protos['OnlinePlay'],
@@ -137,6 +138,7 @@ return {
   if (typeof gDefine === 'function' && gDefine.amd) {
 
     gDefine("zotohlab/p/mmenu",
+
             ['cherimoia/skarojs',
              'zotohlab/asterix',
              'zotohlab/asx/xcfg',
@@ -144,6 +146,7 @@ return {
              'zotohlab/asx/xlayers',
              'zotohlab/asx/xscenes',
              'zotohlab/asx/xmmenus'],
+
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

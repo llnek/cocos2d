@@ -9,29 +9,39 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, sh, xcfg, ccsx) { "use strict";
-var csts= xcfg.csts,
+function moduleFactory(cobjs, Ash) { "use strict";
+var lib= {},
 undef;
 
 //////////////////////////////////////////////////////////////////////////////
 //
-return {
+lib.BoardNode = Ash.Node.create({
+  selection: cobjs.UISelection,
+  board: cobjs.Board,
+  robot: cobjs.SmartAlgo,
+  grid: cobjs.Grid,
+  view: cobjs.GridView
+});
 
-  //pass in gridview
-  drawSymbol: function(view, x,y,offset) {
-    var s1= new cc.Sprite(view.url,
-                          cc.rect(offset * view.width,
-                                  0,
-                                  view.width, view.height));
-    s1.setAnchorPoint(ccsx.AnchorCenter);
-    s1.setPosition(x,y);
-    view.layer.addItem(s1);
-    return s1;
-  }
+//////////////////////////////////////////////////////////////////////////////
+//
+lib.GUINode = Ash.Node.create({
+  selection: cobjs.UISelection,
+  view: cobjs.GridView
+});
 
-};
+//////////////////////////////////////////////////////////////////////////////
+//
+lib.NetPlayNode = Ash.Node.create({
+  playcmd: cobjs.NetPlay,
+  grid: cobjs.Grid
+});
 
 
+
+
+
+return lib;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -40,12 +50,10 @@ return {
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("zotohlab/p/s/utils",
+    gDefine("zotohlab/p/gnodes",
 
-            ['cherimoia/skarojs',
-             'zotohlab/asterix',
-             'zotohlab/asx/xcfg',
-             'zotohlab/asx/ccsx'],
+            ['zotohlab/p/components',
+             'ash-js'],
 
             moduleFactory);
 
@@ -57,8 +65,4 @@ return {
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
-
 

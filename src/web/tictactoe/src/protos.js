@@ -11,18 +11,23 @@
 
 function moduleFactory(sjs, sh, xcfg,
                        online,
-                       splash,
-                       mmenu,
                        msgbox,
                        ynbox,
+                       splash,
+                       mmenu,
                        arena) { "use strict";
+
   var ps= [online, splash, mmenu, msgbox, ynbox, arena],
   R = sjs.ramda,
   undef,
   protos= sh.protos;
 
   R.forEach(function(obj) {
-    protos[obj.id] = obj.proto;
+
+    sjs.eachObj(function(v,k) {
+          protos[k] = v;
+    }, obj);
+
   }, ps);
 
   return protos;
@@ -34,16 +39,18 @@ function moduleFactory(sjs, sh, xcfg,
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("zotohlab/asx/protodefs",
+    gDefine("zotohlab/p/protodefs",
+
             ['cherimoia/skarojs',
              'zotohlab/asterix',
              'zotohlab/asx/xcfg',
-             'zotohlab/asx/online',
+             'zotohlab/asx/onlineplay',
              'zotohlab/asx/msgbox',
              'zotohlab/asx/ynbox',
              'zotohlab/p/splash',
              'zotohlab/p/mmenu',
-             'zotohlab/p/arena']
+             'zotohlab/p/arena'],
+
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

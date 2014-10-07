@@ -11,6 +11,7 @@
 
 function moduleFactory(sjs, sh, xcfg, ccsx, layers, scenes) { "use strict";
 var NILFUNC=function() {},
+csts= xcfg.csts,
 undef,
 PLAYER_THINK_TIME= 7;
 
@@ -59,8 +60,7 @@ var HUDLayer = layers.XGameHUDLayer.extend({
   initParentNode: NILFUNC,
 
   initLabels: function() {
-    var csts = xcfg.csts,
-    cw= ccsx.center(),
+    var cw= ccsx.center(),
     wz= ccsx.screen();
 
     this.title = ccsx.bmfLabel({
@@ -114,8 +114,7 @@ var HUDLayer = layers.XGameHUDLayer.extend({
   },
 
   showTimer: function() {
-    var csts = xcfg.csts,
-    cw= ccsx.center(),
+    var cw= ccsx.center(),
     wz= ccsx.screen();
 
     if (this.countDownState) {
@@ -196,7 +195,6 @@ var HUDLayer = layers.XGameHUDLayer.extend({
   drawScores: function() {
     var s2 = this.scores[this.play2],
     s1 = this.scores[this.play1],
-    csts= xcfg.csts,
     wz = ccsx.screen(),
     n2 = sjs.prettyNumber(s2,3),
     n1 = sjs.prettyNumber(s1,3);
@@ -208,7 +206,7 @@ var HUDLayer = layers.XGameHUDLayer.extend({
   drawResult: function(pnum) {
     var msg='';
 
-    if (_.isNumber(pnum)) {
+    if (sjs.isNumber(pnum)) {
       switch (pnum) {
         case 2: msg= sh.l10n('%whowin', { who: this.p2Long}); break;
         case 1: msg= sh.l10n('%whowin', { who: this.p1Long}); break;
@@ -221,7 +219,7 @@ var HUDLayer = layers.XGameHUDLayer.extend({
   },
 
   drawStatus: function(pnum) {
-    if (_.isNumber(pnum)) {
+    if (sjs.isNumber(pnum)) {
       var pfx = pnum === 1 ? this.p1Long : this.p2Long;
       this.drawStatusText(this.status, sh.l10n('%whosturn', { who: pfx }));
     }
@@ -269,12 +267,14 @@ return {
   if (typeof gDefine === 'function' && gDefine.amd) {
 
     gDefine("zotohlab/p/hud",
+
             ['cherimoia/skarojs',
              'zotohlab/asterix',
              'zotohlab/asx/xcfg',
              'zotohlab/asx/ccsx',
              'zotohlab/asx/xlayers',
              'zotohlab/asx/xscenes'],
+
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

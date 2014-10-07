@@ -9,26 +9,18 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this, _ = global._ ;
-
-var asterix= global.ZotohLab.Asterix,
-Odin= global.ZotohLab.Odin,
-ccsx= asterix.CCS2DX,
-sjs= global.SkaroJS,
-evts= Odin.Events,
-sh= asterix,
-ttt= sh.TicTacToe;
-
-
+function moduleFactory(gnodes, sjs, sh, xcfg, ccsx, odin, Ash) { "use strict";
+var evts= odin.Events,
+csts= xcfg.csts,
+undef;
 
 //////////////////////////////////////////////////////////////////////////////
 //
-ttt.TurnBaseSystem = Ash.System.extend({
+var TurnBaseSystem = Ash.System.extend({
 
   constructor: function(options) {
     this.state= options;
     this.botTimer=null;
-    return this;
   },
 
   removeFromEngine: function(engine) {
@@ -36,21 +28,20 @@ ttt.TurnBaseSystem = Ash.System.extend({
   },
 
   addToEngine: function(engine) {
-    this.nodeList = engine.getNodeList(ttt.BoardNode);
+    this.nodeList = engine.getNodeList(gnodes.BoardNode);
   },
 
   update: function (dt) {
-    if (this.state.running) {
-      for (var node = this.nodeList.head; node; node=node.next) {
-        this.process(node, dt);
-      }
+    var node= this.nodeList.head;
+    if (this.state.running &&
+        !!node) {
+      this.process(node, dt);
     }
   },
 
   process: function(node, evt) {
     var ps= this.state.players,
     cp= ps[this.state.actor],
-    csts= sh.xcfg.csts,
     board= node.board,
     grid= node.grid,
     bot= node.robot,
@@ -90,7 +81,7 @@ ttt.TurnBaseSystem = Ash.System.extend({
   enqueue: function(pos, value, grid) {
 
     if ((pos >= 0 && pos < grid.values.length) &&
-        sh.xcfg.csts.CV_Z === grid.values[pos]) {
+        csts.CV_Z === grid.values[pos]) {
 
       var pnum;
 
@@ -102,7 +93,7 @@ ttt.TurnBaseSystem = Ash.System.extend({
         pnum = this.state.actor===1 ? 2 : 1;
         this.state.actor = pnum;
         grid.values[pos] = value;
-        if (this.state.players[pnum].category === sh.xcfg.csts.HUMAN) {
+        if (this.state.players[pnum].category === csts.HUMAN) {
           sh.fireEvent('/game/hud/timer/show');
         }
       }
@@ -129,11 +120,36 @@ ttt.TurnBaseSystem = Ash.System.extend({
 
 });
 
+return TurnBaseSystem;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+  if (typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("zotohlab/p/s/turnbase",
+
+            ['zotohlab/p/gnodes',
+             'cherimoia/skarojs',
+             'zotohlab/asterix',
+             'zotohlab/asx/xcfg',
+             'zotohlab/asx/ccsx',
+             'zotohlab/asx/odin',
+             'ash-js'],
+
+            moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+  }
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
+
 
 
 

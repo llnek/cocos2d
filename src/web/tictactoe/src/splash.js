@@ -12,7 +12,8 @@
 function moduleFactory(sjs, sh, xcfg, ccsx,
                        layers, scenes,
                        XSplashLayer) { "use strict";
-var undef;
+var csts= xcfg.csts,
+undef;
 
 //////////////////////////////////////////////////////////////////////////////
 // splash screen for the game - make it look nice please.
@@ -72,6 +73,7 @@ return {
   if (typeof gDefine === 'function' && gDefine.amd) {
 
     gDefine("zotohlab/p/splash",
+
             ['cherimoia/skarojs',
              'zotohlab/asterix',
              'zotohlab/asx/xcfg',
@@ -79,6 +81,7 @@ return {
              'zotohlab/asx/xlayers',
              'zotohlab/asx/xscenes',
              'zotohlab/asx/xsplash'],
+
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

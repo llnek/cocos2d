@@ -346,6 +346,12 @@ var skarojs = {
     memo,
     R.toPairs(obj));
   },
+  eachObj: function(f, obj) {
+    return R.forEach(function(pair) {
+      return f(pair[1], pair[0]);
+    },
+    R.toPairs(obj));
+  },
 
   logger: DBG,
   loggr: DBG,

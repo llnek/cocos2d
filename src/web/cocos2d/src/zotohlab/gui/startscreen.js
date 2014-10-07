@@ -9,8 +9,9 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, sh, ccsx, layers) { "use strict";
-var undef;
+function moduleFactory(sjs, sh, xcfg, ccsx, layers) { "use strict";
+var csts= xcfg.csts,
+undef;
 
 //////////////////////////////////////////////////////////////////////////////
 // splash screen for the game - make it look nice please.
@@ -46,10 +47,13 @@ return XSplashLayer;
   if (typeof gDefine === 'function' && gDefine.amd) {
 
     gDefine("zotohlab/asx/xsplash",
+
             ['cherimoia/skarojs',
              'zotohlab/asterix',
+             'zotohlab/asx/xcfg',
              'zotohlab/asx/ccsx',
              'zotohlab/asx/xlayers'],
+
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

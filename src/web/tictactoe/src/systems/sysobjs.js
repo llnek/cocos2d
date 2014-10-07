@@ -9,21 +9,30 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, sh, xcfg, ccsx,
-                       entobjs,
-                       sysnodes,
-                       Ash) { "use strict";
-var lib= {},
-undef;
+function moduleFactory(cobjs, gnodes, utils,
+                       Priorities,
+                       EntityFactory,
+                       NetworkSystem,
+                       RenderSystem,
+                       ResolutionSystem,
+                       Supervisor,
+                       TurnBaseSystem,
+                       SelectionSystem) { "use strict";
+return {
+
+  Priorities: Priorities,
+  EntityFactory: EntityFactory,
+  GameSupervisor: Supervisor,
+  NetworkSystem: NetworkSystem,
+  SelectionSystem: SelectionSystem,
+  TurnBaseSystem: TurnBaseSystem,
+  ResolutionSystem: ResolutionSystem,
+  RenderSystem: RenderSystem,
+  SystemUtils: utils
+
+};
 
 
-
-
-
-
-
-
-return lib;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -32,12 +41,20 @@ return lib;
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("zotohlab/p/sysnodes",
-            ['cherimoia/skarojs',
-             'zotohlab/asterix',
-             'zotohlab/asx/xcfg',
-             'zotohlab/p/entobjs',
-             'ash-js'],
+    gDefine("zotohlab/p/sysobjs",
+
+            ['zotohlab/p/components',
+             'zotohlab/p/gnodes',
+             'zotohlab/p/s/utils',
+             'zotohlab/p/s/priorities',
+             'zotohlab/p/s/factory',
+             'zotohlab/p/s/network',
+             'zotohlab/p/s/rendering',
+             'zotohlab/p/s/resolution',
+             'zotohlab/p/s/supervisor',
+             'zotohlab/p/s/turnbase',
+             'zotohlab/p/s/uiselect'],
+
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

@@ -38,7 +38,7 @@ var XEntity = {
   inflate: function(options) {
   },
 
-  deflate(t) {
+  deflate: function() {
     _hide(this.sprite);
   },
 

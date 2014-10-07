@@ -149,7 +149,7 @@ config = {
 };
 
 
-return config;
+return sh.xcfg=config;
 }
 
 

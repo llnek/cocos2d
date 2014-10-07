@@ -9,13 +9,10 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, sh, xcfg, ccsx,
-                       gnodes,
-                       utils,
-                       Ash) { "use strict";
+function moduleFactory(utils, gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
 var csts= xcfg.csts,
+R = sjs.ramda,
 undef;
-
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -34,9 +31,10 @@ var ResolutionSystem = Ash.System.extend({
   },
 
   update: function (dt) {
-    if (!!this.nodeList.head &&
-        this.state.running) {
-      this.process(this.nodeList.head, dt);
+    var node= this.nodeList.head;
+    if (this.state.running &&
+        !!node) {
+      this.process(node, dt);
     }
   },
 
@@ -47,13 +45,14 @@ var ResolutionSystem = Ash.System.extend({
     result;
 
     if (R.find(function(p) {
-      if (p) {
-        rc= this.checkWin(p,values);
-        if (rc) {
-          return result=[p, rc];
+        if (p) {
+          rc= this.checkWin(p,values);
+          if (rc) {
+            return result=[p, rc];
+          }
         }
-      }
-    }.bind(this), this.state.players)) {
+      }.bind(this), this.state.players)) {
+
       this.doWin(node, result[0], result[1]);
     }
     else
@@ -134,23 +133,22 @@ var ResolutionSystem = Ash.System.extend({
   },
 
   checkDraw: function(values) {
-    return ! (0 === R.find(function(v) {
+    return ! (csts.CV_Z === R.find(function(v) {
       return (v === csts.CV_Z);
     }, values));
   },
 
   checkWin: function(actor, game) {
     //sjs.loggr.debug('checking win for ' + actor.color);
-    var combo,
-    rc= R.some(function(r) {
+    var combo, rc= R.some(function(r) {
       combo=r;
       return R.every(function(n) {
         return actor.value === n;
       },
-      R.map(function(i) {
-        return game[i];
-      }, r));
-    }, this.state.GOALSPACE);
+      R.map(function(i) { return game[i]; }, r));
+    },
+    this.state.GOALSPACE);
+
     return rc ? combo : null;
   }
 
@@ -166,13 +164,15 @@ return ResolutionSystem;
   if (typeof gDefine === 'function' && gDefine.amd) {
 
     gDefine("zotohlab/p/s/resolution",
-            ['cherimoia/skarojs',
+
+            ['zotohlab/p/s/utils',
+             'zotohlab/p/gnodes',
+             'cherimoia/skarojs',
              'zotohlab/asterix',
              'zotohlab/asx/xcfg',
              'zotohlab/asx/ccsx',
-             'zotohlab/p/gnodes',
-             'zotohlab/p/s/utils',
              'ash-js'],
+
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

@@ -9,23 +9,17 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this, _ = global._ ;
-
-var asterix= global.ZotohLab.Asterix,
-ccsx= asterix.CCS2DX,
-sjs= global.SkaroJS,
-sh= asterix,
-ttt= sh.TicTacToe;
-
+function moduleFactory(gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+var csts = xcfg.csts,
+undef;
 
 //////////////////////////////////////////////////////////////////////////////
 //
-ttt.SelectionSystem = Ash.System.extend({
+var SelectionSystem = Ash.System.extend({
 
   constructor: function(options) {
     this.events= options.selQ;
     this.state= options;
-    return this;
   },
 
   removeFromEngine: function(engine) {
@@ -33,25 +27,26 @@ ttt.SelectionSystem = Ash.System.extend({
   },
 
   addToEngine: function(engine) {
-    this.nodeList = engine.getNodeList(ttt.GUINode);
+    this.nodeList = engine.getNodeList(gnodes.GUINode);
   },
 
   update: function (dt) {
     if (this.events.length > 0) {
-      var evt = this.events.shift();
-      for (var node = this.nodeList.head; node; node=node.next) {
+      var evt = this.events.shift(),
+      node= this.nodeList.head;
+      if (!!node) {
         this.process(node, evt);
       }
+      this.events.length=0;
     }
-    this.events.length=0;
   },
 
   process: function(node, evt) {
     var sel = node.selection,
     map = node.view.gridMap,
-    n,rect,
+    n,
+    rect,
     sz= map.length;
-
 
     //set the mouse/touch position
     sel.px = evt.x;
@@ -75,11 +70,36 @@ ttt.SelectionSystem = Ash.System.extend({
 
 });
 
+return SelectionSystem;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+  if (typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("zotohlab/p/s/uiselect",
+
+            ['zotohlab/p/gnodes',
+             'cherimoia/skarojs',
+             'zotohlab/asterix',
+             'zotohlab/asx/xcfg',
+             'zotohlab/asx/ccsx',
+             'ash-js'],
+
+            moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+  }
 
 }).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
+
+
 
 
 

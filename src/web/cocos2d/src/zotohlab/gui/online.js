@@ -11,6 +11,7 @@
 
 function moduleFactory(sjs, sh, xcfg, ccsx, layers, scenes, odin) { "use strict";
 var events= odin.Events,
+csts= xcfg.csts,
 undef;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -91,7 +92,6 @@ var UILayer =  layers.XLayer.extend({
     this.removeAllItems();
     var qn= new cc.LabelBMFont(sh.l10n('%waitothers'),
                                sh.getFontPath('font.TinyBoxBB')),
-    csts = xcfg.csts,
     cw= ccsx.center(),
     wz= ccsx.screen(),
     s1, s2, t1, t2, menu;
@@ -117,7 +117,6 @@ var UILayer =  layers.XLayer.extend({
   pkInit: function() {
     var qn= new cc.LabelBMFont(sh.l10n('%signinplay'),
                                sh.getFontPath('font.TinyBoxBB')),
-    csts = xcfg.csts,
     cw= ccsx.center(),
     wz= ccsx.screen(),
     uid,pwd,
@@ -194,6 +193,7 @@ return {
   if (typeof gDefine === 'function' && gDefine.amd) {
 
     gDefine("zotohlab/asx/onlineplay",
+
             ['cherimoia/skarojs',
              'zotohlab/asterix',
              'zotohlab/asx/xcfg',
@@ -201,6 +201,7 @@ return {
              'zotohlab/asx/xlayers',
              'zotohlab/asx/xscenes',
              'zotohlab/asx/odin'],
+
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

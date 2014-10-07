@@ -10,7 +10,7 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 function moduleFactory(sjs, sh, xcfg) { "use strict";
-var undef;
+
 
 //////////////////////////////////////////////////////////////////////////////
 //merge stuff in-place.
@@ -95,9 +95,11 @@ return xcfg;
   if (typeof gDefine === 'function' && gDefine.amd) {
 
     gDefine("zotohlab/p/config",
+
             ['cherimoia/skarojs',
              'zotohlab/asterix',
              'zotohlab/asx/xcfg'],
+
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

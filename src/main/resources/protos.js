@@ -9,41 +9,28 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, sh, xcfg, entobjs, Ash) { "use strict";
-var lib= {},
-undef;
+function moduleFactory(sjs, sh, xcfg,
+                       online,
+                       msgbox,
+                       ynbox,
+                       splash,
+                       mmenu,
+                       arena) { "use strict";
 
-//////////////////////////////////////////////////////////////////////////////
-//
-lib.BoardNode = Ash.Node.create({
-  selection: entobjs.UISelection,
-  board: entobjs.Board,
-  robot: entobjs.SmartAlgo,
-  grid: entobjs.Grid,
-  view: entobjs.GridView
-});
+  var ps= [online, splash, mmenu, msgbox, ynbox, arena],
+  R = sjs.ramda,
+  undef,
+  protos= sh.protos;
 
-//////////////////////////////////////////////////////////////////////////////
-//
-lib.GUINode = Ash.Node.create({
-  selection: entobjs.UISelection,
-  view: entobjs.GridView
-});
+  R.forEach(function(obj) {
 
-//////////////////////////////////////////////////////////////////////////////
-//
-lib.NetPlayNode = Ash.Node.create({
-  playcmd: entobjs.NetPlay,
-  grid: entobjs.Grid
-});
+    sjs.eachObj(function(v,k) {
+          protos[k] = v;
+    }, obj);
 
+  }, ps);
 
-
-
-
-
-
-return lib;
+  return protos;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -52,12 +39,18 @@ return lib;
 
   if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("zotohlab/p/sysnodes",
+    gDefine("zotohlab/p/protodefs",
+
             ['cherimoia/skarojs',
              'zotohlab/asterix',
              'zotohlab/asx/xcfg',
-             'zotohlab/p/entobjs',
-             'ash-js'],
+             'zotohlab/asx/onlineplay',
+             'zotohlab/asx/msgbox',
+             'zotohlab/asx/ynbox',
+             'zotohlab/p/splash',
+             'zotohlab/p/mmenu',
+             'zotohlab/p/arena'],
+
             moduleFactory);
 
   } else if (typeof module !== 'undefined' && module.exports) {

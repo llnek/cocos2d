@@ -9,20 +9,11 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._ ;
-
-var asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
-sjs= global.SkaroJS;
-
-//TODO: change your app name
-asterix.YOUR_APP_NAME= {};
+function moduleFactory(sjs, sh, xcfg) { "use strict";
 
 //////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
-
-sh.xcfg = sjs.mergeEx( asterix.XConfig, {
+//merge stuff in-place
+sjs.merge( xcfg, {
 
   appKey: '@@UUID@@',
 
@@ -68,6 +59,27 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
 
 });
 
+
+return xcfg;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// export
+(function () { "use strict"; var global=this, gDefine=global.define;
+
+  if (typeof gDefine === 'function' && gDefine.amd) {
+
+    gDefine("zotohlab/p/config",
+
+            ['cherimoia/skarojs',
+             'zotohlab/asterix',
+             'zotohlab/asx/xcfg'],
+
+            moduleFactory);
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+  } else {
+  }
 
 }).call(this);
 
