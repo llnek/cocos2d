@@ -9,9 +9,12 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
+(function () { "use strict"; var global=this, gDefine=global.define;
+//////////////////////////////////////////////////////////////////////////////
+//
 function moduleFactory(sjs, sh, xcfg, ccsx,
                        layers, scenes,
-                       mmenus) { "use strict";
+                       mmenus) {
 var csts= xcfg.csts,
 undef,
 SEED= {
@@ -133,25 +136,24 @@ return {
 
 //////////////////////////////////////////////////////////////////////////////
 // export
-(function () { "use strict"; var global=this, gDefine=global.define;
+if (typeof module !== 'undefined' && module.exports) {}
+else
+if (typeof gDefine === 'function' && gDefine.amd) {
 
-  if (typeof gDefine === 'function' && gDefine.amd) {
+  gDefine("zotohlab/p/mmenu",
 
-    gDefine("zotohlab/p/mmenu",
+          ['cherimoia/skarojs',
+           'zotohlab/asterix',
+           'zotohlab/asx/xcfg',
+           'zotohlab/asx/ccsx',
+           'zotohlab/asx/xlayers',
+           'zotohlab/asx/xscenes',
+           'zotohlab/asx/xmmenus'],
 
-            ['cherimoia/skarojs',
-             'zotohlab/asterix',
-             'zotohlab/asx/xcfg',
-             'zotohlab/asx/ccsx',
-             'zotohlab/asx/xlayers',
-             'zotohlab/asx/xscenes',
-             'zotohlab/asx/xmmenus'],
+          moduleFactory);
 
-            moduleFactory);
-
-  } else if (typeof module !== 'undefined' && module.exports) {
-  } else {
-  }
+} else {
+}
 
 }).call(this);
 

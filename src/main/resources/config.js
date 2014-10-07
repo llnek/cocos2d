@@ -9,10 +9,11 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, sh, xcfg) { "use strict";
+(function () { "use strict"; var global=this, gDefine=global.define;
 
 //////////////////////////////////////////////////////////////////////////////
-//merge stuff in-place
+//
+function moduleFactory(sjs, sh, xcfg) {
 sjs.merge( xcfg, {
 
   appKey: '@@UUID@@',
@@ -65,21 +66,24 @@ return xcfg;
 
 //////////////////////////////////////////////////////////////////////////////
 // export
-(function () { "use strict"; var global=this, gDefine=global.define;
 
-  if (typeof gDefine === 'function' && gDefine.amd) {
+if (typeof module !== 'undefined' && module.exports) {
+}
+else
+if (typeof gDefine === 'function' && gDefine.amd) {
 
-    gDefine("zotohlab/p/config",
+  gDefine("zotohlab/p/config",
 
-            ['cherimoia/skarojs',
-             'zotohlab/asterix',
-             'zotohlab/asx/xcfg'],
+          ['cherimoia/skarojs',
+           'zotohlab/asterix',
+           'zotohlab/asx/xcfg'],
 
-            moduleFactory);
+          moduleFactory);
+} else {
+}
 
-  } else if (typeof module !== 'undefined' && module.exports) {
-  } else {
-  }
+
+
 
 }).call(this);
 

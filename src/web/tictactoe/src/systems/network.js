@@ -9,7 +9,10 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(gnodes, sjs, sh, xcfg, odin, Ash) { "use strict";
+(function () { "use strict"; var global=this, gDefine=global.define;
+//////////////////////////////////////////////////////////////////////////////
+//
+function moduleFactory(gnodes, sjs, sh, xcfg, odin, Ash) {
 var evts= odin.Events,
 csts= xcfg.csts,
 undef;
@@ -83,24 +86,23 @@ return NetworkSystem;
 
 //////////////////////////////////////////////////////////////////////////////
 // export
-(function () { "use strict"; var global=this, gDefine=global.define;
+if (typeof module !== 'undefined' && module.exports) {}
+else
+if (typeof gDefine === 'function' && gDefine.amd) {
 
-  if (typeof gDefine === 'function' && gDefine.amd) {
+  gDefine("zotohlab/p/s/network",
 
-    gDefine("zotohlab/p/s/network",
+          ['zotohlab/p/gnodes',
+           'cherimoia/skarojs',
+           'zotohlab/asterix',
+           'zotohlab/asx/xcfg',
+           'zotohlab/asx/odin',
+           'ash-js'],
 
-            ['zotohlab/p/gnodes',
-             'cherimoia/skarojs',
-             'zotohlab/asterix',
-             'zotohlab/asx/xcfg',
-             'zotohlab/asx/odin',
-             'ash-js'],
+          moduleFactory);
 
-            moduleFactory);
-
-  } else if (typeof module !== 'undefined' && module.exports) {
-  } else {
-  }
+} else {
+}
 
 }).call(this);
 

@@ -11,7 +11,10 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
  ??*/
 
-function moduleFactory(sjs, EventBus, sh) { "use strict";
+(function () { "use strict"; var global=this, gDefine=global.define;
+//////////////////////////////////////////////////////////////////////////////
+//
+function moduleFactory(sjs, EventBus, sh) {
 
 var undef, Events = {
 
@@ -253,17 +256,16 @@ return {
 
 //////////////////////////////////////////////////////////////////////////////
 // export
-(function () { "use strict"; var global=this, gDefine=global.define;
+if (typeof module !== 'undefined' && module.exports) {}
+else
+if (typeof gDefine === 'function' && gDefine.amd) {
 
-  if (typeof gDefine === 'function' && gDefine.amd) {
+  gDefine("zotohlab/asx/odin",
+          ['cherimoia/skarojs','cherimoia/ebus','zotohlab/asterix'],
+          moduleFactory);
 
-    gDefine("zotohlab/asx/odin",
-            ['cherimoia/skarojs','cherimoia/ebus','zotohlab/asterix'],
-            moduleFactory);
-
-  } else if (typeof module !== 'undefined' && module.exports) {
-  } else {
-  }
+} else {
+}
 
 }).call(this);
 

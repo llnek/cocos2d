@@ -9,7 +9,10 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, sh, xcfg, negax, GameBoard, Ash) { "use strict";
+(function () { "use strict"; var global=this, gDefine=global.define;
+//////////////////////////////////////////////////////////////////////////////
+//
+function moduleFactory(sjs, sh, xcfg, negax, GameBoard, Ash) {
 var csts= xcfg.csts,
 undef,
 lib= {
@@ -133,22 +136,21 @@ return lib;
 
 //////////////////////////////////////////////////////////////////////////////
 // export
-(function () { "use strict"; var global=this, gDefine=global.define;
+if (typeof module !== 'undefined' && module.exports) {}
+else
+if (typeof gDefine === 'function' && gDefine.amd) {
 
-  if (typeof gDefine === 'function' && gDefine.amd) {
+  gDefine("zotohlab/p/components",
+          ['cherimoia/skarojs',
+           'zotohlab/asterix',
+           'zotohlab/asx/xcfg',
+           'zotohlab/asx/negamax',
+           'zotohlab/p/c/board',
+           'ash-js'],
+          moduleFactory);
 
-    gDefine("zotohlab/p/components",
-            ['cherimoia/skarojs',
-             'zotohlab/asterix',
-             'zotohlab/asx/xcfg',
-             'zotohlab/asx/negamax',
-             'zotohlab/p/c/board',
-             'ash-js'],
-            moduleFactory);
-
-  } else if (typeof module !== 'undefined' && module.exports) {
-  } else {
-  }
+} else {
+}
 
 }).call(this);
 

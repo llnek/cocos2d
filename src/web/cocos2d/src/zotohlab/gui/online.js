@@ -9,7 +9,10 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(sjs, sh, xcfg, ccsx, layers, scenes, odin) { "use strict";
+(function () { "use strict"; var global=this, gDefine=global.define;
+//////////////////////////////////////////////////////////////////////////////
+//
+function moduleFactory(sjs, sh, xcfg, ccsx, layers, scenes, odin) {
 var events= odin.Events,
 csts= xcfg.csts,
 undef;
@@ -188,25 +191,24 @@ return {
 
 //////////////////////////////////////////////////////////////////////////////
 // export
-(function () { "use strict"; var global=this, gDefine=global.define;
+if (typeof module !== 'undefined' && module.exports) {}
+else
+if (typeof gDefine === 'function' && gDefine.amd) {
 
-  if (typeof gDefine === 'function' && gDefine.amd) {
+  gDefine("zotohlab/asx/onlineplay",
 
-    gDefine("zotohlab/asx/onlineplay",
+          ['cherimoia/skarojs',
+           'zotohlab/asterix',
+           'zotohlab/asx/xcfg',
+           'zotohlab/asx/ccsx',
+           'zotohlab/asx/xlayers',
+           'zotohlab/asx/xscenes',
+           'zotohlab/asx/odin'],
 
-            ['cherimoia/skarojs',
-             'zotohlab/asterix',
-             'zotohlab/asx/xcfg',
-             'zotohlab/asx/ccsx',
-             'zotohlab/asx/xlayers',
-             'zotohlab/asx/xscenes',
-             'zotohlab/asx/odin'],
+          moduleFactory);
 
-            moduleFactory);
-
-  } else if (typeof module !== 'undefined' && module.exports) {
-  } else {
-  }
+} else {
+}
 
 }).call(this);
 

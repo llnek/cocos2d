@@ -9,13 +9,16 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
+(function () { "use strict"; var global=this, gDefine=global.define;
+//////////////////////////////////////////////////////////////////////////////
+//
 function moduleFactory(sjs, sh, xcfg,
                        online,
                        msgbox,
                        ynbox,
                        splash,
                        mmenu,
-                       arena) { "use strict";
+                       arena) {
 
   var ps= [online, splash, mmenu, msgbox, ynbox, arena],
   R = sjs.ramda,
@@ -35,27 +38,25 @@ function moduleFactory(sjs, sh, xcfg,
 
 //////////////////////////////////////////////////////////////////////////////
 // export
-(function () { "use strict"; var global=this, gDefine=global.define;
+if (typeof module !== 'undefined' && module.exports) {}
+else
+if (typeof gDefine === 'function' && gDefine.amd) {
 
-  if (typeof gDefine === 'function' && gDefine.amd) {
+  gDefine("zotohlab/p/protodefs",
 
-    gDefine("zotohlab/p/protodefs",
+          ['cherimoia/skarojs',
+           'zotohlab/asterix',
+           'zotohlab/asx/xcfg',
+           'zotohlab/asx/onlineplay',
+           'zotohlab/asx/msgbox',
+           'zotohlab/asx/ynbox',
+           'zotohlab/p/splash',
+           'zotohlab/p/mmenu',
+           'zotohlab/p/arena'],
 
-            ['cherimoia/skarojs',
-             'zotohlab/asterix',
-             'zotohlab/asx/xcfg',
-             'zotohlab/asx/onlineplay',
-             'zotohlab/asx/msgbox',
-             'zotohlab/asx/ynbox',
-             'zotohlab/p/splash',
-             'zotohlab/p/mmenu',
-             'zotohlab/p/arena'],
-
-            moduleFactory);
-
-  } else if (typeof module !== 'undefined' && module.exports) {
-  } else {
-  }
+          moduleFactory);
+} else {
+}
 
 }).call(this);
 

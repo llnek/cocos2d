@@ -9,7 +9,10 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-function moduleFactory(utils, gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+(function () { "use strict"; var global=this, gDefine=global.define;
+//////////////////////////////////////////////////////////////////////////////
+//
+function moduleFactory(utils, gnodes, sjs, sh, xcfg, ccsx, Ash) {
 var R = sjs.ramda,
 csts= xcfg.csts,
 undef;
@@ -86,25 +89,24 @@ return RenderSystem;
 
 //////////////////////////////////////////////////////////////////////////////
 // export
-(function () { "use strict"; var global=this, gDefine=global.define;
+if (typeof module !== 'undefined' && module.exports) {}
+else
+if (typeof gDefine === 'function' && gDefine.amd) {
 
-  if (typeof gDefine === 'function' && gDefine.amd) {
+  gDefine("zotohlab/p/s/rendering",
 
-    gDefine("zotohlab/p/s/rendering",
+          ['zotohlab/p/s/utils',
+           'zotohlab/p/gnodes',
+           'cherimoia/skarojs',
+           'zotohlab/asterix',
+           'zotohlab/asx/xcfg',
+           'zotohlab/asx/ccsx',
+           'ash-js'],
 
-            ['zotohlab/p/s/utils',
-             'zotohlab/p/gnodes',
-             'cherimoia/skarojs',
-             'zotohlab/asterix',
-             'zotohlab/asx/xcfg',
-             'zotohlab/asx/ccsx',
-             'ash-js'],
+          moduleFactory);
 
-            moduleFactory);
-
-  } else if (typeof module !== 'undefined' && module.exports) {
-  } else {
-  }
+} else {
+}
 
 }).call(this);
 

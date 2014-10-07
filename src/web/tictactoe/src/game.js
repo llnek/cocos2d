@@ -9,6 +9,9 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
+(function () { "use strict"; var global=this, gDefine=global.define;
+//////////////////////////////////////////////////////////////////////////////
+//
 function moduleFactory(sjs, sh, xcfg, ccsx,
                        layers,
                        scenes,
@@ -16,7 +19,7 @@ function moduleFactory(sjs, sh, xcfg, ccsx,
                        odin,
                        huds,
                        cobjs,
-                       sobjs) { "use strict";
+                       sobjs) {
 var prrs= sobjs.Priorities,
 evts= odin.Events,
 csts= xcfg.csts,
@@ -293,29 +296,28 @@ return {
 
 //////////////////////////////////////////////////////////////////////////////
 // export
-(function () { "use strict"; var global=this, gDefine=global.define;
+if (typeof module !== 'undefined' && module.exports) {}
+else
+if (typeof gDefine === 'function' && gDefine.amd) {
 
-  if (typeof gDefine === 'function' && gDefine.amd) {
+  gDefine("zotohlab/p/arena",
 
-    gDefine("zotohlab/p/arena",
+          ['cherimoia/skarojs',
+           'zotohlab/asterix',
+           'zotohlab/asx/xcfg',
+           'zotohlab/asx/ccsx',
+           'zotohlab/asx/xlayers',
+           'zotohlab/asx/xscenes',
+           'zotohlab/asx/xmmenus',
+           'zotohlab/asx/odin',
+           'zotohlab/p/hud',
+           'zotohlab/p/components',
+           'zotohlab/p/sysobjs'],
 
-            ['cherimoia/skarojs',
-             'zotohlab/asterix',
-             'zotohlab/asx/xcfg',
-             'zotohlab/asx/ccsx',
-             'zotohlab/asx/xlayers',
-             'zotohlab/asx/xscenes',
-             'zotohlab/asx/xmmenus',
-             'zotohlab/asx/odin',
-             'zotohlab/p/hud',
-             'zotohlab/p/components',
-             'zotohlab/p/sysobjs'],
+          moduleFactory);
 
-            moduleFactory);
-
-  } else if (typeof module !== 'undefined' && module.exports) {
-  } else {
-  }
+} else {
+}
 
 }).call(this);
 

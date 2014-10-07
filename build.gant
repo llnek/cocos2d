@@ -682,6 +682,7 @@ target (newapp: '') {
     touch (file: "${webDir}/${appid}/src/${s}")
   }
   copy (file: "${srcDir}/resources/config.js", todir: "${webDir}/${appid}/src")
+  copy (file: "${srcDir}/resources/protos.js", todir: "${webDir}/${appid}/src")
   replace (file: "${webDir}/${appid}/src/config.js", token: "@@UUID@@", value: "${appkey}")
   copy (file: "${srcDir}/resources/l10n.js", tofile: "${webDir}/${appid}/src/i18n/game_en_US.js")
   copy (file: "${srcDir}/resources/ccconfig.js", todir: "${webDir}/${appid}/src")
