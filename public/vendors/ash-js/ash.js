@@ -1,17 +1,6 @@
 (function(global) {
   var globalDefine = global.define;
 
-/**
- * almond 0.2.3 Copyright (c) 2011-2012, The Dojo Foundation All Rights Reserved.
- * Available via the MIT or new BSD license.
- * see: http://github.com/jrburke/almond for details
- */
-//Going sloppy to avoid 'use strict' string cost, but strict practices should
-//be followed.
-/*jslint sloppy: true */
-/*global setTimeout: false */
-
-var requirejs= global.requirejs, require= global.require, define= globalDefine;
 
 /**
  * A lightweight inheritance API which is very similar to the
@@ -1036,31 +1025,31 @@ define('ash-core/system',[
  *
  * @author Brett Jephson
  */
-define('ash/ash-framework',['require','ash-core/engine','ash-core/componentmatchingfamily','ash-core/entity','ash-core/entitylist','ash-core/family','ash-core/node','ash-core/nodelist','ash-core/nodepool','ash-core/system','ash-core/systemlist','brejep/class','signals'],function (require) {
+define('ash/ash-framework',['supplicate','ash-core/engine','ash-core/componentmatchingfamily','ash-core/entity','ash-core/entitylist','ash-core/family','ash-core/node','ash-core/nodelist','ash-core/nodepool','ash-core/system','ash-core/systemlist','brejep/class','signals'],function (supplicate) {
     var core = {
         VERSION: '0.2.0'
     };
 
-    core.Engine = require('ash-core/engine');
-    core.ComponentMatchingFamily = require('ash-core/componentmatchingfamily');
-    core.Entity = require('ash-core/entity');
-    core.EntityList = require('ash-core/entitylist');
-    core.Family = require('ash-core/family');
-    core.Node = require('ash-core/node');
-    core.NodeList = require('ash-core/nodelist');
-    core.NodePool = require('ash-core/nodepool');
-    core.System = require('ash-core/system');
-    core.SystemList = require('ash-core/systemlist');
+    core.Engine = supplicate('ash-core/engine');
+    core.ComponentMatchingFamily = supplicate('ash-core/componentmatchingfamily');
+    core.Entity = supplicate('ash-core/entity');
+    core.EntityList = supplicate('ash-core/entitylist');
+    core.Family = supplicate('ash-core/family');
+    core.Node = supplicate('ash-core/node');
+    core.NodeList = supplicate('ash-core/nodelist');
+    core.NodePool = supplicate('ash-core/nodepool');
+    core.System = supplicate('ash-core/system');
+    core.SystemList = supplicate('ash-core/systemlist');
 
     // util classes
     // TODO separate this?
-    core.Class = require('brejep/class');
-    core.Signals = require('signals');
+    core.Class = supplicate('brejep/class');
+    core.Signals = supplicate('signals');
 
     return core;
 });
 
-  var library = require('ash/ash-framework');
+  var library = supplicate('ash/ash-framework');
   if(typeof module !== 'undefined' && module.exports) {
     module.exports = library;
   } else if(globalDefine) {

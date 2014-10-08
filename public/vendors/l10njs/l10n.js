@@ -18,7 +18,7 @@ var global=this, gDefine= global.define, document= global.document;
 var
   undef_type = "undefined"
 , string_type = "string"
-, nav = self.navigator
+, nav = global.navigator
 , String_ctr = String
 , has_own_prop = Object.prototype.hasOwnProperty
 , load_queues = {}

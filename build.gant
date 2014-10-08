@@ -564,19 +564,19 @@ def doJiggleTheIndexFile(wappid,des,cocos) {
 
   def bdir= "/public/ig/lib/game/${wappid}/"
   def ccdir= "/public/extlibs/"
-  def pubdir= "/public/vendors/"
+  def almond= "<script src=\"/public/vendors/almond/almond.js\"></script>"
   def cfg= ""
 
   if (cocos || "${pmode}" == "release") {
     ccdir= "frameworks/"
     bdir= ""
-    pubdir="src/"
+    almond=""
     cfg= FileUtils.readFileToString(new File("${srcDir}/resources/cocos2d.js"), "utf-8")
   } else {
     cfg= FileUtils.readFileToString(new File("${webDir}/${wappid}/src/ccconfig.js"), "utf-8")
   }
 
-  html= StringUtils.replace(html, "@@PUBDIR@@", pubdir)
+  html= StringUtils.replace(html, "@@AMDREF@@", almond)
   html= StringUtils.replace(html, "@@BOOTDIR@@", bdir)
   html= StringUtils.replace(html, "@@CCDIR@@", ccdir)
   html= StringUtils.replace(html, "@@CCCONFIG@@", cfg)

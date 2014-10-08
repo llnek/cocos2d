@@ -181,7 +181,7 @@ if (typeof gDefine === 'function' && gDefine.amd) {
 } else {
 }
 
-cc.game.onStart= function() { global.require('zotohlab/p/main'); };
+cc.game.onStart= function() { global.supplicate('zotohlab/p/main'); };
 cc.game.run();
 
 

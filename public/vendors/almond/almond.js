@@ -8,7 +8,7 @@
 /*jslint sloppy: true */
 /*global setTimeout: false */
 
-var requirejs, require, define;
+var supplicatejs, supplicate, define;
 var global=
   (function (undef) {
     var main, req, makeMap, handlers,
@@ -252,7 +252,7 @@ var global=
     }
 
     handlers = {
-        require: function (name) {
+        supplicate: function (name) {
             return makeRequire(name);
         },
         exports: function (name) {
@@ -287,14 +287,14 @@ var global=
             //Pull out the defined dependencies and pass the ordered
             //values to the callback.
             //Default to [require, exports, module] if no deps
-            deps = !deps.length && callback.length ? ['require', 'exports', 'module'] : deps;
+            deps = !deps.length && callback.length ? ['supplicate', 'exports', 'module'] : deps;
             for (i = 0; i < deps.length; i += 1) {
                 map = makeMap(deps[i], relName);
                 depName = map.f;
 
                 //Fast path CommonJS standard dependencies.
-                if (depName === "require") {
-                    args[i] = handlers.require(name);
+                if (depName === "supplicate") {
+                    args[i] = handlers.supplicate(name);
                 } else if (depName === "exports") {
                     //CommonJS module spec 1.1
                     args[i] = handlers.exports(name);
@@ -335,7 +335,7 @@ var global=
         }
     };
 
-    requirejs = require = req = function (deps, callback, relName, forceSync, alt) {
+    supplicatejs = supplicate = req = function (deps, callback, relName, forceSync, alt) {
         if (typeof deps === "string") {
             if (handlers[deps]) {
                 //callback in this case is really relName
@@ -406,7 +406,7 @@ var global=
     /**
      * Expose module registry for debugging and tooling
      */
-    requirejs._defined = defined;
+    supplicatejs._defined = defined;
 
     define = function (name, deps, callback) {
 
