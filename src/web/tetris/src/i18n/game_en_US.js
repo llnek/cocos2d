@@ -9,30 +9,26 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this; var _ = global._ ,
-asterix= global.ZotohLab.Asterix,
-sh= global.ZotohLab.Asterix;
+define("zotohlab/p/l10n", ['cherimoia/skarojs',
+                          'zotohlab/asterix',
+                          'zotohlab/asx/xcfg'],
 
-//////////////////////////////////////////////////////////////////////////////
-//
-global.SkaroJS.merge(sh.xcfg.l10nTable, {
+  function (sjs, sh, xcfg) { "use strict";
 
-"en-US" : {
+    sjs.merge(xcfg.l10nTable, {
 
-  "%whowin" : "{{who}} Wins!",
+      "en-US" : {
 
-  "%p2" : "P2",
-  "%p1" : "P1"
+        "%whowin" : "{{who}} Wins!",
 
-}
+        "%p2" : "P2",
+        "%p1" : "P1"
 
+      }
 
+    });
 
-
-
-
-});
-
+    return xcfg.l10nTable;
 
 }).call(this);
 

@@ -7,37 +7,32 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
+define("zotohlab/p/gnodes", ['zotohlab/p/components',
+                            'ash-js'],
 
-(function (undef) { "use strict"; var global=this, _ = global._;
+  function (cobjs, Ash) { "use strict";
 
-var asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
-sjs= global.SkaroJS,
-ccsx= asterix.COCOS2DX,
-bks= asterix.Bricks;
+    var bks= {},
+    undef;
 
-//////////////////////////////////////////////////////////////////////////////
-//
-bks.BoxShape = {
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    bks.ArenaNode = Ash.Node.create({
+      collision: cobjs.TileGrid,
+      blocks: cobjs.BlockGrid,
+      motion: cobjs.Motion,
+      pauser: cobjs.Pauser,
+      dropper: cobjs.Dropper,
+      shell: cobjs.ShapeShell,
+      flines: cobjs.FilledLines
+    });
 
-  layout: [
-    [ [1,1],
-      [1,1] ],
-    [ [1,1],
-      [1,1] ],
-    [ [1,1],
-      [1,1] ],
-    [ [1,1],
-      [1,1] ]
-  ],
+    return bks;
 
-  dim: 2
+});
 
-};
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
