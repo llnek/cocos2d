@@ -9,107 +9,90 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(sjs) {
-var undef;
+define("zotohlab/asx/ui", ['cherimoia/skarojs'],
+  function (sjs) { "use strict";
+    var undef;
 
-//////////////////////////////////////////////////////////////////////
-//
-var Circle = sjs.Class.xtends({
+    //////////////////////////////////////////////////////////////////////
+    //
+    var Circle = sjs.Class.xtends({
 
-  draw: function(ctx, styleObj) {
-    ctx.beginPath();
-    ctx.strokeStyle = styleObj.stroke.style;
-    ctx.lineWidth = styleObj.line.width;
-    ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, true);
-    ctx.stroke();
-  },
+      draw: function(ctx, styleObj) {
+        ctx.beginPath();
+        ctx.strokeStyle = styleObj.stroke.style;
+        ctx.lineWidth = styleObj.line.width;
+        ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, true);
+        ctx.stroke();
+      },
 
-  ctor: function(x, y, radius) {
-    this.x = x;
-    this.y = y;
-    this.radius = radius;
-  }
+      ctor: function(x, y, radius) {
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
+      }
+
+    });
+
+    var Line = sjs.Class.xtends({
+
+      draw: function(ctx, styleObj) {
+        ctx.beginPath();
+        ctx.moveTo(this.x1, this.y1);
+        ctx.lineTo(this.x2, this.y2);
+        ctx.strokeStyle = styleObj.stroke.style;
+        ctx.lineWidth = styleObj.line.width;
+        if (styleObj.line.cap != null) {
+          ctx.lineCap = styleObj.line.cap;
+        }
+        ctx.stroke();
+      },
+
+      ctor: function(x1, y1, x2, y2) {
+        this.x1 = x1;
+        this.y1 = y1;
+        this.x2 = x2;
+        this.y2 = y2;
+      }
+
+    });
+
+    var Point = sjs.Class.xtends({
+      ctor: function(x,y) {
+        this.y=y;
+        this.x=x;
+      }
+    });
+
+    var Area = sjs.Class.xtends({
+      ctor: function(x,y,w,h) {
+        this.pos= new Point(x,y);
+        this.height=h;
+        this.width=w;
+      }
+    });
+
+    var TextStyle = sjs.Class.xtends({
+
+      ctor: function() {
+        this.font = "14px 'Architects Daughter'";
+        this.fill = "#dddddd";
+        this.align = "left";
+        this.base = "top";
+      }
+
+    });
+
+    return {
+
+      TextStyle: TextStyle,
+      Circle: Circle,
+      Line: Line,
+      Point: Point,
+      Area: Area
+
+    };
 
 });
-
-var Line = sjs.Class.xtends({
-
-  draw: function(ctx, styleObj) {
-    ctx.beginPath();
-    ctx.moveTo(this.x1, this.y1);
-    ctx.lineTo(this.x2, this.y2);
-    ctx.strokeStyle = styleObj.stroke.style;
-    ctx.lineWidth = styleObj.line.width;
-    if (styleObj.line.cap != null) {
-      ctx.lineCap = styleObj.line.cap;
-    }
-    ctx.stroke();
-  },
-
-  ctor: function(x1, y1, x2, y2) {
-    this.x1 = x1;
-    this.y1 = y1;
-    this.x2 = x2;
-    this.y2 = y2;
-  }
-
-});
-
-var Point = sjs.Class.xtends({
-  ctor: function(x,y) {
-    this.y=y;
-    this.x=x;
-  }
-});
-
-var Area = sjs.Class.xtends({
-  ctor: function(x,y,w,h) {
-    this.pos= new Point(x,y);
-    this.height=h;
-    this.width=w;
-  }
-});
-
-var TextStyle = sjs.Class.xtends({
-
-  ctor: function() {
-    this.font = "14px 'Architects Daughter'";
-    this.fill = "#dddddd";
-    this.align = "left";
-    this.base = "top";
-  }
-
-});
-
-return {
-
-  TextStyle: TextStyle,
-  Circle: Circle,
-  Line: Line,
-  Point: Point,
-  Area: Area
-
-};
-
-
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
-// export
-if (typeof module !== 'undefined' && module.exports) {}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
-
-  gDefine("zotohlab/asx/ui", ['cherimoia/skarojs'], moduleFactory);
-
-} else {
-}
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

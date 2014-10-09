@@ -9,152 +9,136 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(sjs, sh) {
-var GID_SEED = 0,
-undef;
+define("zotohlab/asx/xentity", ['cherimoia/skarojs',
+                                'zotohlab/asterix'],
+  function (sjs, sh) { "use strict";
 
-//////////////////////////////////////////////////////////////////////////////
-//
-function _revive(sprite,x,y) {
-  if (!!sprite) {
-    sprite.setPosition(x,y);
-    sprite.setVisible(true);
-  }
-}
-function _hide(sprite) {
-  if (!!sprite) {
-    sprite.setVisible(false);
-    sprite.setPosition(0,0);
-  }
-}
+    var GID_SEED = 0,
+    undef;
 
-//////////////////////////////////////////////////////////////////////////////
-//
-var XEntity = {
-
-  injured: function(damage,from) {
-  },
-
-  inflate: function(options) {
-  },
-
-  deflate: function() {
-    _hide(this.sprite);
-  },
-
-  rtti: function() {
-    return 'no-rtti-defined';
-  },
-
-  dispose: function() {
-    if (!!this.sprite) {
-      this.sprite.getParent().removeChild(this.sprite,true);
-      this.sprite=null;
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    function _revive(sprite,x,y) {
+      if (!!sprite) {
+        sprite.setPosition(x,y);
+        sprite.setVisible(true);
+      }
     }
-  },
-
-  height: function() {
-    if (!!this.sprite) {
-      return this.sprite.getContentSize().height;
+    function _hide(sprite) {
+      if (!!sprite) {
+        sprite.setVisible(false);
+        sprite.setPosition(0,0);
+      }
     }
-  },
 
-  width: function() {
-    if (!!this.sprite) {
-      return this.sprite.getContentSize().width;
-    }
-  },
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    var XEntity = {
 
-  pid: function() {
-    if (!!this.sprite) { return this.sprite.getTag(); }
-  },
+      injured: function(damage,from) {
+      },
 
-  ctor: function() {
-    this.health= 0;
-    this.speed= 0;
-    this.value= 0;
-    this.sprite= null;
-    this.status=true;
-  }
+      inflate: function(options) {
+      },
 
-};
+      deflate: function() {
+        _hide(this.sprite);
+      },
 
-//////////////////////////////////////////////////////////////////////////////
-//
-var XEntityPool = sjs.Class.xtends({
+      rtti: function() {
+        return 'no-rtti-defined';
+      },
 
-  checkEntity: function(ent) {
-    if (ent instanceof this.entType) {
-      return true;
-    }
-    throw new Error("Cannot add type : " + ent.rtti() + " into pool.  Wrong type.");
-  },
+      dispose: function() {
+        if (!!this.sprite) {
+          this.sprite.getParent().removeChild(this.sprite,true);
+          this.sprite=null;
+        }
+      },
 
-  drain: function() {
-    this.curSize = 0;
-    this.pool = [];
-  },
+      height: function() {
+        if (!!this.sprite) {
+          return this.sprite.getContentSize().height;
+        }
+      },
 
-  get: function() {
-    var rc= null;
-    if (this.curSize > 0) {
-      rc = this.pool.pop();
-      --this.curSize;
-      sjs.loggr.debug('getting object "' + rc.rtti() + '" from pool: oid = ' + rc.pid() );
-    }
-    return rc;
-  },
+      width: function() {
+        if (!!this.sprite) {
+          return this.sprite.getContentSize().width;
+        }
+      },
 
-  add: function(ent) {
-    if (this.checkEntity(ent) && this.curSize < this.maxSize) {
-      sjs.loggr.debug('putting object "' + ent.rtti() + '" into pool: oid = ' + ent.pid() );
-      this.pool.push(ent);
-      ent.deflate();
-      ++this.curSize;
-      return true;
-    } else {
-      return false;
-    }
-  },
+      pid: function() {
+        if (!!this.sprite) { return this.sprite.getTag(); }
+      },
+
+      ctor: function() {
+        this.health= 0;
+        this.speed= 0;
+        this.value= 0;
+        this.sprite= null;
+        this.status=true;
+      }
+
+    };
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    var XEntityPool = sjs.Class.xtends({
+
+      checkEntity: function(ent) {
+        if (ent instanceof this.entType) {
+          return true;
+        }
+        throw new Error("Cannot add type : " + ent.rtti() + " into pool.  Wrong type.");
+      },
+
+      drain: function() {
+        this.curSize = 0;
+        this.pool = [];
+      },
+
+      get: function() {
+        var rc= null;
+        if (this.curSize > 0) {
+          rc = this.pool.pop();
+          --this.curSize;
+          sjs.loggr.debug('getting object "' + rc.rtti() + '" from pool: oid = ' + rc.pid() );
+        }
+        return rc;
+      },
+
+      add: function(ent) {
+        if (this.checkEntity(ent) && this.curSize < this.maxSize) {
+          sjs.loggr.debug('putting object "' + ent.rtti() + '" into pool: oid = ' + ent.pid() );
+          this.pool.push(ent);
+          ent.deflate();
+          ++this.curSize;
+          return true;
+        } else {
+          return false;
+        }
+      },
 
 
-  ctor: function(options) {
-    this.options = options || {};
-    this.maxSize = this.options.maxSize || 1000;
-    this.entType = this.options.entityProto;
-    this.maxSize= 1000;
-    this.curSize= 0;
-    this.pool= [];
-  }
+      ctor: function(options) {
+        this.options = options || {};
+        this.maxSize = this.options.maxSize || 1000;
+        this.entType = this.options.entityProto;
+        this.maxSize= 1000;
+        this.curSize= 0;
+        this.pool= [];
+      }
+
+    });
+
+
+    return {
+      XEntityPool: XEntityPool,
+      XEntity: XEntity
+    };
 
 });
-
-
-return {
-  XEntityPool: XEntityPool,
-  XEntity: XEntity
-};
-
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
-// export
-if (typeof module !== 'undefined' && module.exports) {}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
-
-  gDefine("zotohlab/asx/xentity",
-          ['cherimoia/skarojs', 'zotohlab/asterix'],
-          moduleFactory);
-
-} else {
-}
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

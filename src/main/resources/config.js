@@ -9,83 +9,62 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
+define("zotohlab/p/config", ['cherimoia/skarojs',
+                            'zotohlab/asterix',
+                            'zotohlab/asx/xcfg'],
 
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(sjs, sh, xcfg) {
-sjs.merge( xcfg, {
+  function (sjs, sh, xcfg) { "use strict";
 
-  appKey: '@@UUID@@',
+    sjs.merge( xcfg, {
+
+      appKey: '@@UUID@@',
 
 
-  appid: '',
-  color: '',
+      appid: '',
+      color: '',
 
-  csts: {
-  },
-
-  devices: {
-    iphone:{width:320, height:480, scale:1},
-    android:{width:320, height:480, scale:1},
-    ipad:{width:320, height:480, scale:2},
-    default:{width:320, height:480, scale:1}
-  },
-
-  game: {
-    size: {width:320, height:480, scale:1}
-  },
-
-  assets: {
-    tiles: {
-    },
-    images: {
-    },
-    sounds: {
-    },
-    fonts: {
-    }
-  },
-
-  levels: {
-    "gamelevel1" : {
-      tiles: {
+      csts: {
       },
-      images: {
+
+      devices: {
+        iphone:{width:320, height:480, scale:1},
+        android:{width:320, height:480, scale:1},
+        ipad:{width:320, height:480, scale:2},
+        default:{width:320, height:480, scale:1}
       },
-      sprites: {
+
+      game: {
+        size: {width:320, height:480, scale:1}
+      },
+
+      assets: {
+        tiles: {
+        },
+        images: {
+        },
+        sounds: {
+        },
+        fonts: {
+        }
+      },
+
+      levels: {
+        "gamelevel1" : {
+          tiles: {
+          },
+          images: {
+          },
+          sprites: {
+          }
+        }
       }
-    }
-  }
+
+    });
+
+
+    return xcfg;
 
 });
-
-
-return xcfg;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// export
-
-if (typeof module !== 'undefined' && module.exports) {
-}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
-
-  gDefine("zotohlab/p/config",
-
-          ['cherimoia/skarojs',
-           'zotohlab/asterix',
-           'zotohlab/asx/xcfg'],
-
-          moduleFactory);
-} else {
-}
-
-
-
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

@@ -9,61 +9,44 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(cobjs, gnodes, utils,
-                       Priorities,
-                       EntityFactory,
-                       NetworkSystem,
-                       RenderSystem,
-                       ResolutionSystem,
-                       Supervisor,
-                       TurnBaseSystem,
-                       SelectionSystem) {
-return {
+define("zotohlab/p/sysobjs", ['zotohlab/p/components',
+                             'zotohlab/p/gnodes',
+                             'zotohlab/p/s/utils',
+                             'zotohlab/p/s/priorities',
+                             'zotohlab/p/s/factory',
+                             'zotohlab/p/s/network',
+                             'zotohlab/p/s/rendering',
+                             'zotohlab/p/s/resolution',
+                             'zotohlab/p/s/supervisor',
+                             'zotohlab/p/s/turnbase',
+                             'zotohlab/p/s/uiselect'],
 
-  Priorities: Priorities,
-  EntityFactory: EntityFactory,
-  GameSupervisor: Supervisor,
-  NetworkSystem: NetworkSystem,
-  SelectionSystem: SelectionSystem,
-  TurnBaseSystem: TurnBaseSystem,
-  ResolutionSystem: ResolutionSystem,
-  RenderSystem: RenderSystem,
-  SystemUtils: utils
+  function (cobjs, gnodes, utils,
+            Priorities,
+            EntityFactory,
+            NetworkSystem,
+            RenderSystem,
+            ResolutionSystem,
+            Supervisor,
+            TurnBaseSystem,
+            SelectionSystem) { "use strict";
 
-};
+    return {
+
+      Priorities: Priorities,
+      EntityFactory: EntityFactory,
+      GameSupervisor: Supervisor,
+      NetworkSystem: NetworkSystem,
+      SelectionSystem: SelectionSystem,
+      TurnBaseSystem: TurnBaseSystem,
+      ResolutionSystem: ResolutionSystem,
+      RenderSystem: RenderSystem,
+      SystemUtils: utils
+
+    };
 
 
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// export
-if (typeof module !== 'undefined' && module.exports) {}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
-
-  gDefine("zotohlab/p/sysobjs",
-
-          ['zotohlab/p/components',
-           'zotohlab/p/gnodes',
-           'zotohlab/p/s/utils',
-           'zotohlab/p/s/priorities',
-           'zotohlab/p/s/factory',
-           'zotohlab/p/s/network',
-           'zotohlab/p/s/rendering',
-           'zotohlab/p/s/resolution',
-           'zotohlab/p/s/supervisor',
-           'zotohlab/p/s/turnbase',
-           'zotohlab/p/s/uiselect'],
-
-          moduleFactory);
-
-} else {
-}
-
-}).call(this);
+});
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

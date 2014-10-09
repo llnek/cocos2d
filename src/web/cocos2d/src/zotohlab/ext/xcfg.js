@@ -9,167 +9,151 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(sjs, sh) {
-var R= sjs.ramda,
-undef,
-config = {
+define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
+                            'zotohlab/asterix'],
+  function (sjs, sh) { "use strict";
 
-  urlPrefix: '/public/ig/',
-  appid: '',
-  color: '',
+    var R= sjs.ramda,
+    undef,
+    config = {
 
-  levels: {
-  },
+      urlPrefix: '/public/ig/',
+      appid: '',
+      color: '',
 
-  assets: {
-    sprites: {
-      'gui.audio' : [ 'res/cocos2d/btns/{{color}}/audio_onoff.png', 48,48, -1 ]
-    },
-    atlases : {
-    },
-    tiles: {
-      'gui.blank' : 'game/{{appid}}/levels/blankscreen.tmx',
-      'gui.mmenu' : 'game/{{appid}}/levels/mainmenu.tmx'
-    },
-    images: {
-      'splash.splash' : 'res/{{appid}}/gui/splash.png',
+      levels: {
+      },
 
-      "gui.mmenu.replay" : 'res/cocos2d/btns/{{color}}/replay.png',
-      "gui.mmenu.quit" : 'res/cocos2d/btns/{{color}}/quit.png',
-      "gui.mmenu.back" : 'res/cocos2d/btns/{{color}}/go_back.png',
-      "gui.mmenu.ok" : 'res/cocos2d/btns/{{color}}/go_ok.png',
-      "gui.mmenu.menu" : 'res/cocos2d/btns/{{color}}/go_mmenu.png',
+      assets: {
+        sprites: {
+          'gui.audio' : [ 'res/cocos2d/btns/{{color}}/audio_onoff.png', 48,48, -1 ]
+        },
+        atlases : {
+        },
+        tiles: {
+          'gui.blank' : 'game/{{appid}}/levels/blankscreen.tmx',
+          'gui.mmenu' : 'game/{{appid}}/levels/mainmenu.tmx'
+        },
+        images: {
+          'splash.splash' : 'res/{{appid}}/gui/splash.png',
 
-      /*
-      'gui.mmenu.border16': 'res/cocos2d/game/cbox-borders_x16.png',
-      'gui.mmenu.border8': 'res/cocos2d/game/cbox-borders_x8.png',
-      */
-      'gui.mmenu.menu.bg' : 'game/{{appid}}/levels/mainmenu.png',
-      'gui.mmenu.bg' : 'game/{{appid}}/levels/bg.png',
-      'gui.mmenu.border': 'game/{{appid}}/levels/{{border-tiles}}',
+          "gui.mmenu.replay" : 'res/cocos2d/btns/{{color}}/replay.png',
+          "gui.mmenu.quit" : 'res/cocos2d/btns/{{color}}/quit.png',
+          "gui.mmenu.back" : 'res/cocos2d/btns/{{color}}/go_back.png',
+          "gui.mmenu.ok" : 'res/cocos2d/btns/{{color}}/go_ok.png',
+          "gui.mmenu.menu" : 'res/cocos2d/btns/{{color}}/go_mmenu.png',
 
-      'gui.edit.orange' : 'res/cocos2d/game/orange_edit.png',
-      'gui.edit.green' : 'res/cocos2d/game/green_edit.png',
-      'gui.edit.yellow' : 'res/cocos2d/game/yellow_edit.png'
+          /*
+          'gui.mmenu.border16': 'res/cocos2d/game/cbox-borders_x16.png',
+          'gui.mmenu.border8': 'res/cocos2d/game/cbox-borders_x8.png',
+          */
+          'gui.mmenu.menu.bg' : 'game/{{appid}}/levels/mainmenu.png',
+          'gui.mmenu.bg' : 'game/{{appid}}/levels/bg.png',
+          'gui.mmenu.border': 'game/{{appid}}/levels/{{border-tiles}}',
 
-    },
-    sounds: {
-      'start_game' : 'res/cocos2d/sfx/PowerUp'
-    },
-    fonts: {
-      'font.TinyBoxBB' : [ 'res/cocos2d/fon/{{lang}}', 'TinyBoxBlackBitA8.png', 'TinyBoxBlackBitA8.fnt' ],
-      'font.LaffRiotNF' : [ 'res/cocos2d/fon/{{lang}}', 'LaffRiotNF.png', 'LaffRiotNF.fnt' ],
-      'font.JellyBelly' : [ 'res/cocos2d/fon/{{lang}}', 'JellyBelly.png', 'JellyBelly.fnt' ],
-      'font.Subito' : [ 'res/cocos2d/fon/{{lang}}', 'Subito.png', 'Subito.fnt' ],
-      'font.OogieBoogie' : [ 'res/cocos2d/fon/{{lang}}', 'OogieBoogie.png', 'OogieBoogie.fnt' ],
-      'font.DigitalDream' : [ 'res/cocos2d/fon/{{lang}}', 'DigitalDream.png', 'DigitalDream.fnt' ],
-      'font.AutoMission' : [ 'res/cocos2d/fon/{{lang}}', 'AutoMission.png', 'AutoMission.fnt' ],
-      'font.ConvWisdom' : [ 'res/cocos2d/fon/{{lang}}', 'ConvWisdom.png', 'ConvWisdom.fnt' ],
-      'font.Ubuntu' : [ 'res/cocos2d/fon/{{lang}}', 'Ubuntu.png', 'Ubuntu.fnt' ],
-      'font.OCR' : [ 'res/cocos2d/fon/{{lang}}', 'OCR.png', 'OCR.fnt' ],
-      'font.Downlink' : [ 'res/cocos2d/fon/{{lang}}', 'Downlink.png', 'Downlink.fnt' ]
-    }
-  },
+          'gui.edit.orange' : 'res/cocos2d/game/orange_edit.png',
+          'gui.edit.green' : 'res/cocos2d/game/green_edit.png',
+          'gui.edit.yellow' : 'res/cocos2d/game/yellow_edit.png'
 
-  game: {
-    borderTiles: 'cbox-borders_x8.png',
-    preloadLevels: true,
-    sfx: 'mp3',
-    landscape: false,
-    size: null,
-    gravity: 0,
-    version: "",
-    trackingID: ""
-  },
+        },
+        sounds: {
+          'start_game' : 'res/cocos2d/sfx/PowerUp'
+        },
+        fonts: {
+          'font.TinyBoxBB' : [ 'res/cocos2d/fon/{{lang}}', 'TinyBoxBlackBitA8.png', 'TinyBoxBlackBitA8.fnt' ],
+          'font.LaffRiotNF' : [ 'res/cocos2d/fon/{{lang}}', 'LaffRiotNF.png', 'LaffRiotNF.fnt' ],
+          'font.JellyBelly' : [ 'res/cocos2d/fon/{{lang}}', 'JellyBelly.png', 'JellyBelly.fnt' ],
+          'font.Subito' : [ 'res/cocos2d/fon/{{lang}}', 'Subito.png', 'Subito.fnt' ],
+          'font.OogieBoogie' : [ 'res/cocos2d/fon/{{lang}}', 'OogieBoogie.png', 'OogieBoogie.fnt' ],
+          'font.DigitalDream' : [ 'res/cocos2d/fon/{{lang}}', 'DigitalDream.png', 'DigitalDream.fnt' ],
+          'font.AutoMission' : [ 'res/cocos2d/fon/{{lang}}', 'AutoMission.png', 'AutoMission.fnt' ],
+          'font.ConvWisdom' : [ 'res/cocos2d/fon/{{lang}}', 'ConvWisdom.png', 'ConvWisdom.fnt' ],
+          'font.Ubuntu' : [ 'res/cocos2d/fon/{{lang}}', 'Ubuntu.png', 'Ubuntu.fnt' ],
+          'font.OCR' : [ 'res/cocos2d/fon/{{lang}}', 'OCR.png', 'OCR.fnt' ],
+          'font.Downlink' : [ 'res/cocos2d/fon/{{lang}}', 'Downlink.png', 'Downlink.fnt' ]
+        }
+      },
 
-  smac: null,
+      game: {
+        borderTiles: 'cbox-borders_x8.png',
+        preloadLevels: true,
+        sfx: 'mp3',
+        landscape: false,
+        size: null,
+        gravity: 0,
+        version: "",
+        trackingID: ""
+      },
 
-  l10nTable: {
-    "en-US" : {
-      '%mobileStart' : 'Press Anywhere To Start!',
-      '%webStart' : 'Press Spacebar To Start!',
+      smac: null,
 
-      '%passwd' : 'Password',
-      '%userid' : 'UserId',
+      l10nTable: {
+        "en-US" : {
+          '%mobileStart' : 'Press Anywhere To Start!',
+          '%webStart' : 'Press Spacebar To Start!',
 
-      "%player2" : 'Player 2',
-      "%player1" : 'Player 1',
-      "%computer" : 'Computer',
-      "%cpu" : "CPU",
+          '%passwd' : 'Password',
+          '%userid' : 'UserId',
 
-      "%2players" : '2 Players',
-      "%1player" : '1 Player',
-      "%online" : 'Online',
+          "%player2" : 'Player 2',
+          "%player1" : 'Player 1',
+          "%computer" : 'Computer',
+          "%cpu" : "CPU",
 
-      "%gameover" : 'Game Over',
-      "%quit!" : 'Quit',
-      "%back" : 'Back',
-      "%ok" : 'OK',
+          "%2players" : '2 Players',
+          "%1player" : '1 Player',
+          "%online" : 'Online',
 
-      "%mmenu" : 'Main Menu',
-      "%replay" : 'REPLAY',
-      "%play" : 'PLAY',
+          "%gameover" : 'Game Over',
+          "%quit!" : 'Quit',
+          "%back" : 'Back',
+          "%ok" : 'OK',
 
-      "%waitothers" : 'Waiting for other players to join...',
-      "%waitother" : 'Waiting for another player to join...',
-      "%signinplay" : 'Please sign in to play.',
+          "%mmenu" : 'Main Menu',
+          "%replay" : 'REPLAY',
+          "%play" : 'PLAY',
 
-      "%quit?" : 'Continue to quit game?'
-    }
-  },
+          "%waitothers" : 'Waiting for other players to join...',
+          "%waitother" : 'Waiting for another player to join...',
+          "%signinplay" : 'Please sign in to play.',
 
-  devices: {
-    iphone:{width:240, height:160, scale:2},
-    android:{width:240, height:160, scale:2},
-    ipad:{width:240, height:160, scale:4},
-    default:{width:240, height:160, scale:3}
-  },
+          "%quit?" : 'Continue to quit game?'
+        }
+      },
 
-  csts: {
-    // 1 = single player
-    // 2 = 2 players
-    // 3 = network, multi players
-    GAME_MODE: sh.P1_GAME,
-    TILE: 8,
-    S_OFF: 4,
-    GAME_ID: ''
-  },
+      devices: {
+        iphone:{width:240, height:160, scale:2},
+        android:{width:240, height:160, scale:2},
+        ipad:{width:240, height:160, scale:4},
+        default:{width:240, height:160, scale:3}
+      },
 
-  sound: {
-    volume: 0.5,
-    open: false,
-    music: {
-      volume: 0.5,
-      track: null
-    }
-  },
+      csts: {
+        // 1 = single player
+        // 2 = 2 players
+        // 3 = network, multi players
+        GAME_MODE: sh.P1_GAME,
+        TILE: 8,
+        S_OFF: 4,
+        GAME_ID: ''
+      },
 
-  runOnce: function() {}
+      sound: {
+        volume: 0.5,
+        open: false,
+        music: {
+          volume: 0.5,
+          track: null
+        }
+      },
 
-};
+      runOnce: function() {}
 
-
-return sh.xcfg=config;
-}
+    };
 
 
-//////////////////////////////////////////////////////////////////////////////
-// export
-if (typeof module !== 'undefined' && module.exports) {}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
-
-  gDefine("zotohlab/asx/xcfg",
-          ['cherimoia/skarojs', 'zotohlab/asterix'],
-          moduleFactory);
-
-} else {
-}
-
-}).call(this);
+    return sh.xcfg=config;
+});
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

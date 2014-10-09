@@ -9,102 +9,87 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(gnodes, sjs, sh, xcfg, odin, Ash) {
-var evts= odin.Events,
-csts= xcfg.csts,
-undef;
+define("zotohlab/p/s/network", ['zotohlab/p/gnodes',
+                               'cherimoia/skarojs',
+                               'zotohlab/asterix',
+                               'zotohlab/asx/xcfg',
+                               'zotohlab/asx/odin',
+                               'ash-js'],
 
-//////////////////////////////////////////////////////////////////////////////
-//
-var NetworkSystem = Ash.System.extend({
+  function (gnodes, sjs, sh, xcfg, odin, Ash) { "use strict";
 
-  constructor: function(options) {
-    this.events = options.netQ;
-    this.state= options;
-  },
+    var evts= odin.Events,
+    csts= xcfg.csts,
+    undef;
 
-  removeFromEngine: function(engine) {
-    this.nodeList=null;
-  },
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    var NetworkSystem = Ash.System.extend({
 
-  addToEngine: function(engine) {
-    this.nodeList = engine.getNodeList(gnodes.NetPlayNode);
-  },
+      constructor: function(options) {
+        this.events = options.netQ;
+        this.state= options;
+      },
 
-  update: function (dt) {
-    if (this.events.length > 0) {
-      var evt = this.events.shift(),
-      node= this.nodeList.head;
-      if (!!node) {
-        this.maybeUpdateActions(node, evt);
-        this.process(node, evt);
+      removeFromEngine: function(engine) {
+        this.nodeList=null;
+      },
+
+      addToEngine: function(engine) {
+        this.nodeList = engine.getNodeList(gnodes.NetPlayNode);
+      },
+
+      update: function (dt) {
+        if (this.events.length > 0) {
+          var evt = this.events.shift(),
+          node= this.nodeList.head;
+          if (!!node) {
+            this.maybeUpdateActions(node, evt);
+            this.process(node, evt);
+          }
+        }
+      },
+
+      process: function(node, evt) {
+        var pnum= sjs.isNumber(evt.source.pnum) ? evt.source.pnum : -1;
+        if (pnum === 1 || pnum === 2) {} else { return; }
+        switch (evt.code) {
+          case evts.C_POKE_MOVE:
+            sjs.loggr.debug("player " + pnum + ": my turn to move");
+            sh.fireEvent('/game/hud/timer/show');
+            this.state.actor= pnum;
+          break;
+          case evts.C_POKE_WAIT:
+            sjs.loggr.debug("player " + pnum + ": my turn to wait");
+            sh.fireEvent('/game/hud/timer/hide');
+            // toggle color
+            this.state.actor= pnum===1 ? 2 : 1;
+          break;
+        }
+      },
+
+      maybeUpdateActions: function(node, evt) {
+        var cmd= evt.source.cmd,
+        grid=node.grid,
+        vs=grid.values;
+
+        if (sjs.isObject(cmd) &&
+            sjs.isNumber(cmd.cell) &&
+            cmd.cell >= 0 &&
+            cmd.cell < vs.length) {
+
+          vs[cmd.cell] = cmd.value;
+        }
       }
-    }
-  },
 
-  process: function(node, evt) {
-    var pnum= sjs.isNumber(evt.source.pnum) ? evt.source.pnum : -1;
-    if (pnum === 1 || pnum === 2) {} else { return; }
-    switch (evt.code) {
-      case evts.C_POKE_MOVE:
-        sjs.loggr.debug("player " + pnum + ": my turn to move");
-        sh.fireEvent('/game/hud/timer/show');
-        this.state.actor= pnum;
-      break;
-      case evts.C_POKE_WAIT:
-        sjs.loggr.debug("player " + pnum + ": my turn to wait");
-        sh.fireEvent('/game/hud/timer/hide');
-        // toggle color
-        this.state.actor= pnum===1 ? 2 : 1;
-      break;
-    }
-  },
 
-  maybeUpdateActions: function(node, evt) {
-    var cmd= evt.source.cmd,
-    grid=node.grid,
-    vs=grid.values;
+    });
 
-    if (sjs.isObject(cmd) &&
-        sjs.isNumber(cmd.cell) &&
-        cmd.cell >= 0 &&
-        cmd.cell < vs.length) {
 
-      vs[cmd.cell] = cmd.value;
-    }
-  }
-
+    return NetworkSystem;
 
 });
 
-
-return NetworkSystem;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// export
-if (typeof module !== 'undefined' && module.exports) {}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
-
-  gDefine("zotohlab/p/s/network",
-
-          ['zotohlab/p/gnodes',
-           'cherimoia/skarojs',
-           'zotohlab/asterix',
-           'zotohlab/asx/xcfg',
-           'zotohlab/asx/odin',
-           'ash-js'],
-
-          moduleFactory);
-
-} else {
-}
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

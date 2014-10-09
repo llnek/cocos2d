@@ -9,99 +9,83 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(sjs) {
-var PINF = 1000000,
-undef;
+define("zotohlab/asx/negamax", ['cherimoia/skarojs'],
+  function (sjs) { "use strict";
 
-//////////////////////////////////////////////////////////////////////////////
-//
-function negamax(board, game, maxDepth, depth, alpha, beta) {
+    var PINF = 1000000,
+    undef;
 
-  if (depth === 0 || board.isOver(game)) {
-    return board.evalScore(game);
-  }
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    function negamax(board, game, maxDepth, depth, alpha, beta) {
 
-  //assert(openMoves && openMoves.length > 0);
-  var openMoves = board.getNextMoves(game),
-  bestValue = -PINF,
-  rc,
-  n,
-  move,
-  bestMove = openMoves[0];
-
-  if (depth === maxDepth) {
-    game.lastBestMove = openMoves[0];
-  }
-
-  for (n=0; n < openMoves.length; ++n) {
-    move = openMoves[n];
-    board.makeMove(game, move);
-    board.switchPlayer(game);
-    rc = - negamax(board, game, maxDepth, depth-1, -beta, -alpha);
-    board.switchPlayer(game);
-    board.unmakeMove(game,move);
-    bestValue = Math.max( bestValue,  rc );
-    if (alpha < rc) {
-      alpha = rc;
-      bestMove = move;
-      if (depth === maxDepth) {
-        game.lastBestMove = move;
+      if (depth === 0 || board.isOver(game)) {
+        return board.evalScore(game);
       }
-      if (alpha >= beta) { break; }
-    }
-  };
 
-  return bestValue;
-};
+      //assert(openMoves && openMoves.length > 0);
+      var openMoves = board.getNextMoves(game),
+      bestValue = -PINF,
+      rc,
+      n,
+      move,
+      bestMove = openMoves[0];
 
-return {
+      if (depth === maxDepth) {
+        game.lastBestMove = openMoves[0];
+      }
 
-  Algo: sjs.Class.xtends({
+      for (n=0; n < openMoves.length; ++n) {
+        move = openMoves[n];
+        board.makeMove(game, move);
+        board.switchPlayer(game);
+        rc = - negamax(board, game, maxDepth, depth-1, -beta, -alpha);
+        board.switchPlayer(game);
+        board.unmakeMove(game,move);
+        bestValue = Math.max( bestValue,  rc );
+        if (alpha < rc) {
+          alpha = rc;
+          bestMove = move;
+          if (depth === maxDepth) {
+            game.lastBestMove = move;
+          }
+          if (alpha >= beta) { break; }
+        }
+      };
 
-    getGameBoard: function() { return this.board; },
-    ctor: function(board) { this.board= board; },
-    eval: function() {
-      var snapshot= this.board.takeSnapshot();
-      negamax(this.board, snapshot, 10, 10, -PINF, PINF);
-      return snapshot.lastBestMove;
-    }
+      return bestValue;
+    };
 
-  }),
+    return {
 
-  Snapshot: sjs.Class.xtends({
+      Algo: sjs.Class.xtends({
 
-    ctor: function() {
-      this.lastBestMove= null;
-      this.other= null;
-      this.cur= null;
-      this.state= null;
-    }
+        getGameBoard: function() { return this.board; },
+        ctor: function(board) { this.board= board; },
+        eval: function() {
+          var snapshot= this.board.takeSnapshot();
+          negamax(this.board, snapshot, 10, 10, -PINF, PINF);
+          return snapshot.lastBestMove;
+        }
 
-  }),
+      }),
 
-  INF: PINF
+      Snapshot: sjs.Class.xtends({
 
-};
+        ctor: function() {
+          this.lastBestMove= null;
+          this.other= null;
+          this.cur= null;
+          this.state= null;
+        }
 
+      }),
 
+      INF: PINF
 
-}
+    };
 
-//////////////////////////////////////////////////////////////////////////////
-// export
-if (typeof module !== 'undefined' && module.exports) {}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
-
-  gDefine("zotohlab/asx/negamax", ['cherimoia/skarojs'], moduleFactory);
-
-} else {
-}
-
-}).call(this);
+});
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

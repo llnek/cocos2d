@@ -9,90 +9,77 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(sjs, sh,  xcfg, ccsx, layers, scenes) {
-var csts= xcfg.csts,
-undef;
+define("zotohlab/asx/msgbox", ['cherimoia/skarojs',
+                              'zotohlab/asterix',
+                              'zotohlab/asx/xcfg',
+                              'zotohlab/asx/ccsx',
+                              'zotohlab/asx/xlayers',
+                              'zotohlab/asx/xscenes'],
+  function (sjs, sh,  xcfg, ccsx, layers, scenes) { "use strict";
 
-//////////////////////////////////////////////////////////////////////////////
-//
-var BGLayer = layers.XLayer.extend({
+    var csts= xcfg.csts,
+    R = sjs.ramda,
+    undef;
 
-  pkInit: function() {
-    var map = cc.TMXTiledMap.create(sh.getTilesPath('gui.blank'));
-    this.addItem(map);
-    return this._super();
-  }
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    var BGLayer = layers.XLayer.extend({
 
-});
-
-//////////////////////////////////////////////////////////////////////////////
-//
-var UILayer =  layers.XLayer.extend({
-
-  pkInit: function() {
-    var qn= new cc.LabelBMFont(sh.l10n(this.options.msg),
-                               sh.getFontPath('font.TinyBoxBB')),
-    cw= ccsx.center(),
-    wz= ccsx.screen(),
-    s1, s2, t1, t2, menu;
-
-    qn.setPosition(cw.x, wz.height * 0.75);
-    qn.setScale(18/72);
-    qn.setOpacity(0.9*255);
-    this.addItem(qn);
-
-    s1= new cc.Sprite(sh.getImagePath('gui.mmenu.ok'));
-    t1 = new cc.MenuItemSprite();
-    t1.initWithNormalSprite(s1, null, null, function() {
-      this.options.yes();
-    }, this);
-
-    menu= cc.Menu.create(t1);
-    menu.alignItemsHorizontallyWithPadding(10);
-    menu.setPosition(wz.width - csts.TILE - csts.S_OFF - s1.getContentSize().width * 0.5,
-      csts.TILE + csts.S_OFF + s1.getContentSize().height * 0.5);
-    this.addItem(menu);
-
-    return this._super();
-  }
-
-});
-
-
-return {
-  'MsgBox' : {
-    create: function(options) {
-      return new scenes.XSceneFactory([ BGLayer, UILayer ]).create(options);
+    pkInit: function() {
+      var map = cc.TMXTiledMap.create(sh.getTilesPath('gui.blank'));
+      this.addItem(map);
+      return this._super();
     }
-  }
-};
 
-}
+    });
 
-//////////////////////////////////////////////////////////////////////////////
-// export
-if (typeof module !== 'undefined' && module.exports) {}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    var UILayer =  layers.XLayer.extend({
 
-  gDefine("zotohlab/asx/msgbox",
+    pkInit: function() {
+      var qn= new cc.LabelBMFont(sh.l10n(this.options.msg),
+                                 sh.getFontPath('font.TinyBoxBB')),
+      s1= [null,null,null],
+      cw= ccsx.center(),
+      wz= ccsx.screen(),
+      t1, menu;
 
-          ['cherimoia/skarojs',
-           'zotohlab/asterix',
-           'zotohlab/asx/xcfg',
-           'zotohlab/asx/ccsx',
-           'zotohlab/asx/xlayers',
-           'zotohlab/asx/xscenes'],
+      qn.setPosition(cw.x, wz.height * 0.75);
+      qn.setScale(18/72);
+      qn.setOpacity(0.9*255);
+      this.addItem(qn);
 
-          moduleFactory);
+      R.map.idx(function(z,n,a) {
+        a[n] = new cc.Sprite(sh.getImagePath('gui.mmenu.ok'));
+      },s1);
+      t1 = new cc.MenuItemSprite(s1[0], s1[1], s1[2], function() {
+        this.options.yes();
+      }, this);
 
-} else {
-}
+      menu= cc.Menu.create(t1);
+      menu.alignItemsHorizontallyWithPadding(10);
+      menu.setPosition(wz.width - csts.TILE - csts.S_OFF - s1[0].getContentSize().width * 0.5,
+        csts.TILE + csts.S_OFF + s1[0].getContentSize().height * 0.5);
+      this.addItem(menu);
 
-}).call(this);
+      return this._super();
+    }
+
+    });
+
+
+    return {
+
+      'MsgBox' : {
+        create: function(options) {
+          return new scenes.XSceneFactory([ BGLayer, UILayer ]).create(options);
+        }
+      }
+
+    };
+
+});
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

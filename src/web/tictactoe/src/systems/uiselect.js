@@ -9,94 +9,79 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(gnodes, sjs, sh, xcfg, ccsx, Ash) {
-var csts = xcfg.csts,
-undef;
+define("zotohlab/p/s/uiselect", ['zotohlab/p/gnodes',
+                                'cherimoia/skarojs',
+                                'zotohlab/asterix',
+                                'zotohlab/asx/xcfg',
+                                'zotohlab/asx/ccsx',
+                                'ash-js'],
 
-//////////////////////////////////////////////////////////////////////////////
-//
-var SelectionSystem = Ash.System.extend({
+  function (gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
 
-  constructor: function(options) {
-    this.events= options.selQ;
-    this.state= options;
-  },
+    var csts = xcfg.csts,
+    undef;
 
-  removeFromEngine: function(engine) {
-    this.nodeList=null;
-  },
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    var SelectionSystem = Ash.System.extend({
 
-  addToEngine: function(engine) {
-    this.nodeList = engine.getNodeList(gnodes.GUINode);
-  },
+      constructor: function(options) {
+        this.events= options.selQ;
+        this.state= options;
+      },
 
-  update: function (dt) {
-    if (this.events.length > 0) {
-      var evt = this.events.shift(),
-      node= this.nodeList.head;
-      if (!!node) {
-        this.process(node, evt);
+      removeFromEngine: function(engine) {
+        this.nodeList=null;
+      },
+
+      addToEngine: function(engine) {
+        this.nodeList = engine.getNodeList(gnodes.GUINode);
+      },
+
+      update: function (dt) {
+        if (this.events.length > 0) {
+          var evt = this.events.shift(),
+          node= this.nodeList.head;
+          if (!!node) {
+            this.process(node, evt);
+          }
+          this.events.length=0;
+        }
+      },
+
+      process: function(node, evt) {
+        var sel = node.selection,
+        map = node.view.gridMap,
+        n,
+        rect,
+        sz= map.length;
+
+        //set the mouse/touch position
+        sel.px = evt.x;
+        sel.py = evt.y;
+        sel.cell= -1;
+
+        if (this.state.actor === 0) {
+          return;
+        }
+
+        //which cell did he click on?
+        for (n=0; n < sz; ++n) {
+          rect = map[n];
+          if (sel.px >= rect[0] && sel.px <= rect[2] &&
+              sel.py >= rect[3] && sel.py <= rect[1]) {
+            sel.cell= n;
+            break;
+          }
+        }
       }
-      this.events.length=0;
-    }
-  },
 
-  process: function(node, evt) {
-    var sel = node.selection,
-    map = node.view.gridMap,
-    n,
-    rect,
-    sz= map.length;
+    });
 
-    //set the mouse/touch position
-    sel.px = evt.x;
-    sel.py = evt.y;
-    sel.cell= -1;
-
-    if (this.state.actor === 0) {
-      return;
-    }
-
-    //which cell did he click on?
-    for (n=0; n < sz; ++n) {
-      rect = map[n];
-      if (sel.px >= rect[0] && sel.px <= rect[2] &&
-          sel.py >= rect[3] && sel.py <= rect[1]) {
-        sel.cell= n;
-        break;
-      }
-    }
-  }
+    return SelectionSystem;
 
 });
 
-return SelectionSystem;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// export
-if (typeof module !== 'undefined' && module.exports) {}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
-
-  gDefine("zotohlab/p/s/uiselect",
-
-          ['zotohlab/p/gnodes',
-           'cherimoia/skarojs',
-           'zotohlab/asterix',
-           'zotohlab/asx/xcfg',
-           'zotohlab/asx/ccsx',
-           'ash-js'],
-
-          moduleFactory);
-
-} else {
-}
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

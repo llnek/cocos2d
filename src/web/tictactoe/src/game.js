@@ -9,317 +9,295 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(sjs, sh, xcfg, ccsx,
-                       layers,
-                       scenes,
-                       mmenus,
-                       odin,
-                       huds,
-                       cobjs,
-                       sobjs) {
-var prrs= sobjs.Priorities,
-evts= odin.Events,
-csts= xcfg.csts,
-R = sjs.ramda,
-undef;
+define("zotohlab/p/arena", ['cherimoia/skarojs',
+                           'zotohlab/asterix',
+                           'zotohlab/asx/xcfg',
+                           'zotohlab/asx/ccsx',
+                           'zotohlab/asx/xlayers',
+                           'zotohlab/asx/xscenes',
+                           'zotohlab/asx/xmmenus',
+                           'zotohlab/asx/odin',
+                           'zotohlab/p/hud',
+                           'zotohlab/p/components',
+                           'zotohlab/p/sysobjs'],
 
-//////////////////////////////////////////////////////////////////////////////
-// game layer
-//////////////////////////////////////////////////////////////////////////////
+  function (sjs, sh, xcfg, ccsx,
+            layers, scenes, mmenus,
+            odin, huds, cobjs, sobjs) { "use strict";
 
-var GameLayer = layers.XGameLayer.extend({
+    var prrs= sobjs.Priorities,
+    evts= odin.Events,
+    csts= xcfg.csts,
+    R = sjs.ramda,
+    undef;
 
-  onStop: function(evt) {
-    this.options.netQ.push(evt);
-  },
+    //////////////////////////////////////////////////////////////////////////////
+    // game layer
+    //////////////////////////////////////////////////////////////////////////////
 
-  replay: function() {
-    if (sjs.isObject(this.options.wsock)) {
-      // request server to restart a new game
-      this.options.wsock.send({
-        type: evts.SESSION_MSG,
-        code: evts.C_REPLAY
-      });
-    } else {
-      this.play(false);
-    }
-  },
+    var GameLayer = layers.XGameLayer.extend({
 
-  play: function(newFlag) {
+      onStop: function(evt) {
+        this.options.netQ.push(evt);
+      },
 
-    var h= this.getHUD(),
-    p1ids, p2ids;
+      replay: function() {
+        if (sjs.isObject(this.options.wsock)) {
+          // request server to restart a new game
+          this.options.wsock.send({
+            type: evts.SESSION_MSG,
+            code: evts.C_REPLAY
+          });
+        } else {
+          this.play(false);
+        }
+      },
 
-    csts.CELLS = this.options.size*this.options.size;
-    csts.GRID_SIZE= this.options.size;
+      play: function(newFlag) {
 
-    // sort out names of players
-    sjs.eachObj(function(v,k) {
-      if (v[0] === 1) {
-        p1ids= [k, v[1] ];
-      } else {
-        p2ids= [k, v[1] ];
+        var h= this.getHUD(),
+        p1ids, p2ids;
+
+        csts.CELLS = this.options.size*this.options.size;
+        csts.GRID_SIZE= this.options.size;
+
+        // sort out names of players
+        sjs.eachObj(function(v,k) {
+          if (v[0] === 1) {
+            p1ids= [k, v[1] ];
+          } else {
+            p2ids= [k, v[1] ];
+          }
+        },
+        this.options.ppids);
+
+        // clean slate
+        this.reset(newFlag);
+        this.cleanSlate();
+
+        this.options.factory= new sobjs.EntityFactory(this.engine);
+        this.initPlayers();
+        this.options.selQ = [];
+        this.options.netQ = [];
+        this.options.msgQ = [];
+
+        /*
+        this.engine.addSystem(new sobjs.GameSupervisor(popts),
+                              prrs.PreUpdate);
+
+        this.engine.addSystem(new sobjs.SelectionSystem(popts),
+                              prrs.Movement);
+
+        this.engine.addSystem(new sobjs.NetworkSystem(popts),
+                              prrs.Movement);
+
+        this.engine.addSystem(new sobjs.TurnBaseSystem(popts),
+                              prrs.TurnBase);
+
+        this.engine.addSystem(new sobjs.ResolutionSystem(popts),
+                              prrs.Resolve);
+
+        this.engine.addSystem(new sobjs.RenderSystem(popts),
+                              prrs.Render);
+    */
+        R.forEach(function(z) {
+          this.engine.addSystem(new (z[0])(this.options), z[1]);
+        }.bind(this),
+        [[sobjs.GameSupervisor, prrs.PreUpdate],
+         [sobjs.SelectionSystem, prrs.Movement],
+         [sobjs.NetworkSystem, prrs.Movement],
+         [sobjs.TurnBaseSystem, prrs.TurnBase],
+         [sobjs.ResolutionSystem, prrs.Resolve],
+         [sobjs.RenderSystem, prrs.Render]]);
+
+        if (this.options.wsock) {
+          this.options.wsock.unsubscribeAll();
+          this.options.wsock.subscribeAll(this.onevent,this);
+        }
+
+        this.getHUD().regoPlayers(csts.P1_COLOR, p1ids,
+                                  csts.P2_COLOR, p2ids);
+      },
+
+      onNewGame: function(mode) {
+        //sh.sfxPlay('start_game');
+        this.setGameMode(mode);
+        this.play(true);
+      },
+
+      reset: function(newFlag) {
+        var h= this.getHUD();
+        if (newFlag) {
+          h.resetAsNew();
+        } else {
+          h.reset();
+        }
+        this.removeAllItems();
+      },
+
+      onclicked: function(mx,my) {
+
+        if (this.options.running &&
+            this.options.selQ.length === 0) {
+          sjs.loggr.debug("selection made at pos = " + mx + "," + my);
+          this.options.selQ.push({ x: mx, y: my, cell: -1 });
+        }
+      },
+
+      updateHUD: function() {
+        var h= this.getHUD();
+
+        if (this.options.running) {
+          h.drawStatus(this.actor);
+        } else {
+          h.drawResult(this.lastWinner);
+        }
+      },
+
+      playTimeExpired: function(msg) {
+        this.options.msgQ.push("forfeit");
+      },
+
+      getHUD: function() {
+        var rc= this.ptScene.getLayers();
+        return rc['HUD'];
+      },
+
+      rtti: function() { return 'GameLayer'; },
+
+      setGameMode: function(mode) {
+        var h= this.getHUD();
+        this._super(mode);
+        if (h) {
+          h.setGameMode(mode);
+        }
+      },
+
+      initPlayers: function() {
+        var p2cat, p1cat,
+        p2, p1;
+
+        switch (this.options.mode) {
+          case sh.ONLINE_GAME:
+            p2cat = csts.NETP;
+            p1cat = csts.NETP;
+          break;
+          case sh.P1_GAME:
+            p1cat= csts.HUMAN;
+            p2cat= csts.BOT;
+          break;
+          case sh.P2_GAME:
+            p2cat= csts.HUMAN;
+            p1cat= csts.HUMAN;
+          break;
+        }
+        p1= new cobjs.Player(p1cat, csts.CV_X, 1, csts.P1_COLOR);
+        p2= new cobjs.Player(p2cat, csts.CV_O, 2, csts.P2_COLOR);
+        this.options.players = [null,p1,p2];
+        this.options.colors={};
+        this.options.colors[csts.P1_COLOR] = p1;
+        this.options.colors[csts.P2_COLOR] = p2;
+      },
+
+      onevent: function(topic, evt) {
+        //sjs.loggr.debug(evt);
+        switch (evt.type) {
+          case evts.NETWORK_MSG:
+            this.onNetworkEvent(evt);
+          break;
+          case evts.SESSION_MSG:
+            this.onSessionEvent(evt);
+          break;
+        }
+      },
+
+      onNetworkEvent: function(evt) {
+        var h= this.getHUD();
+        switch (evt.code) {
+          case evts.C_RESTART:
+            sjs.loggr.debug("restarting a new game...");
+            h.killTimer();
+            this.play(false);
+          break;
+          case evts.C_STOP:
+            sjs.loggr.debug("game will stop");
+            h.killTimer();
+            this.onStop(evt);
+          break;
+          default:
+            //TODO: fix this hack
+            this.onSessionEvent(evt);
+          break;
+        }
+      },
+
+      onSessionEvent: function(evt) {
+        this.options.netQ.push(evt);
+        /*
+        if (_.isNumber(evt.source.pnum) &&
+            _.isObject(evt.source.cmd) &&
+            _.isNumber(evt.source.cmd.cell)) {
+          sjs.loggr.debug("action from server " + JSON.stringify(cmd));
+          this.options.netQ.push(evt);
+        }
+        switch (evt.code) {
+          case evts.C_POKE_MOVE:
+          case evts.C_POKE_WAIT:
+          break;
+        }
+
+    */
       }
-    },
-    this.options.ppids);
 
-    // clean slate
-    this.reset(newFlag);
-    this.cleanSlate();
 
-    this.options.factory= new sobjs.EntityFactory(this.engine);
-    this.initPlayers();
-    this.options.selQ = [];
-    this.options.netQ = [];
-    this.options.msgQ = [];
+    });
 
-    /*
-    this.engine.addSystem(new sobjs.GameSupervisor(popts),
-                          prrs.PreUpdate);
 
-    this.engine.addSystem(new sobjs.SelectionSystem(popts),
-                          prrs.Movement);
 
-    this.engine.addSystem(new sobjs.NetworkSystem(popts),
-                          prrs.Movement);
+    return {
 
-    this.engine.addSystem(new sobjs.TurnBaseSystem(popts),
-                          prrs.TurnBase);
+      'GameArena' : {
 
-    this.engine.addSystem(new sobjs.ResolutionSystem(popts),
-                          prrs.Resolve);
+        create: function(options) {
+          var scene = new scenes.XSceneFactory([
+            huds.BackLayer,
+            GameLayer,
+            huds.HUDLayer
+          ]).create(options);
 
-    this.engine.addSystem(new sobjs.RenderSystem(popts),
-                          prrs.Render);
-*/
-    R.forEach(function(z) {
-      this.engine.addSystem(new (z[0])(this.options), z[1]);
-    }.bind(this),
-    [[sobjs.GameSupervisor, prrs.PreUpdate],
-     [sobjs.SelectionSystem, prrs.Movement],
-     [sobjs.NetworkSystem, prrs.Movement],
-     [sobjs.TurnBaseSystem, prrs.TurnBase],
-     [sobjs.ResolutionSystem, prrs.Resolve],
-     [sobjs.RenderSystem, prrs.Render]]);
+          if (scene) {
+            scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
+              mmenus.XMenuLayer.onShowMenu();
+            });
+            scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
+              sh.main.replay();
+            });
+            scene.ebus.on('/game/hud/timer/show',function(t,msg) {
+              sh.main.getHUD().showTimer();
+            });
+            scene.ebus.on('/game/hud/timer/hide',function(t,msg) {
+              sh.main.getHUD().killTimer();
+            });
+            scene.ebus.on('/game/hud/score/update',function(t,msg) {
+              sh.main.getHUD().updateScore(msg.color, msg.score);
+            });
+            scene.ebus.on('/game/hud/end',function(t,msg) {
+              sh.main.getHUD().endGame();
+            });
+            scene.ebus.on('/game/hud/update',function(t,msg) {
+              sh.main.getHUD().update(msg.running, msg.pnum);
+            });
+            scene.ebus.on('/game/player/timer/expired',function(t,msg) {
+              sh.main.playTimeExpired(msg);
+            });
+          }
+          return scene;
+        }
+      }
 
-    if (this.options.wsock) {
-      this.options.wsock.unsubscribeAll();
-      this.options.wsock.subscribeAll(this.onevent,this);
-    }
-
-    this.getHUD().regoPlayers(csts.P1_COLOR, p1ids,
-                              csts.P2_COLOR, p2ids);
-  },
-
-  onNewGame: function(mode) {
-    //sh.sfxPlay('start_game');
-    this.setGameMode(mode);
-    this.play(true);
-  },
-
-  reset: function(newFlag) {
-    var h= this.getHUD();
-    if (newFlag) {
-      h.resetAsNew();
-    } else {
-      h.reset();
-    }
-    this.removeAllItems();
-  },
-
-  onclicked: function(mx,my) {
-
-    if (this.options.running &&
-        this.options.selQ.length === 0) {
-      sjs.loggr.debug("selection made at pos = " + mx + "," + my);
-      this.options.selQ.push({ x: mx, y: my, cell: -1 });
-    }
-  },
-
-  updateHUD: function() {
-    var h= this.getHUD();
-
-    if (this.options.running) {
-      h.drawStatus(this.actor);
-    } else {
-      h.drawResult(this.lastWinner);
-    }
-  },
-
-  playTimeExpired: function(msg) {
-    this.options.msgQ.push("forfeit");
-  },
-
-  getHUD: function() {
-    var rc= this.ptScene.getLayers();
-    return rc['HUD'];
-  },
-
-  rtti: function() { return 'GameLayer'; },
-
-  setGameMode: function(mode) {
-    var h= this.getHUD();
-    this._super(mode);
-    if (h) {
-      h.setGameMode(mode);
-    }
-  },
-
-  initPlayers: function() {
-    var p2cat, p1cat,
-    p2, p1;
-
-    switch (this.options.mode) {
-      case sh.ONLINE_GAME:
-        p2cat = csts.NETP;
-        p1cat = csts.NETP;
-      break;
-      case sh.P1_GAME:
-        p1cat= csts.HUMAN;
-        p2cat= csts.BOT;
-      break;
-      case sh.P2_GAME:
-        p2cat= csts.HUMAN;
-        p1cat= csts.HUMAN;
-      break;
-    }
-    p1= new cobjs.Player(p1cat, csts.CV_X, 1, csts.P1_COLOR);
-    p2= new cobjs.Player(p2cat, csts.CV_O, 2, csts.P2_COLOR);
-    this.options.players = [null,p1,p2];
-    this.options.colors={};
-    this.options.colors[csts.P1_COLOR] = p1;
-    this.options.colors[csts.P2_COLOR] = p2;
-  },
-
-  onevent: function(topic, evt) {
-    //sjs.loggr.debug(evt);
-    switch (evt.type) {
-      case evts.NETWORK_MSG:
-        this.onNetworkEvent(evt);
-      break;
-      case evts.SESSION_MSG:
-        this.onSessionEvent(evt);
-      break;
-    }
-  },
-
-  onNetworkEvent: function(evt) {
-    var h= this.getHUD();
-    switch (evt.code) {
-      case evts.C_RESTART:
-        sjs.loggr.debug("restarting a new game...");
-        h.killTimer();
-        this.play(false);
-      break;
-      case evts.C_STOP:
-        sjs.loggr.debug("game will stop");
-        h.killTimer();
-        this.onStop(evt);
-      break;
-      default:
-        //TODO: fix this hack
-        this.onSessionEvent(evt);
-      break;
-    }
-  },
-
-  onSessionEvent: function(evt) {
-    this.options.netQ.push(evt);
-    /*
-    if (_.isNumber(evt.source.pnum) &&
-        _.isObject(evt.source.cmd) &&
-        _.isNumber(evt.source.cmd.cell)) {
-      sjs.loggr.debug("action from server " + JSON.stringify(cmd));
-      this.options.netQ.push(evt);
-    }
-    switch (evt.code) {
-      case evts.C_POKE_MOVE:
-      case evts.C_POKE_WAIT:
-      break;
-    }
-
-*/
-  }
-
+    };
 
 });
-
-
-
-return {
-
-  'GameArena' : {
-
-    create: function(options) {
-      var scene = new scenes.XSceneFactory([
-        huds.BackLayer,
-        GameLayer,
-        huds.HUDLayer
-      ]).create(options);
-
-      if (scene) {
-        scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
-          mmenus.XMenuLayer.onShowMenu();
-        });
-        scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
-          sh.main.replay();
-        });
-        scene.ebus.on('/game/hud/timer/show',function(t,msg) {
-          sh.main.getHUD().showTimer();
-        });
-        scene.ebus.on('/game/hud/timer/hide',function(t,msg) {
-          sh.main.getHUD().killTimer();
-        });
-        scene.ebus.on('/game/hud/score/update',function(t,msg) {
-          sh.main.getHUD().updateScore(msg.color, msg.score);
-        });
-        scene.ebus.on('/game/hud/end',function(t,msg) {
-          sh.main.getHUD().endGame();
-        });
-        scene.ebus.on('/game/hud/update',function(t,msg) {
-          sh.main.getHUD().update(msg.running, msg.pnum);
-        });
-        scene.ebus.on('/game/player/timer/expired',function(t,msg) {
-          sh.main.playTimeExpired(msg);
-        });
-      }
-      return scene;
-    }
-  }
-
-};
-
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// export
-if (typeof module !== 'undefined' && module.exports) {}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
-
-  gDefine("zotohlab/p/arena",
-
-          ['cherimoia/skarojs',
-           'zotohlab/asterix',
-           'zotohlab/asx/xcfg',
-           'zotohlab/asx/ccsx',
-           'zotohlab/asx/xlayers',
-           'zotohlab/asx/xscenes',
-           'zotohlab/asx/xmmenus',
-           'zotohlab/asx/odin',
-           'zotohlab/p/hud',
-           'zotohlab/p/components',
-           'zotohlab/p/sysobjs'],
-
-          moduleFactory);
-
-} else {
-}
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

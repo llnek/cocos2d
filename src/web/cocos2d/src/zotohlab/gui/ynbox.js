@@ -9,95 +9,83 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(sjs, sh, xcfg, ccsx, layers, scenes) {
-var csts= xcfg.csts,
-undef;
+define("zotohlab/asx/ynbox", ['cherimoia/skarojs',
+                             'zotohlab/asterix',
+                             'zotohlab/asx/xcfg',
+                             'zotohlab/asx/ccsx',
+                             'zotohlab/asx/xlayers',
+                             'zotohlab/asx/xscenes'],
+  function (sjs, sh, xcfg, ccsx, layers, scenes) { "use strict";
 
-//////////////////////////////////////////////////////////////////////////////
-//
-var BGLayer = layers.XLayer.extend({
+    var csts= xcfg.csts,
+    undef;
 
-  pkInit: function() {
-    var map = cc.TMXTiledMap.create(sh.getTilesPath('gui.blank'));
-    this.addItem(map);
-    return this._super();
-  }
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    var BGLayer = layers.XLayer.extend({
+
+      pkInit: function() {
+        var map = cc.TMXTiledMap.create(sh.getTilesPath('gui.blank'));
+        this.addItem(map);
+        return this._super();
+      }
+
+    });
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    var UILayer =  layers.XLayer.extend({
+
+      pkInit: function() {
+        var qn= new cc.LabelBMFont(sh.l10n('%quit?'),
+                                   sh.getFontPath('font.TinyBoxBB')),
+        cw= ccsx.center(),
+        wz= ccsx.screen(),
+        t1, t2,
+        menu;
+
+        qn.setPosition(cw.x, wz.height * 0.75);
+        qn.setScale(18/72);
+        qn.setOpacity(0.9*255);
+        this.addItem(qn);
+
+        var s2 = R.map.idx(function() {
+          a[n]= new cc.Sprite(sh.getImagePath('gui.mmenu.back'));
+        }, [null,null,null]),
+        s1= R.map.idx(function() {
+          a[n]= new cc.Sprite(sh.getImagePath('gui.mmenu.ok'));
+        }, [null,null,null]);
+
+        t2 = new cc.MenuItemSprite(s2[0], s2[1], s2[2], function() {
+          this.options.onBack();
+        }, this);
+        t1 = new cc.MenuItemSprite(s1[0], s1[1], s1[2], function() {
+          this.options.yes();
+        }, this);
+
+        menu= new cc.Menu(t1,t2);
+        menu.alignItemsHorizontallyWithPadding(10);
+        menu.setPosition(wz.width - csts.TILE - csts.S_OFF - (s2[0].getContentSize().width + s1[0].getContentSize().width + 10) * 0.5,
+          csts.TILE + csts.S_OFF + s2[0].getContentSize().height * 0.5);
+        this.addItem(menu);
+
+        return this._super();
+      }
+
+    });
+
+
+    return {
+
+      'YesNo' : {
+        create: function(options) {
+          return new scenes.XSceneFactory( [ BGLayer, UILayer ]).create(options);
+        }
+      }
+
+    };
 
 });
-
-//////////////////////////////////////////////////////////////////////////////
-//
-var UILayer =  layers.XLayer.extend({
-
-  pkInit: function() {
-    var qn= new cc.LabelBMFont(sh.l10n('%quit?'),
-                               sh.getFontPath('font.TinyBoxBB')),
-    cw= ccsx.center(),
-    wz= ccsx.screen(),
-    s1, s2, t1, t2, menu;
-
-    qn.setPosition(cw.x, wz.height * 0.75);
-    qn.setScale(18/72);
-    qn.setOpacity(0.9*255);
-    this.addItem(qn);
-
-    s2= new cc.Sprite(sh.getImagePath('gui.mmenu.back'));
-    s1= new cc.Sprite(sh.getImagePath('gui.mmenu.ok'));
-    t2 = new cc.MenuItemSprite();
-    t2.initWithNormalSprite(s2, null, null, function() {
-      this.options.onBack();
-    }, this);
-    t1 = new cc.MenuItemSprite();
-    t1.initWithNormalSprite(s1, null, null, function() {
-      this.options.yes();
-    }, this);
-
-    menu= new cc.Menu(t1,t2);
-    menu.alignItemsHorizontallyWithPadding(10);
-    menu.setPosition(wz.width - csts.TILE - csts.S_OFF - (s2.getContentSize().width + s1.getContentSize().width + 10) * 0.5,
-      csts.TILE + csts.S_OFF + s2.getContentSize().height * 0.5);
-    this.addItem(menu);
-
-    return this._super();
-  }
-
-});
-
-
-return {
-  'YesNo' : {
-    create: function(options) {
-      return new scenes.XSceneFactory( [ BGLayer, UILayer ]).create(options);
-    }
-  }
-};
-
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// export
-if (typeof module !== 'undefined' && module.exports) {}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
-
-  gDefine("zotohlab/asx/ynbox",
-
-          ['cherimoia/skarojs',
-           'zotohlab/asterix',
-           'zotohlab/asx/xcfg',
-           'zotohlab/asx/ccsx',
-           'zotohlab/asx/xlayers',
-           'zotohlab/asx/xscenes'],
-
-          moduleFactory);
-
-} else {
-}
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

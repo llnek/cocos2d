@@ -9,258 +9,245 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(sjs, Mustache, l10n) {
+define("zotohlab/asterix", ['cherimoia/skarojs',
+                           'mustache',
+                           'eligrey/l10njs'],
 
-var undef, asterix = {
+  function (sjs, Mustache, l10n) { "use strict";
 
-  l10nInit: function(table) {
-    //String.defaultLocale="en-US";
-    String.toLocaleString(table || this.xcfg.l10nTable);
-    String.defaultLocale= this.lang;
-    sjs.loggr.info("Loaded l10n strings.  locale = " + String.locale);
-  },
+    var undef, asterix = {
 
-  l10n: function(s,pms) {
-    var t= s.toLocaleString();
-    return sjs.isObject(pms) ? Mustache.render(t,pms) : t;
-  },
+      l10nInit: function(table) {
+        //String.defaultLocale="en-US";
+        String.toLocaleString(table || this.xcfg.l10nTable);
+        String.defaultLocale= this.lang;
+        sjs.loggr.info("Loaded l10n strings.  locale = " + String.locale);
+      },
 
-  lang: cc.sys.language || 'en',
+      l10n: function(s,pms) {
+        var t= s.toLocaleString();
+        return sjs.isObject(pms) ? Mustache.render(t,pms) : t;
+      },
 
-  // map of main classes
-  protos: {},
-  // object pools
-  pools: {},
+      lang: cc.sys.language || 'en',
 
-  ONLINE_GAME: 3,
-  P2_GAME: 2,
-  P1_GAME: 1,
+      // map of main classes
+      protos: {},
+      // object pools
+      pools: {},
 
-  // game application config
-  xcfg: undef,
-  // main game scene
-  main: undef,
+      ONLINE_GAME: 3,
+      P2_GAME: 2,
+      P1_GAME: 1,
 
-  fireEvent: function(topic, msg) {
-    var r= cc.director.getRunningScene();
-    if (r) {
-      r.ebus.fire(topic,msg || {});
+      // game application config
+      xcfg: undef,
+      // main game scene
+      main: undef,
+
+      fireEvent: function(topic, msg) {
+        var r= cc.director.getRunningScene();
+        if (r) {
+          r.ebus.fire(topic,msg || {});
+        }
+      },
+
+      // tests if 2 rectangles intersect.
+      isIntersect: function(a1,a2) {
+        return ! (a1.left > a2.right ||
+                  a2.left > a1.right ||
+                  a1.top < a2.bottom ||
+                  a2.top < a1.bottom);
+      },
+
+      outOfBound: function(a,B) {
+        return a.right > B.right    ||
+               a.bottom < B.bottom  ||
+               a.left < B.left      ||
+               a.top > B.top;
+      },
+
+      calcXY: function(angle,hypot) {
+      // quadrants =  4 | 1
+      //             --------
+      //              3 | 2
+        var theta, q, x, y;
+        if (angle >= 0 && angle <= 90) {
+          theta = this.degToRad(90 - angle);
+          x = Math.cos(theta);
+          y = Math.sin(theta);
+          q=1;
+        }
+        else
+        if (angle >= 90 && angle <= 180 ) {
+          theta = this.degToRad(angle - 90);
+          x = Math.cos(theta);
+          y =  - Math.sin(theta);
+          q=2;
+        }
+        else
+        if (angle >= 180 && angle <= 270) {
+          theta = this.degToRad(270 - angle);
+          x = - Math.cos(theta);
+          y = - Math.sin(theta);
+          q=3;
+        }
+        else
+        if (angle >= 270 && angle <= 360) {
+          theta= this.degToRad(angle - 270);
+          x = - Math.cos(theta);
+          y = Math.sin(theta);
+          q=4;
+        }
+        else {
+        }
+
+        return [ x * hypot, y * hypot, q ];
+      },
+
+      normalizeDeg: function(deg) {
+        return (deg > 360) ? deg % 360 : (deg < 0) ? 360 + deg % 360 : deg;
+      },
+
+      hh: function(r) {
+        return r.height * 0.5;
+      },
+
+      hw: function(r) {
+        return r.width * 0.5;
+      },
+
+      radToDeg: function(rad) {
+        return 180 * rad / Math.PI;
+      },
+
+      degToRad: function(deg) {
+        return deg * Math.PI / 180;
+      },
+
+      getImagePath: function(key) {
+        return this.fixUrl(this.xcfg.assets.images[key]);
+      },
+
+      getPListPath: function(key) {
+        return this.fixUrl(this.xcfg.assets.atlases[key]) + '.plist';
+      },
+
+      getAtlasPath: function(key) {
+        return this.fixUrl(this.xcfg.assets.atlases[key]) + '.png';
+      },
+
+      getSfxPath: function(key) {
+        return [this.fixUrl(this.xcfg.assets.sounds[key]),
+                '.',
+                this.xcfg.game.sfx].join('');
+      },
+
+      getSpritePath: function(key) {
+        return this.fixUrl(this.xcfg.assets.sprites[key](0));
+      },
+
+      getTilesPath: function(key) {
+        return this.fixUrl(this.xcfg.assets.tiles[key]);
+      },
+
+      getFontPath: function(key) {
+        var obj= this.xcfg.assets.fonts[key];
+        return [this.fixUrl(obj[0]), '/' , obj[2]].join('');
+      },
+
+      setGameSize: function(sz) {
+        this.xcfg.game.size = sjs.isString(sz) ? this.xcfg.devices[sz] : sjs.isObject(sz) ? sz : undef;
+      },
+
+      setDeviceSizes: function (obj) {
+        if (sjs.isObject(obj)) { this.xcfg.devices= obj; }
+      },
+
+      toggleSfx: function(override) {
+        this.xcfg.sound.open = sjs.echt(override) ? override : !this.xcfg.sound.open;
+        if (!cc.audioEngine._soundSupported) {
+          this.xcfg.sound.open=false;
+        }
+      },
+
+      sfxPlay: function(key) {
+        if (this.xcfg.sound.open) {
+          cc.audioEngine.playEffect(this.getSfxPath(key),false);
+        }
+      },
+
+      sfxInit: function() {
+        if (cc.audioEngine._soundSupported) {
+          cc.audioEngine.setMusicVolume(this.xcfg.sound.volume);
+          this.xcfg.sound.open= true;
+        }
+      },
+
+      fixUrl: function(url) { return this.sanitizeUrl(url); },
+
+      sanitizeUrl: function(url) {
+        if (cc.sys.isNative) {
+          return this.sanitizeUrlForDevice(url);
+        } else {
+          return this.sanitizeUrlForWeb(url);
+        }
+      },
+
+      sanitizeUrlForDevice: function(url) {
+        sjs.loggr.debug('About to sanitize url for jsb: ' + url);
+        //ensure we tell mustache not to escape html
+        url = url || '';
+        if (url.match(/^res/)) {
+          //url = 'res' + url.slice(3);
+        }
+        else
+        if (url.match(/^game/)) {
+          url = 'src' + url.slice(4);
+        }
+        return Mustache.render( url, {
+          'border-tiles' : this.xcfg.game.borderTiles,
+          'lang' : this.lang,
+          'color' : this.xcfg.color,
+          'appid' :  this.xcfg.appid
+        });
+      },
+
+      sanitizeUrlForWeb: function(url) {
+        sjs.loggr.debug('About to sanitize url for web: ' + url);
+        //ensure we tell mustache not to escape html
+        url = url || '';
+        if (url.match(/^game/)) {
+          url = '{{{gamesource-ref}}}/' + url;
+        }
+        else
+        if (url.match(/^res/)) {
+          url = '{{{media-ref}}}/' + url;
+        }
+        return Mustache.render( url, {
+          'border-tiles' : this.xcfg.game.borderTiles,
+          'gamesource-ref' : '/public/ig/lib',
+          'media-ref' : '/public/ig',
+          'lang' : this.lang,
+          'color' : this.xcfg.color,
+          'appid' :  this.xcfg.appid
+        });
+      }
+
+    };
+
+    // monkey patch logger to use cocos2d's log functions.
+    if (!!cc) {
+      sjs.logger= cc;
+      sjs.loggr= cc;
+      sjs.loggr.info = cc.log;
+      sjs.loggr.debug = cc.log;
+      sjs.loggr.info('Monkey patched skarojs#loggr to cc.log');
     }
-  },
 
-  // tests if 2 rectangles intersect.
-  isIntersect: function(a1,a2) {
-    return ! (a1.left > a2.right ||
-              a2.left > a1.right ||
-              a1.top < a2.bottom ||
-              a2.top < a1.bottom);
-  },
+    return asterix;
 
-  outOfBound: function(a,B) {
-    return a.right > B.right    ||
-           a.bottom < B.bottom  ||
-           a.left < B.left      ||
-           a.top > B.top;
-  },
-
-  calcXY: function(angle,hypot) {
-  // quadrants =  4 | 1
-  //             --------
-  //              3 | 2
-    var theta, q, x, y;
-    if (angle >= 0 && angle <= 90) {
-      theta = this.degToRad(90 - angle);
-      x = Math.cos(theta);
-      y = Math.sin(theta);
-      q=1;
-    }
-    else
-    if (angle >= 90 && angle <= 180 ) {
-      theta = this.degToRad(angle - 90);
-      x = Math.cos(theta);
-      y =  - Math.sin(theta);
-      q=2;
-    }
-    else
-    if (angle >= 180 && angle <= 270) {
-      theta = this.degToRad(270 - angle);
-      x = - Math.cos(theta);
-      y = - Math.sin(theta);
-      q=3;
-    }
-    else
-    if (angle >= 270 && angle <= 360) {
-      theta= this.degToRad(angle - 270);
-      x = - Math.cos(theta);
-      y = Math.sin(theta);
-      q=4;
-    }
-    else {
-    }
-
-    return [ x * hypot, y * hypot, q ];
-  },
-
-  normalizeDeg: function(deg) {
-    return (deg > 360) ? deg % 360 : (deg < 0) ? 360 + deg % 360 : deg;
-  },
-
-  hh: function(r) {
-    return r.height * 0.5;
-  },
-
-  hw: function(r) {
-    return r.width * 0.5;
-  },
-
-  radToDeg: function(rad) {
-    return 180 * rad / Math.PI;
-  },
-
-  degToRad: function(deg) {
-    return deg * Math.PI / 180;
-  },
-
-  getImagePath: function(key) {
-    return this.fixUrl(this.xcfg.assets.images[key]);
-  },
-
-  getPListPath: function(key) {
-    return this.fixUrl(this.xcfg.assets.atlases[key]) + '.plist';
-  },
-
-  getAtlasPath: function(key) {
-    return this.fixUrl(this.xcfg.assets.atlases[key]) + '.png';
-  },
-
-  getSfxPath: function(key) {
-    return [this.fixUrl(this.xcfg.assets.sounds[key]),
-            '.',
-            this.xcfg.game.sfx].join('');
-  },
-
-  getSpritePath: function(key) {
-    return this.fixUrl(this.xcfg.assets.sprites[key](0));
-  },
-
-  getTilesPath: function(key) {
-    return this.fixUrl(this.xcfg.assets.tiles[key]);
-  },
-
-  getFontPath: function(key) {
-    var obj= this.xcfg.assets.fonts[key];
-    return [this.fixUrl(obj[0]), '/' , obj[2]].join('');
-  },
-
-  setGameSize: function(sz) {
-    this.xcfg.game.size = sjs.isString(sz) ? this.xcfg.devices[sz] : sjs.isObject(sz) ? sz : undef;
-  },
-
-  setDeviceSizes: function (obj) {
-    if (sjs.isObject(obj)) { this.xcfg.devices= obj; }
-  },
-
-  toggleSfx: function(override) {
-    this.xcfg.sound.open = sjs.echt(override) ? override : !this.xcfg.sound.open;
-    if (!cc.audioEngine._soundSupported) {
-      this.xcfg.sound.open=false;
-    }
-  },
-
-  sfxPlay: function(key) {
-    if (this.xcfg.sound.open) {
-      cc.audioEngine.playEffect(this.getSfxPath(key),false);
-    }
-  },
-
-  sfxInit: function() {
-    if (cc.audioEngine._soundSupported) {
-      cc.audioEngine.setMusicVolume(this.xcfg.sound.volume);
-      this.xcfg.sound.open= true;
-    }
-  },
-
-  fixUrl: function(url) { return this.sanitizeUrl(url); },
-
-  sanitizeUrl: function(url) {
-    if (cc.sys.isNative) {
-      return this.sanitizeUrlForDevice(url);
-    } else {
-      return this.sanitizeUrlForWeb(url);
-    }
-  },
-
-  sanitizeUrlForDevice: function(url) {
-    sjs.loggr.debug('About to sanitize url for jsb: ' + url);
-    //ensure we tell mustache not to escape html
-    url = url || '';
-    if (url.match(/^res/)) {
-      //url = 'res' + url.slice(0,3);
-    }
-    else
-    if (url.match(/^game/)) {
-      url = 'src' + url.slice(0,4);
-    }
-    return Mustache.render( url, {
-      'border-tiles' : this.xcfg.game.borderTiles,
-      'lang' : this.lang,
-      'color' : this.xcfg.color,
-      'appid' :  this.xcfg.appid
-    });
-  },
-
-  sanitizeUrlForWeb: function(url) {
-    sjs.loggr.debug('About to sanitize url for web: ' + url);
-    //ensure we tell mustache not to escape html
-    url = url || '';
-    if (url.match(/^game/)) {
-      url = '{{{gamesource-ref}}}/' + url;
-    }
-    else
-    if (url.match(/^res/)) {
-      url = '{{{media-ref}}}/' + url;
-    }
-    return Mustache.render( url, {
-      'border-tiles' : this.xcfg.game.borderTiles,
-      'gamesource-ref' : '/public/ig/lib',
-      'media-ref' : '/public/ig',
-      'lang' : this.lang,
-      'color' : this.xcfg.color,
-      'appid' :  this.xcfg.appid
-    });
-  }
-
-};
-
-// monkey patch logger to use cocos2d's log functions.
-if (!!cc) {
-  sjs.logger= cc;
-  sjs.loggr= cc;
-  sjs.loggr.info = cc.log;
-  sjs.loggr.debug = cc.log;
-  sjs.loggr.info('Monkey patched skarojs#loggr to cc.log');
-}
-
-return asterix;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// export
-if (typeof module !== 'undefined' && module.exports) {}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
-
-  gDefine("zotohlab/asterix",
-          ['cherimoia/skarojs','mustache','eligrey/l10njs'],
-          moduleFactory);
-
-} else {
-}
-
-}).call(this);
+});
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

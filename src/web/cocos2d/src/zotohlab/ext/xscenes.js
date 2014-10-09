@@ -9,125 +9,104 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(sjs, EventBus, sh, xlayers) {
-var R = sjs.ramda,
-undef;
+define("zotohlab/asx/xscenes", ['cherimoia/skarojs',
+                               'cherimoia/ebus',
+                               'zotohlab/asterix',
+                               'zotohlab/asx/xlayers'],
+  function (sjs, EventBus, sh, xlayers) { "use strict";
 
-//////////////////////////////////////////////////////////////////////////////
-//
-var XScene = cc.Scene.extend({
+    var R = sjs.ramda,
+    undef;
 
-  //ebus: global.ZotohLab.MakeEventBus(),
-  //layers: {},
-  //lays: [],
-  //options : {},
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    var XScene = cc.Scene.extend({
 
-  getLayers: function() {
-    return this.layers;
-  },
+      //ebus: global.ZotohLab.MakeEventBus(),
+      //layers: {},
+      //lays: [],
+      //options : {},
 
-  init: function() {
-    return this._super() ? this.createLayers() : false;
-  },
+      getLayers: function() {
+        return this.layers;
+      },
 
-  createLayers: function() {
-    var a = this.lays || [],
-    glptr = undef,
-    ok,
-    rc,
-    obj;
-    // look for failures, hold off init'ing game layer, leave that as last
-    rc = R.some(function(proto) {
-      obj= new (proto)(this.options);
-      obj.setParent(this);
-      if ( obj instanceof xlayers.XGameLayer ) {
-        glptr = obj;
-        ok=true
-      } else {
-        ok= obj.init();
+      init: function() {
+        return this._super() ? this.createLayers() : false;
+      },
+
+      createLayers: function() {
+        var a = this.lays || [],
+        glptr = undef,
+        ok,
+        rc,
+        obj;
+        // look for failures, hold off init'ing game layer, leave that as last
+        rc = R.some(function(proto) {
+          obj= new (proto)(this.options);
+          obj.setParent(this);
+          if ( obj instanceof xlayers.XGameLayer ) {
+            glptr = obj;
+            ok=true
+          } else {
+            ok= obj.init();
+          }
+          if (! ok) { return true; } else {
+            this.layers[ obj.rtti() ] = obj;
+            this.addChild(obj);
+            return false;
+          }
+        }.bind(this), a);
+
+        if (a.length > 0 && rc===false ) {
+          return !!glptr ? glptr.init() : true;
+        } else {
+          return false;
+        }
+      },
+
+      ctor: function(ls, options) {
+        this.options = options || {};
+        this.lays= ls || [];
+        this.layers= {};
+        this.ebus= new EventBus();
+        this._super();
       }
-      if (! ok) { return true; } else {
-        this.layers[ obj.rtti() ] = obj;
-        this.addChild(obj);
-        return false;
+
+
+    });
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    var XSceneFactory = sjs.Class.xtends({
+
+      create: function(options) {
+        var itemKey= 'layers',
+        arr= this.layers,
+        cfg;
+        if (options && sjs.hasKey(options, itemKey ) &&
+            sjs.isArray(options.layers)) {
+          arr= options.layers;
+          cfg= R.omit(itemKey, options);
+        } else {
+          cfg= options || {};
+        }
+        var scene = new XScene(arr, cfg);
+        return scene.init() ? scene : null;
+      },
+
+      ctor: function(ls) {
+        this.layers= ls || [];
       }
-    }.bind(this), a);
 
-    if (a.length > 0 && rc===false ) {
-      return !!glptr ? glptr.init() : true;
-    } else {
-      return false;
-    }
-  },
+    });
 
-  ctor: function(ls, options) {
-    this.options = options || {};
-    this.lays= ls || [];
-    this.layers= {};
-    this.ebus= new EventBus();
-    this._super();
-  }
-
+    return {
+      XSceneFactory: XSceneFactory,
+      XScene: XScene
+    };
 
 });
-
-//////////////////////////////////////////////////////////////////////////////
-//
-var XSceneFactory = sjs.Class.xtends({
-
-  create: function(options) {
-    var itemKey= 'layers',
-    arr= this.layers,
-    cfg;
-    if (options && sjs.hasKey(options, itemKey ) &&
-        sjs.isArray(options.layers)) {
-      arr= options.layers;
-      cfg= R.omit(itemKey, options);
-    } else {
-      cfg= options || {};
-    }
-    var scene = new XScene(arr, cfg);
-    return scene.init() ? scene : null;
-  },
-
-  ctor: function(ls) {
-    this.layers= ls || [];
-  }
-
-});
-
-
-
-return {
-  XSceneFactory: XSceneFactory,
-  XScene: XScene
-};
-
-
-
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
-// export
-if (typeof module !== 'undefined' && module.exports) {}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
-
-  gDefine("zotohlab/asx/xscenes",
-          ['cherimoia/skarojs',
-           'cherimoia/ebus',
-           'zotohlab/asterix',
-           'zotohlab/asx/xlayers'],
-          moduleFactory);
-
-} else {
-}
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

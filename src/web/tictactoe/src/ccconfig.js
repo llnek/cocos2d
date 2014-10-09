@@ -73,7 +73,8 @@ document.ccConfig = {
     '/public/ig/lib/game/tictactoe/hud.js',
     '/public/ig/lib/game/tictactoe/game.js',
 
-    '/public/ig/lib/game/tictactoe/protos.js'
+    '/public/ig/lib/game/tictactoe/protos.js',
+    '/public/ig/lib/zotohlab/ext/xboot.js'
   ]
 
 };

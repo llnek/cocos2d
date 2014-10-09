@@ -9,184 +9,164 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(utils, gnodes, sjs, sh, xcfg, ccsx, Ash) {
-var csts= xcfg.csts,
-R = sjs.ramda,
-undef;
+define("zotohlab/p/s/resolution", ['zotohlab/p/s/utils',
+                                  'zotohlab/p/gnodes',
+                                  'cherimoia/skarojs',
+                                  'zotohlab/asterix',
+                                  'zotohlab/asx/xcfg',
+                                  'zotohlab/asx/ccsx',
+                                  'ash-js'],
 
-//////////////////////////////////////////////////////////////////////////////
-//
-var ResolutionSystem = Ash.System.extend({
+  function (utils, gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
 
-  constructor: function(options) {
-    this.state= options;
-  },
+    var csts= xcfg.csts,
+    R = sjs.ramda,
+    undef;
 
-  removeFromEngine: function(engine) {
-    this.nodeList=null;
-  },
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    var ResolutionSystem = Ash.System.extend({
 
-  addToEngine: function(engine) {
-    this.nodeList = engine.getNodeList(gnodes.BoardNode);
-  },
+      constructor: function(options) {
+        this.state= options;
+      },
 
-  update: function (dt) {
-    var node= this.nodeList.head;
-    if (this.state.running &&
-        !!node) {
-      this.process(node, dt);
-    }
-  },
+      removeFromEngine: function(engine) {
+        this.nodeList=null;
+      },
 
-  process: function(node, dt) {
-    var values= node.grid.values,
-    msg,
-    rc,
-    result;
+      addToEngine: function(engine) {
+        this.nodeList = engine.getNodeList(gnodes.BoardNode);
+      },
 
-    if (R.find(function(p) {
-        if (p) {
-          rc= this.checkWin(p,values);
-          if (rc) {
-            return result=[p, rc];
+      update: function (dt) {
+        var node= this.nodeList.head;
+        if (this.state.running &&
+            !!node) {
+          this.process(node, dt);
+        }
+      },
+
+      process: function(node, dt) {
+        var values= node.grid.values,
+        msg,
+        rc,
+        result;
+
+        if (R.find(function(p) {
+            if (p) {
+              rc= this.checkWin(p,values);
+              if (rc) {
+                return result=[p, rc];
+              }
+            }
+          }.bind(this), this.state.players)) {
+
+          this.doWin(node, result[0], result[1]);
+        }
+        else
+        if (this.checkDraw(values)) {
+          this.doDraw(node);
+        }
+        else
+        if (this.state.msgQ.length > 0) {
+          msg = this.state.msgQ.shift();
+          if ("forfeit" === msg) {
+            this.doForfeit(node);
           }
         }
-      }.bind(this), this.state.players)) {
-
-      this.doWin(node, result[0], result[1]);
-    }
-    else
-    if (this.checkDraw(values)) {
-      this.doDraw(node);
-    }
-    else
-    if (this.state.msgQ.length > 0) {
-      msg = this.state.msgQ.shift();
-      if ("forfeit" === msg) {
-        this.doForfeit(node);
-      }
-    }
-  },
-
-  doWin: function(node, winner, combo) {
-    sh.fireEvent('/game/hud/score/update',
-                 {color: winner.color,
-                  score: 1});
-    this.doDone(node, winner, combo);
-  },
-
-  doDraw: function(node) {
-    this.doDone(node, null, []);
-  },
-
-  doForfeit: function(node) {
-    var other = this.state.actor===1 ? 2 : this.state.actor===2 ? 1 : 0;
-    var tv = this.state.players[this.state.actor];
-    var win= this.state.players[other];
-    var cs = node.view.cells,
-    v2= -1,
-    layer= node.view.layer;
-
-    if (tv) {
-      v2 = tv.value;
-    }
-
-    sh.fireEvent('/game/hud/score/update',
-                 {color: win.color,
-                  score: 1});
-
-    //gray out the losing icons
-    R.forEach.idx(function(z, n) {
-      if (!!z && z[4] === v2) {
-        layer.removeItem(z[0]);
-        z[0] = utils.drawSymbol(node.view, z[1], z[2], z[3]+2);
-      }
-    }.bind(this), cs);
-
-    this.doDone(node, win, null);
-  },
-
-  // flip all other icons except for the winning ones.
-  showWinningIcons: function(view, combo) {
-    var layer= view.layer,
-    cs = view.cells;
-
-    if (combo===null) { return; }
-
-    R.forEach.idx(function(z, n) {
-      if (! R.contains(n, combo)) { if (z) {
-        layer.removeItem(z[0]);
-        z[0] = utils.drawSymbol(view, z[1], z[2], z[3]+2);
-      } }
-    }.bind(this), cs);
-  },
-
-  doDone: function(node, pobj, combo) {
-
-    this.showWinningIcons(node.view, combo);
-    sh.fireEvent('/game/hud/timer/hide');
-    sh.sfxPlay('game_end');
-    sh.fireEvent('/game/hud/end');
-
-    this.state.lastWinner = !!pobj ? pobj.pnum : null;
-    this.state.running=false;
-  },
-
-  checkDraw: function(values) {
-    return ! (csts.CV_Z === R.find(function(v) {
-      return (v === csts.CV_Z);
-    }, values));
-  },
-
-  checkWin: function(actor, game) {
-    //sjs.loggr.debug('checking win for ' + actor.color);
-    var combo, rc= R.some(function(r) {
-      combo=r;
-      return R.every(function(n) {
-        return actor.value === n;
       },
-      R.map(function(i) { return game[i]; }, r));
-    },
-    this.state.GOALSPACE);
 
-    return rc ? combo : null;
-  }
+      doWin: function(node, winner, combo) {
+        sh.fireEvent('/game/hud/score/update',
+                     {color: winner.color,
+                      score: 1});
+        this.doDone(node, winner, combo);
+      },
+
+      doDraw: function(node) {
+        this.doDone(node, null, []);
+      },
+
+      doForfeit: function(node) {
+        var other = this.state.actor===1 ? 2 : this.state.actor===2 ? 1 : 0;
+        var tv = this.state.players[this.state.actor];
+        var win= this.state.players[other];
+        var cs = node.view.cells,
+        v2= -1,
+        layer= node.view.layer;
+
+        if (tv) {
+          v2 = tv.value;
+        }
+
+        sh.fireEvent('/game/hud/score/update',
+                     {color: win.color,
+                      score: 1});
+
+        //gray out the losing icons
+        R.forEach.idx(function(z, n) {
+          if (!!z && z[4] === v2) {
+            layer.removeItem(z[0]);
+            z[0] = utils.drawSymbol(node.view, z[1], z[2], z[3]+2);
+          }
+        }.bind(this), cs);
+
+        this.doDone(node, win, null);
+      },
+
+      // flip all other icons except for the winning ones.
+      showWinningIcons: function(view, combo) {
+        var layer= view.layer,
+        cs = view.cells;
+
+        if (combo===null) { return; }
+
+        R.forEach.idx(function(z, n) {
+          if (! R.contains(n, combo)) { if (z) {
+            layer.removeItem(z[0]);
+            z[0] = utils.drawSymbol(view, z[1], z[2], z[3]+2);
+          } }
+        }.bind(this), cs);
+      },
+
+      doDone: function(node, pobj, combo) {
+
+        this.showWinningIcons(node.view, combo);
+        sh.fireEvent('/game/hud/timer/hide');
+        sh.sfxPlay('game_end');
+        sh.fireEvent('/game/hud/end');
+
+        this.state.lastWinner = !!pobj ? pobj.pnum : null;
+        this.state.running=false;
+      },
+
+      checkDraw: function(values) {
+        return ! (csts.CV_Z === R.find(function(v) {
+          return (v === csts.CV_Z);
+        }, values));
+      },
+
+      checkWin: function(actor, game) {
+        //sjs.loggr.debug('checking win for ' + actor.color);
+        var combo, rc= R.some(function(r) {
+          combo=r;
+          return R.every(function(n) {
+            return actor.value === n;
+          },
+          R.map(function(i) { return game[i]; }, r));
+        },
+        this.state.GOALSPACE);
+
+        return rc ? combo : null;
+      }
+
+    });
+
+    return ResolutionSystem;
 
 });
 
-return ResolutionSystem;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// export
-if (typeof module !== 'undefined' && module.exports) {}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
-
-  gDefine("zotohlab/p/s/resolution",
-
-          ['zotohlab/p/s/utils',
-           'zotohlab/p/gnodes',
-           'cherimoia/skarojs',
-           'zotohlab/asterix',
-           'zotohlab/asx/xcfg',
-           'zotohlab/asx/ccsx',
-           'ash-js'],
-
-          moduleFactory);
-
-} else {
-}
-
-}).call(this);
-
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
-
 

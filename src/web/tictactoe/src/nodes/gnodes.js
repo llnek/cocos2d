@@ -9,61 +9,43 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(cobjs, Ash) {
-var lib= {},
-undef;
+define("zotohlab/p/gnodes", ['zotohlab/p/components',
+                            'ash-js'],
 
-//////////////////////////////////////////////////////////////////////////////
-//
-lib.BoardNode = Ash.Node.create({
-  selection: cobjs.UISelection,
-  board: cobjs.Board,
-  robot: cobjs.SmartAlgo,
-  grid: cobjs.Grid,
-  view: cobjs.GridView
+  function (cobjs, Ash) { "use strict";
+
+    var lib= {},
+    undef;
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    lib.BoardNode = Ash.Node.create({
+      selection: cobjs.UISelection,
+      board: cobjs.Board,
+      robot: cobjs.SmartAlgo,
+      grid: cobjs.Grid,
+      view: cobjs.GridView
+    });
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    lib.GUINode = Ash.Node.create({
+      selection: cobjs.UISelection,
+      view: cobjs.GridView
+    });
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    lib.NetPlayNode = Ash.Node.create({
+      playcmd: cobjs.NetPlay,
+      grid: cobjs.Grid
+    });
+
+
+    return lib;
+
 });
 
-//////////////////////////////////////////////////////////////////////////////
-//
-lib.GUINode = Ash.Node.create({
-  selection: cobjs.UISelection,
-  view: cobjs.GridView
-});
-
-//////////////////////////////////////////////////////////////////////////////
-//
-lib.NetPlayNode = Ash.Node.create({
-  playcmd: cobjs.NetPlay,
-  grid: cobjs.Grid
-});
-
-
-
-
-
-return lib;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// export
-if (typeof module !== 'undefined' && module.exports) {}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
-
-  gDefine("zotohlab/p/gnodes",
-
-          ['zotohlab/p/components',
-           'ash-js'],
-
-          moduleFactory);
-
-} else {
-}
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

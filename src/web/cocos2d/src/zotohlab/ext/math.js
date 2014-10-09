@@ -9,90 +9,76 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(sjs) {
-var undef;
-//////////////////////////////////////////////////////////////////////////////
-//
-function radToDeg(rad) {
-  return 180 * rad / Math.PI;
-}
+define("zotohlab/asx/math", ['cherimoia/skarojs'],
+  function (sjs) { "use strict";
 
-function degToRad(deg) {
-  return deg * Math.PI / 180;
-}
+    var undef;
 
-//////////////////////////////////////////////////////////////////////////////
-//
-var Vector2 = sjs.Class.xtends({
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    function radToDeg(rad) {
+      return 180 * rad / Math.PI;
+    }
 
-  mult: function (n) {
-    var rc = new Vector2(0,0,this.x,this.y);
-    rc.x *= n;
-    rc.y *= n;
-    return rc;
-  },
+    function degToRad(deg) {
+      return deg * Math.PI / 180;
+    }
 
-  rotate: function(cx, cy, deg) {
-    var rad = degToRad(deg);
-    var a= [cx + (Math.cos(rad) * (this.x - cx) - Math.sin(rad) * (this.y - y0)),
-            cy + (Math.sin(rad) * (this.x - cx) + Math.cos(rad) * (this.y - y0)) ];
-    this.x= a[0];
-    this.y= a[1];
-  },
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    var Vector2 = sjs.Class.xtends({
 
-  length: function () {
-    return Math.sqrt(this.x*this.x + this.y*this.y);
-  },
+      mult: function (n) {
+        var rc = new Vector2(0,0,this.x,this.y);
+        rc.x *= n;
+        rc.y *= n;
+        return rc;
+      },
 
-  toString: function () {
-    return [ "[" , this.x , "," , this.y , "]" ].join('');
-  },
+      rotate: function(cx, cy, deg) {
+        var rad = degToRad(deg);
+        var a= [cx + (Math.cos(rad) * (this.x - cx) - Math.sin(rad) * (this.y - y0)),
+                cy + (Math.sin(rad) * (this.x - cx) + Math.cos(rad) * (this.y - y0)) ];
+        this.x= a[0];
+        this.y= a[1];
+      },
 
-  plus: function (v2) {
-    var rc = new Vector2(0,0,0,0);
-    rc.x = this.x + v2.x;
-    rc.y = this.y + v2.y;
-    return rc;
-  },
+      length: function () {
+        return Math.sqrt(this.x*this.x + this.y*this.y);
+      },
 
-  minus: function (v2) {
-    var rc = new Vector2(0,0,0,0);
-    rc.x = this.x - v2.x;
-    rc.y = this.y - v2.y;
-    return rc;
-  },
+      toString: function () {
+        return [ "[" , this.x , "," , this.y , "]" ].join('');
+      },
 
-  ctor: function (x1, y1, x2, y2) {
-    this.x = x2 - x1;
-    this.y = y2 - y1;
-  }
+      plus: function (v2) {
+        var rc = new Vector2(0,0,0,0);
+        rc.x = this.x + v2.x;
+        rc.y = this.y + v2.y;
+        return rc;
+      },
+
+      minus: function (v2) {
+        var rc = new Vector2(0,0,0,0);
+        rc.x = this.x - v2.x;
+        rc.y = this.y - v2.y;
+        return rc;
+      },
+
+      ctor: function (x1, y1, x2, y2) {
+        this.x = x2 - x1;
+        this.y = y2 - y1;
+      }
+
+    });
+
+
+
+    return {
+      Vector2: Vector2
+    };
 
 });
-
-
-
-return {
-  Vector2: Vector2
-};
-
-}
-
-
-//////////////////////////////////////////////////////////////////////////////
-// export
-if (typeof module !== 'undefined' && module.exports) {}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
-
-  gDefine("zotohlab/asx/math", ['cherimoia/skarojs'], moduleFactory);
-
-} else {
-}
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

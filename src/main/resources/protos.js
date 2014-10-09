@@ -9,56 +9,35 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(sjs, sh, xcfg,
-                       online,
-                       msgbox,
-                       ynbox,
-                       splash,
-                       mmenu,
-                       arena) {
+define("zotohlab/p/protodefs", ['cherimoia/skarojs',
+                               'zotohlab/asterix',
+                               'zotohlab/asx/xcfg',
+                               'zotohlab/asx/onlineplay',
+                               'zotohlab/asx/msgbox',
+                               'zotohlab/asx/ynbox',
+                               'zotohlab/p/splash',
+                               'zotohlab/p/mmenu',
+                               'zotohlab/p/arena'],
 
-  var ps= [online, splash, mmenu, msgbox, ynbox, arena],
-  R = sjs.ramda,
-  undef,
-  protos= sh.protos;
+  function (sjs, sh, xcfg, online,
+            msgbox, ynbox, splash, mmenu, arena) { "use strict";
 
-  R.forEach(function(obj) {
+    var ps= [online, splash, mmenu, msgbox, ynbox, arena],
+    R = sjs.ramda,
+    undef,
+    protos= sh.protos;
 
-    sjs.eachObj(function(v,k) {
-          protos[k] = v;
-    }, obj);
+    R.forEach(function(obj) {
 
-  }, ps);
+      sjs.eachObj(function(v,k) {
+            protos[k] = v;
+      }, obj);
 
-  return protos;
-}
+    }, ps);
 
-//////////////////////////////////////////////////////////////////////////////
-// export
-if (typeof module !== 'undefined' && module.exports) {}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
+    return protos;
 
-  gDefine("zotohlab/p/protodefs",
-
-          ['cherimoia/skarojs',
-           'zotohlab/asterix',
-           'zotohlab/asx/xcfg',
-           'zotohlab/asx/onlineplay',
-           'zotohlab/asx/msgbox',
-           'zotohlab/asx/ynbox',
-           'zotohlab/p/splash',
-           'zotohlab/p/mmenu',
-           'zotohlab/p/arena'],
-
-          moduleFactory);
-} else {
-}
-
-}).call(this);
+});
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

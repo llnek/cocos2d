@@ -9,146 +9,134 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(sjs, sh, xcfg, ccsx, layers) {
-var csts= xcfg.csts,
-undef;
+define("zotohlab/asx/xmmenus", ['cherimoia/skarojs',
+                               'zotohlab/asterix',
+                               'zotohlab/asx/xcfg',
+                               'zotohlab/asx/ccsx',
+                               'zotohlab/asx/xlayers'],
+  function (sjs, sh, xcfg, ccsx, layers) { "use strict";
 
-//////////////////////////////////////////////////////////////////////////////
-// Main menu.
-var XMenuBackLayer = layers.XLayer.extend({
+    var csts= xcfg.csts,
+    R = sjs.ramda,
+    undef;
 
-  pkInit: function() {
-    var title = new cc.LabelBMFont(sh.l10n('%mmenu'),
-                                   sh.getFontPath('font.JellyBelly')),
-    bgMenu = new cc.TMXTiledMap(sh.getTilesPath('gui.mmenu')),
-    wz = ccsx.screen(),
-    cw= ccsx.center();
+    //////////////////////////////////////////////////////////////////////////////
+    // Main menu.
+    var XMenuBackLayer = layers.XLayer.extend({
 
-    title.setPosition(cw.x, wz.height - csts.TILE * 8 / 2);
-    title.setOpacity(0.9*255);
-    title.setScale(0.6);
+      pkInit: function() {
+        var title = new cc.LabelBMFont(sh.l10n('%mmenu'),
+                                       sh.getFontPath('font.JellyBelly')),
+        bgMenu = new cc.TMXTiledMap(sh.getTilesPath('gui.mmenu')),
+        wz = ccsx.screen(),
+        cw= ccsx.center();
 
-    this.addItem(bgMenu);
-    this.addItem(title);
+        title.setPosition(cw.x, wz.height - csts.TILE * 8 / 2);
+        title.setOpacity(0.9*255);
+        title.setScale(0.6);
 
-    return this._super();
-  },
+        this.addItem(bgMenu);
+        this.addItem(title);
 
-  rtti: function() { return 'XMenuBackLayer'; }
+        return this._super();
+      },
 
-});
+      rtti: function() { return 'XMenuBackLayer'; }
 
-//////////////////////////////////////////////////////////////////////////////
-// Main menu.
-var XMenuLayer= layers.XLayer.extend({
+    });
 
-  doCtrlBtns: function() {
-    var audio = xcfg.assets.sprites['gui.audio'],
-    wz = ccsx.screen(),
-    cw = ccsx.center(),
-    menu, t2,t1,
-    w= audio[1],
-    h= audio[2],
-    p= sh.sanitizeUrl(audio[0]),
-    s1= new cc.Sprite(p, cc.rect(w,0,w,h)),
-    s2= new cc.Sprite(p, cc.rect(0,0,w,h));
+    //////////////////////////////////////////////////////////////////////////////
+    // Main menu.
+    var XMenuLayer= layers.XLayer.extend({
 
-    audio= new cc.MenuItemToggle(new cc.MenuItemSprite(s1),
-                        new cc.MenuItemSprite(s2),
-           function(sender) {
-            if (sender.getSelectedIndex() === 0) {
-              sh.toggleSfx(true);
-            } else {
-              sh.toggleSfx(false);
-            }
-           });
-    audio.setAnchorPoint(cc.p(0,0));
-    if (xcfg.sound.open) {
-      audio.setSelectedIndex(0);
-    } else {
-      audio.setSelectedIndex(1);
-    }
+      doCtrlBtns: function() {
+        var audio = xcfg.assets.sprites['gui.audio'],
+        wz = ccsx.screen(),
+        cw = ccsx.center(),
+        s1 = [null, null, null],
+        s2 = [null, null, null],
+        menu, t2,t1,
+        w= audio[1],
+        h= audio[2],
+        p= sh.sanitizeUrl(audio[0]);
 
-    menu= new cc.Menu(audio);
-    menu.setPosition(csts.TILE + csts.S_OFF,
-                     csts.TILE + csts.S_OFF);
-    this.addItem(menu);
+        s1[0]= new cc.Sprite(p, cc.rect(w,0,w,h));
+        s2[0]= new cc.Sprite(p, cc.rect(0,0,w,h));
 
-    //all these to make 2 buttons
-    s2= new cc.Sprite( sh.getImagePath('gui.mmenu.back'));
-    s1= new cc.Sprite( sh.getImagePath('gui.mmenu.quit'));
-    t2 = new cc.MenuItemSprite();
-    t1 = new cc.MenuItemSprite();
-    t2.initWithNormalSprite(s2, null, null, function() {
-      this.options.onBack();
-    },this);
-    t1.initWithNormalSprite(s1, null, null, function() {
-      this.pkQuit();
-    }, this);
-    menu= new cc.Menu(t1,t2);
-    menu.alignItemsHorizontallyWithPadding(10);
-    menu.setPosition(wz.width - csts.TILE - csts.S_OFF - (s2.getContentSize().width + s1.getContentSize().width + 10) * 0.5,
-      csts.TILE + csts.S_OFF + s2.getContentSize().height * 0.5);
-    this.addItem(menu);
-  },
+        audio= new cc.MenuItemToggle(new cc.MenuItemSprite(s1[0]),
+                            new cc.MenuItemSprite(s2[0]),
+               function(sender) {
+                if (sender.getSelectedIndex() === 0) {
+                  sh.toggleSfx(true);
+                } else {
+                  sh.toggleSfx(false);
+                }
+               });
+        audio.setAnchorPoint(cc.p(0,0));
+        if (xcfg.sound.open) {
+          audio.setSelectedIndex(0);
+        } else {
+          audio.setSelectedIndex(1);
+        }
 
-  rtti: function() { return 'XMenuLayer'; },
+        menu= new cc.Menu(audio);
+        menu.setPosition(csts.TILE + csts.S_OFF,
+                         csts.TILE + csts.S_OFF);
+        this.addItem(menu);
 
-  pkQuit: function() {
-    var ss= sh.protos['StartScreen'],
-    yn= sh.protos['YesNo'],
-    dir = cc.director;
+        //all these to make 2 buttons
+        R.map.idx(function(z, pos, lst) {
+          lst[pos]= new cc.Sprite( sh.getImagePath('gui.mmenu.back'));
+        }, s2);
+        R.map.idx(function(z, pos, lst) {
+          lst[pos]= new cc.Sprite( sh.getImagePath('gui.mmenu.quit'));
+        }, s1);
+        t2 = new cc.MenuItemSprite(s2[0], s2[1], s2[2], function() {
+          this.options.onBack();
+        },this);
+        t1 = new cc.MenuItemSprite(s1[0], s1[1], s1[2], function() {
+          this.pkQuit();
+        }, this);
+        menu= new cc.Menu(t1,t2);
+        menu.alignItemsHorizontallyWithPadding(10);
+        menu.setPosition(wz.width - csts.TILE - csts.S_OFF - (s2[0].getContentSize().width + s1[0].getContentSize().width + 10) * 0.5,
+          csts.TILE + csts.S_OFF + s2[0].getContentSize().height * 0.5);
+        this.addItem(menu);
+      },
 
-    dir.pushScene( yn.create({
-      onBack: function() { dir.popScene(); },
-      yes: function() {
-        sh.sfxPlay('game_quit');
-        dir.replaceRootScene( ss.create() );
+      rtti: function() { return 'XMenuLayer'; },
+
+      pkQuit: function() {
+        var ss= sh.protos['StartScreen'],
+        yn= sh.protos['YesNo'],
+        dir = cc.director;
+
+        dir.pushScene( yn.create({
+          onBack: function() { dir.popScene(); },
+          yes: function() {
+            sh.sfxPlay('game_quit');
+            dir.replaceRootScene( ss.create() );
+          }
+        }));
       }
-    }));
-  }
+
+    });
+
+    XMenuLayer.onShowMenu = function() {
+      var dir= cc.director;
+      dir.pushScene( sh.protos['MainMenu'].create({
+        onBack: function() {
+          dir.popScene();
+        }
+      }));
+    };
+
+    return {
+      XMenuBackLayer: XMenuBackLayer,
+      XMenuLayer: XMenuLayer
+    };
 
 });
-
-XMenuLayer.onShowMenu = function() {
-  var dir= cc.director;
-  dir.pushScene( sh.protos['MainMenu'].create({
-    onBack: function() {
-      dir.popScene();
-    }
-  }));
-};
-
-return {
-  XMenuBackLayer: XMenuBackLayer,
-  XMenuLayer: XMenuLayer
-};
-
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// export
-if (typeof module !== 'undefined' && module.exports) {}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
-
-  gDefine("zotohlab/asx/xmmenus",
-
-          ['cherimoia/skarojs',
-           'zotohlab/asterix',
-           'zotohlab/asx/xcfg',
-           'zotohlab/asx/ccsx',
-           'zotohlab/asx/xlayers'],
-
-          moduleFactory);
-
-} else {
-}
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

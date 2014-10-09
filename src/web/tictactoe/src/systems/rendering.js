@@ -9,106 +9,91 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(utils, gnodes, sjs, sh, xcfg, ccsx, Ash) {
-var R = sjs.ramda,
-csts= xcfg.csts,
-undef;
+define("zotohlab/p/s/rendering", ['zotohlab/p/s/utils',
+                                 'zotohlab/p/gnodes',
+                                 'cherimoia/skarojs',
+                                 'zotohlab/asterix',
+                                 'zotohlab/asx/xcfg',
+                                 'zotohlab/asx/ccsx',
+                                 'ash-js'],
 
-//////////////////////////////////////////////////////////////////////////////
-//
-var RenderSystem = Ash.System.extend({
+  function (utils, gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
 
-  constructor: function(options) {
-    this.state= options;
-  },
+    var R = sjs.ramda,
+    csts= xcfg.csts,
+    undef;
 
-  removeFromEngine: function(engine) {
-    this.nodeList=null;
-  },
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    var RenderSystem = Ash.System.extend({
 
-  addToEngine: function(engine) {
-    this.nodeList = engine.getNodeList(gnodes.BoardNode);
-  },
+      constructor: function(options) {
+        this.state= options;
+      },
 
-  update: function (dt) {
-    var node = this.nodeList.head;
-    if (!!node) {
-      this.process(node);
-    }
-  },
+      removeFromEngine: function(engine) {
+        this.nodeList=null;
+      },
 
-  process: function(node) {
-    var values= node.grid.values,
-    view= node.view,
-    cs= view.cells,
-    c, offset;
+      addToEngine: function(engine) {
+        this.nodeList = engine.getNodeList(gnodes.BoardNode);
+      },
 
-    R.forEach.idx(function(v, pos) {
+      update: function (dt) {
+        var node = this.nodeList.head;
+        if (!!node) {
+          this.process(node);
+        }
+      },
 
-      if (!sjs.echt(cs[pos]) &&
-          v !== csts.CV_Z) {
-        c= this.xrefCell(pos, view.gridMap);
-        offset= v === csts.CV_X ? 0 : 1;
-        if (!!c) {
-          cs[pos] = [utils.drawSymbol(view, c[0], c[1], offset),
-                     c[0], c[1], offset, v];
+      process: function(node) {
+        var values= node.grid.values,
+        view= node.view,
+        cs= view.cells,
+        c, offset;
+
+        R.forEach.idx(function(v, pos) {
+
+          if (!sjs.echt(cs[pos]) &&
+              v !== csts.CV_Z) {
+            c= this.xrefCell(pos, view.gridMap);
+            offset= v === csts.CV_X ? 0 : 1;
+            if (!!c) {
+              cs[pos] = [utils.drawSymbol(view, c[0], c[1], offset),
+                         c[0], c[1], offset, v];
+            }
+          }
+
+        }.bind(this), values);
+
+      },
+
+      xrefCell: function(pos, map) {
+        // given a cell, find the screen co-ordinates for that cell.
+        //var img2= sh.main.cache.getImage('gamelevel1.sprites.markers');
+        //var delta= 0;//72;//img2.height;
+        var gg, x, y,
+        delta=0;
+
+        if (pos >= 0 && pos < csts.CELLS) {
+          gg = map[pos];
+          x = gg[0] + (gg[2] - gg[0]  - delta) / 2;
+          y = gg[1] - (gg[1] - gg[3] - delta ) / 2;
+          // the cell's center
+          return [x, y];
+        } else {
+          return null;
         }
       }
 
-    }.bind(this), values);
 
-  },
+    });
 
-  xrefCell: function(pos, map) {
-    // given a cell, find the screen co-ordinates for that cell.
-    //var img2= sh.main.cache.getImage('gamelevel1.sprites.markers');
-    //var delta= 0;//72;//img2.height;
-    var gg, x, y,
-    delta=0;
 
-    if (pos >= 0 && pos < csts.CELLS) {
-      gg = map[pos];
-      x = gg[0] + (gg[2] - gg[0]  - delta) / 2;
-      y = gg[1] - (gg[1] - gg[3] - delta ) / 2;
-      // the cell's center
-      return [x, y];
-    } else {
-      return null;
-    }
-  }
-
+    return RenderSystem;
 
 });
 
-
-return RenderSystem;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// export
-if (typeof module !== 'undefined' && module.exports) {}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
-
-  gDefine("zotohlab/p/s/rendering",
-
-          ['zotohlab/p/s/utils',
-           'zotohlab/p/gnodes',
-           'cherimoia/skarojs',
-           'zotohlab/asterix',
-           'zotohlab/asx/xcfg',
-           'zotohlab/asx/ccsx',
-           'ash-js'],
-
-          moduleFactory);
-
-} else {
-}
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

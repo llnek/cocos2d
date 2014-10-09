@@ -9,141 +9,126 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(sjs, sh, Cookies) {
-var R = sjs.ramda,
-undef;
+define("zotohlab/asx/highscores", ['cherimoia/skarojs',
+                                  'zotohlab/asterix',
+                                  'Cookies'],
+  function (sjs, sh, Cookies) { "use strict";
+    var R = sjs.ramda,
+    undef;
 
-////////////////////////////////////////////////////////////////////
-//
-function mkScore(n,v) {
-  return {
-    value: Number(v.trim()),
-    name: n.trim()
-  };
-}
-
-////////////////////////////////////////////////////////////////////
-//
-var HighScores= sjs.Class.xtends({
-
-  read: function() {
-    var s = Cookies.get(this.KEY) || '',
-    a,
-    ts = sjs.safeSplit(s, '|');
-    //this.reset();
-    this.scores= R.reduce(function(memo,z) {
-      a = sjs.safeSplit(z, ':');
-      if (a.length === 2) {
-        memo.push(mkScore(a[0], a[1]));
-      }
-      return memo;
-    }.bind(this), [], ts);
-  },
-
-  reset: function() {
-    this.scores=[];
-  },
-
-  write: function() {
-    var rc= R.map(function(z) {
-      return z.name + ':' + n.value;
-    }, this.scores);
-    Cookies.set(this.KEY, rc.join('|'), this.duration);
-  },
-
-  hasSlots: function() {
-    return this.scores.length < this.size;
-  },
-
-  canAdd: function(score) {
-    if (this.hasSlots()) {
-      return true;
-    } else {
-      return R.some(function(z) {
-        return z.value < score;
-      }, this.scores);
+    ////////////////////////////////////////////////////////////////////
+    //
+    function mkScore(n,v) {
+      return {
+        value: Number(v.trim()),
+        name: n.trim()
+      };
     }
-  },
 
-  insert: function(name, score) {
-    var s= mkScore(name || '', score),
-    i,
-    len= this.scores.length;
+    ////////////////////////////////////////////////////////////////////
+    //
+    var HighScores= sjs.Class.xtends({
 
-    if (! this.hasSlots()) {
-      for (i = len - 1; i >= 0; --i) {
-        if (this.scores[i].value < score) {
-          this.scores.splice(i,1);
-          break;
+      read: function() {
+        var s = Cookies.get(this.KEY) || '',
+        a,
+        ts = sjs.safeSplit(s, '|');
+        //this.reset();
+        this.scores= R.reduce(function(memo,z) {
+          a = sjs.safeSplit(z, ':');
+          if (a.length === 2) {
+            memo.push(mkScore(a[0], a[1]));
+          }
+          return memo;
+        }.bind(this), [], ts);
+      },
+
+      reset: function() {
+        this.scores=[];
+      },
+
+      write: function() {
+        var rc= R.map(function(z) {
+          return z.name + ':' + n.value;
+        }, this.scores);
+        Cookies.set(this.KEY, rc.join('|'), this.duration);
+      },
+
+      hasSlots: function() {
+        return this.scores.length < this.size;
+      },
+
+      canAdd: function(score) {
+        if (this.hasSlots()) {
+          return true;
+        } else {
+          return R.some(function(z) {
+            return z.value < score;
+          }, this.scores);
         }
-    }};
+      },
 
-    if (this.hasSlots()) {
-      this.scores.push( s);
-      this.sort();
-      this.write();
-    }
-  },
+      insert: function(name, score) {
+        var s= mkScore(name || '', score),
+        i,
+        len= this.scores.length;
 
-  getScores: function() {
-    return this.scores;
-  },
+        if (! this.hasSlots()) {
+          for (i = len - 1; i >= 0; --i) {
+            if (this.scores[i].value < score) {
+              this.scores.splice(i,1);
+              break;
+            }
+        }};
 
-  sort: function() {
-    var len = this.scores.length,
-    tmp = this.scores,
-    i,
-    last,
-    ptr;
-
-    this.reset();
-
-    while (tmp.length > 0) {
-      last= undef;
-      ptr= -1;
-      for (i=0; i < tmp.length; ++i) {
-        if (!last || (tmp[i].value > last.value)) {
-          last = tmp[i];
-          ptr = i;
+        if (this.hasSlots()) {
+          this.scores.push( s);
+          this.sort();
+          this.write();
         }
-      }
-      if (ptr !== -1) {
-        tmp.splice(ptr,1);
-        this.scores.push(last);
-      }
-    }
-  },
+      },
 
-  ctor: function(key, size, duration) {
-    this.duration= duration || 60*60*24*1000;
-    this.size = size || 10;
-    this.scores = [];
-    this.KEY= key;
-  }
+      getScores: function() {
+        return this.scores;
+      },
 
+      sort: function() {
+        var len = this.scores.length,
+        tmp = this.scores,
+        i,
+        last,
+        ptr;
+
+        this.reset();
+
+        while (tmp.length > 0) {
+          last= undef;
+          ptr= -1;
+          for (i=0; i < tmp.length; ++i) {
+            if (!last || (tmp[i].value > last.value)) {
+              last = tmp[i];
+              ptr = i;
+            }
+          }
+          if (ptr !== -1) {
+            tmp.splice(ptr,1);
+            this.scores.push(last);
+          }
+        }
+      },
+
+      ctor: function(key, size, duration) {
+        this.duration= duration || 60*60*24*1000;
+        this.size = size || 10;
+        this.scores = [];
+        this.KEY= key;
+      }
+
+    });
+
+
+    return HighScores;
 });
-
-
-return HighScores;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// export
-
-if (typeof module !== 'undefined' && module.exports) {}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
-
-  gDefine("zotohlab/asx/highscores",
-          ['cherimoia/skarojs', 'zotohlab/asterix','Cookies'],
-          moduleFactory);
-} else {
-}
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

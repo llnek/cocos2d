@@ -9,53 +9,35 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(sjs, sh, xcfg, ccsx) {
-var csts= xcfg.csts,
-undef;
+define("zotohlab/p/s/utils", ['cherimoia/skarojs',
+                             'zotohlab/asterix',
+                             'zotohlab/asx/xcfg',
+                             'zotohlab/asx/ccsx'],
 
-//////////////////////////////////////////////////////////////////////////////
-//
-return {
+  function (sjs, sh, xcfg, ccsx) { "use strict";
 
-  //pass in gridview
-  drawSymbol: function(view, x,y,offset) {
-    var s1= new cc.Sprite(view.url,
-                          cc.rect(offset * view.width,
-                                  0,
-                                  view.width, view.height));
-    s1.setAnchorPoint(ccsx.AnchorCenter);
-    s1.setPosition(x,y);
-    view.layer.addItem(s1);
-    return s1;
-  }
+    var csts= xcfg.csts,
+    undef;
 
-};
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    return {
 
+      //pass in gridview
+      drawSymbol: function(view, x,y,offset) {
+        var s1= new cc.Sprite(view.url,
+                              cc.rect(offset * view.width,
+                                      0,
+                                      view.width, view.height));
+        s1.setAnchorPoint(ccsx.AnchorCenter);
+        s1.setPosition(x,y);
+        view.layer.addItem(s1);
+        return s1;
+      }
 
-}
+    };
 
-//////////////////////////////////////////////////////////////////////////////
-// export
-if (typeof module !== 'undefined' && module.exports) {}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
-
-  gDefine("zotohlab/p/s/utils",
-
-          ['cherimoia/skarojs',
-           'zotohlab/asterix',
-           'zotohlab/asx/xcfg',
-           'zotohlab/asx/ccsx'],
-
-          moduleFactory);
-
-} else {
-}
-
-}).call(this);
+});
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

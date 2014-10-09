@@ -9,41 +9,23 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(sjs) {
-var undef;
+define("zotohlab/p/s/priorities",
+       ['cherimoia/skarojs'],
 
-//////////////////////////////////////////////////////////////////////////////
-//
-return {
+  function (sjs) { "use strict";
 
-  PreUpdate: 1,
-  Movement: 2,
-  TurnBase: 3,
-  Render: 4,
-  Resolve: 5
+    return {
 
-};
+      PreUpdate: 1,
+      Movement: 2,
+      TurnBase: 3,
+      Render: 4,
+      Resolve: 5
 
+    };
 
-}
+});
 
-//////////////////////////////////////////////////////////////////////////////
-// export
-if (typeof module !== 'undefined' && module.exports) {}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
-
-  gDefine("zotohlab/p/s/priorities",
-          ['cherimoia/skarojs'],
-          moduleFactory);
-
-} else {
-}
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

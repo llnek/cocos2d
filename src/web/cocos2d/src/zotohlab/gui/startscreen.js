@@ -9,60 +9,43 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(sjs, sh, xcfg, ccsx, layers) {
-var csts= xcfg.csts,
-undef;
+define("zotohlab/asx/xsplash", ['cherimoia/skarojs',
+                               'zotohlab/asterix',
+                               'zotohlab/asx/xcfg',
+                               'zotohlab/asx/ccsx',
+                               'zotohlab/asx/xlayers'],
+  function (sjs, sh, xcfg, ccsx, layers) { "use strict";
 
-//////////////////////////////////////////////////////////////////////////////
-// splash screen for the game - make it look nice please.
-//////////////////////////////////////////////////////////////////////////////
-var XSplashLayer = layers.XLayer.extend({
+    var csts= xcfg.csts,
+    undef;
 
-  pkInit: function() {
-    var imgUrl= sh.getImagePath('splash.splash'),
-    wz = ccsx.screen(),
-    cw = ccsx.center();
+    //////////////////////////////////////////////////////////////////////////////
+    // splash screen for the game - make it look nice please.
+    //////////////////////////////////////////////////////////////////////////////
+    var XSplashLayer = layers.XLayer.extend({
 
-    if (imgUrl) {
-      var s= new cc.Sprite(imgUrl);
-      s.setPosition(cw);
-      this.addItem(s);
-    }
+      pkInit: function() {
+        var imgUrl= sh.getImagePath('splash.splash'),
+        wz = ccsx.screen(),
+        cw = ccsx.center();
 
-    return this._super();
-  },
+        if (imgUrl) {
+          var s= new cc.Sprite(imgUrl);
+          s.setPosition(cw);
+          this.addItem(s);
+        }
 
-  rtti: function() { return "SplashLayer"; }
+        return this._super();
+      },
+
+      rtti: function() { return "SplashLayer"; }
+
+    });
+
+
+    return XSplashLayer;
 
 });
-
-
-return XSplashLayer;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// export
-if (typeof module !== 'undefined' && module.exports) {}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
-
-  gDefine("zotohlab/asx/xsplash",
-
-          ['cherimoia/skarojs',
-           'zotohlab/asterix',
-           'zotohlab/asx/xcfg',
-           'zotohlab/asx/ccsx',
-           'zotohlab/asx/xlayers'],
-
-          moduleFactory);
-
-} else {
-}
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

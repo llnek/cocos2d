@@ -9,208 +9,198 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function () { "use strict"; var global=this, gDefine=global.define;
-//////////////////////////////////////////////////////////////////////////////
-//
-function moduleFactory(sjs, sh, xcfg, ccsx, layers, scenes, odin) {
-var events= odin.Events,
-csts= xcfg.csts,
-undef;
+define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
+                                  'zotohlab/asterix',
+                                  'zotohlab/asx/xcfg',
+                                  'zotohlab/asx/ccsx',
+                                  'zotohlab/asx/xlayers',
+                                  'zotohlab/asx/xscenes',
+                                  'zotohlab/asx/odin'],
+  function (sjs, sh, xcfg, ccsx, layers, scenes, odin) { "use strict";
 
-//////////////////////////////////////////////////////////////////////////////
-//
-var BGLayer = layers.XLayer.extend({
+    var events= odin.Events,
+    csts= xcfg.csts,
+    R = sjs.ramda,
+    undef;
 
-  pkInit: function() {
-    var map = cc.TMXTiledMap.create(sh.getTilesPath('gui.blank'));
-    this.addItem(map);
-    return this._super();
-  }
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    var BGLayer = layers.XLayer.extend({
+
+      pkInit: function() {
+        var map = cc.TMXTiledMap.create(sh.getTilesPath('gui.blank'));
+        this.addItem(map);
+        return this._super();
+      }
+
+    });
+
+    //////////////////////////////////////////////////////////////////////////////
+    //
+    var UILayer =  layers.XLayer.extend({
+
+      onOnlineReq: function(uid,pwd) {
+        var wsurl = sjs.fmtUrl(sjs.getWebSockProtocol(), "/network/odin/websocket"),
+        //gid = $('body').attr('data-gameid') || '',
+        wsurl,
+        user = (uid || '').trim(),
+        pswd = (pwd || '').trim();
+
+        if (user.length === 0 ||
+            pswd.length === 0) { return; }
+
+        this.wss= odin.newSession({ game: xcfg.appKey, user: user, passwd: pswd });
+        this.wss.subscribeAll(this.onOdinEvent, this);
+        this.wss.connect(wsurl);
+      },
+
+      onOdinEvent: function(topic,evt) {
+        //sjs.loggr.debug(evt);
+        switch (evt.type) {
+          case events.NETWORK_MSG: this.onNetworkEvent(evt); break;
+          case events.SESSION_MSG: this.onSessionEvent(evt); break;
+        }
+      },
+
+      onNetworkEvent: function(evt) {
+        switch (evt.code) {
+          case events.C_PLAYER_JOINED:
+            //TODO
+            sjs.loggr.debug("another player joined room. " + evt.source.puid);
+          break;
+          case events.C_START:
+            sjs.loggr.info("play room is ready, game can start.");
+            this.wss.unsubscribeAll();
+            // flip to game scene
+            this.options.yes(this.wss, this.player, evt.source || {});
+          break;
+        }
+      },
+
+      onSessionEvent: function(evt) {
+        switch (evt.code) {
+          case events.C_PLAYREQ_OK:
+            sjs.loggr.debug("player " +
+                            evt.source.pnum +
+                            ": request to play game was successful.");
+            this.player=evt.source.pnum;
+            this.showWaitOthers();
+          break;
+        }
+      },
+
+      onCancelPlay: function() {
+        try {
+          this.wss.close();
+        } catch (e) {}
+        this.wss=null;
+        this.options.onBack();
+      },
+
+      showWaitOthers: function() {
+        this.removeAllItems();
+        var qn= new cc.LabelBMFont(sh.l10n('%waitothers'),
+                                   sh.getFontPath('font.TinyBoxBB')),
+        cw= ccsx.center(),
+        wz= ccsx.screen(),
+        t2, menu,
+        s2 = R.map.idx(function(z,n,a) {
+          a[n]= new cc.Sprite(sh.getImagePath('gui.mmenu.back'));
+        }, [null,null,null]);
+
+        qn.setPosition(cw.x, wz.height * 0.90);
+        qn.setScale(18/72);
+        qn.setOpacity(0.9*255);
+        this.addItem(qn);
+
+        t2= new cc.MenuItemSprite(s2[0], s2[1], s2[2], function() {
+          this.onCancelPlay();
+        }, this);
+
+        menu= cc.Menu.create(t2);
+        menu.alignItemsHorizontallyWithPadding(10);
+        menu.setPosition(wz.width - csts.TILE - csts.S_OFF - s2[0].getContentSize().width * 0.5,
+          csts.TILE + csts.S_OFF + s2[0].getContentSize().height * 0.5);
+        this.addItem(menu);
+      },
+
+      pkInit: function() {
+        var qn= new cc.LabelBMFont(sh.l10n('%signinplay'),
+                                   sh.getFontPath('font.TinyBoxBB')),
+        cw= ccsx.center(),
+        wz= ccsx.screen(),
+        uid,pwd,
+        menu;
+
+        qn.setPosition(cw.x, wz.height * 0.90);
+        qn.setScale(18/72);
+        qn.setOpacity(0.9*255);
+        this.addItem(qn);
+
+        var url = sh.sanitizeUrl(xcfg.assets.images['gui.edit.orange']),
+        s9= new cc.Scale9Sprite(url),
+        wcc= cc.color(255,255,255),
+        bxz= cc.size(100,36);
+
+        uid = new cc.EditBox(bxz,s9);
+        uid.x = cw.x
+        uid.y = cw.y + bxz.height * 0.5 + 2; // + 2 for a gap
+        uid.setPlaceHolder(sh.l10n('%userid'));
+        uid.setPlaceholderFontColor(wcc);
+        uid.setFontColor(wcc);
+        uid.setMaxLength(12);
+        uid.setDelegate(this);
+        this.addItem(uid);
+
+        s9= new cc.Scale9Sprite(url);
+        pwd= new cc.EditBox(bxz,s9);
+        pwd.y = cw.y - bxz.height * 0.5 - 2; // + 2 for a gap
+        pwd.x= cw.x;
+        pwd.setInputFlag(cc.EDITBOX_INPUT_FLAG_PASSWORD);
+        pwd.setPlaceHolder(sh.l10n('%passwd'));
+        pwd.setPlaceholderFontColor(wcc);
+        pwd.setFontColor(wcc);
+        pwd.setMaxLength(12);
+        pwd.setDelegate(this);
+        this.addItem(pwd);
+
+        var s2= R.map.idx(function(z,n,a) {
+          a[n] = new cc.Sprite(sh.getImagePath('gui.mmenu.back'));
+        },[null,null,null]),
+        s1= R.map.idx(function(z,n,a) {
+          a[n] = new cc.Sprite(sh.getImagePath('gui.mmenu.ok'));
+        },[null,null,null]),
+        t2,t1;
+
+        t2 = new cc.MenuItemSprite(s2[0], s2[1], s2[2], function() {
+          this.options.onBack();
+        }, this);
+        t1 = new cc.MenuItemSprite(s1[0], s1[1], s1[2], function() {
+          this.onOnlineReq(uid.getString(),pwd.getString());
+        }, this);
+
+        menu= new cc.Menu(t1,t2);
+        menu.alignItemsHorizontallyWithPadding(10);
+        menu.setPosition(wz.width - csts.TILE - csts.S_OFF - (s2[0].getContentSize().width + s1[0].getContentSize().width + 10) * 0.5,
+          csts.TILE + csts.S_OFF + s2[0].getContentSize().height * 0.5);
+        this.addItem(menu);
+
+        return this._super();
+      }
+
+    });
+
+    return {
+
+      'OnlinePlay' : {
+        create: function(options) {
+          return new scenes.XSceneFactory([ BGLayer, UILayer ]).create(options);
+        }
+      }
+
+    };
 
 });
-
-//////////////////////////////////////////////////////////////////////////////
-//
-var UILayer =  layers.XLayer.extend({
-
-  onOnlineReq: function(uid,pwd) {
-    var wsurl = sjs.fmtUrl(sjs.getWebSockProtocol(), "/network/odin/websocket"),
-    //gid = $('body').attr('data-gameid') || '',
-    wsurl,
-    user = (uid || '').trim(),
-    pswd = (pwd || '').trim();
-
-    if (user.length === 0 ||
-        pswd.length === 0) { return; }
-
-    this.wss= odin.newSession({ game: xcfg.appKey, user: user, passwd: pswd });
-    this.wss.subscribeAll(this.onOdinEvent, this);
-    this.wss.connect(wsurl);
-  },
-
-  onOdinEvent: function(topic,evt) {
-    //sjs.loggr.debug(evt);
-    switch (evt.type) {
-      case events.NETWORK_MSG: this.onNetworkEvent(evt); break;
-      case events.SESSION_MSG: this.onSessionEvent(evt); break;
-    }
-  },
-
-  onNetworkEvent: function(evt) {
-    switch (evt.code) {
-      case events.C_PLAYER_JOINED:
-        //TODO
-        sjs.loggr.debug("another player joined room. " + evt.source.puid);
-      break;
-      case events.C_START:
-        sjs.loggr.info("play room is ready, game can start.");
-        this.wss.unsubscribeAll();
-        // flip to game scene
-        this.options.yes(this.wss, this.player, evt.source || {});
-      break;
-    }
-  },
-
-  onSessionEvent: function(evt) {
-    switch (evt.code) {
-      case events.C_PLAYREQ_OK:
-        sjs.loggr.debug("player " +
-                        evt.source.pnum +
-                        ": request to play game was successful.");
-        this.player=evt.source.pnum;
-        this.showWaitOthers();
-      break;
-    }
-  },
-
-  onCancelPlay: function() {
-    try {
-      this.wss.close();
-    } catch (e) {}
-    this.wss=null;
-    this.options.onBack();
-  },
-
-  showWaitOthers: function() {
-    this.removeAllItems();
-    var qn= new cc.LabelBMFont(sh.l10n('%waitothers'),
-                               sh.getFontPath('font.TinyBoxBB')),
-    cw= ccsx.center(),
-    wz= ccsx.screen(),
-    s1, s2, t1, t2, menu;
-
-    qn.setPosition(cw.x, wz.height * 0.90);
-    qn.setScale(18/72);
-    qn.setOpacity(0.9*255);
-    this.addItem(qn);
-
-    s2= new cc.Sprite(sh.getImagePath('gui.mmenu.back'));
-    t2= new cc.MenuItemSprite();
-    t2.initWithNormalSprite(s2, null, null, function() {
-      this.onCancelPlay();
-    }, this);
-
-    menu= cc.Menu.create(t2);
-    menu.alignItemsHorizontallyWithPadding(10);
-    menu.setPosition(wz.width - csts.TILE - csts.S_OFF - s2.getContentSize().width * 0.5,
-      csts.TILE + csts.S_OFF + s2.getContentSize().height * 0.5);
-    this.addItem(menu);
-  },
-
-  pkInit: function() {
-    var qn= new cc.LabelBMFont(sh.l10n('%signinplay'),
-                               sh.getFontPath('font.TinyBoxBB')),
-    cw= ccsx.center(),
-    wz= ccsx.screen(),
-    uid,pwd,
-    s1, s2, t1, t2, menu;
-
-    qn.setPosition(cw.x, wz.height * 0.90);
-    qn.setScale(18/72);
-    qn.setOpacity(0.9*255);
-    this.addItem(qn);
-
-    var url = sh.sanitizeUrl(xcfg.assets.images['gui.edit.orange']),
-    s9= new cc.Scale9Sprite(url),
-    wcc= cc.color(255,255,255),
-    bxz= cc.size(100,36);
-
-    uid = new cc.EditBox(bxz,s9);
-    uid.x = cw.x
-    uid.y = cw.y + bxz.height * 0.5 + 2; // + 2 for a gap
-    uid.setPlaceHolder(sh.l10n('%userid'));
-    uid.setPlaceholderFontColor(wcc);
-    uid.setFontColor(wcc);
-    uid.setMaxLength(12);
-    uid.setDelegate(this);
-    this.addItem(uid);
-
-    s9= new cc.Scale9Sprite(url);
-    pwd= new cc.EditBox(bxz,s9);
-    pwd.y = cw.y - bxz.height * 0.5 - 2; // + 2 for a gap
-    pwd.x= cw.x;
-    pwd.setInputFlag(cc.EDITBOX_INPUT_FLAG_PASSWORD);
-    pwd.setPlaceHolder(sh.l10n('%passwd'));
-    pwd.setPlaceholderFontColor(wcc);
-    pwd.setFontColor(wcc);
-    pwd.setMaxLength(12);
-    pwd.setDelegate(this);
-    this.addItem(pwd);
-
-    s2= new cc.Sprite(sh.getImagePath('gui.mmenu.back'));
-    s1= new cc.Sprite(sh.getImagePath('gui.mmenu.ok'));
-    t2 = new cc.MenuItemSprite();
-    t2.initWithNormalSprite(s2, null, null, function() {
-      this.options.onBack();
-    }, this);
-    t1 = new cc.MenuItemSprite();
-    t1.initWithNormalSprite(s1, null, null, function() {
-      this.onOnlineReq(uid.getString(),pwd.getString());
-    }, this);
-
-    menu= new cc.Menu(t1,t2);
-    menu.alignItemsHorizontallyWithPadding(10);
-    menu.setPosition(wz.width - csts.TILE - csts.S_OFF - (s2.getContentSize().width + s1.getContentSize().width + 10) * 0.5,
-      csts.TILE + csts.S_OFF + s2.getContentSize().height * 0.5);
-    this.addItem(menu);
-
-    return this._super();
-  }
-
-});
-
-return {
-  'OnlinePlay' : {
-    create: function(options) {
-      return new scenes.XSceneFactory([ BGLayer, UILayer ]).create(options);
-    }
-  }
-};
-
-}
-
-//////////////////////////////////////////////////////////////////////////////
-// export
-if (typeof module !== 'undefined' && module.exports) {}
-else
-if (typeof gDefine === 'function' && gDefine.amd) {
-
-  gDefine("zotohlab/asx/onlineplay",
-
-          ['cherimoia/skarojs',
-           'zotohlab/asterix',
-           'zotohlab/asx/xcfg',
-           'zotohlab/asx/ccsx',
-           'zotohlab/asx/xlayers',
-           'zotohlab/asx/xscenes',
-           'zotohlab/asx/odin'],
-
-          moduleFactory);
-
-} else {
-}
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
