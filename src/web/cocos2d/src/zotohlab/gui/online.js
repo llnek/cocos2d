@@ -165,11 +165,11 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
         this.addItem(pwd);
 
         var s2= R.map.idx(function(z,n,a) {
-          a[n] = new cc.Sprite(sh.getImagePath('gui.mmenu.back'));
-        },[null,null,null]),
+          return new cc.Sprite(sh.getImagePath('gui.mmenu.back'));
+        },[0,1,2]),
         s1= R.map.idx(function(z,n,a) {
-          a[n] = new cc.Sprite(sh.getImagePath('gui.mmenu.ok'));
-        },[null,null,null]),
+          return new cc.Sprite(sh.getImagePath('gui.mmenu.ok'));
+        },[0,1,2]),
         t2,t1;
 
         t2 = new cc.MenuItemSprite(s2[0], s2[1], s2[2], function() {
