@@ -9,13 +9,13 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/s/supervisor", ["zotohlab/p/cobjs",
-                                  'cherimoia/skarojs',
-                                  'zotohlab/asterix',
-                                  'zotohlab/asx/xcfg',
-                                  'zotohlab/asx/ccsx',
-                                  'ash-js'],
-  function () { "use strict";
+define("zotohlab/p/s/utils", ["zotohlab/p/components",
+                             'cherimoia/skarojs',
+                             'zotohlab/asterix',
+                             'zotohlab/asx/xcfg',
+                             'zotohlab/asx/ccsx',
+                             'ash-js'],
+  function (cobjs, sjs, sh, xcfg, ccsx, Ash) { "use strict";
 
     var csts = xcfg.csts,
     R = sjs.ramda,

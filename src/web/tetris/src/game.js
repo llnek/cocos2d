@@ -25,6 +25,7 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
            huds, cobjs, sobjs) { "use strict";
 
     var csts = xcfg.csts,
+    R = sjs.ramda,
     undef,
     GameLayer = layers.XGameLayer.extend({
 
@@ -39,8 +40,6 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
         } else {
           this.getHUD().reset();
         }
-        this.pauseToClear=false;
-        this.op.onspace: sh.throttle(this.onSpace.bind(this), 100);
       },
 
       ctor: function (options) {
@@ -65,24 +64,24 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
       },
 
       play: function(newFlag) {
+        var pss= sobjs.Priorities;
+
         this.reset(newFlag);
         this.cleanSlate();
-        this.options.factory = new bks.EntityFactory(this.engine);
-        this.engine.addSystem(new bks.GameSupervisor(this.options),
-                              bks.Priorities.PreUpdate);
-        this.engine.addSystem(new bks.RowClearance(this.options),
-                              bks.Priorities.Clear);
-        this.engine.addSystem(new bks.ShapeGenerator(this.options),
-                              bks.Priorities.Generate);
-        this.engine.addSystem(new bks.MovementSystem(this.options),
-                              bks.Priorities.Move);
-        this.engine.addSystem(new bks.MotionCtrlSystem(this.options),
-                              bks.Priorities.Motion);
-        this.engine.addSystem(new bks.RenderSystem(this.options),
-                              bks.Priorities.Render);
-        this.engine.addSystem(new bks.ResolutionSystem(this.options),
-                              bks.Priorities.Resolve);
+
+        this.options.factory = new sobjs.EntityFactory(this.engine);
         this.options.running=true;
+
+        R.forEach(function(z) {
+          this.engine.addSystem(new (z[0])(this.options), z[1]);
+        }.bind(this),
+        [[sobjs.Supervisor, pss.PreUpdate],
+         [sobjs.RowClearance, pss.Clear],
+         [sobjs.Generator, pss.Generate],
+         [sobjs.Movements, pss.Move],
+         [sobjs.MotionControl, pss.Motion],
+         [sobjs.Rendering, pss.Render],
+         [sobjs.Resolution, pss.Resolve]]);
       },
 
       endGame: function() {
@@ -98,30 +97,33 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
 
     });
 
+    return {
+      'GameArena' : {
 
-asterix.Bricks.Factory = {
-  create: function(options) {
-    var fac = new asterix.XSceneFactory([ bks.BackLayer, GameLayer, bks.HUDLayer ]),
-    scene= fac.create(options);
-    if (!scene) { return null; }
+        create: function(options) {
+          var fac = new scenes.XSceneFactory([ huds.BackLayer, GameLayer, huds.HUDLayer ]),
+          scene= fac.create(options);
+          if (!scene) { return null; }
 
-    scene.ebus.on('/game/hud/end', function(topic, msg) {
-      sh.main.endGame();
-    });
-    scene.ebus.on('/game/hud/score/update', function(topic, msg) {
-      sh.main.getHUD().updateScore(msg.score);
-    });
+          scene.ebus.on('/game/hud/end', function(topic, msg) {
+            sh.main.endGame();
+          });
+          scene.ebus.on('/game/hud/score/update', function(topic, msg) {
+            sh.main.getHUD().updateScore(msg.score);
+          });
 
-    scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
-      asterix.XMenuLayer.onShowMenu();
-    });
-    scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
-      sh.main.replay();
-    });
+          scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
+            mmenus.XMenuLayer.onShowMenu();
+          });
+          scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
+            sh.main.replay();
+          });
 
-    return scene;
-  }
-}
+          return scene;
+        }
+      }
+
+    };
 
 });
 

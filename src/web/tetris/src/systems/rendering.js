@@ -11,9 +11,12 @@
 
 define("zotohlab/p/s/rendering", ["zotohlab/p/s/utils",
                                  'zotohlab/p/gnodes',
+                                 'cherimoia/skarojs',
+                                 'zotohlab/asterix',
+                                 'zotohlab/asx/xcfg',
                                  'ash-js'],
 
-  function (utils, gnodes, Ash) { "use strict";
+  function (utils, gnodes, sjs, sh, xcfg, Ash) { "use strict";
 
     var csts = xcfg.csts,
     undef,

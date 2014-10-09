@@ -18,6 +18,7 @@ define("zotohlab/asx/ynbox", ['cherimoia/skarojs',
   function (sjs, sh, xcfg, ccsx, layers, scenes) { "use strict";
 
     var csts= xcfg.csts,
+    R= sjs.ramda,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////

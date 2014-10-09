@@ -9,15 +9,16 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/s/movement", ["zotohlab/p/s/utils",
-                                "zotohlab/p/cobjs",
+define("zotohlab/p/s/movement", ["zotohlab/p/components",
+                                "zotohlab/p/gnodes",
+                                'zotohlab/p/s/utils',
                                 'cherimoia/skarojs',
                                 'zotohlab/asterix',
                                 'zotohlab/asx/xcfg',
                                 'zotohlab/asx/ccsx',
                                 'ash-js'],
 
-  function (utils, cobjs, sh, ast, xcfg, ccsx, Ash) { "use strict";
+  function (cobjs, gnodes, utils, sjs, sh, xcfg, ccsx, Ash) { "use strict";
 
     var csts = xcfg.csts,
     undef,
@@ -32,7 +33,7 @@ define("zotohlab/p/s/movement", ["zotohlab/p/s/utils",
       },
 
       addToEngine: function(engine) {
-        this.nodeList = engine.getNodeList(cobjs.ArenaNode);
+        this.nodeList = engine.getNodeList(gnodes.ArenaNode);
       },
 
       update: function(dt) {
@@ -76,7 +77,6 @@ define("zotohlab/p/s/movement", ["zotohlab/p/s/utils",
         }
       }
 
-
     });
 
     return MovementSystem;
@@ -84,8 +84,4 @@ define("zotohlab/p/s/movement", ["zotohlab/p/s/utils",
 
 ///////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
-
 

@@ -20,19 +20,19 @@ define("zotohlab/p/gnodes", ['zotohlab/p/components',
     //////////////////////////////////////////////////////////////////////////////
     //
     bks.ArenaNode = Ash.Node.create({
-      collision: cobjs.TileGrid,
-      blocks: cobjs.BlockGrid,
-      motion: cobjs.Motion,
-      pauser: cobjs.Pauser,
-      dropper: cobjs.Dropper,
-      shell: cobjs.ShapeShell,
-      flines: cobjs.FilledLines
+
+      collision   : cobjs.TileGrid,
+      blocks      : cobjs.BlockGrid,
+      motion      : cobjs.Motion,
+      pauser      : cobjs.Pauser,
+      dropper     : cobjs.Dropper,
+      shell       : cobjs.ShapeShell,
+      flines      : cobjs.FilledLines
+
     });
 
     return bks;
-
 });
-
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

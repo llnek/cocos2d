@@ -54,7 +54,7 @@ define("zotohlab/p/s/clearance", ['zotohlab/p/gnodes',
       clearFilled: function(node) {
         var score= node.flines.lines.length;
 
-        R.each(function(z) {
+        R.forEach(function(z) {
           this.clearOneRow(node,z);
           this.resetOneRow(node,z);
         }.bind(this),
@@ -94,7 +94,8 @@ define("zotohlab/p/s/clearance", ['zotohlab/p/gnodes',
 
         while (true) {
           f= this.findFirstDirty(node);
-          if (f===0) { return; } // no lines are touched.
+          // no lines are touched
+          if (f===0) { return; }
           e= this.findLastEmpty(node);
           if (e > f) { return; }
           d=e+1;

@@ -30,6 +30,8 @@ define("zotohlab/p/l10n", ['cherimoia/skarojs',
 
     return xcfg.l10nTable;
 
-}).call(this);
+});
 
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 

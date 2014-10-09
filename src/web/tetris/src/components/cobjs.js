@@ -99,12 +99,12 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     bks.Brick= sjs.Class.xtends({
 
       blink: function() {
-        if (this.sprite) { this.sprite.blink(); }
+        if ( !!this.sprite) { this.sprite.blink(); }
       },
 
       dispose: function() {
-        if (this.sprite) {
-          this.sprite.getParent().removeChild(this.sprite,true);
+        if (!!this.sprite) {
+          this.sprite.getParent().removeChild(this.sprite, true);
           this.sprite=null;
         }
       },
@@ -113,7 +113,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
         return this.sprite = new Block(this.startPos.x, this.startPos.y, this.options);
       },
 
-      ctor: function(x,y,options) {
+      ctor: function(x, y, options) {
         this.options = options || {};
         this.startPos = cc.p(x,y);
         this.options.frames= [ '' + options.frame + '.png', '0.png'];
@@ -126,9 +126,9 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     bks.Dropper= Ash.Class.extend({
 
       constructor: function() {
+        this.dropSpeed = csts.DROPSPEED;
         this.dropRate= 80 + 700/1 ;
         this.timer=null;
-        this.dropSpeed = 1000;
       }
 
     });

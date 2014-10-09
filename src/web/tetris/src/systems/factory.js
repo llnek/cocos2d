@@ -9,14 +9,14 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/s/factory", ['zotohlab/p/s/utils',
-                               'zotohlab/p/cobjs',
+define("zotohlab/p/s/factory", ['zotohlab/p/components',
+                               'zotohlab/p/s/utils',
                                'cherimoia/skarojs',
                                'zotohlab/asterix',
                                'zotohlab/asx/xcfg',
                                'zotohlab/asx/ccsx',
                                'ash-js'],
-  function (utils, cobjs, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (cobjs, utils, sjs, sh, xcfg, ccsx, Ash) { "use strict";
 
     var csts = xcfg.csts,
     undef,
@@ -42,7 +42,6 @@ define("zotohlab/p/s/factory", ['zotohlab/p/s/utils',
         var ent = new Ash.Entity();
 
         ent.add(this.spawn(layer, options));
-        sh.fireEvent('/game/hud/shape/next');
         utils.initDropper(options);
 
         return ent;

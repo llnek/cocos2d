@@ -62,6 +62,7 @@ document.ccConfig = {
 '/public/ig/lib/game/tetris/systems/movement.js',
 '/public/ig/lib/game/tetris/systems/rendering.js',
 '/public/ig/lib/game/tetris/systems/resolution.js',
+'/public/ig/lib/game/tetris/systems/sysobjs.js',
 
       '/public/ig/lib/game/tetris/splash.js',
       '/public/ig/lib/game/tetris/mmenu.js',

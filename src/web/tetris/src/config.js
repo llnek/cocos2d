@@ -9,91 +9,86 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._ ;
+define("zotohlab/p/config", ["cherimoia/skarojs",
+                            'zotohlab/asterix',
+                            'zotohlab/asx/xcfg'],
 
-var asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
-sjs = global.SkaroJS;
+  function (sjs, sh, xcfg) { "use strict";
 
-asterix.Bricks= {};
+    sjs.merge( xcfg, {
 
-//////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
+      appKey: "fb0fdd0b-1821-42d9-b6f7-26b11218b40d",
 
-sh.xcfg = sjs.mergeEx( asterix.XConfig, {
+      appid: 'tetris',
+      color: 'silver',
 
-  appKey: "fb0fdd0b-1821-42d9-b6f7-26b11218b40d",
+      csts: {
+        BLOCK_COLORS: 8,
+        FIELD_SIDE: 1,
+        FIELD_TOP: 1,
+        FIELD_W: 12,
+        FIELD_BOTTOM: 1,
 
-  appid: 'tetris',
-  color: 'silver',
+        THROTTLEWAIT: 100,
+        DROPSPEED: 1000,
 
-  csts: {
-    BLOCK_COLORS: 8,
-    FIELD_SIDE: 1,
-    FIELD_TOP: 1,
-    FIELD_W: 12,
-    FIELD_BOTTOM: 1,
-
-    THROTTLEWAIT: 100,
-    DROPSPEED: 1000,
-
-    BTN_SIZE: 32,
-    GRID_W: 30,
-    GRID_H: 20,
-    TILE: 16
-  },
-
-  assets: {
-    atlases: {
-      'game-pics' : 'res/{{appid}}/game/sprites'
-    },
-    tiles: {
-    },
-    images: {
-      'splash.play-btn' : 'res/cocos2d/btns/play_gray_x64.png'
-    },
-    sounds: {
-      'game_end' : 'res/cocos2d/sfx/MineExplosion',
-      'game_quit' : 'res/cocos2d/sfx/Death'
-    },
-    fonts: {
-    }
-  },
-
-  devices: {
-    iphone:{height:320, width:480, scale:1},
-    android:{height:320, width:480, scale:1},
-    ipad:{height:320, width:480, scale:2},
-    default:{height:320, width:480, scale:1}
-  },
-
-  game: {
-    size: {height:320, width:480, scale:1},
-    borderTiles: 'cbox-borders_x16.png'
-  },
-
-  levels: {
-    "gamelevel1" : {
-      'tiles' : {
-        'arena' : 'game/{{appid}}/levels/arena.tmx'
+        BTN_SIZE: 32,
+        GRID_W: 30,
+        GRID_H: 20,
+        TILE: 16
       },
-      'images' : {
-        'arena' : 'game/{{appid}}/levels/arena.png'
+
+      assets: {
+        atlases: {
+          'game-pics' : 'res/{{appid}}/game/sprites'
+        },
+        tiles: {
+        },
+        images: {
+          'splash.play-btn' : 'res/cocos2d/btns/play_gray_x64.png'
+        },
+        sounds: {
+          'game_end' : 'res/cocos2d/sfx/MineExplosion',
+          'game_quit' : 'res/cocos2d/sfx/Death'
+        },
+        fonts: {
+        }
       },
-      'sprites' : {
+
+      devices: {
+        iphone:{height:320, width:480, scale:1},
+        android:{height:320, width:480, scale:1},
+        ipad:{height:320, width:480, scale:2},
+        default:{height:320, width:480, scale:1}
+      },
+
+      game: {
+        size: {height:320, width:480, scale:1},
+        borderTiles: 'cbox-borders_x16.png'
+      },
+
+      levels: {
+        "gamelevel1" : {
+          'tiles' : {
+            'arena' : 'game/{{appid}}/levels/arena.tmx'
+          },
+          'images' : {
+            'arena' : 'game/{{appid}}/levels/arena.png'
+          },
+          'sprites' : {
+          }
+        }
+      },
+
+      runOnce: function() {
+        cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
       }
-    }
-  },
 
-  runOnce: function() {
-    cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
-  }
+    });
+
+    return xcfg;
 
 });
-
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
