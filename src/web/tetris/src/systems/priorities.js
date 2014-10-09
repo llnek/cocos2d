@@ -9,35 +9,25 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this, _ = global._ ;
+define("zotohlab/p/s/priorities", [],
 
-var asterix= global.ZotohLab.Asterix,
-ccsx= asterix.CCS2DX,
-sjs= global.SkaroJS,
-sh= asterix,
-bks= sh.Bricks;
+  function (){ "use strict";
 
+    return {
 
-//////////////////////////////////////////////////////////////////////////////
-//
-bks.Priorities = {
+      PreUpdate: 1,
+      Clear: 2,
+      Generate: 3,
+      Motion: 4,
+      Move: 5,
+      Render: 6,
+      Resolve: 7
 
-  PreUpdate: 1,
-  Clear: 2,
-  Generate: 3,
-  Motion: 4,
-  Move: 5,
-  Render: 6,
-  Resolve: 7
+    };
 
-};
-
-
-}).call(this);
+});
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
 
 

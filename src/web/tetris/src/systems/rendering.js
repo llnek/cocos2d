@@ -1,42 +1,44 @@
+// This library is distributed in  the hope that it will be useful but without
+// any  warranty; without  even  the  implied  warranty of  merchantability or
+// fitness for a particular purpose.
+// The use and distribution terms for this software are covered by the Eclipse
+// Public License 1.0  (http://opensource.org/licenses/eclipse-1.0.php)  which
+// can be found in the file epl-v10.html at the root of this distribution.
+// By using this software in any  fashion, you are agreeing to be bound by the
+// terms of this license. You  must not remove this notice, or any other, from
+// this software.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global = this, _ = global._ ;
+define("zotohlab/p/s/rendering", ["zotohlab/p/s/utils",
+                                 'zotohlab/p/gnodes',
+                                 'ash-js'],
 
-var asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
-sjs= global.SkaroJS,
-ccsx= asterix.COCOS2DX,
-bks= asterix.Bricks;
+  function (utils, gnodes, Ash) { "use strict";
 
-//////////////////////////////////////////////////////////////////////////////
-//
-bks.RenderSystem = Ash.System.extend({
+    var csts = xcfg.csts,
+    undef,
+    RenderSystem = Ash.System.extend({
 
-  constructor: function(options) {
-    this.state = options;
-    return this;
-  },
+      constructor: function(options) {
+        this.state = options;
+      },
 
-  removeFromEngine: function(engine) {
-    this.nodeList=null;
-  },
+      removeFromEngine: function(engine) {
+        this.nodeList=null;
+      },
 
-  addToEngine: function(engine) {
-    this.nodeList= engine.getNodeList(bks.ArenaNode);
-  },
+      addToEngine: function(engine) {
+        this.nodeList= engine.getNodeList(gnodes.ArenaNode);
+      },
 
-  update: function (dt) {
-  }
+      update: function (dt) {
+      }
 
+    });
 
+    return RenderSystem;
 });
-
-
-
-}).call(this);
 
 ///////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
 

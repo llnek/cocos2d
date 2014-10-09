@@ -1,85 +1,86 @@
+// This library is distributed in  the hope that it will be useful but without
+// any  warranty; without  even  the  implied  warranty of  merchantability or
+// fitness for a particular purpose.
+// The use and distribution terms for this software are covered by the Eclipse
+// Public License 1.0  (http://opensource.org/licenses/eclipse-1.0.php)  which
+// can be found in the file epl-v10.html at the root of this distribution.
+// By using this software in any  fashion, you are agreeing to be bound by the
+// terms of this license. You  must not remove this notice, or any other, from
+// this software.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global = this, _ = global._ ;
+define("zotohlab/p/s/resolution", ["zotohlab/p/s/utils",
+                                  'zotohlab/p/gnodes',
+                                  'cherimoia/skarojs',
+                                  'zotohlab/asterix',
+                                  'zotohlab/asx/xcfg',
+                                  'zotohlab/asx/ccsx',
+                                  'ash-js'],
 
-var asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
-sjs= global.SkaroJS,
-ccsx= asterix.COCOS2DX,
-bks= asterix.Bricks,
-utils= bks.SystemUtils;
+  function (utils, gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
 
+    var csts = xcfg.csts,
+    undef,
+    ResolutionSystem = Ash.System.extend({
 
-//////////////////////////////////////////////////////////////////////////////
-//
-bks.ResolutionSystem = Ash.System.extend({
+      constructor: function(options) {
+        this.state = options;
+      },
 
-  constructor: function(options) {
-    this.state = options;
-    return this;
-  },
+      removeFromEngine: function(engine) {
+        this.nodeList=null;
+      },
 
-  removeFromEngine: function(engine) {
-    this.nodeList=null;
-  },
+      addToEngine: function(engine) {
+        this.nodeList = engine.getNodeList(gnodes.ArenaNode);
+      },
 
-  addToEngine: function(engine) {
-    this.nodeList = engine.getNodeList(bks.ArenaNode);
+      update: function (dt) {
+        var node= this.nodeList.head;
+        if (this.state.running &&
+           !!node) {
 
-  },
+          var cmap= node.collision.tiles,
+          motion = node.motion,
+          layer=sh.main,
+          shape= node.shell.shape;
 
-  update: function (dt) {
-    var node= this.nodeList.head,
-    cmap= node.collision.tiles,
-    shape= node.shell.shape,
-    motion = node.motion;
+          if (!!shape) {
+            if (motion.right) {
+              utils.shiftRight(layer, cmap, shape);
+            }
+            if (motion.left) {
+              utils.shiftLeft(layer, cmap, shape);
+            }
+            if (motion.rotr) {
+              utils.rotateRight(layer, cmap, shape);
+            }
+            if (motion.rotl) {
+              utils.rotateLeft(layer, cmap, shape);
+            }
+            if (motion.down) {
+              this.fastDrop(layer, node);
+            }
+          }
+          motion.right = false;
+          motion.left = false;
+          motion.rotr = false;
+          motion.rotl = false;
+          motion.down = false;
+        }
+      },
 
-    if (shape) {
-
-      if (motion.right) {
-        utils.shiftRight(sh.main,cmap,shape);
+      fastDrop: function(layer, node) {
+        var dp= node.dropper;
+        dp.timer=null;
+        utils.setDropper(layer, dp, dp.dropRate, 9000);
       }
 
-      if (motion.left) {
-        utils.shiftLeft(sh.main,cmap,shape);
-      }
+    });
 
-      if (motion.rotr) {
-        utils.rotateRight(sh.main,cmap,shape);
-      }
-
-      if (motion.rotl) {
-        utils.rotateLeft(sh.main,cmap,shape);
-      }
-
-      if (motion.down) {
-        this.fastDrop(node);
-      }
-
-    }
-
-    motion.right = false;
-    motion.left = false;
-    motion.rotr = false;
-    motion.rotl = false;
-    motion.down = false;
-  },
-
-  fastDrop: function(node) {
-    var dp= node.dropper;
-    dp.timer=null;
-    utils.setDropper(sh.main,dp,dp.dropRate,9000);
-  }
-
-
+    return ResolutionSystem;
 });
-
-
-
-}).call(this);
 
 ///////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
 

@@ -376,6 +376,10 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
         sjs.loggr.debug("touch = " + touches);
       },
 
+      keyPoll: function(k){
+        return this.keyboard[k];
+      },
+
       onclicked: function(x,y) {
       },
 

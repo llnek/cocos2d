@@ -34,6 +34,10 @@ sh.xcfg = sjs.mergeEx( asterix.XConfig, {
     FIELD_TOP: 1,
     FIELD_W: 12,
     FIELD_BOTTOM: 1,
+
+    THROTTLEWAIT: 100,
+    DROPSPEED: 1000,
+
     BTN_SIZE: 32,
     GRID_W: 30,
     GRID_H: 20,

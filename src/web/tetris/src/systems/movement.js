@@ -1,76 +1,86 @@
+// This library is distributed in  the hope that it will be useful but without
+// any  warranty; without  even  the  implied  warranty of  merchantability or
+// fitness for a particular purpose.
+// The use and distribution terms for this software are covered by the Eclipse
+// Public License 1.0  (http://opensource.org/licenses/eclipse-1.0.php)  which
+// can be found in the file epl-v10.html at the root of this distribution.
+// By using this software in any  fashion, you are agreeing to be bound by the
+// terms of this license. You  must not remove this notice, or any other, from
+// this software.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global = this, _ = global._ ;
+define("zotohlab/p/s/movement", ["zotohlab/p/s/utils",
+                                "zotohlab/p/cobjs",
+                                'cherimoia/skarojs',
+                                'zotohlab/asterix',
+                                'zotohlab/asx/xcfg',
+                                'zotohlab/asx/ccsx',
+                                'ash-js'],
 
-var asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
-sjs= global.SkaroJS,
-ccsx= asterix.COCOS2DX,
-bks= asterix.Bricks,
-utils= bks.SystemUtils;
+  function (utils, cobjs, sh, ast, xcfg, ccsx, Ash) { "use strict";
 
+    var csts = xcfg.csts,
+    undef,
+    MovementSystem = Ash.System.extend({
 
-//////////////////////////////////////////////////////////////////////////////
-//
-bks.MovementSystem = Ash.System.extend({
+      constructor: function(options) {
+        this.state = options;
+      },
 
-  constructor: function(options) {
-    this.state = options;
-    return this;
-  },
+      removeFromEngine: function(engine) {
+        this.nodeList=null;
+      },
 
-  removeFromEngine: function(engine) {
-    this.nodeList=null;
-  },
+      addToEngine: function(engine) {
+        this.nodeList = engine.getNodeList(cobjs.ArenaNode);
+      },
 
-  addToEngine: function(engine) {
-    this.nodeList = engine.getNodeList(bks.ArenaNode);
-  },
+      update: function(dt) {
+        var node= this.nodeList.head;
+        if (this.state.running &&
+           !!node) {
 
-  update: function(dt) {
-    var node= this.nodeList.head,
-    shape=node.shell.shape,
-    drop=node.dropper;
+          if (ccsx.timerDone(node.dropper.timer) &&
+              !!node.shell.shape) {
+            this.doFall(sh.main, node);
+          }
 
-    if (shape &&
-        ccsx.timerDone(drop.timer)) {
-      this.doFall();
-    }
-  },
-
-  doFall: function() {
-    var node = this.nodeList.head,
-    cmap= node.collision.tiles,
-    emap= node.blocks.grid,
-    shape= node.shell.shape,
-    pu= node.pauser,
-    dp= node.dropper;
-
-    if (shape) {
-      if (! utils.moveDown(sh.main, cmap, shape)) {
-
-        // lock shape in place
-        utils.lock(node,shape);
-
-        //
-        if (! pu.timer) {
-          //utils.disposeShape(shape);
-          node.shell.shape= null;
-          shape.bricks=[];
         }
-        node.shell.shape= null;
-        shape.bricks=[];
-      } else {
-        utils.initDropper(sh.main, dp);
+      },
+
+      doFall: function(layer, node) {
+        var cmap= node.collision.tiles,
+        shape= node.shell.shape,
+        emap= node.blocks.grid,
+        pu= node.pauser,
+        dp= node.dropper;
+
+        if (!!shape) {
+          if (! utils.moveDown(layer, cmap, shape)) {
+
+            // lock shape in place
+            utils.lock(node, shape);
+
+            //
+            if (! pu.timer) {
+              node.shell.shape= null;
+              shape.bricks=[];
+            }
+
+            node.shell.shape= null;
+            shape.bricks=[];
+
+          } else {
+            utils.initDropper(layer, dp);
+          }
+        }
       }
-    }
-  }
 
 
+    });
+
+    return MovementSystem;
 });
-
-
-
-}).call(this);
 
 ///////////////////////////////////////////////////////////////////////////////
 //EOF

@@ -1,94 +1,104 @@
+// This library is distributed in  the hope that it will be useful but without
+// any  warranty; without  even  the  implied  warranty of  merchantability or
+// fitness for a particular purpose.
+// The use and distribution terms for this software are covered by the Eclipse
+// Public License 1.0  (http://opensource.org/licenses/eclipse-1.0.php)  which
+// can be found in the file epl-v10.html at the root of this distribution.
+// By using this software in any  fashion, you are agreeing to be bound by the
+// terms of this license. You  must not remove this notice, or any other, from
+// this software.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global = this, _ = global._ ;
+define("zotohlab/p/s/supervisor", ["zotohlab/p/s/utils",
+                                  "zotohlab/p/gnodes",
+                                  'cherimoia/skarojs',
+                                  'zotohlab/asterix',
+                                  'zotohlab/asx/xcfg',
+                                  'zotohlab/asx/ccsx',
+                                  'ash-js'],
 
-var asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
-sjs= global.SkaroJS,
-ccsx= asterix.COCOS2DX,
-bks= asterix.Bricks;
+  function (utils, gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
 
-//////////////////////////////////////////////////////////////////////////////
-//
-bks.GameSupervisor = Ash.System.extend({
+    var csts= xcfg.csts,
+    undef,
+    GameSupervisor = Ash.System.extend({
 
-  constructor: function(options) {
-    this.factory = options.factory;
-    this.state = options;
-    this.inited=false;
-    return this;
-  },
+      constructor: function(options) {
+        this.factory = options.factory;
+        this.state = options;
+        this.inited=false;
+      },
 
-  removeFromEngine: function(engine) {
-    this.nodeList=null;
-  },
+      removeFromEngine: function(engine) {
+        this.nodeList=null;
+      },
 
-  addToEngine: function(engine) {
-    engine.addEntity(this.factory.createArena(this.state));
-    this.nodeList= engine.getNodeList(bks.ArenaNode);
-  },
+      addToEngine: function(engine) {
+        engine.addEntity(this.factory.createArena(sh.main, this.state));
+        this.nodeList= engine.getNodeList(gnodes.ArenaNode);
+      },
 
-  update: function (dt) {
-    if (! this.inited) {
-      this.onceOnly();
-      this.inited=true;
-    } else {
-    }
-  },
+      update: function (dt) {
+        var node = this.nodeList.head;
+        if (this.state.running &&
+            !!node) {
 
-  onceOnly: function () {
-    var node = this.nodeList.head,
-    tiles= this.fakeTileMap();
+          if (! this.inited) {
+            this.onceOnly(node);
+            this.inited=true;
+          }
+        }
+      },
 
-    node.blocks.grid = this.initBlockMap(tiles);
-    node.collision.tiles = tiles;
+      onceOnly: function (node) {
+        var tiles= this.fakeTileMap();
 
-    sjs.loggr.info("collision tiles and blocks init'ed.");
-  },
+        node.blocks.grid = this.initBlockMap(tiles);
+        node.collision.tiles = tiles;
 
-  initBlockMap: function(tiles) {
-    var grid=[],
-    rc,
-    r;
+        sjs.loggr.info("collision tiles and blocks init'ed.");
+      },
 
-    for (r= 0; r < tiles.length; ++r) {
-      rc= sjs.makeArray(tiles[r].length, undef);
-      grid.push(rc);
-    }
+      initBlockMap: function(tiles) {
+        var grid=[],
+        rc,
+        r;
 
-    return grid;
-  },
+        for (r= 0; r < tiles.length; ++r) {
+          rc= sjs.makeArray(tiles[r].length, undef);
+          grid.push(rc);
+        }
 
-  //create our own collision map using cells
-  fakeTileMap: function() {
-    var csts= sh.xcfg.csts,
-    map=[],
-    r,
-    rc,
-    hlen = csts.GRID_H,
-    wlen = csts.GRID_W;
+        return grid;
+      },
 
-    for (r = 0; r < hlen; ++r) {
-      if (r === 0 || r === hlen-1) {
-        rc = sjs.makeArray(wlen, 1);
-      } else {
-        rc = sjs.makeArray(wlen, 0);
-        rc[0] = 1;
-        rc[csts.FIELD_W + 1] = 1;
+      //create our own collision map using cells
+      fakeTileMap: function() {
+        var hlen = csts.GRID_H,
+        wlen = csts.GRID_W,
+        map=[],
+        r,
+        rc;
+
+        for (r = 0; r < hlen; ++r) {
+          if (r === 0 || r === hlen-1) {
+            rc = sjs.makeArray(wlen, 1);
+          } else {
+            rc = sjs.makeArray(wlen, 0);
+            rc[0] = 1;
+            rc[csts.FIELD_W + 1] = 1;
+          }
+          map[r] = rc;
+        }
+        return map;
       }
-      map[r] = rc;
-    }
-    return map;
-  }
+
+    });
 
 
-
+    return GameSupervisor;
 });
-
-
-
-}).call(this);
 
 ///////////////////////////////////////////////////////////////////////////////
 //EOF
-
 
