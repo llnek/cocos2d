@@ -9,7 +9,7 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/config", ['cherimoia/skarojs',
+define("zotohlab/p/l10n", ['cherimoia/skarojs',
                             'zotohlab/asterix',
                             'zotohlab/asx/xcfg'],
 

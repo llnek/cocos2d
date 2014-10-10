@@ -15,9 +15,10 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
                                   'zotohlab/asterix',
                                   'zotohlab/asx/xcfg',
                                   'zotohlab/asx/ccsx',
-                                  'zotohlab/asx/xpool'],
+                                  'zotohlab/asx/xpool',
+                                  'ash-js'],
 
-  function (cobjs, utils, sjs, sh, xcfg, ccsx, xpool) { "use strict";
+  function (cobjs, utils, sjs, sh, xcfg, ccsx, xpool,Ash) { "use strict";
 
     var csts = xcfg.csts,
     undef,

@@ -9,86 +9,89 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this, _ = global._ ;
+define('zotohlab/p/s/motions', ['zotohlab/p/gnodes',
+                               'cherimoia/skarojs',
+                               'zotohlab/asterix',
+                               'zotohlab/asx/xcfg',
+                               'zotohlab/asx/ccsx',
+                               'ash-js'],
 
-var asterix= global.ZotohLab.Asterix,
-ccsx= asterix.CCS2DX,
-sjs= global.SkaroJS,
-sh= asterix,
-ivs= sh.Invaders;
+  function (gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
 
+    var csts = xcfg.csts,
+    undef,
+    MotionCtrlSystem = Ash.System.extend({
 
-//////////////////////////////////////////////////////////////////////////////
-//
+      constructor: function(options) {
+        this.state= options;
+      },
 
-ivs.MotionCtrlSystem = Ash.System.extend({
+      removeFromEngine: function(engine) {
+        this.alienMotions = undef;
+        this.shipMotions = undef;
+      },
 
-  constructor: function(options) {
-    this.state= options;
-    return this;
-  },
+      addToEngine: function(engine) {
+        this.alienMotions = engine.getNodeList(gnodes.AlienMotionNode);
+        this.shipMotions = engine.getNodeList(gnodes.ShipMotionNode);
+      },
 
-  removeFromEngine: function(engine) {
-  },
+      update: function (dt) {
+        var node = this.alienMotions.head;
+        if (this.state.running &&
+           !!node) {
+          this.processAlienMotions(node,dt);
+        }
 
-  addToEngine: function(engine) {
-    this.alienMotions = engine.getNodeList(ivs.AlienMotionNode);
-    this.shipMotions = engine.getNodeList(ivs.ShipMotionNode);
-  },
+        node=this.shipMotions.head;
+        if (this.state.running &&
+           !!node) {
+          this.scanInput(node, dt);
+        }
+      },
 
-  update: function (dt) {
-    var node;
-    for (node=this.alienMotions.head;node;node=node.next) {
-      this.processAlienMotions(node,dt);
-    }
-    for (node=this.shipMotions.head;node;node=node.next) {
-      if (cc.sys.capabilities['keyboard']) {
-        this.processKeys(node,dt);
+      scanInput: function(node, dt) {
+        if (cc.sys.capabilities['keyboard']) {
+          this.processKeys(node,dt);
+        }
+        else
+        if (cc.sys.capabilities['mouse']) {
+        }
+        else
+        if (cc.sys.capabilities['touches']) {
+        }
+      },
+
+      processAlienMotions: function(node,dt) {
+        var lpr = node.looper,
+        sqad= node.aliens;
+
+        if (! sjs.echt(lpr.timers[0])) {
+          lpr.timers[0]= ccsx.createTimer(sh.main,1);
+        }
+
+        if (! sjs.echt(lpr.timers[1])) {
+          lpr.timers[1]= ccsx.createTimer(sh.main,2);
+        }
+      },
+
+      processKeys: function(node,dt) {
+        var s= node.ship,
+        m= node.motion;
+
+        if (sh.main.keyPoll(cc.KEY.right)) {
+          m.right=true;
+        }
+        if (sh.main.keyPoll(cc.KEY.left)) {
+          m.left=true;
+        }
       }
-      else
-      if (cc.sys.capabilities['mouse']) {
-      }
-      else
-      if (cc.sys.capabilities['touches']) {
-      }
-    }
-  },
 
-  processAlienMotions: function(node,dt) {
-    var lpr = node.looper,
-    sqad= node.aliens;
+    });
 
-    if (! sjs.echt(lpr.timers[0])) {
-      lpr.timers[0]= ccsx.createTimer(sh.main,1);
-    }
-
-    if (! sjs.echt(lpr.timers[1])) {
-      lpr.timers[1]= ccsx.createTimer(sh.main,2);
-    }
-  },
-
-  processKeys: function(node,dt) {
-    var s= node.ship,
-    m= node.motion;
-
-    if (sh.main.keyboard[cc.KEY.right]) {
-      m.right=true;
-    }
-    if (sh.main.keyboard[cc.KEY.left]) {
-      m.left=true;
-    }
-
-  }
-
-
+    return MotionCtrlSystem;
 });
-
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
 

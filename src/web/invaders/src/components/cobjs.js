@@ -62,13 +62,13 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
       pid: function() { return this.sprite.getTag(); },
       rtti: function() { return "Bomb"; },
 
-      hibernate: function() {
+      deflate: function() {
         this.sprite.setVisible(false);
         this.sprite.setPosition(0,0);
         this.status=false;
       },
 
-      revive: function(x,y) {
+      inflate: function(x,y) {
         this.sprite.setVisible(true);
         this.sprite.setPosition(x,y);
         this.status=true;
@@ -97,7 +97,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
         this.status=false;
       },
 
-      revive: function(x,y) {
+      inflate: function(x,y) {
         var frames = [ccsx.getSpriteFrame('boom_0.png'),
                       ccsx.getSpriteFrame('boom_1.png'),
                       ccsx.getSpriteFrame('boom_2.png'),
@@ -111,7 +111,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
         ));
       },
 
-      hibernate: function() {
+      deflate: function() {
         this.sprite.setPosition(0,0);
         this.sprite.setVisible(false);
         this.status=false;
@@ -149,13 +149,13 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
       pid: function() { return this.sprite.getTag(); },
       rtti: function() { return "Missile"; },
 
-      hibernate: function() {
+      deflate: function() {
         this.sprite.setVisible(false);
         this.sprite.setPosition(0,0);
         this.status=false;
       },
 
-      revive: function(x,y) {
+      inflate: function(x,y) {
         this.sprite.setVisible(true);
         this.sprite.setPosition(x,y);
         this.status=true;

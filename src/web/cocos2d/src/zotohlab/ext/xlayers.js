@@ -16,7 +16,8 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
                                'ash-js'],
   function (sjs, sh, xcfg, ccsx, Ash) { "use strict";
 
-    var R= sjs.ramda,
+    var csts = xcfg.csts,
+    R= sjs.ramda,
     SEED = 0,
     undef;
 
@@ -48,7 +49,7 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
       isDead: function() { return this.curLives < 0; },
       getLives: function() { return this.curLives; },
 
-      reset:function() {
+      reset: function() {
         R.forEach(function(z) {
           this.hud.removeItem(z);
         }.bind(this),
@@ -89,6 +90,7 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
 
       ctor: function(hud, x, y, options) {
         this.options = options || {};
+        this.icons= [];
         this.hud= hud;
         this.curLives= -1;
         this.topLeft= cc.p(x,y);

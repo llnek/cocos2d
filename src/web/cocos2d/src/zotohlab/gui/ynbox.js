@@ -50,11 +50,11 @@ define("zotohlab/asx/ynbox", ['cherimoia/skarojs',
         qn.setOpacity(0.9*255);
         this.addItem(qn);
 
-        var s2 = R.map.idx(function() {
-          a[n]= new cc.Sprite(sh.getImagePath('gui.mmenu.back'));
+        var s2 = R.map.idx(function(v,n,a) {
+          return new cc.Sprite(sh.getImagePath('gui.mmenu.back'));
         }, [null,null,null]),
-        s1= R.map.idx(function() {
-          a[n]= new cc.Sprite(sh.getImagePath('gui.mmenu.ok'));
+        s1= R.map.idx(function(v,n,a) {
+          return new cc.Sprite(sh.getImagePath('gui.mmenu.ok'));
         }, [null,null,null]);
 
         t2 = new cc.MenuItemSprite(s2[0], s2[1], s2[2], function() {

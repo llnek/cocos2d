@@ -88,6 +88,14 @@ define("zotohlab/p/s/utils", ['zotohlab/p/components',
         alien.sprite.setPosition(0,0);
         alien.status=false;
         sh.sfxPlay('xxx-explode');
+      },
+
+      resetPools: function() {
+        sh.pools[csts.P_MS].drain();
+        sh.pools[csts.P_BS].drain();
+        sh.pools[csts.P_ES].drain();
+        sh.pools[csts.P_LMS] = {};
+        sh.pools[csts.P_LBS] = {};
       }
 
     };

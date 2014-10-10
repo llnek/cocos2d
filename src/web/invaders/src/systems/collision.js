@@ -9,150 +9,146 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this, _ = global._ ;
+define('zotohlab/p/s/collisions', ['zotohlab/p/s/utils',
+                                  'zotohlab/p/gnodes',
+                                  'cherimoia/skarojs',
+                                  'zotohlab/asterix',
+                                  'zotohlab/asx/xcfg',
+                                  'zotohlab/asx/ccsx',
+                                  'ash-js'],
 
-var asterix= global.ZotohLab.Asterix,
-ccsx= asterix.CCS2DX,
-sjs= global.SkaroJS,
-sh= asterix,
-ivs= sh.Invaders,
-utils=ivs.SystemUtils;
+  function (utils, gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
 
+    var csts = xcfg.csts,
+    R = sjs.ramda,
+    undef,
+    CollisionSystem = Ash.System.extend({
 
-//////////////////////////////////////////////////////////////////////////////
-//
+      constructor: function(options) {
+        this.factory= options.factory;
+        this.state= options;
+        this.inited=false;
+      },
 
-ivs.CollisionSystem = Ash.System.extend({
+      removeFromEngine: function(engine) {
+        this.aliens= undef;
+        this.ships= undef;
+        this.engine=undef;
+      },
 
-  constructor: function(options) {
-    this.factory= options.factory;
-    this.state= options;
-    this.inited=false;
-    return this;
-  },
+      addToEngine: function(engine) {
+        this.aliens= engine.getNodeList(gnodes.AlienMotionNode);
+        this.ships= engine.getNodeList(gnodes.ShipMotionNode);
+        this.engine=engine;
+      },
 
-  removeFromEngine: function(engine) {
-    this.nodeList=null;
-  },
+      update: function (dt) {
+        var aliens= this.aliens.head,
+        ship = this.ships.head;
 
-  addToEngine: function(engine) {
-    this.aliens= engine.getNodeList(ivs.AlienMotionNode);
-    this.ships= engine.getNodeList(ivs.ShipMotionNode);
-    this.engine=engine;
-  },
+        // 1. get rid of all colliding bombs & missiles.
+        this.checkMissilesBombs();
+        // 2. kill aliens
+        this.checkMissilesAliens(aliens);
 
-  update: function (dt) {
-    var aliens= this.aliens.head,
-    ship = this.ships.head;
+        if (!!ship) {
+          // 3. ship ok?
+          this.checkShipBombs(ship);
+          // 4. overruned by aliens ?
+          if (!!aliens) {
+            this.checkShipAliens(aliens, ship);
+          }
+        }
+      },
 
-    // 1. get rid of all colliding bombs & missiles.
-    this.checkMissilesBombs();
-    // 2. kill aliens
-    this.checkMissilesAliens(aliens);
+      checkMissilesBombs: function() {
+        var mss = sh.pools[csts.P_LMS],
+        bbs = sh.pools[csts.P_LBS],
+        k, a, m, b;
 
-    if (ship) {
-      // 3. ship ok?
-      this.checkShipBombs(ship);
-      // 4. overruned by aliens ?
-      this.checkShipAliens(aliens, ship);
-    }
+        R.forEach(function(z) {
+          a= R.keys(mss);
+          b= bbs[z];
+          for (k = 0; k < a.length; ++k) {
+            m = mss[ a[k] ];
+            if ( ccsx.collide0(m.sprite, b.sprite)) {
+              utils.killBomb(b,true);
+              utils.killMissile(m);
+              break;
+            }
+          }
+        }, R.keys(bbs));
+      },
 
-  },
+      checkMissilesAliens: function(node) {
+        var mss = sh.pools[csts.P_LMS],
+        sqad= node.aliens,
+        m, n,
+        sz= sqad.aliens.length;
 
-  checkMissilesBombs: function() {
-    var k, a, m, b, csts= sh.xcfg.csts,
-    mss = sh.pools[csts.P_LMS],
-    bbs = sh.pools[csts.P_LBS];
+        R.forEach(function(z) {
+          m = mss[z];
+          for (n=0; n < sz; ++n) {
+            if (sqad.aliens[n].status !== true) {
+              continue;
+            }
+            if (ccsx.collide0(m.sprite, sqad.aliens[n].sprite)) {
+              utils.killMissile(m);
+              utils.killAlien(sqad.aliens[n],true);
+              break;
+            }
+          }
+        }, R.keys(mss));
+      },
 
-    _.each(_.keys(bbs), function(z) {
-      a= _.keys(mss);
-      b= bbs[z];
-      for (k = 0; k < a.length; ++k) {
-        m = mss[ a[k] ];
-        if ( ccsx.collide0(m.sprite, b.sprite)) {
-          utils.killBomb(b,true);
-          utils.killMissile(m);
-          break;
+      checkShipBombs: function(node) {
+        var b, n, ship=node.ship,
+        pos= ship.sprite.getPosition(),
+        x= pos.x,
+        y= pos.y,
+        p= sh.pools[csts.P_LBS],
+        a= R.keys(p);
+
+        for (n=0; n < a.length; ++n) {
+          b = p[ a[n] ];
+          if (ccsx.collide0(b.sprite, ship.sprite)) {
+            utils.killBomb(b);
+            this.eraseShip(node);
+            break;
+          }
+        }
+      },
+
+      eraseShip: function(node) {
+        sh.main.removeItem(node.ship.sprite);
+        this.ships.remove(node);
+        this.engine.removeEntity(node.entity);
+        utils.killShip(node.ship,true);
+      },
+
+      checkShipAliens: function(anode,snode) {
+        var n, sqad= anode.aliens,
+        ship = snode.ship,
+        sz= sqad.aliens.length;
+
+        for (n=0; n < sz; ++n) {
+          if (sqad.aliens[n].status !== true) {
+            continue;
+          }
+          if (ccsx.collide0(ship.sprite,
+                            sqad.aliens[n].sprite)) {
+            utils.killAlien(sqad.aliens[n]);
+            this.eraseShip(snode);
+            break;
+          }
         }
       }
+
     });
-  },
 
-  checkMissilesAliens: function(node) {
-    var m, n, csts= sh.xcfg.csts,
-    mss = sh.pools[csts.P_LMS],
-    sqad= node.aliens,
-    sz= sqad.aliens.length;
-
-    _.each(_.keys(mss), function(z) {
-      m = mss[z];
-      for (n=0; n < sz; ++n) {
-        if (sqad.aliens[n].status !== true) {
-          continue;
-        }
-        if (ccsx.collide0(m.sprite, sqad.aliens[n].sprite)) {
-          utils.killMissile(m);
-          utils.killAlien(sqad.aliens[n],true);
-          break;
-        }
-      }
-    });
-  },
-
-  checkShipBombs: function(node) {
-    var b, n, csts = sh.xcfg.csts,
-    ship=node.ship,
-    pos= ship.sprite.getPosition(),
-    x= pos.x,
-    y= pos.y,
-    p= sh.pools[csts.P_LBS],
-    a= _.keys(p);
-
-    for (n=0; n < a.length; ++n) {
-      b = p[ a[n] ];
-      if (ccsx.collide0(b.sprite, ship.sprite)) {
-        utils.killBomb(b);
-        this.eraseShip(node);
-        break;
-      }
-    }
-  },
-
-  eraseShip: function(node) {
-    //node.ship.sprite.getParent().removeChild(node.sprite);
-    sh.main.removeItem(node.ship.sprite);
-    this.ships.remove(node);
-    this.engine.removeEntity(node.entity);
-    utils.killShip(node.ship,true);
-  },
-
-  checkShipAliens: function(anode,snode) {
-    var n, sqad= anode.aliens,
-    ship = snode.ship,
-    sz= sqad.aliens.length;
-
-    for (n=0; n < sz; ++n) {
-      if (sqad.aliens[n].status !== true) {
-        continue;
-      }
-      if (ccsx.collide0(ship.sprite,
-                        sqad.aliens[n].sprite)) {
-        utils.killAlien(sqad.aliens[n]);
-        this.eraseShip(snode);
-        break;
-      }
-    }
-  }
-
-
+    return CollisionSystem;
 });
-
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
 
