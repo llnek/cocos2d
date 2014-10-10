@@ -1,96 +1,99 @@
+// This library is distributed in  the hope that it will be useful but without
+// any  warranty; without  even  the  implied  warranty of  merchantability or
+// fitness for a particular purpose.
+// The use and distribution terms for this software are covered by the Eclipse
+// Public License 1.0  (http://opensource.org/licenses/eclipse-1.0.php)  which
+// can be found in the file epl-v10.html at the root of this distribution.
+// By using this software in any  fashion, you are agreeing to be bound by the
+// terms of this license. You  must not remove this notice, or any other, from
+// this software.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global = this, _ = global._ ;
+define("zotohlab/p/s/collision", ['zotohlab/p/gnodes',
+                                 'cherimoia/skarojs',
+                                 'zotohlab/asterix',
+                                 'zotohlab/asx/xcfg',
+                                 'zotohlab/asx/ccsx',
+                                 'ash-js'],
+  function (gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
 
-var asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
-sjs= global.SkaroJS,
-ccsx= asterix.COCOS2DX,
-png= asterix.Pong,
-utils= png.SystemUtils;
+    var csts = xcfg.csts,
+    undef,
+    CollisionSystem = Ash.System.extend({
 
+      constructor: function(options) {
+        this.state = options;
+      },
 
+      removeFromEngine: function(engine) {
+        this.nodeList=null;
+        this.fauxs=null;
+        this.balls=null;
+      },
 
-//////////////////////////////////////////////////////////////////////////////
-//
-png.CollisionSystem = Ash.System.extend({
+      addToEngine: function(engine) {
+        this.fauxs= engine.getNodeList(gnodes.FauxPaddleNode);
+        this.nodeList= engine.getNodeList(gnodes.PaddleNode);
+        this.balls= engine.getNodeList(gnodes.BallNode);
+      },
 
-  constructor: function(options) {
-    this.state = options;
-    return this;
-  },
+      update: function (dt) {
+        var bnode = this.balls.head;
 
-  removeFromEngine: function(engine) {
-    this.nodeList=null;
-    this.fauxs=null;
-    this.balls=null;
-  },
+        if (this.state.running &&
+           !!bnode) {
+          this.checkNodes(this.nodeList, bnode);
+          this.checkNodes(this.fauxs, bnode);
+        }
+      },
 
-  addToEngine: function(engine) {
-    this.fauxs= engine.getNodeList(png.FauxPaddleNode);
-    this.nodeList= engine.getNodeList(png.PaddleNode);
-    this.balls= engine.getNodeList(png.BallNode);
-  },
+      checkNodes: function(nl, bnode) {
+        for (var node=nl.head; node; node=node.next) {
+          if (ccsx.collide0(node.paddle.sprite,
+                            bnode.ball.sprite)) {
+            this.check(node, bnode);
+          }
+        }
+      },
 
-  update: function (dt) {
-    var bnode = this.balls.head;
+      //ball hits paddle
+      check: function(node, bnode) {
+        var pos = bnode.ball.sprite.getPosition(),
+        bb4 = ccsx.bbox4(node.paddle.sprite),
+        velo = bnode.velocity,
+        x= pos.x,
+        y= pos.y,
+        hw2= ccsx.halfHW(bnode.ball.sprite);
 
-    this.checkNodes(this.nodeList,bnode);
-    this.checkNodes(this.fauxs,bnode);
-  },
+        if (ccsx.isPortrait()) {
+          velo.vel.y = - velo.vel.y;
+        } else {
+          velo.vel.x = - velo.vel.x;
+        }
 
-  checkNodes: function(nl,bnode) {
-    for (var node=nl.head; node; node=node.next) {
-      if (ccsx.collide0(node.paddle.sprite,
-                        bnode.ball.sprite)) {
-        this.check(node,bnode);
+        if (node.paddle.color === csts.P1_COLOR) {
+          if (ccsx.isPortrait()) {
+            y=bb4.top + hw2[1];
+          } else {
+            x=bb4.right + hw2[0];
+          }
+        } else {
+          if (ccsx.isPortrait()) {
+            y = bb4.bottom - hw2[1];
+          } else {
+            x = bb4.left - hw2[0];
+          }
+        }
+
+        bnode.ball.sprite.setPosition(x,y);
+        sh.sfxPlay(node.paddle.snd);
       }
-    }
-  },
 
-  //ball hits paddle
-  check: function(node,bnode) {
-    var pos = bnode.ball.sprite.getPosition(),
-    bb4 = ccsx.bbox4(node.paddle.sprite),
-    velo = bnode.velocity,
-    csts = sh.xcfg.csts,
-    x= pos.x,
-    y= pos.y,
-    hw2= ccsx.halfHW(bnode.ball.sprite);
+    });
 
-    if (ccsx.isPortrait()) {
-      velo.vel.y = - velo.vel.y;
-    } else {
-      velo.vel.x = - velo.vel.x;
-    }
-
-    if (node.paddle.color === csts.P1_COLOR) {
-      if (ccsx.isPortrait()) {
-        y=bb4.top + hw2[1];
-      } else {
-        x=bb4.right + hw2[0];
-      }
-    } else {
-      if (ccsx.isPortrait()) {
-        y = bb4.bottom - hw2[1];
-      } else {
-        x = bb4.left - hw2[0];
-      }
-    }
-
-    bnode.ball.sprite.setPosition(x,y);
-    sh.sfxPlay(node.paddle.snd);
-  }
-
-
-
+    return CollisionSystem;
 });
-
-
-
-}).call(this);
 
 ///////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
 

@@ -1,18 +1,30 @@
  {
 
     "jsList"        : [
-
-      "src/pong/config.js",
+     "src/pong/config.js",
       "src/pong/i18n/game_en_US.js",
-      "src/pong/entities/entity.js",
-      "src/pong/entities/ball.js",
-      "src/pong/entities/human.js",
-      "src/pong/entities/robot.js",
+
+      "src/pong/components/cobjs.js",
+      "src/pong/nodes/gnodes.js",
+
+      "src/pong/systems/priorities.js",
+      "src/pong/systems/factory.js",
+      "src/pong/systems/motion.js",
+      "src/pong/systems/supervisor.js",
+      "src/pong/systems/movement.js",
+      "src/pong/systems/networking.js",
+      "src/pong/systems/collision.js",
+      "src/pong/systems/resolution.js",
+      "src/pong/systems/rendering.js",
+      "src/pong/systems/sysobjs.js",
+
       "src/pong/hud.js",
-      "src/pong/arena.js",
       "src/pong/game.js",
       "src/pong/mmenu.js",
-      "src/pong/splash.js"
+      "src/pong/splash.js",
+      "src/pong/protos.js",
+      "src/zotohlab/ext/xboot.js"
+
 
     ]
 }

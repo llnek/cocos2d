@@ -1,115 +1,121 @@
+// This library is distributed in  the hope that it will be useful but without
+// any  warranty; without  even  the  implied  warranty of  merchantability or
+// fitness for a particular purpose.
+// The use and distribution terms for this software are covered by the Eclipse
+// Public License 1.0  (http://opensource.org/licenses/eclipse-1.0.php)  which
+// can be found in the file epl-v10.html at the root of this distribution.
+// By using this software in any  fashion, you are agreeing to be bound by the
+// terms of this license. You  must not remove this notice, or any other, from
+// this software.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global = this, _ = global._ ;
+define("zotohlab/p/s/resolution", ['zotohlab/p/gnodes',
+                                  'cherimoia/skarojs',
+                                  'zotohlab/asterix',
+                                  'zotohlab/asx/xcfg',
+                                  'zotohlab/asx/ccsx',
+                                  'ash-js'],
 
-var asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
-sjs= global.SkaroJS,
-ccsx= asterix.COCOS2DX,
-png= asterix.Pong,
-utils= png.SystemUtils;
+  function (gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
 
+    var csts = xcfg.csts,
+    undef,
+    Resolution = Ash.System.extend({
 
+      constructor: function(options) {
+        this.state = options;
+      },
 
-//////////////////////////////////////////////////////////////////////////////
-//
-png.Resolution = Ash.System.extend({
+      removeFromEngine: function(engine) {
+        this.nodeList=null;
+        this.fauxs=null;
+        this.balls=null;
+      },
 
-  constructor: function(options) {
-    this.state = options;
-    return this;
-  },
+      addToEngine: function(engine) {
+        this.fauxs= engine.getNodeList(gnodes.FauxPaddleNode);
+        this.nodeList= engine.getNodeList(gnodes.PaddleNode);
+        this.balls= engine.getNodeList(gnodes.BallNode);
+        this.engine=engine;
+      },
 
-  removeFromEngine: function(engine) {
-    this.nodeList=null;
-    this.fauxs=null;
-    this.balls=null;
-  },
+      update: function (dt) {
+        var bnode = this.balls.head,
+        rc;
 
-  addToEngine: function(engine) {
-    this.fauxs= engine.getNodeList(png.FauxPaddleNode);
-    this.nodeList= engine.getNodeList(png.PaddleNode);
-    this.balls= engine.getNodeList(png.BallNode);
-    this.engine=engine;
-  },
+        if (this.state.mode === sh.ONLINE_GAME) {
+          return;
+        }
 
-  update: function (dt) {
-    var bnode = this.balls.head,
-    rc;
+        if (this.state.running &&
+           !!bnode) {
 
-    if (this.state.mode === sh.ONLINE_GAME) {
-      return;
-    }
+          rc=this.checkNodes(this.nodeList, bnode);
+          if (rc !== false) {
+            rc=this.checkNodes(this.fauxs, bnode);
+          }
+        }
 
-    rc=this.checkNodes(this.nodeList,bnode);
-    if (rc !==false) {
-      rc=this.checkNodes(this.fauxs,bnode);
-    }
-    return rc;
-  },
+        return rc;
+      },
 
-  checkNodes: function(nl,bnode) {
-    for (var node=nl.head; node; node=node.next) {
-      var winner =this.check(node,bnode);
-      if (winner) {
-        this.onWin(winner);
-        return false;
+      checkNodes: function(nl, bnode) {
+        for (var node=nl.head; node; node=node.next) {
+          var winner =this.check(node,bnode);
+          if (winner) {
+            this.onWin(winner);
+            return false;
+          }
+        }
+      },
+
+      onWin: function(winner) {
+        var bnode= this.balls.head;
+        sjs.loggr.debug("winner ====== " + winner);
+        bnode.ball.sprite.setPosition(
+          this.state.ball.x,
+          this.state.ball.y);
+        bnode.velocity.vel.x = this.state.ball.speed * sjs.randSign();
+        bnode.velocity.vel.y = this.state.ball.speed * sjs.randSign();
+        sh.fireEvent('/game/hud/score/update', { score: 1, color: winner });
+      },
+
+      //check win
+      check: function(node,bnode) {
+        var b= bnode.ball,
+        pd= node.paddle,
+        pc= pd.color,
+        bp= b.sprite.getPosition();
+
+        if (ccsx.isPortrait()) {
+
+          if (pc === csts.P1_COLOR) {
+            return bp.y < ccsx.getBottom(pd.sprite) ?
+              csts.P2_COLOR : undef;
+          } else {
+            return bp.y > ccsx.getTop(pd.sprite) ?
+              csts.P1_COLOR : undef;
+          }
+
+        } else {
+
+          if (pc === csts.P1_COLOR) {
+            return bp.x < ccsx.getLeft(pd.sprite) ?
+              csts.P2_COLOR : undef;
+          } else {
+            return bp.x > ccsx.getRight(pd.sprite) ?
+              csts.P1_COLOR : undef;
+          }
+
+        }
+
       }
-    }
-  },
 
-  onWin: function(winner) {
-    var bnode= this.balls.head;
-    sjs.loggr.debug("winner ====== " + winner);
-    bnode.ball.sprite.setPosition(
-    this.state.ball.x,
-    this.state.ball.y);
-    bnode.velocity.vel.x = this.state.ball.speed * sjs.randomSign();
-    bnode.velocity.vel.y = this.state.ball.speed * sjs.randomSign();
-    sh.fireEvent('/game/hud/score/update', { score: 1, color: winner });
-  },
+    });
 
-  //check win
-  check: function(node,bnode) {
-    var csts= sh.xcfg.csts,
-    b= bnode.ball,
-    pd= node.paddle,
-    pc= pd.color,
-    bp= b.sprite.getPosition();
-
-    if (ccsx.isPortrait()) {
-
-      if (pc === csts.P1_COLOR) {
-        return bp.y < ccsx.getBottom(pd.sprite) ?
-          csts.P2_COLOR : undef;
-      } else {
-        return bp.y > ccsx.getTop(pd.sprite) ?
-          csts.P1_COLOR : undef;
-      }
-
-    } else {
-
-      if (pc === csts.P1_COLOR) {
-        return bp.x < ccsx.getLeft(pd.sprite) ?
-          csts.P2_COLOR : undef;
-      } else {
-        return bp.x > ccsx.getRight(pd.sprite) ?
-          csts.P1_COLOR : undef;
-      }
-
-    }
-
-  }
-
-
-
+    return Resolution;
 });
-
-
-
-}).call(this);
 
 ///////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
 

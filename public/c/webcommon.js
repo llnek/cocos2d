@@ -931,9 +931,7 @@ define("cherimoia/skarojs", ['global/window',
         return !!s ? R.reject(function(z) { return z.length===0; }, s.trim().split(ch)) : [];
       },
 
-      now: function() {
-        return Date.now || new Date().getTime();
-      },
+      now: Date.now || function() { return new Date().getTime(); },
 
       capitalize: function(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);

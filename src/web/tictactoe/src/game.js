@@ -81,25 +81,6 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
         this.options.netQ = [];
         this.options.msgQ = [];
 
-        /*
-        this.engine.addSystem(new sobjs.GameSupervisor(popts),
-                              prrs.PreUpdate);
-
-        this.engine.addSystem(new sobjs.SelectionSystem(popts),
-                              prrs.Movement);
-
-        this.engine.addSystem(new sobjs.NetworkSystem(popts),
-                              prrs.Movement);
-
-        this.engine.addSystem(new sobjs.TurnBaseSystem(popts),
-                              prrs.TurnBase);
-
-        this.engine.addSystem(new sobjs.ResolutionSystem(popts),
-                              prrs.Resolve);
-
-        this.engine.addSystem(new sobjs.RenderSystem(popts),
-                              prrs.Render);
-    */
         R.forEach(function(z) {
           this.engine.addSystem(new (z[0])(this.options), z[1]);
         }.bind(this),
