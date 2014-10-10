@@ -9,88 +9,75 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this, _ = global._ ;
+define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
+                                  'zotohlab/p/s/utils',
+                                  'cherimoia/skarojs',
+                                  'zotohlab/asterix',
+                                  'zotohlab/asx/xcfg',
+                                  'zotohlab/asx/ccsx',
+                                  'zotohlab/asx/xpool'],
 
-var asterix= global.ZotohLab.Asterix,
-ccsx= asterix.CCS2DX,
-sjs= global.SkaroJS,
-sh= asterix,
-ivs= sh.Invaders,
-utils=ivs.SystemUtils;
+  function (cobjs, utils, sjs, sh, xcfg, ccsx, xpool) { "use strict";
 
+    var csts = xcfg.csts,
+    undef,
+    GameSupervisor = Ash.System.extend({
 
-//////////////////////////////////////////////////////////////////////////////
-//
+      constructor: function(options) {
+        this.factory= options.factory;
+        this.state= options;
+        this.inited=false;
+      },
 
-ivs.GameSupervisor = Ash.System.extend({
+      removeFromEngine: function(engine) {
+      },
 
-  constructor: function(options) {
-    this.factory= options.factory;
-    this.state= options;
-    this.inited=false;
-    return this;
-  },
+      addToEngine: function(engine) {
+      },
 
-  removeFromEngine: function(engine) {
-    this.nodeList=null;
-  },
+      initAlienSize: function() {
+        var s= new cc.Sprite();
+        s.initWithSpriteFrameName( 'green_bug_0.png');
+        return this.state.alienSize= s.getContentSize();
+      },
 
-  addToEngine: function(engine) {
-  },
+      initShipSize: function() {
+        var s= new cc.Sprite();
+        s.initWithSpriteFrameName( 'ship_0.png');
+        return this.state.shipSize= s.getContentSize();
+      },
 
-  initAlienSize: function() {
-    var s= new cc.Sprite();
-    s.initWithSpriteFrameName( 'green_bug_0.png');
-    return this.state.alienSize= s.getContentSize();
+      spawnAliens: function() {
+        this.factory.createAliens(sh.main,this.state);
+      },
 
-  },
+      update: function (dt) {
+        if (! this.inited) {
+          this.onceOnly();
+          this.spawnAliens();
+          this.inited=true;
+        }
+      },
 
-  initShipSize: function() {
-    var s= new cc.Sprite();
-    s.initWithSpriteFrameName( 'ship_0.png');
-    return this.state.shipSize= s.getContentSize();
-  },
+      onceOnly: function() {
+        sh.pools[csts.P_MS] = new xpool.XEntityPool({ entityProto: cobjs.Missile });
+        sh.pools[csts.P_BS] = new xpool.XEntityPool({ entityProto: cobjs.Bomb });
+        sh.pools[csts.P_ES] = new xpool.XEntityPool({ entityProto: cobjs.Explosion });
+        sh.pools[csts.P_LMS] = {};
+        sh.pools[csts.P_LBS] = {};
+        this.initAlienSize();
+        this.initShipSize();
+        utils.createMissiles(sh.main,this.state,50);
+        utils.createBombs(sh.main,this.state,50);
+        utils.createExplosions(sh.main,this.state,50);
+        this.factory.createShip(sh.main,this.state);
+      }
 
-  spawnAliens: function() {
-    this.factory.createAliens(sh.main,this.state);
-  },
+    });
 
-  update: function (dt) {
-    if (! this.inited) {
-      this.onceOnly();
-      this.spawnAliens();
-      this.inited=true;
-    } else {
-      this.process();
-    }
-  },
-
-  onceOnly: function() {
-    var csts=sh.xcfg.csts;
-    sh.pools[csts.P_MS] = new asterix.XEntityPool({ entityProto: ivs.Missile });
-    sh.pools[csts.P_BS] = new asterix.XEntityPool({ entityProto: ivs.Bomb });
-    sh.pools[csts.P_ES] = new asterix.XEntityPool({ entityProto: ivs.Explosion });
-    sh.pools[csts.P_LMS] = {};
-    sh.pools[csts.P_LBS] = {};
-    this.initAlienSize();
-    this.initShipSize();
-    utils.createMissiles(sh.main,this.state,50);
-    utils.createBombs(sh.main,this.state,50);
-    utils.createExplosions(sh.main,this.state,50);
-    this.factory.createShip(sh.main,this.state);
-  },
-
-  process: function() {
-  }
-
+    return GameSupervisor;
 });
-
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
 

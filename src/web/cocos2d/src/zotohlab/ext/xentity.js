@@ -9,7 +9,7 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/asx/xentity", ['cherimoia/skarojs',
+define("zotohlab/asx/xpool", ['cherimoia/skarojs',
                                 'zotohlab/asterix'],
   function (sjs, sh) { "use strict";
 
