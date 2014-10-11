@@ -9,152 +9,148 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this, _ = global._ ;
+define('zotohlab/p/s/collisions', ['zotohlab/p/s/utils',
+                                  'zotohlab/p/gnodes',
+                                  'cherimoia/skarojs',
+                                  'zotohlab/asterix',
+                                  'zotohlab/asx/xcfg',
+                                  'zotohlab/asx/ccsx',
+                                  'ash-js'],
 
-var asterix= global.ZotohLab.Asterix,
-ccsx= asterix.CCS2DX,
-sjs= global.SkaroJS,
-sh= asterix,
-ast= sh.Asteroids,
-utils=ast.SystemUtils;
+  function (utils, gnodes, sjs, sh, xcfg, ccsx, Ash ) { "use strict";
 
+    var csts = xcfg.csts,
+    R = sjs.ramda,
+    undef,
+    CollisionSystem = Ash.System.extend({
 
-//////////////////////////////////////////////////////////////////////////////
-//
+      constructor: function(options) {
+        this.factory= options.factory;
+        this.state= options;
+      },
 
-ast.CollisionSystem = Ash.System.extend({
+      removeFromEngine: function(engine) {
+        this.ships= undef;
+        this.engine=undef;
+      },
 
-  constructor: function(options) {
-    this.factory= options.factory;
-    this.state= options;
-    return this;
-  },
+      addToEngine: function(engine) {
+        this.ships= engine.getNodeList(gnodes.ShipMotionNode);
+        this.engine=engine;
+      },
 
-  removeFromEngine: function(engine) {
-  },
+      update: function (dt) {
+        var p = sh.pools[ csts.P_LAS],
+        m= sh.pools[ csts.P_LMS],
+        ship = this.ships.head;
 
-  addToEngine: function(engine) {
-    this.ships= engine.getNodeList(ast.ShipMotionNode);
-    this.engine=engine;
-  },
+        if (this.state.running &&
+           !!ship) {
 
-  update: function (dt) {
-    var csts= sh.xcfg.csts,
-    p = sh.pools[sh.xcfg.csts.P_LAS],
-    m= sh.pools[csts.P_LMS],
-    ship = this.ships.head;
+          // 1. get rid of all colliding bombs & missiles.
+          //this.checkMissilesBombs();
+          // 2. kill aliens
+          this.checkMissilesRocks(p,m);
 
-    // 1. get rid of all colliding bombs & missiles.
-    //this.checkMissilesBombs();
-    // 2. kill aliens
-    this.checkMissilesRocks(p,m);
+          // 3. ship ok?
+          //this.checkShipBombs(ship);
+          // 4. overruned by aliens ?
+          this.checkShipRocks(p, ship);
+        }
 
-    if (ship) {
-      // 3. ship ok?
-      //this.checkShipBombs(ship);
-      // 4. overruned by aliens ?
-      this.checkShipRocks(p, ship);
-    }
+      },
 
-  },
+      checkMissilesBombs: function() {
+        var mss = sh.pools[csts.P_LMS],
+        bbs = sh.pools[csts.P_LAS],
+        k, a, m, b;
 
-  checkMissilesBombs: function() {
-    var k, a, m, b, csts= sh.xcfg.csts,
-    mss = sh.pools[csts.P_LMS],
-    bbs = sh.pools[csts.P_LAS];
+        R.forEach(function(z) {
+          a= R.keys(mss);
+          b= bbs[z];
+          for (k = 0; k < a.length; ++k) {
+            m = mss[ a[k] ];
+            if ( ccsx.collide0(m.sprite, b.sprite)) {
+              utils.killBomb(b,true);
+              utils.killMissile(m);
+              break;
+            }
+          }
+        }, R.keys(bbs));
+      },
 
-    _.each(_.keys(bbs), function(z) {
-      a= _.keys(mss);
-      b= bbs[z];
-      for (k = 0; k < a.length; ++k) {
-        m = mss[ a[k] ];
-        if ( ccsx.collide0(m.sprite, b.sprite)) {
-          utils.killBomb(b,true);
-          utils.killMissile(m);
-          break;
+      checkMissilesRocks: function(ps, mss) {
+        var arr= R.values(ps),
+        sz= arr.length,
+        a,r,
+        m,n;
+
+        R.forEach(function(z) {
+          m = mss[z];
+          for (n=0; n < sz; ++n) {
+            a= arr[n].astro;
+            if (a.status !== true) { continue; }
+            if (ccsx.collide0(m.sprite, a.sprite)) {
+              r=a.rank;
+              utils.killMissile(m);
+              utils.killRock(a,true);
+              this.factory.createAsteroids(sh.main,this.state,r+1);
+              break;
+            }
+          }
+        }.bind(this), R.keys(mss));
+      },
+
+      checkShipBombs: function(node) {
+        var b, n, ship=node.ship,
+        pos= ship.sprite.getPosition(),
+        x= pos.x,
+        y= pos.y,
+        p= sh.pools[csts.P_LBS],
+        a= R.keys(p);
+
+        for (n=0; n < a.length; ++n) {
+          b = p[ a[n] ];
+          if (ccsx.collide0(b.sprite, ship.sprite)) {
+            utils.killBomb(b);
+            this.eraseShip(node);
+            break;
+          }
+        }
+      },
+
+      eraseShip: function(node) {
+        sh.main.removeItem(node.ship.sprite);
+        this.ships.remove(node);
+        this.engine.removeEntity(node.entity);
+        utils.killShip(node.ship,true);
+      },
+
+      checkShipRocks: function(p,snode) {
+        var n, rocks= R.values(p),
+        ship = snode.ship,
+        a,r,
+        sz= rocks.length;
+
+        for (n=0; n < sz; ++n) {
+          a=rocks[n].astro;
+          r= a.rank;
+          if (a.status !== true) { continue; }
+          if (ccsx.collide0(ship.sprite,
+                            a.sprite)) {
+            utils.killRock(a,true);
+            this.eraseShip(snode);
+            this.factory.createAsteroids(sh.main,this.state,r+1);
+            break;
+          }
         }
       }
+
     });
-  },
 
-  checkMissilesRocks: function(ps,mss) {
-    var m, n, csts= sh.xcfg.csts,
-    arr= _.values(ps),
-    a,r,
-    sz= arr.length;
-
-    _.each(_.keys(mss), function(z) {
-      m = mss[z];
-      for (n=0; n < sz; ++n) {
-        a= arr[n].astro;
-        if (a.status !== true) { continue; }
-        if (ccsx.collide0(m.sprite, a.sprite)) {
-          r=a.rank;
-          utils.killMissile(m);
-          utils.killRock(a,true);
-          this.factory.createAsteroids(sh.main,this.state,r+1);
-          break;
-        }
-      }
-    },this);
-  },
-
-  checkShipBombs: function(node) {
-    var b, n, csts = sh.xcfg.csts,
-    ship=node.ship,
-    pos= ship.sprite.getPosition(),
-    x= pos.x,
-    y= pos.y,
-    p= sh.pools[csts.P_LBS],
-    a= _.keys(p);
-
-    for (n=0; n < a.length; ++n) {
-      b = p[ a[n] ];
-      if (ccsx.collide0(b.sprite, ship.sprite)) {
-        utils.killBomb(b);
-        this.eraseShip(node);
-        break;
-      }
-    }
-  },
-
-  eraseShip: function(node) {
-    //node.ship.sprite.getParent().removeChild(node.sprite);
-    sh.main.removeItem(node.ship.sprite);
-    this.ships.remove(node);
-    this.engine.removeEntity(node.entity);
-    utils.killShip(node.ship,true);
-  },
-
-  checkShipRocks: function(p,snode) {
-    var n, rocks= _.values(p),
-    ship = snode.ship,
-    a,r,
-    sz= rocks.length;
-
-    for (n=0; n < sz; ++n) {
-      a=rocks[n].astro;
-      r= a.rank;
-      if (a.status !== true) { continue; }
-      if (ccsx.collide0(ship.sprite,
-                        a.sprite)) {
-        utils.killRock(a,true);
-        this.eraseShip(snode);
-        this.factory.createAsteroids(sh.main,this.state,r+1);
-        break;
-      }
-    }
-  }
-
-
+    return CollisionSystem;
 });
-
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
 

@@ -9,103 +9,94 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._ ;
+define('zotohlab/p/config', ['cherimoia/skarojs',
+                            'zotohlab/asterix',
+                            'zotohlab/asx/xcfg'],
 
-var asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
-sjs= global.SkaroJS;
+  function (sjs, sh, xcfg) { "use strict";
 
-asterix.Asteroids= {};
+    var P_AS3= 'aster3',
+    P_AS2= 'aster2',
+    P_AS1= 'aster1';
 
-var P_AS3= 'aster3',
-P_AS2= 'aster2',
-P_AS1= 'aster1';
+    sjs.merge( xcfg, {
 
+      appKey: "339a5c13-24b3-4069-9a0a-661820573fb3",
 
-//////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
+      appid: 'asteroids',
+      color: 'red',
 
-sh.xcfg = sjs.mergeEx(asterix.XConfig, {
+      csts: {
+        P_LMS: 'live-missiles',
+        P_LLS: 'live-lasers',
+        P_MS: 'missiles',
+        P_LS: 'lasers',
 
-  appKey: "339a5c13-24b3-4069-9a0a-661820573fb3",
+        P_LAS: 'live-asteroids',
+        P_AS3: 3,
+        P_AS2: 2,
+        P_AS1: 1,
 
-  appid: 'asteroids',
-  color: 'red',
-
-  csts: {
-    P_LMS: 'live-missiles',
-    P_LLS: 'live-lasers',
-    P_MS: 'missiles',
-    P_LS: 'lasers',
-
-    P_LAS: 'live-asteroids',
-    P_AS3: 3,
-    P_AS2: 2,
-    P_AS1: 1,
-
-    GRID_W: 60,
-    GRID_H: 40
-  },
-
-  assets: {
-    atlases: {
-      'game-pics' : 'res/{{appid}}/game/sprites'
-    },
-    tiles: {
-    },
-    images: {
-      'splash.play-btn' : 'res/cocos2d/btns/play_gray_x64.png'
-    },
-    sounds: {
-      'game_end' : 'res/cocos2d/sfx/MineExplosion',
-      'game_quit' : 'res/cocos2d/sfx/Death'
-    },
-    fonts: {
-    }
-  },
-
-  devices: {
-    iphone:{height:320, width:480, scale:1},
-    android:{height:320, width:480, scale:1},
-    ipad:{height:320, width:480, scale:2},
-    default:{height:320, width:480, scale:1}
-  },
-
-  game: {
-    size: {height:320, width:480, scale:1}
-  },
-
-  levels: {
-    "gamelevel1" : {
-      tiles : {
-        'hudwall' : 'game/{{appid}}/levels/hudwall.tmx',
-        'arena' : 'game/{{appid}}/levels/arena.tmx'
+        GRID_W: 60,
+        GRID_H: 40
       },
-      images : {
-        'arena' : 'game/{{appid}}/levels/arena.png'
+
+      assets: {
+        atlases: {
+          'game-pics' : 'res/{{appid}}/game/sprites'
+        },
+        tiles: {
+        },
+        images: {
+          'splash.play-btn' : 'res/cocos2d/btns/play_gray_x64.png'
+        },
+        sounds: {
+          'game_end' : 'res/cocos2d/sfx/MineExplosion',
+          'game_quit' : 'res/cocos2d/sfx/Death'
+        },
+        fonts: {
+        }
       },
-      sprites : {
+
+      devices: {
+        iphone:{height:320, width:480, scale:1},
+        android:{height:320, width:480, scale:1},
+        ipad:{height:320, width:480, scale:2},
+        default:{height:320, width:480, scale:1}
       },
-      fixtures: [
-        null,
-        [5, 'rock_large.png'],
-        [5, 'rock_med.png'],
-        [10, 'rock_small.png']
-      ]
-    }
-  },
 
-  runOnce: function() {
-    cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
-  }
+      game: {
+        size: {height:320, width:480, scale:1}
+      },
 
+      levels: {
+        "gamelevel1" : {
+          tiles : {
+            'hudwall' : 'game/{{appid}}/levels/hudwall.tmx',
+            'arena' : 'game/{{appid}}/levels/arena.tmx'
+          },
+          images : {
+            'arena' : 'game/{{appid}}/levels/arena.png'
+          },
+          sprites : {
+          },
+          fixtures: [
+            null,
+            [5, 'rock_large.png'],
+            [5, 'rock_med.png'],
+            [10, 'rock_small.png']
+          ]
+        }
+      },
 
+      runOnce: function() {
+        cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
+      }
+
+    });
+
+    return xcfg;
 });
-
-
-}).call(this);
-
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

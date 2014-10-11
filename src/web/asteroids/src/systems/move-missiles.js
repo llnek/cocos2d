@@ -9,92 +9,85 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this, _ = global._ ;
+define('zotohlab/p/s/movemissiles', ['zotohlab/p/s/utils',
+                                     'cherimoia/skarojs',
+                                     'zotohlab/asterix',
+                                     'zotohlab/asx/xcfg',
+                                     'zotohlab/asx/ccsx',
+                                     'ash-js'],
 
-var asterix= global.ZotohLab.Asterix,
-ccsx= asterix.CCS2DX,
-sjs= global.SkaroJS,
-sh= asterix,
-ast= sh.Asteroids,
-utils= ast.SystemUtils;
+  function (utils, sjs, sh, xcfg, ccsx, Ash) { "use strict";
 
+    var csts = xcfg.csts,
+    undef,
+    R= sjs.ramda,
+    MoveMissiles = Ash.System.extend({
 
-//////////////////////////////////////////////////////////////////////////////
-//
+      constructor: function(options) {
+        this.state= options;
+      },
 
-ast.MoveMissiles = Ash.System.extend({
+      removeFromEngine: function(engine) {
+      },
 
-  constructor: function(options) {
-    this.state= options;
-    return this;
-  },
+      addToEngine: function(engine) {
+      },
 
-  removeFromEngine: function(engine) {
-  },
+      update: function (dt) {
+        var h = ccsx.screen().height - csts.TILE,
+        aa=[],
+        pos,
+        x,y;
 
-  addToEngine: function(engine) {
-  },
+        sjs.eachObj(function(b) {
+          pos= b.sprite.getPosition();
+          y = pos.y + dt * b.vel.y * b.speed;
+          x = pos.x + dt * b.vel.x * b.speed;
+          b.sprite.setPosition(x, y);
+          if (ccsx.getTop(b.sprite) >= h) {
+            pos= b.sprite.getPosition();
+            b.sprite.setPosition(pos.x,h);
+            aa.push(b);
+          }
+        }, sh.pools[csts.P_LMS]);
 
-  update: function (dt) {
-    var csts= sh.xcfg.csts,
-    h = ccsx.screen().height - csts.TILE,
-    aa=[],
-    pos,
-    x,y;
-    _.each(sh.pools[csts.P_LMS],function(b) {
-      pos= b.sprite.getPosition();
-      y = pos.y + dt * b.vel.y * b.speed;
-      x = pos.x + dt * b.vel.x * b.speed;
-      b.sprite.setPosition(x, y);
-      if (ccsx.getTop(b.sprite) >= h) {
-        pos= b.sprite.getPosition();
-        b.sprite.setPosition(pos.x,h);
-        aa.push(b);
+        R.forEach(function(b) {
+          //this.killMissile(b);
+        }.bind(this), aa);
+      },
+
+      killMissile: function(b) {
+        var p = sh.pools[csts.P_LMS],
+        ent,
+        tag= b.sprite.getTag(),
+        pos = b.sprite.getPosition();
+
+        delete p[tag];
+        sjs.loggr.debug('put back one missile into pool');
+        sh.pools[csts.P_MS].add(b);
+        // explosion?
+        if (false) {
+          this.showExplosion(pos.x,pos.y);
+        }
+      },
+
+      showExplosion: function(x,y) {
+        var p= sh.pools[csts.P_ES],
+        ent = p.get();
+
+        if (! sjs.echt(ent)) {
+          utils.createExplosions();
+          ent= p.get();
+        }
+        ent.inflate(x,y);
+        sh.sfxPlay('xxx-explode');
       }
-    },this);
-    _.each(aa,function(b) {
-      //this.killMissile(b);
-    },this);
-  },
 
-  killMissile: function(b) {
-    var csts = sh.xcfg.csts,
-    p = sh.pools[csts.P_LMS],
-    ent,
-    tag= b.sprite.getTag(),
-    pos = b.sprite.getPosition();
+    });
 
-    delete p[tag];
-    sjs.loggr.debug('put back one missile into pool');
-    sh.pools[csts.P_MS].add(b);
-    // explosion?
-    if (false) {
-      this.showExplosion(pos.x,pos.y);
-    }
-  },
-
-  showExplosion: function(x,y) {
-    var csts = sh.xcfg.csts,
-    p= sh.pools[csts.P_ES],
-    ent = p.get();
-
-    if (! sjs.echt(ent)) {
-      utils.createExplosions();
-      ent= p.get();
-    }
-    ent.revive(x,y);
-    sh.sfxPlay('xxx-explode');
-  }
-
-
+    return MoveMissiles;
 });
-
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
 

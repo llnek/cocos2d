@@ -9,97 +9,89 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this, _ = global._ ;
+define('zotohlab/p/s/moveasteroids', ['cherimoia/skarojs',
+                                     'zotohlab/asterix',
+                                     'zotohlab/asx/xcfg',
+                                     'zotohlab/asx/ccsx',
+                                     'ash-js'],
 
-var asterix= global.ZotohLab.Asterix,
-ccsx= asterix.CCS2DX,
-sjs= global.SkaroJS,
-sh= asterix,
-ast= sh.Asteroids,
-utils= ast.SystemUtils;
+  function (sjs, sh, xcfg, ccsx, Ash) { "use strict";
 
+    var csts = xcfg.csts,
+    R = sjs.ramda,
+    undef,
+    MoveAsteroids = Ash.System.extend({
 
-//////////////////////////////////////////////////////////////////////////////
-//
+      constructor: function(options) {
+        this.state= options;
+      },
 
-ast.MoveAsteroids = Ash.System.extend({
+      removeFromEngine: function(engine) {
+      },
 
-  constructor: function(options) {
-    this.state= options;
-    return this;
-  },
+      addToEngine: function(engine) {
+      },
 
-  removeFromEngine: function(engine) {
-  },
+      update: function (dt) {
+        var p= sh.pools[ csts.P_LAS];
+        sjs.eachObj(function(n) {
+          this.process(n,dt);
+        }.bind(this), p);
+      },
 
-  addToEngine: function(engine) {
-  },
+      process: function(node, dt) {
+        var rot= node.rotation,
+        B = this.state.world,
+        velo= node.velocity,
+        sp= node.astro.sprite,
+        sz= sp.getContentSize(),
+        pos= sp.getPosition(),
+        r,x,y;
 
-  update: function (dt) {
-    var p= sh.pools[sh.xcfg.csts.P_LAS];
-    _.each(p,function(n) {
-      this.process(n,dt);
-    },this);
-  },
+        x = pos.x + dt * velo.vel.x;
+        y = pos.y + dt * velo.vel.y;
 
-  process: function(node,dt) {
-    var rot= node.rotation,
-    B = this.state.world,
-    velo= node.velocity,
-    sp= node.astro.sprite,
-    sz= sp.getContentSize(),
-    pos= sp.getPosition(),
-    r,x,y;
+        rot.angle += 0.1;
+        if (rot.angle > 360) { rot.angle -= 360; }
 
-    x = pos.x + dt * velo.vel.x;
-    y = pos.y + dt * velo.vel.y;
+        sp.setRotation(rot.angle);
+        sp.setPosition(x,y);
 
-    rot.angle += 0.1;
-    if (rot.angle > 360) { rot.angle -= 360; }
+        //wrap?
+        r= ccsx.bbox4(sp);
 
-    sp.setRotation(rot.angle);
-    sp.setPosition(x,y);
+        if (r.bottom > B.top) {
+          if (velo.vel.y > 0) {
+            y = B.bottom - sz.height;
+          }
+        }
 
-    //wrap?
-    r= ccsx.bbox4(sp);
+        if (r.top < B.bottom) {
+          if (velo.vel.y < 0) {
+            y = B.top + sz.height;
+          }
+        }
 
-    if (r.bottom > B.top) {
-      if (velo.vel.y > 0) {
-        y = B.bottom - sz.height;
+        if (r.left > B.right) {
+          if (velo.vel.x > 0) {
+            x = B.left - sz.width;
+          }
+        }
+
+        if (r.right < B.left) {
+          if (velo.vel.x < 0) {
+            x = B.right + sz.width;
+          }
+        }
+
+        sp.setPosition(x,y);
       }
-    }
 
-    if (r.top < B.bottom) {
-      if (velo.vel.y < 0) {
-        y = B.top + sz.height;
-      }
-    }
+    });
 
-    if (r.left > B.right) {
-      if (velo.vel.x > 0) {
-        x = B.left - sz.width;
-      }
-    }
-
-    if (r.right < B.left) {
-      if (velo.vel.x < 0) {
-        x = B.right + sz.width;
-      }
-    }
-
-    sp.setPosition(x,y);
-  }
-
-
-
+    return MoveAsteroids;
 });
-
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
 

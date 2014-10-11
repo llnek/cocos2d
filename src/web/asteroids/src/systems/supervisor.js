@@ -9,99 +9,91 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this, _ = global._ ;
+define('zotohlab/p/s/supervisor', ['zotohlab/p/components',
+                                  'cherimoia/skarojs',
+                                  'zotohlab/asterix',
+                                  'zotohlab/asx/xcfg',
+                                  'zotohlab/asx/ccsx',
+                                  'zotohlab/asx/xpool',
+                                  'ash-js'],
 
-var asterix= global.ZotohLab.Asterix,
-ccsx= asterix.CCS2DX,
-sjs= global.SkaroJS,
-sh= asterix,
-ast= sh.Asteroids,
-utils=ast.SystemUtils;
+  function (cobjs, sjs, sh, xcfg, ccsx, xpool, Ash) { "use strict";
 
+    var csts = xcfg.csts,
+    undef,
+    GameSupervisor = Ash.System.extend({
 
-//////////////////////////////////////////////////////////////////////////////
-//
+      constructor: function(options) {
+        this.factory= options.factory;
+        this.state= options;
+        this.inited=false;
+      },
 
-ast.GameSupervisor = Ash.System.extend({
+      removeFromEngine: function(engine) {
+      },
 
-  constructor: function(options) {
-    this.factory= options.factory;
-    this.state= options;
-    this.inited=false;
-    return this;
-  },
+      addToEngine: function(engine) {
+      },
 
-  removeFromEngine: function(engine) {
-  },
+      update: function (dt) {
+        if (! this.inited) {
+          this.onceOnly();
+          this.inited=true;
+        } else {
+        }
+      },
 
-  addToEngine: function(engine) {
-  },
+      onceOnly: function() {
 
-  update: function (dt) {
-    if (! this.inited) {
-      this.onceOnly();
-      this.inited=true;
-    } else {
-    }
-  },
+        sh.pools[csts.P_MS] = new xpool.XEntityPool({ entityProto: cobjs.Missile });
+        sh.pools[csts.P_LS] = new xpool.XEntityPool({ entityProto: cobjs.Laser });
 
-  onceOnly: function() {
-    var csts=sh.xcfg.csts;
-    sh.pools[csts.P_MS] = new asterix.XEntityPool({ entityProto: ast.Missile });
-    sh.pools[csts.P_LS] = new asterix.XEntityPool({ entityProto: ast.Laser });
+        sh.pools[csts.P_AS3] = new xpool.XEntityPool({ entityProto: cobjs.Asteroid });
+        sh.pools[csts.P_AS2] = new xpool.XEntityPool({ entityProto: cobjs.Asteroid });
+        sh.pools[csts.P_AS1] = new xpool.XEntityPool({ entityProto: cobjs.Asteroid });
 
-    sh.pools[csts.P_AS3] = new asterix.XEntityPool({ entityProto: ast.Asteroid });
-    sh.pools[csts.P_AS2] = new asterix.XEntityPool({ entityProto: ast.Asteroid });
-    sh.pools[csts.P_AS1] = new asterix.XEntityPool({ entityProto: ast.Asteroid });
+        sh.pools[csts.P_LMS] = {};
+        sh.pools[csts.P_LLS] = {};
+        sh.pools[csts.P_LAS] = {};
 
-    sh.pools[csts.P_LMS] = {};
-    sh.pools[csts.P_LLS] = {};
-    sh.pools[csts.P_LAS] = {};
+        this.initAsteroidSizes();
+        this.initPlayerSize();
+        this.initUfoSize();
+        this.factory.createAsteroids(sh.main,this.state, csts.P_AS1);
+        this.factory.createShip(sh.main,this.state);
+      },
 
-    this.initAsteroidSizes();
-    this.initPlayerSize();
-    this.initUfoSize();
-    this.factory.createAsteroids(sh.main,this.state,
-                                sh.xcfg.csts.P_AS1);
-    this.factory.createShip(sh.main,this.state);
+      initAsteroidSizes: function() {
+        var s = new cc.Sprite();
+        s.initWithSpriteFrameName('rock_small.png');
+        this.state.astro3 = s.getContentSize();
 
-  },
+        s = new cc.Sprite();
+        s.initWithSpriteFrameName('rock_med.png');
+        this.state.astro2 = s.getContentSize();
 
-  initAsteroidSizes: function() {
-    var s = new cc.Sprite();
-    s.initWithSpriteFrameName('rock_small.png');
-    this.state.astro3 = s.getContentSize();
+        s = new cc.Sprite();
+        s.initWithSpriteFrameName('rock_large.png');
+        this.state.astro1 = s.getContentSize();
+      },
 
-    s = new cc.Sprite();
-    s.initWithSpriteFrameName('rock_med.png');
-    this.state.astro2 = s.getContentSize();
+      initPlayerSize: function() {
+        var s = new cc.Sprite();
+        s.initWithSpriteFrameName('rship_0.png');
+        this.state.playerSize = s.getContentSize();
+      },
 
-    s = new cc.Sprite();
-    s.initWithSpriteFrameName('rock_large.png');
-    this.state.astro1 = s.getContentSize();
-  },
+      initUfoSize: function() {
+        var s = new cc.Sprite();
+        s.initWithSpriteFrameName('ufo.png');
+        this.state.ufoSize = s.getContentSize();
+      }
 
-  initPlayerSize: function() {
-    var s = new cc.Sprite();
-    s.initWithSpriteFrameName('rship_0.png');
-    this.state.playerSize = s.getContentSize();
-  },
+    });
 
-  initUfoSize: function() {
-    var s = new cc.Sprite();
-    s.initWithSpriteFrameName('ufo.png');
-    this.state.ufoSize = s.getContentSize();
-  }
-
-
+    return GameSupervisor;
 });
-
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
 

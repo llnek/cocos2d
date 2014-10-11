@@ -9,90 +9,82 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this, _ = global._ ;
+define('zotohlab/p/s/movelasers', ['zotohlab/p/s/utils',
+                                  'cherimoia/skarojs',
+                                  'zotohlab/asterix',
+                                  'zotohlab/asx/xcfg',
+                                  'zotohlab/asx/ccsx',
+                                  'ash-js'],
 
-var asterix= global.ZotohLab.Asterix,
-ccsx= asterix.CCS2DX,
-sjs= global.SkaroJS,
-sh= asterix,
-ivs= sh.Invaders,
-utils= ivs.SystemUtils;
+  function (utils, sjs, sh, xcfg, ccsx, Ash) { "use strict";
 
+    var csts = xcfg.csts,
+    undef,
+    MovementBombs = Ash.System.extend({
 
-//////////////////////////////////////////////////////////////////////////////
-//
+      constructor: function(options) {
+        this.state= options;
+      },
 
-ivs.MovementBombs = Ash.System.extend({
+      removeFromEngine: function(engine) {
+      },
 
-  constructor: function(options) {
-    this.state= options;
-    return this;
-  },
+      addToEngine: function(engine) {
+      },
 
-  removeFromEngine: function(engine) {
-  },
+      update: function (dt) {
+        var aa=[],
+        pos,
+        y;
 
-  addToEngine: function(engine) {
-  },
+        sjs.eachObj(function(b) {
+          pos= b.sprite.getPosition();
+          y = pos.y + dt * b.vel.y;
+          b.sprite.setPosition(pos.x, y);
+          if (ccsx.getBottom(b.sprite) <= csts.TILE) {
+            pos= b.sprite.getPosition();
+            b.sprite.setPosition(pos.x,csts.TILE);
+            aa.push(b);
+          }
+        }, sh.pools[csts.P_LBS] );
 
-  update: function (dt) {
-    var csts= sh.xcfg.csts,
-    aa=[],
-    pos,
-    y;
-    _.each(sh.pools[csts.P_LBS],function(b) {
-      pos= b.sprite.getPosition();
-      y = pos.y + dt * b.vel.y;
-      b.sprite.setPosition(pos.x, y);
-      if (ccsx.getBottom(b.sprite) <= csts.TILE) {
-        pos= b.sprite.getPosition();
-        b.sprite.setPosition(pos.x,csts.TILE);
-        aa.push(b);
+        R.forEach(function(b) {
+          this.killBomb(b);
+        }.bind(this), aa);
+      },
+
+      killBomb: function(b) {
+        var p = sh.pools[csts.P_LBS],
+        ent,
+        tag= b.sprite.getTag(),
+        pos = b.sprite.getPosition();
+
+        delete p[tag];
+        sjs.loggr.debug('put back one bomb into pool');
+        sh.pools[csts.P_BS].add(b);
+        // explosion?
+        if (true) {
+          this.showExplosion(pos.x,pos.y);
+        }
+      },
+
+      showExplosion: function(x,y) {
+        var p= sh.pools[csts.P_ES],
+        ent = p.get();
+
+        if (! sjs.echt(ent)) {
+          utils.createExplosions();
+          ent= p.get();
+        }
+        ent.inflate(x,y);
+        sh.sfxPlay('xxx-explode');
       }
-    },this);
-    _.each(aa,function(b) {
-      this.killBomb(b);
-    },this);
-  },
 
-  killBomb: function(b) {
-    var csts = sh.xcfg.csts,
-    p = sh.pools[csts.P_LBS],
-    ent,
-    tag= b.sprite.getTag(),
-    pos = b.sprite.getPosition();
+    });
 
-    delete p[tag];
-    sjs.loggr.debug('put back one bomb into pool');
-    sh.pools[csts.P_BS].add(b);
-    // explosion?
-    if (true) {
-      this.showExplosion(pos.x,pos.y);
-    }
-  },
-
-  showExplosion: function(x,y) {
-    var csts = sh.xcfg.csts,
-    p= sh.pools[csts.P_ES],
-    ent = p.get();
-
-    if (! sjs.echt(ent)) {
-      utils.createExplosions();
-      ent= p.get();
-    }
-    ent.revive(x,y);
-    sh.sfxPlay('xxx-explode');
-  }
-
-
+    return MovementBombs;
 });
-
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
 

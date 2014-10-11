@@ -9,468 +9,154 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this, _ = global._ ;
+define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
+                           'cherimoia/skarojs',
+                           'zotohlab/asterix',
+                           'zotohlab/asx/xcfg',
+                           'zotohlab/asx/ccsx',
+                           'zotohlab/asx/xlayers',
+                           'zotohlab/asx/xscenes',
+                           'zotohlab/asx/xmmenus',
+                           'zotohlab/p/hud',
+                           'ash-js'],
 
-var asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
-ccsx = asterix.COCOS2DX,
-ast= asterix.Asteroids,
-sjs= global.SkaroJS;
+  function(sobjs, sjs, sh, xcfg, ccsx, layers, scenes, mmenus, huds, Ash) { "use strict";
 
-//////////////////////////////////////////////////////////////////////////////
-// game layer
-//////////////////////////////////////////////////////////////////////////////
-var GameLayer = asterix.XGameLayer.extend({
+    var csts = xcfg.csts,
+    R = sjs.ramda,
+    undef,
+    GameLayer = layers.XGameLayer.extend({
 
-  getHUD: function() {
-    var rc= this.ptScene.getLayers();
-    return rc['HUD'];
-  },
+      getHUD: function() {
+        var rc= this.ptScene.getLayers();
+        return rc['HUD'];
+      },
 
-  getNode: function() { return this.atlasBatch; },
+      getNode: function() { return this.atlasBatch; },
 
-  replay: function() {
-    this.play(false);
-  },
+      replay: function() {
+        this.play(false);
+      },
 
-  play: function(newFlag) {
-    this.reset(newFlag);
-    this.cleanSlate();
+      play: function(newFlag) {
 
-    this.options.factory=new ast.EntityFactory(this.engine);
-    this.options.level=1;
-    this.options.world= this.getEnclosureRect();
+        var pss = sobjs.Priorities;
 
+        this.reset(newFlag);
+        this.cleanSlate();
 
-    this.engine.addSystem(new ast.GameSupervisor(this.options),
-                          ast.Priorities.PreUpdate);
+        this.options.factory=new sobjs.EntityFactory(this.engine);
+        this.options.world= this.getEnclosureRect();
+        this.options.level=1;
+        this.options.running=true;
 
-    this.engine.addSystem(new ast.MotionControls(this.options),
-                          ast.Priorities.Motion);
-    this.engine.addSystem(new ast.MissileControl(this.options),
-                          ast.Priorities.Motion);
+        R.forEach(function(z) {
+          this.engine.addSystem(new (z[0])(this.options), z[1]);
+        }.bind(this),
+        [ [sobjs.Supervisor, pss.PreUpdate],
+          [sobjs.Motions, pss.Motion],
+          [sobjs.MissileControl, pss.Motion],
+          [sobjs.MoveAsteroids, pss.Movement],
+          [sobjs.MovementShip, pss.Movement],
+          [sobjs.MoveMissiles, pss.Movement],
+          [sobjs.Collisions, pss.Collision] ]);
+      },
 
-    this.engine.addSystem(new ast.MoveAsteroids(this.options),
-                          ast.Priorities.Movement);
-    this.engine.addSystem(new ast.MovementShip(this.options),
-                          ast.Priorities.Movement);
+      reset: function(newFlag) {
+        if (this.atlasBatch) { this.atlasBatch.removeAllChildren(); } else {
+          var img = cc.textureCache.addImage( sh.getAtlasPath('game-pics'));
+          this.atlasBatch = cc.SpriteBatchNode.create(img,320);
+          this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
+        }
+        if (newFlag) {
+          this.getHUD().resetAsNew();
+        } else {
+          this.getHUD().reset();
+        }
+      },
 
-    this.engine.addSystem(new ast.MoveMissiles(this.options),
-                          ast.Priorities.Movement);
+      operational: function() {
+        return this.options.running;
+      },
 
-    this.engine.addSystem(new ast.CollisionSystem(this.options),
-                          ast.Priorities.Collision);
+      spawnPlayer: function() {
+        this.options.factory.createShip(sh.main, this.options);
+      },
 
-    this.options.running=true;
-  },
+      onPlayerKilled: function(msg) {
+        if ( this.getHUD().reduceLives(1)) {
+          this.onDone();
+        } else {
+          this.spawnPlayer();
+        }
+      },
 
-  reset: function(newFlag) {
-    if (this.atlasBatch) { this.atlasBatch.removeAllChildren(); } else {
-      var img = cc.textureCache.addImage( sh.getAtlasPath('game-pics'));
-      this.atlasBatch = cc.SpriteBatchNode.create(img,320);
-      this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
-    }
-    /*
-    sh.pools['missiles'].drain();
-    sh.pools['lasers'].drain();
-    sh.pools['live-missiles'] = {};
-    sh.pools['live-lasers'] = {};
-    this.initAsteroidSizes();
-    this.initPlayerSize();
-    this.initUfoSize();
-    this.players=[];
-    this.ufos=[];
-    this.actor=null;
-    */
-    if (newFlag) {
-      this.getHUD().resetAsNew();
-    } else {
-      this.getHUD().reset();
-    }
-  },
+      onDone: function() {
+        this.reset();
+        this.getHUD().enableReplay();
+      },
 
-  operational: function() {
-    return this.options.running;
-  },
+      onEarnScore: function(msg) {
+        this.getHUD().updateScore(msg.score);
+      },
 
-  updateEntities: function(dt) {
-
-    _.each(this.rocks,function(z) {
-      if (z && z.status) {
-        z.update(dt);
+      onNewGame: function(mode) {
+        //sh.xcfg.sfxPlay('start_game');
+        this.setGameMode(mode);
+        this.play(true);
       }
+
     });
 
-    if (this.ufos.length === 0) {
-      this.spawnUfo();
-    }
+    return {
 
-    var obj= sh.pools['live-lasers'];
-    _.each(_.keys(obj), function(k) {
-      obj[k].update(dt);
-    });
+      'GameArena' : {
 
-    this.actor.update(dt);
-
-    _.each(this.ufos, function(z) {
-      z.update(dt);
-    });
-
-    obj = sh.pools['live-missiles'];
-    _.each(_.keys(obj), function(k) {
-      obj[k].update(dt);
-    });
-
-    obj = sh.pools['live-lasers'];
-    _.each(_.keys(obj), function(k) {
-      obj[k].update(dt);
-    });
-
-  },
-
-  checkEntities: function(dt) {
-
-    this.checkMissilesLasers(dt);
-    this.checkMissilesAstros(dt);
-    this.checkMissilesUfos(dt);
-
-    this.checkShipLasers(dt);
-    this.checkShipAstros(dt);
-    this.checkShipUfos(dt);
-
-    for (var n=0; n< 5; ++n) {
-      this.checkRocks(dt);
-    }
-  },
-
-  checkShipLasers: function(dt) {
-    var bss = sh.pools['live-lasers'],
-    a= _.keys(bss),
-    b, n, p = this.actor;
-    for (n=0; n < a.length; ++n) {
-      b = bss[ a[n] ];
-      if (ccsx.collide(b, p)) {
-        p.check(b);
-        break;
-      }
-    }
-  },
-
-  checkShipAstros: function(dt) {
-    var ass= this.rocks,
-    p= this.actor,
-    n;
-    for (n=0; n < ass.length; ++n) {
-      if (ass[n].status !== true) { continue; }
-      if (ccsx.collide(p, ass[n])) {
-        p.check(ass[n]);
-        break;
-      }
-    }
-  },
-
-  checkShipUfos: function(dt) {
-    var ass= this.ufos,
-    p= this.actor,
-    n;
-    for (n=0; n < ass.length; ++n) {
-      if (ass[n].status !== true) { continue; }
-      if (ccsx.collide(p, ass[n])) {
-        p.check(ass[n]);
-        break;
-      }
-    }
-  },
-
-  checkMissilesAstros: function(dt) {
-    var mss = sh.pools['live-missiles'],
-    ass= this.rocks,
-    m, n;
-    _.each(_.keys(mss), function(z) {
-      m = mss[z];
-      for (n=0; n < ass.length; ++n) {
-        if (ass[n].status !== true) { continue; }
-        if (ccsx.collide(m, ass[n])) {
-          m.check(ass[n]);
-          break;
+        create: function(options) {
+          var scene = new scenes.XSceneFactory([
+            huds.BackLayer,
+            GameLayer,
+            huds.HUDLayer
+          ]).create(options);
+          if (!!scene) {
+            scene.ebus.on('/game/objects/missiles/killed', function(topic, msg) {
+              sh.main.onMissileKilled(msg);
+            });
+            scene.ebus.on('/game/objects/ufos/killed', function(topic, msg) {
+              sh.main.onUfoKilled(msg);
+            });
+            scene.ebus.on('/game/objects/players/shoot',function(t,msg) {
+              sh.main.onFireMissile(msg);
+            });
+            scene.ebus.on('/game/objects/players/killed',function(t,msg) {
+              sh.main.onPlayerKilled(msg);
+            });
+            scene.ebus.on('/game/objects/ufos/shoot',function(t,msg) {
+              sh.main.onFireLaser(msg);
+            });
+            scene.ebus.on('/game/objects/stones/create',function(t,msg) {
+              sh.main.onCreateStones(msg);
+            });
+            scene.ebus.on('/game/objects/rocks/create',function(t,msg) {
+              sh.main.onCreateRocks(msg);
+            });
+            scene.ebus.on('/game/objects/players/earnscore', function(topic, msg) {
+              sh.main.onEarnScore(msg);
+            });
+            scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
+              mmenus.XMenuLayer.onShowMenu();
+            });
+            scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
+              sh.main.replay();
+            });
+          }
+          return scene;
         }
       }
-    });
-  },
 
-  checkMissilesUfos: function(dt) {
-    var mss = sh.pools['live-missiles'],
-    ass= this.ufos,
-    m, n;
-    _.each(_.keys(mss), function(z) {
-      m = mss[z];
-      for (n=0; n < ass.length; ++n) {
-        if (ass[n].status !== true) { continue; }
-        if (ccsx.collide(m, ass[n])) {
-          m.check(ass[n]);
-          break;
-        }
-      }
-    });
-  },
-
-  checkMissilesLasers: function(dt) {
-    var mss = sh.pools['live-missiles'],
-    bbs = sh.pools['live-lasers'],
-    k, a,m,b;
-    _.each(_.keys(bbs), function(z) {
-      a= _.keys(mss);
-      b= bbs[z];
-      for (k = 0; k < a.length; ++k) {
-        m = mss[ a[k] ];
-        if ( ccsx.collide(m, b)) {
-          m.check(b);
-          break;
-        }
-      }
-    });
-  },
-  checkRocks: function(dt) {
-    var r1,r2, i, j;
-    for (i =0; i < this.rocks.length; ++i) {
-      r1= this.rocks[i];
-      if (!r1.status) { continue; }
-      for (j= i+1; j < this.rocks.length; ++j) {
-        r2 = this.rocks[j];
-        if (!r2.status) { continue; }
-        if (ccsx.collide2(r1,r2)) {
-          ccsx.resolveElastic(r1,r2);
-        }
-      }
-    }
-  },
-
-  initAsteroidSizes: function() {
-    var dummy = new ast.EntityAsteroid3(0,0,{}),
-    s= dummy.create();
-    this.astro3 = s.getContentSize();
-
-    dummy = new ast.EntityAsteroid2(0,0,{});
-    s= dummy.create();
-    this.astro2 = s.getContentSize();
-
-    dummy = new ast.EntityAsteroid1(0,0,{});
-    s= dummy.create();
-    this.astro1 = s.getContentSize();
-  },
-
-  initPlayerSize: function() {
-    var dummy = new ast.EntityPlayer(0,0,{}),
-    s= dummy.create();
-    this.playerSize = s.getContentSize();
-  },
-
-  initUfoSize: function() {
-    var dummy = new ast.EntityUfo(0,0,{}),
-    s= dummy.create();
-    this.ufoSize = s.getContentSize();
-  },
-
-  initRocks: function() {
-    var cfg = sh.xcfg.levels['gamelevel' + this.level]['fixtures'],
-    h = this.astro1.height,
-    w = this.astro1.width,
-    csts= sh.xcfg.csts,
-    wz = ccsx.screen(),
-    cw = ccsx.center(),
-    aa, n, r,
-    x,y, deg,
-    B= this.getEnclosureRect();
-    this.rocks= [];
-    while (this.rocks.length < cfg[csts.P_AS1]) {
-      r= { left: sjs.randPercentage() * wz.width,
-           top: sjs.randPercentage() * wz.height };
-      r.bottom = r.top - h;
-      r.right = r.left + w;
-      if (!this.maybeOverlap(r) && !sh.outOfBound(r,B)) {
-        deg = sjs.randPercentage() * 360;
-        x = r.left + w/2;
-        y = r.top - h/2;
-        aa = new ast.EntityAsteroid1( x, y, {angle: deg});
-        this.addItem(aa.create());
-        this.rocks.push(aa);
-      }
-    }
-  },
-
-  spawnPlayer: function() {
-    this.options.factory.createShip(sh.main, this.options);
-  },
-
-  spawnUfo: function() {
-    var h = this.ufoSize.height,
-    w = this.ufoSize.width,
-    B= this.getEnclosureRect(),
-    wz = ccsx.screen(),
-    cw = ccsx.center(),
-    test=true,
-    aa,x,y,r;
-
-    this.ufos=[];
-    while (test) {
-      r= { left: sjs.randPercentage() * wz.width,
-           top: sjs.randPercentage() * wz.height };
-      r.bottom = r.top - h;
-      r.right = r.left + w;
-      if (!this.maybeOverlap(r) && !sh.outOfBound(r,B)) {
-        x = r.left + w/2;
-        y = r.top - h/2;
-        aa = new ast.EntityUfo( x, y, { player: this.actor });
-        this.addItem(aa.create());
-        this.ufos.push(aa);
-        test=false;
-      }
-    }
-  },
-
-  maybeOverlap: function (a) {
-    return _.some(this.rocks, function(z) {
-      var r={};
-      r.left= Math.floor(ccsx.getLeft(z.sprite));
-      r.top= Math.floor(ccsx.getTop(z.sprite));
-      r.bottom = r.top - ccsx.getHeight(z.sprite);
-      r.right= r.left + ccsx.getWidth(z.sprite);
-      return sh.isIntersect(r,a);
-    });
-  },
-
-  onFireMissile: function(msg) {
-    var ent = sh.pools['missiles'].get();
-    if (ent) {
-      ent.revive(msg.x, msg.y, msg);
-    } else {
-      ent = new ast.EntityMissile(msg.x, msg.y, msg);
-      this.addItem(ent.create());
-    }
-    sh.pools['live-missiles'][ent.OID] = ent;
-    //sh.sfxPlay('ship-missile');
-  },
-
-  onFireLaser: function(msg) {
-    var ent = sh.pools['lasers'].get();
-    if (ent) {
-      ent.revive(msg.x, msg.y, msg);
-    } else {
-      ent = new ast.EntityLaser(msg.x, msg.y, msg);
-      this.addItem(ent.create());
-    }
-    sh.pools['live-lasers'][ent.OID] = ent;
-    //sh.sfxPlay('ship-missile');
-  },
-
-  onPlayerKilled: function(msg) {
-    if ( this.getHUD().reduceLives(1)) {
-      this.onDone();
-    } else {
-      this.spawnPlayer();
-    }
-  },
-
-  onDone: function() {
-    this.reset();
-    this.getHUD().enableReplay();
-  },
-
-  onMissileKilled: function(msg) {
-    var obj = sh.pools['live-missiles'],
-    m= msg.entity,
-    tag= m.sprite.getTag();
-    delete obj[tag];
-    sh.pools['missiles'].add(m);
-  },
-
-  onUfoKilled: function(msg) {
-    var x= this.ufos.pop();
-    x.dispose();
-    this.ufos=[];
-  },
-
-  onLaserKilled: function(msg) {
-    var obj = sh.pools['live-lasers'],
-    m= msg.entity,
-    tag= m.sprite.getTag();
-    delete obj[tag];
-    sh.pools['lasers'].add(m);
-  },
-
-  onCreateStones: function(msg) {
-    var aa= new ast.EntityAsteroid3(msg.x, msg.y, msg);
-    this.addItem(aa.create());
-    this.rocks.push(aa);
-  },
-
-  onCreateRocks: function(msg) {
-    var aa= new ast.EntityAsteroid2(msg.x, msg.y, msg);
-    this.addItem(aa.create());
-    this.rocks.push(aa);
-  },
-
-  onEarnScore: function(msg) {
-    this.getHUD().updateScore(msg.score);
-  },
-
-  onNewGame: function(mode) {
-    //sh.xcfg.sfxPlay('start_game');
-    this.setGameMode(mode);
-    this.play(true);
-  }
+    };
 
 });
-
-
-
-asterix.Asteroids.Factory = {
-
-  create: function(options) {
-    var scene = new asterix.XSceneFactory([
-      ast.BackLayer,
-      GameLayer,
-      ast.HUDLayer
-    ]).create(options);
-    if (scene) {
-      scene.ebus.on('/game/objects/missiles/killed', function(topic, msg) {
-        sh.main.onMissileKilled(msg);
-      });
-      scene.ebus.on('/game/objects/ufos/killed', function(topic, msg) {
-        sh.main.onUfoKilled(msg);
-      });
-      scene.ebus.on('/game/objects/players/shoot',function(t,msg) {
-        sh.main.onFireMissile(msg);
-      });
-      scene.ebus.on('/game/objects/players/killed',function(t,msg) {
-        sh.main.onPlayerKilled(msg);
-      });
-      scene.ebus.on('/game/objects/ufos/shoot',function(t,msg) {
-        sh.main.onFireLaser(msg);
-      });
-      scene.ebus.on('/game/objects/stones/create',function(t,msg) {
-        sh.main.onCreateStones(msg);
-      });
-      scene.ebus.on('/game/objects/rocks/create',function(t,msg) {
-        sh.main.onCreateRocks(msg);
-      });
-      scene.ebus.on('/game/objects/players/earnscore', function(topic, msg) {
-        sh.main.onEarnScore(msg);
-      });
-      scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
-        asterix.XMenuLayer.onShowMenu();
-      });
-      scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
-        sh.main.replay();
-      });
-    }
-    return scene;
-  }
-
-};
-
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

@@ -9,48 +9,46 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this; var _ = global._ ,
-asterix= global.ZotohLab.Asterix,
-sh= global.ZotohLab.Asterix,
-SkaroJS= global.SkaroJS;
+define('zotohlab/p/l10n', ['cherimoia/skarojs',
+                          'zotohlab/asterix',
+                          'zotohlab/asx/xcfg'],
 
-//////////////////////////////////////////////////////////////////////////////
-//
-SkaroJS.merge(sh.xcfg.l10nTable, {
+  function(sjs, sh, xcfg) { "use strict";
 
-"en-US" : {
+    sjs.merge(xcfg.l10nTable, {
 
-  "%whosturn" : "{{who}}'s TURN...",
-  "%whodraw" : "Draw!",
-  "%whowin" : "{{who}} Wins!",
-  "%computer" : 'Computer',
-  "%player2" : 'Player 2',
-  "%player1" : 'Player 1',
+      "en-US" : {
 
-  "%quit!" : 'Quit',
-  "%back" : 'Back',
-  "%ok" : 'OK',
+        "%whosturn" : "{{who}}'s TURN...",
+        "%whodraw" : "Draw!",
+        "%whowin" : "{{who}} Wins!",
+        "%computer" : 'Computer',
+        "%player2" : 'Player 2',
+        "%player1" : 'Player 1',
 
-  "%cpu" : "CPU",
-  "%p2" : "P2",
-  "%p1" : "P1",
+        "%quit!" : 'Quit',
+        "%back" : 'Back',
+        "%ok" : 'OK',
 
-  "%mmenu" : 'Main Menu',
+        "%cpu" : "CPU",
+        "%p2" : "P2",
+        "%p1" : "P1",
 
-  "%replay" : 'REPLAY',
-  "%play" : 'PLAY',
+        "%mmenu" : 'Main Menu',
 
-  "%quit?" : 'Continue to quit game?',
-  "%scores" : '= scores ='
+        "%replay" : 'REPLAY',
+        "%play" : 'PLAY',
 
+        "%quit?" : 'Continue to quit game?',
+        "%scores" : '= scores ='
 
-}
+      }
 
+    });
 
-
+    return xcfg.l10nTable;
 });
 
-
-}).call(this);
-
+//////////////////////////////////////////////////////////////////////////////
+//EOF
 
