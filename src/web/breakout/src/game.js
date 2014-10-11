@@ -9,239 +9,149 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function(undef) { "use strict"; var global = this, _ = global._  ;
+define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
+                           'cherimoia/skarojs',
+                           'zotohlab/asterix',
+                           'zotohlab/asx/xcfg',
+                           'zotohlab/asx/ccsx',
+                           'zotohlab/asx/xlayers',
+                           'zotohlab/asx/xscenes',
+                           'zotohlab/asx/xmmenus',
+                           'zotohlab/p/hud'],
 
-var asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
-ccsx = asterix.COCOS2DX,
-bko= asterix.BreakOut,
-sjs= global.SkaroJS;
+  function(sobjs, sjs, sh, xcfg, ccsx, layers, scenes, mmenus, huds) { "use strict";
 
+    var csts = xcfg.csts,
+    R = sjs.ramda,
+    undef,
+    GameLayer = layers.XGameLayer.extend({
 
-//////////////////////////////////////////////////////////////////////////////
-// game layer
-//////////////////////////////////////////////////////////////////////////////
+      getHUD: function() {
+        var rc= this.ptScene.getLayers();
+        return rc['HUD'];
+      },
 
-var GameLayer = asterix.XGameLayer.extend({
+      getNode: function() { return this.atlasBatch; },
 
-  getHUD: function() {
-    var rc= this.ptScene.getLayers();
-    return rc['HUD'];
-  },
+      reset: function(newFlag) {
+        if (this.atlasBatch) { this.atlasBatch.removeAllChildren(); } else {
+          var img = cc.textureCache.addImage( sh.getAtlasPath('game-pics'));
+          this.atlasBatch = new cc.SpriteBatchNode(img);
+          this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
+        }
+        if (newFlag) {
+          this.getHUD().resetAsNew();
+        } else {
+          this.getHUD().reset();
+        }
+      },
 
-  getNode: function() { return this.atlasBatch; },
+      operational: function() {
+        return this.options.running;
+      },
 
-  reset: function(newFlag) {
-    if (this.atlasBatch) { this.atlasBatch.removeAllChildren(); } else {
-      var img = cc.textureCache.addImage( sh.getAtlasPath('game-pics'));
-      this.atlasBatch = new cc.SpriteBatchNode(img);
-      this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
-    }
-    this.players=[];
-    this.bricks=[];
-    this.actor=null;
-    this.ball=null;
-    if (newFlag) {
-      this.getHUD().resetAsNew();
-    } else {
-      this.getHUD().reset();
-    }
-  },
+      spawnPlayer: function() {
+        this.options.factory.createPaddle(sh.main,this.options);
+      },
 
-  operational: function() {
-    return this.options.running;
-  },
+      spawnBall: function() {
+        this.options.factory.createBall(sh.main,this.options);
+      },
 
-  spawnPlayer: function() {
-    this.options.factory.createPaddle(sh.main,this.options);
-  },
+      getEnclosureRect: function() {
+        var csts= sh.xcfg.csts,
+        wz= ccsx.screen();
+        return { bottom: csts.TILE,
+                 top: wz.height - csts.TOP * csts.TILE,
+                 left: csts.TILE,
+                 right: wz.width - csts.TILE };
+      },
 
-  spawnBall: function() {
-    this.options.factory.createBall(sh.main,this.options);
-  },
+      onPlayerKilled: function() {
+        if ( this.getHUD().reduceLives(1)) {
+          this.onDone();
+        } else {
+          this.spawnPlayer();
+          this.spawnBall();
+        }
+      },
 
-  initBrickSize: function() {
-    if (this.candySize) {} else {
-      var dummy = new bko.EntityBrick(0,0, { color: 'red_candy' });
-      this.candySize= dummy.create().getContentSize();
-    }
-  },
+      onDone: function() {
+        this.reset();
+        this.options.running=false;
+        this.getHUD().enableReplay();
+      },
 
-  initBallSize: function() {
-    if (this.ballSize) {} else {
-      var dummy = new bko.EntityBall(0,0, {});
-      this.ballSize= dummy.create().getContentSize();
-    }
-  },
+      replay: function() {
+        this.play(false);
+      },
 
-  initBricks: function() {
-    var csts = sh.xcfg.csts,
-    wz = ccsx.screen(),
-    cw= ccsx.center(),
-    candies= csts.CANDIES,
-    cs= csts.LEVELS["1"],
-    b, w, r, c,
-    x,
-    y= wz.height - csts.TOP_ROW * csts.TILE ;
+      play: function(newFlag) {
 
-    for (r=0; r < csts.ROWS; ++r) {
-      x= csts.TILE + csts.LEFT_OFF + sh.hw(this.candySize);
-      for (c=0; c < csts.COLS; ++c) {
-        b= new bko.EntityBrick(x,y, {
-          color: candies[cs[r]]
-        });
-        this.addItem(b.create());
-        this.bricks.push(b);
-        x += this.candySize.width + 1;
+        var pss = sobjs.Priorities;
+
+        this.reset(newFlag);
+        this.cleanSlate();
+
+        this.options.factory= new sobjs.EntityFactory(this.engine);
+        this.options.world= this.getEnclosureRect();
+        this.options.running=true;
+
+        R.forEach(function(z) {
+          this.engine.addSystem( new (z[0])(this.options), z[1]);
+        }.bind(this),
+        [ [sobjs.Supervisor, pss.PreUpdate],
+          [sobjs.Motions, pss.Motion],
+          [sobjs.MovementPaddle, pss.Movement],
+          [sobjs.MovementBall, pss.Movement],
+          [sobjs.Collisions, pss.Collision]]);
+      },
+
+      onEarnScore: function(msg) {
+        this.getHUD().updateScore(msg.value);
+      },
+
+      onNewGame: function(mode) {
+        //sh.sfxPlay('start_game');
+        this.setGameMode(mode);
+        this.play(true);
       }
-      y -= this.candySize.height - 2;
-    }
-  },
 
-  getEnclosureRect: function() {
-    var csts= sh.xcfg.csts,
-    wz= ccsx.screen();
-    return { bottom: csts.TILE,
-             top: wz.height - csts.TOP * csts.TILE,
-             left: csts.TILE,
-             right: wz.width - csts.TILE };
-  },
+    });
 
-  updateEntities: function(dt) {
-    this.actor.update(dt);
-    this.ball.update(dt);
-  },
+    return {
 
-  checkEntities: function(dt) {
-    var bs = this.ball.sprite,
-    bp= bs.getPosition();
+      'GameArena' : {
 
-    // 1. check if ball is lost
-    if (bp.y < ccsx.getBottom(this.actor.sprite)) {
-      this.onPlayerKilled();
-    }
-    else if (ccsx.collide(this.ball, this.actor)) {
-    // 2. check if ball is hitting paddle
-      this.ball.vel.y = - this.ball.vel.y;
-      if (this.ball.vel.x < 0) {
-      } else {
+        create: function(options) {
+          var scene = new scenes.XSceneFactory([
+            huds.BackLayer, GameLayer, huds.HUDLayer
+          ]).create(options);
+          if (!!scene) {
+            scene.ebus.on('/game/objects/bricks/killed', function(topic, msg) {
+              sh.main.onBrickKilled(msg);
+            });
+            scene.ebus.on('/game/objects/players/killed', function(topic, msg) {
+              sh.main.onPlayerKilled(msg);
+            });
+            scene.ebus.on('/game/objects/players/earnscore', function(topic, msg) {
+              sh.main.onEarnScore(msg);
+            });
+            scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
+              mmenus.XMenuLayer.onShowMenu();
+            });
+            scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
+              sh.main.replay();
+            });
+          }
+
+          return scene;
+        }
       }
-      bs.setPosition(bp.x, ccsx.getTop(this.actor.sprite) + ccsx.getHeight(bs) * 0.5);
-      sh.sfxPlay('ball-paddle');
-    }
-    else {
-    // 3. check if ball hits brick
-      this.checkBallBricks();
-    }
-  },
 
-  checkBallBricks: function(dt) {
-    var bss = this.bricks,
-    n,
-    m= this.ball;
-
-    for (n=0; n < bss.length; ++n) {
-      if (bss[n].status !== true) { continue; }
-      if (ccsx.collide(m, bss[n])) {
-        m.check(bss[n]);
-        break;
-      }
-    }
-  },
-
-  onPlayerKilled: function() {
-    if ( this.getHUD().reduceLives(1)) {
-      this.onDone();
-    } else {
-      this.spawnPlayer();
-this.spawnBall();
-    }
-  },
-
-  onDone: function() {
-    this.reset();
-    this.options.running=false;
-    this.getHUD().enableReplay();
-  },
-
-  replay: function() {
-    this.play(false);
-  },
-
-  play: function(newFlag) {
-
-    this.reset(newFlag);
-    this.cleanSlate();
-    this.options.world= this.getEnclosureRect();
-
-    this.options.factory= new bko.EntityFactory(this.engine);
-    this.engine.addSystem(new bko.GameSupervisor(this.options),
-                          bko.Priorities.PreUpdate);
-    this.engine.addSystem(new bko.MotionControl(this.options),
-                          bko.Priorities.Motion);
-    this.engine.addSystem(new bko.MovementPaddle(this.options),
-                          bko.Priorities.Movement);
-    this.engine.addSystem(new bko.MovementBall(this.options),
-                          bko.Priorities.Movement);
-    this.engine.addSystem(new bko.CollisionSystem(this.options),
-                          bko.Priorities.Collision);
-
-    this.options.running=true;
-  },
-
-  onBrickKilled: function(msg) {
-    var obj= new bko.EntityExplode(msg.x, msg.y, msg);
-    this.addItem(obj.create());
-    sh.sfxPlay('ball-brick');
-  },
-
-  onEarnScore: function(msg) {
-    this.getHUD().updateScore(msg.value);
-  },
-
-  onNewGame: function(mode) {
-    //sh.sfxPlay('start_game');
-    this.setGameMode(mode);
-    this.play(true);
-  }
+    };
 
 });
-
-
-
-
-asterix.BreakOut.Factory = {
-  create: function(options) {
-    var scene = new asterix.XSceneFactory([
-      bko.BackLayer, GameLayer, bko.HUDLayer
-    ]).create(options);
-    if (scene) {
-      scene.ebus.on('/game/objects/bricks/killed', function(topic, msg) {
-        sh.main.onBrickKilled(msg);
-      });
-      scene.ebus.on('/game/objects/players/killed', function(topic, msg) {
-        sh.main.onPlayerKilled(msg);
-      });
-      scene.ebus.on('/game/objects/players/earnscore', function(topic, msg) {
-        sh.main.onEarnScore(msg);
-      });
-      scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
-        asterix.XMenuLayer.onShowMenu();
-      });
-      scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
-        sh.main.replay();
-      });
-    }
-
-    return scene;
-  }
-}
-
-
-
-
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

@@ -13,7 +13,7 @@ define('zotohlab/p/l10n', ['cherimoia/skarojs',
                           'zotohlab/asterix',
                           'zotohlab/asx/xcfg'],
 
-  function () { "use strict";
+  function (sjs, sh, xcfg) { "use strict";
 
     sjs.merge( xcfg.l10nTable, {
 

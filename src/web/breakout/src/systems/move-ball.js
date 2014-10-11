@@ -9,69 +9,66 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this, _ = global._ ;
+define('zotohlab/p/s/moveball', ['zotohlab/p/gnodes',
+                                'cherimoia/skarojs',
+                                'zotohlab/asterix',
+                                'zotohlab/asx/xcfg',
+                                'zotohlab/asx/ccsx',
+                                'ash-js'],
 
-var asterix= global.ZotohLab.Asterix,
-ccsx= asterix.CCS2DX,
-sjs= global.SkaroJS,
-sh= asterix,
-bko= sh.BreakOut;
+  function (gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
 
+    var csts = xcfg.csts,
+    undef,
+    MovementBall = Ash.System.extend({
 
-//////////////////////////////////////////////////////////////////////////////
-//
+      constructor: function(options) {
+        this.state= options;
+      },
 
-bko.MovementBall = Ash.System.extend({
+      removeFromEngine: function(engine) {
+        this.ballMotions = undef;
+      },
 
-  constructor: function(options) {
-    this.state= options;
-    return this;
-  },
+      addToEngine: function(engine) {
+        this.ballMotions = engine.getNodeList( gnodes.BallMotionNode)
+      },
 
-  removeFromEngine: function(engine) {
-  },
+      update: function (dt) {
+        var node=this.ballMotions.head;
 
-  addToEngine: function(engine) {
-    this.ballMotions = engine.getNodeList(bko.BallMotionNode)
-  },
+        if (this.state.running &&
+           !!node) {
+          this.processBallMotions(node, dt);
+        }
+      },
 
-  update: function (dt) {
-    var node;
-    for (node=this.ballMotions.head;node;node=node.next) {
-      this.processBallMotions(node,dt);
-    }
-  },
+      processBallMotions: function(node, dt) {
+        var v = node.velocity,
+        b= node.ball,
+        rc,
+        pos= b.sprite.getPosition(),
+        rect= ccsx.bbox(b.sprite);
 
-  processBallMotions: function(node,dt) {
-    var v = node.velocity,
-    b= node.ball,
-    rc,
-    pos= b.sprite.getPosition(),
-    rect= ccsx.bbox(b.sprite);
+        rect.x = pos.x;
+        rect.y = pos.y;
 
-    rect.x = pos.x;
-    rect.y = pos.y;
+        rc=ccsx.traceEnclosure(dt,this.state.world,
+                               rect,
+                               v.vel);
+        if (rc.hit) {
+          v.vel.x = rc.vx;
+          v.vel.y = rc.vy;
+        } else {
+        }
+        b.sprite.setPosition(rc.x,rc.y);
+      }
 
-    rc=ccsx.traceEnclosure(dt,this.state.world,
-                           rect,
-                           v.vel);
-    if (rc.hit) {
-      v.vel.x = rc.vx;
-      v.vel.y = rc.vy;
-    } else {
-    }
-    b.sprite.setPosition(rc.x,rc.y);
-  }
+    });
 
-
+    return MovementBall;
 });
-
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
 

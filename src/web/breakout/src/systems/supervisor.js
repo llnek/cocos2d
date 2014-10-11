@@ -9,75 +9,62 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this, _ = global._ ;
+define('zotohlab/p/s/supervisor', ['cherimoia/skarojs',
+                                  'zotohlab/asterix',
+                                  'zotohlab/asx/xcfg',
+                                  'zotohlab/asx/ccsx',
+                                  'ash-js'],
 
-var asterix= global.ZotohLab.Asterix,
-ccsx= asterix.CCS2DX,
-sjs= global.SkaroJS,
-sh= asterix,
-bko= sh.BreakOut;
+  function (sjs, sh, xcfg, ccsx, Ash) { "use strict";
 
+    var csts = xcfg.csts,
+    undef,
+    GameSupervisor = Ash.System.extend({
 
-//////////////////////////////////////////////////////////////////////////////
-//
+      constructor: function(options) {
+        this.factory= options.factory;
+        this.state= options;
+        this.inited=false;
+      },
 
-bko.GameSupervisor = Ash.System.extend({
+      removeFromEngine: function(engine) {
+      },
 
-  constructor: function(options) {
-    this.factory= options.factory;
-    this.state= options;
-    this.inited=false;
-    return this;
-  },
+      addToEngine: function(engine) {
+      },
 
-  removeFromEngine: function(engine) {
-  },
+      update: function (dt) {
+        if (! this.inited) {
+          this.onceOnly();
+          this.inited=true;
+        }
+      },
 
-  addToEngine: function(engine) {
-  },
+      initBrickSize: function() {
+        var s= new cc.Sprite();
+        s.initWithSpriteFrameName('red_candy.png');
+        this.state.candySize= s.getContentSize();
+      },
 
-  update: function (dt) {
-    if (! this.inited) {
-      this.onceOnly();
-      this.inited=true;
-    } else {
-      this.process();
-    }
-  },
+      initBallSize: function() {
+        var s= new cc.Sprite();
+        s.initWithSpriteFrameName('ball.png');
+        this.state.ballSize= s.getContentSize();
+      },
 
-  initBrickSize: function() {
-    var s= new cc.Sprite();
-    s.initWithSpriteFrameName('red_candy.png');
-    this.state.candySize= s.getContentSize();
-  },
+      onceOnly: function() {
+        this.initBrickSize();
+        this.initBallSize();
+        this.factory.createBricks(sh.main,this.state);
+        this.factory.createPaddle(sh.main,this.state);
+        this.factory.createBall(sh.main,this.state);
+      }
 
-  initBallSize: function() {
-    var s= new cc.Sprite();
-    s.initWithSpriteFrameName('ball.png');
-    this.state.ballSize= s.getContentSize();
-  },
+    });
 
-  onceOnly: function() {
-    this.initBrickSize();
-    this.initBallSize();
-    this.factory.createBricks(sh.main,this.state);
-    this.factory.createPaddle(sh.main,this.state);
-    this.factory.createBall(sh.main,this.state);
-    this.state.running=true;
-  },
-
-  process: function(node,dt) {
-
-  }
-
+    return GameSupervisor;
 });
-
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
 

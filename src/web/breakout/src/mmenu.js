@@ -9,62 +9,62 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this, _ = global._ ;
+define('zotohlab/p/mmenu', ['cherimoia/skarojs',
+                           'zotohlab/asterix',
+                           'zotohlab/asx/xcfg',
+                           'zotohlab/asx/ccsx',
+                           'zotohlab/asx/xlayers',
+                           'zotohlab/asx/xscenes',
+                           'zotohlab/asx/xmmenus'],
 
-var asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
-ccsx = asterix.COCOS2DX,
-sjs= global.SkaroJS;
+  function (sjs, sh, xcfg, ccsx, layers, scenes, mmenus) { "use strict";
 
+    var csts = xcfg.csts,
+    undef,
+    MainMenuLayer = mmenus.XMenuLayer.extend({
 
-//////////////////////////////////////////////////////////////////////////////
-// Main menu.
-//////////////////////////////////////////////////////////////////////////////
+      pkInit: function() {
+        var cw = ccsx.center(),
+        wz = ccsx.screen();
 
-var MainMenuLayer = asterix.XMenuLayer.extend({
+        this.addItem( ccsx.tmenu1({
+          fontPath: sh.getFontPath('font.OogieBoogie'),
+          text: sh.l10n('%1player'),
+          selector: function() {
+            sh.fireEvent('/mmenu/controls/newgame', { mode: sh.P1_GAME });
+          },
+          target: this,
+          scale: 0.5,
+          pos: cc.p(cw.x, csts.TILE * 19)
+        }));
 
-  pkInit: function() {
-    var dir= cc.director,
-    csts = sh.xcfg.csts,
-    cw = ccsx.center(),
-    wz = ccsx.screen();
+        this.doCtrlBtns();
+        return this._super();
+      }
+    });
 
-    this.addItem( ccsx.tmenu1({
-      fontPath: sh.getFontPath('font.OogieBoogie'),
-      text: sh.l10n('%1player'),
-      selector: function() {
-        sh.fireEvent('/mmenu/controls/newgame', { mode: sh.P1_GAME });
-      },
-      target: this,
-      scale: 0.5,
-      pos: cc.p(cw.x, csts.TILE * 19)
-    }));
+    return {
 
-    this.doCtrlBtns();
+      'MainMenu' : {
 
-    return this._super();
-  }
+        create: function(options) {
+          var scene = new scenes.XSceneFactory([
+            mmenus.XMenuBackLayer,
+            MainMenuLayer
+          ]).create(options);
+          if (!!scene) {
+            scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
+              cc.director.runScene( sh.protos['GameArena'].create(msg));
+            });
+          }
+          return scene;
+        }
+
+      }
+
+    };
 
 });
-
-sh.protos['MainMenu'] = {
-
-  create: function(options) {
-    var scene = new asterix.XSceneFactory([
-      asterix.XMenuBackLayer,
-      MainMenuLayer
-    ]).create(options);
-    if (scene) {
-      scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
-        cc.director.runScene( asterix.BreakOut.Factory.create(msg));
-      });
-    }
-    return scene;
-  }
-
-};
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

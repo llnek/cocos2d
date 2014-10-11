@@ -9,85 +9,82 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef){ "use strict"; var global = this, _ = global._ ;
+define('zotohlab/p/s/movepaddle', ['zotohlab/p/gnodes',
+                                'cherimoia/skarojs',
+                                'zotohlab/asterix',
+                                'zotohlab/asx/xcfg',
+                                'zotohlab/asx/ccsx',
+                                'ash-js'],
 
-var asterix= global.ZotohLab.Asterix,
-ccsx= asterix.CCS2DX,
-sjs= global.SkaroJS,
-sh= asterix,
-bko= sh.BreakOut;
+  function (gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
 
+    var csts = xcfg.csts,
+    undef,
+    MovementPaddle = Ash.System.extend({
 
-//////////////////////////////////////////////////////////////////////////////
-//
+      constructor: function(options) {
+        this.state= options;
+      },
 
-bko.MovementPaddle = Ash.System.extend({
+      removeFromEngine: function(engine) {
+        this.paddleMotions = undef;
+      },
 
-  constructor: function(options) {
-    this.state= options;
-    return this;
-  },
+      addToEngine: function(engine) {
+        this.paddleMotions = engine.getNodeList(gnodes.PaddleMotionNode)
+      },
 
-  removeFromEngine: function(engine) {
-  },
+      update: function (dt) {
+        var node=this.paddleMotions.head;
 
-  addToEngine: function(engine) {
-    this.paddleMotions = engine.getNodeList(bko.PaddleMotionNode)
-  },
+        if (this.state.running &&
+           !!node) {
+          this.processPaddleMotions(node,dt);
+        }
+      },
 
-  update: function (dt) {
-    var node;
-    for (node=this.paddleMotions.head;node;node=node.next) {
-      this.processPaddleMotions(node,dt);
-    }
-  },
+      processPaddleMotions: function(node,dt) {
+        var motion = node.motion,
+        sv = node.velocity,
+        pad= node.paddle,
+        pos = pad.sprite.getPosition(),
+        x= pos.x,
+        y= pos.y;
 
-  processPaddleMotions: function(node,dt) {
-    var motion = node.motion,
-    sv = node.velocity,
-    pad= node.paddle,
-    pos = pad.sprite.getPosition(),
-    x= pos.x,
-    y= pos.y;
+        if (motion.right) {
+          x = pos.x + dt * sv.vel.x;
+        }
 
-    if (motion.right) {
-      x = pos.x + dt * sv.vel.x;
-    }
+        if (motion.left) {
+          x = pos.x - dt * sv.vel.x;
+        }
 
-    if (motion.left) {
-      x = pos.x - dt * sv.vel.x;
-    }
+        pad.sprite.setPosition(x,y);
+        this.clamp(pad);
 
-    pad.sprite.setPosition(x,y);
-    this.clamp(pad);
+        motion.right=false;
+        motion.left=false;
+      },
 
-    motion.right=false;
-    motion.left=false;
-  },
+      clamp: function(pad) {
+        var sz= pad.sprite.getContentSize(),
+        pos= pad.sprite.getPosition(),
+        csts = sh.xcfg.csts,
+        wz = ccsx.screen();
 
-  clamp: function(pad) {
-    var sz= pad.sprite.getContentSize(),
-    pos= pad.sprite.getPosition(),
-    csts = sh.xcfg.csts,
-    wz = ccsx.screen();
+        if (ccsx.getRight(pad.sprite) > wz.width - csts.TILE) {
+          pad.sprite.setPosition(wz.width - csts.TILE - sh.hw(sz), pos.y);
+        }
+        if (ccsx.getLeft(pad.sprite) < csts.TILE) {
+          pad.sprite.setPosition( csts.TILE + sh.hw(sz), pos.y);
+        }
+      }
 
-    if (ccsx.getRight(pad.sprite) > wz.width - csts.TILE) {
-      pad.sprite.setPosition(wz.width - csts.TILE - sh.hw(sz), pos.y);
-    }
-    if (ccsx.getLeft(pad.sprite) < csts.TILE) {
-      pad.sprite.setPosition( csts.TILE + sh.hw(sz), pos.y);
-    }
-  }
+    });
 
-
+    return MovementPaddle;
 });
-
-
-}).call(this);
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
 

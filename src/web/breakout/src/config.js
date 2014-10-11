@@ -9,99 +9,91 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global= this; var _ = global._ ;
+define('zotohlab/p/config', ['cherimoia/skarojs',
+                            'zotohlab/asterix',
+                            'zotohlab/asx/xcfg'],
 
-var asterix = global.ZotohLab.Asterix,
-sh = global.ZotohLab.Asterix,
-sjs= global.SkaroJS;
+  function (sjs, sh, xcfg) { "use strict";
 
-asterix.BreakOut= {};
+    sjs.merge( xcfg, {
 
+      appKey :  "7d943e06-0849-4bf4-a16d-64a401f72a3e",
 
-//////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
+      appid: 'breakout',
+      color: 'yellow',
 
-sh.xcfg = sjs.mergeEx( asterix.XConfig, {
+      csts: {
+        GRID_W: 40,
+        GRID_H: 60,
 
-  appKey :  "7d943e06-0849-4bf4-a16d-64a401f72a3e",
+        CANDIES: ['red_candy','amber_candy','white_candy','green_candy','yellow_candy','blue_candy',
+                  'purple_plus_candy', 'purple_minus_candy'],
 
-  appid: 'breakout',
-  color: 'yellow',
+        LEVELS: {
+          "1": [ 0, 1, 5, 3, 4]
+        },
 
-  csts: {
-    GRID_W: 40,
-    GRID_H: 60,
+        ROWS: 5,
+        COLS: 9,
+        TOP: 6,
 
-    CANDIES: ['red_candy','amber_candy','white_candy','green_candy','yellow_candy','blue_candy',
-              'purple_plus_candy', 'purple_minus_candy'],
+        TOP_ROW: 10,
 
-    LEVELS: {
-      "1": [ 0, 1, 5, 3, 4]
-    },
-
-    ROWS: 5,
-    COLS: 9,
-    TOP: 6,
-
-    TOP_ROW: 10,
-
-    PADDLE_OFF: 4,
-    LEFT_OFF: 4
-  },
-
-  assets: {
-    atlases: {
-      'game-pics' : 'res/{{appid}}/game/sprites'
-    },
-    tiles: {
-    },
-    images: {
-      'splash.play-btn' : 'res/cocos2d/btns/play_gray_x64.png'
-    },
-    sounds: {
-      'game_end' : 'res/cocos2d/sfx/MineExplosion',
-      'game_quit' : 'res/cocos2d/sfx/Death',
-      'ball-paddle' : 'res/cocos2d/sfx/ElevatorBeep',
-      'ball-brick' : 'res/cocos2d/sfx/MineBeep'
-    },
-    fonts: {
-    }
-  },
-
-  devices: {
-    iphone:{width:320, height:480, scale:1},
-    android:{width:320, height:480, scale:1},
-    ipad:{width:320, height:480, scale:2},
-    default:{width:320, height:480, scale:1}
-  },
-
-  game: {
-    size: {width:320, height:480, scale:1}
-  },
-
-  levels: {
-    "gamelevel1" : {
-      'tiles' : {
-        'arena' : 'game/{{appid}}/levels/arena.tmx'
+        PADDLE_OFF: 4,
+        LEFT_OFF: 4
       },
-      'images' : {
-        'arena' : 'game/{{appid}}/levels/arena.png'
+
+      assets: {
+        atlases: {
+          'game-pics' : 'res/{{appid}}/game/sprites'
+        },
+        tiles: {
+        },
+        images: {
+          'splash.play-btn' : 'res/cocos2d/btns/play_gray_x64.png'
+        },
+        sounds: {
+          'game_end' : 'res/cocos2d/sfx/MineExplosion',
+          'game_quit' : 'res/cocos2d/sfx/Death',
+          'ball-paddle' : 'res/cocos2d/sfx/ElevatorBeep',
+          'ball-brick' : 'res/cocos2d/sfx/MineBeep'
+        },
+        fonts: {
+        }
       },
-      'sprites' : {
+
+      devices: {
+        iphone:{width:320, height:480, scale:1},
+        android:{width:320, height:480, scale:1},
+        ipad:{width:320, height:480, scale:2},
+        default:{width:320, height:480, scale:1}
+      },
+
+      game: {
+        size: {width:320, height:480, scale:1}
+      },
+
+      levels: {
+        "gamelevel1" : {
+          'tiles' : {
+            'arena' : 'game/{{appid}}/levels/arena.tmx'
+          },
+          'images' : {
+            'arena' : 'game/{{appid}}/levels/arena.png'
+          },
+          'sprites' : {
+          }
+        }
+      },
+
+      runOnce: function() {
+        cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
       }
-    }
-  },
 
-  runOnce: function() {
-    cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
-  }
+    });
 
+    return xcfg;
 });
-
-
-}).call(this);
-
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
