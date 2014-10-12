@@ -664,11 +664,13 @@ target (newapp: '') {
   input (message: "Enter app-name: ", addproperty: 'appid')
   println "Creating new game: ${appid}"
   mkdir (dir: "${webDir}/${appid}")
-  ["res/game", "res/gui" , "res/sfx",
-   "src/components", "src/nodes", "src/systems",
-   "src/entities" ,
-   "src/i18n", "src/levels"].each { s ->
+  ["src/components", "src/nodes", "src/systems",
+   "src/i18n", "src/levels", "res/sfx"].each { s ->
     mkdir (dir: "${webDir}/${appid}/${s}")
+  }
+  ["hdr", "hds", "sd"].each { s ->
+    mkdir (dir: "${webDir}/${appid}/res/${s}/pics")
+    mkdir (dir: "${webDir}/${appid}/res/${s}/fon")
   }
   ["info" , "pages" , "styles"].each { s ->
     mkdir (dir: "${webDir}/${appid}/${s}")
@@ -681,16 +683,23 @@ target (newapp: '') {
   }
   replace (file: "${webDir}/${appid}/info/game.mf", token: "@@PUBDATE@@", value: "${pubtime}")
   replace (file: "${webDir}/${appid}/info/game.json", token: "@@UUID@@", value: "${appkey}")
-  ["game.js", "splash.js", "mmenu.js", "hud.js", "factory.js"].each { s ->
+  ["game.js", "splash.js", "mmenu.js", "hud.js"].each { s ->
     touch (file: "${webDir}/${appid}/src/${s}")
   }
+  touch (file: "${webDir}/${appid}/src/components/cobjs.js")
+  touch (file: "${webDir}/${appid}/src/nodes/gnodes.js")
+  ["supervisor.js", "factory.js", "priorities.js",
+   "utils.js", "sysobjs.js"].each { s ->
+    touch (file: "${webDir}/${appid}/src/systems/${s}")
+  }
+
   copy (file: "${srcDir}/resources/config.js", todir: "${webDir}/${appid}/src")
   copy (file: "${srcDir}/resources/protos.js", todir: "${webDir}/${appid}/src")
   replace (file: "${webDir}/${appid}/src/config.js", token: "@@UUID@@", value: "${appkey}")
   copy (file: "${srcDir}/resources/l10n.js", tofile: "${webDir}/${appid}/src/i18n/game_en_US.js")
   copy (file: "${srcDir}/resources/ccconfig.js", todir: "${webDir}/${appid}/src")
   echo (message: '{ "jsList" : [] }', file: "${webDir}/${appid}/src/project.json")
-  cocos_new("${appid}");
+  //cocos_new("${appid}");
 }
 
 def cocos_new(appid) {
