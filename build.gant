@@ -690,6 +690,10 @@ target (newapp: '') {
   copy (file: "${srcDir}/resources/l10n.js", tofile: "${webDir}/${appid}/src/i18n/game_en_US.js")
   copy (file: "${srcDir}/resources/ccconfig.js", todir: "${webDir}/${appid}/src")
   echo (message: '{ "jsList" : [] }', file: "${webDir}/${appid}/src/project.json")
+  cocos_new("${appid}");
+}
+
+def cocos_new(appid) {
   mkdir (dir: "${basedir}/cocos")
   exec (executable: 'cocos') {
     arg (value: 'new')
@@ -698,7 +702,7 @@ target (newapp: '') {
     arg (value: '-t')
     arg (value: 'runtime')
     arg (value: '--ios-bundleid')
-    arg (value: "com.zotohlab.${appkey}")
+    arg (value: "com.zotohlab.p.${appid}")
     arg (value: '-d')
     arg (value: "${basedir}/cocos")
     arg (value: "${appid}")
@@ -717,79 +721,83 @@ target (deployapp: '') {
   final dd2path= dd2.getCanonicalPath()
   final dd1path= dd1.getCanonicalPath()
 
-  if ( ! des.exists() ||
-       ! src.exists()) {
+  if ( ! src.exists()) {
     println "Invalid game: ${appid}"
-  } else {
-    println "Deploying game: ${appid}"
-    dd2.deleteDir()
-    dd1.deleteDir()
-    dd2.mkdirs()
-    dd1.mkdirs()
-    // resources
-    copy (todir: dd2path+'/main') {
-      fileset (dir: "${webDir}/main/res")
-    }
-    copy (todir: dd2path+'/cocos2d') {
-      fileset (dir: "${webDir}/cocos2d/res")
-    }
-    copy (todir: dd2path+"/${appid}") {
-      fileset (dir: "${srcpath}/res")
-    }
-    // js code
-    copy (todir: "${dd1path}/zotohlab") {
-      fileset (dir: "${webDir}/cocos2d/src/zotohlab")
-    }
-    copy (todir: "${dd1path}/${appid}") {
-      fileset (dir: "${srcpath}/src")
-    }
-    copy (todir: "${dd1path}/helpers") {
-      fileset (dir: "${vendors}/helpers") {
-        include (name: 'dbg.js')
-      }
-    }
-    ['almond','js-signals','ash-js','ramda','cherimoia', 'l10njs', 'cookies','mustache'].each { d ->
-      copy (todir: "${dd1path}/${d}") {
-        fileset (dir: "${vendors}/${d}")
-      }
-    }
-    // boot stuff
-    copy (todir: "${despath}", overwrite: true) {
-      fileset (dir: "${srcDir}/resources") {
-        include (name: 'project.json')
-        include (name: 'main.js')
-        include (name: 'index.html')
-      }
-    }
-    final j1= new JsonParser().parse(FileUtils.readFileToString(
-      new File("${srcDir}/resources/project.json"),"utf-8"))
-    final j2= new JsonParser().parse(FileUtils.readFileToString(
-      new File("${srcpath}/src/project.json"),"utf-8"))
-    j1.getAsJsonArray('jsList').addAll( j2.getAsJsonArray('jsList'))
-    FileUtils.writeStringToFile(new File("${despath}/project.json"),
-    new GsonBuilder().setPrettyPrinting().create().toJson(j1), "utf-8")
-    doJiggleTheIndexFile(appid,"${basedir}/cocos/${appid}",true)
+    return
   }
+  if ( ! des.exists()) {
+    cocos_new("${appid}")
+  }
+
+  println "Deploying game: ${appid}"
+  dd2.deleteDir()
+  dd1.deleteDir()
+  dd2.mkdirs()
+  dd1.mkdirs()
+  // resources
+  copy (todir: dd2path+'/main') {
+    fileset (dir: "${webDir}/main/res")
+  }
+  copy (todir: dd2path+'/cocos2d') {
+    fileset (dir: "${webDir}/cocos2d/res")
+  }
+  copy (todir: dd2path+"/${appid}") {
+    fileset (dir: "${srcpath}/res")
+  }
+  // js code
+  copy (todir: "${dd1path}/zotohlab") {
+    fileset (dir: "${webDir}/cocos2d/src/zotohlab")
+  }
+  copy (todir: "${dd1path}/${appid}") {
+    fileset (dir: "${srcpath}/src")
+  }
+  copy (todir: "${dd1path}/helpers") {
+    fileset (dir: "${vendors}/helpers") {
+      include (name: 'dbg.js')
+    }
+  }
+  ['almond','js-signals','ash-js','ramda','cherimoia', 'l10njs', 'cookies','mustache'].each { d ->
+    copy (todir: "${dd1path}/${d}") {
+      fileset (dir: "${vendors}/${d}")
+    }
+  }
+  // boot stuff
+  copy (todir: "${despath}", overwrite: true) {
+    fileset (dir: "${srcDir}/resources") {
+      include (name: 'project.json')
+      include (name: 'main.js')
+      include (name: 'index.html')
+    }
+  }
+  final j1= new JsonParser().parse(FileUtils.readFileToString(
+    new File("${srcDir}/resources/project.json"),"utf-8"))
+  final j2= new JsonParser().parse(FileUtils.readFileToString(
+    new File("${srcpath}/src/project.json"),"utf-8"))
+  j1.getAsJsonArray('jsList').addAll( j2.getAsJsonArray('jsList'))
+  FileUtils.writeStringToFile(new File("${despath}/project.json"),
+  new GsonBuilder().setPrettyPrinting().create().toJson(j1), "utf-8")
+  doJiggleTheIndexFile(appid,"${basedir}/cocos/${appid}",true)
+
 }
 
 //////////////////////////////////////////////////////////////////////////////
 //
 target (android: '') {
-  input (message: "Enter app-name: ", addproperty: 'appid')
-  final despath= "${basedir}/cocos/${appid}"
-  final des= new File("${despath}")
-  if ( ! des.exists()) {
-    println "Invalid game: ${appid}"
-  } else {
-    exec (executable: 'cocos') {
-      arg (value: 'deploy')
-      arg (value: '-s')
-      arg (value: "${despath}")
-      arg (value: '-p')
-      arg (value: 'android')
-      arg (value: '-m')
-      arg (value: 'release')
-    }
+input (message: "Enter app-name: ", addproperty: 'appid')
+final despath= "${basedir}/cocos/${appid}"
+final des= new File("${despath}")
+if ( ! des.exists()) {
+  println "Invalid game: ${appid}"
+} else {
+  exec (executable: 'cocos') {
+    arg (value: 'deploy')
+    arg (value: '-s')
+    arg (value: "${despath}")
+    arg (value: '-p')
+    arg (value: 'android')
+    arg (value: '-m')
+    arg (value: 'release')
+  }
   }
 }
 

@@ -122,8 +122,8 @@ define("zotohlab/asx/ccsx", ['cherimoia/skarojs',
 
       //return a cc-rect
       bbox: function(sprite) {
-        return new cc.Rect( this.getLeft(sprite), this.getBottom(sprite), this.getWidth(sprite),
-        this.getHeight(sprite));
+        return cc.rect( this.getLeft(sprite), this.getBottom(sprite),
+                       this.getWidth(sprite), this.getHeight(sprite));
       },
 
       //return rect from the last frame
