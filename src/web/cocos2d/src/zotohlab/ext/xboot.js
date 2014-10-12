@@ -164,10 +164,10 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
         dirc.setDisplayStats(xcfg.game.showFPS);
       }
 
-      var pfx; if (cc.sys.isNative) { pfx= 'res';  } else { pfx = "/public/ig/res"; }
+      var pfx; if (cc.sys.isNative) { pfx= '';  } else { pfx = "/public/ig/res/"; }
       var rc= [
-        pfx + '/cocos2d/pics/preloader_bar.png',
-        pfx + '/cocos2d/pics/ZotohLab.png'
+        pfx + 'cocos2d/pics/preloader_bar.png',
+        pfx + 'cocos2d/pics/ZotohLab.png'
       ];
       // hack to suppress the showing of cocos2d's logo
       cc.loaderScene = new MyLoaderScene();

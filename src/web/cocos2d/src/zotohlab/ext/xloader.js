@@ -28,20 +28,20 @@ define("zotohlab/asx/xloader", ['cherimoia/skarojs',
       },
 
       pkLoad: function () {
-        var pfx; if (cc.sys.isNative) { pfx= 'res';  } else { pfx = "/public/ig/res"; }
+        var pfx; if (cc.sys.isNative) { pfx= '';  } else { pfx = "/public/ig/res/"; }
         var cw = ccsx.center(),
         s1,s2;
 
         this.addChild(this.bgLayer);
 
         // logo
-        this.logoSprite = cc.Sprite.create(pfx + '/cocos2d/pics/ZotohLab.png');
+        this.logoSprite = cc.Sprite.create(pfx + 'cocos2d/pics/ZotohLab.png');
         //this.logoSprite.setScale( cc.contentScaleFactor());
         this.logoSprite.setPosition(cw);
         this.bgLayer.addChild(this.logoSprite);
 
         // progress bar
-        s2 = cc.Sprite.create(pfx+'/cocos2d/pics/preloader_bar.png');
+        s2 = cc.Sprite.create(pfx+'cocos2d/pics/preloader_bar.png');
         //s2.setScale( cc.contentScaleFactor());
         this.progress = cc.ProgressTimer.create(s2);
         this.progress.setType(cc.ProgressTimer.TYPE_BAR);

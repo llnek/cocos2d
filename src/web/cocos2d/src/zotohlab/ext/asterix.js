@@ -126,6 +126,7 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
       },
 
       getImagePath: function(key) {
+        cc.log('getSpritePath for key : ' + key);
         return this.fixUrl(this.xcfg.assets.images[key]);
       },
 
@@ -144,6 +145,7 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
       },
 
       getSpritePath: function(key) {
+        cc.log('getSpritePath for key : ' + key);
         return this.fixUrl(this.xcfg.assets.sprites[key](0));
       },
 
@@ -180,11 +182,11 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
 
       sanitizeUrl: function(url) {
         sjs.loggr.debug('About to sanitize url: ' + url);
-        var rc = url || '';
+        var rc;
         if (cc.sys.isNative) {
-          rc= this.sanitizeUrlForDevice(rc);
+          rc= this.sanitizeUrlForDevice(url);
         } else {
-          rc= this.sanitizeUrlForWeb(rc);
+          rc= this.sanitizeUrlForWeb(url);
         }
         sjs.loggr.debug('Sanitized url: ' + rc);
         return rc;

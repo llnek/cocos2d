@@ -50,7 +50,7 @@
               return isL ? [960,640] : [640,960];
             }
            },
-           ['res/hd', 'src']);
+           ['res/hds', 'src']);
     }
 
     if (!rc) {
@@ -68,7 +68,7 @@
 
   function initDesignResolution() {
     var pcy = cc.ResolutionPolicy.SHOW_ALL,
-    isLandscape= true,
+    isLandscape= false,
     eglv= cc.view;
 
     eglv.adjustViewPort(true);
