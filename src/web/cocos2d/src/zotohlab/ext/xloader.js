@@ -35,13 +35,13 @@ define("zotohlab/asx/xloader", ['cherimoia/skarojs',
         this.addChild(this.bgLayer);
 
         // logo
-        this.logoSprite = cc.Sprite.create(pfx + '/main/ZotohLab_x200.png');
+        this.logoSprite = cc.Sprite.create(pfx + '/cocos2d/pics/ZotohLab.png');
         //this.logoSprite.setScale( cc.contentScaleFactor());
         this.logoSprite.setPosition(cw);
         this.bgLayer.addChild(this.logoSprite);
 
         // progress bar
-        s2 = cc.Sprite.create(pfx+'/cocos2d/game/preloader_bar.png');
+        s2 = cc.Sprite.create(pfx+'/cocos2d/pics/preloader_bar.png');
         //s2.setScale( cc.contentScaleFactor());
         this.progress = cc.ProgressTimer.create(s2);
         this.progress.setType(cc.ProgressTimer.TYPE_BAR);

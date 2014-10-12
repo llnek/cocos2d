@@ -179,19 +179,27 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
       fixUrl: function(url) { return this.sanitizeUrl(url); },
 
       sanitizeUrl: function(url) {
+        sjs.loggr.debug('About to sanitize url: ' + url);
+        var rc = url || '';
         if (cc.sys.isNative) {
-          return this.sanitizeUrlForDevice(url);
+          rc= this.sanitizeUrlForDevice(rc);
         } else {
-          return this.sanitizeUrlForWeb(url);
+          rc= this.sanitizeUrlForWeb(rc);
         }
+        sjs.loggr.debug('Sanitized url: ' + rc);
+        return rc;
       },
 
       sanitizeUrlForDevice: function(url) {
-        sjs.loggr.debug('About to sanitize url for jsb: ' + url);
-        //ensure we tell mustache not to escape html
-        url = url || '';
-        if (url.match(/^res/)) {
-          //url = 'res' + url.slice(3);
+        if (url.match(/^res\//)) {
+          if (url.indexOf('/sfx/') > 0) {
+            var ss= url.split("/"), t = ss[1];
+            ss[1]='sfx';
+            ss[2]=t;
+            url = ss.join("/");
+          } else {
+            url = url.slice(4);
+          }
         }
         else
         if (url.match(/^game/)) {
@@ -206,9 +214,7 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
       },
 
       sanitizeUrlForWeb: function(url) {
-        sjs.loggr.debug('About to sanitize url for web: ' + url);
         //ensure we tell mustache not to escape html
-        url = url || '';
         if (url.match(/^game/)) {
           url = '{{{gamesource-ref}}}/' + url;
         }

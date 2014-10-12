@@ -67,9 +67,9 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
             'arena' : 'game/{{appid}}/levels/arena.tmx'
           },
           'images' : {
-            'p.paddle2' : 'res/{{appid}}/game/green_paddle.png',
-            'p.paddle1' : 'res/{{appid}}/game/red_paddle.png',
-            'ball' : 'res/{{appid}}/game/pongball.png',
+            'p.paddle2' : 'res/{{appid}}/pics/green_paddle.png',
+            'p.paddle1' : 'res/{{appid}}/pics/red_paddle.png',
+            'ball' : 'res/{{appid}}/pics/pongball.png',
             'arena' : 'game/{{appid}}/levels/arena.png'
           },
           'sprites' : {

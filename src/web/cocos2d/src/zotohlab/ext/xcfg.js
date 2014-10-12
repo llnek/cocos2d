@@ -35,7 +35,7 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
           'gui.mmenu' : 'game/{{appid}}/levels/mainmenu.tmx'
         },
         images: {
-          'splash.splash' : 'res/{{appid}}/gui/splash.png',
+          'splash.splash' : 'res/{{appid}}/ui/splash.png',
 
           "gui.mmenu.replay" : 'res/cocos2d/btns/{{color}}/replay.png',
           "gui.mmenu.quit" : 'res/cocos2d/btns/{{color}}/quit.png',
@@ -44,16 +44,16 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
           "gui.mmenu.menu" : 'res/cocos2d/btns/{{color}}/go_mmenu.png',
 
           /*
-          'gui.mmenu.border16': 'res/cocos2d/game/cbox-borders_x16.png',
-          'gui.mmenu.border8': 'res/cocos2d/game/cbox-borders_x8.png',
+          'gui.mmenu.border16': 'res/cocos2d/pics/cbox-borders_x16.png',
+          'gui.mmenu.border8': 'res/cocos2d/pics/cbox-borders_x8.png',
           */
           'gui.mmenu.menu.bg' : 'game/{{appid}}/levels/mainmenu.png',
           'gui.mmenu.bg' : 'game/{{appid}}/levels/bg.png',
           'gui.mmenu.border': 'game/{{appid}}/levels/{{border-tiles}}',
 
-          'gui.edit.orange' : 'res/cocos2d/game/orange_edit.png',
-          'gui.edit.green' : 'res/cocos2d/game/green_edit.png',
-          'gui.edit.yellow' : 'res/cocos2d/game/yellow_edit.png'
+          'gui.edit.orange' : 'res/cocos2d/pics/orange_edit.png',
+          'gui.edit.green' : 'res/cocos2d/pics/green_edit.png',
+          'gui.edit.yellow' : 'res/cocos2d/pics/yellow_edit.png'
 
         },
         sounds: {

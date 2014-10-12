@@ -166,8 +166,8 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
 
       var pfx; if (cc.sys.isNative) { pfx= 'res';  } else { pfx = "/public/ig/res"; }
       var rc= [
-        pfx+'/cocos2d/game/preloader_bar.png',
-        pfx + '/main/ZotohLab_x200.png'
+        pfx + '/cocos2d/pics/preloader_bar.png',
+        pfx + '/cocos2d/pics/ZotohLab.png'
       ];
       // hack to suppress the showing of cocos2d's logo
       cc.loaderScene = new MyLoaderScene();

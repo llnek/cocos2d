@@ -74,7 +74,7 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
             'arena' : 'game/{{appid}}/levels/arena.png'
           },
           sprites: {
-            'markers' : [ 'res/{{appid}}/game/markers.png', 72,72, -1]
+            'markers' : [ 'res/{{appid}}/pics/markers.png', 72,72, -1]
           }
         }
       }

@@ -506,8 +506,11 @@ def doCompileSCSS(wappid) {
 def doCompileMedia(wappid) {
   mkdir (dir: "${basedir}/public/ig/res/${wappid}")
   copy (todir: "${basedir}/public/ig/res/${wappid}") {
-    fileset (dir: "${webDir}/${wappid}/res") {
+    fileset (dir: "${webDir}/${wappid}/res/hds") {
       include (name: '**/*')
+    }
+    fileset (dir: "${webDir}/${wappid}/res") {
+      include (name: 'sfx/**/*')
     }
   }
 }
@@ -744,14 +747,13 @@ target (deployapp: '') {
   dd2.mkdirs()
   dd1.mkdirs()
   // resources
-  copy (todir: dd2path+'/main') {
-    fileset (dir: "${webDir}/main/res")
-  }
-  copy (todir: dd2path+'/cocos2d') {
-    fileset (dir: "${webDir}/cocos2d/res")
-  }
-  copy (todir: dd2path+"/${appid}") {
-    fileset (dir: "${srcpath}/res")
+  ['hdr','hds','sd','sfx'].each { s ->
+    copy (todir: dd2path+"/${s}/cocos2d") {
+      fileset (dir: "${webDir}/cocos2d/res/${s}", erroronmissingdir: false)
+    }
+    copy (todir: dd2path+"/${s}/${appid}") {
+      fileset (dir: "${srcpath}/res/${s}", erroronmissingdir: false)
+    }
   }
   // js code
   copy (todir: "${dd1path}/zotohlab") {

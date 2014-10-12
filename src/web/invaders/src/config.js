@@ -44,7 +44,7 @@ define('zotohlab/p/config', ['cherimoia/skarojs',
 
       assets: {
         atlases: {
-          'game-pics' : 'res/{{appid}}/game/sprites'
+          'game-pics' : 'res/{{appid}}/pics/sprites'
         },
         tiles: {
         },
