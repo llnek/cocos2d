@@ -112,6 +112,37 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
       }, [], R.flatten(rc));
     }
 
+    var MyLoaderScene = cc.LoaderScene.extend({
+
+      init: function() {
+
+        if(cc._loaderImage){
+            //loading logo
+            cc.loader.loadImg(cc._loaderImage,
+                              {isCrossOrigin : false },
+                              function(err, img){
+            });
+        }
+        return true;
+      },
+      _startLoading: function () {
+          var self = this;
+          self.unschedule(self._startLoading);
+          var res = self.resources;
+          cc.loader.load(res,
+              function (result, count, loadedCount) {
+              }, function () {
+                  if (self.cb)
+                      self.cb();
+              });
+      },
+
+      onExit: function () {
+          cc.Node.prototype.onExit.call(this);
+      }
+
+    });
+
     //////////////////////////////////////////////////////////////////////////////
     //
     function preLaunchApp(sjs, sh, xcfg, ldr,  ss1) {
@@ -119,10 +150,12 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
       dirc = cc.director,
       eglv = cc.view;
 
-      eglv.setDesignResolutionSize(sz.width, sz.height,
-                                   cc.ResolutionPolicy.SHOW_ALL);
-      eglv.resizeWithBrowserSize(true);
-      eglv.adjustViewPort(true);
+      if (! cc.sys.isNative) {
+        eglv.setDesignResolutionSize(sz.width, sz.height,
+                                     cc.ResolutionPolicy.SHOW_ALL);
+      } else {
+        // let size be flexible depends on device.
+      }
 
       cc.director.setProjection(cc.Director.PROJECTION_2D);
 
@@ -136,6 +169,9 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
         pfx+'/cocos2d/game/preloader_bar.png',
         pfx + '/main/ZotohLab_x200.png'
       ];
+      // hack to suppress the showing of cocos2d's logo
+      cc.loaderScene = new MyLoaderScene();
+      cc.loaderScene.init();
       cc.LoaderScene.preload(rc, function() {
         ldr.preload(pvGatherPreloads(sjs, sh, xcfg), function () {
           xcfg.runOnce();

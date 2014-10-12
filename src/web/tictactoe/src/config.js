@@ -45,13 +45,6 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
         GAP: 10
       },
 
-      devices: {
-        iphone:{width:320, height:480, scale:1},
-        android:{width:320, height:480, scale:1},
-        ipad:{width:320, height:480, scale:2},
-        default:{width:320, height:480, scale:1}
-      },
-
       game: {
         size: {width:320, height:480, scale:1}
       },

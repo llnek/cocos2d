@@ -156,14 +156,6 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
         return [this.fixUrl(obj[0]), '/' , obj[2]].join('');
       },
 
-      setGameSize: function(sz) {
-        this.xcfg.game.size = sjs.isString(sz) ? this.xcfg.devices[sz] : sjs.isObject(sz) ? sz : undef;
-      },
-
-      setDeviceSizes: function (obj) {
-        if (sjs.isObject(obj)) { this.xcfg.devices= obj; }
-      },
-
       toggleSfx: function(override) {
         this.xcfg.sound.open = sjs.echt(override) ? override : !this.xcfg.sound.open;
         if (!cc.audioEngine._soundSupported) {

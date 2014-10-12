@@ -79,7 +79,7 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
         preloadLevels: true,
         sfx: 'mp3',
         landscape: false,
-        size: null,
+        size: {},
         gravity: 0,
         version: "",
         trackingID: ""
@@ -119,13 +119,6 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
 
           "%quit?" : 'Continue to quit game?'
         }
-      },
-
-      devices: {
-        iphone:{width:240, height:160, scale:2},
-        android:{width:240, height:160, scale:2},
-        ipad:{width:240, height:160, scale:4},
-        default:{width:240, height:160, scale:3}
       },
 
       csts: {

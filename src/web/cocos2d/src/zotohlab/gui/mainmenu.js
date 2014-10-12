@@ -115,7 +115,9 @@ define("zotohlab/asx/xmmenus", ['cherimoia/skarojs',
           onBack: function() { dir.popScene(); },
           yes: function() {
             sh.sfxPlay('game_quit');
-            dir.replaceRootScene( ss.create() );
+            dir.popToRootScene();
+            dir.runScene(ss.create());
+            //dir.replaceRootScene( ss.create() );
           }
         }));
       }

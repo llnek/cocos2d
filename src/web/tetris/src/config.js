@@ -55,13 +55,6 @@ define("zotohlab/p/config", ["cherimoia/skarojs",
         }
       },
 
-      devices: {
-        iphone:{height:320, width:480, scale:1},
-        android:{height:320, width:480, scale:1},
-        ipad:{height:320, width:480, scale:2},
-        default:{height:320, width:480, scale:1}
-      },
-
       game: {
         size: {height:320, width:480, scale:1},
         borderTiles: 'cbox-borders_x16.png'

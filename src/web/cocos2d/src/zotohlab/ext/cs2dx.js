@@ -20,7 +20,7 @@ define("zotohlab/asx/ccsx", ['cherimoia/skarojs',
     //////////////////////////////////////////////////////////////////////////////
     // monkey patch stuff that we want to extend
     //////////////////////////////////////////////////////////////////////////////
-
+/****
     cc.Director.prototype.getSceneStackLength = function() {
       return this._scenesStack.length;
     };
@@ -40,7 +40,7 @@ define("zotohlab/asx/ccsx", ['cherimoia/skarojs',
       this._nextScene = null;
       this.runScene(scene);
     };
-
+***/
     //////////////////////////////////////////////////////////////////////////////
     //
     var ccsx = {
