@@ -13,15 +13,15 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
                            'mustache',
                            'eligrey/l10njs'],
 
-  function (sjs, Mustache, l10n) { "use strict";
+  function (sjs, Mustache, LZString) { "use strict";
 
     var undef, asterix = {
 
       l10nInit: function(table) {
-        //String.defaultLocale="en-US";
-        String.toLocaleString(table || this.xcfg.l10nTable);
-        String.defaultLocale= this.lang;
-        sjs.loggr.info("Loaded l10n strings.  locale = " + String.locale);
+        LZString.toLocaleString(table || this.xcfg.l10nTable);
+        LZString.locale = cc.sys.language ;
+        LZString.defaultLocale= "en";
+        sjs.loggr.info("Loaded l10n strings.  locale = " + LZString.locale);
       },
 
       l10n: function(s,pms) {

@@ -17,7 +17,7 @@ define("zotohlab/p/l10n", ['cherimoia/skarojs',
 
     sjs.merge(xcfg.l10nTable, {
 
-      "en-US" : {
+      "en" : {
 
         "%whowin" : "{{who}} Wins!",
 

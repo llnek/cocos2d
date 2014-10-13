@@ -88,7 +88,7 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
       smac: null,
 
       l10nTable: {
-        "en-US" : {
+        "en" : {
           '%mobileStart' : 'Press Anywhere To Start!',
           '%webStart' : 'Press Spacebar To Start!',
 
