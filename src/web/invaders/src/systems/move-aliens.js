@@ -52,7 +52,7 @@ define('zotohlab/p/s/movealiens', ['zotohlab/p/s/utils',
 
         if (ccsx.timerDone(lpr.timers[0])) {
           this.maybeShuffleAliens(sqad);
-          lpr.timers[0]=null;
+          lpr.timers[0]=ccsx.releaseTimer(lpr.timers[0]);
         }
       },
 
@@ -62,7 +62,7 @@ define('zotohlab/p/s/movealiens', ['zotohlab/p/s/utils',
 
         if (ccsx.timerDone(lpr.timers[1])) {
           this.checkBomb(sqad);
-          lpr.timers[1]=null;
+          lpr.timers[1]=ccsx.releaseTimer(lpr.timers[1]);
         }
       },
 

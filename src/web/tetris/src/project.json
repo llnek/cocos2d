@@ -18,7 +18,7 @@
       "src/tetris/systems/rendering.js",
       "src/tetris/systems/resolution.js",
 
-      "src/tetris/systems/sobjs.js",
+      "src/tetris/systems/sysobjs.js",
 
       "src/tetris/hud.js",
       "src/tetris/game.js",

@@ -42,7 +42,7 @@ define("zotohlab/p/s/clearance", ['zotohlab/p/gnodes',
           if (ps.pauseToClear) {
             if (ccsx.timerDone(ps.timer)) {
               this.clearFilled(node);
-              ps.timer=null;
+              ps.timer=ccsx.releaseTimer(ps.timer);
               ps.pauseToClear=false;
             }
             //stop downstream processing

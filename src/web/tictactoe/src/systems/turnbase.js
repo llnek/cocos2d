@@ -67,15 +67,17 @@ define("zotohlab/p/s/turnbase", ['zotohlab/p/gnodes',
         else
         if (cp.category === csts.BOT) {
           //create some small delay...
-          if (this.botTimer) {} else {
-            this.botTimer = setTimeout(function() {
+          if (!!this.botTimer) {
+            if (ccsx.timerDone(this.botTimer)) {
               var bd= bot.algo.getGameBoard();
               bd.syncState(grid.values, this.state.players[this.state.actor].value);
               var rc= bd.getFirstMove();
               if (!sjs.echt(rc)) { rc = bot.algo.eval(); }
               this.enqueue(rc,cp.value,grid);
-              this.botTimer=null;
-            }.bind(this), 1000);
+              this.botTimer=ccsx.releaseTimer(this.botTimer);
+            }
+          } else {
+            this.botTimer = ccsx.createTimer(sh.main, 0.6);
           }
         }
         else

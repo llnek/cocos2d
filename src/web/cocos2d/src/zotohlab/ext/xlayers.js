@@ -348,13 +348,14 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
       },
 
       onTouchBegan: function(touch,event) {
-        var pt= touch.getLocation();
-        sjs.loggr.debug("touch location [" + pt.x + "," + pt.y + "]");
-        this.onclicked(pt.x, pt.y);
         return true;
       },
 
       onTouchEnded: function(touch,event) {
+        var pt= touch.getLocation();
+        sjs.loggr.debug("touch location [" + pt.x + "," + pt.y + "]");
+        this.onclicked(pt.x, pt.y);
+        return true;
       },
 
       onKeyDown:function (e) {

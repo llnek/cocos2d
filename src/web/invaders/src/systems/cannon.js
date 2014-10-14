@@ -53,7 +53,7 @@ define('zotohlab/p/s/cannon', ['zotohlab/p/s/utils',
           if (ccsx.timerDone(t)) {
             ship.sprite.setSpriteFrame(ship.frames[0]);
             gun.hasAmmo=true;
-            lpr.timers[0]=null;
+            lpr.timers[0]=ccsx.releaseTimer(t);
           }
           return;
         } else {

@@ -97,8 +97,19 @@ define("zotohlab/asx/ccsx", ['cherimoia/skarojs',
                 bx.left > wz.width -1);
       },
 
+      releaseTimer: function(par, tm) {
+        if (cc.sys.isNative && !!tm) {
+          tm.release();
+        }
+        return null;
+      },
+
       createTimer: function(par, tm) {
-        return par.runAction(new cc.DelayTime(tm));
+        var rc= par.runAction(new cc.DelayTime(tm));
+        if (cc.sys.isNative) {
+          rc.retain();
+        }
+        return rc;
       },
 
       timerDone: function(t) {

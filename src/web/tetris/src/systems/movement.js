@@ -43,6 +43,7 @@ define("zotohlab/p/s/movement", ["zotohlab/p/components",
 
           if (ccsx.timerDone(node.dropper.timer) &&
               !!node.shell.shape) {
+            node.dropper.timer= ccsx.releaseTimer(node.dropper.timer);
             this.doFall(sh.main, node);
           }
 
