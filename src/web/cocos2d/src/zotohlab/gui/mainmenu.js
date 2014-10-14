@@ -25,17 +25,25 @@ define("zotohlab/asx/xmmenus", ['cherimoia/skarojs',
     var XMenuBackLayer = layers.XLayer.extend({
 
       pkInit: function() {
-        var title = new cc.LabelBMFont(sh.l10n('%mmenu'),
-                                       sh.getFontPath('font.JellyBelly')),
-        bgMenu = new cc.TMXTiledMap(sh.getTilesPath('gui.mmenu')),
-        wz = ccsx.screen(),
-        cw= ccsx.center();
 
+        var imgUrl= sh.getImagePath('gui.mmenu.menu.bg'),
+        s,
+        title,
+        wz = ccsx.screen(),
+        cw = ccsx.center();
+
+        if (!!imgUrl) {
+          s= new cc.Sprite(imgUrl);
+          s.setPosition(cw);
+          this.addItem(s);
+        }
+
+        title = new cc.LabelBMFont(sh.l10n('%mmenu'),
+                                   sh.getFontPath('font.JellyBelly')),
         title.setPosition(cw.x, wz.height - csts.TILE * 8 / 2);
         title.setOpacity(0.9*255);
         title.setScale(0.6);
 
-        this.addItem(bgMenu);
         this.addItem(title);
 
         return this._super();
@@ -60,11 +68,13 @@ define("zotohlab/asx/xmmenus", ['cherimoia/skarojs',
         h= audio[2],
         p= sh.sanitizeUrl(audio[0]);
 
-        s1[0]= new cc.Sprite(p, cc.rect(w,0,w,h));
-        s2[0]= new cc.Sprite(p, cc.rect(0,0,w,h));
+        for (var n=0; n < 3; ++n) {
+          s1[n]= new cc.Sprite(p, cc.rect(w,0,w,h));
+          s2[n]= new cc.Sprite(p, cc.rect(0,0,w,h));
+        }
 
-        audio= new cc.MenuItemToggle(new cc.MenuItemSprite(s1[0]),
-                            new cc.MenuItemSprite(s2[0]),
+        audio= new cc.MenuItemToggle(new cc.MenuItemSprite(s1[0], s1[1], s1[2]),
+                            new cc.MenuItemSprite(s2[0], s2[1], s2[2]),
                function(sender) {
                 if (sender.getSelectedIndex() === 0) {
                   sh.toggleSfx(true);

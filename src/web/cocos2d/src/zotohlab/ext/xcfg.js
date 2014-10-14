@@ -31,8 +31,8 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
         atlases : {
         },
         tiles: {
-          'gui.blank' : 'game/{{appid}}/levels/blankscreen.tmx',
-          'gui.mmenu' : 'game/{{appid}}/levels/mainmenu.tmx'
+          //'gui.blank' : 'game/{{appid}}/levels/blankscreen.tmx',
+          //'gui.mmenu' : 'game/{{appid}}/levels/mainmenu.tmx'
         },
         images: {
           'splash.splash' : 'res/{{appid}}/ui/splash.png',
@@ -43,13 +43,12 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
           "gui.mmenu.ok" : 'res/cocos2d/btns/{{color}}/go_ok.png',
           "gui.mmenu.menu" : 'res/cocos2d/btns/{{color}}/go_mmenu.png',
 
-          /*
-          'gui.mmenu.border16': 'res/cocos2d/pics/cbox-borders_x16.png',
-          'gui.mmenu.border8': 'res/cocos2d/pics/cbox-borders_x8.png',
-          */
-          'gui.mmenu.menu.bg' : 'game/{{appid}}/levels/mainmenu.png',
-          'gui.mmenu.bg' : 'game/{{appid}}/levels/bg.png',
-          'gui.mmenu.border': 'game/{{appid}}/levels/{{border-tiles}}',
+          //'gui.mmenu.border16': 'res/cocos2d/pics/cbox-borders_x16.png',
+          //'gui.mmenu.border8': 'res/cocos2d/pics/cbox-borders_x8.png',
+
+          'gui.mmenu.menu.bg' : 'res/{{appid}}/ui/mainmenu.png',
+          'gui.mmenu.bg' : 'res/{{appid}}/ui/bg.png',
+          //'gui.mmenu.border': 'game/{{appid}}/levels/{{border-tiles}}',
 
           'gui.edit.orange' : 'res/cocos2d/pics/orange_edit.png',
           'gui.edit.green' : 'res/cocos2d/pics/green_edit.png',

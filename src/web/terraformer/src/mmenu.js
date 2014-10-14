@@ -24,22 +24,45 @@ define('zotohlab/p/mmenu', ['cherimoia/skarojs',
     MainMenuLayer = mmenus.XMenuLayer.extend({
 
       pkInit: function() {
-        var cw = ccsx.center(),
+        var sps = [null,null,null],
+        ms=[null,null,null],
+        logo,
+        menu, sp,
+        cw = ccsx.center(),
         wz = ccsx.screen();
 
-        this.addItem( ccsx.tmenu1({
-          fontPath: sh.getFontPath('font.OogieBoogie'),
-          text: sh.l10n('%1player'),
-          selector: function() {
-            sh.fireEvent('/mmenu/controls/newgame', { mode: sh.P1_GAME });
-          },
-          target: this,
-          scale: 0.5,
-          pos: cc.p(cw.x, wz.height * 0.75)
-        }));
+        logo = new cc.Sprite(sh.getImagePath('logo'));
+        logo.setPosition(cw.x, wz.height * 0.65);
+        this.addItem(logo);
+
+        sp = sh.getImagePath('menu-btns');
+        sps[2] = new cc.Sprite(sp, cc.rect(0, 33 * 2, 126, 33));
+        sps[1] = new cc.Sprite(sp, cc.rect(0, 33, 126, 33));
+        sps[0] = new cc.Sprite(sp, cc.rect(0, 0, 126, 33));
+        ms[0] = new cc.MenuItemSprite(sps[0], sps[1], sps[2], function () {
+            this.onButtonEffect();
+sh.fireEvent('/mmenu/controls/newgame', { mode: sh.P1_GAME });
+            //this.onNewGame();
+            //flareEffect(flare, this, this.onNewGame);
+        }.bind(this));
+
+        sps[2]= new cc.Sprite(sp, cc.rect(126, 33 * 2, 126, 33));
+        sps[1]= new cc.Sprite(sp, cc.rect(126, 33, 126, 33));
+        sps[0]= new cc.Sprite(sp, cc.rect(126, 0, 126, 33));
+        ms[1]= new cc.MenuItemSprite(sps[0], sps[1], sps[2], this.onSettings, this);
+
+        sps[2]= new cc.Sprite(sp, cc.rect(252, 33 * 2, 126, 33));
+        sps[1]= new cc.Sprite(sp, cc.rect(252, 33, 126, 33));
+        sps[0]= new cc.Sprite(sp, cc.rect(252, 0, 126, 33));
+        ms[2] = new cc.MenuItemSprite(sps[0],sps[1],sps[2], this.onAbout, this);
+
+        menu = new cc.Menu(ms[0], ms[1], ms[2]);
+        menu.alignItemsVerticallyWithPadding(10);
+        menu.setPosition( cw.x, wz.height * 0.35);
+        this.addItem(menu);
+
 
         this.doCtrlBtns();
-
         return this._super();
       }
 

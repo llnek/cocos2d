@@ -46,9 +46,15 @@ document.ccConfig = {
     "/public/ig/lib/zotohlab/gui/online.js",
     "/public/ig/lib/zotohlab/gui/mainmenu.js",
 
-    '/public/ig/lib/game/???/config.js',
-    '/public/ig/lib/game/???/i18n/game_en_US.js'
+    '/public/ig/lib/game/terraformer/config.js',
+    '/public/ig/lib/game/terraformer/i18n/game_en_US.js',
 
+'/public/ig/lib/game/terraformer/splash.js',
+'/public/ig/lib/game/terraformer/mmenu.js',
+'/public/ig/lib/game/terraformer/game.js',
+
+'/public/ig/lib/game/terraformer/protos.js',
+'/public/ig/lib/zotohlab/ext/xboot.js'
   ]
 
 };

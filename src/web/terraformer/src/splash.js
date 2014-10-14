@@ -24,8 +24,12 @@ define('zotohlab/p/splash', ['cherimoia/skarojs',
     UILayer = layers.XLayer.extend({
 
       pkInit: function() {
-        var cw = ccsx.center(),
+        var logo = new cc.Sprite(sh.getImagePath('logo')),
+        cw = ccsx.center(),
         wz = ccsx.screen();
+
+        logo.setPosition(cw.x, wz.height * 0.65);
+        this.addItem(logo);
 
         this.addItem( ccsx.pmenu1({
           imgPath: sh.getImagePath('splash.play-btn'),

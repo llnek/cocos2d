@@ -20,7 +20,7 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
       appKey: '4d6b93c4-05d7-42f1-95cc-98ce8adeac0a',
 
 
-      appid: 'hyperjump',
+      appid: 'terraformer',
       color: 'yellow',
 
       csts: {
@@ -42,15 +42,16 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
         tiles: {
         },
         images: {
-          'splash.play-btn' : 'res/cocos2d/btns/play_gray_x64.png'
+          'splash.play-btn' : 'res/cocos2d/btns/play_gray_x64.png',
 
           'cocos2d_html5' : 'res/{{appid}}/pics/cocos2d-html5.png',
           'flare': 'res/{{appid}}/pics/flare.jpg',
           'gameOver': 'res/{{appid}}/pics/gameOver.png',
           'loading': 'res/{{appid}}/pics/loading.png',
           'logo': 'res/{{appid}}/pics/logo.png',
-          'menu': 'res/{{appid}}/pics/menu.png',
-          'menuTitle': 'res/{{appid}}/pics/menuTitle.png',
+
+          'menu-btns': 'res/{{appid}}/fon/{{lang}}/menu.png',
+          'menuTitle': 'res/{{appid}}/fon/{{lang}}/menuTitle.png'
 
         },
         sounds: {
@@ -62,7 +63,7 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
           'shipDestroyEffect' : 'res/{{appid}}/sfx/shipDestroyEffect'
         },
         fonts: {
-          'font.arial' : [ 'res/cocos2d/fon/{{lang}}', 'arial-14.png', 'arial-14.fnt' ]
+          'font.arial' : [ 'res/{{appid}}/fon/{{lang}}', 'arial-14.png', 'arial-14.fnt' ]
         }
       },
 
@@ -75,6 +76,13 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
           sprites: {
           }
         }
+      },
+
+      runOnce: function() {
+        cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('tr-pics'));
+        cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('op-pics'));
+        cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('explosions'));
+        cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('b01'));
       }
 
     });

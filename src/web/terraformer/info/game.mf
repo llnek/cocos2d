@@ -2,7 +2,7 @@
   :pubdate #inst "2014-10-13"
   :author "llnek"
   :status true
-  :uri "/arena/hyperjump"
+  :uri "/arena/terraformer"
   :image "ui/catalog.png"
 }
 
