@@ -3,6 +3,6 @@
   :author "llnek"
   :status true
   :uri "/arena/breakout"
-  :image "gui/catalog.png"
+  :image "ui/catalog.png"
 }
 

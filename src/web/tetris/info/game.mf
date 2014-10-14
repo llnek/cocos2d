@@ -3,6 +3,6 @@
   :author "llnek"
   :status true
   :uri "/arena/tetris"
-  :image "gui/catalog.png"
+  :image "ui/catalog.png"
 }
 

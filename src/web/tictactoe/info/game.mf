@@ -10,6 +10,6 @@
     :engine  "cmzlabclj.frigga.tictactoe.core.TicTacToe" }
 
   :uri "/arena/tictactoe"
-  :image "gui/catalog.png"
+  :image "ui/catalog.png"
 }
 
