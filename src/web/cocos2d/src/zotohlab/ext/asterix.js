@@ -160,8 +160,12 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
 
       toggleSfx: function(override) {
         this.xcfg.sound.open = sjs.echt(override) ? override : !this.xcfg.sound.open;
-        if (!cc.audioEngine._soundSupported) {
-          this.xcfg.sound.open=false;
+      },
+
+      sfxPlayMusic: function(key,repeat) {
+        if (this.xcfg.sound.open) {
+          cc.audioEngine.playMusic(this.getSfxPath(key),
+                                   repeat===true);
         }
       },
 
@@ -172,10 +176,8 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
       },
 
       sfxInit: function() {
-        if (cc.audioEngine._soundSupported) {
-          cc.audioEngine.setMusicVolume(this.xcfg.sound.volume);
-          this.xcfg.sound.open= true;
-        }
+        cc.audioEngine.setMusicVolume(this.xcfg.sound.volume);
+        this.xcfg.sound.open= true;
       },
 
       fixUrl: function(url) { return this.sanitizeUrl(url); },

@@ -32,6 +32,7 @@ define("zotohlab/asx/xloader", ['cherimoia/skarojs',
         var cw = ccsx.center(),
         s1,s2;
 
+        this.unschedule(this.pkLoad);
         this.addChild(this.bgLayer);
 
         // logo
@@ -54,18 +55,18 @@ define("zotohlab/asx/xloader", ['cherimoia/skarojs',
         //this.progress.setMidpoint(cc.p(0,0));
         this.bgLayer.addChild(this.progress);
 
-        this.scheduleOnce(this.pkStartLoading);
+        //this.scheduleOnce(this.pkStartLoading);
+        this.pkStartLoading();
       },
 
       onEnter: function () {
-        this._super();
-        this.pkLoad();
+        cc.Node.prototype.onEnter.call(this);
+        this.schedule(this.pkLoad, 0.3);
       },
 
-      /*
       onExit: function () {
+        cc.Node.prototype.onExit.call(this);
       },
-      */
 
       initWithResources: function (resources, selector, target) {
         this.resources = resources;

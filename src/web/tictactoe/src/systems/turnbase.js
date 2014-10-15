@@ -94,16 +94,23 @@ define("zotohlab/p/s/turnbase", ['zotohlab/p/gnodes',
         if ((pos >= 0 && pos < grid.values.length) &&
             csts.CV_Z === grid.values[pos]) {
 
-          var pnum;
+          var snd, pnum;
 
           sh.fireEvent('/game/hud/timer/hide');
 
           if (this.state.wsock) {
             this.onEnqueue(grid,this.state.actor,pos);
           } else {
-            pnum = this.state.actor===1 ? 2 : 1;
-            this.state.actor = pnum;
+            if (this.state.actor ===1) {
+              snd= 'x_pick';
+              pnum = 2;
+            } else {
+              snd= 'o_pick';
+              pnum = 1;
+            }
             grid.values[pos] = value;
+            this.state.actor = pnum;
+            sh.sfxPlay(snd);
             if (this.state.players[pnum].category === csts.HUMAN) {
               sh.fireEvent('/game/hud/timer/show');
             }
@@ -119,6 +126,7 @@ define("zotohlab/p/s/turnbase", ['zotohlab/p/gnodes',
           grid: grid.values,
           cell: cell
         },
+        snd = pnum===1 ? 'x_pick' : 'o_pick',
         evt= {
           source: JSON.stringify(src),
           type: evts.SESSION_MSG,
@@ -126,6 +134,7 @@ define("zotohlab/p/s/turnbase", ['zotohlab/p/gnodes',
         };
         this.state.wsock.send(evt);
         this.state.actor=0;
+        sh.sfxPlay(snd);
       }
 
 

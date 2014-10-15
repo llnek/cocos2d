@@ -50,6 +50,7 @@ document.ccConfig = {
     '/public/ig/lib/game/terraformer/i18n/game_en_US.js',
 
 '/public/ig/lib/game/terraformer/splash.js',
+'/public/ig/lib/game/terraformer/hud.js',
 '/public/ig/lib/game/terraformer/mmenu.js',
 '/public/ig/lib/game/terraformer/game.js',
 

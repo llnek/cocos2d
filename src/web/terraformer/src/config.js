@@ -56,7 +56,7 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
         },
         sounds: {
           'bgMusic' : 'res/{{appid}}/sfx/bgMusic',
-          'buttonEffet' : 'res/{{appid}}/sfx/buttonEffet',
+          'buttonEffect' : 'res/{{appid}}/sfx/buttonEffet',
           'explodeEffect' : 'res/{{appid}}/sfx/explodeEffect',
           'fireEffect' : 'res/{{appid}}/sfx/fireEffect',
           'mainMainMusic' : 'res/{{appid}}/sfx/mainMainMusic',

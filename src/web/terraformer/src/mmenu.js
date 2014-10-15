@@ -23,13 +23,65 @@ define('zotohlab/p/mmenu', ['cherimoia/skarojs',
     undef,
     MainMenuLayer = mmenus.XMenuLayer.extend({
 
+      onButtonEffect: function(){
+        sh.sfxPlay('buttonEffect');
+      },
+
+      flareEffect: function (flare) {
+        flare.stopAllActions();
+        flare.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
+        flare.attr({
+          x: -30,
+          y: 297,
+          visible: true,
+          opacity: 0,
+          rotation: -120,
+          scale: 0.2
+        });
+
+        var opacityAnim = cc.fadeTo(0.5, 255),
+        bigger = cc.scaleTo(0.5, 1),
+        opacDim = cc.fadeTo(1, 0);
+
+        var biggerEase = cc.scaleBy(0.7, 1.2, 1.2).easing(cc.easeSineOut());
+        var easeMove = cc.moveBy(0.5, cc.p(328, 0)).easing(cc.easeSineOut());
+        var rotateEase = cc.rotateBy(2.5, 90).easing(cc.easeExponentialOut());
+        var onComplete = cc.callFunc(this.onNewGame, this);
+        var killflare = cc.callFunc(function () {
+          this.removeItem(flare);
+        }, this);
+        flare.runAction(cc.sequence(opacityAnim, biggerEase, opacDim, killflare, onComplete));
+        flare.runAction(easeMove);
+        flare.runAction(rotateEase);
+        flare.runAction(bigger);
+      },
+
+      onNewGame: function() {
+        sh.fireEvent('/mmenu/controls/newgame', { mode: sh.P1_GAME });
+      },
+
+      onSettings: function() {
+        this.onButtonEffect();
+
+      },
+
+      onAbout: function() {
+        this.onButtonEffect();
+
+      },
+
       pkInit: function() {
         var sps = [null,null,null],
         ms=[null,null,null],
+        flare,
         logo,
         menu, sp,
         cw = ccsx.center(),
         wz = ccsx.screen();
+
+        flare = new cc.Sprite(sh.getImagePath('flare'));
+        flare.setVisible(false);
+        this.addItem(flare);
 
         logo = new cc.Sprite(sh.getImagePath('logo'));
         logo.setPosition(cw.x, wz.height * 0.65);
@@ -40,10 +92,8 @@ define('zotohlab/p/mmenu', ['cherimoia/skarojs',
         sps[1] = new cc.Sprite(sp, cc.rect(0, 33, 126, 33));
         sps[0] = new cc.Sprite(sp, cc.rect(0, 0, 126, 33));
         ms[0] = new cc.MenuItemSprite(sps[0], sps[1], sps[2], function () {
+            this.flareEffect(flare);
             this.onButtonEffect();
-sh.fireEvent('/mmenu/controls/newgame', { mode: sh.P1_GAME });
-            //this.onNewGame();
-            //flareEffect(flare, this, this.onNewGame);
         }.bind(this));
 
         sps[2]= new cc.Sprite(sp, cc.rect(126, 33 * 2, 126, 33));
@@ -61,9 +111,34 @@ sh.fireEvent('/mmenu/controls/newgame', { mode: sh.P1_GAME });
         menu.setPosition( cw.x, wz.height * 0.35);
         this.addItem(menu);
 
+        this._ship = new cc.Sprite("#ship01.png");
+        this._ship.setPosition(sjs.rand(wz.width), 0);
+        this.addItem(this._ship, -10);
+        this._ship.runAction(cc.moveBy(2,
+          cc.p(sjs.rand(wz.width),
+               this._ship.getPosition().y + wz.height + 100)));
+
+        //sh.sfxPlayMusic('mainMainMusic');
+        this.schedule(function() {
+          this.update();
+        }.bind(this), 0.1);
 
         this.doCtrlBtns();
         return this._super();
+      },
+
+      update: function () {
+        var pos= this._ship.getPosition(),
+        wz= ccsx.screen();
+
+        if (pos.y > wz.height) {
+          this._ship.setPosition(sjs.rand(wz.width), 10);
+          pos= this._ship.getPosition();
+          this._ship.runAction(cc.moveBy(
+              parseInt(sjs.rand(5), 10),
+              cc.p(sjs.rand(wz.width), pos.y + wz.height)
+          ));
+        }
       }
 
     });

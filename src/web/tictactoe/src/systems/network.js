@@ -70,6 +70,7 @@ define("zotohlab/p/s/network", ['zotohlab/p/gnodes',
 
       maybeUpdateActions: function(node, evt) {
         var cmd= evt.source.cmd,
+        snd,
         grid=node.grid,
         vs=grid.values;
 
@@ -78,7 +79,13 @@ define("zotohlab/p/s/network", ['zotohlab/p/gnodes',
             cmd.cell >= 0 &&
             cmd.cell < vs.length) {
 
+          if (this.state.players[1].value === cmd.value) {
+            snd= 'x_pick';
+          } else {
+            snd= 'o_pick';
+          }
           vs[cmd.cell] = cmd.value;
+          sh.sfxPlay(snd);
         }
       }
 

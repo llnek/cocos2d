@@ -16,7 +16,8 @@ define('zotohlab/p/arena', [
                            'zotohlab/asx/ccsx',
                            'zotohlab/asx/xlayers',
                            'zotohlab/asx/xscenes',
-                           'zotohlab/asx/xmmenus'],
+                           'zotohlab/asx/xmmenus',
+                           'zotohlab/p/hud'],
 
   function (sjs, sh, xcfg, ccsx,
             layers, scenes, mmenus, huds) { "use strict";
@@ -27,11 +28,25 @@ define('zotohlab/p/arena', [
     GameLayer = layers.XGameLayer.extend({
 
       reset: function(newFlag) {
-        if (this.atlasBatch) { this.atlasBatch.removeAllChildren(); } else {
-          var img = cc.textureCache.addImage( sh.getAtlasPath('game-pics'));
-          this.atlasBatch = new cc.SpriteBatchNode(img);
-          this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
+        var wz = ccsx.screen(),
+        b,
+        img;
+
+        if (!!this.atlases) {
+          sjs.eachObj(function(z) { z.removeAllChildren(); }, this.atlases);
+        } else {
+          img = cc.textureCache.addImage( sh.getAtlasPath('op-pics'));
+          b = new cc.SpriteBatchNode(img);
+          b.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
+          this.atlases = { 'op-pics' : b };
+          this.addChild(b, ++this.lastZix, ++this.lastTag);
+          //2
+          img = cc.textureCache.addImage( sh.getAtlasPath('tr-pics')),
+          b = new cc.SpriteBatchNode(img);
+          this.atlases[ 'tr-pics' ] =  b;
+          this.addChild(b, ++this.lastZix, ++this.lastTag);
         }
+        this.screenRect = cc.rect(0, 0, wz.width, wz.height + 10);
         this.getHUD().reset();
       },
 
@@ -51,7 +66,7 @@ define('zotohlab/p/arena', [
       },
 
       play: function(newFlag) {
-
+        this.reset(newFlag);
       },
 
       spawnPlayer: function() {
@@ -81,6 +96,11 @@ define('zotohlab/p/arena', [
         this.reset();
         this.options.running=false;
         this.getHUD().enableReplay();
+      },
+
+      ctor: function(options) {
+        //this._levelManager = new LevelManager(this);
+        this._super(options);
       }
 
     });
@@ -91,7 +111,9 @@ define('zotohlab/p/arena', [
 
         create: function(options) {
           var fac = new scenes.XSceneFactory([
-            GameLayer
+            huds.BackLayer,
+            GameLayer,
+            huds.HUDLayer
              ]),
           scene= fac.create(options);
           if (!!scene) {
