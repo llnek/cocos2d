@@ -58,6 +58,7 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
         this.lives = new layers.XHUDLives( this, csts.TILE + csts.S_OFF,
           wz.height - csts.TILE - csts.S_OFF, {
           frames: ['ship01.png'],
+          scale: 0.4,
           totalLives: 3
         });
 

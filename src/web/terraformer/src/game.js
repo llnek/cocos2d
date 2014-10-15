@@ -9,7 +9,7 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-define('zotohlab/p/arena', [
+define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
                            'cherimoia/skarojs',
                            'zotohlab/asterix',
                            'zotohlab/asx/xcfg',
@@ -19,7 +19,7 @@ define('zotohlab/p/arena', [
                            'zotohlab/asx/xmmenus',
                            'zotohlab/p/hud'],
 
-  function (sjs, sh, xcfg, ccsx,
+  function (sobjs, sjs, sh, xcfg, ccsx,
             layers, scenes, mmenus, huds) { "use strict";
 
     var csts = xcfg.csts,
@@ -31,6 +31,8 @@ define('zotohlab/p/arena', [
         var wz = ccsx.screen(),
         b,
         img;
+
+        this.backSkies=[];
 
         if (!!this.atlases) {
           sjs.eachObj(function(z) { z.removeAllChildren(); }, this.atlases);
@@ -48,6 +50,31 @@ define('zotohlab/p/arena', [
         }
         this.screenRect = cc.rect(0, 0, wz.width, wz.height + 10);
         this.getHUD().reset();
+        this.initBackground();
+      },
+
+      createBackSky: function () {
+        var bg = new cc.Sprite( sh.getImagePath('bg01'));
+        bg.setAnchorPoint(0,0);
+        bg.setVisible(false);
+        this.getBackgd().addChild(bg);//, -10);
+        return {
+          sprite: bg,
+          active: false
+        }
+      },
+
+      initBackground:function () {
+        for (var n = 0; n < 2; ++n) {
+          this.backSkies[n] = this.createBackSky();
+        }
+        //this.moveTileMap();
+        //this.schedule(this.moveTileMap, 5);
+      },
+
+      getBackgd: function() {
+        var rc= this.ptScene.getLayers();
+        return rc['BackLayer'];
       },
 
       getHUD: function() {
@@ -66,7 +93,21 @@ define('zotohlab/p/arena', [
       },
 
       play: function(newFlag) {
+
+        var pss = sobjs.Priorities;
+
         this.reset(newFlag);
+        this.cleanSlate();
+
+        this.options.factory=new sobjs.EntityFactory(this.engine);
+        this.options.running = true;
+
+        R.forEach(function(z) {
+          this.engine.addSystem(new (z[0])(this.options), z[1]);
+        }.bind(this),
+        [ [sobjs.Supervisor, pss.PreUpdate],
+          [sobjs.MovementSky, pss.Movement]]);
+
       },
 
       spawnPlayer: function() {

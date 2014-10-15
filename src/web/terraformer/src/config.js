@@ -49,6 +49,7 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
           'gameOver': 'res/{{appid}}/pics/gameOver.png',
           'loading': 'res/{{appid}}/pics/loading.png',
           'logo': 'res/{{appid}}/pics/logo.png',
+          'b01' : 'res/{{appid}}/pics/b01.png',
 
           'menu-btns': 'res/{{appid}}/fon/{{lang}}/menu.png',
           'menuTitle': 'res/{{appid}}/fon/{{lang}}/menuTitle.png'
