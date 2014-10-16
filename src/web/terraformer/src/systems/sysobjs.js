@@ -10,15 +10,18 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 define("zotohlab/p/sysobjs", ['zotohlab/p/s/priorities',
+                             'zotohlab/p/s/factory',
                              'zotohlab/p/s/supervisor',
                              'zotohlab/p/s/movesky'],
 
   function (Priorities,
+            EntityFactory,
             Supervisor,
             MovementSky) { "use strict";
 
     return {
 
+      EntityFactory       : EntityFactory,
       Priorities          : Priorities,
       Supervisor          : Supervisor,
       MovementSky      : MovementSky

@@ -43,6 +43,8 @@ define("zotohlab/p/s/supervisor", [
       },
 
       onceOnly: function() {
+        this.state.backSky.sprite.setVisible(true);
+        this.state.backSky.active=true;
       }
 
     });

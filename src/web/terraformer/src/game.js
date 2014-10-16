@@ -32,8 +32,6 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
         b,
         img;
 
-        this.backSkies=[];
-
         if (!!this.atlases) {
           sjs.eachObj(function(z) { z.removeAllChildren(); }, this.atlases);
         } else {
@@ -50,26 +48,36 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
         }
         this.screenRect = cc.rect(0, 0, wz.width, wz.height + 10);
         this.getHUD().reset();
-        this.initBackground();
-      },
-
-      createBackSky: function () {
-        var bg = new cc.Sprite( sh.getImagePath('bg01'));
-        bg.setAnchorPoint(0,0);
-        bg.setVisible(false);
-        this.getBackgd().addChild(bg);//, -10);
-        return {
-          sprite: bg,
-          active: false
-        }
       },
 
       initBackground:function () {
-        for (var n = 0; n < 2; ++n) {
-          this.backSkies[n] = this.createBackSky();
+        var n, rc= this.options.backSkies,
+        fac= this.options.factory,
+        layer= this.getBackgd();
+
+        for (n = 0; n < 2; ++n) {
+          rc[n] = fac.createBackSky(layer, this.options);
         }
-        //this.moveTileMap();
-        //this.schedule(this.moveTileMap, 5);
+        this.options.backSky= rc[0];
+
+        this.moveBackTiles();
+        this.schedule(this.moveBackTiles, 5);
+      },
+
+      moveBackTiles: function () {
+        var bg = this.getBackgd(),
+        wz= ccsx.screen(),
+        tm = bg.getOrCreate();
+
+        tm.sprite.setPosition( sjs.rand(wz.width), wz.height);
+
+        var move = cc.moveBy(sjs.rand(2) + 10, cc.p(0, -wz.height - wz.height * 0.5)),
+        fun = cc.callFunc(function() {
+          tm.sprite.setVisible(false);
+          tm.active=false;
+        },this);
+
+        tm.sprite.runAction(cc.sequence(move,fun));
       },
 
       getBackgd: function() {
@@ -100,6 +108,7 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
         this.cleanSlate();
 
         this.options.factory=new sobjs.EntityFactory(this.engine);
+        this.options.backSkies=[];
         this.options.running = true;
 
         R.forEach(function(z) {
@@ -108,6 +117,7 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
         [ [sobjs.Supervisor, pss.PreUpdate],
           [sobjs.MovementSky, pss.Movement]]);
 
+        this.initBackground();
       },
 
       spawnPlayer: function() {

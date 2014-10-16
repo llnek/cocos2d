@@ -35,7 +35,7 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
           'tr-pics' : 'res/{{appid}}/pics/textureTransparentPack',
           'op-pics' : 'res/{{appid}}/pics/textureOpaquePack',
           'explosions' : 'res/{{appid}}/pics/explosion',
-          'b01' : 'res/{{appid}}/pics/b01'
+          'back-tiles' : 'res/{{appid}}/pics/b01'
         },
         sprites: {
         },
@@ -83,7 +83,7 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
         cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('tr-pics'));
         cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('op-pics'));
         cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('explosions'));
-        cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('b01'));
+        cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('back-tiles'));
       }
 
     });

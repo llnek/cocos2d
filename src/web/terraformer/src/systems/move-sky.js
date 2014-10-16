@@ -48,12 +48,12 @@ define('zotohlab/p/s/movesky', [
         var locSkyHeight = this.state.backSkyDim.height,
         locBackSkyRe = this.state.backSkyRe,
         locBackSky = this.state.backSky,
-        pos= locBackSky.getPosition(),
+        pos= locBackSky.sprite.getPosition(),
         wz = ccsx.screen(),
         currPosY = pos.y - movingDist;
-
         if (locSkyHeight + currPosY <= wz.height) {
-          if (locBackSkyRe != null) {
+
+          if (!!locBackSkyRe) {
             throw "The memory is leaking at moving background";
           }
 
@@ -63,18 +63,19 @@ define('zotohlab/p/s/movesky', [
           //create a new background
           this.state.backSky = this.getOrCreate();
           locBackSky = this.state.backSky;
-          locBackSky.setPositionY(currPosY + locSkyHeight - 2);
+          locBackSky.sprite.setPositionY(currPosY + locSkyHeight - 2);
         } else {
-          locBackSky.setPositionY(currPosY);
+          locBackSky.sprite.setPositionY(currPosY);
         }
 
         if (!!locBackSkyRe) {
-          currPosY = locBackSkyRe.getPosition().y - movingDist;
+          currPosY = locBackSkyRe.sprite.getPositionY() - movingDist;
           if (currPosY + locSkyHeight < 0) {
-            locBackSkyRe.destroy();
+            locBackSkyRe.sprite.setVisible(false);
+            locBackSkyRe.active=false;
             this.state.backSkyRe = null;
           } else {
-            locBackSkyRe.setPositionY(currPosY);
+            locBackSkyRe.sprite.setPositionY(currPosY);
           }
         }
       },
@@ -89,7 +90,7 @@ define('zotohlab/p/s/movesky', [
               return c;
             }
         }
-        c = this.state.factory.createBackSky();
+        c = this.state.factory.createBackSky(sh.main.getBackgd(), this.state);
         c.active=true;
         this.state.backSkies.push(c);
         return c;

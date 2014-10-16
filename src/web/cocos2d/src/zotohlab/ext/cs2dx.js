@@ -116,6 +116,12 @@ define("zotohlab/asx/ccsx", ['cherimoia/skarojs',
         return sjs.echt(t) && t.isDone();
       },
 
+      createSpriteFrame: function(name) {
+        var rc= new cc.Sprite();
+        rc.initWithSpriteFrameName(name);
+        return rc;
+      },
+
       //return a 4-point rect.
       bbox4: function(sprite) {
         return {

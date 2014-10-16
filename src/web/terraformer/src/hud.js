@@ -18,11 +18,60 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
   function(sjs, sh, xcfg, ccsx, layers) { "use strict";
 
     var csts = xcfg.csts,
+    R= sjs.ramda,
     undef,
     BackLayer = layers.XLayer.extend({
 
+      BackTileMap: ["lvl1_map1.png", "lvl1_map2.png", "lvl1_map3.png", "lvl1_map4.png"],
+      BackTiles: 4,
+
+      getOrCreate: function () {
+        var j, rc;
+        for (j = 0; j < this.backTiles.length; ++j) {
+          rc = this.backTiles[j];
+          if (!rc.active) {
+            rc.sprite.setVisible(true);
+            rc.active = true;
+            return rc;
+          }
+        }
+        return this.createTile(BackTileMap[sjs.rand( this.BackTiles)]);
+      },
+
+      createTile: function (name) {
+        var rc, tm = ccsx.createSpriteFrame(name);
+        tm.setAnchorPoint(0.5,0);
+        tm.setVisible(false);
+        this.tilesBatch.addChild(tm, -9);
+        rc= {
+          active: false,
+          sprite: tm
+        };
+        this.backTiles.push(rc);
+        return rc;
+      },
+
+      preSet: function () {
+        R.forEach(function(s) {
+          this.createTile(s);
+        }.bind(this), ["lvl1_map1.png", "lvl1_map2.png",
+                       "lvl1_map3.png", "lvl1_map4.png"]);
+      },
+
       rtti: function() { return 'BackLayer'; },
+
       pkInit: function() {
+        var img= cc.textureCache.addImage( sh.getAtlasPath('tr-pics'));
+        this.atlasBatch = new cc.SpriteBatchNode(img);
+        this.addChild(this.atlasBatch, this.lastZix, ++this.lastTag);
+
+        img= cc.textureCache.addImage( sh.getAtlasPath('back-tiles'));
+        this.tilesBatch= new cc.SpriteBatchNode(img);
+        this.addChild(this.tilesBatch, this.lastZix, ++this.lastTag);
+
+        this.backTiles=[];
+        this.preSet();
+
         return this._super();
       }
 
