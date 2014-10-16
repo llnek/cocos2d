@@ -80,18 +80,6 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
         tm.sprite.runAction(cc.sequence(move,fun));
       },
 
-      getBackgd: function() {
-        var rc= this.ptScene.getLayers();
-        return rc['BackLayer'];
-      },
-
-      getHUD: function() {
-        var rc= this.ptScene.getLayers();
-        return rc['HUD'];
-      },
-
-      getNode: function() { return this.atlasBatch; },
-
       operational: function() {
         return this.options.running;
       },

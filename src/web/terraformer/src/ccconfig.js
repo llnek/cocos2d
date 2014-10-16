@@ -49,10 +49,17 @@ document.ccConfig = {
     '/public/ig/lib/game/terraformer/config.js',
     '/public/ig/lib/game/terraformer/i18n/game_en_US.js',
 
+'/public/ig/lib/game/terraformer/components/cobjs.js',
+'/public/ig/lib/game/terraformer/nodes/gnodes.js',
+
 '/public/ig/lib/game/terraformer/systems/priorities.js',
+'/public/ig/lib/game/terraformer/systems/utils.js',
+
 '/public/ig/lib/game/terraformer/systems/factory.js',
 '/public/ig/lib/game/terraformer/systems/supervisor.js',
+//'/public/ig/lib/game/terraformer/systems/motion.js',
 '/public/ig/lib/game/terraformer/systems/move-sky.js',
+
 '/public/ig/lib/game/terraformer/systems/sysobjs.js',
 
 

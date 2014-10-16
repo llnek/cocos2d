@@ -107,8 +107,6 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
     //
     var XLayer = cc.Layer.extend({
 
-      lastTag: 0,
-      lastZix: 0,
 
       pkInit: function() {
         this.pkInput();
@@ -122,8 +120,9 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
         return "" + Number(SEED++);
       },
 
-      getNode: function() {
-        return this;
+      getNode: function(key) {
+        var a= this.atlases[ key || ""];
+        return !!a ? a : this;
       },
 
       removeAllItems: function(c) {
@@ -161,6 +160,9 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
 
       ctor: function(options) {
         this.options = options || {};
+        this.lastTag= 0;
+        this.lastZix= 0;
+        this.atlases= {};
         this._super();
       }
 
@@ -432,10 +434,14 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
 
       operational: function() { return true; },
 
-      updateEntities: function(dt) {
+      getBackgd: function() {
+        var rc= this.ptScene.getLayers();
+        return rc['BackLayer'];
       },
 
-      checkEntities: function(dt) {
+      getHUD: function() {
+        var rc= this.ptScene.getLayers();
+        return rc['HUD'];
       },
 
       update: function(dt) {

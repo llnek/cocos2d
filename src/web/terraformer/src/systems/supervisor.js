@@ -9,7 +9,8 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/s/supervisor", [
+define("zotohlab/p/s/supervisor", ['zotohlab/p/s/utils',
+                                  'zotohlab/p/gnodes',
                                   'cherimoia/skarojs',
                                   'zotohlab/asterix',
                                   'zotohlab/asx/xcfg',
@@ -17,7 +18,7 @@ define("zotohlab/p/s/supervisor", [
                                   'zotohlab/asx/xpool',
                                   'ash-js'],
 
-  function (sjs, sh, xcfg, ccsx, xpool,Ash) { "use strict";
+  function (utils, gnodes, sjs, sh, xcfg, ccsx, xpool,Ash) { "use strict";
 
     var csts = xcfg.csts,
     undef,
@@ -30,9 +31,11 @@ define("zotohlab/p/s/supervisor", [
       },
 
       removeFromEngine: function(engine) {
+        this.ships=null;
       },
 
       addToEngine: function(engine) {
+        this.ships = engine.getNodeList(gnodes.ShipMotionNode);
       },
 
       update: function (dt) {
@@ -45,6 +48,11 @@ define("zotohlab/p/s/supervisor", [
       onceOnly: function() {
         this.state.backSky.sprite.setVisible(true);
         this.state.backSky.active=true;
+        this.factory.createShip(sh.main, this.state);
+        var node = this.ships.head;
+        if (!!node) {
+          utils.bornShip(node.ship);
+        }
       }
 
     });
