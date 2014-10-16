@@ -2,7 +2,7 @@
   :pubdate #inst "@@PUBDATE@@"
   :author "llnek"
   :status true
-  :uri ""
-  :image ""
+  :uri "/arena/???"
+  :image "ui/catalog.png"
 }
 
