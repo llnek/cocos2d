@@ -24,6 +24,16 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
       color: 'yellow',
 
       csts: {
+        MISSILE_SPEED: 900,
+        BOMB_SPEED: 200,
+        ATTACK_MODE: {
+          NORMAL: 1
+        },
+        P_MS: 'missiles',
+        P_BS: 'bombs',
+        P_LMS: 'live-missiles',
+        P_LBS: 'live-bombs'
+
       },
 
       game: {

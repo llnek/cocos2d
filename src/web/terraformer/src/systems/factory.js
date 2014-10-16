@@ -42,7 +42,8 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         animate = cc.animate(animation);
         sp.runAction(animate.repeatForever());
 
-        layer.getNode('tr-pics').addItem(sp, 3000);
+        layer.addItem(sp, 3000);
+
         bs = ccsx.createSpriteFrame("ship03.png");
         bs.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
         bs.setPosition(sz.width * 0.5, 12);
@@ -63,7 +64,7 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
           options.backSkyDim= cc.size(bg.getContentSize());
         }
 
-        return { sprite: bg, active: false };
+        return { sprite: bg, status: false };
       }
 
     });

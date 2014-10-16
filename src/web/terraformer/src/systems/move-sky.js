@@ -72,7 +72,7 @@ define('zotohlab/p/s/movesky', [
           currPosY = locBackSkyRe.sprite.getPositionY() - movingDist;
           if (currPosY + locSkyHeight < 0) {
             locBackSkyRe.sprite.setVisible(false);
-            locBackSkyRe.active=false;
+            locBackSkyRe.status=false;
             this.state.backSkyRe = null;
           } else {
             locBackSkyRe.sprite.setPositionY(currPosY);
@@ -84,14 +84,14 @@ define('zotohlab/p/s/movesky', [
         var j, c = null;
         for (j = 0; j < this.state.backSkies.length; ++j) {
             c = this.state.backSkies[j];
-            if (!c.active) {
+            if (!c.status) {
               c.sprite.setVisible(true);
-              c.active = true;
+              c.status = true;
               return c;
             }
         }
         c = this.state.factory.createBackSky(sh.main.getBackgd(), this.state);
-        c.active=true;
+        c.status=true;
         this.state.backSkies.push(c);
         return c;
       }

@@ -29,9 +29,9 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
         var j, rc;
         for (j = 0; j < this.backTiles.length; ++j) {
           rc = this.backTiles[j];
-          if (!rc.active) {
+          if (!rc.status) {
             rc.sprite.setVisible(true);
-            rc.active = true;
+            rc.status = true;
             return rc;
           }
         }
@@ -44,7 +44,7 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
         tm.setVisible(false);
         this.tilesBatch.addChild(tm, -9);
         rc= {
-          active: false,
+          status: false,
           sprite: tm
         };
         this.backTiles.push(rc);

@@ -9,7 +9,8 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/s/supervisor", ['zotohlab/p/s/utils',
+define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
+                                  'zotohlab/p/s/utils',
                                   'zotohlab/p/gnodes',
                                   'cherimoia/skarojs',
                                   'zotohlab/asterix',
@@ -18,7 +19,7 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/s/utils',
                                   'zotohlab/asx/xpool',
                                   'ash-js'],
 
-  function (utils, gnodes, sjs, sh, xcfg, ccsx, xpool,Ash) { "use strict";
+  function (cobjs, utils, gnodes, sjs, sh, xcfg, ccsx, xpool,Ash) { "use strict";
 
     var csts = xcfg.csts,
     undef,
@@ -46,9 +47,19 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/s/utils',
       },
 
       onceOnly: function() {
+        sh.pools[csts.P_MS] = new xpool.XEntityPool({ entityProto: cobjs.Missile });
+        sh.pools[csts.P_BS] = new xpool.XEntityPool({ entityProto: cobjs.Bomb });
+        //sh.pools[csts.P_ES] = new xpool.XEntityPool({ entityProto: cobjs.Explosion });
+        sh.pools[csts.P_LMS] = {};
+        sh.pools[csts.P_LBS] = {};
+
         this.state.backSky.sprite.setVisible(true);
-        this.state.backSky.active=true;
-        this.factory.createShip(sh.main, this.state);
+        this.state.backSky.status=true;
+
+        utils.createMissiles(sh.main.getNode('op-pics'), this.state, 50);
+        utils.createBombs(sh.main.getNode('op-pics'), this.state, 50);
+        this.factory.createShip(sh.main.getNode('tr-pics'), this.state);
+
         var node = this.ships.head;
         if (!!node) {
           utils.bornShip(node.ship);

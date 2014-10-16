@@ -21,6 +21,81 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     undef,
     cobjs={};
 
+    cobjs.Velocity = Ash.Class.extend({
+      constructor: function(vx, vy, mx, my) {
+        this.vel = {
+          x: vx,
+          y: vy
+        };
+        this.max = {
+          x: mx || 0,
+          y: my || 0
+        };
+      }
+    });
+
+    cobjs.Missile = Ash.Class.extend({
+
+      constructor: function (sprite, attackMode) {
+        this.attackMode = attackMode || csts.ATTACK_MODE.NORMAL;
+        this.sprite = sprite;
+        this.status= false;
+        this.power= 1;
+        this.vel= {
+          x: 0,
+          y: csts.MISSILE_SPEED
+        };
+        this.HP = 1;
+      },
+
+      pid: function() { return this.sprite.getTag(); },
+      rtti: function() { return "Missile"; },
+
+      deflate: function() {
+        this.sprite.setVisible(false);
+        this.sprite.setPosition(0,0);
+        this.status=false;
+      },
+
+      inflate: function(x,y) {
+        this.sprite.setVisible(true);
+        this.sprite.setPosition(x,y);
+        this.status=true;
+      }
+
+    });
+
+    cobjs.Bomb = Ash.Class.extend({
+
+      constructor: function (sprite, attackMode) {
+        this.attackMode = attackMode || csts.ATTACK_MODE.NORMAL;
+        this.sprite = sprite;
+        this.status= false;
+        this.power= 1;
+        this.vel= {
+          x: 0,
+          y: -csts.BOMB_SPEED
+        };
+        this.HP = 1;
+      },
+
+      pid: function() { return this.sprite.getTag(); },
+      rtti: function() { return "Bomb"; },
+
+      deflate: function() {
+        this.sprite.setVisible(false);
+        this.sprite.setPosition(0,0);
+        this.status=false;
+      },
+
+      inflate: function(x,y) {
+        this.sprite.setVisible(true);
+        this.sprite.setPosition(x,y);
+        this.status=true;
+      }
+
+    });
+
     //////////////////////////////////////////////////////////////////////////
     //
     cobjs.Ship = Ash.Class.extend({
@@ -31,7 +106,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
         this.canBeAttack = false;
         this.HP = 5;
         this._hurtColorLife = 0;
-        this.active = false;
+        this.status = false;
       }
 
     });

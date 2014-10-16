@@ -74,7 +74,7 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
         var move = cc.moveBy(sjs.rand(2) + 10, cc.p(0, -wz.height - wz.height * 0.5)),
         fun = cc.callFunc(function() {
           tm.sprite.setVisible(false);
-          tm.active=false;
+          tm.status=false;
         },this);
 
         tm.sprite.runAction(cc.sequence(move,fun));
@@ -103,6 +103,7 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
           this.engine.addSystem(new (z[0])(this.options), z[1]);
         }.bind(this),
         [ [sobjs.Supervisor, pss.PreUpdate],
+          [sobjs.MoveMissiles, pss.Movement],
           [sobjs.MovementSky, pss.Movement]]);
 
         this.initBackground();
