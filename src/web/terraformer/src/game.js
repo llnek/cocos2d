@@ -27,6 +27,28 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
     undef,
     GameLayer = layers.XGameLayer.extend({
 
+      cfgInputMouse: function() {
+        cc.eventManager.addListener({
+          event: cc.EventListener.MOUSE,
+          onMouseMove: function(event){
+            if (event.getButton() === cc.EventMouse.BUTTON_LEFT) {
+              event.getCurrentTarget().processEvent(event);
+            }
+          }
+        }, this);
+      },
+
+      processEvent: function(event) {
+        if (this.operational()) {
+          var delta = event.getDelta();
+          this.options.touches.push(delta);
+        }
+      },
+
+      cfgTouch: function() {
+        this.cfgInputTouchesAll();
+      },
+
       reset: function(newFlag) {
         var wz = ccsx.screen(),
         b,
@@ -97,6 +119,7 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
 
         this.options.factory=new sobjs.EntityFactory(this.engine);
         this.options.backSkies=[];
+        this.options.touches=[];
         this.options.secCount=0;
         this.options.running = true;
 

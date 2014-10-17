@@ -267,24 +267,31 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
 
       pkInput: function() {
 
-        if (cc.sys.capabilities['keyboard']) {
+        if (!cc.sys.isNative && cc.sys.capabilities['keyboard']) {
           sjs.loggr.debug('pkInput:  keyboard supported');
           this.cfgInputKeyPad();
         }else{
           sjs.loggr.debug('pkInput:  keyboard not supported');
         }
+
         if (cc.sys.capabilities['mouse']) {
           sjs.loggr.debug('pkInput:  mouse supported');
           this.cfgInputMouse();
         }else{
           sjs.loggr.debug('pkInput:  mouse not supported');
         }
+
         if (cc.sys.capabilities['touches']) {
           sjs.loggr.debug('pkInput:  touch supported');
-          this.cfgInputTouchOne();
+          this.cfgTouch();
         }else{
           sjs.loggr.debug('pkInput:  touch not supported');
         }
+      },
+
+      cfgTouch: function() {
+        this.cfgInputTouchOne();
+        //this.cfgInputTouchesAll();
       },
 
       cfgInputKeyPad: function() {
@@ -323,16 +330,14 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
 
       cfgInputTouchesAll: function() {
         cc.eventManager.addListener({
-          onTouchesMoved:function (touches, event) {
+          prevTouchId: -1,
+          event: cc.EventListener.TOUCH_ALL_AT_ONCE,
+          onTouchesMoved: function (touches, event) {
             var touch = touches[0];
             if (this.prevTouchId != touch.getId()) {
-              this.prevTouchId = touch.getId();
-            } else {
-              event.getCurrentTarget().processEvent(touches[0]);
-            }
-          },
-          prevTouchId: -1,
-          event: cc.EventListener.TOUCH_ALL_AT_ONCE
+                this.prevTouchId = touch.getId();
+            } else  { event.getCurrentTarget().processEvent(touches[0]); }
+          }
         }, this);
       },
 

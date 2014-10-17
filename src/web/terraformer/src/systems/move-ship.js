@@ -42,11 +42,25 @@ define('zotohlab/p/s/moveship', ['zotohlab/p/components',
 
         if (this.state.running &&
            !!node) {
-          this.processMovement(node,dt);
+          if (this.state.touches.length > 0) {
+            var t = this.state.touches.shift();
+            this.processTouch(node, t);
+          }
+          this.processKeys(node,dt);
         }
       },
 
-      processMovement: function(node,dt) {
+      processTouch: function(node, delta) {
+        var ship = node.ship,
+        wz= ccsx.screen(),
+        pos = ship.sprite.getPosition(),
+        cur= cc.pAdd(pos, delta);
+        cur= cc.pClamp(cur, cc.p(0, 0), cc.p(wz.width, wz.height));
+        ship.sprite.setPosition(cur.x, cur.y);
+        cur=null;
+      },
+
+      processKeys: function(node,dt) {
         var ship = node.ship,
         wz= ccsx.screen(),
         mot= node.motion,
