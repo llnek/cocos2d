@@ -97,16 +97,27 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
 
         this.options.factory=new sobjs.EntityFactory(this.engine);
         this.options.backSkies=[];
+        this.options.secCount=0;
         this.options.running = true;
 
         R.forEach(function(z) {
           this.engine.addSystem(new (z[0])(this.options), z[1]);
         }.bind(this),
         [ [sobjs.Supervisor, pss.PreUpdate],
+          [sobjs.Motions, pss.Motion],
+          [sobjs.LevelManager, pss.Movement],
           [sobjs.MoveMissiles, pss.Movement],
+          [sobjs.MoveBombs, pss.Movement],
+          [sobjs.MoveShip, pss.Movement],
           [sobjs.MovementSky, pss.Movement]]);
 
         this.initBackground();
+        this.schedule(this.countSeconds, 1);
+      },
+
+      countSeconds: function() {
+        // this counter is used to spawn enemies
+        ++this.options.secCount;
       },
 
       spawnPlayer: function() {

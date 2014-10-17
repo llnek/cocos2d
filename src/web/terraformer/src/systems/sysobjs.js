@@ -12,13 +12,21 @@
 define("zotohlab/p/sysobjs", ['zotohlab/p/s/priorities',
                              'zotohlab/p/s/factory',
                              'zotohlab/p/s/supervisor',
+                             'zotohlab/p/levelmgr',
+                             'zotohlab/p/s/motions',
                              'zotohlab/p/s/movemissiles',
+                             'zotohlab/p/s/movebombs',
+                             'zotohlab/p/s/moveship',
                              'zotohlab/p/s/movesky'],
 
   function (Priorities,
             EntityFactory,
             Supervisor,
+            LevelManager,
+            Motions,
             MoveMissiles,
+            MoveBombs,
+            MoveShip,
             MovementSky) { "use strict";
 
     return {
@@ -26,7 +34,11 @@ define("zotohlab/p/sysobjs", ['zotohlab/p/s/priorities',
       EntityFactory       : EntityFactory,
       Priorities          : Priorities,
       Supervisor          : Supervisor,
+      LevelManager        : LevelManager,
+      Motions             : Motions,
       MoveMissiles        : MoveMissiles,
+      MoveBombs           : MoveBombs,
+      MoveShip            : MoveShip,
       MovementSky      : MovementSky
 
     };

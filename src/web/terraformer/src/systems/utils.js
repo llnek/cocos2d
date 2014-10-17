@@ -44,8 +44,8 @@ define("zotohlab/p/s/utils", ['zotohlab/p/components',
       bornShip: function(ship) {
         ship.bornSprite.scale = 8;
         ship.canBeAttack = false;
-        ship.bornSprite.runAction(cc.scaleTo(0.5, 1, 1));
         ship.bornSprite.setVisible(true);
+        ship.bornSprite.runAction(cc.scaleTo(0.5, 1, 1));
 
         var cb= this.fireMissiles,
         makeBeAttack = cc.callFunc(function () {
@@ -53,9 +53,11 @@ define("zotohlab/p/s/utils", ['zotohlab/p/components',
           ship.canBeAttack = true;
           ship.sprite.schedule(cb, 1/6);
           ship.sprite.setVisible(true);
-        }),
-        blinks = cc.blink(3, 9);
-        ship.sprite.runAction(cc.sequence(cc.delayTime(0.5), blinks, makeBeAttack));
+        });
+
+        ship.sprite.runAction(cc.sequence(cc.delayTime(0.5),
+                                          cc.blink(3,9),
+                                          makeBeAttack));
 
         ship.HP = 5;
         ship._hurtColorLife = 0;
@@ -79,6 +81,20 @@ define("zotohlab/p/s/utils", ['zotohlab/p/components',
           sh.pools[csts.P_BS].add(b);
         }
       },
+
+      createEnemies: function(layer, options, count) {
+        var arg, en,
+        n,j;
+
+        for (n = 0; n < count; ++n) {
+          for (j = 0; j < xcfg.EnemyTypes.length; ++j) {
+            arg = xcfg.EnemyTypes[j];
+            en= options.factory.createEnemy(layer, arg);
+            sh.pools[csts.P_BADIES].ens.push(en);
+          }
+        }
+
+      }
 
     };
 

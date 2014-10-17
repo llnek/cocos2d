@@ -37,7 +37,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     cobjs.Missile = Ash.Class.extend({
 
       constructor: function (sprite, attackMode) {
-        this.attackMode = attackMode || csts.ATTACK_MODE.NORMAL;
+        this.attackMode = attackMode || csts.ENEMY_ATTACK.NORMAL;
         this.sprite = sprite;
         this.status= false;
         this.power= 1;
@@ -68,7 +68,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     cobjs.Bomb = Ash.Class.extend({
 
       constructor: function (sprite, attackMode) {
-        this.attackMode = attackMode || csts.ATTACK_MODE.NORMAL;
+        this.attackMode = attackMode || csts.ENEMY_ATTACK.NORMAL;
         this.sprite = sprite;
         this.status= false;
         this.power= 1;
@@ -98,6 +98,32 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
 
     //////////////////////////////////////////////////////////////////////////
     //
+    cobjs.Enemy = Ash.Class.extend({
+
+      constructor: function(sprite, arg) {
+
+        this.delayTime= 1 + 1.2 * Math.random();
+        this.bulletPowerValue=1;
+        this._hurtColorLife=0;
+        this.speed= arg.speed || 200;
+
+        this.sprite= sprite;
+
+        this.HP = arg.HP;
+        this.eID=0;
+        this._timeTick= 0;
+
+        this.moveType = arg.moveType;
+        this.scoreValue = arg.scoreValue;
+        this.attackMode = arg.attackMode;
+        this.enemyType = arg.type;
+        this.status = false;
+      }
+
+    });
+
+    //////////////////////////////////////////////////////////////////////////
+    //
     cobjs.Ship = Ash.Class.extend({
 
       constructor: function(sprite, spriteX) {
@@ -111,6 +137,18 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
 
     });
 
+    //////////////////////////////////////////////////////////////////////////
+    //
+    cobjs.Motion = Ash.Class.extend({
+
+      constructor: function() {
+        this.right=false;
+        this.left= false;
+        this.down= false;
+        this.up= false;
+      }
+
+    });
 
 
     return cobjs;

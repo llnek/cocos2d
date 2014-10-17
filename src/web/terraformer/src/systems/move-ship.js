@@ -9,26 +9,24 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
-                                  'zotohlab/p/s/utils',
-                                  'zotohlab/p/gnodes',
+define('zotohlab/p/s/moveship', ['zotohlab/p/components',
+                                 'zotohlab/p/s/utils',
+                                 'zotohlab/p/gnodes',
                                   'cherimoia/skarojs',
                                   'zotohlab/asterix',
                                   'zotohlab/asx/xcfg',
                                   'zotohlab/asx/ccsx',
-                                  'zotohlab/asx/xpool',
                                   'ash-js'],
 
-  function (cobjs, utils, gnodes, sjs, sh, xcfg, ccsx, xpool,Ash) { "use strict";
+  function (cobjs, utils, gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
 
     var csts = xcfg.csts,
+    R = sjs.ramda,
     undef,
-    GameSupervisor = Ash.System.extend({
+    MoveShip = Ash.System.extend({
 
       constructor: function(options) {
-        this.factory= options.factory;
         this.state= options;
-        this.inited=false;
       },
 
       removeFromEngine: function(engine) {
@@ -40,40 +38,50 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
       },
 
       update: function (dt) {
-        if (! this.inited) {
-          this.onceOnly();
-          this.inited=true;
+        var node= this.ships.head;
+
+        if (this.state.running &&
+           !!node) {
+          this.processMovement(node,dt);
         }
       },
 
-      onceOnly: function() {
-        sh.pools[csts.P_MS] = new xpool.XEntityPool({ entityProto: cobjs.Missile });
-        sh.pools[csts.P_BS] = new xpool.XEntityPool({ entityProto: cobjs.Bomb });
-        sh.pools[csts.P_BADIES] = {
-          actives: 0,
-          ens: []
-        };
-        sh.pools[csts.P_LMS] = {};
-        sh.pools[csts.P_LBS] = {};
+      processMovement: function(node,dt) {
+        var ship = node.ship,
+        wz= ccsx.screen(),
+        mot= node.motion,
+        sp = ship.sprite,
+        pos = sp.getPosition(),
+        x = pos.x,
+        y = pos.y;
 
-        this.state.backSky.sprite.setVisible(true);
-        this.state.backSky.status=true;
+        if (!cc.sys.isNative) {
+          if (mot.up && pos.y <= wz.height) {
+            y = pos.y + dt * csts.SHIP_SPEED;
+          }
+          if (mot.down && pos.y >= 0) {
+            y = pos.y - dt * csts.SHIP_SPEED;
+          }
+          if (mot.left && pos.x >= 0) {
+            x = pos.x - dt * csts.SHIP_SPEED;
+          }
+          if (mot.right && pos.x <= wz.width) {
+            x = pos.x + dt * csts.SHIP_SPEED;
+          }
 
-        utils.createMissiles(sh.main.getNode('op-pics'), this.state, 50);
-        utils.createBombs(sh.main.getNode('op-pics'), this.state, 50);
-        utils.createEnemies(sh.main.getNode('tr-pics'), this.state, 3);
-
-        this.factory.createShip(sh.main.getNode('tr-pics'), this.state);
-
-        var node = this.ships.head;
-        if (!!node) {
-          utils.bornShip(node.ship);
+          sp.setPosition(x,y);
         }
+
+        mot.right= false;
+        mot.left=false;
+        mot.down=false;
+        mot.up=false;
       }
+
 
     });
 
-    return GameSupervisor;
+    return MoveShip;
 });
 
 //////////////////////////////////////////////////////////////////////////////

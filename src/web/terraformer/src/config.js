@@ -15,6 +15,17 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
 
   function (sjs, sh, xcfg) { "use strict";
 
+    var ENEMY_MOVE = {
+      RUSH    :0,
+      VERT    :1,
+      HORZ    :2,
+      OLAP    :3
+    },
+    ENEMY_ATTACK= {
+      TSUIHIKIDAN : 2,
+      NORMAL      : 1
+    };
+
     sjs.merge( xcfg, {
 
       appKey: '4d6b93c4-05d7-42f1-95cc-98ce8adeac0a',
@@ -24,11 +35,13 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
       color: 'yellow',
 
       csts: {
+        ENEMY_ATTACK: ENEMY_ATTACK,
+        ENEMY_MOVE : ENEMY_MOVE,
         MISSILE_SPEED: 900,
         BOMB_SPEED: 200,
-        ATTACK_MODE: {
-          NORMAL: 1
-        },
+        SHIP_SPEED: 200,
+
+        P_BADIES: 'enemies',
         P_MS: 'missiles',
         P_BS: 'bombs',
         P_LMS: 'live-missiles',
@@ -78,14 +91,77 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
         }
       },
 
+      EnemyTypes: [ {
+          attackMode: ENEMY_ATTACK.NORMAL,
+          moveType: ENEMY_MOVE.RUSH,
+          type: 0,
+          textureName:"E0.png",
+          bulletType:"W2.png",
+          HP:1,
+          scoreValue:15
+        },
+        {
+          attackMode: ENEMY_ATTACK.NORMAL,
+          moveType: ENEMY_MOVE.RUSH,
+          type:1,
+          textureName:"E1.png",
+          bulletType:"W2.png",
+          HP:2,
+          scoreValue:40
+        },
+        {
+          attackMode: ENEMY_ATTACK.TSUIHIKIDAN,
+          moveType: ENEMY_MOVE.HORZ,
+          type:2,
+          textureName:"E2.png",
+          bulletType:"W2.png",
+          HP:4,
+          scoreValue:60
+        },
+        {
+          attackMode: ENEMY_ATTACK.NORMAL,
+          moveType: ENEMY_MOVE.OLAP,
+          type:3,
+          textureName:"E3.png",
+          bulletType:"W2.png",
+          HP:6,
+          scoreValue:80
+        },
+        {
+          attackMode: ENEMY_ATTACK.TSUIHIKIDAN,
+          moveType: ENEMY_MOVE.HORZ,
+          type:4,
+          textureName:"E4.png",
+          bulletType:"W2.png",
+          HP:10,
+          scoreValue:150
+        },
+        {
+          attackMode: ENEMY_ATTACK.NORMAL,
+          moveType: ENEMY_MOVE.HORZ,
+          type:5,
+          textureName:"E5.png",
+          bulletType:"W2.png",
+          HP:15,
+          scoreValue:200
+        }
+      ],
+
       levels: {
         "gamelevel1" : {
+          sprites: {
+          },
           tiles: {
           },
           images: {
           },
-          sprites: {
+          cfg: {
+            enemyMax: 6,
+            enemies: [
+              { style:"Repeat", time: 2, types:[0,1,2] },
+              { style:"Repeat", time: 5, types:[3,4,5] } ]
           }
+
         }
       },
 

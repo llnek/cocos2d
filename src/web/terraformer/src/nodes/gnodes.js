@@ -24,6 +24,7 @@ define("zotohlab/p/gnodes", ['zotohlab/p/components',
     //////////////////////////////////////////////////////////////////////////////
     //
     gns.ShipMotionNode = Ash.Node.create({
+      motion : cobjs.Motion,
       ship  : cobjs.Ship
     });
 

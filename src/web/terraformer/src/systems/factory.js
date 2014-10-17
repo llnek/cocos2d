@@ -51,7 +51,15 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         sp.addChild(bs, 3000,99999);
 
         ent.add(new cobjs.Ship(sp, bs));
+        ent.add(new cobjs.Motion());
         this.engine.addEntity(ent);
+      },
+
+      createEnemy: function(layer, arg) {
+        var sp= ccsx.createSpriteFrame(arg.textureName);
+        sp.setVisible(false);
+        layer.addItem(sp, 1000);
+        return new cobjs.Enemy(sp, arg);
       },
 
       createBackSky: function(layer, options) {

@@ -57,9 +57,12 @@ document.ccConfig = {
 
 '/public/ig/lib/game/terraformer/systems/factory.js',
 '/public/ig/lib/game/terraformer/systems/supervisor.js',
-//'/public/ig/lib/game/terraformer/systems/motion.js',
+'/public/ig/lib/game/terraformer/systems/motion.js',
 '/public/ig/lib/game/terraformer/systems/move-missiles.js',
+'/public/ig/lib/game/terraformer/systems/move-bombs.js',
+'/public/ig/lib/game/terraformer/systems/move-ship.js',
 '/public/ig/lib/game/terraformer/systems/move-sky.js',
+'/public/ig/lib/game/terraformer/systems/levelmgr.js',
 '/public/ig/lib/game/terraformer/systems/sysobjs.js',
 
 
