@@ -65,10 +65,7 @@ define("zotohlab/asx/xpool", ['cherimoia/skarojs',
 
     });
 
-    return {
-      XEntityPool: XEntityPool
-    };
-
+    return XEntityPool;
 });
 
 //////////////////////////////////////////////////////////////////////////////

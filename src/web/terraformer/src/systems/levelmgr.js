@@ -19,7 +19,7 @@ define("zotohlab/p/levelmgr", ['zotohlab/p/components',
                               'zotohlab/asx/xpool',
                               'ash-js'],
 
-  function (cobjs, utils, gnodes, sjs, sh, xcfg, ccsx, xpool, Ash) { "use strict";
+  function (cobjs, utils, gnodes, sjs, sh, xcfg, ccsx, XPool, Ash) { "use strict";
 
     var csts = xcfg.csts,
     undef,

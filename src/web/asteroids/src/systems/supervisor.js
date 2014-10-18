@@ -17,7 +17,7 @@ define('zotohlab/p/s/supervisor', ['zotohlab/p/components',
                                   'zotohlab/asx/xpool',
                                   'ash-js'],
 
-  function (cobjs, sjs, sh, xcfg, ccsx, xpool, Ash) { "use strict";
+  function (cobjs, sjs, sh, xcfg, ccsx, XPool, Ash) { "use strict";
 
     var csts = xcfg.csts,
     undef,
@@ -45,12 +45,12 @@ define('zotohlab/p/s/supervisor', ['zotohlab/p/components',
 
       onceOnly: function() {
 
-        sh.pools[csts.P_MS] = new xpool.XEntityPool({ entityProto: cobjs.Missile });
-        sh.pools[csts.P_LS] = new xpool.XEntityPool({ entityProto: cobjs.Laser });
+        sh.pools[csts.P_MS] = new XPool({ entityProto: cobjs.Missile });
+        sh.pools[csts.P_LS] = new XPool({ entityProto: cobjs.Laser });
 
-        sh.pools[csts.P_AS3] = new xpool.XEntityPool({ entityProto: cobjs.Asteroid });
-        sh.pools[csts.P_AS2] = new xpool.XEntityPool({ entityProto: cobjs.Asteroid });
-        sh.pools[csts.P_AS1] = new xpool.XEntityPool({ entityProto: cobjs.Asteroid });
+        sh.pools[csts.P_AS3] = new XPool({ entityProto: cobjs.Asteroid });
+        sh.pools[csts.P_AS2] = new XPool({ entityProto: cobjs.Asteroid });
+        sh.pools[csts.P_AS1] = new XPool({ entityProto: cobjs.Asteroid });
 
         sh.pools[csts.P_LMS] = {};
         sh.pools[csts.P_LLS] = {};

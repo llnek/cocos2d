@@ -18,7 +18,7 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
                                   'zotohlab/asx/xpool',
                                   'ash-js'],
 
-  function (cobjs, utils, sjs, sh, xcfg, ccsx, xpool,Ash) { "use strict";
+  function (cobjs, utils, sjs, sh, xcfg, ccsx, XPool,Ash) { "use strict";
 
     var csts = xcfg.csts,
     undef,
@@ -61,9 +61,9 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
       },
 
       onceOnly: function() {
-        sh.pools[csts.P_MS] = new xpool.XEntityPool({ entityProto: cobjs.Missile });
-        sh.pools[csts.P_BS] = new xpool.XEntityPool({ entityProto: cobjs.Bomb });
-        sh.pools[csts.P_ES] = new xpool.XEntityPool({ entityProto: cobjs.Explosion });
+        sh.pools[csts.P_MS] = new XPool({ entityProto: cobjs.Missile });
+        sh.pools[csts.P_BS] = new XPool({ entityProto: cobjs.Bomb });
+        sh.pools[csts.P_ES] = new XPool({ entityProto: cobjs.Explosion });
         sh.pools[csts.P_LMS] = {};
         sh.pools[csts.P_LBS] = {};
         this.initAlienSize();
