@@ -22,10 +22,14 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
         this.HP -= sjs.echt(damage) ? damage : 1;
       },
 
-      inflate: function(x,y) {
+      inflate: function(options) {
+        options= options || {};
         if (!!this.sprite) {
+          if (sjs.hasKey(options, 'x') &&
+              sjs.hasKey(options, 'y')) {
+            this.sprite.setPosition(options.x, options.y);
+          }
           this.sprite.setVisible(true);
-          this.sprite.setPosition(x,y);
         }
         this.HP= this.origHP;
         this.status=true;

@@ -11,15 +11,15 @@
 
 define('zotohlab/p/mmenu', ['cherimoia/skarojs',
                            'zotohlab/asterix',
-                           'zotohlab/asx/xcfg',
                            'zotohlab/asx/ccsx',
                            'zotohlab/asx/xlayers',
                            'zotohlab/asx/xscenes',
                            'zotohlab/asx/xmmenus'],
 
-  function (sjs, sh, xcfg, ccsx, layers, scenes, mmenus) { "use strict";
+  function (sjs, sh, ccsx, layers, scenes, mmenus) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts = xcfg.csts,
     undef,
     MainMenuLayer = mmenus.XMenuLayer.extend({
 

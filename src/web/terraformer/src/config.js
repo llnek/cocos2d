@@ -16,10 +16,10 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
   function (sjs, sh, xcfg) { "use strict";
 
     var ENEMY_MOVE = {
-      RUSH    :0,
-      VERT    :1,
-      HORZ    :2,
-      OLAP    :3
+      RUSH    : 0,
+      VERT    : 1,
+      HORZ    : 2,
+      OLAP    : 3
     },
     ENEMY_ATTACK= {
       TSUIHIKIDAN : 2,
@@ -29,7 +29,6 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
     sjs.merge( xcfg, {
 
       appKey: '4d6b93c4-05d7-42f1-95cc-98ce8adeac0a',
-
 
       appid: 'terraformer',
       color: 'yellow',
@@ -170,9 +169,7 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
 
     });
 
-
     return xcfg;
-
 });
 
 //////////////////////////////////////////////////////////////////////////////

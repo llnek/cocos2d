@@ -11,51 +11,39 @@
 
 define('zotohlab/p/hud', ['cherimoia/skarojs',
                          'zotohlab/asterix',
-                         'zotohlab/asx/xcfg',
                          'zotohlab/asx/ccsx',
                          'zotohlab/asx/xlayers'],
 
-  function(sjs, sh, xcfg, ccsx, layers) { "use strict";
+  function(sjs, sh, ccsx, layers) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts = xcfg.csts,
     R= sjs.ramda,
     undef,
+    BackTileMap= ["lvl1_map1.png", "lvl1_map2.png", "lvl1_map3.png", "lvl1_map4.png"],
+    BackTiles= BackTileMap.length,
+    BackTile= sh.Ashley.compDef({
+    }),
     BackLayer = layers.XLayer.extend({
-
-      BackTileMap: ["lvl1_map1.png", "lvl1_map2.png", "lvl1_map3.png", "lvl1_map4.png"],
-      BackTiles: 4,
-
-      getOrCreate: function () {
-        var j, rc;
-        for (j = 0; j < this.backTiles.length; ++j) {
-          rc = this.backTiles[j];
-          if (!rc.status) {
-            rc.sprite.setVisible(true);
-            rc.status = true;
-            return rc;
-          }
-        }
-        return this.createTile(BackTileMap[sjs.rand( this.BackTiles)]);
-      },
 
       createTile: function (name) {
         var rc, tm = ccsx.createSpriteFrame(name);
         tm.setAnchorPoint(0.5,0);
         tm.setVisible(false);
         this.tilesBatch.addChild(tm, -9);
-        rc= {
-          status: false,
-          sprite: tm
-        };
-        this.backTiles.push(rc);
-        return rc;
+        return new BackTile(tm);
       },
 
-      preSet: function () {
-        R.forEach(function(s) {
-          this.createTile(s);
-        }.bind(this), ["lvl1_map1.png", "lvl1_map2.png",
-                       "lvl1_map3.png", "lvl1_map4.png"]);
+      preSetTiles: function (count) {
+        var tiles = BackTileMap,
+        tlen= tiles.length,
+        sz= count || 1,
+        me=this;
+        this.backTiles.preSet(function(pool) {
+          for (var n=0; n < tlen; ++n) {
+            pool.push(me.createTile(tiles[sjs.rand(tlen)]));
+          }
+        }, sz);
       },
 
       rtti: function() { return 'BackLayer'; },
@@ -69,8 +57,8 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
         this.tilesBatch= new cc.SpriteBatchNode(img);
         this.addChild(this.tilesBatch, this.lastZix, ++this.lastTag);
 
-        this.backTiles=[];
-        this.preSet();
+        this.backTiles= new XPool();
+        this.preSetTiles(6);
 
         return this._super();
       }

@@ -14,16 +14,15 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
                                   'zotohlab/p/gnodes',
                                   'cherimoia/skarojs',
                                   'zotohlab/asterix',
-                                  'zotohlab/asx/xcfg',
                                   'zotohlab/asx/ccsx',
-                                  'zotohlab/asx/xpool',
-                                  'ash-js'],
+                                  'zotohlab/asx/xpool'],
 
-  function (cobjs, utils, gnodes, sjs, sh, xcfg, ccsx, XPool,Ash) { "use strict";
+  function (cobjs, utils, gnodes, sjs, sh, ccsx, XPool) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts = xcfg.csts,
     undef,
-    GameSupervisor = Ash.System.extend({
+    GameSupervisor = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.factory= options.factory;
@@ -47,15 +46,12 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
       },
 
       onceOnly: function() {
-        sh.pools[csts.P_BADIES] = {
-          actives: 0,
-          ens: []
-        };
-        sh.pools[csts.P_MS] = [];
-        sh.pools[csts.P_BS] = [];
 
-        this.state.backSky.sprite.setVisible(true);
-        this.state.backSky.status=true;
+        sh.pools.Missiles = new XPool();
+        sh.pools.Baddies = new XPool();
+        sh.pools.Bombs= new XPool();
+
+        this.state.backSky.inflate();
 
         utils.createMissiles(sh.main.getNode('op-pics'), this.state, 50);
         utils.createBombs(sh.main.getNode('op-pics'), this.state, 50);

@@ -14,16 +14,15 @@ define('zotohlab/p/s/resolution', ['zotohlab/p/components',
                                   'zotohlab/p/gnodes',
                                   'cherimoia/skarojs',
                                   'zotohlab/asterix',
-                                  'zotohlab/asx/xcfg',
-                                  'zotohlab/asx/ccsx',
-                                  'ash-js'],
+                                  'zotohlab/asx/ccsx'],
 
-  function (cobjs, utils, gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts = xcfg.csts,
     R = sjs.ramda,
     undef,
-    Resolution = Ash.System.extend({
+    Resolution = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.factory= options.factory;
@@ -53,57 +52,48 @@ define('zotohlab/p/s/resolution', ['zotohlab/p/components',
 
       checkMissiles: function() {
         var box= sh.main.getEnclosureBox(),
-        mss= sh.pools[csts.P_MS],
         pos;
 
-        R.forEach(function(m) {
+        sh.pools.Missiles.iter(function(m){
           if (m.status) {
             pos= m.sprite.getPosition();
             if (m.HP <= 0 ||
                 !ccsx.pointInBox(box, pos)) {
-              m.sprite.setVisible(false);
-              m.status= false;
+              m.deflate();
             }
           }
-        }, mss);
+        });
       },
 
       checkBombs: function() {
         var box= sh.main.getEnclosureBox(),
-        mss= sh.pools[csts.P_BS],
         pos;
 
-        R.forEach(function(m) {
-          if (m.status) {
-            pos= m.sprite.getPosition();
-            if (m.HP <= 0 ||
+        sh.pools.Bombs.iter(function(b) {
+          if (b.status) {
+            pos= b.sprite.getPosition();
+            if (b.HP <= 0 ||
                 !ccsx.pointInBox(box, pos)) {
-              m.sprite.setVisible(false);
-              m.status= false;
+              b.deflate();
             }
           }
-        }, mss);
+        });
       },
 
       checkAliens: function() {
         var box= sh.main.getEnclosureBox(),
-        mss= sh.pools[csts.P_BADIES],
         pos;
 
-        R.forEach(function(m) {
-          if (m.status) {
-            pos= m.sprite.getPosition();
-            if (m.HP <= 0 ||
+        sh.pools.Baddies.iter(function(a) {
+          if (a.status) {
+            pos= a.sprite.getPosition();
+            if (a.HP <= 0 ||
                 !ccsx.pointInBox(box, pos)) {
-              m.sprite.unscheduleAllCallbacks();
-              m.sprite.stopAllActions();
-              m.sprite.setVisible(false);
-              m.status= false;
-              --mss.actives;
-              sh.fireEvent('/game/objects/players/earnscore', { score: m.scoreValue});
+              a.deflate();
+              sh.fireEvent('/game/objects/players/earnscore', { score: a.value });
             }
           }
-        }, mss.ens);
+        });
       },
 
       checkShip: function(node) {
@@ -111,8 +101,7 @@ define('zotohlab/p/s/resolution', ['zotohlab/p/components',
 
         if (ship.status) {
           if (ship.HP <= 0) {
-            ship.sprite.setVisible(false);
-            ship.status=false;
+            ship.deflate();
             sh.fireEvent('/game/objects/players/killed');
           }
         }

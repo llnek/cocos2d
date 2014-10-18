@@ -11,15 +11,15 @@
 
 define('zotohlab/p/splash', ['cherimoia/skarojs',
                             'zotohlab/asterix',
-                            'zotohlab/asx/xcfg',
                             'zotohlab/asx/ccsx',
                             'zotohlab/asx/xlayers',
                             'zotohlab/asx/xscenes',
                             'zotohlab/asx/xsplash'],
 
-  function (sjs, sh, xcfg, ccsx, layers, scenes, XSplashLayer) { "use strict";
+  function (sjs, sh, ccsx, layers, scenes, XSplashLayer) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts = xcfg.csts,
     undef,
     UILayer = layers.XLayer.extend({
 
@@ -33,7 +33,7 @@ define('zotohlab/p/splash', ['cherimoia/skarojs',
 
         this.addItem( ccsx.pmenu1({
           imgPath: sh.getImagePath('splash.play-btn'),
-          pos: cc.p(cw.x, wz.height * 0.75),
+          pos: cc.p(cw.x, wz.height * 0.25),
           selector: function() {
             sh.fireEvent('/splash/controls/playgame');
           },
