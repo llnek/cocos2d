@@ -11,186 +11,79 @@
 
 define("zotohlab/p/components", ['cherimoia/skarojs',
                                 'zotohlab/asterix',
-                                'zotohlab/asx/xcfg',
-                                'zotohlab/asx/ccsx',
-                                'ash-js'],
+                                'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (sjs, sh, ccsx) { "use strict";
 
-    var csts= xcfg.csts,
+    var xcfg= sh.xcfg,
+    csts= xcfg.csts,
     undef,
     cobjs={};
 
-    cobjs.Velocity = Ash.Class.extend({
-      constructor: function(vx, vy, mx, my) {
-        this.vel = {
-          x: vx,
-          y: vy
-        };
-        this.max = {
-          x: mx || 0,
-          y: my || 0
-        };
-      }
-    });
-
-    cobjs.Missile = Ash.Class.extend({
+    //////////////////////////////////////////////////////////////////////////
+    cobjs.Missile = sh.Ashley.compDef({
 
       constructor: function (sprite, attackMode) {
         this.attackMode = attackMode || csts.ENEMY_ATTACK.NORMAL;
-        this.sprite = sprite;
-        this.status= false;
-        this.power= 1;
+        this.rego('Missile');
+        this.ctor(sprite);
         this.vel= {
           x: 0,
           y: csts.MISSILE_SPEED
         };
-        this.HP = 1;
-      },
-
-      pid: function() { return this.sprite.getTag(); },
-      rtti: function() { return "Missile"; },
-
-      hurt: function() {
-        --this.HP;
-      },
-
-      deflate: function() {
-        this.sprite.setVisible(false);
-        this.sprite.setPosition(0,0);
-        this.status=false;
-      },
-
-      inflate: function(x,y) {
-        this.sprite.setVisible(true);
-        this.sprite.setPosition(x,y);
-        this.HP = 1;
-        this.status=true;
       }
 
     });
 
-    cobjs.Bomb = Ash.Class.extend({
+    //////////////////////////////////////////////////////////////////////////
+    cobjs.Bomb = sh.Ashley.compDef({
 
       constructor: function (sprite, attackMode) {
         this.attackMode = attackMode || csts.ENEMY_ATTACK.NORMAL;
-        this.sprite = sprite;
-        this.status= false;
-        this.power= 1;
+        this.rego('Bomb');
+        this.ctor(sprite);
         this.vel= {
           x: 0,
           y: -csts.BOMB_SPEED
         };
-        this.HP = 1;
-      },
-
-      pid: function() { return this.sprite.getTag(); },
-      rtti: function() { return "Bomb"; },
-
-      hurt: function() {
-        --this.HP;
-      },
-
-      deflate: function() {
-        this.sprite.setVisible(false);
-        this.sprite.setPosition(0,0);
-        this.status=false;
-      },
-
-      inflate: function(x,y) {
-        this.sprite.setVisible(true);
-        this.sprite.setPosition(x,y);
-        this.HP = 1;
-        this.status=true;
       }
 
     });
 
+
     //////////////////////////////////////////////////////////////////////////
-    //
-    cobjs.Enemy = Ash.Class.extend({
+    cobjs.Enemy = sh.Ashley.compDef({
 
       constructor: function(sprite, arg) {
 
+        this.ctor(sprite, arg.HP, arg.scoreValue);
         this.delayTime= 1 + 1.2 * Math.random();
-        this.bulletPowerValue=1;
-        this._hurtColorLife=0;
+        this.rego('Enemy');
         this.speed= arg.speed || 200;
-
-        this.origHP = this.HP = arg.HP;
-        this.sprite= sprite;
-        this.eID=0;
-        this._timeTick= 0;
-
         this.moveType = arg.moveType;
-        this.scoreValue = arg.scoreValue;
         this.attackMode = arg.attackMode;
         this.enemyType = arg.type;
-        this.status = false;
-      },
 
-      pid: function() { return this.sprite.getTag(); },
-      rtti: function() { return "Enemy"; },
-
-      hurt: function() {
-        --this.HP;
-      },
-
-      inflate: function(x,y) {
-        this.sprite.setVisible(true);
-        this.sprite.setPosition(x,y);
-        this.HP= this.origHP;
-        this.status=true;
-      },
-
-      deflate: function() {
-        this.sprite.setVisible(false);
-        this.sprite.unscheduleAllCallbacks();
-        this.sprite.stopAllActions();
-        this.status=false;
       }
 
     });
 
     //////////////////////////////////////////////////////////////////////////
     //
-    cobjs.Ship = Ash.Class.extend({
+    cobjs.Ship = sh.Ashley.compDef({
 
       constructor: function(sprite, spriteX) {
         this.bornSprite = spriteX;
-        this.sprite= sprite;
         this.canBeAttack = false;
-        this.HP = 5;
-        this._hurtColorLife = 0;
-        this.status = false;
-      },
-
-      pid: function() { return this.sprite.getTag(); },
-      rtti: function() { return "Player"; },
-
-      hurt: function() {
-        --this.HP;
-      },
-
-      inflate: function(x,y) {
-        this.sprite.setVisible(true);
-        this.sprite.setPosition(x,y);
-        this.HP=5;
-        this.status=true;
-      },
-
-      deflate: function() {
-        this.sprite.setVisible(false);
-        this.status=false;
-        this.sprite.unscheduleAllCallbacks();
-        this.sprite.stopAllActions();
+        this.ctor(sprite, 5);
+        this.rego('Player');
       }
 
     });
 
     //////////////////////////////////////////////////////////////////////////
     //
-    cobjs.Motion = Ash.Class.extend({
+    cobjs.Motion = sh.Ashley.casDef({
 
       constructor: function() {
         this.right=false;

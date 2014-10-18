@@ -11,11 +11,80 @@
 
 define("zotohlab/asterix", ['cherimoia/skarojs',
                            'mustache',
-                           'eligrey/l10njs'],
+                           'eligrey/l10njs',
+                           'ash-js'],
 
-  function (sjs, Mustache, LZString) { "use strict";
+  function (sjs, Mustache, LZString, Ash) { "use strict";
 
-    var undef, asterix = {
+    var ComObj = {
+
+      hurt: function(damage, from) {
+        this.HP -= sjs.echt(damage) ? damage : 1;
+      },
+
+      inflate: function(x,y) {
+        if (!!this.sprite) {
+          this.sprite.setVisible(true);
+          this.sprite.setPosition(x,y);
+        }
+        this.HP= this.origHP;
+        this.status=true;
+      },
+
+      deflate: function() {
+        if (!!this.sprite) {
+          this.sprite.unscheduleAllCallbacks();
+          this.sprite.stopAllActions();
+          this.sprite.setVisible(false);
+        }
+        this.status=false;
+      },
+
+      height: function() {
+        if (!!this.sprite) {
+          return this.sprite.getContentSize().height;
+        }
+      },
+
+      width: function() {
+        if (!!this.sprite) {
+          return this.sprite.getContentSize().width;
+        }
+      },
+
+      rtti: function() { return this._tag; },
+      rego: function(s) { this._tag = s; },
+
+      pid: function() {
+        if (!!this.sprite) { return this.sprite.getTag(); }
+      },
+
+      ctor: function(sprite, health, score) {
+        this.sprite = sprite;
+        this.origHP = health || 1;
+        this.HP = this.origHP;
+        this.value = score || 0;
+        this._tag= "unknown";
+        this.status=false;
+      }
+    },
+    undef,
+    asterix = {
+
+      Ashley: {
+        compDef : function(proto) {
+          return Ash.Class.extend(sjs.mergeEx(ComObj, proto));
+        },
+        nodeDef: function(proto) {
+          return Ash.Node.create(proto);
+        },
+        sysDef: function(proto) {
+          return Ash.System.extend(proto);
+        },
+        casDef: function(proto) {
+          return Ash.Class.extend(proto);
+        }
+      },
 
       l10nInit: function(table) {
         LZString.toLocaleString(table || this.xcfg.l10nTable);

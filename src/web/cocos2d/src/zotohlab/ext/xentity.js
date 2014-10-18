@@ -10,80 +10,13 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 define("zotohlab/asx/xpool", ['cherimoia/skarojs',
-                                'zotohlab/asterix'],
+                              'zotohlab/asterix'],
   function (sjs, sh) { "use strict";
 
     var GID_SEED = 0,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    function _revive(sprite,x,y) {
-      if (!!sprite) {
-        sprite.setPosition(x,y);
-        sprite.setVisible(true);
-      }
-    }
-    function _hide(sprite) {
-      if (!!sprite) {
-        sprite.setVisible(false);
-        sprite.setPosition(0,0);
-      }
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    var XEntity = {
-
-      injured: function(damage,from) {
-      },
-
-      inflate: function(options) {
-      },
-
-      deflate: function() {
-        _hide(this.sprite);
-      },
-
-      rtti: function() {
-        return 'no-rtti-defined';
-      },
-
-      dispose: function() {
-        if (!!this.sprite) {
-          this.sprite.getParent().removeChild(this.sprite,true);
-          this.sprite=null;
-        }
-      },
-
-      height: function() {
-        if (!!this.sprite) {
-          return this.sprite.getContentSize().height;
-        }
-      },
-
-      width: function() {
-        if (!!this.sprite) {
-          return this.sprite.getContentSize().width;
-        }
-      },
-
-      pid: function() {
-        if (!!this.sprite) { return this.sprite.getTag(); }
-      },
-
-      ctor: function() {
-        this.health= 0;
-        this.speed= 0;
-        this.value= 0;
-        this.sprite= null;
-        this.status=true;
-      }
-
-    };
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
     var XEntityPool = sjs.Class.xtends({
 
       checkEntity: function(ent) {
@@ -132,10 +65,8 @@ define("zotohlab/asx/xpool", ['cherimoia/skarojs',
 
     });
 
-
     return {
-      XEntityPool: XEntityPool,
-      XEntity: XEntity
+      XEntityPool: XEntityPool
     };
 
 });
