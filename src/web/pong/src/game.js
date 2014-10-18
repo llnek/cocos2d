@@ -123,7 +123,7 @@ define("zotohlab/p/arena", ['zotohlab/p/components',
 
         //
         this.options.factory= new sobjs.EntityFactory(this.engine);
-        this.options.world = this.getEnclosureRect();
+        this.options.world = this.getEnclosureBox();
         this.options.netQ= [];
         this.initPlayers();
 
@@ -226,7 +226,7 @@ define("zotohlab/p/arena", ['zotohlab/p/components',
         this._super(mode);
       },
 
-      getEnclosureRect: function() {
+      getEnclosureBox: function() {
         var wz = ccsx.screen();
         return { top: Math.floor(wz.height - 6 * csts.TILE),
                  left: csts.TILE,

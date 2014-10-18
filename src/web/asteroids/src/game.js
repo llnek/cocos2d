@@ -46,7 +46,7 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
         this.cleanSlate();
 
         this.options.factory=new sobjs.EntityFactory(this.engine);
-        this.options.world= this.getEnclosureRect();
+        this.options.world= this.getEnclosureBox();
         this.options.level=1;
         this.options.running=true;
 

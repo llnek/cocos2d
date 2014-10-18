@@ -393,7 +393,7 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
       onclicked: function(x,y) {
       },
 
-      getEnclosureRect: function() {
+      getEnclosureBox: function() {
         var csts = xcfg.csts,
         wz = ccsx.screen();
         return { top: wz.height - csts.TILE,

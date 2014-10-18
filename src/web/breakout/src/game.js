@@ -58,7 +58,7 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
         this.options.factory.createBall(sh.main,this.options);
       },
 
-      getEnclosureRect: function() {
+      getEnclosureBox: function() {
         var csts= sh.xcfg.csts,
         wz= ccsx.screen();
         return { bottom: csts.TILE,
@@ -94,7 +94,7 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
         this.cleanSlate();
 
         this.options.factory= new sobjs.EntityFactory(this.engine);
-        this.options.world= this.getEnclosureRect();
+        this.options.world= this.getEnclosureBox();
         this.options.running=true;
 
         R.forEach(function(z) {

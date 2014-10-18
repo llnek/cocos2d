@@ -52,7 +52,7 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/components',
       },
 
       checkMissiles: function() {
-        var box= sh.main.getEnclosureRect(),
+        var box= sh.main.getEnclosureBox(),
         mss= sh.pools[csts.P_MS],
         pos;
 
@@ -69,7 +69,7 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/components',
       },
 
       checkBombs: function() {
-        var box= sh.main.getEnclosureRect(),
+        var box= sh.main.getEnclosureBox(),
         mss= sh.pools[csts.P_BS],
         pos;
 
@@ -86,7 +86,7 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/components',
       },
 
       checkAliens: function() {
-        var box= sh.main.getEnclosureRect(),
+        var box= sh.main.getEnclosureBox(),
         mss= sh.pools[csts.P_BADIES],
         pos;
 

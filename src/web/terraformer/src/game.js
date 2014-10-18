@@ -177,7 +177,7 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
         this.getHUD().enableReplay();
       },
 
-      getEnclosureRect: function() {
+      getEnclosureBox: function() {
         var wz= ccsx.screen();
         return {
           bottom: 0,
