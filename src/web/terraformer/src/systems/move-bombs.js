@@ -46,30 +46,18 @@ define('zotohlab/p/s/movebombs', ['zotohlab/p/components',
         wz= ccsx.screen();
         var x = pos.x + m.vel.x * dt;
         var y = pos.y + m.vel.y * dt;
-        if (y < 0) {
-          return false;
-        } else {
-          m.sprite.setPosition(x,y);
-        }
+        m.sprite.setPosition(x,y);
       },
 
       processMovement: function(dt) {
-        var po2 = sh.pools[csts.P_LBS],
-        po1 = sh.pools[csts.P_BS],
-        m,
-        bad=[];
+        var po2 = sh.pools[csts.P_BS];
 
-        sjs.eachObj(function(v,k) {
-          if (this.moveBomb(v,dt) === false) {
-            bad.push(k);
+        R.forEach(function(v) {
+          if (v.status) {
+            this.moveBomb(v,dt);
           }
         }.bind(this), po2);
 
-        R.forEach(function(id) {
-          m= po2[id];
-          po1.add(m);
-          delete po2[id];
-        }, bad);
       }
 
     });

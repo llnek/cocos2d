@@ -21,24 +21,41 @@ define("zotohlab/p/s/utils", ['zotohlab/p/components',
     undef,
     SystemUtils = {
 
-      fireMissiles: function(dt) {
+      maybeGetMissile: function(mss, start) {
+        for (var n=start; n < mss.length; ++n){
+          if (!mss[n].status) {
+            return [ mss[n], n+1 ];
+          }
+        }
+      },
+
+      fireMissiles: function(ship, dt) {
         //this === ship sprite
         var po1= sh.pools[csts.P_MS],
-        po2= sh.pools[csts.P_LMS],
-        sz= this.getContentSize(),
-        pos= this.getPosition(),
-        m= po1.get(),
+        plen= po1.length,
+        ssp= ship.sprite,
+        sz= ssp.getContentSize(),
+        pos= ssp.getPosition(),
+        m1, m2,
         offset=13;
-        if (!m) {
-          SystemUtils.createMissiles(sh.main.getNode('op-pics'),
-                                     sh.main.options, 50);
-          m= po1.get();
+
+        m1= this.maybeGetMissile(po1, 0);
+        if (!!m1) {
+          m2= this.maybeGetMissile(po1, m1[1]);
         }
-        m.inflate(pos.x + offset, pos.y + 3 + sz.height * 0.3);
-        po2[m.pid() ] = m;
-        m= po1.get();
-        m.inflate(pos.x - offset, pos.y + 3 + sz.height * 0.3);
-        po2[m.pid() ] = m;
+        if (!!m1 && !!m2) {} else {
+          this.createMissiles(sh.main.getNode('op-pics'),
+                              sh.main.options, 50);
+          if (!m1) {
+            m1= this.maybeGetMissile(po1, 0);
+          }
+          if (!m2) {
+            m2= this.maybeGetMissile(po1, m1[1]);
+          }
+        }
+
+        m1[0].inflate(pos.x + offset, pos.y + 3 + sz.height * 0.3);
+        m2[0].inflate(pos.x - offset, pos.y + 3 + sz.height * 0.3);
       },
 
       bornShip: function(ship) {
@@ -47,11 +64,12 @@ define("zotohlab/p/s/utils", ['zotohlab/p/components',
         ship.bornSprite.setVisible(true);
         ship.bornSprite.runAction(cc.scaleTo(0.5, 1, 1));
 
-        var cb= this.fireMissiles,
-        makeBeAttack = cc.callFunc(function () {
+        var me=this, makeBeAttack = cc.callFunc(function () {
           ship.bornSprite.setVisible(false);
           ship.canBeAttack = true;
-          ship.sprite.schedule(cb, 1/6);
+          ship.sprite.schedule(function(dt) {
+            me.fireMissiles(ship,dt);
+          }, 1/6);
           ship.sprite.setVisible(true);
         });
 
@@ -69,7 +87,7 @@ define("zotohlab/p/s/utils", ['zotohlab/p/components',
           var b= new cobjs.Missile(ccsx.createSpriteFrame('W1.png'));
           b.sprite.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
           layer.addItem(b.sprite, 3000);
-          sh.pools[csts.P_MS].add(b);
+          sh.pools[csts.P_MS].push(b);
         }
       },
 
@@ -78,7 +96,7 @@ define("zotohlab/p/s/utils", ['zotohlab/p/components',
           var b= new cobjs.Bomb(ccsx.createSpriteFrame('W2.png'));
           b.sprite.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
           layer.addItem(b.sprite, 3000);
-          sh.pools[csts.P_BS].add(b);
+          sh.pools[csts.P_BS].push(b);
         }
       },
 

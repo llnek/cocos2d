@@ -64,6 +64,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
       inflate: function(x,y) {
         this.sprite.setVisible(true);
         this.sprite.setPosition(x,y);
+        this.HP = 1;
         this.status=true;
       }
 
@@ -99,6 +100,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
       inflate: function(x,y) {
         this.sprite.setVisible(true);
         this.sprite.setPosition(x,y);
+        this.HP = 1;
         this.status=true;
       }
 
@@ -115,9 +117,8 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
         this._hurtColorLife=0;
         this.speed= arg.speed || 200;
 
+        this.origHP = this.HP = arg.HP;
         this.sprite= sprite;
-
-        this.HP = arg.HP;
         this.eID=0;
         this._timeTick= 0;
 
@@ -126,6 +127,27 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
         this.attackMode = arg.attackMode;
         this.enemyType = arg.type;
         this.status = false;
+      },
+
+      pid: function() { return this.sprite.getTag(); },
+      rtti: function() { return "Enemy"; },
+
+      hurt: function() {
+        --this.HP;
+      },
+
+      inflate: function(x,y) {
+        this.sprite.setVisible(true);
+        this.sprite.setPosition(x,y);
+        this.HP= this.origHP;
+        this.status=true;
+      },
+
+      deflate: function() {
+        this.sprite.setVisible(false);
+        this.sprite.unscheduleAllCallbacks();
+        this.sprite.stopAllActions();
+        this.status=false;
       }
 
     });
@@ -141,6 +163,27 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
         this.HP = 5;
         this._hurtColorLife = 0;
         this.status = false;
+      },
+
+      pid: function() { return this.sprite.getTag(); },
+      rtti: function() { return "Player"; },
+
+      hurt: function() {
+        --this.HP;
+      },
+
+      inflate: function(x,y) {
+        this.sprite.setVisible(true);
+        this.sprite.setPosition(x,y);
+        this.HP=5;
+        this.status=true;
+      },
+
+      deflate: function() {
+        this.sprite.setVisible(false);
+        this.status=false;
+        this.sprite.unscheduleAllCallbacks();
+        this.sprite.stopAllActions();
       }
 
     });

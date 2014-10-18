@@ -9,7 +9,7 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define('zotohlab/p/s/collisions', ['zotohlab/p/components',
+define('zotohlab/p/s/resolution', ['zotohlab/p/components',
                                   'zotohlab/p/s/utils',
                                   'zotohlab/p/gnodes',
                                   'cherimoia/skarojs',

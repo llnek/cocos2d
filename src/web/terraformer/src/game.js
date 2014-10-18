@@ -53,9 +53,31 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
       },
 
       reset: function(newFlag) {
-        var wz = ccsx.screen(),
+        var aliens = sh.pools[csts.P_BADIES],
+        wz = ccsx.screen(),
+        cleaner = function(a) {
+          R.forEach(function(v) {
+            v.deflate();
+          }, a);
+        },
         b,
-        img;
+        img,
+        blayer= this.getBackgd();
+
+        if (!!aliens) { cleaner( aliens.ens || []); }
+        cleaner(sh.pools[csts.P_MS] || []);
+        cleaner(sh.pools[csts.P_BS] || []);
+
+        if (!!this.options.backSkies) {
+          this.unschedule(this.moveBackTiles);
+          R.forEach(function(v) {
+            v.sprite.setVisible(false);
+            v.status=false;
+            v.sprite.unscheduleAllCallbacks();
+            v.sprite.stopAllActions();
+            blayer.removeItem(v.sprite);
+          }, this.options.backSkies);
+        }
 
         if (!!this.atlases) {
           sjs.eachObj(function(z) { z.removeAllChildren(); }, this.atlases);
@@ -71,7 +93,6 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
           this.atlases[ 'tr-pics' ] =  b;
           this.addChild(b, ++this.lastZix, ++this.lastTag);
         }
-        this.screenRect = cc.rect(0, 0, wz.width, wz.height + 10);
         this.getHUD().reset();
       },
 
@@ -149,11 +170,11 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
       },
 
       spawnPlayer: function() {
-        this.options.factory.createShip(sh.main,this.options);
+        sobjs.Utils.bornShip(this.options.player);
       },
 
       onPlayerKilled: function(msg) {
-        sh.sfxPlay('xxx-explode');
+        //sh.sfxPlay('xxx-explode');
         if ( this.getHUD().reduceLives(1)) {
           this.onDone();
         } else {
@@ -172,8 +193,8 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
       },
 
       onDone: function() {
-        this.reset();
         this.options.running=false;
+        this.reset();
         this.getHUD().enableReplay();
       },
 
@@ -185,11 +206,6 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
           top: wz.height + 10,
           right: wz.width
         };
-      },
-
-      getCameraView: function() {
-        var wz= ccsx.screen();
-        return cc.rect(0,0, wz.width, wz.height+10);
       },
 
       ctor: function(options) {

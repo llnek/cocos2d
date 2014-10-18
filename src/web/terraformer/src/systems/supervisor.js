@@ -47,14 +47,12 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
       },
 
       onceOnly: function() {
-        sh.pools[csts.P_MS] = new xpool.XEntityPool({ entityProto: cobjs.Missile });
-        sh.pools[csts.P_BS] = new xpool.XEntityPool({ entityProto: cobjs.Bomb });
         sh.pools[csts.P_BADIES] = {
           actives: 0,
           ens: []
         };
-        sh.pools[csts.P_LMS] = {};
-        sh.pools[csts.P_LBS] = {};
+        sh.pools[csts.P_MS] = [];
+        sh.pools[csts.P_BS] = [];
 
         this.state.backSky.sprite.setVisible(true);
         this.state.backSky.status=true;

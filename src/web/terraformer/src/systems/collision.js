@@ -52,18 +52,23 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/components',
       },
 
       update: function (dt) {
+        var node = this.ships.head;
 
-        checkMissilesAliens(node);
-        checkShipAliens(node);
-        checkShipBombs(node);
-        checkMissilesBombs();
+        if (this.state.running &&
+            !!node) {
+
+          this.checkMissilesAliens();
+          this.checkShipAliens(node);
+          this.checkShipBombs(node);
+          this.checkMissilesBombs();
+        }
 
       },
 
       checkMissilesBombs: function() {
 
-        var bombs = sh.pools[csts.P_LBS],
-        mss = sh.pools[csts.P_LMS],
+        var bombs = sh.pools[csts.P_BS],
+        mss = sh.pools[csts.P_MS],
         me=this;
 
         sjs.eachObj(function(b) {
@@ -72,6 +77,7 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/components',
 
             if (b.status && m.status &&
                 me.collide(b, m)) {
+              sjs.loggr.debug('missiles-bombs collided !!!!');
               m.hurt();
               b.hurt();
             }
@@ -81,9 +87,9 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/components',
         }, bombs);
       },
 
-      checkMissilesAliens: function(node) {
+      checkMissilesAliens: function() {
         var enemies= sh.pools[csts.P_BADIES],
-        bullets= sh.pool[csts.P_LMS],
+        bullets= sh.pools[csts.P_MS],
         me=this;
 
         R.forEach(function(en) {
@@ -91,7 +97,8 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/components',
           sjs.eachObj(function(b) {
             if (b.status &&
                 me.collide(en, b)) {
-              en.hurt();
+              sjs.loggr.debug('missiles-aliens collided !!!!');
+            en.hurt();
               b.hurt();
             }
           }, bullets);
@@ -100,7 +107,7 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/components',
       },
 
       checkShipBombs: function(node) {
-        var bombs = sh.pools[csts.P_LBS],
+        var bombs = sh.pools[csts.P_BS],
         me=this,
         ship= node.ship;
 
@@ -111,7 +118,8 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/components',
         sjs.eachObj(function(b) {
           if (b.status &&
               me.collide(b, ship)) {
-            ship.hurt();
+            sjs.loggr.debug('ship got bombed collided !!!!');
+          ship.hurt();
             b.hurt();
           }
         }, bombs);
@@ -130,7 +138,8 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/components',
         R.forEach(function(en) {
           if (en.status &&
               me.collide(en, ship)) {
-            ship.hurt();
+            sjs.loggr.debug('ship got ramped !!!!');
+          ship.hurt();
             en.hurt();
           }
         }, enemies);

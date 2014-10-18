@@ -86,21 +86,28 @@ define("zotohlab/p/levelmgr", ['zotohlab/p/components',
 
       dropBombs: function(enemy) {
         // this ptr = enemy.sprite
-        var po1= sh.pools[csts.P_BS],
-        po2= sh.pools[csts.P_LBS],
+        var po2= sh.pools[csts.P_BS],
+        plen= po2.length,
         sp= enemy.sprite,
         sz= sp.getContentSize(),
         pos= sp.getPosition(),
-        b= po1.get();
+        n, b;
+
+        for (n=0; n < plen; ++n) {
+          if (!po2[n].status) {
+            b= po2[n];
+            break;
+          }
+        }
 
         if (!b) {
-          SystemUtils.createBombs(sh.main.getNode('op-pics'),
-                                  sh.main.options, 50);
-          b= po1.get();
+          utils.createBombs(sh.main.getNode('op-pics'),
+                            sh.main.options, 50);
+          b= po2[plen];
         }
+
         b.inflate(pos.x, pos.y - sz.height * 0.2);
         b.attackMode=enemy.attackMode;
-        po2[b.pid() ] = b;
       },
 
       getOrCreateEnemy: function(arg) {
