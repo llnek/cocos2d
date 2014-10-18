@@ -14,16 +14,15 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/components',
                                   'zotohlab/p/gnodes',
                                   'cherimoia/skarojs',
                                   'zotohlab/asterix',
-                                  'zotohlab/asx/xcfg',
-                                  'zotohlab/asx/ccsx',
-                                  'ash-js'],
+                                  'zotohlab/asx/ccsx'],
 
-  function (cobjs, utils, gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts = xcfg.csts,
     R = sjs.ramda,
     undef,
-    Collisions = Ash.System.extend({
+    Collisions = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.factory= options.factory;
@@ -39,15 +38,6 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/components',
       },
 
       collide: function (a, b) {
-        /*
-        var pos_a = a.getPosition(),
-        pos_b = b.getPosition();
-
-        if (Math.abs(pos_a.x - pos_b.x) > csts.CONSTRAINT_WD ||
-            Math.abs(pos_a.y - pos_b.y) > csts.CONSTRAINT_HT) {
-          return false;
-        }
-*/
         return ccsx.collide0(a.sprite, b.sprite);
       },
 
@@ -66,84 +56,65 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/components',
       },
 
       checkMissilesBombs: function() {
-
-        var bombs = sh.pools[csts.P_BS],
-        mss = sh.pools[csts.P_MS],
+        var bombs = sh.pools.Bombs,
+        mss = sh.pools.Missiles,
         me=this;
-
-        sjs.eachObj(function(b) {
-
-          sjs.eachObj(function(m) {
-
-            if (b.status && m.status &&
+        bombs.iter(function(b) {
+          mss.iter(function(m) {
+            if (b.status &&
+                m.status &&
                 me.collide(b, m)) {
-              sjs.loggr.debug('missiles-bombs collided !!!!');
               m.hurt();
               b.hurt();
             }
-
-          }, mss);
-
-        }, bombs);
+          });
+        });
       },
 
       checkMissilesAliens: function() {
-        var enemies= sh.pools[csts.P_BADIES],
-        bullets= sh.pools[csts.P_MS],
+        var enemies= sh.pools.Baddies,
+        mss= sh.pools.Missiles,
         me=this;
-
-        R.forEach(function(en) {
-          if (!en.status) { return; }
-          sjs.eachObj(function(b) {
-            if (b.status &&
+        enemies.iter(function(en) {
+          mss.iter(function(b) {
+            if (en.status &&
+                b.status &&
                 me.collide(en, b)) {
-              sjs.loggr.debug('missiles-aliens collided !!!!');
-            en.hurt();
+              en.hurt();
               b.hurt();
             }
-          }, bullets);
-        }, enemies);
-
+          });
+        });
       },
 
       checkShipBombs: function(node) {
-        var bombs = sh.pools[csts.P_BS],
+        var bombs = sh.pools.Bombs,
         me=this,
         ship= node.ship;
 
-        if (!ship.status) {
-          return;
-        }
-
-        sjs.eachObj(function(b) {
+        if (!ship.status) { return; }
+        bombs.iter(function(b) {
           if (b.status &&
               me.collide(b, ship)) {
-            sjs.loggr.debug('ship got bombed collided !!!!');
-          ship.hurt();
+            ship.hurt();
             b.hurt();
           }
-        }, bombs);
-
+        });
       },
 
       checkShipAliens: function(node) {
-        var enemies= sh.pools[csts.P_BADIES],
+        var enemies= sh.pools.Baddies,
         me=this,
         ship= node.ship;
 
-        if (! ship.status) {
-          return;
-        }
-
-        R.forEach(function(en) {
+        if (! ship.status) { return; }
+        enemies.iter(function(en) {
           if (en.status &&
               me.collide(en, ship)) {
-            sjs.loggr.debug('ship got ramped !!!!');
-          ship.hurt();
+            ship.hurt();
             en.hurt();
           }
-        }, enemies);
-
+        });
       }
 
     });

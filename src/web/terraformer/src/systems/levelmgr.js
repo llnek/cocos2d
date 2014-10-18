@@ -14,29 +14,27 @@ define("zotohlab/p/levelmgr", ['zotohlab/p/components',
                               'zotohlab/p/gnodes',
                               'cherimoia/skarojs',
                               'zotohlab/asterix',
-                              'zotohlab/asx/xcfg',
-                              'zotohlab/asx/ccsx',
-                              'zotohlab/asx/xpool',
-                              'ash-js'],
+                              'zotohlab/asx/ccsx'],
 
-  function (cobjs, utils, gnodes, sjs, sh, xcfg, ccsx, XPool, Ash) { "use strict";
+  function (cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts = xcfg.csts,
     undef,
-    LevelManager = Ash.System.extend({
+    LevelManager = sh.Ashley.sysDef({
 
-      constructor: function(options){
+      constructor: function(options) {
         this.state= options;
-        this._currentLevel = 1;
-        this.setLevel(this._currentLevel);
+        this.setLevel(1);
       },
 
       setLevel: function(level) {
-        this.onceLatch=1;
+        this.onceLatch = 1;
+        this.curLevel = 1;
       },
 
       getLCfg: function() {
-        var k= 'gamelevel' + Number(this._currentLevel).toString();
+        var k= 'gamelevel' + Number(this.curLevel).toString();
         return xcfg['levels'][k]['cfg'];
       },
 
@@ -57,22 +55,19 @@ define("zotohlab/p/levelmgr", ['zotohlab/p/components',
       },
 
       loadLevelResource: function(node, deltaTime) {
-        var fc, em, cfg= this.getLCfg(),
-        me=this,
-        t, n,
-        cl= this._currentLevel;
+        var enemies= sh.pools.Baddies,
+        cfg= this.getLCfg(),
+        me=this;
 
-        if (sh.pools[csts.P_BADIES].actives >= cfg.enemyMax) { return; }
-
-        for (n = 0; n < cfg.enemies.length; ++n){
-          em = cfg.enemies[n];
-          if (!!em) {
-            fc= function() {
+        if (enemies.actives() < cfg.enemyMax) {
+          enemies.iter(function(em) {
+            var fc= function() {
               for (var t = 0; t < em.types.length; ++t) {
-                me.addEnemyToGameLayer(node, em.types[t]);
+                me.addEnemyToGame(node, em.types[t]);
               }
             };
-            if (em.style === "Repeat" && deltaTime % em.time === 0) {
+            if (em.style === "Repeat" &&
+                deltaTime % em.time === 0) {
               fc();
             }
             if (em.style === "Once" &&
@@ -80,104 +75,95 @@ define("zotohlab/p/levelmgr", ['zotohlab/p/components',
               this.onceLatch=0;
               fc();
             }
-          }
+          });
         }
       },
 
       dropBombs: function(enemy) {
-        // this ptr = enemy.sprite
-        var po2= sh.pools[csts.P_BS],
-        plen= po2.length,
+        var bombs= sh.pools.Bombs,
         sp= enemy.sprite,
         sz= sp.getContentSize(),
         pos= sp.getPosition(),
-        n, b;
-
-        for (n=0; n < plen; ++n) {
-          if (!po2[n].status) {
-            b= po2[n];
-            break;
-          }
-        }
+        b = bombs.get();
 
         if (!b) {
-          utils.createBombs(sh.main.getNode('op-pics'),
-                            sh.main.options, 50);
-          b= po2[plen];
+          utils.createBombs(sh.main.getNode('op-pics'));
+          b= bombs.get();
         }
 
         b.inflate(pos.x, pos.y - sz.height * 0.2);
         b.attackMode=enemy.attackMode;
       },
 
-      getOrCreateEnemy: function(arg) {
+      getB: function(arg) {
         var layer = sh.main.getNode('tr-pics'),
-        po1 = sh.pools[csts.P_BADIES],
-        ens= po1.ens,
-        me=this,
-        en, j;
+        enemies = sh.pools.Baddies,
+        en, me=this,
+        pred= function(e) {
+          return (e.enemyType === arg.type &&
+                  e.status === false);
+        };
 
-        for (j = 0; j < ens.length; ++j) {
-          en = ens[j];
-          if (en.status === false &&
-              en.enemyType === arg.type) {
-            en._hurtColorLife = 0;
-            en.status = true;
-            en.sprite.schedule(function() {
-              me.dropBombs(en);
-            }, en.delayTime);
-            en.sprite.setVisible(true);
-            ++po1.actives;
-            return en;
-          }
+        en= enemies.select(pred);
+        if (!en) {
+          utils.createEnemies(layer, this.state, 3);
+          en= enemies.select(pred);
         }
-        en = this.state.factory.createEnemy(layer, arg);
-        ++po1.actives;
+
+        if (!!en) {
+          en.sprite.schedule(function() {
+            me.dropBombs(en);
+          }, en.delayTime);
+          en.sprite.setVisible(true);
+          en.status = true;
+        }
+
         return en;
       },
 
-      addEnemyToGameLayer: function(node, enemyType) {
-        var addEnemy = this.getOrCreateEnemy(xcfg.EnemyTypes[enemyType]),
+      addEnemyToGame: function(node, enemyType) {
+        var arg = xcfg.EnemyTypes[enemyType],
+        en = this.getB(arg[enemyType]),
+        wz = ccsx.screen(),
         ship= node.ship,
+        sp= en.sprite,
         pos= ship.sprite.getPosition(),
-        sp= addEnemy.sprite,
         sz= sp.getContentSize(),
-        offset, tmpAction,
-        a0=0,
-        a1=0,
-        wz = ccsx.screen();
+        act, a0, a1;
 
-        sp.setPosition(sjs.rand(80 + (wz.width - 160)), wz.height);
-        switch (addEnemy.moveType) {
+        sp.setPosition(sjs.rand(80 + wz.width * 0.5), wz.height);
+        switch (en.moveType) {
 
           case csts.ENEMY_MOVE.RUSH:
-            tmpAction = cc.moveTo(1, cc.p(pos.x, pos.y));
+            act = cc.moveTo(1, cc.p(pos.x, pos.y));
           break;
 
           case csts.ENEMY_MOVE.VERT:
-            tmpAction = cc.moveBy(4, cc.p(0, -wz.height - sz.height));
+            act = cc.moveBy(4, cc.p(0, -wz.height - sz.height));
           break;
 
           case csts.ENEMY_MOVE.HORZ:
             a0 = cc.moveBy(0.5, cc.p(0, -100 - sjs.rand(200)));
             a1 = cc.moveBy(1, cc.p(-50 - sjs.rand(100), 0));
-            var onComplete = cc.callFunc(function (pSender) {
+            var onComplete = cc.callFunc(function (p) {
               var a2 = cc.delayTime(1);
               var a3 = cc.moveBy(1, cc.p(100 + sjs.rand(100), 0));
-              pSender.runAction(cc.sequence(a2, a3, a2.clone(), a3.reverse()).repeatForever());
-            }.bind(addEnemy) );
-            tmpAction = cc.sequence(a0, a1, onComplete);
+              p.runAction(cc.sequence(a2, a3,
+                                      a2.clone(),
+                                      a3.reverse()).repeatForever());
+            }.bind(en) );
+            act = cc.sequence(a0, a1, onComplete);
           break;
 
           case csts.ENEMY_MOVE.OLAP:
             var newX = (sp.getPositionX() <= wz.width * 0.5) ? wz.width : -wz.width;
             a0 = cc.moveBy(4, cc.p(newX, -wz.width * 0.75));
             a1 = cc.moveBy(4,cc.p(-newX, -wz.width));
-            tmpAction = cc.sequence(a0,a1);
+            act = cc.sequence(a0,a1);
           break;
         }
 
-        sp.runAction(tmpAction);
+        sp.runAction(act);
       }
 
     });

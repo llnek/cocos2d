@@ -11,25 +11,21 @@
 
 define("zotohlab/p/gnodes", ['zotohlab/p/components',
                             'cherimoia/skarojs',
-                            'zotohlab/asterix',
-                            'zotohlab/asx/xcfg',
-                            'ash-js'],
+                            'zotohlab/asterix'],
 
-  function (cobjs, sjs, sh, xcfg, Ash) { "use strict";
+  function (cobjs, sjs, sh) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts = xcfg.csts,
     undef,
     gns= {};
 
     //////////////////////////////////////////////////////////////////////////////
     //
-    gns.ShipMotionNode = Ash.Node.create({
+    gns.ShipMotionNode = sh.Ashley.nodeDef({
       motion : cobjs.Motion,
       ship  : cobjs.Ship
     });
-
-
-
 
     return gns;
 });

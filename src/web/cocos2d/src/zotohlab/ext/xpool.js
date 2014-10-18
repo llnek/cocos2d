@@ -13,11 +13,8 @@ define("zotohlab/asx/xpool", ['cherimoia/skarojs',
                               'zotohlab/asterix'],
   function (sjs, sh) { "use strict";
 
-    var GID_SEED = 0,
-    undef;
-
     //////////////////////////////////////////////////////////////////////////////
-    var XEntityPool = sjs.Class.xtends({
+    var undef, XEntityPool = sjs.Class.xtends({
 
       checkEntity: function(ent) {
         if (ent instanceof this.entType) {
@@ -63,9 +60,66 @@ define("zotohlab/asx/xpool", ['cherimoia/skarojs',
         this.pool= [];
       }
 
+    }),
+    XPool = sjs.class.xtends({
+
+      preSet: function(ctor, count) {
+        var olen = this.pool.length,
+        sz = count || 50,
+        n, rc;
+
+        for (n=0; n < sz; ++n) {
+          rc= ctor(this.pool);
+          if (!!rc) {
+            this.pool.push(rc);
+          }
+        }
+      },
+
+      select: function(filter) {
+        var rc, n;
+        for (n=0; n < this.pool.length; ++n) {
+          rc = filter(this.pool[n]);
+          if (!!rc) {
+            return this.pool[n];
+          }
+        }
+      },
+
+      get: function() {
+        for (var n=0; n < this.pool.length; ++n) {
+          if (!this.pool[n].status) {
+            return this.pool[n];
+          }
+        }
+        return null;
+      },
+
+      actives: function() {
+        var c=0;
+        for (var n=0; n < this.pool.length; ++n) {
+          if (this.pool[n].status) {
+            ++c;
+          }
+        }
+        return c;
+      },
+
+      size: function() { return this.pool.length; },
+
+      iter: function(func) {
+        for (var n=0; n < this.pool.length; ++n) {
+          func.call(this, this.pool[n]);
+        }
+      },
+
+      ctor: function() {
+        this.pool = [];
+      }
+
     });
 
-    return XEntityPool;
+    return XPool;
 });
 
 //////////////////////////////////////////////////////////////////////////////

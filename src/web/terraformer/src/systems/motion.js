@@ -12,15 +12,14 @@
 define('zotohlab/p/s/motions', ['zotohlab/p/gnodes',
                                'cherimoia/skarojs',
                                'zotohlab/asterix',
-                               'zotohlab/asx/xcfg',
-                               'zotohlab/asx/ccsx',
-                               'ash-js'],
+                               'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (gnodes, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts = xcfg.csts,
     undef,
-    Motions = Ash.System.extend({
+    Motions = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.state= options;
@@ -42,20 +41,15 @@ define('zotohlab/p/s/motions', ['zotohlab/p/gnodes',
         }
       },
 
-      scanInput: function(node, dt) {
-        if (cc.sys.capabilities['keyboard']) {
-          this.processKeys(node,dt);
-        }
-        else
-        if (cc.sys.capabilities['mouse']) {
-        }
-        else
-        if (cc.sys.capabilities['touches']) {
-        }
-      },
-
       processMotions: function(node,dt) {
         this.scanInput(node, dt);
+      },
+
+      scanInput: function(node, dt) {
+        if (cc.sys.capabilities['keyboard'] &&
+            !cc.sys.isNative) {
+          this.processKeys(node,dt);
+        }
       },
 
       processKeys: function(node,dt) {

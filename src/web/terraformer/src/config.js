@@ -41,14 +41,7 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
         BOMB_SPEED: 200,
         SHIP_SPEED: 200,
 
-        P_BADIES: 'enemies',
-        P_MS: 'missiles',
-        P_BS: 'bombs',
-        P_LMS: 'live-missiles',
-        P_LBS: 'live-bombs',
-
-        CONSTRAINT_HT : 40,
-        CONSTRAINT_WD : 40
+        SHIP_ZX: 3000
 
       },
 

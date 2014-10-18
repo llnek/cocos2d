@@ -83,6 +83,9 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
         },
         casDef: function(proto) {
           return Ash.Class.extend(proto);
+        },
+        newEntity: function() {
+          return new Ash.Entity();
         }
       },
 

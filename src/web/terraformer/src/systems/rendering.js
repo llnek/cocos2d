@@ -11,16 +11,15 @@
 
 define('zotohlab/p/s/rendering', ['cherimoia/skarojs',
                                   'zotohlab/asterix',
-                                  'zotohlab/asx/xcfg',
-                                  'zotohlab/asx/ccsx',
-                                  'ash-js'],
+                                  'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts = xcfg.csts,
     R = sjs.ramda,
     undef,
-    Rendering = Ash.System.extend({
+    Rendering = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.state= options;
@@ -33,23 +32,21 @@ define('zotohlab/p/s/rendering', ['cherimoia/skarojs',
       },
 
       update: function (dt) {
-        var node= {};
-
-        if (this.state.running &&
-           !!node) {
+        if (this.state.running) {
           this.processMovement(node,dt);
         }
       },
 
       processMovement: function(node,dt) {
-        var movingDist = 16 * dt;       // background's moving rate is 16 pixel per second
-
+        // background's moving rate is 16 pixel per second
         var locSkyHeight = this.state.backSkyDim.height,
         locBackSkyRe = this.state.backSkyRe,
         locBackSky = this.state.backSky,
-        pos= locBackSky.sprite.getPosition(),
+        posy= locBackSky.sprite.getPositionY(),
+        movingDist = 16 * dt,
         wz = ccsx.screen(),
-        currPosY = pos.y - movingDist;
+        currPosY = posy - movingDist;
+
         if (locSkyHeight + currPosY <= wz.height) {
 
           if (!!locBackSkyRe) {
@@ -80,18 +77,17 @@ define('zotohlab/p/s/rendering', ['cherimoia/skarojs',
       },
 
       getOrCreate: function () {
-        var j, c = null;
-        for (j = 0; j < this.state.backSkies.length; ++j) {
-            c = this.state.backSkies[j];
-            if (!c.status) {
-              c.sprite.setVisible(true);
-              c.status = true;
-              return c;
-            }
+        var p = sh.pools.BackSkies,
+        c= p.get();
+
+        if (!c) {
+          utils.createBackSkies(sh.main.getBackgd(), this.state);
+          c= p.get();
         }
-        c = this.state.factory.createBackSky(sh.main.getBackgd(), this.state);
-        c.status=true;
-        this.state.backSkies.push(c);
+
+        if (!!c) {
+          c.inflate(0,0);
+        }
         return c;
       }
 

@@ -12,18 +12,17 @@
 define('zotohlab/p/s/moveship', ['zotohlab/p/components',
                                  'zotohlab/p/s/utils',
                                  'zotohlab/p/gnodes',
-                                  'cherimoia/skarojs',
-                                  'zotohlab/asterix',
-                                  'zotohlab/asx/xcfg',
-                                  'zotohlab/asx/ccsx',
-                                  'ash-js'],
+                                 'cherimoia/skarojs',
+                                 'zotohlab/asterix',
+                                 'zotohlab/asx/ccsx'],
 
-  function (cobjs, utils, gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts = xcfg.csts,
     R = sjs.ramda,
     undef,
-    MoveShip = Ash.System.extend({
+    MoveShip = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.state= options;
@@ -42,24 +41,8 @@ define('zotohlab/p/s/moveship', ['zotohlab/p/components',
 
         if (this.state.running &&
            !!node) {
-          /*
-          if (this.state.touches.length > 0) {
-            var t = this.state.touches.shift();
-            this.processTouch(node, t);
-          }
-        */
           this.processKeys(node,dt);
         }
-      },
-
-      processTouch: function(node, delta) {
-        var ship = node.ship,
-        wz= ccsx.screen(),
-        pos = ship.sprite.getPosition(),
-        cur= cc.pAdd(pos, delta);
-        cur= cc.pClamp(cur, cc.p(0, 0), cc.p(wz.width, wz.height));
-        ship.sprite.setPosition(cur.x, cur.y);
-        cur=null;
       },
 
       processKeys: function(node,dt) {
@@ -67,33 +50,35 @@ define('zotohlab/p/s/moveship', ['zotohlab/p/components',
         wz= ccsx.screen(),
         mot= node.motion,
         sp = ship.sprite,
+        ok=true,
         pos = sp.getPosition(),
         x = pos.x,
         y = pos.y;
 
-        if (!cc.sys.isNative) {
-          if (mot.up && pos.y <= wz.height) {
-            y = pos.y + dt * csts.SHIP_SPEED;
-          }
-          if (mot.down && pos.y >= 0) {
-            y = pos.y - dt * csts.SHIP_SPEED;
-          }
-          if (mot.left && pos.x >= 0) {
-            x = pos.x - dt * csts.SHIP_SPEED;
-          }
-          if (mot.right && pos.x <= wz.width) {
-            x = pos.x + dt * csts.SHIP_SPEED;
-          }
-
-          sp.setPosition(x,y);
+        if (mot.up && pos.y <= wz.height) {
+          y = pos.y + dt * csts.SHIP_SPEED;
+          ok=undef;
         }
+        if (mot.down && pos.y >= 0) {
+          y = pos.y - dt * csts.SHIP_SPEED;
+          ok=undef;
+        }
+        if (mot.left && pos.x >= 0) {
+          x = pos.x - dt * csts.SHIP_SPEED;
+          ok=undef;
+        }
+        if (mot.right && pos.x <= wz.width) {
+          x = pos.x + dt * csts.SHIP_SPEED;
+          ok=undef;
+        }
+
+        if (!ok) { sp.setPosition(x,y); }
 
         mot.right= false;
         mot.left=false;
         mot.down=false;
         mot.up=false;
       }
-
 
     });
 

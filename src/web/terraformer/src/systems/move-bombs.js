@@ -14,16 +14,15 @@ define('zotohlab/p/s/movebombs', ['zotohlab/p/components',
                                     'zotohlab/p/gnodes',
                                     'cherimoia/skarojs',
                                     'zotohlab/asterix',
-                                    'zotohlab/asx/xcfg',
-                                    'zotohlab/asx/ccsx',
-                                    'ash-js'],
+                                    'zotohlab/asx/ccsx'],
 
-  function (cobjs, utils, gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts = xcfg.csts,
     R = sjs.ramda,
     undef,
-    MoveBombs = Ash.System.extend({
+    MoveBombs = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.state= options;
@@ -42,22 +41,18 @@ define('zotohlab/p/s/movebombs', ['zotohlab/p/components',
       },
 
       moveBomb: function(m, dt) {
-        var pos = m.sprite.getPosition(),
-        wz= ccsx.screen();
-        var x = pos.x + m.vel.x * dt;
-        var y = pos.y + m.vel.y * dt;
-        m.sprite.setPosition(x,y);
+        var pos = m.sprite.getPosition();
+        m.sprite.setPosition(pos.x + m.vel.x * dt,
+                             pos.y + m.vel.y * dt);
       },
 
       processMovement: function(dt) {
-        var po2 = sh.pools[csts.P_BS];
-
-        R.forEach(function(v) {
-          if (v.status) {
-            this.moveBomb(v,dt);
+        var me=this;
+        sh.pools.Bombs.iter(function (b) {
+          if (b.status) {
+            me.moveBomb(b,dt);
           }
-        }.bind(this), po2);
-
+        });
       }
 
     });

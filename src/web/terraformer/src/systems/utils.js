@@ -82,36 +82,32 @@ define("zotohlab/p/s/utils", ['zotohlab/p/components',
         ship.status = true;
       },
 
-      createMissiles: function(layer, options, count) {
-        for (var n=0; n < count; ++n) {
+      createMissiles: function(layer) {
+        sh.pools.Missiles.preSet(function() {
           var b= new cobjs.Missile(ccsx.createSpriteFrame('W1.png'));
           b.sprite.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
-          layer.addItem(b.sprite, 3000);
-          sh.pools[csts.P_MS].push(b);
-        }
+          layer.addItem(b.sprite, csts.SHIP_ZX);
+          return b;
+        });
       },
 
-      createBombs: function(layer, options, count) {
-        for (var n=0; n < count; ++n) {
+      createBombs: function(layer) {
+        sh.pools.Bombs.preSet(function() {
           var b= new cobjs.Bomb(ccsx.createSpriteFrame('W2.png'));
           b.sprite.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
-          layer.addItem(b.sprite, 3000);
-          sh.pools[csts.P_BS].push(b);
-        }
+          layer.addItem(b.sprite, csts.SHIP_ZX);
+          return b;
+        });
       },
 
       createEnemies: function(layer, options, count) {
-        var arg, en,
-        n,j;
-
-        for (n = 0; n < count; ++n) {
-          for (j = 0; j < xcfg.EnemyTypes.length; ++j) {
-            arg = xcfg.EnemyTypes[j];
-            en= options.factory.createEnemy(layer, arg);
-            sh.pools[csts.P_BADIES].ens.push(en);
+        var ts = xcfg.EnemyTypes,
+        fac=options.factory;
+        sh.pools.Baddies.preSet(function(pool) {
+          for (var j = 0; j < ts.length; ++j) {
+            pool.push(fac.createEnemy(layer, ts[j]));
           }
-        }
-
+        }, 3);
       },
 
       processTouch: function(ship, delta) {

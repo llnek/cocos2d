@@ -12,25 +12,24 @@
 define('zotohlab/p/s/factory', ['zotohlab/p/components',
                                'cherimoia/skarojs',
                                'zotohlab/asterix',
-                               'zotohlab/asx/xcfg',
-                               'zotohlab/asx/ccsx',
-                               'ash-js'],
+                               'zotohlab/asx/ccsx'],
 
-  function (cobjs, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (cobjs, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts = xcfg.csts,
     undef,
-    EntityFactory = Ash.Class.extend({
+    EntityFactory = sh.Ashley.casDef({
 
       constructor: function(engine) {
         this.engine=engine;
       },
 
       createShip: function(layer, options) {
-        var bs, sp= ccsx.createSpriteFrame('ship01.png'),
+        var sp= ccsx.createSpriteFrame('ship01.png'),
+        ent= sh.Ashley.newEntity(),
         sz= sp.getContentSize(),
-        ent= new Ash.Entity(),
-        player,
+        bs, player,
         cw= ccsx.center(),
         wz= ccsx.screen();
         sp.setPosition(cw.x, sz.height);
@@ -38,18 +37,18 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         // set frame
         var fr0 = cc.spriteFrameCache.getSpriteFrame("ship01.png"),
         fr1 = cc.spriteFrameCache.getSpriteFrame("ship02.png"),
-        animFrames = [ fr0, fr1],
+        animFrames = [fr0, fr1],
         animation = new cc.Animation(animFrames, 0.1),
         animate = cc.animate(animation);
         sp.runAction(animate.repeatForever());
 
-        layer.addItem(sp, 3000);
+        layer.addItem(sp, csts.SHIP_ZX);
 
         bs = ccsx.createSpriteFrame("ship03.png");
         bs.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
         bs.setPosition(sz.width * 0.5, 12);
         bs.setVisible(false);
-        sp.addChild(bs, 3000,99999);
+        sp.addChild(bs, csts.SHIP_ZX, 99999);
 
         player = new cobjs.Ship(sp, bs);
         options.player= player;
@@ -61,7 +60,7 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
       createEnemy: function(layer, arg) {
         var sp= ccsx.createSpriteFrame(arg.textureName);
         sp.setVisible(false);
-        layer.addItem(sp, 1000);
+        layer.addItem(sp, csts.SHIP_ZX - 1); // why?
         return new cobjs.Enemy(sp, arg);
       },
 
