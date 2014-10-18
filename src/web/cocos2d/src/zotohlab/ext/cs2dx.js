@@ -45,6 +45,19 @@ define("zotohlab/asx/ccsx", ['cherimoia/skarojs',
     //
     var ccsx = {
 
+      pointInBox: function (box, x, y) {
+        var px, py;
+        if (! sjs.echt(y)) {
+          px= x.x;
+          py= x.y;
+        } else {
+          px = x;
+          py= y;
+        }
+        return px >= box.left && px <= box.right &&
+          py >= box.bottom && py <= box.top;
+      },
+
       //test collision of 2 entities
       collide2: function(a,b) {
         if (!a || !b) { return false; }

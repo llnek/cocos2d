@@ -42,10 +42,12 @@ define('zotohlab/p/s/moveship', ['zotohlab/p/components',
 
         if (this.state.running &&
            !!node) {
+          /*
           if (this.state.touches.length > 0) {
             var t = this.state.touches.shift();
             this.processTouch(node, t);
           }
+        */
           this.processKeys(node,dt);
         }
       },

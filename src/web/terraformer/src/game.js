@@ -40,8 +40,11 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
 
       processEvent: function(event) {
         if (this.operational()) {
-          var delta = event.getDelta();
-          this.options.touches.push(delta);
+          var delta = event.getDelta(),
+          p= this.options.player;
+          if (!!p) {
+            sobjs.Utils.processTouch(p,delta);
+          }
         }
       },
 
@@ -132,7 +135,9 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
           [sobjs.MoveMissiles, pss.Movement],
           [sobjs.MoveBombs, pss.Movement],
           [sobjs.MoveShip, pss.Movement],
-          [sobjs.MovementSky, pss.Movement]]);
+          [sobjs.Collisions, pss.Collision],
+          [sobjs.Resolution, pss.Resolve],
+          [sobjs.Rendering, pss.Render] ]);
 
         this.initBackground();
         this.schedule(this.countSeconds, 1);
@@ -170,6 +175,21 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
         this.reset();
         this.options.running=false;
         this.getHUD().enableReplay();
+      },
+
+      getEnclosureRect: function() {
+        var wz= ccsx.screen();
+        return {
+          bottom: 0,
+          left: 0,
+          top: wz.height + 10,
+          right: wz.width
+        };
+      },
+
+      getCameraView: function() {
+        var wz= ccsx.screen();
+        return cc.rect(0,0, wz.width, wz.height+10);
       },
 
       ctor: function(options) {

@@ -94,6 +94,15 @@ define("zotohlab/p/s/utils", ['zotohlab/p/components',
           }
         }
 
+      },
+
+      processTouch: function(ship, delta) {
+        var wz= ccsx.screen(),
+        pos = ship.sprite.getPosition(),
+        cur= cc.pAdd(pos, delta);
+        cur= cc.pClamp(cur, cc.p(0, 0), cc.p(wz.width, wz.height));
+        ship.sprite.setPosition(cur.x, cur.y);
+        cur=null;
       }
 
     };

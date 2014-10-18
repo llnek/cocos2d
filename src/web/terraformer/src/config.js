@@ -45,7 +45,10 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
         P_MS: 'missiles',
         P_BS: 'bombs',
         P_LMS: 'live-missiles',
-        P_LBS: 'live-bombs'
+        P_LBS: 'live-bombs',
+
+        CONSTRAINT_HT : 40,
+        CONSTRAINT_WD : 40
 
       },
 

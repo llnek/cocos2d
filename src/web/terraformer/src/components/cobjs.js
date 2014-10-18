@@ -51,6 +51,10 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
       pid: function() { return this.sprite.getTag(); },
       rtti: function() { return "Missile"; },
 
+      hurt: function() {
+        --this.HP;
+      },
+
       deflate: function() {
         this.sprite.setVisible(false);
         this.sprite.setPosition(0,0);
@@ -81,6 +85,10 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
 
       pid: function() { return this.sprite.getTag(); },
       rtti: function() { return "Bomb"; },
+
+      hurt: function() {
+        --this.HP;
+      },
 
       deflate: function() {
         this.sprite.setVisible(false);

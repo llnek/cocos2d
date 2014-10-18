@@ -30,6 +30,7 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         var bs, sp= ccsx.createSpriteFrame('ship01.png'),
         sz= sp.getContentSize(),
         ent= new Ash.Entity(),
+        player,
         cw= ccsx.center(),
         wz= ccsx.screen();
         sp.setPosition(cw.x, sz.height);
@@ -50,7 +51,9 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         bs.setVisible(false);
         sp.addChild(bs, 3000,99999);
 
-        ent.add(new cobjs.Ship(sp, bs));
+        player = new cobjs.Ship(sp, bs);
+        options.player= player;
+        ent.add(player);
         ent.add(new cobjs.Motion());
         this.engine.addEntity(ent);
       },

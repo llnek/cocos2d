@@ -10,6 +10,7 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 define("zotohlab/p/sysobjs", ['zotohlab/p/s/priorities',
+                             'zotohlab/p/s/utils',
                              'zotohlab/p/s/factory',
                              'zotohlab/p/s/supervisor',
                              'zotohlab/p/levelmgr',
@@ -17,9 +18,11 @@ define("zotohlab/p/sysobjs", ['zotohlab/p/s/priorities',
                              'zotohlab/p/s/movemissiles',
                              'zotohlab/p/s/movebombs',
                              'zotohlab/p/s/moveship',
-                             'zotohlab/p/s/movesky'],
+                             'zotohlab/p/s/collisions',
+                             'zotohlab/p/s/resolution',
+                             'zotohlab/p/s/rendering'],
 
-  function (Priorities,
+  function (Priorities, Utils,
             EntityFactory,
             Supervisor,
             LevelManager,
@@ -27,11 +30,14 @@ define("zotohlab/p/sysobjs", ['zotohlab/p/s/priorities',
             MoveMissiles,
             MoveBombs,
             MoveShip,
-            MovementSky) { "use strict";
+            Collisions,
+            Resolution,
+            Rendering) { "use strict";
 
     return {
 
       EntityFactory       : EntityFactory,
+      Utils               : Utils,
       Priorities          : Priorities,
       Supervisor          : Supervisor,
       LevelManager        : LevelManager,
@@ -39,7 +45,9 @@ define("zotohlab/p/sysobjs", ['zotohlab/p/s/priorities',
       MoveMissiles        : MoveMissiles,
       MoveBombs           : MoveBombs,
       MoveShip            : MoveShip,
-      MovementSky      : MovementSky
+      Collisions       : Collisions,
+      Resolution       : Resolution,
+      Rendering        : Rendering
 
     };
 

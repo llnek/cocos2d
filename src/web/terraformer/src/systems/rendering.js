@@ -9,8 +9,7 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define('zotohlab/p/s/movesky', [
-                                  'cherimoia/skarojs',
+define('zotohlab/p/s/rendering', ['cherimoia/skarojs',
                                   'zotohlab/asterix',
                                   'zotohlab/asx/xcfg',
                                   'zotohlab/asx/ccsx',
@@ -21,7 +20,7 @@ define('zotohlab/p/s/movesky', [
     var csts = xcfg.csts,
     R = sjs.ramda,
     undef,
-    MovementSky = Ash.System.extend({
+    Rendering = Ash.System.extend({
 
       constructor: function(options) {
         this.state= options;
@@ -99,7 +98,7 @@ define('zotohlab/p/s/movesky', [
 
     });
 
-    return MovementSky;
+    return Rendering;
 });
 
 //////////////////////////////////////////////////////////////////////////////
