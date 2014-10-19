@@ -16,7 +16,11 @@ define("zotohlab/p/s/utils", ['zotohlab/p/components',
 
   function (cobjs, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    var BackTileMap= ["lvl1_map1.png", "lvl1_map2.png",
+                      "lvl1_map3.png", "lvl1_map4.png"],
+    BackTile= sh.Ashley.compDef({
+    }),
+    xcfg = sh.xcfg,
     csts = xcfg.csts,
     undef,
     SystemUtils = {
@@ -88,11 +92,34 @@ define("zotohlab/p/s/utils", ['zotohlab/p/components',
         }, 3);
       },
 
+      createTile: function (layer, name) {
+        var rc, tm = ccsx.createSpriteFrame(name);
+        tm.setAnchorPoint(0.5,0);
+        layer.addItemEx('back-tiles', tm, -9);
+        rc=new BackTile(tm);
+        rc.deflate();
+        return rc;
+      },
+
+      createBackTiles: function(layer, count) {
+        var pool = sh.pools.BackTiles,
+        var tm= BackTileMap,
+        tn= tm.length,
+        sz= count || 1,
+        me=this;
+        this.backTiles.preSet(function(pool) {
+          for (var n=0; n < tn; ++n) {
+            pool.push(me.createTile(tm[sjs.rand(tn)]));
+          }
+        }, sz);
+      },
+
       processTouch: function(ship, delta) {
         var pos = ship.sprite.getPosition(),
         wz= ccsx.screen(),
         cur= cc.pAdd(pos, delta);
-        cur= cc.pClamp(cur, cc.p(0, 0), cc.p(wz.width, wz.height));
+        cur= cc.pClamp(cur, cc.p(0, 0),
+                       cc.p(wz.width, wz.height));
         ship.sprite.setPosition(cur.x, cur.y);
         cur=null;
       }

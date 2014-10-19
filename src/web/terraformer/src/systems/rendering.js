@@ -57,9 +57,10 @@ define('zotohlab/p/s/rendering', ['cherimoia/skarojs',
           locBackSkyRe = this.state.backSky;
 
           //create a new background
-          this.state.backSky = this.getOrCreate();
+          this.state.backSky = sh.pools.BackSkies.get();
           locBackSky = this.state.backSky;
-          locBackSky.sprite.setPositionY(currPosY + locSkyHeight - 2);
+          locBackSky.inflate({ x: 0,
+                             y: currPosY + locSkyHeight - 2});
         } else {
           locBackSky.sprite.setPositionY(currPosY);
         }
@@ -67,30 +68,13 @@ define('zotohlab/p/s/rendering', ['cherimoia/skarojs',
         if (!!locBackSkyRe) {
           currPosY = locBackSkyRe.sprite.getPositionY() - movingDist;
           if (currPosY + locSkyHeight < 0) {
-            locBackSkyRe.sprite.setVisible(false);
-            locBackSkyRe.status=false;
             this.state.backSkyRe = null;
+            locBackSkyRe.deflate();
           } else {
             locBackSkyRe.sprite.setPositionY(currPosY);
           }
         }
-      },
-
-      getOrCreate: function () {
-        var p = sh.pools.BackSkies,
-        c= p.get();
-
-        if (!c) {
-          utils.createBackSkies(sh.main.getBackgd(), this.state);
-          c= p.get();
-        }
-
-        if (!!c) {
-          c.inflate(0,0);
-        }
-        return c;
       }
-
 
     });
 

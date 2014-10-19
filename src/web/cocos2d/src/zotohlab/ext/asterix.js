@@ -72,6 +72,11 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
         this.status=false;
       }
     },
+    SimpleComp = Ash.Class.extend(sjs.mergeEx(ComObj, {
+      constructor: function(sprite) {
+        this.ctor(sprite);
+      }
+    })),
     undef,
     asterix = {
 
@@ -90,6 +95,9 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
         },
         newEntity: function() {
           return new Ash.Entity();
+        },
+        newComp: function(sprite) {
+          return new SimpleComp(sprite);
         }
       },
 

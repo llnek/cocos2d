@@ -125,17 +125,25 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
         return !!a ? a : this;
       },
 
+      removeAllItemsEx: function(atlas, c) {
+        this.getNode(atlas).removeAllChildren(c || true);
+      },
+
       removeAllItems: function(c) {
-        this.getNode().removeAllChildren(c || true);
+        this.removeAllItemsEx('', c);
+      },
+
+      removeItemEx: function(atlas, n,c) {
+        this.getNode(atlas).removeChild(n,c || true);
       },
 
       removeItem: function(n,c) {
-        this.getNode().removeChild(n,c || true);
+        this.removeItemEx('', n, c);
       },
 
-      addItem: function(n,zx,tag) {
+      addItemEx: function(atlas, n, zx, tag) {
         var zOrder = sjs.echt(zx) ? zx : this.lastZix,
-        p= this.getNode(),
+        p= this.getNode(atlas),
         ptag = tag;
 
         if (! sjs.echt(ptag)) {
@@ -148,6 +156,10 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
         }
 
         p.addChild(n, zOrder, ptag);
+      },
+
+      addItem: function(n,zx,tag) {
+        this.addItemEx('', n, zx, tag);
       },
 
       setParent: function(par) {

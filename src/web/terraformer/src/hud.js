@@ -20,10 +20,6 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
     csts = xcfg.csts,
     R= sjs.ramda,
     undef,
-    BackTileMap= ["lvl1_map1.png", "lvl1_map2.png", "lvl1_map3.png", "lvl1_map4.png"],
-    BackTiles= BackTileMap.length,
-    BackTile= sh.Ashley.compDef({
-    }),
     BackLayer = layers.XLayer.extend({
 
       createTile: function (name) {
@@ -56,9 +52,6 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
         img= cc.textureCache.addImage( sh.getAtlasPath('back-tiles'));
         this.tilesBatch= new cc.SpriteBatchNode(img);
         this.addChild(this.tilesBatch, this.lastZix, ++this.lastTag);
-
-        this.backTiles= new XPool();
-        this.preSetTiles(6);
 
         return this._super();
       }

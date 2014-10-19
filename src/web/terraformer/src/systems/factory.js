@@ -65,16 +65,28 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
       },
 
       createBackSky: function(layer, options) {
-        var bg = ccsx.createSpriteFrame('bg01.png');
+        var rc, bg = ccsx.createSpriteFrame('bg01.png');
         bg.setAnchorPoint(0,0);
         bg.setVisible(false);
-        layer.addItem(bg, -10);
+        layer.addItemEx('tr-pics', bg, -10);
 
         if (! options.backSkyDim) {
           options.backSkyDim= cc.size(bg.getContentSize());
         }
 
-        return { sprite: bg, status: false };
+        rc= sh.Ashley.newComp(sprite);
+        rc.deflate();
+
+        return rc;
+      },
+
+      createTile: function (layer, name) {
+        var rc, tm = ccsx.createSpriteFrame(name);
+        tm.setAnchorPoint(0.5,0);
+        layer.addItemEx('back-tiles', tm, -9);
+        rc=new BackTile(tm);
+        rc.deflate();
+        return rc;
       }
 
     });

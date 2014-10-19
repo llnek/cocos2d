@@ -51,7 +51,11 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
         sh.pools.Baddies = new XPool();
         sh.pools.Bombs= new XPool();
 
-        this.state.backSky.inflate();
+        sh.pools.BackTiles= new XPool();
+        sh.pools.BackSkies= new XPool();
+
+        this.initBackSkies();
+        this.initBackTiles();
 
         utils.createMissiles(sh.main.getNode('op-pics'), this.state, 50);
         utils.createBombs(sh.main.getNode('op-pics'), this.state, 50);

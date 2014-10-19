@@ -14,7 +14,9 @@ define("zotohlab/asx/xpool", ['cherimoia/skarojs',
   function (sjs, sh) { "use strict";
 
     //////////////////////////////////////////////////////////////////////////////
-    var undef, XEntityPool = sjs.Class.xtends({
+    var R= sjs.ramda,
+    undef,
+    XEntityPool = sjs.Class.xtends({
 
       checkEntity: function(ent) {
         if (ent instanceof this.entType) {
@@ -111,6 +113,12 @@ define("zotohlab/asx/xpool", ['cherimoia/skarojs',
         for (var n=0; n < this.pool.length; ++n) {
           func.call(this, this.pool[n]);
         }
+      },
+
+      reset: function() {
+        R.forEach(function(z) {
+          z.deflate();
+        }, this.pool);
       },
 
       ctor: function() {
