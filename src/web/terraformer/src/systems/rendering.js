@@ -16,8 +16,8 @@ define('zotohlab/p/s/rendering', ['cherimoia/skarojs',
   function (sjs, sh, ccsx) { "use strict";
 
     var xcfg = sh.xcfg,
-    csts = xcfg.csts,
-    R = sjs.ramda,
+    csts= xcfg.csts,
+    R= sjs.ramda,
     undef,
     Rendering = sh.Ashley.sysDef({
 
@@ -60,7 +60,7 @@ define('zotohlab/p/s/rendering', ['cherimoia/skarojs',
           this.state.backSky = sh.pools.BackSkies.get();
           locBackSky = this.state.backSky;
           locBackSky.inflate({ x: 0,
-                             y: currPosY + locSkyHeight - 2});
+                               y: currPosY + locSkyHeight - 2});
         } else {
           locBackSky.sprite.setPositionY(currPosY);
         }

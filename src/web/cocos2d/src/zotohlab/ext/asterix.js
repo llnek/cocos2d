@@ -56,6 +56,24 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
         }
       },
 
+      setPos: function(x,y) {
+        if (!!this.sprite) {
+          this.sprite.setPosition(x,y);
+        }
+      },
+
+      pos: function() {
+        if (!!this.sprite) {
+          return this.sprite.getPosition();
+        }
+      },
+
+      size: function() {
+        if (!!this.sprite) {
+          return this.sprite.getContentSize();
+        }
+      },
+
       rtti: function() { return this._tag; },
       rego: function(s) { this._tag = s; },
 
@@ -96,7 +114,7 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
         newEntity: function() {
           return new Ash.Entity();
         },
-        newComp: function(sprite) {
+        newObject: function(sprite) {
           return new SimpleComp(sprite);
         }
       },
@@ -128,6 +146,8 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
       xcfg: undef,
       // main game scene
       main: undef,
+      // entity factory
+      factory: undef,
 
       fireEvent: function(topic, msg) {
         var r= cc.director.getRunningScene();

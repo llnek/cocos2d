@@ -67,7 +67,7 @@ define("zotohlab/asx/xpool", ['cherimoia/skarojs',
 
       preSet: function(ctor, count) {
         var olen = this.pool.length,
-        sz = count || 50,
+        sz = count || 48,
         n, rc;
 
         for (n=0; n < sz; ++n) {
@@ -109,9 +109,10 @@ define("zotohlab/asx/xpool", ['cherimoia/skarojs',
 
       size: function() { return this.pool.length; },
 
-      iter: function(func) {
+      iter: function(func, target) {
+        target = target || this;
         for (var n=0; n < this.pool.length; ++n) {
-          func.call(this, this.pool[n]);
+          func.call(target, this.pool[n]);
         }
       },
 

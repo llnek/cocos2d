@@ -16,8 +16,10 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
 
   function (cobjs, sjs, sh, ccsx) { "use strict";
 
+    var BackTileMap= ["lvl1_map1.png", "lvl1_map2.png",
+                      "lvl1_map3.png", "lvl1_map4.png"];
     var xcfg = sh.xcfg,
-    csts = xcfg.csts,
+    csts= xcfg.csts,
     undef,
     EntityFactory = sh.Ashley.casDef({
 
@@ -25,7 +27,7 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         this.engine=engine;
       },
 
-      createShip: function(layer, options) {
+      createShip: function() {
         var sp= ccsx.createSpriteFrame('ship01.png'),
         ent= sh.Ashley.newEntity(),
         sz= sp.getContentSize(),
@@ -42,7 +44,7 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         animate = cc.animate(animation);
         sp.runAction(animate.repeatForever());
 
-        layer.addItem(sp, csts.SHIP_ZX);
+        sh.main.addItemEx('tr-pics', sp, csts.SHIP_ZX);
 
         bs = ccsx.createSpriteFrame("ship03.png");
         bs.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
@@ -51,42 +53,78 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         sp.addChild(bs, csts.SHIP_ZX, 99999);
 
         player = new cobjs.Ship(sp, bs);
-        options.player= player;
         ent.add(player);
         ent.add(new cobjs.Motion());
         this.engine.addEntity(ent);
+        return player;
       },
 
-      createEnemy: function(layer, arg) {
-        var sp= ccsx.createSpriteFrame(arg.textureName);
-        sp.setVisible(false);
-        layer.addItem(sp, csts.SHIP_ZX - 1); // why?
-        return new cobjs.Enemy(sp, arg);
+      createBackSkies: function(layer) {
+        var layer= sh.main.getBackgd();
+        sh.pool.BackSkies.preSet(function() {
+          var bg = ccsx.createSpriteFrame('bg01.png');
+          bg.setAnchorPoint(0,0);
+          bg.setVisible(false);
+          layer.addItemEx('tr-pics', bg, -10);
+          return sh.Ashley.newObject(bg);
+        }, 2);
       },
 
-      createBackSky: function(layer, options) {
-        var rc, bg = ccsx.createSpriteFrame('bg01.png');
-        bg.setAnchorPoint(0,0);
-        bg.setVisible(false);
-        layer.addItemEx('tr-pics', bg, -10);
-
-        if (! options.backSkyDim) {
-          options.backSkyDim= cc.size(bg.getContentSize());
-        }
-
-        rc= sh.Ashley.newComp(sprite);
-        rc.deflate();
-
-        return rc;
+      createMissiles: function(count) {
+        sh.pools.Missiles.preSet(function() {
+          var sp= ccsx.createSpriteFrame('W1.png');
+          sp.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
+          sh.main.addItemEx('op-pics', sp, csts.SHIP_ZX);
+          return new cobjs.Missile(sp);
+        }, count);
       },
 
-      createTile: function (layer, name) {
-        var rc, tm = ccsx.createSpriteFrame(name);
-        tm.setAnchorPoint(0.5,0);
-        layer.addItemEx('back-tiles', tm, -9);
-        rc=new BackTile(tm);
-        rc.deflate();
-        return rc;
+      createBombs: function(count) {
+        sh.pools.Bombs.preSet(function() {
+          var sp= ccsx.createSpriteFrame('W2.png');
+          sp.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
+          sh.main.addItemEx('op-pics', sp, csts.SHIP_ZX);
+          return new cobjs.Bomb(sp);
+        }, count);
+      },
+
+      createEnemies: function(count) {
+        var sp, cr= function(arg) {
+          sp= ccsx.createSpriteFrame(arg.textureName);
+          sp.setVisible(false);
+          sh.main.addItemEx('tr-pics', sp,
+                            csts.SHIP_ZX - 1); // why?
+          return new cobjs.Enemy(sp, arg);
+        },
+        ts = xcfg.EnemyTypes;
+
+        sh.pools.Baddies.preSet(function(pool) {
+          for (var j = 0; j < ts.length; ++j) {
+            pool.push( cr( ts[j]));
+          }
+        }, count||3);
+      },
+
+      createBackTiles: function(count) {
+        var layer= sh.main.getBackgd(),
+        rc, sp,
+        cr=function (name) {
+          sp = ccsx.createSpriteFrame(name);
+          sp.setAnchorPoint(0.5,0);
+          sp.setVisible(false);
+          layer.addItemEx('back-tiles', sp, -9);
+          return sh.Ashley.newObject(sp);
+        };
+
+        var tm= BackTileMap,
+        tn= tm.length,
+        sz= count || 1;
+
+        sh.pools.BackTiles.preSet(function(pool) {
+          for (var n=0; n < tn; ++n) {
+            pool.push(cr(tm[sjs.rand(tn)]));
+          }
+        }, sz);
       }
 
     });

@@ -19,8 +19,8 @@ define('zotohlab/p/s/movebombs', ['zotohlab/p/components',
   function (cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     var xcfg = sh.xcfg,
-    csts = xcfg.csts,
-    R = sjs.ramda,
+    csts= xcfg.csts,
+    R= sjs.ramda,
     undef,
     MoveBombs = sh.Ashley.sysDef({
 

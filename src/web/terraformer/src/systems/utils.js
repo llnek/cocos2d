@@ -16,111 +16,58 @@ define("zotohlab/p/s/utils", ['zotohlab/p/components',
 
   function (cobjs, sjs, sh, ccsx) { "use strict";
 
-    var BackTileMap= ["lvl1_map1.png", "lvl1_map2.png",
-                      "lvl1_map3.png", "lvl1_map4.png"],
-    BackTile= sh.Ashley.compDef({
-    }),
-    xcfg = sh.xcfg,
-    csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
     SystemUtils = {
 
       fireMissiles: function(ship, dt) {
         var po1= sh.pools.Missiles,
-        ssp= ship.sprite,
-        sz= ssp.getContentSize(),
-        pos= ssp.getPosition(),
+        pos = ship.pos();
+        sz = ship.size(),
+        offy= 3 + sz.height * 0.3;
+        offx=13,
         m2= po1.get(),
-        m1= po1.get(),
-        offset=13;
+        m1= po1.get();
 
-        if (!!m1 && !!m2) {} else {
-          this.createMissiles(sh.main.getNode('op-pics'));
-        }
+        if (!m1 || !m2) { sh.factory.createMissiles(); }
         if (!m2) { m2 = po1.get(); }
         if (!m1) { m1 = po1.get(); }
 
-        m1.inflate({ x: pos.x + offset, y: pos.y + 3 + sz.height * 0.3});
-        m2.inflate({ x: pos.x - offset, y: pos.y + 3 + sz.height * 0.3});
+        m1.inflate({ x: pos.x + offx, y: pos.y + offy });
+        m2.inflate({ x: pos.x - offx, y: pos.y + offy });
       },
 
       bornShip: function(ship) {
-        var me=this, makeBeAttack = cc.callFunc(function () {
-          ship.bornSprite.setVisible(false);
+        var bsp= ship.bornSprite,
+        ssp=ship.sprite,
+        me=this,
+        makeBeAttack = cc.callFunc(function () {
           ship.canBeAttack = true;
-          ship.sprite.schedule(function(dt) {
+          bsp.setVisible(false);
+          ssp.schedule(function(dt) {
             me.fireMissiles(ship, dt);
           }, 1/6);
           ship.inflate();
         });
 
-        ship.bornSprite.scale = 8;
         ship.canBeAttack = false;
-        ship.bornSprite.setVisible(true);
-        ship.bornSprite.runAction(cc.scaleTo(0.5, 1, 1));
+        bsp.scale = 8;
 
-        ship.sprite.runAction(cc.sequence(cc.delayTime(0.5),
-                                          cc.blink(3,9),
-                                          makeBeAttack));
-      },
+        bsp.setVisible(true);
+        bsp.runAction(cc.scaleTo(0.5, 1, 1));
 
-      createMissiles: function(layer) {
-        sh.pools.Missiles.preSet(function() {
-          var b= new cobjs.Missile(ccsx.createSpriteFrame('W1.png'));
-          b.sprite.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
-          layer.addItem(b.sprite, csts.SHIP_ZX);
-          return b;
-        });
-      },
-
-      createBombs: function(layer) {
-        sh.pools.Bombs.preSet(function() {
-          var b= new cobjs.Bomb(ccsx.createSpriteFrame('W2.png'));
-          b.sprite.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
-          layer.addItem(b.sprite, csts.SHIP_ZX);
-          return b;
-        });
-      },
-
-      createEnemies: function(layer, options, count) {
-        var ts = xcfg.EnemyTypes,
-        fac=options.factory;
-        sh.pools.Baddies.preSet(function(pool) {
-          for (var j = 0; j < ts.length; ++j) {
-            pool.push(fac.createEnemy(layer, ts[j]));
-          }
-        }, 3);
-      },
-
-      createTile: function (layer, name) {
-        var rc, tm = ccsx.createSpriteFrame(name);
-        tm.setAnchorPoint(0.5,0);
-        layer.addItemEx('back-tiles', tm, -9);
-        rc=new BackTile(tm);
-        rc.deflate();
-        return rc;
-      },
-
-      createBackTiles: function(layer, count) {
-        var pool = sh.pools.BackTiles,
-        var tm= BackTileMap,
-        tn= tm.length,
-        sz= count || 1,
-        me=this;
-        this.backTiles.preSet(function(pool) {
-          for (var n=0; n < tn; ++n) {
-            pool.push(me.createTile(tm[sjs.rand(tn)]));
-          }
-        }, sz);
+        ssp.runAction(cc.sequence(cc.delayTime(0.5),
+                                  cc.blink(3,9), makeBeAttack));
       },
 
       processTouch: function(ship, delta) {
-        var pos = ship.sprite.getPosition(),
+        var pos = ship.pos(),
         wz= ccsx.screen(),
         cur= cc.pAdd(pos, delta);
         cur= cc.pClamp(cur, cc.p(0, 0),
                        cc.p(wz.width, wz.height));
-        ship.sprite.setPosition(cur.x, cur.y);
+        ship.setPos(cur.x, cur.y);
         cur=null;
       }
 

@@ -17,7 +17,7 @@ define('zotohlab/p/s/motions', ['zotohlab/p/gnodes',
   function (gnodes, sjs, sh, ccsx) { "use strict";
 
     var xcfg = sh.xcfg,
-    csts = xcfg.csts,
+    csts= xcfg.csts,
     undef,
     Motions = sh.Ashley.sysDef({
 

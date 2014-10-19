@@ -19,13 +19,12 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/components',
   function (cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     var xcfg = sh.xcfg,
-    csts = xcfg.csts,
-    R = sjs.ramda,
+    csts= xcfg.csts,
+    R= sjs.ramda,
     undef,
     Collisions = sh.Ashley.sysDef({
 
       constructor: function(options) {
-        this.factory= options.factory;
         this.state= options;
       },
 

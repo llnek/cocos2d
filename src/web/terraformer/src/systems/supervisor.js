@@ -25,7 +25,6 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
     GameSupervisor = sh.Ashley.sysDef({
 
       constructor: function(options) {
-        this.factory= options.factory;
         this.state= options;
         this.inited=false;
       },
@@ -45,7 +44,16 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
         }
       },
 
+      initBackSkies: function () {
+        var bs = sh.pools.BackSkies.get();
+        this.state.backSkyRe = null;
+        this.state.backSky = bs;
+        this.state.backSkyDim = cc.size(bs.size());
+      },
+
       onceOnly: function() {
+
+        this.state.player= sh.factory.createShip();
 
         sh.pools.Missiles = new XPool();
         sh.pools.Baddies = new XPool();
@@ -54,14 +62,12 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
         sh.pools.BackTiles= new XPool();
         sh.pools.BackSkies= new XPool();
 
+        sh.factory.createBackSkies();
         this.initBackSkies();
-        this.initBackTiles();
 
-        utils.createMissiles(sh.main.getNode('op-pics'), this.state, 50);
-        utils.createBombs(sh.main.getNode('op-pics'), this.state, 50);
-        utils.createEnemies(sh.main.getNode('tr-pics'), this.state, 3);
-
-        this.factory.createShip(sh.main.getNode('tr-pics'), this.state);
+        sh.factory.createMissiles();
+        sh.factory.createBombs();
+        sh.factory.createEnemies();
 
         var node = this.ships.head;
         if (!!node) {

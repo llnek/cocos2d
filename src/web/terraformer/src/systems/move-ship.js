@@ -19,8 +19,8 @@ define('zotohlab/p/s/moveship', ['zotohlab/p/components',
   function (cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     var xcfg = sh.xcfg,
-    csts = xcfg.csts,
-    R = sjs.ramda,
+    csts= xcfg.csts,
+    R= sjs.ramda,
     undef,
     MoveShip = sh.Ashley.sysDef({
 
@@ -50,29 +50,29 @@ define('zotohlab/p/s/moveship', ['zotohlab/p/components',
         wz= ccsx.screen(),
         mot= node.motion,
         sp = ship.sprite,
-        ok=true,
+        ok = false,
         pos = sp.getPosition(),
         x = pos.x,
         y = pos.y;
 
         if (mot.up && pos.y <= wz.height) {
           y = pos.y + dt * csts.SHIP_SPEED;
-          ok=undef;
+          ok= true;
         }
         if (mot.down && pos.y >= 0) {
           y = pos.y - dt * csts.SHIP_SPEED;
-          ok=undef;
+          ok= true;
         }
         if (mot.left && pos.x >= 0) {
           x = pos.x - dt * csts.SHIP_SPEED;
-          ok=undef;
+          ok= true;
         }
         if (mot.right && pos.x <= wz.width) {
           x = pos.x + dt * csts.SHIP_SPEED;
-          ok=undef;
+          ok= true;
         }
 
-        if (!ok) { sp.setPosition(x,y); }
+        if (ok) { sp.setPosition(x,y); }
 
         mot.right= false;
         mot.left=false;

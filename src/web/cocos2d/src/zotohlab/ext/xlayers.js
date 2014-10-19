@@ -200,6 +200,18 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
         return this._super();
       },
 
+      removeItem: function(n) {
+        if (n instanceof cc.Sprite) { this._super(n); } else {
+          this.removeChild(n);
+        }
+      },
+
+      addItem: function(n) {
+        if (n instanceof cc.Sprite) { this._super(n); } else {
+          this.addChild(n, this.lastZix, ++this.lastTag);
+        }
+      },
+
       getScore: function() {
         return this.score;
       },

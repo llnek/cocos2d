@@ -22,26 +22,6 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
     undef,
     BackLayer = layers.XLayer.extend({
 
-      createTile: function (name) {
-        var rc, tm = ccsx.createSpriteFrame(name);
-        tm.setAnchorPoint(0.5,0);
-        tm.setVisible(false);
-        this.tilesBatch.addChild(tm, -9);
-        return new BackTile(tm);
-      },
-
-      preSetTiles: function (count) {
-        var tiles = BackTileMap,
-        tlen= tiles.length,
-        sz= count || 1,
-        me=this;
-        this.backTiles.preSet(function(pool) {
-          for (var n=0; n < tlen; ++n) {
-            pool.push(me.createTile(tiles[sjs.rand(tlen)]));
-          }
-        }, sz);
-      },
-
       rtti: function() { return 'BackLayer'; },
 
       pkInit: function() {
@@ -60,12 +40,11 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
     HUDLayer = layers.XGameHUDLayer.extend({
 
       initParentNode: function() {
-        var img= cc.textureCache.addImage( sh.getAtlasPath('tr-pics'));
-        this.atlasBatch = new cc.SpriteBatchNode(img);
-        this.addChild(this.atlasBatch, this.lastZix, ++this.lastTag);
+        var img= cc.textureCache.addImage( sh.getAtlasPath('tr-pics')),
+        b = new cc.SpriteBatchNode(img);
+        this.addChild(b, this.lastZix, ++this.lastTag);
+        this.atlases['tr-pics']=b;
       },
-
-      getNode: function() { return this.atlasBatch; },
 
       initLabels: function() {
         var wz = ccsx.screen();

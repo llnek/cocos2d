@@ -28,42 +28,39 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
     GameLayer = layers.XGameLayer.extend({
 
       cfgInputMouse: function() {
+
         cc.eventManager.addListener({
+
           event: cc.EventListener.MOUSE,
-          onMouseMove: function(event){
-            if (event.getButton() === cc.EventMouse.BUTTON_LEFT) {
-              event.getCurrentTarget().processEvent(event);
+          onMouseMove: function(e)
+          {
+            if (e.getButton() ===
+                cc.EventMouse.BUTTON_LEFT) {
+              e.getCurrentTarget().processEvent(e);
             }
           }
         }, this);
-      },
 
-      processEvent: function(event) {
-        if (this.options.running &&
-            !!this.options.player) {
-          sobjs.Utils.processTouch(p,
-                                   event.getDelta());
-        }
       },
 
       cfgTouch: function() {
         this.cfgInputTouchesAll();
       },
 
+      processEvent: function(e) {
+        var ship= this.options.player;
+        if (this.options.running &&
+            !!ship) {
+          sobjs.Utils.processTouch(ship,
+                                   e.getDelta());
+        }
+      },
+
       reset: function(newFlag) {
-        var blayer= this.getBackgd(),
-        wz = ccsx.screen(),
+        var wz = ccsx.screen(),
         ps = sh.pools,
         b,
         img;
-
-        if (!!ps.Missiles) { ps.Missiles.reset(); }
-        if (!!ps.Bombs) { ps.Bombs.reset(); }
-        if (!!ps.Baddies) { ps.Baddies.reset(); }
-        if (!!ps.BackSkies) {
-          this.unschedule(this.moveBackTiles);
-          ps.BackSkies.reset();
-        }
 
         if (!!this.atlases) {
           //sjs.eachObj(function(z) { z.removeAllChildren(); }, this.atlases);
@@ -83,33 +80,31 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
       },
 
       initBackground:function () {
-        var bs = sh.pools.BackSkies.get();
-        this.options.backSkyRe = null;
-        this.options.backSky = bs;
-        this.state.backSkyDim = cc.size(bs.getContentSize());
-
+        this.factory.createBackTiles();
         this.moveBackTiles();
         this.schedule(this.moveBackTiles, 5);
       },
 
       moveBackTiles: function () {
-        var bg = this.getBackgd(),
-        ps= sh.pools.BackSkies,
+        var ps= sh.pools.BackSkies,
         wz= ccsx.screen(),
+        move,
+        fun,
         tm = ps.get();
 
         if (!tm) {
-          utils.createBackSkies(bg);
+          this.factory.createBackTiles();
           tm= ps.get();
         }
-        tm.inflate({ x: sjs.rand(wz.width),
-                   y: wz.height });
 
-        var move = cc.moveBy(sjs.rand(2) + 10,
-                             cc.p(0, -wz.height - wz.height * 0.5)),
+        tm.inflate({ x: sjs.rand(wz.width),
+                     y: wz.height });
+
+        move = cc.moveBy(sjs.rand(2) + 10,
+                         cc.p(0, -wz.height - wz.height * 0.5));
         fun = cc.callFunc(function() {
           tm.deflate();
-        },this);
+        }, this);
 
         tm.sprite.runAction(cc.sequence(move,fun));
       },
@@ -128,7 +123,8 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
         this.reset(newFlag);
         this.cleanSlate();
 
-        this.options.factory=new sobjs.EntityFactory(this.engine);
+        this.factory=new sobjs.EntityFactory(this.engine);
+        sh.factory = this.factory;
         this.options.secCount=0;
         this.options.running = true;
 

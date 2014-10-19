@@ -19,7 +19,7 @@ define("zotohlab/p/levelmgr", ['zotohlab/p/components',
   function (cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     var xcfg = sh.xcfg,
-    csts = xcfg.csts,
+    csts= xcfg.csts,
     undef,
     LevelManager = sh.Ashley.sysDef({
 
@@ -29,8 +29,8 @@ define("zotohlab/p/levelmgr", ['zotohlab/p/components',
       },
 
       setLevel: function(level) {
+        this.curLevel = level;
         this.onceLatch = 1;
-        this.curLevel = 1;
       },
 
       getLCfg: function() {
@@ -54,28 +54,29 @@ define("zotohlab/p/levelmgr", ['zotohlab/p/components',
         }
       },
 
-      loadLevelResource: function(node, deltaTime) {
+      loadLevelResource: function(node, dt) {
         var enemies= sh.pools.Baddies,
         cfg= this.getLCfg(),
+        fc,
         me=this;
 
         if (enemies.actives() < cfg.enemyMax) {
-          enemies.iter(function(em) {
-            var fc= function() {
-              for (var t = 0; t < em.types.length; ++t) {
-                me.addEnemyToGame(node, em.types[t]);
+          sjs.eachObj(function(v) {
+            fc= function() {
+              for (var t = 0; t < v.types.length; ++t) {
+                me.addEnemyToGame(node, v.types[t]);
               }
             };
-            if (em.style === "Repeat" &&
-                deltaTime % em.time === 0) {
+            if (v.style === "Repeat" &&
+                dt % v.time === 0) {
               fc();
             }
-            if (em.style === "Once" &&
-                em.time >= deltaTime && this.onceLatch > 0) {
-              this.onceLatch=0;
+            if (v.style === "Once" &&
+                v.time >= dt && me.onceLatch > 0) {
+              me.onceLatch=0;
               fc();
             }
-          });
+          }, cfg.enemies);
         }
       },
 
@@ -87,26 +88,27 @@ define("zotohlab/p/levelmgr", ['zotohlab/p/components',
         b = bombs.get();
 
         if (!b) {
-          utils.createBombs(sh.main.getNode('op-pics'));
+          sh.factory.createBombs();
           b= bombs.get();
         }
 
-        b.inflate(pos.x, pos.y - sz.height * 0.2);
+        b.inflate({ x: pos.x, y: pos.y - sz.height * 0.2 });
         b.attackMode=enemy.attackMode;
       },
 
       getB: function(arg) {
-        var layer = sh.main.getNode('tr-pics'),
-        enemies = sh.pools.Baddies,
-        en, me=this,
+        var enemies = sh.pools.Baddies,
+        me=this,
+        en,
         pred= function(e) {
-          return (e.enemyType === arg.type &&
+          return (e.enemyType === arg.type
+                  &&
                   e.status === false);
         };
 
         en= enemies.select(pred);
         if (!en) {
-          utils.createEnemies(layer, this.state, 3);
+          sh.factory.createEnemies(1);
           en= enemies.select(pred);
         }
 
@@ -114,8 +116,7 @@ define("zotohlab/p/levelmgr", ['zotohlab/p/components',
           en.sprite.schedule(function() {
             me.dropBombs(en);
           }, en.delayTime);
-          en.sprite.setVisible(true);
-          en.status = true;
+          en.inflate();
         }
 
         return en;
@@ -123,15 +124,18 @@ define("zotohlab/p/levelmgr", ['zotohlab/p/components',
 
       addEnemyToGame: function(node, enemyType) {
         var arg = xcfg.EnemyTypes[enemyType],
-        en = this.getB(arg[enemyType]),
         wz = ccsx.screen(),
+
+        en = this.getB(arg),
+        sz= en.size(),
+        epos= en.pos(),
+
         ship= node.ship,
-        sp= en.sprite,
-        pos= ship.sprite.getPosition(),
-        sz= sp.getContentSize(),
+        pos= ship.pos(),
+
         act, a0, a1;
 
-        sp.setPosition(sjs.rand(80 + wz.width * 0.5), wz.height);
+        en.setPos(sjs.rand(80 + wz.width * 0.5), wz.height);
         switch (en.moveType) {
 
           case csts.ENEMY_MOVE.RUSH:
@@ -156,14 +160,14 @@ define("zotohlab/p/levelmgr", ['zotohlab/p/components',
           break;
 
           case csts.ENEMY_MOVE.OLAP:
-            var newX = (sp.getPositionX() <= wz.width * 0.5) ? wz.width : -wz.width;
+            var newX = (pos.x <= wz.width * 0.5) ? wz.width : -wz.width;
             a0 = cc.moveBy(4, cc.p(newX, -wz.width * 0.75));
             a1 = cc.moveBy(4,cc.p(-newX, -wz.width));
             act = cc.sequence(a0,a1);
           break;
         }
 
-        sp.runAction(act);
+        en.sprite.runAction(act);
       }
 
     });
