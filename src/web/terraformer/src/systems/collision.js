@@ -49,7 +49,7 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/components',
           this.checkMissilesAliens();
           this.checkShipAliens(node);
           this.checkShipBombs(node);
-          this.checkMissilesBombs();
+          //this.checkMissilesBombs();
         }
 
       },
