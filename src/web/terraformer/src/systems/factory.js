@@ -20,6 +20,7 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
                       "lvl1_map3.png", "lvl1_map4.png"];
     var xcfg = sh.xcfg,
     csts= xcfg.csts,
+    R=sjs.ramda,
     undef,
     EntityFactory = sh.Ashley.casDef({
 
@@ -88,6 +89,39 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
           sh.main.addAtlasItem('op-pics', sp, csts.SHIP_ZX);
           return new cobjs.Bomb(sp);
         }, count);
+      },
+
+      createExplosions: function(count) {
+        sh.pools.Explosions.preSet(function() {
+          var sp = ccsx.createSpriteFrame("explosion_01.png");
+          sp.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
+          sp.setVisible(false);
+          sh.main.addAtlasItem('explosions', sp);
+          return new cobjs.Explosion(sp);
+        }, count || 6);
+      },
+
+      createHitEffects: function(count) {
+        sh.pools.HitEffects.preSet(function() {
+          var sp = ccsx.createSpriteFrame("hit.png");
+          sp.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
+          sp.setVisible(false);
+          sh.main.addAtlasItem('op-pics', sp);
+          return new cobjs.HitEffect(sp);
+        }, count || 10);
+      },
+
+      createSparks: function(count) {
+        sh.pools.Sparks.preSet(function() {
+          var sp = [ccsx.createSpriteFrame("explode2.png"),
+                    ccsx.createSpriteFrame("explode3.png")];
+          R.forEach(function(s) {
+            s.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
+            s.setVisible(false);
+            sh.main.addAtlasItem('op-pics', s);
+          }, sp);
+          return new cobjs.Spark(sp[0], sp[1]);
+        }, count || 6);
       },
 
       createEnemies: function(count) {

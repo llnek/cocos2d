@@ -52,6 +52,20 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
         this.state.backSkyDim = cc.size(bs.size());
       },
 
+      sharedExplosion: function () {
+        var animFrames = [],
+        animation,
+        frame, n,
+        str = "";
+        for (n = 1; n < 35; ++n) {
+          str = "explosion_" + (n < 10 ? ("0" + n) : n) + ".png";
+          frame = cc.spriteFrameCache.getSpriteFrame(str);
+          animFrames.push(frame);
+        }
+        animation = new cc.Animation(animFrames, 0.04);
+        cc.animationCache.addAnimation(animation, "Explosion");
+      },
+
       onceOnly: function() {
 
         this.state.player= sh.factory.createShip();
@@ -63,15 +77,25 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
         sh.pools.BackTiles= new XPool();
         sh.pools.BackSkies= new XPool();
 
+        sh.pools.Explosions= new XPool();
+        sh.pools.Sparks= new XPool();
+        sh.pools.HitEffects= new XPool();
+
         sh.factory.createBackSkies();
+        sh.factory.createBackTiles();
+
+        this.sharedExplosion();
         this.initBackSkies();
 
-        sh.factory.createBackTiles();
         sh.main.initBackTiles();
 
         sh.factory.createMissiles();
         sh.factory.createBombs();
         sh.factory.createEnemies();
+
+        sh.factory.createExplosions();
+        sh.factory.createSparks();
+        sh.factory.createHitEffects();
 
         var node = this.ships.head;
         if (!!node) {

@@ -82,7 +82,6 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////
-    //
     cobjs.Motion = sh.Ashley.casDef({
 
       constructor: function() {
@@ -94,6 +93,101 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
 
     });
 
+    //////////////////////////////////////////////////////////////////////////
+    cobjs.Spark = sh.Ashley.compDef({
+
+      constructor: function(sp1, sp2) {
+        this.duration = 0.7;
+        this.sprite2= sp2;
+        this.ctor(sp1);
+        this.scale = 1.2;
+      },
+
+      inflate: function(options) {
+        var x= options.x,
+        y= options.y;
+
+        this.sprite.attr({
+	        x: x,
+	        y: y,
+	        scale: this.scale,
+	        opacity: 255
+        });
+        this.sprite2.attr({
+	        x: x,
+	        y: y,
+	        scale: this.scale,
+	        rotation: sjs.rand(360),
+	        opacity: 255
+        });
+
+        var scaleBy = cc.scaleBy(this.duration, 3, 3),
+        right = cc.rotateBy(this.duration, 45),
+        seq = cc.sequence(cc.fadeOut(this.duration),
+                          cc.callFunc(this.destroy, this));
+
+        this.sprite.runAction(right);
+        this.sprite.runAction(scaleBy);
+        this.sprite.runAction(seq);
+
+        this.sprite2.runAction(scaleBy.clone());
+        this.sprite2.runAction(seq.clone());
+
+        this.sprite2.setVisible(true);
+        this.status=true;
+        this.sprite.setVisible(true);
+      },
+
+      deflate: function() {
+        this.sprite2.setVisible(false);
+        this.sprite.setVisible(false);
+        this.status=false;
+        this.sprite2.stopAllActions();
+        this.sprite.stopAllActions();
+      }
+
+    });
+
+    //////////////////////////////////////////////////////////////////////////
+    cobjs.Explosion = sh.Ashley.compDef({
+
+      constructor: function(sprite) {
+        this.animation = cc.animationCache.getAnimation("Explosion");
+        this.ctor(sprite);
+      },
+
+      inflate: function(options) {
+        this.sprite.setPosition(options.x, options.y);
+        this.sprite.setVisible(true);
+        this.status=true;
+        this.sprite.runAction(cc.sequence(
+            cc.animate(this.animation),
+            cc.callFunc(this.deflate, this)
+        ));
+      }
+
+    });
+
+    //////////////////////////////////////////////////////////////////////////
+    cobjs.HitEffect = sh.Ashley.compDef({
+
+      constructor: function(sprite) {
+        this.scale = 0.75;
+        this.ctor(sprite);
+      },
+
+      inflate: function(options) {
+        this.sprite.setPosition(options.x, options.y);
+        this.sprite.setScale(this.scale);
+        this.sprite.setRotation(sjs.rand(360));
+        this.sprite.setVisible(true);
+        this.status=true;
+        this.sprite.runAction(cc.scaleBy(0.3, 2, 2));
+        this.sprite.runAction(cc.sequence(cc.fadeOut(0.3),
+                                   cc.callFunc(this.deflate, this)));
+      }
+
+    });
 
     return cobjs;
 });

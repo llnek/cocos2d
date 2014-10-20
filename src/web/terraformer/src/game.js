@@ -68,7 +68,9 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
               b.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
             }
             this.regoAtlas(info[0], b);
-          }.bind(this), [ ['op-pics', true], ['tr-pics', false] ]);
+          }.bind(this), [ ['op-pics', true],
+                          ['tr-pics', false],
+                          ['explosions', true]]);
 
         }
 

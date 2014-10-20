@@ -49,8 +49,21 @@ define('zotohlab/p/s/resolution', ['zotohlab/p/components',
         }
       },
 
+      onBulletDeath: function(b) {
+        var pe= sh.pools.HitEffects,
+        pos= b.pos(),
+        e= pe.get();
+
+        if (!e) {
+          sh.factory.createHitEffects();
+          e= pe.get();
+        }
+        e.inflate({x : pos.x, y: pos.y});
+      },
+
       checkMissiles: function() {
         var box= sh.main.getEnclosureBox(),
+        me=this,
         pos;
 
         sh.pools.Missiles.iter(function(m){
@@ -58,6 +71,7 @@ define('zotohlab/p/s/resolution', ['zotohlab/p/components',
             pos= m.sprite.getPosition();
             if (m.HP <= 0 ||
                 !ccsx.pointInBox(box, pos)) {
+              me.onBulletDeath(m);
               m.deflate();
             }
           }
@@ -66,6 +80,7 @@ define('zotohlab/p/s/resolution', ['zotohlab/p/components',
 
       checkBombs: function() {
         var box= sh.main.getEnclosureBox(),
+        me=this,
         pos;
 
         sh.pools.Bombs.iter(function(b) {
@@ -73,14 +88,46 @@ define('zotohlab/p/s/resolution', ['zotohlab/p/components',
             pos= b.sprite.getPosition();
             if (b.HP <= 0 ||
                 !ccsx.pointInBox(box, pos)) {
+              me.onBulletDeath(b);
               b.deflate();
             }
           }
         });
       },
 
+      onEnemyDeath: function(alien) {
+        var pe= sh.pools.Explosions,
+        ps= sh.pools.Sparks,
+        pos= alien.pos(),
+        e= pe.get(),
+        s= ps.get();
+        if (!e) {
+          sh.factory.createExplosions();
+          e= pe.get();
+        }
+        e.inflate({x : pos.x, y: pos.y});
+        if (!s) {
+          sh.factory.createSparks();
+          s=ps.get();
+        }
+        s.inflate({x : pos.x, y: pos.y});
+      },
+
+      onShipDeath: function(ship) {
+        var pe= sh.pools.Explosions,
+        pos= ship.pos(),
+        e= pe.get();
+
+        if (!e) {
+          sh.factory.createExplosions();
+          e= pe.get();
+        }
+        e.inflate({x : pos.x, y: pos.y});
+      },
+
       checkAliens: function() {
         var box= sh.main.getEnclosureBox(),
+        me=this,
         pos;
 
         sh.pools.Baddies.iter(function(a) {
@@ -88,6 +135,7 @@ define('zotohlab/p/s/resolution', ['zotohlab/p/components',
             pos= a.sprite.getPosition();
             if (a.HP <= 0 ||
                 !ccsx.pointInBox(box, pos)) {
+              me.onEnemyDeath(a);
               a.deflate();
               sh.fireEvent('/game/objects/players/earnscore', { score: a.value });
             }
@@ -96,10 +144,12 @@ define('zotohlab/p/s/resolution', ['zotohlab/p/components',
       },
 
       checkShip: function(node) {
-        var ship = node.ship;
+        var ship = node.ship,
+        me=this;
 
         if (ship.status) {
           if (ship.HP <= 0) {
+            me.onShipDeath(ship);
             ship.deflate();
             sh.fireEvent('/game/objects/players/killed');
           }
