@@ -33,11 +33,11 @@ define('zotohlab/p/s/rendering', ['cherimoia/skarojs',
 
       update: function (dt) {
         if (this.state.running) {
-          this.processMovement(node,dt);
+          this.processMovement(dt);
         }
       },
 
-      processMovement: function(node,dt) {
+      processMovement: function(dt) {
         // background's moving rate is 16 pixel per second
         var locSkyHeight = this.state.backSkyDim.height,
         locBackSkyRe = this.state.backSkyRe,

@@ -23,19 +23,20 @@ define("zotohlab/p/s/utils", ['zotohlab/p/components',
 
       fireMissiles: function(ship, dt) {
         var po1= sh.pools.Missiles,
-        pos = ship.pos();
+        pos = ship.pos(),
         sz = ship.size(),
-        offy= 3 + sz.height * 0.3;
+        offy= 3 + sz.height * 0.3,
         offx=13,
-        m2= po1.get(),
-        m1= po1.get();
+        m2= po1.getAndSet(),
+        m1= po1.getAndSet();
 
         if (!m1 || !m2) { sh.factory.createMissiles(); }
-        if (!m2) { m2 = po1.get(); }
-        if (!m1) { m1 = po1.get(); }
 
-        m1.inflate({ x: pos.x + offx, y: pos.y + offy });
+        if (!m1) { m1= po1.getAndSet(); }
+        if (!m2) { m2= po1.getAndSet(); }
+
         m2.inflate({ x: pos.x - offx, y: pos.y + offy });
+        m1.inflate({ x: pos.x + offx, y: pos.y + offy });
       },
 
       bornShip: function(ship) {

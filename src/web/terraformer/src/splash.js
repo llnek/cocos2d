@@ -19,7 +19,7 @@ define('zotohlab/p/splash', ['cherimoia/skarojs',
   function (sjs, sh, ccsx, layers, scenes, XSplashLayer) { "use strict";
 
     var xcfg = sh.xcfg,
-    csts = xcfg.csts,
+    csts= xcfg.csts,
     undef,
     UILayer = layers.XLayer.extend({
 

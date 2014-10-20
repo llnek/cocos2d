@@ -44,7 +44,7 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         animate = cc.animate(animation);
         sp.runAction(animate.repeatForever());
 
-        sh.main.addItemEx('tr-pics', sp, csts.SHIP_ZX);
+        sh.main.addAtlasItem('tr-pics', sp, csts.SHIP_ZX);
 
         bs = ccsx.createSpriteFrame("ship03.png");
         bs.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
@@ -61,11 +61,11 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
 
       createBackSkies: function(layer) {
         var layer= sh.main.getBackgd();
-        sh.pool.BackSkies.preSet(function() {
+        sh.pools.BackSkies.preSet(function() {
           var bg = ccsx.createSpriteFrame('bg01.png');
           bg.setAnchorPoint(0,0);
           bg.setVisible(false);
-          layer.addItemEx('tr-pics', bg, -10);
+          layer.addAtlasItem('tr-pics', bg, -10);
           return sh.Ashley.newObject(bg);
         }, 2);
       },
@@ -74,7 +74,8 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         sh.pools.Missiles.preSet(function() {
           var sp= ccsx.createSpriteFrame('W1.png');
           sp.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
-          sh.main.addItemEx('op-pics', sp, csts.SHIP_ZX);
+          sp.setVisible(false);
+          sh.main.addAtlasItem('op-pics', sp, csts.SHIP_ZX);
           return new cobjs.Missile(sp);
         }, count);
       },
@@ -83,7 +84,8 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         sh.pools.Bombs.preSet(function() {
           var sp= ccsx.createSpriteFrame('W2.png');
           sp.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
-          sh.main.addItemEx('op-pics', sp, csts.SHIP_ZX);
+          sp.setVisible(false);
+          sh.main.addAtlasItem('op-pics', sp, csts.SHIP_ZX);
           return new cobjs.Bomb(sp);
         }, count);
       },
@@ -92,7 +94,7 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         var sp, cr= function(arg) {
           sp= ccsx.createSpriteFrame(arg.textureName);
           sp.setVisible(false);
-          sh.main.addItemEx('tr-pics', sp,
+          sh.main.addAtlasItem('tr-pics', sp,
                             csts.SHIP_ZX - 1); // why?
           return new cobjs.Enemy(sp, arg);
         },
@@ -112,7 +114,7 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
           sp = ccsx.createSpriteFrame(name);
           sp.setAnchorPoint(0.5,0);
           sp.setVisible(false);
-          layer.addItemEx('back-tiles', sp, -9);
+          layer.addAtlasItem('back-tiles', sp, -9);
           return sh.Ashley.newObject(sp);
         };
 

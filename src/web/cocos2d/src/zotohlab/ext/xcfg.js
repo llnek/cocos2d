@@ -49,6 +49,8 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
           'gui.mmenu.menu.bg' : 'res/{{appid}}/ui/mainmenu.png',
           'gui.mmenu.bg' : 'res/{{appid}}/ui/bg.png',
           //'gui.mmenu.border': 'game/{{appid}}/levels/{{border-tiles}}',
+          //
+          'gui.blank' : 'res/{{appid}}/ui/bg.png',
 
           'gui.edit.orange' : 'res/cocos2d/pics/orange_edit.png',
           'gui.edit.green' : 'res/cocos2d/pics/green_edit.png',

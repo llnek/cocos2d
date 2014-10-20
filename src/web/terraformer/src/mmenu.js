@@ -19,7 +19,7 @@ define('zotohlab/p/mmenu', ['cherimoia/skarojs',
   function (sjs, sh, ccsx, layers, scenes, mmenus) { "use strict";
 
     var xcfg = sh.xcfg,
-    csts = xcfg.csts,
+    csts= xcfg.csts,
     undef,
     MainMenuLayer = mmenus.XMenuLayer.extend({
 

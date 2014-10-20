@@ -63,7 +63,7 @@ define("zotohlab/asx/xpool", ['cherimoia/skarojs',
       }
 
     }),
-    XPool = sjs.class.xtends({
+    XPool = sjs.Class.xtends({
 
       preSet: function(ctor, count) {
         var olen = this.pool.length,
@@ -86,6 +86,14 @@ define("zotohlab/asx/xpool", ['cherimoia/skarojs',
             return this.pool[n];
           }
         }
+      },
+
+      getAndSet: function() {
+        var rc= this.get();
+        if (!!rc) {
+          rc.status=true;
+        }
+        return rc;
       },
 
       get: function() {

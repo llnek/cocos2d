@@ -26,10 +26,18 @@ define("zotohlab/asx/ynbox", ['cherimoia/skarojs',
     var BGLayer = layers.XLayer.extend({
 
       pkInit: function() {
-        var map = cc.TMXTiledMap.create(sh.getTilesPath('gui.blank'));
-        this.addItem(map);
+        var imgUrl= sh.getImagePath('gui.blank'),
+        s,
+        cw = ccsx.center();
+
+        if (!!imgUrl) {
+          s= new cc.Sprite(imgUrl);
+          s.setPosition(cw);
+          this.addItem(s);
+        }
         return this._super();
       }
+
 
     });
 

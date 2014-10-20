@@ -17,7 +17,7 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
   function(sjs, sh, ccsx, layers) { "use strict";
 
     var xcfg = sh.xcfg,
-    csts = xcfg.csts,
+    csts= xcfg.csts,
     R= sjs.ramda,
     undef,
     BackLayer = layers.XLayer.extend({
@@ -25,13 +25,15 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
       rtti: function() { return 'BackLayer'; },
 
       pkInit: function() {
-        var img= cc.textureCache.addImage( sh.getAtlasPath('tr-pics'));
-        this.atlasBatch = new cc.SpriteBatchNode(img);
-        this.addChild(this.atlasBatch, this.lastZix, ++this.lastTag);
 
-        img= cc.textureCache.addImage( sh.getAtlasPath('back-tiles'));
-        this.tilesBatch= new cc.SpriteBatchNode(img);
-        this.addChild(this.tilesBatch, this.lastZix, ++this.lastTag);
+        R.forEach(function(id) {
+
+          this.regoAtlas(id, new cc.SpriteBatchNode(
+            cc.textureCache.addImage(
+              sh.getAtlasPath(id))
+          ));
+
+        }.bind(this), ['tr-pics', 'back-tiles'] );
 
         return this._super();
       }
@@ -39,11 +41,15 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
     }),
     HUDLayer = layers.XGameHUDLayer.extend({
 
-      initParentNode: function() {
-        var img= cc.textureCache.addImage( sh.getAtlasPath('tr-pics')),
-        b = new cc.SpriteBatchNode(img);
-        this.addChild(b, this.lastZix, ++this.lastTag);
-        this.atlases['tr-pics']=b;
+      initAtlases: function() {
+        var id= 'tr-pics';
+
+        this.regoAtlas(id, new cc.SpriteBatchNode(
+          cc.textureCache.addImage(
+            sh.getAtlasPath(id))
+        ));
+
+        this.hudAtlas= id;
       },
 
       initLabels: function() {
@@ -72,18 +78,6 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
         });
 
         this.lives.create();
-      },
-
-      removeItem: function(n) {
-        if (n instanceof cc.Sprite) { this._super(n); } else {
-          this.removeChild(n);
-        }
-      },
-
-      addItem: function(n) {
-        if (n instanceof cc.Sprite) { this._super(n); } else {
-          this.addChild(n, this.lastZix, ++this.lastTag);
-        }
       },
 
       initCtrlBtns: function(s) {

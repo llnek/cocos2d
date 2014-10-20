@@ -41,7 +41,7 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
       reduce: function(howmany) {
         var n;
         for (n=0; n < howmany; ++n) {
-          this.hud.removeItem(this.icons.pop());
+          this.hud.removeIcon(this.icons.pop());
         }
         this.curLives -= howmany;
       },
@@ -51,7 +51,7 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
 
       reset: function() {
         R.forEach(function(z) {
-          this.hud.removeItem(z);
+          this.hud.removeIcon(z);
         }.bind(this),
         this.icons);
 
@@ -72,7 +72,7 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
 
         for (n = 0; n < this.curLives; ++n) {
           v= new XLive(x,y,this.options);
-          this.hud.addItem(v);
+          this.hud.addIcon(v);
           this.icons.push(v);
           if (this.options.direction > 0) {
             x += this.lifeSize.width + gap;
@@ -107,6 +107,18 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
     //
     var XLayer = cc.Layer.extend({
 
+      rtti: function() { return "layer-" + Number(SEED++); },
+
+      regoAtlas: function(name, a, z, tag) {
+        if (! sjs.echt(tag)) {
+          tag = ++this.lastTag;
+        }
+        if (! sjs.echt(z)) {
+          z = this.lastZix;
+        }
+        this.addChild(a, z, tag);
+        this.atlases[name] = a;
+      },
 
       pkInit: function() {
         this.pkInput();
@@ -116,34 +128,31 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
       pkInput: function() {
       },
 
-      rtti: function() {
-        return "" + Number(SEED++);
+      getAtlas: function(key) {
+        return this.atlases[key || ""];
       },
 
-      getNode: function(key) {
-        var a= this.atlases[ key || ""];
-        return !!a ? a : this;
+      removeAtlasAll: function(atlas, c) {
+        var a=this.getAtlas(atlas);
+        if (!!a) { a.removeAllChildren(c || true); }
       },
 
-      removeAllItemsEx: function(atlas, c) {
-        this.getNode(atlas).removeAllChildren(c || true);
+      removeAtlasItem: function(atlas, n,c) {
+        var a= this.getAtlas(atlas);
+        if (!!a) { a.removeChild(n,c || true); }
       },
 
-      removeAllItems: function(c) {
-        this.removeAllItemsEx('', c);
-      },
-
-      removeItemEx: function(atlas, n,c) {
-        this.getNode(atlas).removeChild(n,c || true);
+      removeAll: function(c) {
+        this.removeAllChildren(c);
       },
 
       removeItem: function(n,c) {
-        this.removeItemEx('', n, c);
+        this.removeChild(n, c);
       },
 
-      addItemEx: function(atlas, n, zx, tag) {
+      addAtlasItem: function(atlas, n, zx, tag) {
         var zOrder = sjs.echt(zx) ? zx : this.lastZix,
-        p= this.getNode(atlas),
+        p= this.getAtlas(atlas),
         ptag = tag;
 
         if (! sjs.echt(ptag)) {
@@ -159,7 +168,14 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
       },
 
       addItem: function(n,zx,tag) {
-        this.addItemEx('', n, zx, tag);
+        var zOrder = sjs.echt(zx) ? zx : this.lastZix,
+        ptag = tag;
+
+        if (! sjs.echt(ptag)) {
+          ptag = ++this.lastTag;
+        }
+
+        this.addChild(n, zOrder, ptag);
       },
 
       setParent: function(par) {
@@ -186,35 +202,31 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
 
       rtti: function() { return 'HUD'; },
 
+      removeIcon: function(icon) {
+        this.removeAtlasItem(this.hudAtlas, icon);
+      },
+
+      addIcon: function(icon, z, idx) {
+        this.addAtlasItem(this.hudAtlas, icon, z, idx);
+      },
+
       pkInit: function() {
         this.scoreLabel = null;
         this.lives= null;
         this.score= 0;
         this.replayBtn = null;
 
-        this.initParentNode();
-        this.initLabels();
+        this.hudAtlas= 'hud-pics';
+        this.initAtlases();
         this.initIcons();
+        this.initLabels();
+
         this.initCtrlBtns();
 
         return this._super();
       },
 
-      removeItem: function(n) {
-        if (n instanceof cc.Sprite) { this._super(n); } else {
-          this.removeChild(n);
-        }
-      },
-
-      addItem: function(n) {
-        if (n instanceof cc.Sprite) { this._super(n); } else {
-          this.addChild(n, this.lastZix, ++this.lastTag);
-        }
-      },
-
-      getScore: function() {
-        return this.score;
-      },
+      getScore: function() { return this.score; },
 
       reset: function() {
         this.disableReplay();
@@ -291,7 +303,8 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
 
       pkInput: function() {
 
-        if (!cc.sys.isNative && cc.sys.capabilities['keyboard']) {
+        if (cc.sys.capabilities['keyboard'] &&
+            !cc.sys.isNative) {
           sjs.loggr.debug('pkInput:  keyboard supported');
           this.cfgInputKeyPad();
         }else{

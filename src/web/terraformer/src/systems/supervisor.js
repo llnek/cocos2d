@@ -20,7 +20,7 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
   function (cobjs, utils, gnodes, sjs, sh, ccsx, XPool) { "use strict";
 
     var xcfg = sh.xcfg,
-    csts = xcfg.csts,
+    csts= xcfg.csts,
     undef,
     GameSupervisor = sh.Ashley.sysDef({
 
@@ -46,6 +46,7 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
 
       initBackSkies: function () {
         var bs = sh.pools.BackSkies.get();
+        bs.inflate({x: 0, y: 0});
         this.state.backSkyRe = null;
         this.state.backSky = bs;
         this.state.backSkyDim = cc.size(bs.size());
@@ -64,6 +65,9 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
 
         sh.factory.createBackSkies();
         this.initBackSkies();
+
+        sh.factory.createBackTiles();
+        sh.main.initBackTiles();
 
         sh.factory.createMissiles();
         sh.factory.createBombs();

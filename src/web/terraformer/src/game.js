@@ -22,7 +22,7 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
             layers, scenes, mmenus, huds) { "use strict";
 
     var xcfg = sh.xcfg,
-    csts = xcfg.csts,
+    csts= xcfg.csts,
     R = sjs.ramda,
     undef,
     GameLayer = layers.XGameLayer.extend({
@@ -57,36 +57,31 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
       },
 
       reset: function(newFlag) {
-        var wz = ccsx.screen(),
-        ps = sh.pools,
-        b,
-        img;
 
-        if (!!this.atlases) {
+        if (! sjs.isEmpty(this.atlases)) {
           //sjs.eachObj(function(z) { z.removeAllChildren(); }, this.atlases);
         } else {
-          img = cc.textureCache.addImage( sh.getAtlasPath('op-pics'));
-          b = new cc.SpriteBatchNode(img);
-          b.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
-          this.atlases = { 'op-pics' : b };
-          this.addChild(b, ++this.lastZix, ++this.lastTag);
-          //2
-          img = cc.textureCache.addImage( sh.getAtlasPath('tr-pics')),
-          b = new cc.SpriteBatchNode(img);
-          this.atlases[ 'tr-pics' ] =  b;
-          this.addChild(b, ++this.lastZix, ++this.lastTag);
+
+          R.forEach(function(info) {
+            var b = new cc.SpriteBatchNode(cc.textureCache.addImage( sh.getAtlasPath(info[0])));
+            if (info[1]) {
+              b.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
+            }
+            this.regoAtlas(info[0], b);
+          }.bind(this), [ ['op-pics', true], ['tr-pics', false] ]);
+
         }
+
         this.getHUD().reset();
       },
 
-      initBackground:function () {
-        this.factory.createBackTiles();
+      initBackTiles:function () {
         this.moveBackTiles();
         this.schedule(this.moveBackTiles, 5);
       },
 
       moveBackTiles: function () {
-        var ps= sh.pools.BackSkies,
+        var ps= sh.pools.BackTiles,
         wz= ccsx.screen(),
         move,
         fun,
@@ -141,7 +136,6 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
           [sobjs.Resolution, pss.Resolve],
           [sobjs.Rendering, pss.Render] ]);
 
-        this.initBackground();
         this.schedule(this.countSeconds, 1);
       },
 
