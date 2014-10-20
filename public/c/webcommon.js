@@ -958,6 +958,7 @@ define("cherimoia/skarojs", ['global/window',
 
       tne: function(msg) { throw new Error(msg); },
 
+      noop: function() {},
       echt: _echt,
 
       prettyNumber: function (num, digits) {

@@ -15,6 +15,7 @@ define("zotohlab/asx/xloader", ['cherimoia/skarojs',
   function (sjs, sh, ccsx) { "use strict";
 
     var _instance= null,
+    CHUNK=36,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -22,9 +23,11 @@ define("zotohlab/asx/xloader", ['cherimoia/skarojs',
     var XLoader = cc.Scene.extend({
 
       ctor: function () {
+        this._super();
+
         this.bgLayer = new cc.LayerColor(cc.color(0,0,0, 255));
         this.bgLayer.setPosition(0, 0);
-        this._super();
+        this.addChild(this.bgLayer);
       },
 
       pkLoad: function () {
@@ -33,7 +36,6 @@ define("zotohlab/asx/xloader", ['cherimoia/skarojs',
         s1,s2;
 
         this.unschedule(this.pkLoad);
-        this.addChild(this.bgLayer);
 
         // logo
         this.logoSprite = cc.Sprite.create(pfx + 'cocos2d/pics/ZotohLab.png');
@@ -42,15 +44,14 @@ define("zotohlab/asx/xloader", ['cherimoia/skarojs',
         this.bgLayer.addChild(this.logoSprite);
 
         // progress bar
-        s2 = cc.Sprite.create(pfx+'cocos2d/pics/preloader_bar.png');
-        //s2.setScale( cc.contentScaleFactor());
-        this.progress = cc.ProgressTimer.create(s2);
+        this.progress = cc.ProgressTimer.create(
+                          cc.Sprite.create(pfx+'cocos2d/pics/preloader_bar.png'));
         this.progress.setType(cc.ProgressTimer.TYPE_BAR);
         this.progress.setScaleX(0.8);
         this.progress.setScaleY(0.3);
         //this.progress.setOpacity(0);
         //this.progress.setPercentage(0);
-        this.progress.setPosition(this.logoSprite.getPosition().x, // - 0.5 * this.logo.width / 2 ,
+        this.progress.setPosition(this.logoSprite.getPositionX(), // - 0.5 * this.logo.width / 2 ,
                                   cw.y - this.logoSprite.getContentSize().height * 0.6 );//- 10);
         //this.progress.setMidpoint(cc.p(0,0));
         this.bgLayer.addChild(this.progress);
@@ -75,19 +76,48 @@ define("zotohlab/asx/xloader", ['cherimoia/skarojs',
       },
 
       niceFadeOut: function() {
-        this.logoSprite.runAction( cc.Sequence.create(
+        this.unscheduleUpdate();
+        this.logoSprite.runAction(cc.Sequence.create(
                                           cc.FadeOut.create(1.2),
                                           cc.CallFunc.create(this.selector, this.target)));
+      },
+
+      loadChunk: function() {
+        var res = this.resources,
+        me=this,
+        s= this._pres[0],
+        e= this._pres[1];
+
+        cc.log('start s = ' + s + ', e = ' + e);
+
+        cc.loader.load(res.slice(s,e), function(result, total, cnt) {
+          cc.log('total = ' + total + ', cnt = ' + cnt);
+          me._count += 1;
+        }, function() {
+          me._pres[2]=true;
+        });
       },
 
       pkStartLoading: function () {
         var res = this.resources,
         me=this;
 
+        this._pres= [0, Math.min(CHUNK, res.length), false];
+        this._count=0;
+
+        this.schedule(this.update, 0.25);
+        this.loadChunk();
+      },
+
+      XXpkStartLoading: function () {
+        var res = this.resources,
+        me=this;
+
         this._length = res.length;
         this._count=0;
 
-        cc.loader.load(res, function(result,cnt) {
+        cc.loader.load(res, function(result,total, cnt) {
+          cc.log('total = ' + total + ', cnt = ' + cnt);
           me._count= cnt;
         }, function() {
           me.niceFadeOut();
@@ -96,13 +126,25 @@ define("zotohlab/asx/xloader", ['cherimoia/skarojs',
       },
 
       update: function () {
-        var cnt = this._count,
-        len = this._length,
-        percent = (cnt / len * 100) | 0;
-        percent = Math.min(percent, 100);
-        this.progress.setPercentage(percent);
+        var len = this.resources.length,
+        cnt = this._count,
+        ratio = cnt / len,
+        s,e,
+        perc= Math.min(ratio * 100, 100);
+
+        this.progress.setPercentage(perc);
         if (cnt >= len) {
           this.unscheduleUpdate();
+          this.niceFadeOut();
+        }
+        else
+        if (this._pres[2]) {
+          s= this._pres[1];
+          e= s+ Math.min(CHUNK, len - s);
+          this._pres[0]=s;
+          this._pres[1]=e;
+          this._pres[2]=false;
+          this.loadChunk();
         }
       }
 
