@@ -4,7 +4,7 @@ document.ccConfig = {
   chipmunk: true,
   box2d: false,
   showFPS: false,
-  frameRate: 60,
+  frameRate: 30,
 
   // 0(default), 1(Canvas only), 2(WebGL only)
   renderMode: 0,
@@ -37,7 +37,7 @@ document.ccConfig = {
 
     "/public/ig/lib/zotohlab/ext/xlayers.js",
     "/public/ig/lib/zotohlab/ext/xscenes.js",
-    "/public/ig/lib/zotohlab/ext/xentity.js",
+    "/public/ig/lib/zotohlab/ext/xpool.js",
     "/public/ig/lib/zotohlab/ext/xloader.js",
 
     "/public/ig/lib/zotohlab/gui/startscreen.js",

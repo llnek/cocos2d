@@ -1,1 +1,38 @@
-{ "jsList" : [] }
+ {
+
+    "jsList"        : [
+
+
+    "src/terraformer/config.js",
+    "src/terraformer/i18n/game_en_US.js",
+
+    "src/terraformer/components/cobjs.js",
+    "src/terraformer/nodes/gnodes.js",
+
+    "src/terraformer/systems/priorities.js",
+    "src/terraformer/systems/utils.js",
+
+    "src/terraformer/systems/factory.js",
+    "src/terraformer/systems/supervisor.js",
+    "src/terraformer/systems/motion.js",
+    "src/terraformer/systems/move-missiles.js",
+    "src/terraformer/systems/move-bombs.js",
+    "src/terraformer/systems/move-ship.js",
+    "src/terraformer/systems/levelmgr.js",
+    "src/terraformer/systems/collision.js",
+    "src/terraformer/systems/resolution.js",
+    "src/terraformer/systems/rendering.js",
+    "src/terraformer/systems/sysobjs.js",
+
+    "src/terraformer/splash.js",
+    "src/terraformer/hud.js",
+    "src/terraformer/mmenu.js",
+    "src/terraformer/game.js",
+
+    "src/terraformer/protos.js",
+    "src/zotohlab/ext/xboot.js"
+
+
+
+    ]
+}

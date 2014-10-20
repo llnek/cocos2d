@@ -138,6 +138,7 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
           [sobjs.Resolution, pss.Resolve],
           [sobjs.Rendering, pss.Render] ]);
 
+        sh.sfxPlayMusic('bgMusic', true);
         this.schedule(this.countSeconds, 1);
       },
 
@@ -170,6 +171,8 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
       },
 
       onDone: function() {
+        cc.audioEngine.stopAllEffects();
+        cc.audioEngine.stopMusic();
         this.options.running=false;
         this.reset();
         this.getHUD().enableReplay();

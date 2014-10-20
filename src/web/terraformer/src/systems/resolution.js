@@ -111,6 +111,7 @@ define('zotohlab/p/s/resolution', ['zotohlab/p/components',
           s=ps.get();
         }
         s.inflate({x : pos.x, y: pos.y});
+        sh.sfxPlay('explodeEffect');
       },
 
       onShipDeath: function(ship) {
@@ -123,6 +124,7 @@ define('zotohlab/p/s/resolution', ['zotohlab/p/components',
           e= pe.get();
         }
         e.inflate({x : pos.x, y: pos.y});
+        sh.sfxPlay('shipDestroyEffect');
       },
 
       checkAliens: function() {

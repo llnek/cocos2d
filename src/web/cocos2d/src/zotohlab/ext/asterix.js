@@ -273,9 +273,10 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
         }
       },
 
-      sfxPlay: function(key) {
+      sfxPlay: function(key,repeat) {
         if (this.xcfg.sound.open) {
-          cc.audioEngine.playEffect(this.getSfxPath(key),false);
+          cc.audioEngine.playEffect(this.getSfxPath(key),
+                                    repeat===true);
         }
       },
 

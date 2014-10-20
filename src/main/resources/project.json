@@ -32,7 +32,7 @@
 
     "src/zotohlab/ext/xlayers.js",
     "src/zotohlab/ext/xscenes.js",
-    "src/zotohlab/ext/xentity.js",
+    "src/zotohlab/ext/xpool.js",
     "src/zotohlab/ext/xloader.js",
 
     "src/zotohlab/gui/startscreen.js",

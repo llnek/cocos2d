@@ -57,6 +57,8 @@ define('zotohlab/p/mmenu', ['cherimoia/skarojs',
       },
 
       onNewGame: function() {
+        cc.audioEngine.stopAllEffects();
+        cc.audioEngine.stopMusic();
         sh.fireEvent('/mmenu/controls/newgame', { mode: sh.P1_GAME });
       },
 
@@ -124,6 +126,10 @@ define('zotohlab/p/mmenu', ['cherimoia/skarojs',
         }.bind(this), 0.1);
 
         this.doCtrlBtns();
+
+        //cc.audioEngine.setMusicVolume(0.7);
+        sh.sfxPlayMusic('mainMainMusic', true);
+
         return this._super();
       },
 
