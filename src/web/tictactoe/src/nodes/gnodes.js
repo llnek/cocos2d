@@ -10,16 +10,15 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 define("zotohlab/p/gnodes", ['zotohlab/p/components',
-                            'ash-js'],
+                            'zotohlab/asterix'],
 
-  function (cobjs, Ash) { "use strict";
+  function (cobjs, sh) { "use strict";
 
     var lib= {},
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    lib.BoardNode = Ash.Node.create({
+    lib.BoardNode = sh.Ashley.nodeDef({
       selection: cobjs.UISelection,
       board: cobjs.Board,
       robot: cobjs.SmartAlgo,
@@ -28,24 +27,19 @@ define("zotohlab/p/gnodes", ['zotohlab/p/components',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    lib.GUINode = Ash.Node.create({
+    lib.GUINode = sh.Ashley.nodeDef({
       selection: cobjs.UISelection,
       view: cobjs.GridView
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    lib.NetPlayNode = Ash.Node.create({
+    lib.NetPlayNode = sh.Ashley.nodeDef({
       playcmd: cobjs.NetPlay,
       grid: cobjs.Grid
     });
 
-
     return lib;
-
 });
-
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

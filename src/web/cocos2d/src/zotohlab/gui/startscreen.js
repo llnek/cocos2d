@@ -11,31 +11,28 @@
 
 define("zotohlab/asx/xsplash", ['cherimoia/skarojs',
                                'zotohlab/asterix',
-                               'zotohlab/asx/xcfg',
                                'zotohlab/asx/ccsx',
                                'zotohlab/asx/xlayers'],
-  function (sjs, sh, xcfg, ccsx, layers) { "use strict";
+  function (sjs, sh, ccsx, layers) { "use strict";
 
-    var csts= xcfg.csts,
-    undef;
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
+    undef,
 
-    //////////////////////////////////////////////////////////////////////////////
-    // splash screen for the game - make it look nice please.
-    //////////////////////////////////////////////////////////////////////////////
-    var XSplashLayer = layers.XLayer.extend({
+    XSplashLayer = layers.XLayer.extend({
 
       pkInit: function() {
         var imgUrl= sh.getImagePath('splash.splash'),
         wz = ccsx.screen(),
         cw = ccsx.center();
 
+        this._super();
+
         if (imgUrl) {
           var s= new cc.Sprite(imgUrl);
           s.setPosition(cw);
           this.addItem(s);
         }
-
-        return this._super();
       },
 
       rtti: function() { return "SplashLayer"; }

@@ -12,39 +12,38 @@
 define("zotohlab/p/s/supervisor", ['zotohlab/p/gnodes',
                                   'cherimoia/skarojs',
                                   'zotohlab/asterix',
-                                  'zotohlab/asx/xcfg',
                                   'zotohlab/asx/ccsx',
-                                  'zotohlab/asx/odin',
-                                  'ash-js'],
+                                  'zotohlab/asx/odin'],
 
-  function (gnodes, sjs, sh, xcfg, ccsx, odin, Ash) { "use strict";
+  function (gnodes, sjs, sh, ccsx, odin) { "use strict";
 
     var evts= odin.Events,
+    xcfg=sh.xcfg,
+    csts= xcfg.csts,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    var GameSupervisor = Ash.System.extend({
+    var GameSupervisor = sh.Ashley.sysDef({
 
       constructor: function(options) {
-        this.factory= options.factory;
         this.state= options;
         this.inited=false;
       },
 
       removeFromEngine: function(engine) {
-        this.nodeList=null;
+        this.board=null;
       },
 
       addToEngine: function(engine) {
-        var b= this.factory.createBoard(sh.main, this.state);
-        engine.addEntity(b);
-        this.nodeList= engine.getNodeList(gnodes.BoardNode);
+        engine.addEntity(sh.factory.createBoard(sh.main,
+                                                this.state));
+        this.board= engine.getNodeList(gnodes.BoardNode);
       },
 
       update: function (dt) {
-        var node= this.nodeList.head;
-        if (!!node) {
+        var node= this.board.head;
+        if (this.state.running &&
+            !!node) {
           if (! this.inited) {
             this.onceOnly(node, dt);
             this.inited=true;
@@ -68,15 +67,13 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/gnodes',
           //randomly pick a player to start the game.
           var pnum = sjs.randSign() > 0 ? 1 : 2;
           this.state.actor=pnum;
-          if (this.state.players[pnum].category === sh.xcfg.csts.HUMAN) {
+          if (this.state.players[pnum].category === csts.HUMAN) {
             sh.fireEvent('/game/hud/timer/show');
           }
           else
-          if (this.state.players[pnum].category === sh.xcfg.csts.BOT) {
+          if (this.state.players[pnum].category === csts.BOT) {
           }
         }
-
-        this.state.running=true;
       },
 
       process: function(node,dt) {

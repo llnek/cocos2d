@@ -11,26 +11,28 @@
 
 define("zotohlab/p/mmenu", ['cherimoia/skarojs',
                            'zotohlab/asterix',
-                           'zotohlab/asx/xcfg',
                            'zotohlab/asx/ccsx',
                            'zotohlab/asx/xlayers',
                            'zotohlab/asx/xscenes',
                            'zotohlab/asx/xmmenus'],
 
-  function (sjs, sh, xcfg, ccsx, layers, scenes, mmenus) { "use strict";
+  function (sjs, sh, ccsx, layers, scenes, mmenus) { "use strict";
 
-    var csts= xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
+    R=sjs.ramda,
     undef,
     SEED= {
-      grid: [0,0,0, 0,0,0, 0,0,0],
+      grid: [0,0,0,
+        0,0,0,
+        0,0,0],
       size: 3,
-      ppids: { },
+      ppids: {},
       pnum: 1,
       mode: 0
     };
 
     //////////////////////////////////////////////////////////////////////////////
-    //
     var MainMenuLayer = mmenus.XMenuLayer.extend({
 
       rtti: function() { return 'MainMenuLayer'; },
@@ -38,9 +40,11 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
       pkInit: function() {
 
         var cw = ccsx.center(),
+        wz = ccsx.screen(),
         pobj2,
-        pobj1,
-        wz = ccsx.screen();
+        pobj1;
+
+        this._super();
 
         this.addItem(ccsx.tmenu1({
           fontPath: sh.getFontPath('font.OogieBoogie'),
@@ -90,8 +94,6 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
         }));
 
         this.doCtrlBtns();
-
-        return this._super();
       }
 
     });
@@ -99,45 +101,46 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
     //////////////////////////////////////////////////////////////////////////////
     //
     return {
-
       'MainMenu' : {
-          create: function (options) {
-            var gl = sh.protos['GameArena'],
-            mm= sh.protos['MainMenu'],
-            ol= sh.protos['OnlinePlay'],
-            dir= cc.director,
-            scene = new scenes.XSceneFactory([
-              mmenus.XMenuBackLayer,
-              MainMenuLayer
-            ]).create(options);
-            if (scene) {
-              scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
-                dir.runScene( gl.create(msg));
+        create: function (options) {
+          var gl = sh.protos['GameArena'],
+          mm= sh.protos['MainMenu'],
+          ol= sh.protos['OnlinePlay'],
+          dir= cc.director,
+          scene = new scenes.XSceneFactory([
+            mmenus.XMenuBackLayer,
+            MainMenuLayer
+          ]).create(options);
+
+          scene.ebus.on('/mmenu/controls/newgame',
+                        function(topic, msg) {
+            dir.runScene( gl.create(msg));
+          });
+          scene.ebus.on('/mmenu/controls/online',
+                        function(topic, msg) {
+
+            msg.yes=function(wss,pnum,startmsg) {
+              var m= sjs.mergeEx( R.omit(['yes', 'onBack'], msg), {
+                wsock: wss,
+                pnum: pnum
               });
-              scene.ebus.on('/mmenu/controls/online', function(topic, msg) {
-                msg.onBack=function() {
-                  dir.runScene( mm.create());
-                };
-                msg.yes=function(wss,pnum,startmsg) {
-                  var m= sjs.mergeEx( R.omit(['yes', 'onBack'], msg), {
-                    wsock: wss,
-                    pnum: pnum
-                  });
-                  sjs.merge(m, startmsg);
-                  dir.runScene( gl.create(m));
-                }
-                dir.runScene( ol.create(msg));
-              });
+              sjs.merge(m, startmsg);
+              dir.runScene( gl.create(m));
             }
-            return scene;
+
+            msg.onBack=function() {
+              dir.runScene( mm.create());
+            };
+
+            dir.runScene( ol.create(msg));
+          });
+
+          return scene;
         }
       }
-
     };
 
-
 });
-
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

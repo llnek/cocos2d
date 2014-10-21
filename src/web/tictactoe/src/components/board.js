@@ -9,8 +9,7 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/c/board",
-       ['cherimoia/skarojs'],
+define("zotohlab/p/c/board", ['cherimoia/skarojs'],
 
   function (sjs) { "use strict";
 
@@ -20,7 +19,6 @@ define("zotohlab/p/c/board",
     //////////////////////////////////////////////////////////////////////////////
     // A Tic Tac Toe board.
     //////////////////////////////////////////////////////////////////////////////
-
     var GameBoard = sjs.Class.xtends({
 
       isNil: function(cellv) { return cellv === this.CV_Z; },
@@ -135,7 +133,6 @@ define("zotohlab/p/c/board",
 
 
     return GameBoard;
-
 });
 
 

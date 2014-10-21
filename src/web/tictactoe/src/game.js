@@ -11,7 +11,6 @@
 
 define("zotohlab/p/arena", ['cherimoia/skarojs',
                            'zotohlab/asterix',
-                           'zotohlab/asx/xcfg',
                            'zotohlab/asx/ccsx',
                            'zotohlab/asx/xlayers',
                            'zotohlab/asx/xscenes',
@@ -21,25 +20,20 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
                            'zotohlab/p/components',
                            'zotohlab/p/sysobjs'],
 
-  function (sjs, sh, xcfg, ccsx,
-            layers, scenes, mmenus,
-            odin, huds, cobjs, sobjs) { "use strict";
+  function (sjs, sh, ccsx, layers, scenes,
+            mmenus, odin, huds, cobjs, sobjs) { "use strict";
 
     var prrs= sobjs.Priorities,
     evts= odin.Events,
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    // game layer
-    //////////////////////////////////////////////////////////////////////////////
-
     var GameLayer = layers.XGameLayer.extend({
 
-      onStop: function(evt) {
-        this.options.netQ.push(evt);
-      },
+      onStop: function(evt) { this.options.netQ.push(evt); },
 
       replay: function() {
         if (sjs.isObject(this.options.wsock)) {
@@ -55,8 +49,7 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
 
       play: function(newFlag) {
 
-        var h= this.getHUD(),
-        p1ids, p2ids;
+        var p1ids, p2ids;
 
         csts.CELLS = this.options.size*this.options.size;
         csts.GRID_SIZE= this.options.size;
@@ -68,15 +61,17 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
           } else {
             p2ids= [k, v[1] ];
           }
-        },
-        this.options.ppids);
+        }, this.options.ppids);
 
         // clean slate
         this.reset(newFlag);
         this.cleanSlate();
 
-        this.options.factory= new sobjs.EntityFactory(this.engine);
+        this.factory= new sobjs.Factory(this.engine);
+        this.options.running=true;
+        sh.factory= this.factory;
         this.initPlayers();
+
         this.options.selQ = [];
         this.options.netQ = [];
         this.options.msgQ = [];
@@ -84,12 +79,12 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
         R.forEach(function(z) {
           this.engine.addSystem(new (z[0])(this.options), z[1]);
         }.bind(this),
-        [[sobjs.GameSupervisor, prrs.PreUpdate],
-         [sobjs.SelectionSystem, prrs.Movement],
-         [sobjs.NetworkSystem, prrs.Movement],
-         [sobjs.TurnBaseSystem, prrs.TurnBase],
-         [sobjs.ResolutionSystem, prrs.Resolve],
-         [sobjs.RenderSystem, prrs.Render]]);
+        [[sobjs.GameSupervisor,     prrs.PreUpdate],
+         [sobjs.SelectionSystem,    prrs.Movement],
+         [sobjs.NetworkSystem,      prrs.Movement],
+         [sobjs.TurnBaseSystem,     prrs.TurnBase],
+         [sobjs.ResolutionSystem,   prrs.Resolve],
+         [sobjs.RenderSystem,       prrs.Render]]);
 
         if (this.options.wsock) {
           this.options.wsock.unsubscribeAll();
@@ -107,17 +102,15 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
       },
 
       reset: function(newFlag) {
-        var h= this.getHUD();
         if (newFlag) {
-          h.resetAsNew();
+          this.getHUD().resetAsNew();
         } else {
-          h.reset();
+          this.getHUD().reset();
         }
-        this.removeAllItems();
+        this.removeAll();
       },
 
       onclicked: function(mx,my) {
-
         if (this.options.running &&
             this.options.selQ.length === 0) {
           sjs.loggr.debug("selection made at pos = " + mx + "," + my);
@@ -126,12 +119,10 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
       },
 
       updateHUD: function() {
-        var h= this.getHUD();
-
         if (this.options.running) {
-          h.drawStatus(this.actor);
+          this.getHUD().drawStatus(this.actor);
         } else {
-          h.drawResult(this.lastWinner);
+          this.getHUD().drawResult(this.lastWinner);
         }
       },
 
@@ -139,19 +130,9 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
         this.options.msgQ.push("forfeit");
       },
 
-      getHUD: function() {
-        var rc= this.ptScene.getLayers();
-        return rc['HUD'];
-      },
-
-      rtti: function() { return 'GameLayer'; },
-
       setGameMode: function(mode) {
-        var h= this.getHUD();
         this._super(mode);
-        if (h) {
-          h.setGameMode(mode);
-        }
+        this.getHUD().setGameMode(mode);
       },
 
       initPlayers: function() {
@@ -193,16 +174,15 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
       },
 
       onNetworkEvent: function(evt) {
-        var h= this.getHUD();
         switch (evt.code) {
           case evts.C_RESTART:
             sjs.loggr.debug("restarting a new game...");
-            h.killTimer();
+            this.getHUD().killTimer();
             this.play(false);
           break;
           case evts.C_STOP:
             sjs.loggr.debug("game will stop");
-            h.killTimer();
+            this.getHUD().killTimer();
             this.onStop(evt);
           break;
           default:
@@ -230,10 +210,7 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
     */
       }
 
-
     });
-
-
 
     return {
 
@@ -246,32 +223,31 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
             huds.HUDLayer
           ]).create(options);
 
-          if (scene) {
-            scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
-              mmenus.XMenuLayer.onShowMenu();
-            });
-            scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
-              sh.main.replay();
-            });
-            scene.ebus.on('/game/hud/timer/show',function(t,msg) {
-              sh.main.getHUD().showTimer();
-            });
-            scene.ebus.on('/game/hud/timer/hide',function(t,msg) {
-              sh.main.getHUD().killTimer();
-            });
-            scene.ebus.on('/game/hud/score/update',function(t,msg) {
-              sh.main.getHUD().updateScore(msg.color, msg.score);
-            });
-            scene.ebus.on('/game/hud/end',function(t,msg) {
-              sh.main.getHUD().endGame();
-            });
-            scene.ebus.on('/game/hud/update',function(t,msg) {
-              sh.main.getHUD().update(msg.running, msg.pnum);
-            });
-            scene.ebus.on('/game/player/timer/expired',function(t,msg) {
-              sh.main.playTimeExpired(msg);
-            });
-          }
+          scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
+            mmenus.XMenuLayer.onShowMenu();
+          });
+          scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
+            sh.main.replay();
+          });
+          scene.ebus.on('/game/hud/timer/show',function(t,msg) {
+            sh.main.getHUD().showTimer();
+          });
+          scene.ebus.on('/game/hud/timer/hide',function(t,msg) {
+            sh.main.getHUD().killTimer();
+          });
+          scene.ebus.on('/game/hud/score/update',function(t,msg) {
+            sh.main.getHUD().updateScore(msg.color, msg.score);
+          });
+          scene.ebus.on('/game/hud/end',function(t,msg) {
+            sh.main.getHUD().endGame();
+          });
+          scene.ebus.on('/game/hud/update',function(t,msg) {
+            sh.main.getHUD().update(msg.running, msg.pnum);
+          });
+          scene.ebus.on('/game/player/timer/expired',function(t,msg) {
+            sh.main.playTimeExpired(msg);
+          });
+
           return scene;
         }
       }

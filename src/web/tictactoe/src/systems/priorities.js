@@ -9,8 +9,7 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/s/priorities",
-       ['cherimoia/skarojs'],
+define("zotohlab/p/s/priorities", ['cherimoia/skarojs'],
 
   function (sjs) { "use strict";
 

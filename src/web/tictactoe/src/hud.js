@@ -11,39 +11,28 @@
 
 define("zotohlab/p/hud", ['cherimoia/skarojs',
                          'zotohlab/asterix',
-                         'zotohlab/asx/xcfg',
                          'zotohlab/asx/ccsx',
                          'zotohlab/asx/xlayers',
                          'zotohlab/asx/xscenes'],
 
-  function (sjs, sh, xcfg, ccsx, layers, scenes) { "use strict";
+  function (sjs, sh, ccsx, layers, scenes) { "use strict";
 
-    var NILFUNC=function() {},
+    var xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-    PLAYER_THINK_TIME= 7;
 
-    //////////////////////////////////////////////////////////////////////////////
-    // back layer
-    //////////////////////////////////////////////////////////////////////////////
+    BackLayer = layers.XLayer.extend({
 
-    var BackLayer = layers.XLayer.extend({
-
-      rtti: function() { return 'tttBackLayer'; },
-
+      rtti: function() { return 'BackLayer'; },
       pkInit: function() {
-        var map = new cc.TMXTiledMap(sh.getTilesPath('gamelevel1.tiles.arena'));
-        this.addItem(map);
-        return this._super();
+        this._super();
+        this.addItem(new cc.TMXTiledMap(
+          sh.getTilesPath('gamelevel1.tiles.arena')));
       }
 
-    });
+    }),
 
-    //////////////////////////////////////////////////////////////////////////////
-    // HUD layer
-    //////////////////////////////////////////////////////////////////////////////
-
-    var HUDLayer = layers.XGameHUDLayer.extend({
+    HUDLayer = layers.XGameHUDLayer.extend({
 
       ctor: function(options) {
         this._super(options);
@@ -56,8 +45,8 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
 
       initScores: function() {
         this.scores= {};
-        this.scores[xcfg.csts.P2_COLOR] =  0;
-        this.scores[xcfg.csts.P1_COLOR] =  0;
+        this.scores[csts.P2_COLOR] =  0;
+        this.scores[csts.P1_COLOR] =  0;
       },
 
       setGameMode: function(mode) {
@@ -65,7 +54,8 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
         this.mode= mode;
       },
 
-      initParentNode: NILFUNC,
+      initAtlases: sjs.noop,
+      initIcons: sjs.noop,
 
       initLabels: function() {
         var cw= ccsx.center(),
@@ -125,8 +115,8 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
         var cw= ccsx.center(),
         wz= ccsx.screen();
 
+        // timer is already showing, go away
         if (this.countDownState) {
-          // timer is already showing, go away
           return;
         }
 
@@ -143,38 +133,41 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
           this.addItem(this.countDown);
         }
 
-        this.countDownValue= PLAYER_THINK_TIME;
-        this.countDown.setString('' + this.countDownValue);
+        this.countDownValue= csts.PLAYER_THINK_TIME;
+        this.showCountDown();
 
-        this.schedule(this.updateTimer,1.0);
+        this.schedule(this.updateTimer, 1.0);
         this.countDownState= true;
       },
 
       updateTimer: function(dt) {
 
-        if (!this.countDownState) {
-          return;
+        if (!this.countDownState) { return; } else {
+          this.countDownValue -= 1;
         }
 
-        this.countDownValue -= 1;
         if (this.countDownValue < 0) {
           this.killTimer();
-          sh.fireEvent('/game/player/timer/expired', {});
+          sh.fireEvent('/game/player/timer/expired');
         }
-        else if (this.countDown) {
-          this.countDown.setString('' + this.countDownValue);
+        else {
+          this.showCountDown();
+        }
+      },
+
+      showCountDown: function(msg) {
+        if (!!this.countDown) {
+          this.countDown.setString(msg || '' + this.countDownValue);
         }
       },
 
       killTimer: function() {
         if (this.countDownState) {
           this.unschedule(this.updateTimer);
-          this.countDown.setString('');
-          //this.removeItem(this.countDown);
+          this.showCountDown(' ');
         }
         this.countDownState=false;
         this.countDownValue=0;
-        //this.countDown=null;
       },
 
       updateScore: function(pcolor, value) {
@@ -182,7 +175,7 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
         this.drawScores();
       },
 
-      update: function(running,pnum) {
+      update: function(running, pnum) {
         if (running) {
           this.drawStatus(pnum);
         } else {
@@ -197,7 +190,7 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
       },
 
       drawStatusText: function(obj, msg) {
-        obj.setString( msg);
+        obj.setString(msg || '');
       },
 
       drawScores: function() {
@@ -212,7 +205,7 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
       },
 
       drawResult: function(pnum) {
-        var msg='';
+        var msg;
 
         if (sjs.isNumber(pnum)) {
           switch (pnum) {
@@ -229,7 +222,10 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
       drawStatus: function(pnum) {
         if (sjs.isNumber(pnum)) {
           var pfx = pnum === 1 ? this.p1Long : this.p2Long;
-          this.drawStatusText(this.status, sh.l10n('%whosturn', { who: pfx }));
+          this.drawStatusText(this.status,
+                              sh.l10n('%whosturn', {
+            who: pfx
+          }));
         }
       },
 
@@ -242,8 +238,6 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
         this.p1ID= p1ids[0];
         this.title.setString(this.p1ID + " / " + this.p2ID);
       },
-
-      initIcons: NILFUNC,
 
       resetAsNew: function() {
         this.initScores();
@@ -258,7 +252,6 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
 
 
     });
-
 
     return {
       BackLayer: BackLayer,

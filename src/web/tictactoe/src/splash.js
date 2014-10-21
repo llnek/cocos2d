@@ -11,20 +11,18 @@
 
 define("zotohlab/p/splash", ['cherimoia/skarojs',
                             'zotohlab/asterix',
-                            'zotohlab/asx/xcfg',
                             'zotohlab/asx/ccsx',
                             'zotohlab/asx/xlayers',
                             'zotohlab/asx/xscenes',
                             'zotohlab/asx/xsplash'],
-  function (sjs, sh, xcfg, ccsx,
+  function (sjs, sh, ccsx,
             layers, scenes, XSplashLayer) { "use strict";
 
-    var csts= xcfg.csts,
-    undef;
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
+    undef,
 
-    //////////////////////////////////////////////////////////////////////////////
-    // splash screen for the game - make it look nice please.
-    var UILayer = layers.XLayer.extend({
+    UILayer = layers.XLayer.extend({
 
       rtti: function() { return "UILayer"; },
 
@@ -33,39 +31,37 @@ define("zotohlab/p/splash", ['cherimoia/skarojs',
         var cw = ccsx.center(),
         wz = ccsx.screen();
 
+        this._super();
+
         this.addItem(ccsx.pmenu1({
           imgPath: sh.getImagePath('splash.play-btn'),
           selector: function() {
             sh.fireEvent('/splash/controls/playgame');
           },
           target: this,
-          pos: cc.p(cw.x, 0.12 * wz.height)
+          pos: cc.p(cw.x, 0.25 * wz.height)
         }));
 
-        return this._super();
       }
 
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
     return {
       'StartScreen' : {
         create: function(options) {
           var scene = new scenes.XSceneFactory([
-            XSplashLayer,
-            UILayer
+            XSplashLayer, UILayer
           ]).create(options);
-          if (scene) {
-            scene.ebus.on('/splash/controls/playgame', function() {
-              var ss= sh.protos['StartScreen'],
-              mm= sh.protos['MainMenu'],
-              dir= cc.director;
-              dir.runScene( mm.create({
-                onBack: function() { dir.runScene( ss.create() ); }
-              }));
-            });
-          }
+          scene.ebus.on('/splash/controls/playgame',
+                        function() {
+            var ss= sh.protos['StartScreen'],
+            mm= sh.protos['MainMenu'],
+            dir= cc.director;
+            dir.runScene( mm.create({
+              onBack: function() { dir.runScene( ss.create() ); }
+            }));
+          });
           return scene;
         }
       }

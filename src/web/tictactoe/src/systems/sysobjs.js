@@ -34,7 +34,7 @@ define("zotohlab/p/sysobjs", ['zotohlab/p/components',
     return {
 
       Priorities: Priorities,
-      EntityFactory: EntityFactory,
+      Factory: EntityFactory,
       GameSupervisor: Supervisor,
       NetworkSystem: NetworkSystem,
       SelectionSystem: SelectionSystem,

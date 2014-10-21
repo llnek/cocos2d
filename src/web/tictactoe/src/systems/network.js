@@ -12,19 +12,17 @@
 define("zotohlab/p/s/network", ['zotohlab/p/gnodes',
                                'cherimoia/skarojs',
                                'zotohlab/asterix',
-                               'zotohlab/asx/xcfg',
-                               'zotohlab/asx/odin',
-                               'ash-js'],
+                               'zotohlab/asx/odin'],
 
-  function (gnodes, sjs, sh, xcfg, odin, Ash) { "use strict";
+  function (gnodes, sjs, sh, odin) { "use strict";
 
     var evts= odin.Events,
+    xcfg= sh.xcfg,
     csts= xcfg.csts,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    var NetworkSystem = Ash.System.extend({
+    var NetworkSystem = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.events = options.netQ;
@@ -32,18 +30,19 @@ define("zotohlab/p/s/network", ['zotohlab/p/gnodes',
       },
 
       removeFromEngine: function(engine) {
-        this.nodeList=null;
+        this.netplay=null;
       },
 
       addToEngine: function(engine) {
-        this.nodeList = engine.getNodeList(gnodes.NetPlayNode);
+        this.netplay = engine.getNodeList(gnodes.NetPlayNode);
       },
 
       update: function (dt) {
         if (this.events.length > 0) {
           var evt = this.events.shift(),
-          node= this.nodeList.head;
-          if (!!node) {
+          node= this.netplay.head;
+          if (this.state.running &&
+              !!node) {
             this.maybeUpdateActions(node, evt);
             this.process(node, evt);
           }
@@ -89,18 +88,12 @@ define("zotohlab/p/s/network", ['zotohlab/p/gnodes',
         }
       }
 
-
     });
 
 
     return NetworkSystem;
-
 });
-
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
 

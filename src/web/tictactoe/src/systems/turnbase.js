@@ -12,20 +12,18 @@
 define("zotohlab/p/s/turnbase", ['zotohlab/p/gnodes',
                                 'cherimoia/skarojs',
                                 'zotohlab/asterix',
-                                'zotohlab/asx/xcfg',
                                 'zotohlab/asx/ccsx',
-                                'zotohlab/asx/odin',
-                                'ash-js'],
+                                'zotohlab/asx/odin'],
 
-  function (gnodes, sjs, sh, xcfg, ccsx, odin, Ash) { "use strict";
+  function (gnodes, sjs, sh, ccsx, odin) { "use strict";
 
     var evts= odin.Events,
+    xcfg= sh.xcfg,
     csts= xcfg.csts,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    var TurnBaseSystem = Ash.System.extend({
+    var TurnBaseSystem = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.state= options;
@@ -33,15 +31,15 @@ define("zotohlab/p/s/turnbase", ['zotohlab/p/gnodes',
       },
 
       removeFromEngine: function(engine) {
-        this.nodeList=null;
+        this.board=null;
       },
 
       addToEngine: function(engine) {
-        this.nodeList = engine.getNodeList(gnodes.BoardNode);
+        this.board = engine.getNodeList(gnodes.BoardNode);
       },
 
       update: function (dt) {
-        var node= this.nodeList.head;
+        var node= this.board.head;
         if (this.state.running &&
             !!node) {
           this.process(node, dt);
@@ -62,16 +60,16 @@ define("zotohlab/p/s/turnbase", ['zotohlab/p/gnodes',
           if (cp && (this.state.pnum === cp.pnum)) {
             this.enqueue(sel.cell,cp.value,grid);
           }
-
         }
         else
         if (cp.category === csts.BOT) {
           //create some small delay...
           if (!!this.botTimer) {
             if (ccsx.timerDone(this.botTimer)) {
-              var bd= bot.algo.getGameBoard();
+              var bd= bot.algo.getGameBoard(),
+              rc;
               bd.syncState(grid.values, this.state.players[this.state.actor].value);
-              var rc= bd.getFirstMove();
+              rc= bd.getFirstMove();
               if (!sjs.echt(rc)) { rc = bot.algo.eval(); }
               this.enqueue(rc,cp.value,grid);
               this.botTimer=ccsx.releaseTimer(this.botTimer);
@@ -146,8 +144,4 @@ define("zotohlab/p/s/turnbase", ['zotohlab/p/gnodes',
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
-
 

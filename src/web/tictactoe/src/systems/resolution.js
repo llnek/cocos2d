@@ -13,34 +13,32 @@ define("zotohlab/p/s/resolution", ['zotohlab/p/s/utils',
                                   'zotohlab/p/gnodes',
                                   'cherimoia/skarojs',
                                   'zotohlab/asterix',
-                                  'zotohlab/asx/xcfg',
-                                  'zotohlab/asx/ccsx',
-                                  'ash-js'],
+                                  'zotohlab/asx/ccsx'],
 
-  function (utils, gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var csts= xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     R = sjs.ramda,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    var ResolutionSystem = Ash.System.extend({
+    var ResolutionSystem = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.state= options;
       },
 
       removeFromEngine: function(engine) {
-        this.nodeList=null;
+        this.board=null;
       },
 
       addToEngine: function(engine) {
-        this.nodeList = engine.getNodeList(gnodes.BoardNode);
+        this.board = engine.getNodeList(gnodes.BoardNode);
       },
 
       update: function (dt) {
-        var node= this.nodeList.head;
+        var node= this.board.head;
         if (this.state.running &&
             !!node) {
           this.process(node, dt);
@@ -164,7 +162,6 @@ define("zotohlab/p/s/resolution", ['zotohlab/p/s/utils',
     });
 
     return ResolutionSystem;
-
 });
 
 //////////////////////////////////////////////////////////////////////////////

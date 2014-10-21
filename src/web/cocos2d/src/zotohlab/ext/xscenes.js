@@ -32,47 +32,44 @@ define("zotohlab/asx/xscenes", ['cherimoia/skarojs',
       },
 
       init: function() {
-        return this._super() ? this.createLayers() : false;
+        this._super();
+        this.createLayers();
+        return true;
       },
 
       createLayers: function() {
         var a = this.lays || [],
         glptr = undef,
-        ok,
         rc,
         obj;
-        // look for failures, hold off init'ing game layer, leave that as last
+        //hold off init'ing game layer, leave that as last
         rc = R.some(function(proto) {
           obj= new (proto)(this.options);
           obj.setParent(this);
           if ( obj instanceof xlayers.XGameLayer ) {
             glptr = obj;
-            ok=true
           } else {
-            ok= obj.init();
+            obj.init();
           }
-          if (! ok) { return true; } else {
-            this.layers[ obj.rtti() ] = obj;
-            this.addChild(obj);
-            return false;
-          }
+          this.layers[ obj.rtti() ] = obj;
+          this.addChild(obj);
+          return false;
         }.bind(this), a);
 
         if (a.length > 0 && rc===false ) {
-          return !!glptr ? glptr.init() : true;
-        } else {
-          return false;
+          if (!!glptr) {
+            glptr.init();
+          }
         }
       },
 
       ctor: function(ls, options) {
         this.options = options || {};
+        this._super();
         this.lays= ls || [];
         this.layers= {};
         this.ebus= new EventBus();
-        this._super();
       }
-
 
     });
 
@@ -92,7 +89,8 @@ define("zotohlab/asx/xscenes", ['cherimoia/skarojs',
           cfg= options || {};
         }
         var scene = new XScene(arr, cfg);
-        return scene.init() ? scene : null;
+        scene.init()
+        return scene;
       },
 
       ctor: function(ls) {

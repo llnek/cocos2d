@@ -25,24 +25,16 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
       color: 'sky',
 
       csts: {
-        CV_X: 'X'.charCodeAt(0),
-        CV_O: 'O'.charCodeAt(0),
-        CV_Z: 0,
-
-        P2_COLOR: 'O',
-        P1_COLOR: 'X',
-
-        HUMAN:  1,
-        BOT:    2,
-        NETP:   3,
-
         GRID_W: 40,
         GRID_H: 60,
         C_GAP: 1,
         R_GAP: 1,
         LEFT: 4,
         HOLE: 10,
-        GAP: 10
+        GAP: 10,
+
+        PLAYER_THINK_TIME: 7,
+        CV_Z: 0
       },
 
       game: {

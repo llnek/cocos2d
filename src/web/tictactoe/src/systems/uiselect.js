@@ -12,18 +12,16 @@
 define("zotohlab/p/s/uiselect", ['zotohlab/p/gnodes',
                                 'cherimoia/skarojs',
                                 'zotohlab/asterix',
-                                'zotohlab/asx/xcfg',
-                                'zotohlab/asx/ccsx',
-                                'ash-js'],
+                                'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (gnodes, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg= sh.xcfg,
+    csts = xcfg.csts,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    var SelectionSystem = Ash.System.extend({
+    var SelectionSystem = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.events= options.selQ;
@@ -31,17 +29,17 @@ define("zotohlab/p/s/uiselect", ['zotohlab/p/gnodes',
       },
 
       removeFromEngine: function(engine) {
-        this.nodeList=null;
+        this.gui=null;
       },
 
       addToEngine: function(engine) {
-        this.nodeList = engine.getNodeList(gnodes.GUINode);
+        this.gui = engine.getNodeList(gnodes.GUINode);
       },
 
       update: function (dt) {
         if (this.events.length > 0) {
           var evt = this.events.shift(),
-          node= this.nodeList.head;
+          node= this.gui.head;
           if (!!node) {
             this.process(node, evt);
           }

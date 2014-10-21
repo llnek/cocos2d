@@ -48,8 +48,8 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
 
           'gui.mmenu.menu.bg' : 'res/{{appid}}/ui/mainmenu.png',
           'gui.mmenu.bg' : 'res/{{appid}}/ui/bg.png',
-          //'gui.mmenu.border': 'game/{{appid}}/levels/{{border-tiles}}',
-          //
+          'gui.mmenu.border': 'game/{{appid}}/levels/{{border-tiles}}',
+
           'gui.blank' : 'res/{{appid}}/ui/bg.png',
 
           'gui.edit.orange' : 'res/cocos2d/pics/orange_edit.png',
@@ -122,10 +122,20 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
         }
       },
 
-      csts: {
         // 1 = single player
         // 2 = 2 players
         // 3 = network, multi players
+      csts: {
+        CV_X: 'X'.charCodeAt(0),
+        CV_O: 'O'.charCodeAt(0),
+
+        P2_COLOR: 'O',
+        P1_COLOR: 'X',
+
+        HUMAN:  1,
+        BOT:    2,
+        NETP:   3,
+
         GAME_MODE: sh.P1_GAME,
         TILE: 8,
         S_OFF: 4,

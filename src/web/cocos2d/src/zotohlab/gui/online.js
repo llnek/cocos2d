@@ -11,40 +11,37 @@
 
 define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
                                   'zotohlab/asterix',
-                                  'zotohlab/asx/xcfg',
                                   'zotohlab/asx/ccsx',
                                   'zotohlab/asx/xlayers',
                                   'zotohlab/asx/xscenes',
                                   'zotohlab/asx/odin'],
-  function (sjs, sh, xcfg, ccsx, layers, scenes, odin) { "use strict";
+  function (sjs, sh, ccsx, layers, scenes, odin) { "use strict";
 
     var events= odin.Events,
+    xcfg= sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
-    undef;
+    unde,
 
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    var BGLayer = layers.XLayer.extend({
+    BGLayer = layers.XLayer.extend({
 
       pkInit: function() {
         var imgUrl= sh.getImagePath('gui.blank'),
         s,
         cw = ccsx.center();
 
+        this._super();
+
         if (!!imgUrl) {
           s= new cc.Sprite(imgUrl);
           s.setPosition(cw);
           this.addItem(s);
         }
-        return this._super();
       }
 
-    });
+    }),
 
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    var UILayer =  layers.XLayer.extend({
+    UILayer =  layers.XLayer.extend({
 
       onOnlineReq: function(uid,pwd) {
         var wsurl = sjs.fmtUrl(sjs.getWebSockProtocol(), "/network/odin/websocket"),
@@ -105,14 +102,14 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
       },
 
       showWaitOthers: function() {
-        this.removeAllItems();
+        this.removeAll();
         var qn= new cc.LabelBMFont(sh.l10n('%waitothers'),
                                    sh.getFontPath('font.TinyBoxBB')),
         cw= ccsx.center(),
         wz= ccsx.screen(),
         t2, menu,
-        s2 = R.map.idx(function(z,n,a) {
-          a[n]= new cc.Sprite(sh.getImagePath('gui.mmenu.back'));
+        s2 = R.map.idx(function(z,n) {
+          return new cc.Sprite(sh.getImagePath('gui.mmenu.back'));
         }, [null,null,null]);
 
         qn.setPosition(cw.x, wz.height * 0.90);
@@ -138,6 +135,8 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
         wz= ccsx.screen(),
         uid,pwd,
         menu;
+
+        this._super();
 
         qn.setPosition(cw.x, wz.height * 0.90);
         qn.setScale(18/72);
@@ -192,7 +191,6 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
           csts.TILE + csts.S_OFF + s2[0].getContentSize().height * 0.5);
         this.addItem(menu);
 
-        return this._super();
       }
 
     });

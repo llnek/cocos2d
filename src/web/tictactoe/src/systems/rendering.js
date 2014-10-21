@@ -13,35 +13,34 @@ define("zotohlab/p/s/rendering", ['zotohlab/p/s/utils',
                                  'zotohlab/p/gnodes',
                                  'cherimoia/skarojs',
                                  'zotohlab/asterix',
-                                 'zotohlab/asx/xcfg',
-                                 'zotohlab/asx/ccsx',
-                                 'ash-js'],
+                                 'zotohlab/asx/ccsx'],
 
-  function (utils, gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     var R = sjs.ramda,
+    xcfg= sh.xcfg,
     csts= xcfg.csts,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    var RenderSystem = Ash.System.extend({
+    var RenderSystem = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.state= options;
       },
 
       removeFromEngine: function(engine) {
-        this.nodeList=null;
+        this.board=null;
       },
 
       addToEngine: function(engine) {
-        this.nodeList = engine.getNodeList(gnodes.BoardNode);
+        this.board = engine.getNodeList(gnodes.BoardNode);
       },
 
       update: function (dt) {
-        var node = this.nodeList.head;
-        if (!!node) {
+        var node = this.board.head;
+        if (this.state.running &&
+            !!node) {
           this.process(node);
         }
       },
@@ -91,9 +90,7 @@ define("zotohlab/p/s/rendering", ['zotohlab/p/s/utils',
 
 
     return RenderSystem;
-
 });
-
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

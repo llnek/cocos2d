@@ -11,12 +11,12 @@
 
 define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
                                'zotohlab/asterix',
-                               'zotohlab/asx/xcfg',
                                'zotohlab/asx/ccsx',
                                'ash-js'],
-  function (sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (sjs, sh, ccsx, Ash) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts = xcfg.csts,
     R= sjs.ramda,
     SEED = 0,
     undef;
@@ -84,16 +84,17 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
 
       create: function() {
         var dummy = new XLive(0,0,this.options);
-        this.lifeSize = { width: ccsx.getScaledWidth(dummy), height: ccsx.getScaledHeight(dummy) } ;
+        this.lifeSize = { width: ccsx.getScaledWidth(dummy),
+                          height: ccsx.getScaledHeight(dummy) } ;
         this.drawLives();
       },
 
       ctor: function(hud, x, y, options) {
         this.options = options || {};
+        this.topLeft= cc.p(x,y);
         this.icons= [];
         this.hud= hud;
         this.curLives= -1;
-        this.topLeft= cc.p(x,y);
         this.reset();
         if ( !sjs.echt(this.options.direction)) {
           this.options.direction = 1;
@@ -122,7 +123,6 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
 
       pkInit: function() {
         this.pkInput();
-        return true;
       },
 
       pkInput: function() {
@@ -183,15 +183,16 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
       },
 
       init: function() {
-        return this._super() ? this.pkInit() : false;
+        this._super();
+        this.pkInit();
       },
 
       ctor: function(options) {
         this.options = options || {};
+        this._super();
         this.lastTag= 0;
         this.lastZix= 0;
         this.atlases= {};
-        this._super();
       }
 
     });
@@ -217,13 +218,12 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
         this.replayBtn = null;
 
         this.hudAtlas= 'hud-pics';
+        this._super();
+
         this.initAtlases();
         this.initIcons();
         this.initLabels();
-
         this.initCtrlBtns();
-
-        return this._super();
       },
 
       getScore: function() { return this.score; },
@@ -457,21 +457,14 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
       },
 
       pkInit: function() {
+        var m= this.options.mode;
+        this._super();
 
-        var m= this.options.mode,
-        rc= this._super();
-
-        if (rc) {
-          if (m === sh.ONLINE_GAME ||
-              m === sh.P2_GAME ||
-              m === sh.P1_GAME) {
-            this.newGame(m);
-          } else {
-            rc=false;
-          }
+        if (m === sh.ONLINE_GAME ||
+            m === sh.P2_GAME ||
+            m === sh.P1_GAME) {
+          this.newGame(m);
         }
-
-        return rc;
       },
 
       operational: function() { return true; },
@@ -493,6 +486,7 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
       },
 
       keys: function() { return this.keyboard; },
+      rtti: function() { return 'GameLayer'; },
 
       ctor: function(options) {
         this._super(options);

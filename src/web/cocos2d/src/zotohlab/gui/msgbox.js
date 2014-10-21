@@ -11,38 +11,35 @@
 
 define("zotohlab/asx/msgbox", ['cherimoia/skarojs',
                               'zotohlab/asterix',
-                              'zotohlab/asx/xcfg',
                               'zotohlab/asx/ccsx',
                               'zotohlab/asx/xlayers',
                               'zotohlab/asx/xscenes'],
-  function (sjs, sh,  xcfg, ccsx, layers, scenes) { "use strict";
+  function (sjs, sh, ccsx, layers, scenes) { "use strict";
 
-    var csts= xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     R = sjs.ramda,
-    undef;
+    undef,
 
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    var BGLayer = layers.XLayer.extend({
+    BGLayer = layers.XLayer.extend({
 
     pkInit: function() {
       var imgUrl= sh.getImagePath('gui.blank'),
       s,
       cw = ccsx.center();
 
+      this._super();
+
       if (!!imgUrl) {
         s= new cc.Sprite(imgUrl);
         s.setPosition(cw);
         this.addItem(s);
       }
-      return this._super();
     }
 
-    });
+    }),
 
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    var UILayer =  layers.XLayer.extend({
+    UILayer =  layers.XLayer.extend({
 
     pkInit: function() {
       var qn= new cc.LabelBMFont(sh.l10n(this.options.msg),
@@ -51,6 +48,8 @@ define("zotohlab/asx/msgbox", ['cherimoia/skarojs',
       cw= ccsx.center(),
       wz= ccsx.screen(),
       t1, menu;
+
+      this._super();
 
       qn.setPosition(cw.x, wz.height * 0.75);
       qn.setScale(18/72);
@@ -70,7 +69,6 @@ define("zotohlab/asx/msgbox", ['cherimoia/skarojs',
         csts.TILE + csts.S_OFF + s1[0].getContentSize().height * 0.5);
       this.addItem(menu);
 
-      return this._super();
     }
 
     });

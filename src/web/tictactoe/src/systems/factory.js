@@ -12,17 +12,15 @@
 define("zotohlab/p/s/factory", ['zotohlab/p/components',
                                'zotohlab/p/gnodes',
                                'cherimoia/skarojs',
-                               'zotohlab/asterix',
-                               'zotohlab/asx/xcfg',
-                               'ash-js'],
+                               'zotohlab/asterix'],
 
-  function (cobjs, gnodes, sjs, sh, xcfg, Ash) { "use strict";
+  function (cobjs, gnodes, sjs, sh) { "use strict";
 
-    var csts= xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    //
     function mapGoalSpace(size) {
       var ROWSPACE = [],
       COLSPACE = [],
@@ -47,8 +45,7 @@ define("zotohlab/p/s/factory", ['zotohlab/p/components',
     }
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    var EntityFactory = Ash.Class.extend({
+    var EntityFactory = sh.Ashley.casDef({
 
       constructor: function(engine) {
         this.engine=engine;
@@ -60,7 +57,7 @@ define("zotohlab/p/s/factory", ['zotohlab/p/components',
                                 csts.CV_Z,
                                 csts.CV_X,
                                 csts.CV_O, goals),
-        ent = new Ash.Entity();
+        ent = sh.Ashley.newEntity();
 
         ent.add(new cobjs.Grid(options.size, options.seed));
         ent.add(new cobjs.Board(options.size, goals));
@@ -75,11 +72,8 @@ define("zotohlab/p/s/factory", ['zotohlab/p/components',
 
     });
 
-
     return EntityFactory;
-
 });
-
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

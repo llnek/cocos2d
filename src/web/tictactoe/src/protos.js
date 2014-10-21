@@ -11,7 +11,6 @@
 
 define("zotohlab/p/protodefs", ['cherimoia/skarojs',
                                'zotohlab/asterix',
-                               'zotohlab/asx/xcfg',
                                'zotohlab/asx/onlineplay',
                                'zotohlab/asx/msgbox',
                                'zotohlab/asx/ynbox',
@@ -19,10 +18,11 @@ define("zotohlab/p/protodefs", ['cherimoia/skarojs',
                                'zotohlab/p/mmenu',
                                'zotohlab/p/arena'],
 
-  function (sjs, sh, xcfg, online,
+  function (sjs, sh, online,
             msgbox, ynbox, splash, mmenu, arena) { "use strict";
 
     var ps= [online, splash, mmenu, msgbox, ynbox, arena],
+    xcfg = sh.xcfg,
     R = sjs.ramda,
     undef,
     protos= sh.protos;

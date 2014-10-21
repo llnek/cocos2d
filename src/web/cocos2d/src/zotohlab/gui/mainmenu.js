@@ -11,18 +11,16 @@
 
 define("zotohlab/asx/xmmenus", ['cherimoia/skarojs',
                                'zotohlab/asterix',
-                               'zotohlab/asx/xcfg',
                                'zotohlab/asx/ccsx',
                                'zotohlab/asx/xlayers'],
-  function (sjs, sh, xcfg, ccsx, layers) { "use strict";
+  function (sjs, sh, ccsx, layers) { "use strict";
 
-    var csts= xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     R = sjs.ramda,
-    undef;
+    undef,
 
-    //////////////////////////////////////////////////////////////////////////////
-    // Main menu.
-    var XMenuBackLayer = layers.XLayer.extend({
+    XMenuBackLayer = layers.XLayer.extend({
 
       pkInit: function() {
 
@@ -31,6 +29,8 @@ define("zotohlab/asx/xmmenus", ['cherimoia/skarojs',
         title,
         wz = ccsx.screen(),
         cw = ccsx.center();
+
+        this._super();
 
         if (!!imgUrl) {
           s= new cc.Sprite(imgUrl);
@@ -45,17 +45,13 @@ define("zotohlab/asx/xmmenus", ['cherimoia/skarojs',
         title.setScale(0.6);
 
         this.addItem(title);
-
-        return this._super();
       },
 
       rtti: function() { return 'XMenuBackLayer'; }
 
-    });
+    }),
 
-    //////////////////////////////////////////////////////////////////////////////
-    // Main menu.
-    var XMenuLayer= layers.XLayer.extend({
+    XMenuLayer= layers.XLayer.extend({
 
       doCtrlBtns: function() {
         var audio = xcfg.assets.sprites['gui.audio'],
@@ -135,6 +131,7 @@ define("zotohlab/asx/xmmenus", ['cherimoia/skarojs',
       }
 
     });
+
 
     XMenuLayer.onShowMenu = function() {
       var dir= cc.director;

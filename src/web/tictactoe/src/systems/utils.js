@@ -11,16 +11,15 @@
 
 define("zotohlab/p/s/utils", ['cherimoia/skarojs',
                              'zotohlab/asterix',
-                             'zotohlab/asx/xcfg',
                              'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, xcfg, ccsx) { "use strict";
+  function (sjs, sh, ccsx) { "use strict";
 
-    var csts= xcfg.csts,
+    var xcfg= sh.xcfg,
+    csts= xcfg.csts,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    //
     return {
 
       //pass in gridview

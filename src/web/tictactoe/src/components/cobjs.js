@@ -11,22 +11,20 @@
 
 define("zotohlab/p/components", ['cherimoia/skarojs',
                                 'zotohlab/asterix',
-                                'zotohlab/asx/xcfg',
                                 'zotohlab/asx/negamax',
-                                'zotohlab/p/c/board',
-                                'ash-js'],
+                                'zotohlab/p/c/board'],
 
-  function (sjs, sh, xcfg, negax, GameBoard, Ash) { "use strict";
+  function (sjs, sh, negax, GameBoard) { "use strict";
 
-    var csts= xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
     lib= {
       GameBoard: GameBoard
     };
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    lib.SmartAlgo = Ash.Class.extend({
+    lib.SmartAlgo = sh.Ashley.casDef({
 
       constructor: function(board) {
         this.algo= new negax.Algo(board);
@@ -35,8 +33,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    lib.Board = Ash.Class.extend({
+    lib.Board = sh.Ashley.casDef({
 
       constructor: function(size, goals) {
         this.GOALSPACE= goals;
@@ -46,8 +43,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    lib.Grid = Ash.Class.extend({
+    lib.Grid = sh.Ashley.casDef({
 
       constructor: function(size,seed) {
         //ignore seed for now
@@ -59,7 +55,6 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
 
 
     //////////////////////////////////////////////////////////////////////////////
-    //
     function mapGridPos (self) {
       // memorize the co-ordinates of each cell on the board, so
       // we know which cell the user has clicked on.
@@ -83,7 +78,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
       }
     }
 
-    lib.GridView = Ash.Class.extend({
+    lib.GridView = sh.Ashley.casDef({
 
       constructor: function(size, layer) {
         var m = xcfg.assets.sprites['gamelevel1.sprites.markers'];
@@ -99,8 +94,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    lib.NetPlay = Ash.Class.extend({
+    lib.NetPlay = sh.Ashley.casDef({
 
       constructor: function() {
         this.event= null;
@@ -110,8 +104,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
 
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    lib.Player = Ash.Class.extend({
+    lib.Player = sh.Ashley.casDef({
 
       constructor: function(category,value,id,color,labels) {
         this.color= color;
@@ -124,8 +117,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    lib.UISelection = Ash.Class.extend({
+    lib.UISelection = sh.Ashley.casDef({
 
       constructor: function() {
         this.cell = -1;
@@ -137,9 +129,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
 
 
     return lib;
-
 });
-
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

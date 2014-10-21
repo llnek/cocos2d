@@ -10,28 +10,29 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 define("zotohlab/p/l10n", ['cherimoia/skarojs',
-                          'zotohlab/asterix',
-                          'zotohlab/asx/xcfg'],
+                          'zotohlab/asterix'],
 
-  function (sjs, sh, xcfg) { "use strict";
+  function (sjs, sh) { "use strict";
+
+    var xcfg = sh.xcfg,
+    undef;
 
     sjs.merge(xcfg.l10nTable, {
 
-    "en" : {
+      "en" : {
 
-      "%whosturn" : "{{who}}'s TURN...",
-      "%whodraw" : "Draw!",
-      "%whowin" : "{{who}} Wins!",
+        "%whosturn" : "{{who}}'s TURN...",
+        "%whodraw" : "Draw!",
+        "%whowin" : "{{who}} Wins!",
 
-      "%p2" : "P2",
-      "%p1" : "P1"
+        "%p2" : "P2",
+        "%p1" : "P1"
 
-    }
+      }
 
     });
 
     return xcfg.l10nTable;
-
 });
 
 
