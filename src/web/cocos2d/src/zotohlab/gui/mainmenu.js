@@ -70,9 +70,9 @@ define("zotohlab/asx/xmmenus", ['cherimoia/skarojs',
         }
 
         audio= new cc.MenuItemToggle(new cc.MenuItemSprite(s1[0], s1[1], s1[2],
-                                                           sjs.noop, this),
+                                                           sjs.NILFUNC, this),
                                      new cc.MenuItemSprite(s2[0], s2[1], s2[2],
-                                                           sjs.noop, this),
+                                                           sjs.NILFUNC, this),
                function(sender) {
                 if (sender.getSelectedIndex() === 0) {
                   sh.toggleSfx(true);

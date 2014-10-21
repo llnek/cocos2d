@@ -54,8 +54,8 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
         this.mode= mode;
       },
 
-      initAtlases: sjs.noop,
-      initIcons: sjs.noop,
+      initAtlases: sjs.NILFUNC,
+      initIcons: sjs.NILFUNC,
 
       initLabels: function() {
         var cw= ccsx.center(),

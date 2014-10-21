@@ -35,7 +35,7 @@ define("zotohlab/p/sysobjs", ['zotohlab/p/components',
     return {
 
       Priorities        : Priorities,
-      EntityFactory     : EntityFactory,
+      Factory     : EntityFactory,
       Collisions        : Collisions,
       Networking        : Networking,
       Rendering         : Rendering,

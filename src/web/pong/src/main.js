@@ -11,20 +11,9 @@
 
 (function () { "use strict";
 
-  function nativeInit() {
-    if (cc.sys.isNative) {
-      var searchPaths = jsb.fileUtils.getSearchPaths();
-      searchPaths.push('script');
-      if (cc.sys.os == cc.sys.OS_IOS ||
-          cc.sys.os == cc.sys.OS_OSX) {
-          searchPaths.push("res");
-          searchPaths.push("src");
-      }
-      jsb.fileUtils.setSearchPaths(searchPaths);
-    }
-  }
-
-  cc.game.onStart= function() { supplicate('zotohlab/p/boot'); };
+  cc.game.onStart= function() {
+    supplicate('zotohlab/p/boot');
+  };
   cc.game.run();
 
 }).call(this);

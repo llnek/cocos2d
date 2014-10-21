@@ -10,40 +10,37 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 define("zotohlab/p/gnodes", ['zotohlab/p/components',
-                            'ash-js'],
+                            'cherimoia/skarojs',
+                            'zotohlab/asterix'],
 
-  function (cobjs, Ash) { "use strict";
+  function (cobjs, sjs, sh) { "use strict";
 
     var png= {},
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    png.BallNode = Ash.Node.create({
+    png.BallNode = sh.Ashley.nodeDef({
       velocity    : cobjs.Velocity,
       ball        : cobjs.Ball
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    png.FauxPaddleNode = Ash.Node.create({
+    png.FauxPaddleNode = sh.Ashley.nodeDef({
       lastpos   : cobjs.Position,
       paddle    : cobjs.Paddle,
       faux      : cobjs.Faux,
       player    : cobjs.Player
     });
 
-    png.PaddleNode = Ash.Node.create({
+    png.PaddleNode = sh.Ashley.nodeDef({
       lastpos   : cobjs.Position,
       motion    : cobjs.Motion,
       paddle    : cobjs.Paddle,
       player    : cobjs.Player
     });
 
-
     return png;
 });
-
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

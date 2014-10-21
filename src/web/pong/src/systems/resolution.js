@@ -12,15 +12,15 @@
 define("zotohlab/p/s/resolution", ['zotohlab/p/gnodes',
                                   'cherimoia/skarojs',
                                   'zotohlab/asterix',
-                                  'zotohlab/asx/xcfg',
-                                  'zotohlab/asx/ccsx',
-                                  'ash-js'],
+                                  'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (gnodes, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
-    Resolution = Ash.System.extend({
+
+    Resolution = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.state = options;
@@ -71,7 +71,7 @@ define("zotohlab/p/s/resolution", ['zotohlab/p/gnodes',
 
       onWin: function(winner) {
         var bnode= this.balls.head;
-        sjs.loggr.debug("winner ====== " + winner);
+        //sjs.loggr.debug("winner ====== " + winner);
         bnode.ball.sprite.setPosition(
           this.state.ball.x,
           this.state.ball.y);

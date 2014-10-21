@@ -11,23 +11,26 @@
 
 define("zotohlab/p/hud", ['cherimoia/skarojs',
                          'zotohlab/asterix',
-                         'zotohlab/asx/xcfg',
                          'zotohlab/asx/ccsx',
                          'zotohlab/asx/xlayers'],
 
-  function(sjs, sh, xcfg, ccsx, layers) { "use strict";
+  function(sjs, sh, ccsx, layers) { "use strict";
 
-    var NILFUNC= function() {},
-    csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
+
     BackLayer = layers.XLayer.extend({
+
       rtti: function() { return 'BackLayer'; },
+
       pkInit: function() {
-        var map = cc.TMXTiledMap.create(sh.getTilesPath('gamelevel1.tiles.arena'));
-        this.addItem(map);
-        return this._super();
-      },
+        this._super();
+        this.addItem(new cc.TMXTiledMap(sh.getTilesPath('gamelevel1.tiles.arena')));
+      }
+
     }),
+
     HUDLayer = layers.XGameHUDLayer.extend({
 
       ctor: function(options) {
@@ -44,7 +47,8 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
         this.mode=mode;
       },
 
-      initParentNode: NILFUNC,
+      initAtlases: sjs.NILFUNC,
+      initIcons: sjs.NILFUNC,
 
       regoPlayers: function(p1,p1ids,p2,p2ids) {
         var cw= ccsx.center(),
@@ -126,9 +130,6 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
 
       initCtrlBtns: function() {
         this._super(28/48, 'cc.ALIGN_TOP');
-      },
-
-      initIcons: function() {
       },
 
       isDone: function() {

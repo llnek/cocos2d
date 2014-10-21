@@ -12,14 +12,15 @@
 define("zotohlab/p/s/collision", ['zotohlab/p/gnodes',
                                  'cherimoia/skarojs',
                                  'zotohlab/asterix',
-                                 'zotohlab/asx/xcfg',
-                                 'zotohlab/asx/ccsx',
-                                 'ash-js'],
-  function (gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+                                 'zotohlab/asx/ccsx'],
 
-    var csts = xcfg.csts,
+  function (gnodes, sjs, sh, ccsx) { "use strict";
+
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
-    CollisionSystem = Ash.System.extend({
+
+    CollisionSystem = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.state = options;

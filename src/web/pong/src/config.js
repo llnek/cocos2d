@@ -23,19 +23,10 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
       color: 'green',
 
       csts: {
-        CV_X: 'X'.charCodeAt(0),
-        CV_O: 'O'.charCodeAt(0),
-
-        P2_COLOR: 'O',
-        P1_COLOR: 'X',
 
         BALL_SPEED: 150, // 25 incremental
         PADDLE_SPEED: 200, // 300
         NUM_POINTS: 4,
-
-        HUMAN:  1,
-        BOT:    2,
-        NETP:   3,
 
         GRID_W: 40,
         GRID_H: 60

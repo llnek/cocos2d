@@ -11,15 +11,15 @@
 
 define("zotohlab/p/s/motion", ['zotohlab/p/gnodes',
                               'cherimoia/skarojs',
-                              'zotohlab/asterix',
-                              'zotohlab/asx/xcfg',
-                              'ash-js'],
+                              'zotohlab/asterix'],
 
-  function (gnodes, sjs,  sh, xcfg, Ash) { "use strict";
+  function (gnodes, sjs,  sh) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
-    MotionCtrlSystem = Ash.System.extend({
+
+    MotionCtrlSystem = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.state = options;
@@ -33,8 +33,9 @@ define("zotohlab/p/s/motion", ['zotohlab/p/gnodes',
         this.nodeList= engine.getNodeList(gnodes.PaddleNode);
       },
 
-      inputKeys: function(node, dt) {
-        if (cc.sys.capabilities['keyboard']) {
+      scanInput: function(node, dt) {
+        if (cc.sys.capabilities['keyboard'] &&
+            !cc.sys.isNative) {
           this.processKeys(node,dt);
         }
         else
@@ -47,7 +48,7 @@ define("zotohlab/p/s/motion", ['zotohlab/p/gnodes',
 
       update: function (dt) {
         for (var node= this.nodeList.head; node; node=node.next) {
-          this.inputKeys(node, dt);
+          this.scanInput(node, dt);
         }
       },
 

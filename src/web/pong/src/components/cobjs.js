@@ -11,30 +11,27 @@
 
 define("zotohlab/p/components", ['cherimoia/skarojs',
                                 'zotohlab/asterix',
-                                'zotohlab/asx/xcfg',
-                                'zotohlab/asx/ccsx',
-                                'ash-js'],
+                                'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, xcfg,  ccsx, Ash) { "use strict";
+  function (sjs, sh, ccsx) { "use strict";
 
-    var csts= xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
     png= {};
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    png.Ball = Ash.Class.extend({
+    png.Ball = sh.Ashley.compDef({
 
       constructor: function(sprite, speed) {
-        this.sprite = sprite;
+        this.ctor(sprite);
         this.speed= speed;
       }
 
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    png.Motion = Ash.Class.extend({
+    png.Motion = sh.Ashley.casDef({
 
       constructor: function() {
         this.right = false;
@@ -45,8 +42,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
 
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    png.Paddle = Ash.Class.extend({
+    png.Paddle = sh.Ashley.compDef({
 
       p1Keys: function() {
         return  ccsx.isPortrait() ? [cc.KEY.left, cc.KEY.right] : [cc.KEY.down, cc.KEY.up];
@@ -63,7 +59,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
 
       constructor: function(sprite, color, speed) {
 
-        this.sprite = sprite;
+        this.ctor(sprite);
         this.color= color;
         this.speed= speed;
 
@@ -77,8 +73,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    png.Player = Ash.Class.extend({
+    png.Player = sh.Ashley.casDef({
 
       constructor: function(category,value,id,color,labels) {
         this.color= color;
@@ -90,8 +85,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    png.Faux= Ash.Class.extend({
+    png.Faux= sh.Ashley.casDef({
 
       constructor: function() {
       }
@@ -99,8 +93,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    png.Position = Ash.Class.extend({
+    png.Position = sh.Ashley.casDef({
 
       constructor: function(lp) {
         this.lastDir= 0;
@@ -110,8 +103,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    png.Velocity = Ash.Class.extend({
+    png.Velocity = sh.Ashley.casDef({
 
       constructor: function(vx,vy) {
         this.vel = {
@@ -121,7 +113,6 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
       }
 
     });
-
 
     return png;
 });

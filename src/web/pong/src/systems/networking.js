@@ -12,15 +12,15 @@
 define("zotohlab/p/s/networking", ['zotohlab/p/gnodes',
                                   'cherimoia/skarojs',
                                   'zotohlab/asterix',
-                                  'zotohlab/asx/xcfg',
-                                  'zotohlab/asx/ccsx',
-                                  'ash-js'],
+                                  'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (gnodes, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
-    NetworkSystem = Ash.System.extend({
+
+    NetworkSystem = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.netQ= options.netQ;

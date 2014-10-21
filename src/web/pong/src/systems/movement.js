@@ -12,17 +12,17 @@
 define("zotohlab/p/s/movements", ['zotohlab/p/gnodes',
                                  'cherimoia/skarojs',
                                  'zotohlab/asterix',
-                                 'zotohlab/asx/xcfg',
                                  'zotohlab/asx/ccsx',
-                                 'zotohlab/asx/odin',
-                                 'ash-js'],
+                                 'zotohlab/asx/odin'],
 
-  function (gnodes, sjs, sh, xcfg, ccsx, odin, Ash) { "use strict";
+  function (gnodes, sjs, sh, ccsx, odin) { "use strict";
 
-    var csts = xcfg.csts,
+    var evts= odin.Events,
+    xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
-    evts= odin.Events,
-    MovementSystem = Ash.System.extend({
+
+    MovementSystem = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.state = options;

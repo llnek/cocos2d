@@ -11,21 +11,20 @@
 
 define("zotohlab/p/s/supervisor", ['cherimoia/skarojs',
                                   'zotohlab/asterix',
-                                  'zotohlab/asx/xcfg',
                                   'zotohlab/asx/ccsx',
-                                  'zotohlab/asx/odin',
-                                  'ash-js'],
+                                  'zotohlab/asx/odin'],
 
-  function (sjs, sh, xcfg, ccsx, odin, Ash) { "use strict";
+  function (sjs, sh, ccsx, odin) { "use strict";
 
-    var csts = xcfg.csts,
-    evts= odin.Events,
+    var evts= odin.Events,
+    xcfg = sh.xcfg,
+    csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-    GameSupervisor = Ash.System.extend({
+
+    GameSupervisor = sh.Ashley.sysDef({
 
       constructor: function(options) {
-        this.factory= options.factory;
         this.state= options;
         this.inited=false;
       },
@@ -42,7 +41,6 @@ define("zotohlab/p/s/supervisor", ['cherimoia/skarojs',
           this.inited=true;
         } else {
         }
-
         return this.state.wsock ? this.state.poked : true;
       },
 
@@ -80,8 +78,8 @@ define("zotohlab/p/s/supervisor", ['cherimoia/skarojs',
         }
         this.state.numpts= csts.NUM_POINTS;
 
-        this.factory.createPaddles(sh.main, this.state);
-        this.factory.createBall(sh.main, this.state);
+        sh.factory.createPaddles(sh.main, this.state);
+        sh.factory.createBall(sh.main, this.state);
 
         if (this.state.wsock) {
           // online play

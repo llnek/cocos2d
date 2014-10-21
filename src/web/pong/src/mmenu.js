@@ -11,18 +11,19 @@
 
 define("zotohlab/p/mmenu", ['cherimoia/skarojs',
                              'zotohlab/asterix',
-                             'zotohlab/asx/xcfg',
                              'zotohlab/asx/ccsx',
                              'zotohlab/asx/xlayers',
                              'zotohlab/asx/xscenes',
                              'zotohlab/asx/xmmenus'],
 
-  function (sjs, sh, xcfg, ccsx,
+  function (sjs, sh, ccsx,
             layers, scenes, mmenus) { "use strict";
 
     var SEED= { ppids: { }, pnum: 1, mode: 0 },
-    csts = xcfg.csts,
+    xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
+
     MainMenuLayer = mmenus.XMenuLayer.extend({
 
       pkInit: function() {
@@ -30,6 +31,8 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
         pobj1, pobj2,
         cw = ccsx.center(),
         wz = ccsx.screen();
+
+        this._super();
 
         this.addItem( ccsx.tmenu1({
           fontPath: sh.getFontPath('font.OogieBoogie'),
@@ -81,8 +84,6 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
         }));
 
         this.doCtrlBtns();
-
-        return this._super();
       }
 
     });
@@ -100,28 +101,24 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
           fac = sh.protos['GameArena'],
           dir=cc.director;
 
-          if (!!scene) {
+          scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
+            dir.runScene( fac.create(msg));
+          });
 
-            scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
-              dir.runScene( fac.create(msg));
-            });
-
-            scene.ebus.on('/mmenu/controls/online', function(topic, msg) {
-              msg.onBack=function() {
-                dir.runScene( sh.protos['MainMenu'].create());
-              };
-              msg.yes=function(wss,pnum,startmsg) {
-                var m= sjs.mergeEx( R.omit(['yes', 'onBack'], msg), {
-                  wsock: wss,
-                  pnum: pnum
-                });
-                m.ppids = startmsg.ppids;
-                dir.runScene( fac.create(m));
-              }
-              dir.runScene( sh.protos['OnlinePlay'].create(msg));
-            });
-
-          }
+          scene.ebus.on('/mmenu/controls/online', function(topic, msg) {
+            msg.onBack=function() {
+              dir.runScene( sh.protos['MainMenu'].create());
+            };
+            msg.yes=function(wss,pnum,startmsg) {
+              var m= sjs.mergeEx( R.omit(['yes', 'onBack'], msg), {
+                wsock: wss,
+                pnum: pnum
+              });
+              m.ppids = startmsg.ppids;
+              dir.runScene( fac.create(m));
+            }
+            dir.runScene( sh.protos['OnlinePlay'].create(msg));
+          });
 
           return scene;
         }

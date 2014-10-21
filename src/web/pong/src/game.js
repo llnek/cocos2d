@@ -13,7 +13,6 @@ define("zotohlab/p/arena", ['zotohlab/p/components',
                            'zotohlab/p/sysobjs',
                            'cherimoia/skarojs',
                            'zotohlab/asterix',
-                           'zotohlab/asx/xcfg',
                            'zotohlab/asx/ccsx',
                            'zotohlab/asx/odin',
                            'zotohlab/asx/xlayers',
@@ -21,13 +20,15 @@ define("zotohlab/p/arena", ['zotohlab/p/components',
                            'zotohlab/asx/xmmenus',
                            'zotohlab/p/hud'],
 
-  function(cobjs, sobjs, sjs, sh, xcfg, ccsx,
+  function(cobjs, sobjs, sjs, sh, ccsx,
            odin, layers, scenes, mmenus, huds) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     evts= odin.Events,
     R= sjs.ramda,
     undef,
+
     GameLayer = layers.XGameLayer.extend({
 
       // get an odin event, first level callback
@@ -98,11 +99,6 @@ define("zotohlab/p/arena", ['zotohlab/p/components',
         }
       },
 
-      getHUD: function() {
-        var rc= this.ptScene.getLayers();
-        return rc['HUD'];
-      },
-
       play: function(newFlag) {
         var pss = sobjs.Priorities,
         p1ids,
@@ -122,9 +118,12 @@ define("zotohlab/p/arena", ['zotohlab/p/components',
         this.cleanSlate();
 
         //
-        this.options.factory= new sobjs.EntityFactory(this.engine);
+        sh.factory= new sobjs.Factory(this.engine);
         this.options.world = this.getEnclosureBox();
         this.options.netQ= [];
+        this.options.running=true;
+        this.options.poked=false;
+
         this.initPlayers();
 
         this.getHUD().regoPlayers(csts.P1_COLOR,p1ids,
@@ -134,8 +133,6 @@ define("zotohlab/p/arena", ['zotohlab/p/components',
           this.options.wsock.unsubscribeAll();
           this.options.wsock.subscribeAll(this.onevent,this);
         }
-        this.options.running=true;
-        this.options.poked=false;
 
         R.forEach(function(z) {
           this.engine.addSystem(new (z[0])(this.options), z[1]);
@@ -214,16 +211,15 @@ define("zotohlab/p/arena", ['zotohlab/p/components',
       doDone: function(p) {
         this.getHUD().drawResult(p);
         this.getHUD().endGame();
-
-        this.removeAllItems();
+        this.removeAll();
         sh.sfxPlay('game_end');
 
         this.options.running=false;
       },
 
       setGameMode: function(mode) {
-        this.getHUD().setGameMode(mode);
         this._super(mode);
+        this.getHUD().setGameMode(mode);
       },
 
       getEnclosureBox: function() {
@@ -248,26 +244,25 @@ define("zotohlab/p/arena", ['zotohlab/p/components',
             huds.HUDLayer
           ]).create(options);
 
-          if (!!scene) {
-            scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
-              mmenus.XMenuLayer.onShowMenu();
-            });
-            scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
-              sh.main.replay();
-            });
+          scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
+            mmenus.XMenuLayer.onShowMenu();
+          });
+          scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
+            sh.main.replay();
+          });
 
-            scene.ebus.on('/game/hud/score/update',function(t,msg) {
-              sh.main.onWinner(msg.color, msg.score);
-            });
+          scene.ebus.on('/game/hud/score/update',function(t,msg) {
+            sh.main.onWinner(msg.color, msg.score);
+          });
 
-            scene.ebus.on('/game/hud/score/sync',function(t,msg) {
-              sh.main.updatePoints(msg.points);
-            });
+          scene.ebus.on('/game/hud/score/sync',function(t,msg) {
+            sh.main.updatePoints(msg.points);
+          });
 
-            scene.ebus.on('/game/hud/end',function(t,msg) {
-              sh.main.doDone(msg.winner);
-            });
-          }
+          scene.ebus.on('/game/hud/end',function(t,msg) {
+            sh.main.doDone(msg.winner);
+          });
+
           return scene;
         }
 
