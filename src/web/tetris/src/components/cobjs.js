@@ -11,19 +11,17 @@
 
 define("zotohlab/p/components", ['cherimoia/skarojs',
                                 'zotohlab/asterix',
-                                'zotohlab/asx/xcfg',
-                                'zotohlab/asx/ccsx',
-                                'ash-js'],
+                                'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (sjs, sh, ccsx) { "use strict";
 
-    var csts= xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
     bks= {};
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    bks.ShapeShell= Ash.Class.extend({
+    bks.ShapeShell= sh.Ashley.casDef({
 
       constructor: function() {
         this.shape=null;
@@ -32,8 +30,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    bks.Shape= Ash.Class.extend({
+    bks.Shape= sh.Ashley.casDef({
 
       constructor: function(x,y,options) {
         this.model= options.model;
@@ -47,8 +44,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    bks.BlockGrid= Ash.Class.extend({
+    bks.BlockGrid= sh.Ashley.casDef({
 
       constructor: function() {
         this.grid=[];
@@ -122,8 +118,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    bks.Dropper= Ash.Class.extend({
+    bks.Dropper= sh.Ashley.casDef({
 
       constructor: function() {
         this.dropSpeed = csts.DROPSPEED;
@@ -181,7 +176,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
 
     //////////////////////////////////////////////////////////////////////////////
     //
-    bks.FilledLines= Ash.Class.extend({
+    bks.FilledLines= sh.Ashley.casDef({
 
       constructor: function() {
         this.lines=[];
@@ -217,8 +212,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     };
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    bks.Motion= Ash.Class.extend({
+    bks.Motion= sh.Ashley.casDef({
 
       constructor: function() {
         this.right=false;
@@ -254,8 +248,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     };
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    bks.Pauser= Ash.Class.extend({
+    bks.Pauser= sh.Ashley.casDef({
 
       constructor: function() {
         this.pauseToClear=false;
@@ -311,8 +304,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     };
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    bks.TileGrid= Ash.Class.extend({
+    bks.TileGrid= sh.Ashley.casDef({
 
       constructor: function() {
         this.tiles=[];
@@ -321,7 +313,6 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
     bks.Shapes = [bks.LineShape,
                      bks.BoxShape,
                      bks.StShape,

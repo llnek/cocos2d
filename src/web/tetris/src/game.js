@@ -11,7 +11,6 @@
 
 define("zotohlab/p/arena", ['cherimoia/skarojs',
                            'zotohlab/asterix',
-                           'zotohlab/asx/xcfg',
                            'zotohlab/asx/ccsx',
                            'zotohlab/asx/xlayers',
                            'zotohlab/asx/xscenes',
@@ -20,20 +19,23 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
                            'zotohlab/p/components',
                            'zotohlab/p/sysobjs'],
 
-  function(sjs, sh, xcfg, ccsx,
-           layers, scenes, mmenus,
-           huds, cobjs, sobjs) { "use strict";
+  function(sjs, sh, ccsx, layers, scenes,
+           mmenus, huds, cobjs, sobjs) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts = xcfg.csts,
     R = sjs.ramda,
     undef,
+
     GameLayer = layers.XGameLayer.extend({
 
       reset: function(newFlag) {
-        if (this.atlasBatch) { this.atlasBatch.removeAllChildren(); } else {
-          var img = cc.textureCache.addImage( sh.getAtlasPath('game-pics'));
-          this.atlasBatch = new cc.SpriteBatchNode(img);
-          this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
+        if (sjs.isEmpty(this.atlases)) {
+          sjs.eachObj(function(v) {
+            v.removeAllChildren();
+          }, this.atlases);
+        } else {
+          this.regoAtlas('game-pics');
         }
         if (newFlag) {
           this.getHUD().resetAsNew();
@@ -47,13 +49,6 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
         this.collisionMap= [];
         this.ops = {};
       },
-
-      getHUD: function() {
-        var rc= this.ptScene.getLayers();
-        return rc['HUD'];
-      },
-
-      getNode: function() { return this.atlasBatch; },
 
       operational: function() {
         return this.options.running;
@@ -69,7 +64,7 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
         this.reset(newFlag);
         this.cleanSlate();
 
-        this.options.factory = new sobjs.EntityFactory(this.engine);
+        sh.factory = new sobjs.Factory(this.engine);
         this.options.running=true;
 
         R.forEach(function(z) {
@@ -101,9 +96,10 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
       'GameArena' : {
 
         create: function(options) {
-          var fac = new scenes.XSceneFactory([ huds.BackLayer, GameLayer, huds.HUDLayer ]),
-          scene= fac.create(options);
-          if (!scene) { return null; }
+          var scene = new scenes.XSceneFactory([
+            huds.BackLayer,
+            GameLayer,
+            huds.HUDLayer ]).create(options);
 
           scene.ebus.on('/game/hud/end', function(topic, msg) {
             sh.main.endGame();

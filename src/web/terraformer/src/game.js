@@ -63,11 +63,10 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
         } else {
 
           R.forEach(function(info) {
-            var b = new cc.SpriteBatchNode(cc.textureCache.addImage( sh.getAtlasPath(info[0])));
+            var b= this.regoAtlas(info[0]);
             if (info[1]) {
               b.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
             }
-            this.regoAtlas(info[0], b);
           }.bind(this), [ ['op-pics', true],
                           ['tr-pics', false],
                           ['explosions', true]]);

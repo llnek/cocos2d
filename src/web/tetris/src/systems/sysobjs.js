@@ -36,7 +36,7 @@ define("zotohlab/p/sysobjs", ['zotohlab/p/components',
     return {
 
       Priorities      : Priorities,
-      EntityFactory   : EntityFactory,
+      Factory   : EntityFactory,
       RowClearance    : RowClearance,
       Generator       : Generator,
       MotionControl   : MotionControl,

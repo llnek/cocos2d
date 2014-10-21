@@ -14,34 +14,34 @@ define("zotohlab/p/s/generator", ['zotohlab/p/components',
                                  "zotohlab/p/s/utils",
                                  'cherimoia/skarojs',
                                  'zotohlab/asterix',
-                                 'zotohlab/asx/xcfg',
-                                 'zotohlab/asx/ccsx',
-                                 'ash-js'],
+                                 'zotohlab/asx/ccsx'],
 
-  function (cobjs, gnodes, utils, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (cobjs, gnodes, utils, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
-    ShapeGenerator = Ash.System.extend({
+
+    ShapeGenerator = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.state = options;
       },
 
       removeFromEngine: function(engine) {
-        this.nodeList=null;
+        this.arena=null;
       },
 
       addToEngine: function(engine) {
-        this.nodeList= engine.getNodeList(gnodes.ArenaNode);
+        this.arena= engine.getNodeList(gnodes.ArenaNode);
         this.nextShapeInfo= this.randNext();
         this.nextShape=null;
       },
 
       update: function (dt) {
-        var node = this.nodeList.head,
-        dp,
-        sl;
+        var node = this.arena.head,
+        dp, sl;
+
         if (this.state.running &&
            !!node) {
           dp = node.dropper;

@@ -14,30 +14,30 @@ define("zotohlab/p/s/movement", ["zotohlab/p/components",
                                 'zotohlab/p/s/utils',
                                 'cherimoia/skarojs',
                                 'zotohlab/asterix',
-                                'zotohlab/asx/xcfg',
-                                'zotohlab/asx/ccsx',
-                                'ash-js'],
+                                'zotohlab/asx/ccsx'],
 
-  function (cobjs, gnodes, utils, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (cobjs, gnodes, utils, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
-    MovementSystem = Ash.System.extend({
+
+    MovementSystem = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.state = options;
       },
 
       removeFromEngine: function(engine) {
-        this.nodeList=null;
+        this.arena=null;
       },
 
       addToEngine: function(engine) {
-        this.nodeList = engine.getNodeList(gnodes.ArenaNode);
+        this.arena = engine.getNodeList(gnodes.ArenaNode);
       },
 
       update: function(dt) {
-        var node= this.nodeList.head;
+        var node= this.arena.head;
         if (this.state.running &&
            !!node) {
 

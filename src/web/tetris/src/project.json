@@ -13,7 +13,7 @@
       "src/tetris/systems/supervisor.js",
       "src/tetris/systems/clearance.js",
       "src/tetris/systems/generator.js",
-      "src/tetris/systems/motion-control.js",
+      "src/tetris/systems/motion.js",
       "src/tetris/systems/movement.js",
       "src/tetris/systems/rendering.js",
       "src/tetris/systems/resolution.js",

@@ -25,31 +25,17 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
       rtti: function() { return 'BackLayer'; },
 
       pkInit: function() {
-
-        R.forEach(function(id) {
-
-          this.regoAtlas(id, new cc.SpriteBatchNode(
-            cc.textureCache.addImage(
-              sh.getAtlasPath(id))
-          ));
-
-        }.bind(this), ['tr-pics', 'back-tiles'] );
-
-        return this._super();
+        this._super();
+        this.regoAtlas('back-tiles');
+        this.regoAtlas('tr-pics');
       }
 
     }),
     HUDLayer = layers.XGameHUDLayer.extend({
 
       initAtlases: function() {
-        var id= 'tr-pics';
-
-        this.regoAtlas(id, new cc.SpriteBatchNode(
-          cc.textureCache.addImage(
-            sh.getAtlasPath(id))
-        ));
-
-        this.hudAtlas= id;
+        this.hudAtlas= 'tr-pics';
+        this.regoAtlas(this.hudAtlas);
       },
 
       initLabels: function() {

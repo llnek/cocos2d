@@ -12,14 +12,15 @@
 define("zotohlab/p/s/utils", ["zotohlab/p/components",
                              'cherimoia/skarojs',
                              'zotohlab/asterix',
-                             'zotohlab/asx/xcfg',
-                             'zotohlab/asx/ccsx',
-                             'ash-js'],
-  function (cobjs, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+                             'zotohlab/asx/ccsx'],
 
-    var csts = xcfg.csts,
+  function (cobjs, sjs, sh, ccsx) { "use strict";
+
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     R = sjs.ramda,
     undef,
+
     SystemUtils = {
 
       reifyShape: function(layer, cmap, shape) {
@@ -82,8 +83,7 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
       findBBox: function(cmap, model, left, top, rID, skipCollide) {
         var skipCollide = skipCollide || false,
         form= model.layout[rID],
-        x,y,
-        r,c,
+        x,y, r,c,
         pt,
         bs=[];
 
@@ -275,7 +275,8 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
       rotateRight: function(layer,cmap,shape) {
         var nF = sjs.xmod(shape.rot+1, shape.model.layout.length),
         bricks,
-        bs= this.findBBox(cmap, shape.model, shape.x, shape.y, nF);
+        bs= this.findBBox(cmap, shape.model,
+                          shape.x, shape.y, nF);
 
         sjs.loggr.debug("shape.rot = " + shape.rot +
                         ", dim = " +
@@ -295,7 +296,8 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
       rotateLeft: function(layer,cmap,shape) {
         var nF = sjs.xmod(shape.rot-1, shape.model.layout.length),
         bricks,
-        bs= this.findBBox(cmap, shape.model, shape.x, shape.y, nF);
+        bs= this.findBBox(cmap, shape.model,
+                          shape.x, shape.y, nF);
 
         sjs.loggr.debug("shape.rot = " + shape.rot +
                         ", dim = " +

@@ -13,36 +13,34 @@ define("zotohlab/p/s/supervisor", ["zotohlab/p/s/utils",
                                   "zotohlab/p/gnodes",
                                   'cherimoia/skarojs',
                                   'zotohlab/asterix',
-                                  'zotohlab/asx/xcfg',
-                                  'zotohlab/asx/ccsx',
-                                  'ash-js'],
+                                  'zotohlab/asx/ccsx'],
 
-  function (utils, gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var csts= xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
-    GameSupervisor = Ash.System.extend({
+
+    GameSupervisor = sh.Ashley.sysDef({
 
       constructor: function(options) {
-        this.factory = options.factory;
         this.state = options;
         this.inited=false;
       },
 
       removeFromEngine: function(engine) {
-        this.nodeList=null;
+        this.arena=null;
       },
 
       addToEngine: function(engine) {
-        engine.addEntity(this.factory.createArena(sh.main, this.state));
-        this.nodeList= engine.getNodeList(gnodes.ArenaNode);
+        engine.addEntity(sh.factory.createArena(sh.main, this.state));
+        this.arena= engine.getNodeList(gnodes.ArenaNode);
       },
 
       update: function (dt) {
-        var node = this.nodeList.head;
+        var node = this.arena.head;
         if (this.state.running &&
             !!node) {
-
           if (! this.inited) {
             this.onceOnly(node);
             this.inited=true;

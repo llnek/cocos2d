@@ -14,15 +14,15 @@ define("zotohlab/p/s/motioncontrol", ['zotohlab/p/components',
                                      'zotohlab/p/s/utils',
                                      'cherimoia/skarojs',
                                      'zotohlab/asterix',
-                                     'zotohlab/asx/xcfg',
-                                     'zotohlab/asx/ccsx',
-                                     'ash-js'],
+                                     'zotohlab/asx/ccsx'],
 
-  function (cobjs, gnodes, utils, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (cobjs, gnodes, utils, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
-    MotionCtrlSystem = Ash.System.extend({
+
+    MotionCtrlSystem = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.throttleWait= csts.THROTTLEWAIT;
@@ -30,11 +30,11 @@ define("zotohlab/p/s/motioncontrol", ['zotohlab/p/components',
       },
 
       removeFromEngine: function(engine) {
-        this.nodeList=null;
+        this.arena=null;
       },
 
       addToEngine: function(engine) {
-        this.nodeList= engine.getNodeList(gnodes.ArenaNode);
+        this.arena= engine.getNodeList(gnodes.ArenaNode);
         this.ops={};
         this.initKeyOps();
       },
@@ -52,7 +52,7 @@ define("zotohlab/p/s/motioncontrol", ['zotohlab/p/components',
       },
 
       update: function (dt) {
-        var node= this.nodeList.head;
+        var node= this.arena.head;
         if (this.state.running &&
            !!node) {
           this.checkInput(node, dt);

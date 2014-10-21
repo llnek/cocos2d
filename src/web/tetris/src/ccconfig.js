@@ -4,7 +4,7 @@ document.ccConfig = {
   chipmunk: true,
   box2d: false,
   showFPS: false,
-  frameRate: 60,
+  frameRate: 30,
 
   id: 'gameArea',
 
@@ -58,7 +58,7 @@ document.ccConfig = {
 '/public/ig/lib/game/tetris/systems/supervisor.js',
 '/public/ig/lib/game/tetris/systems/clearance.js',
 '/public/ig/lib/game/tetris/systems/generator.js',
-'/public/ig/lib/game/tetris/systems/motion-control.js',
+'/public/ig/lib/game/tetris/systems/motion.js',
 '/public/ig/lib/game/tetris/systems/movement.js',
 '/public/ig/lib/game/tetris/systems/rendering.js',
 '/public/ig/lib/game/tetris/systems/resolution.js',

@@ -110,15 +110,18 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
 
       rtti: function() { return "layer-" + Number(SEED++); },
 
-      regoAtlas: function(name, a, z, tag) {
+      regoAtlas: function(name, z, tag) {
         if (! sjs.echt(tag)) {
           tag = ++this.lastTag;
         }
         if (! sjs.echt(z)) {
           z = this.lastZix;
         }
+        var a= new cc.SpriteBatchNode(
+                 cc.textureCache.addImage( sh.getAtlasPath(name)));
         this.addChild(a, z, tag);
         this.atlases[name] = a;
+        return a;
       },
 
       pkInit: function() {

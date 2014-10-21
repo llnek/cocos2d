@@ -13,21 +13,22 @@ define("zotohlab/p/s/factory", ['zotohlab/p/components',
                                'zotohlab/p/s/utils',
                                'cherimoia/skarojs',
                                'zotohlab/asterix',
-                               'zotohlab/asx/xcfg',
-                               'zotohlab/asx/ccsx',
-                               'ash-js'],
-  function (cobjs, utils, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+                               'zotohlab/asx/ccsx'],
 
-    var csts = xcfg.csts,
+  function (cobjs, utils, sjs, sh, ccsx) { "use strict";
+
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
-    EntityFactory = Ash.Class.extend({
+
+    EntityFactory = sh.Ashley.sysDef({
 
       constructor: function(engine) {
         this.engine=engine;
       },
 
       createArena: function(layer, options) {
-        var ent = new Ash.Entity();
+        var ent = sh.Ashley.newEntity();
         ent.add(new cobjs.FilledLines());
         ent.add(new cobjs.ShapeShell());
         ent.add(new cobjs.BlockGrid());
@@ -39,7 +40,7 @@ define("zotohlab/p/s/factory", ['zotohlab/p/components',
       },
 
       createShape: function(layer, options) {
-        var ent = new Ash.Entity();
+        var ent = sh.Ashley.newEntity();
 
         ent.add(this.spawn(layer, options));
         utils.initDropper(options);

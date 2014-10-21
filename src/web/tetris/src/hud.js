@@ -12,33 +12,30 @@
 define("zotohlab/p/hud", ['zotohlab/p/components',
                           'cherimoia/skarojs',
                           'zotohlab/asterix',
-                          'zotohlab/asx/xcfg',
                           'zotohlab/asx/ccsx',
                           'zotohlab/asx/xlayers'],
 
-  function(cobjs, sjs, sh, xcfg, ccsx, layers) { "use strict";
+  function(cobjs, sjs, sh, ccsx, layers) { "use strict";
 
-    var csts= xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-    NILFUNC=function(){},
+
     BackLayer = layers.XLayer.extend({
       rtti: function() { return 'BackLayer'; },
       pkInit: function() {
-        var map = cc.TMXTiledMap.create(sh.getTilesPath('gamelevel1.tiles.arena'));
-        this.addItem(map);
-        return this._super();
+        this._super();
+        this.addItem(cc.TMXTiledMap.create(
+          sh.getTilesPath('gamelevel1.tiles.arena')));
       }
     }),
+
     HUDLayer = layers.XGameHUDLayer.extend({
 
-      initParentNode: function() {
-        var img= cc.textureCache.addImage( sh.getAtlasPath('game-pics'));
-        this.atlasBatch = new cc.SpriteBatchNode(img);
-        this.addChild(this.atlasBatch, this.lastZix, ++this.lastTag);
+      initAtlases: function() {
+        this.regoAtlas('game-pics');
       },
-
-      getNode: function() { return this.atlasBatch; },
 
       initLabels: function() {
         var cw= ccsx.center(),
@@ -95,18 +92,6 @@ define("zotohlab/p/hud", ['zotohlab/p/components',
       updateScore: function(score) {
         this.score += score;
         this.scoreLabel.setString('' + this.score);
-      },
-
-      removeItem: function(n) {
-        if (n instanceof cc.Sprite) { this._super(n); } else {
-          this.removeChild(n);
-        }
-      },
-
-      addItem: function(n) {
-        if (n instanceof cc.Sprite) { this._super(n); } else {
-          this.addChild(n, this.lastZix, ++this.lastTag);
-        }
       },
 
       initCtrlBtns: function(s) {

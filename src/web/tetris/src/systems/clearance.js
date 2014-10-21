@@ -12,30 +12,31 @@
 define("zotohlab/p/s/clearance", ['zotohlab/p/gnodes',
                                  'cherimoia/skarojs',
                                  'zotohlab/asterix',
-                                 'zotohlab/asx/xcfg',
-                                 'zotohlab/asx/ccsx',
-                                 'ash-js' ],
-  function (gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+                                 'zotohlab/asx/ccsx'],
 
-    var csts = xcfg.csts,
+  function (gnodes, sjs, sh, ccsx) { "use strict";
+
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-    RowClearance = Ash.System.extend({
+
+    RowClearance = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.state = options;
       },
 
       removeFromEngine: function(engine) {
-        this.nodeList=null;
+        this.arena=null;
       },
 
       addToEngine: function(engine) {
-        this.nodeList= engine.getNodeList(gnodes.ArenaNode);
+        this.arena= engine.getNodeList(gnodes.ArenaNode);
       },
 
       update: function(dt) {
-        var node = this.nodeList.head;
+        var node = this.arena.head;
         if (this.state.running &&
            !!node) {
           var ps= node.pauser;

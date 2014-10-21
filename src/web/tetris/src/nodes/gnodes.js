@@ -10,16 +10,17 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 define("zotohlab/p/gnodes", ['zotohlab/p/components',
-                            'ash-js'],
+                            'cherimoia/skarojs',
+                            'zotohlab/asterix'],
 
-  function (cobjs, Ash) { "use strict";
+  function (cobjs, sjs, sh) { "use strict";
 
     var bks= {},
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
     //
-    bks.ArenaNode = Ash.Node.create({
+    bks.ArenaNode = sh.Ashley.nodeDef({
 
       collision   : cobjs.TileGrid,
       blocks      : cobjs.BlockGrid,

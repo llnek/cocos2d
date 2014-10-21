@@ -12,26 +12,26 @@
 define("zotohlab/p/s/rendering", ["zotohlab/p/s/utils",
                                  'zotohlab/p/gnodes',
                                  'cherimoia/skarojs',
-                                 'zotohlab/asterix',
-                                 'zotohlab/asx/xcfg',
-                                 'ash-js'],
+                                 'zotohlab/asterix'],
 
-  function (utils, gnodes, sjs, sh, xcfg, Ash) { "use strict";
+  function (utils, gnodes, sjs, sh) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
-    RenderSystem = Ash.System.extend({
+
+    RenderSystem = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.state = options;
       },
 
       removeFromEngine: function(engine) {
-        this.nodeList=null;
+        this.arena=null;
       },
 
       addToEngine: function(engine) {
-        this.nodeList= engine.getNodeList(gnodes.ArenaNode);
+        this.arena= engine.getNodeList(gnodes.ArenaNode);
       },
 
       update: function (dt) {
