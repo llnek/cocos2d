@@ -13,15 +13,15 @@ define('zotohlab/p/s/cannon', ['zotohlab/p/s/utils',
                               'zotohlab/p/gnodes',
                               'cherimoia/skarojs',
                               'zotohlab/asterix',
-                              'zotohlab/asx/xcfg',
-                              'zotohlab/asx/ccsx',
-                              'ash-js'],
+                              'zotohlab/asx/ccsx'],
 
-  function (utils, gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
-    CannonControl = Ash.System.extend({
+
+    CannonControl = sh.Ashley.sysDef({
 
       constructor: function (options) {
         this.state = options;
@@ -63,7 +63,8 @@ define('zotohlab/p/s/cannon', ['zotohlab/p/s/utils',
 
       inputKeys: function() {
         var hit=false;
-        if (cc.sys.capabilities['keyboard']) {
+        if (cc.sys.capabilities['keyboard'] &&
+            !cc.sys.isNative) {
           hit= sh.main.keyPoll(cc.KEY.space);
         }
         else
@@ -83,23 +84,20 @@ define('zotohlab/p/s/cannon', ['zotohlab/p/s/utils',
       },
 
       fireMissile: function(node,dt) {
-        var p= sh.pools[csts.P_MS],
+        var p= sh.pools.Missiles,
         lpr= node.looper,
         sp= node.ship,
         gun= node.cannon,
         pos= sp.sprite.getPosition(),
         top= ccsx.getTop(sp.sprite),
-        tag,
         ent= p.get();
 
         if (!ent) {
-          utils.createMissiles(sh.main,this.state,30);
+          sh.factory.createMissiles(30);
           ent= p.get();
         }
 
-        tag= ent.sprite.getTag();
-        ent.inflate(pos.x, top + 4);
-        sh.pools[csts.P_LMS][tag] = ent;
+        ent.inflate({ x: pos.x, y: top+4 });
 
         lpr.timers[0] = ccsx.createTimer(sh.main, gun.coolDownWindow);
         gun.hasAmmo=false;

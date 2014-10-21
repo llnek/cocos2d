@@ -13,19 +13,18 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/s/utils',
                                   'zotohlab/p/gnodes',
                                   'cherimoia/skarojs',
                                   'zotohlab/asterix',
-                                  'zotohlab/asx/xcfg',
-                                  'zotohlab/asx/ccsx',
-                                  'ash-js'],
+                                  'zotohlab/asx/ccsx'],
 
-  function (utils, gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-    CollisionSystem = Ash.System.extend({
+
+    CollisionSystem = sh.Ashley.sysDef({
 
       constructor: function(options) {
-        this.factory= options.factory;
         this.state= options;
         this.inited=false;
       },
@@ -47,7 +46,7 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/s/utils',
         ship = this.ships.head;
 
         // 1. get rid of all colliding bombs & missiles.
-        this.checkMissilesBombs();
+        //this.checkMissilesBombs();
         // 2. kill aliens
         this.checkMissilesAliens(aliens);
 
@@ -61,69 +60,58 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/s/utils',
         }
       },
 
-      checkMissilesBombs: function() {
-        var mss = sh.pools[csts.P_LMS],
-        bbs = sh.pools[csts.P_LBS],
-        k, a, m, b;
+      collide: function(a, b) {
 
-        R.forEach(function(z) {
-          a= R.keys(mss);
-          b= bbs[z];
-          for (k = 0; k < a.length; ++k) {
-            m = mss[ a[k] ];
-            if ( ccsx.collide0(m.sprite, b.sprite)) {
-              utils.killBomb(b,true);
-              utils.killMissile(m);
-              break;
+      },
+
+      checkMissilesBombs: function() {
+        var mss = sh.pools.Missiles,
+        bbs = sh.pools.Bombs,
+        me=this;
+
+        mss.iter(function(m) {
+          bbs.iter(function(b) {
+            if (b.status &&
+                m.status &&
+                me.collide(m,b)) {
+              b.hurt();
+              m.hurt();
             }
-          }
-        }, R.keys(bbs));
+          });
+        });
       },
 
       checkMissilesAliens: function(node) {
-        var mss = sh.pools[csts.P_LMS],
+        var mss = sh.pools.Missiles,
         sqad= node.aliens,
-        m, n,
-        sz= sqad.aliens.length;
+        me=this;
 
-        R.forEach(function(z) {
-          m = mss[z];
-          for (n=0; n < sz; ++n) {
-            if (sqad.aliens[n].status !== true) {
-              continue;
-            }
-            if (ccsx.collide0(m.sprite, sqad.aliens[n].sprite)) {
-              utils.killMissile(m);
-              utils.killAlien(sqad.aliens[n],true);
-              break;
-            }
+        R.forEach(function(en) {
+          if (en.status) {
+            mss.iter(function(m){
+              if (m.status &&
+                  me.collide(en,m)) {
+                en.hurt();
+                m.hurt();
+              }
+            });
           }
-        }, R.keys(mss));
+        }, sqad.aliens);
       },
 
       checkShipBombs: function(node) {
-        var b, n, ship=node.ship,
-        pos= ship.sprite.getPosition(),
-        x= pos.x,
-        y= pos.y,
-        p= sh.pools[csts.P_LBS],
-        a= R.keys(p);
+        var bbs= sh.pools.Bombs,
+        me= this,
+        ship=node.ship;
 
-        for (n=0; n < a.length; ++n) {
-          b = p[ a[n] ];
-          if (ccsx.collide0(b.sprite, ship.sprite)) {
-            utils.killBomb(b);
-            this.eraseShip(node);
-            break;
+        bbs.iter(function(b) {
+          if (ship.status &&
+              b.status &&
+              me.collide(ship, b)) {
+            ship.hurt();
+            b.hurt();
           }
-        }
-      },
-
-      eraseShip: function(node) {
-        sh.main.removeItem(node.ship.sprite);
-        this.ships.remove(node);
-        this.engine.removeEntity(node.entity);
-        utils.killShip(node.ship,true);
+        });
       },
 
       checkShipAliens: function(anode,snode) {
@@ -131,17 +119,14 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/s/utils',
         ship = snode.ship,
         sz= sqad.aliens.length;
 
-        for (n=0; n < sz; ++n) {
-          if (sqad.aliens[n].status !== true) {
-            continue;
+        R.forEach(function(en) {
+          if (ship.status &&
+              en.status &&
+              me.collide(ship, en)) {
+            ship.hurt();
+            en.hurt();
           }
-          if (ccsx.collide0(ship.sprite,
-                            sqad.aliens[n].sprite)) {
-            utils.killAlien(sqad.aliens[n]);
-            this.eraseShip(snode);
-            break;
-          }
-        }
+        }, sqad.aliens);
       }
 
     });

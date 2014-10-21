@@ -12,15 +12,15 @@
 define('zotohlab/p/s/moveship', ['zotohlab/p/gnodes',
                                 'cherimoia/skarojs',
                                 'zotohlab/asterix',
-                                'zotohlab/asx/xcfg',
-                                'zotohlab/asx/ccsx',
-                                'ash-js'],
+                                'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (gnodes, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
-    MovementShip = Ash.System.extend({
+
+    MovementShip = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.state= options;
@@ -46,7 +46,7 @@ define('zotohlab/p/s/moveship', ['zotohlab/p/gnodes',
         var motion = node.motion,
         sv = node.velocity,
         ship= node.ship,
-        pos = ship.sprite.getPosition(),
+        pos = ship.pos(),
         x= pos.x,
         y= pos.y;
 
@@ -58,7 +58,7 @@ define('zotohlab/p/s/moveship', ['zotohlab/p/gnodes',
           x = pos.x - dt * sv.vel.x;
         }
 
-        ship.sprite.setPosition(x,y);
+        ship.setPos(x,y);
         this.clamp(ship);
 
         motion.right=false;
@@ -67,17 +67,16 @@ define('zotohlab/p/s/moveship', ['zotohlab/p/gnodes',
 
       clamp: function(ship) {
         var sz= ship.sprite.getContentSize(),
-        pos= ship.sprite.getPosition(),
+        pos= ship.pos(),
         wz = ccsx.screen();
 
         if (ccsx.getRight(ship.sprite) > wz.width - csts.TILE) {
-          ship.sprite.setPosition(wz.width - csts.TILE - sz.width * 0.5, pos.y);
+          ship.setPos(wz.width - csts.TILE - sz.width * 0.5, pos.y);
         }
         if (ccsx.getLeft(ship.sprite) < csts.TILE) {
-          ship.sprite.setPosition( csts.TILE + sz.width * 0.5, pos.y);
+          ship.setPos( csts.TILE + sz.width * 0.5, pos.y);
         }
       }
-
 
     });
 

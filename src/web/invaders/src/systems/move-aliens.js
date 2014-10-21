@@ -13,16 +13,16 @@ define('zotohlab/p/s/movealiens', ['zotohlab/p/s/utils',
                                   'zotohlab/p/gnodes',
                                   'cherimoia/skarojs',
                                   'zotohlab/asterix',
-                                  'zotohlab/asx/xcfg',
-                                  'zotohlab/asx/ccsx',
-                                  'ash-js'],
+                                  'zotohlab/asx/ccsx'],
 
-  function (utils, gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-    MovementAliens = Ash.System.extend({
+
+    MovementAliens = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.state= options;
@@ -83,18 +83,16 @@ define('zotohlab/p/s/movealiens', ['zotohlab/p/s/utils',
       },
 
       dropBomb: function(x,y) {
-        var ent = sh.pools[csts.P_BS].get(),
-        tag;
+        var bbs = sh.pools.Bombs,
+        ent = bbs.get();
 
         if (! sjs.echt(ent)) {
-          utils.createBombs(sh.main,this.state,25);
-          ent = sh.pools[csts.P_BS].get();
+          sh.factory.createBombs(25);
+          ent = bbs.get();
         }
-        sjs.loggr.debug('got one bomb from pool');
-        ent.inflate(x,y);
-        tag= ent.sprite.getTag();
 
-        sh.pools[csts.P_LBS][tag] = ent;
+        sjs.loggr.debug('got one bomb from pool');
+        ent.inflate({ x: x, y: y});
       },
 
       maybeShuffleAliens: function(sqad) {

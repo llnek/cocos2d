@@ -13,16 +13,16 @@ define('zotohlab/p/s/movebombs', ['zotohlab/p/s/utils',
                                  'zotohlab/p/gnodes',
                                  'cherimoia/skarojs',
                                  'zotohlab/asterix',
-                                 'zotohlab/asx/xcfg',
-                                 'zotohlab/asx/ccsx',
-                                 'ash-js'],
+                                 'zotohlab/asx/ccsx'],
 
-  function (utils, gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-    MovementBombs = Ash.System.extend({
+
+    MovementBombs = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.state= options;
@@ -35,50 +35,17 @@ define('zotohlab/p/s/movebombs', ['zotohlab/p/s/utils',
       },
 
       update: function (dt) {
-        var aa=[],
+        var bbs= sh.pools.Bombs,
         pos,
         y;
-        sjs.eachObj(function(b) {
-          pos= b.sprite.getPosition();
-          y = pos.y + dt * b.vel.y;
-          b.sprite.setPosition(pos.x, y);
-          if (ccsx.getBottom(b.sprite) <= csts.TILE) {
-            pos= b.sprite.getPosition();
-            b.sprite.setPosition(pos.x,csts.TILE);
-            aa.push(b);
+
+        bbs.iter(function(b) {
+          if (b.status) {
+            pos= b.pos();
+            y = pos.y + dt * b.vel.y;
+            b.setPos(pos.x, y);
           }
-        }, sh.pools[csts.P_LBS]);
-
-        R.forEach(function(b) {
-          this.killBomb(b);
-        }.bind(this), aa);
-      },
-
-      killBomb: function(b) {
-        var p = sh.pools[csts.P_LBS],
-        ent,
-        tag= b.sprite.getTag(),
-        pos = b.sprite.getPosition();
-
-        delete p[tag];
-        sjs.loggr.debug('put back one bomb into pool');
-        sh.pools[csts.P_BS].add(b);
-        // explosion?
-        if (true) {
-          this.showExplosion(pos.x,pos.y);
-        }
-      },
-
-      showExplosion: function(x,y) {
-        var p= sh.pools[csts.P_ES],
-        ent = p.get();
-
-        if (! sjs.echt(ent)) {
-          utils.createExplosions();
-          ent= p.get();
-        }
-        ent.inflate(x,y);
-        sh.sfxPlay('xxx-explode');
+        });
       }
 
     });

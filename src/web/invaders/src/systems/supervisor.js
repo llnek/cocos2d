@@ -13,19 +13,18 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
                                   'zotohlab/p/s/utils',
                                   'cherimoia/skarojs',
                                   'zotohlab/asterix',
-                                  'zotohlab/asx/xcfg',
                                   'zotohlab/asx/ccsx',
-                                  'zotohlab/asx/xpool',
-                                  'ash-js'],
+                                  'zotohlab/asx/xpool'],
 
-  function (cobjs, utils, sjs, sh, xcfg, ccsx, XPool,Ash) { "use strict";
+  function (cobjs, utils, sjs, sh, ccsx, XPool) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
-    GameSupervisor = Ash.System.extend({
+
+    GameSupervisor = sh.Ashley.sysDef({
 
       constructor: function(options) {
-        this.factory= options.factory;
         this.state= options;
         this.inited=false;
       },
@@ -49,7 +48,7 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
       },
 
       spawnAliens: function() {
-        this.factory.createAliens(sh.main,this.state);
+        sh.factory.createAliens();
       },
 
       update: function (dt) {
@@ -61,17 +60,18 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
       },
 
       onceOnly: function() {
-        sh.pools[csts.P_MS] = new XPool({ entityProto: cobjs.Missile });
-        sh.pools[csts.P_BS] = new XPool({ entityProto: cobjs.Bomb });
-        sh.pools[csts.P_ES] = new XPool({ entityProto: cobjs.Explosion });
-        sh.pools[csts.P_LMS] = {};
-        sh.pools[csts.P_LBS] = {};
+        sh.pools.Missiles = new XPool();
+        sh.pools.Bombs = new XPool();
+        sh.pools.Explosions = new XPool();
+
         this.initAlienSize();
         this.initShipSize();
-        utils.createMissiles(sh.main,this.state,50);
-        utils.createBombs(sh.main,this.state,50);
-        utils.createExplosions(sh.main,this.state,50);
-        this.factory.createShip(sh.main,this.state);
+
+        sh.factory.createMissiles(sh.main,this.state,50);
+        sh.factory.createBombs(sh.main,this.state,50);
+        sh.factory.createExplosions(sh.main,this.state,50);
+        sh.factory.createShip(sh.main,this.state);
+
       }
 
     });

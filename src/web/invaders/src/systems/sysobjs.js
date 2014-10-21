@@ -32,7 +32,7 @@ define("zotohlab/p/sysobjs", ['zotohlab/p/s/priorities',
     return {
 
       Priorities          : Priorities,
-      EntityFactory       : EntityFactory,
+      Factory       : EntityFactory,
       SystemUtils         : SystemUtils,
       Supervisor          : Supervisor,
       Motions             : Motions,

@@ -13,36 +13,30 @@ define('zotohlab/p/arena', ['zotohlab/p/s/utils',
                            'zotohlab/p/sysobjs',
                            'cherimoia/skarojs',
                            'zotohlab/asterix',
-                           'zotohlab/asx/xcfg',
                            'zotohlab/asx/ccsx',
                            'zotohlab/asx/xlayers',
                            'zotohlab/asx/xscenes',
                            'zotohlab/asx/xmmenus',
                            'zotohlab/p/hud'],
 
-  function (utils, sobjs, sjs, sh, xcfg, ccsx,
+  function (utils, sobjs, sjs, sh, ccsx,
             layers, scenes, mmenus, huds) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     R = sjs.ramda,
     undef,
+
     GameLayer = layers.XGameLayer.extend({
 
       reset: function(newFlag) {
-        if (this.atlasBatch) { this.atlasBatch.removeAllChildren(); } else {
-          var img = cc.textureCache.addImage( sh.getAtlasPath('game-pics'));
-          this.atlasBatch = new cc.SpriteBatchNode(img);
-          this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
+        if (!sjs.isEmpty(this.atlases)) {
+          sjs.eachObj(function(v){ v.removeAllChildren(); }, this.atlases);
+        } else {
+          this.regoAtlas('game-pics');
         }
         this.getHUD().reset();
       },
-
-      getHUD: function() {
-        var rc= this.ptScene.getLayers();
-        return rc['HUD'];
-      },
-
-      getNode: function() { return this.atlasBatch; },
 
       operational: function() {
         return this.options.running;
@@ -59,7 +53,7 @@ define('zotohlab/p/arena', ['zotohlab/p/s/utils',
         this.reset(newFlag);
         this.cleanSlate();
 
-        this.options.factory=new sobjs.EntityFactory(this.engine);
+        sh.factory=new sobjs.Factory(this.engine);
         this.options.running = true;
 
         R.forEach(function(z) {
@@ -77,7 +71,7 @@ define('zotohlab/p/arena', ['zotohlab/p/s/utils',
       },
 
       spawnPlayer: function() {
-        this.options.factory.createShip(sh.main,this.options);
+        sh.factory.createShip(sh.main,this.options);
       },
 
       onPlayerKilled: function(msg) {
@@ -100,8 +94,8 @@ define('zotohlab/p/arena', ['zotohlab/p/s/utils',
       },
 
       onDone: function() {
-        this.reset();
         this.options.running=false;
+        this.reset();
         this.getHUD().enableReplay();
       }
 
@@ -112,25 +106,24 @@ define('zotohlab/p/arena', ['zotohlab/p/s/utils',
       'GameArena' : {
 
         create: function(options) {
-          var fac = new scenes.XSceneFactory([
+          var scene = new scenes.XSceneFactory([
             huds.BackLayer,
             GameLayer,
-            huds.HUDLayer ]),
-          scene= fac.create(options);
-          if (!!scene) {
-            scene.ebus.on('/game/objects/players/earnscore', function(topic, msg) {
-              sh.main.onEarnScore(msg);
-            });
-            scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
-              mmenus.XMenuLayer.onShowMenu();
-            });
-            scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
-              sh.main.replay();
-            });
-            scene.ebus.on('/game/objects/players/killed', function(topic, msg) {
-              sh.main.onPlayerKilled(msg);
-            });
-          }
+            huds.HUDLayer ]).create(options);
+
+          scene.ebus.on('/game/objects/players/earnscore', function(topic, msg) {
+            sh.main.onEarnScore(msg);
+          });
+          scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
+            mmenus.XMenuLayer.onShowMenu();
+          });
+          scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
+            sh.main.replay();
+          });
+          scene.ebus.on('/game/objects/players/killed', function(topic, msg) {
+            sh.main.onPlayerKilled(msg);
+          });
+
           return scene;
         }
       }

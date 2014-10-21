@@ -13,16 +13,16 @@ define('zotohlab/p/s/movemissiles', ['zotohlab/p/s/utils',
                                     'zotohlab/p/gnodes',
                                     'cherimoia/skarojs',
                                     'zotohlab/asterix',
-                                    'zotohlab/asx/xcfg',
-                                    'zotohlab/asx/ccsx',
-                                    'ash-js'],
+                                    'zotohlab/asx/ccsx'],
 
-  function (utils, gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-    MovementMissiles = Ash.System.extend({
+
+    MovementMissiles = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.state= options;
@@ -35,51 +35,15 @@ define('zotohlab/p/s/movemissiles', ['zotohlab/p/s/utils',
       },
 
       update: function (dt) {
-        var h = ccsx.screen().height - csts.TILE,
-        aa=[],
+        var mss= sh.pools.Missiles,
         pos,
         y;
-        sjs.eachObj(function(b) {
-          pos= b.sprite.getPosition();
+
+        mss.iter(function(m) {
+          pos= b.pos();
           y = pos.y + dt * b.vel.y;
-          b.sprite.setPosition(pos.x, y);
-          if (ccsx.getTop(b.sprite) >= h) {
-            pos= b.sprite.getPosition();
-            b.sprite.setPosition(pos.x,h);
-            aa.push(b);
-          }
-        }, sh.pools[csts.P_LMS]);
-
-        R.forEach(function(b) {
-          this.killMissile(b);
-        }.bind(this), aa);
-      },
-
-      killMissile: function(b) {
-        var p = sh.pools[csts.P_LMS],
-        ent,
-        tag= b.sprite.getTag(),
-        pos = b.sprite.getPosition();
-
-        delete p[tag];
-        sjs.loggr.debug('put back one missile into pool');
-        sh.pools[csts.P_MS].add(b);
-        // explosion?
-        if (false) {
-          this.showExplosion(pos.x,pos.y);
-        }
-      },
-
-      showExplosion: function(x,y) {
-        var p= sh.pools[csts.P_ES],
-        ent = p.get();
-
-        if (! sjs.echt(ent)) {
-          utils.createExplosions();
-          ent= p.get();
-        }
-        ent.inflate(x,y);
-        sh.sfxPlay('xxx-explode');
+          b.setPos(pos.x, y);
+        });
       }
 
     });

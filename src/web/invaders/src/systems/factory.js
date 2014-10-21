@@ -12,18 +12,102 @@
 define('zotohlab/p/s/factory', ['zotohlab/p/components',
                                'cherimoia/skarojs',
                                'zotohlab/asterix',
-                               'zotohlab/asx/xcfg',
-                               'zotohlab/asx/ccsx',
-                               'ash-js'],
+                               'zotohlab/asx/ccsx'],
 
-  function (cobjs, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (cobjs, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
-    EntityFactory = Ash.Class.extend({
+
+    EntityFactory = sh.Ashley.casDef({
 
       constructor: function(engine) {
         this.engine=engine;
+      },
+
+      createMissiles: function(count) {
+        sh.pools.Missiles.preSet(function() {
+          var sp = ccsx.createSpriteFrame('missile.png');
+          sp.setVisible(false);
+          sh.main.addAtlasItem('game-pics', sp);
+          return new cobjs.Missile(sp);
+        }, count || 36);
+      },
+
+      createExplosions: function(count) {
+        sh.pools.Explosions.preSet(function() {
+          var sp = ccsx.createSpriteFrame('boom_0.png');
+          sp.setVisible(false);
+          sh.main.addAtlasItem('game-pics', sp);
+          return new cobjs.Explosion(sp);
+        }, count || 24);
+      },
+
+      createBombs: function(count) {
+        sh.pools.Bombs.preSet(function() {
+          var sp = ccsx.createSpriteFrame('bomb.png');
+          sp.setVisible(false);
+          sh.main.addAtlasItem('game-pics', sp);
+          return new cobjs.Bomb(sp);
+        }, count || 24);
+      },
+
+      killBomb: function(bb,explode) {
+        sh.fireEvent('/game/objects/players/earnscore', {score: bb.value});
+        var pos= bb.sprite.getPosition(),
+        tag= bb.sprite.getTag(),
+        x= pos.x,
+        y= pos.y,
+        p = sh.pools[csts.P_LBS];
+
+        delete p[tag];
+        sh.pools[csts.P_BS].add(bb);
+
+        if (explode) {
+        }
+      },
+
+      killMissile: function(mm,explode) {
+        var pos= mm.sprite.getPosition(),
+        tag= mm.sprite.getTag(),
+        x= pos.x,
+        y= pos.y,
+        p = sh.pools[csts.P_LMS];
+
+        delete p[tag];
+        sh.pools[csts.P_MS].add(mm);
+
+        if (explode) {
+        }
+      },
+
+      killShip: function(ship, explode) {
+        sh.fireEvent('/game/objects/players/killed');
+        sh.sfxPlay('xxx-explode');
+      },
+
+      killAlien: function(alien,explode) {
+        sh.fireEvent('/game/objects/players/earnscore', {score: alien.value});
+        alien.sprite.setVisible(false);
+        alien.sprite.setPosition(0,0);
+        alien.status=false;
+        sh.sfxPlay('xxx-explode');
+      },
+
+      resetPools: function() {
+        sh.pools[csts.P_MS].drain();
+        sh.pools[csts.P_BS].drain();
+        sh.pools[csts.P_ES].drain();
+        sh.pools[csts.P_LMS] = {};
+        sh.pools[csts.P_LBS] = {};
+      }
+
+      eraseShip: function(node) {
+        sh.main.removeItem(node.ship.sprite);
+        this.ships.remove(node);
+        this.engine.removeEntity(node.entity);
+        utils.killShip(node.ship,true);
       },
 
       getRankInfo: function(rank) {
@@ -39,14 +123,15 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         }
       },
 
-      createAliens: function(layer, options) {
-        var stepx= options.alienSize.width /3,
-        az= options.alienSize,
+      createAliens: function() {
+        var stepx= this.state.alienSize.width /3,
+        az= this.state.alienSize,
         cw= ccsx.center(),
-        info,aliens=[],
+        info,
+        aliens=[],
         n, x,y,
         aa, row = 0,
-        ent= new Ash.Entity();
+        ent= sh.Ashley.newEntity();
 
         for (n=0; n < csts.CELLS; ++n) {
           if (n % csts.COLS === 0) {
@@ -55,14 +140,13 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
             row += 1;
           }
           info= this.getRankInfo(row);
-          aa= new cc.Sprite();
-          aa.initWithSpriteFrameName(info[1][0]);
+          aa= ccsx.createSpriteFrame(info[1][0]);
           aa.setPosition( x + sh.hw(az), y - sh.hh(az));
           aa.runAction(new cc.RepeatForever(
             new cc.Animate( new cc.Animation(
                 [ccsx.getSpriteFrame(info[1][0]),
                  ccsx.getSpriteFrame(info[1][1]) ], 1))));
-          layer.addItem(aa);
+          sh.main.addAtlasItem('game-pics', aa);
           aliens.push(new cobjs.Alien(aa,info[0],row));
           x += az.width + csts.OFF_X;
         }
@@ -73,15 +157,15 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         this.engine.addEntity(ent);
       },
 
-      createShip: function(layer,options) {
-        var ent= new Ash.Entity(),
+      createShip: function() {
+        var ent= new sh.Ashley.newEntity(),
+        y = this.state.shipSize.height +
+            5 * csts.TILE,
         x = ccsx.center().x,
-        y = 5 * csts.TILE + options.shipSize.height,
-        s= new cc.Sprite();
-
-        s.initWithSpriteFrameName('ship_1.png');
+        s= ccsx.createSpriteFrame('ship_1.png');
         s.setPosition(x,y);
-        layer.addItem(s);
+        sh.main.addAtlasItem('game-pics', s);
+
         ent.add(new cobjs.Ship(s, ['ship_1.png', 'ship_0.png']));
         ent.add(new cobjs.Velocity(150,0));
         ent.add(new cobjs.Looper(1));
