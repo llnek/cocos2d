@@ -12,15 +12,15 @@
 define('zotohlab/p/s/movepaddle', ['zotohlab/p/gnodes',
                                 'cherimoia/skarojs',
                                 'zotohlab/asterix',
-                                'zotohlab/asx/xcfg',
-                                'zotohlab/asx/ccsx',
-                                'ash-js'],
+                                'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (gnodes, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
-    MovementPaddle = Ash.System.extend({
+
+    MovementPaddle = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.state= options;
@@ -69,7 +69,6 @@ define('zotohlab/p/s/movepaddle', ['zotohlab/p/gnodes',
       clamp: function(pad) {
         var sz= pad.sprite.getContentSize(),
         pos= pad.sprite.getPosition(),
-        csts = sh.xcfg.csts,
         wz = ccsx.screen();
 
         if (ccsx.getRight(pad.sprite) > wz.width - csts.TILE) {

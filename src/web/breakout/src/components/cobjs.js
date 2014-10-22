@@ -11,29 +11,26 @@
 
 define('zotohlab/p/components', ['cherimoia/skarojs',
                                 'zotohlab/asterix',
-                                'zotohlab/asx/xcfg',
-                                'zotohlab/asx/ccsx',
-                                'ash-js'],
+                                'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
     bko= {};
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    bko.Ball = Ash.Class.extend({
+    bko.Ball = sh.Ashley.compDef({
 
       constructor: function(sprite) {
-        this.sprite=sprite;
+        this.ctor(sprite);
       }
 
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    bko.BrickFence = Ash.Class.extend({
+    bko.BrickFence = sh.Ashley.casDef({
 
       constructor: function(bricks) {
         this.bricks=bricks;
@@ -41,22 +38,18 @@ define('zotohlab/p/components', ['cherimoia/skarojs',
 
     });
 
-
     //
-    bko.Brick = Ash.Class.extend({
+    bko.Brick = sh.Ashley.compDef({
 
       constructor: function(sprite,value,color) {
-        this.sprite=sprite;
-        this.value=value;
+        this.ctor(sprite, 1, value);
         this.color=color;
-        this.status=true;
       }
 
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    bko.Motion = Ash.Class.extend({
+    bko.Motion = sh.Ashley.casDef({
 
       constructor: function() {
         this.right = false;
@@ -66,18 +59,16 @@ define('zotohlab/p/components', ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    bko.Paddle = Ash.Class.extend({
+    bko.Paddle = sh.Ashley.compDef({
 
       constructor: function(sprite) {
-        this.sprite=sprite;
+        this.ctor(sprite);
       }
 
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    bko.Velocity = Ash.Class.extend({
+    bko.Velocity = sh.Ashley.casDef({
 
       constructor: function(vx,vy) {
         this.vel = {

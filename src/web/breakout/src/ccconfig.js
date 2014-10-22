@@ -4,7 +4,7 @@ document.ccConfig = {
   chipmunk: true,
   box2d: false,
   showFPS: false,
-  frameRate: 60,
+  frameRate: 30,
 
   id: 'gameArea',
 

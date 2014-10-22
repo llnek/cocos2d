@@ -12,32 +12,26 @@
 define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
                            'cherimoia/skarojs',
                            'zotohlab/asterix',
-                           'zotohlab/asx/xcfg',
                            'zotohlab/asx/ccsx',
                            'zotohlab/asx/xlayers',
                            'zotohlab/asx/xscenes',
                            'zotohlab/asx/xmmenus',
                            'zotohlab/p/hud'],
 
-  function(sobjs, sjs, sh, xcfg, ccsx, layers, scenes, mmenus, huds) { "use strict";
+  function(sobjs, sjs, sh, ccsx, layers, scenes, mmenus, huds) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     R = sjs.ramda,
     undef,
+
     GameLayer = layers.XGameLayer.extend({
 
-      getHUD: function() {
-        var rc= this.ptScene.getLayers();
-        return rc['HUD'];
-      },
-
-      getNode: function() { return this.atlasBatch; },
-
       reset: function(newFlag) {
-        if (this.atlasBatch) { this.atlasBatch.removeAllChildren(); } else {
-          var img = cc.textureCache.addImage( sh.getAtlasPath('game-pics'));
-          this.atlasBatch = new cc.SpriteBatchNode(img);
-          this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
+        if (!sjs.isEmpty(this.atlases)) {
+          sjs.eachObj(function(v) { v.removeAllChildren(); }, this.atlases);
+        } else {
+          this.regoAtlas('game-pics');
         }
         if (newFlag) {
           this.getHUD().resetAsNew();
@@ -51,11 +45,7 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
       },
 
       spawnPlayer: function() {
-        this.options.factory.createPaddle(sh.main,this.options);
-      },
-
-      spawnBall: function() {
-        this.options.factory.createBall(sh.main,this.options);
+        sh.factory.bornPaddle();
       },
 
       getEnclosureBox: function() {
@@ -72,7 +62,6 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
           this.onDone();
         } else {
           this.spawnPlayer();
-          this.spawnBall();
         }
       },
 
@@ -93,7 +82,8 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
         this.reset(newFlag);
         this.cleanSlate();
 
-        this.options.factory= new sobjs.EntityFactory(this.engine);
+        sh.factory= new sobjs.Factory(this.engine,
+                                     this.options);
         this.options.world= this.getEnclosureBox();
         this.options.running=true;
 
@@ -125,25 +115,26 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
 
         create: function(options) {
           var scene = new scenes.XSceneFactory([
-            huds.BackLayer, GameLayer, huds.HUDLayer
+            huds.BackLayer,
+            GameLayer,
+            huds.HUDLayer
           ]).create(options);
-          if (!!scene) {
-            scene.ebus.on('/game/objects/bricks/killed', function(topic, msg) {
-              sh.main.onBrickKilled(msg);
-            });
-            scene.ebus.on('/game/objects/players/killed', function(topic, msg) {
-              sh.main.onPlayerKilled(msg);
-            });
-            scene.ebus.on('/game/objects/players/earnscore', function(topic, msg) {
-              sh.main.onEarnScore(msg);
-            });
-            scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
-              mmenus.XMenuLayer.onShowMenu();
-            });
-            scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
-              sh.main.replay();
-            });
-          }
+
+          scene.ebus.on('/game/objects/bricks/killed', function(topic, msg) {
+            sh.main.onBrickKilled(msg);
+          });
+          scene.ebus.on('/game/objects/players/killed', function(topic, msg) {
+            sh.main.onPlayerKilled(msg);
+          });
+          scene.ebus.on('/game/objects/players/earnscore', function(topic, msg) {
+            sh.main.onEarnScore(msg);
+          });
+          scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
+            mmenus.XMenuLayer.onShowMenu();
+          });
+          scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
+            sh.main.replay();
+          });
 
           return scene;
         }

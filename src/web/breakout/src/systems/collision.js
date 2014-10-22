@@ -12,15 +12,15 @@
 define('zotohlab/p/s/collisions', ['zotohlab/p/gnodes',
                                   'cherimoia/skarojs',
                                   'zotohlab/asterix',
-                                  'zotohlab/asx/xcfg',
-                                  'zotohlab/asx/ccsx',
-                                  'ash-js'],
+                                  'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (gnodes, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.xcsts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.xcsts,
     undef,
-    CollisionSystem = Ash.System.extend({
+
+    CollisionSystem = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.state = options;
@@ -60,12 +60,6 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/gnodes',
         var pos= bnode.ball.sprite.getPosition();
 
         if (pos.y < ccsx.getBottom(pnode.paddle.sprite)) {
-          sh.main.removeItem(pnode.paddle.sprite);
-          sh.main.removeItem(bnode.ball.sprite);
-          this.balls.remove(bnode);
-          this.engine.removeEntity(bnode.entity);
-          this.paddles.remove(pnode);
-          this.engine.removeEntity(pnode.entity);
           sh.fireEvent('/game/objects/players/killed');
           return true;
         } else {

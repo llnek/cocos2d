@@ -11,18 +11,17 @@
 
 define('zotohlab/p/s/supervisor', ['cherimoia/skarojs',
                                   'zotohlab/asterix',
-                                  'zotohlab/asx/xcfg',
-                                  'zotohlab/asx/ccsx',
-                                  'ash-js'],
+                                  'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
-    GameSupervisor = Ash.System.extend({
+
+    GameSupervisor = sh.Ashley.sysDef({
 
       constructor: function(options) {
-        this.factory= options.factory;
         this.state= options;
         this.inited=false;
       },
@@ -41,23 +40,19 @@ define('zotohlab/p/s/supervisor', ['cherimoia/skarojs',
       },
 
       initBrickSize: function() {
-        var s= new cc.Sprite();
-        s.initWithSpriteFrameName('red_candy.png');
-        this.state.candySize= s.getContentSize();
+        this.state.candySize= ccsx.createSpriteFrame('red_candy.png').getContentSize();
       },
 
       initBallSize: function() {
-        var s= new cc.Sprite();
-        s.initWithSpriteFrameName('ball.png');
-        this.state.ballSize= s.getContentSize();
+        this.state.ballSize= ccsx.createSpriteFrame('ball.png').getContentSize();
       },
 
       onceOnly: function() {
         this.initBrickSize();
         this.initBallSize();
-        this.factory.createBricks(sh.main,this.state);
-        this.factory.createPaddle(sh.main,this.state);
-        this.factory.createBall(sh.main,this.state);
+        sh.factory.createBricks();
+        sh.factory.createPaddle();
+        sh.factory.createBall();
       }
 
     });

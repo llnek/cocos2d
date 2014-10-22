@@ -10,23 +10,25 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 define('zotohlab/p/s/factory', ['zotohlab/p/components',
+                               'zotohlab/p/gnodes',
                                'cherimoia/skarojs',
                                'zotohlab/asterix',
-                               'zotohlab/asx/xcfg',
-                               'zotohlab/asx/ccsx',
-                               'ash-js'],
+                               'zotohlab/asx/ccsx'],
 
-  function (cobjs, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (cobjs, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
-    EntityFactory = Ash.Class.extend({
 
-      constructor: function(engine) {
+    EntityFactory = sh.Ashley.casDef({
+
+      constructor: function(engine, options) {
         this.engine=engine;
+        this.state= options;
       },
 
-      createBricks: function(layer, options) {
+      createBricks: function() {
         var wz = ccsx.screen(),
         cw= ccsx.center(),
         candies= csts.CANDIES,
@@ -37,50 +39,66 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         y= wz.height - csts.TOP_ROW * csts.TILE ;
 
         for (r=0; r < csts.ROWS; ++r) {
-          x= csts.TILE + csts.LEFT_OFF + sh.hw(options.candySize);
+          x= csts.TILE + csts.LEFT_OFF + sh.hw(this.state.candySize);
           for (c=0; c < csts.COLS; ++c) {
-            sp= new cc.Sprite();
-            sp.initWithSpriteFrameName( candies[cs[r]] + ".png");
-            sp.setPosition(x,y);
-            layer.addItem(sp);
-            bks.push(new cobjs.Brick(sp,10));
-            x += options.candySize.width + 1;
+            sp= ccsx.createSpriteFrame( candies[cs[r]] + ".png");
+            sh.main.addAtlasItem('game-pics', sp);
+            sp = new cobjs.Brick(sp,10);
+            bks.push(sp);
+            sp.inflate({ x: x, y: y});
+            x += this.state.candySize.width + 1;
           }
-          y -= options.candySize.height - 2;
+          y -= this.state.candySize.height - 2;
         }
 
-        ent= new Ash.Entity();
+        ent= sh.Ashley.newEntity();
         ent.add(new cobjs.BrickFence(bks));
         this.engine.addEntity(ent);
       },
 
-      createPaddle: function(layer,options) {
+      bornPaddle: function() {
+        var p= this.engine.getNodeList(gnodes.PaddleMotionNode).head,
+        cw= ccsx.center(),
+        b= this.engine.getNodeList(gnodes.BallMotionNode).head;
+
+        p.paddle.inflate();
+
+        b.ball.inflate({ x: cw.x, y: 250});
+        b.velocity.vel.vy = 200 * sjs.randSign();
+        b.velocity.vel.vx = 200 * sjs.randSign();
+      },
+
+      createPaddle: function() {
         var cw= ccsx.center(),
         ent,
-        sp= new cc.Sprite();
+        sp;
 
-        sp.initWithSpriteFrameName('paddle.png');
-        sp.setPosition(cw.x, 56);
-        layer.addItem(sp);
-        ent= new Ash.Entity();
-        ent.add(new cobjs.Paddle(sp));
+        sp = ccsx.createSpriteFrame('paddle.png');
+        sh.main.addAtlasItem('game-pics',sp);
+        sp= new cobjs.Paddle(sp);
+        sp.inflate({ x: cw.x, y: 56});
+        ent= sh.Ashley.newEntity();
+        ent.add(sp);
         ent.add(new cobjs.Motion());
         ent.add(new cobjs.Velocity(150,0));
         this.engine.addEntity(ent);
       },
 
-      createBall: function(layer,options) {
+      createBall: function() {
         var vy = 200 * sjs.randSign(),
         vx = 200 * sjs.randSign(),
         cw= ccsx.center(),
         ent,
-        sp= new cc.Sprite();
+        sp;
 
-        sp.initWithSpriteFrameName('ball.png');
-        sp.setPosition(cw.x, 250);
-        layer.addItem(sp);
-        ent= new Ash.Entity();
-        ent.add(new cobjs.Ball(sp,200));
+        sp = ccsx.createSpriteFrame('ball.png');
+        sh.main.addAtlasItem('game-pics', sp);
+        sp= new cobjs.Ball(sp,200);
+        sp.inflate({ x: cw.x, y: 250});
+
+        ent= sh.Ashley.newEntity();
+        ent.add(sp);
+
         ent.add(new cobjs.Velocity(vx,vy));
         this.engine.addEntity(ent);
       }

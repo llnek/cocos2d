@@ -11,33 +11,29 @@
 
 define('zotohlab/p/gnodes', ['zotohlab/p/components',
                             'cherimoia/skarojs',
-                            'zotohlab/asterix',
-                            'zotohlab/asx/xcfg',
-                            'ash-js'],
+                            'zotohlab/asterix'],
 
-  function (cobjs, sjs, sh, xcfg, Ash) { "use strict";
+  function (cobjs, sjs, sh) { "use strict";
 
-    var csts= xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
     bko= {};
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    bko.BricksNode = Ash.Node.create({
+    bko.BricksNode = sh.Ashley.nodeDef({
       fence   : cobjs.BrickFence
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    bko.PaddleMotionNode = Ash.Node.create({
+    bko.PaddleMotionNode = sh.Ashley.nodeDef({
       velocity    : cobjs.Velocity,
       motion      : cobjs.Motion,
       paddle      : cobjs.Paddle
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    bko.BallMotionNode = Ash.Node.create({
+    bko.BallMotionNode = sh.Ashley.nodeDef({
       velocity    : cobjs.Velocity,
       ball        : cobjs.Ball
     });

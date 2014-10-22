@@ -23,7 +23,7 @@ define('zotohlab/p/sysobjs', ['zotohlab/p/s/collisions',
     return {
 
       Collisions        : Collisions,
-      EntityFactory     : EntityFactory,
+      Factory     : EntityFactory,
       Motions           : Motions,
       MovementBall      : MovementBall,
       MovementPaddle    : MovementPaddle,
