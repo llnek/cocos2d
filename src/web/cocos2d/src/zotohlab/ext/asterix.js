@@ -157,7 +157,7 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
       },
 
       getLevelCfg: function(level) {
-        return this.xcfg.levels['gamelevel' + level]['cfg'],
+        return this.xcfg.levels['gamelevel' + level]['cfg'];
       },
 
       // tests if 2 rectangles intersect.
@@ -169,10 +169,10 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
       },
 
       outOfBound: function(a,B) {
-        return a.right > B.right    ||
-               a.bottom < B.bottom  ||
-               a.left < B.left      ||
-               a.top > B.top;
+        return a.left > B.right    ||
+               a.top < B.bottom  ||
+               a.right < B.left      ||
+               a.bottom > B.top;
       },
 
       calcXY: function(angle,hypot) {

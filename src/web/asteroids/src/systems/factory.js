@@ -78,7 +78,7 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         wz = ccsx.screen(),
         cw = ccsx.center(),
         test=true,
-        sp,aa,x,y,r,
+        sp,aa,x,y,r;
 
         while (test) {
           r= { left: sjs.rand(wz.width),
@@ -125,8 +125,8 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
             r.right = r.left + wd;
             if ( !sh.outOfBound(r,B)) {
               deg = sjs.rand(360);
-              x = r.left + w/2;
-              y = r.top - h/2;
+              x = r.left + wd/2;
+              y = r.top - ht/2;
               sp= ccsx.createSpriteFrame(cfg[rank][1]);
               sp.setRotation(deg);
               sh.main.addAtlasItem('game-pics', sp);
@@ -148,17 +148,17 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
       maybeOverlap: function (ship) {
         var rc= R.some(function(z) {
           return z.status ? sh.isIntersect(ship, ccsx.bbox4(z.sprite)) : false;
-        }, sh.pools.Astro1.pool);
+        }, sh.pools.Astros1.pool);
         if (rc) { return true; }
 
         rc= R.some(function(z) {
           return z.status ? sh.isIntersect(ship, ccsx.bbox4(z.sprite)) : false;
-        }, sh.pools.Astro2.pool);
+        }, sh.pools.Astros2.pool);
         if (rc) { return true; }
 
         rc= R.some(function(z) {
           return z.status ? sh.isIntersect(ship, ccsx.bbox4(z.sprite)) : false;
-        }, sh.pools.Astro3.pool);
+        }, sh.pools.Astros3.pool);
         if (rc) { return true; }
 
         return false;

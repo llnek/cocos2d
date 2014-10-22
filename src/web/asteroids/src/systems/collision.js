@@ -53,6 +53,10 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/s/utils',
 
       },
 
+      collide: function(a,b) {
+        return ccsx.collide0(a.sprite, b.sprite);
+      },
+
       checkMissilesRocks: function() {
         var me=this;
         sh.pools.Missiles.iter(function(m) {

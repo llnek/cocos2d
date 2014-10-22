@@ -46,85 +46,65 @@ define('zotohlab/p/s/resolution', ['zotohlab/p/components',
           this.checkMissiles();
           this.checkLasers();
           this.checkAstros();
-          this.checkShip();
+          this.checkShip(ship);
         }
 
       },
 
       checkMissiles: function() {
+        var world = this.state.world;
         sh.pools.Missiles.iter(function(m) {
           if (m.status) {
             if (m.HP <= 0 ||
-                ccsx.
+                sh.outOfBound(ccsx.bbox4(m.sprite), world)) {
             m.deflate();
-          }
+          }}
         });
       },
 
-      checkMissilesRocks: function(ps, mss) {
-        var arr= R.values(ps),
-        sz= arr.length,
-        a,r,
-        m,n;
+      checkLasers: function() {
+        var world = this.state.world;
+        sh.pools.Lasers.iter(function(b) {
+          if (b.status) {
+            if (b.HP <= 0 ||
+                sh.outOfBound(ccsx.bbox4(b.sprite), world)) {
+            b.deflate();
+          }}
+        });
+      },
 
-        R.forEach(function(z) {
-          m = mss[z];
-          for (n=0; n < sz; ++n) {
-            a= arr[n].astro;
-            if (a.status !== true) { continue; }
-            if (ccsx.collide0(m.sprite, a.sprite)) {
-              r=a.rank;
-              utils.killMissile(m);
-              utils.killRock(a,true);
-              this.factory.createAsteroids(sh.main,this.state,r+1);
-              break;
+      checkAstros: function() {
+        sh.pools.Astros1.iter(function(a) {
+          if (a.status &&
+              a.HP <= 0) {
+              sh.fireEvent('/game/objects/players/earnscore', {score: a.value});
+              sh.factory.createAsteroids(a.rank +1);
+              a.deflate();
             }
-          }
-        }.bind(this), R.keys(mss));
+        });
+        sh.pools.Astros2.iter(function(a) {
+          if (a.status &&
+              a.HP <= 0) {
+              sh.fireEvent('/game/objects/players/earnscore', {score: a.value});
+              sh.factory.createAsteroids(a.rank +1);
+              a.deflate();
+            }
+        });
+        sh.pools.Astros3.iter(function(a) {
+          if (a.status &&
+              a.HP <= 0) {
+              sh.fireEvent('/game/objects/players/earnscore', {score: a.value});
+              a.deflate();
+            }
+        });
       },
 
-      checkShipBombs: function(node) {
-        var b, n, ship=node.ship,
-        pos= ship.sprite.getPosition(),
-        x= pos.x,
-        y= pos.y,
-        p= sh.pools[csts.P_LBS],
-        a= R.keys(p);
+      checkShip: function(node) {
+        var ship=node.ship;
 
-        for (n=0; n < a.length; ++n) {
-          b = p[ a[n] ];
-          if (ccsx.collide0(b.sprite, ship.sprite)) {
-            utils.killBomb(b);
-            this.eraseShip(node);
-            break;
-          }
-        }
-      },
-
-      eraseShip: function(node) {
-        sh.main.removeItem(node.ship.sprite);
-        this.ships.remove(node);
-        this.engine.removeEntity(node.entity);
-        utils.killShip(node.ship,true);
-      },
-
-      checkShipRocks: function(p,snode) {
-        var n, rocks= R.values(p),
-        ship = snode.ship,
-        a,r,
-        sz= rocks.length;
-
-        for (n=0; n < sz; ++n) {
-          a=rocks[n].astro;
-          r= a.rank;
-          if (a.status !== true) { continue; }
-          if (ccsx.collide0(ship.sprite,
-                            a.sprite)) {
-            utils.killRock(a,true);
-            this.eraseShip(snode);
-            this.factory.createAsteroids(sh.main,this.state,r+1);
-            break;
-          }
+        if (ship.status && ship.HP <= 0) {
+          ship.deflate();
+          sh.fireEvent('/game/objects/players/killed');
         }
       }
 

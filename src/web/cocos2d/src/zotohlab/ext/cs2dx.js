@@ -101,13 +101,15 @@ define("zotohlab/asx/ccsx", ['cherimoia/skarojs',
         var s=this.screen(); return s.height > s.width;
       },
 
-      outOfBound: function(ent) {
+      outOfBound: function(ent,B) {
         var bx= this.bbox4(ent.sprite),
-        wz = this.screen();
-        return (bx.bottom > wz.height-1 ||
-                bx.top < 0 ||
-                bx.right < 0 ||
-                bx.left > wz.width -1);
+        wz = this.screen(),
+        E = B || { bottom: 0, left: 0, top: wz.height, right: wz.width};
+
+        return (bx.bottom > E.top ||
+                bx.top < E.bottom ||
+                bx.right < E.left ||
+                bx.left > E.right);
       },
 
       releaseTimer: function(par, tm) {

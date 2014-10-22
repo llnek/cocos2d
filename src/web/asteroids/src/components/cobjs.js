@@ -25,8 +25,8 @@ define('zotohlab/p/components', ['cherimoia/skarojs',
 
       constructor: function(sprite,value,rank, deg, vx, vy) {
         this.ctor(sprite, 1, value);
+        this.rotation= deg;
         this.rank=rank;
-        this.deg= deg;
         this.vel = {
           x: vx,
           y: vy

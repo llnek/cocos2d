@@ -57,10 +57,11 @@ define('zotohlab/p/s/moveasteroids', ['cherimoia/skarojs',
         x = pos.x + dt * velo.x;
         y = pos.y + dt * velo.y;
 
-        rot.angle += 0.1;
-        if (rot.angle > 360) { rot.angle -= 360; }
+        rot += 0.1;
+        if (rot > 360) { rot -= 360; }
 
-        sp.setRotation(rot.angle);
+        astro.rotation= rot;
+        sp.setRotation(rot);
         sp.setPosition(x,y);
 
         //wrap?

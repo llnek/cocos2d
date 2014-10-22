@@ -22,7 +22,12 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
 
     BackLayer = layers.XLayer.extend({
 
-      rtti: function() { return 'BackLayer'; }
+      rtti: function() { return 'BackLayer'; },
+      pkInit: function() {
+        this._super();
+        this.addItem(new cc.TMXTiledMap(
+          sh.getTilesPath('gamelevel1.tiles.arena')));
+      }
 
     }),
 

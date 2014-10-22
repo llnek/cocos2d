@@ -38,7 +38,7 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
         this.reset(newFlag);
         this.cleanSlate();
 
-        sh.factory=new sobjs.Factory(this.engine);
+        sh.factory=new sobjs.Factory(this.engine, this.options);
         this.options.world= this.getEnclosureBox();
         this.options.level=1;
         this.options.running=true;
@@ -52,7 +52,8 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
           [sobjs.MoveAsteroids, pss.Movement],
           [sobjs.MovementShip, pss.Movement],
           [sobjs.MoveMissiles, pss.Movement],
-          [sobjs.Collisions, pss.Collision] ]);
+          [sobjs.Collisions, pss.Collision],
+          [sobjs.Resolution, pss.Resolve] ]);
       },
 
       reset: function(newFlag) {
