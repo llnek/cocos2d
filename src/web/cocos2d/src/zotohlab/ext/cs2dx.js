@@ -218,10 +218,15 @@ define("zotohlab/asx/ccsx", ['cherimoia/skarojs',
                                      : this.getBottom(ent);
       },
 
+      centerX: function() { return this.center().x; },
+      centerY: function() { return this.center().y; },
       center: function() {
         var wz = this.screen();
         return cc.p(wz.width * 0.5, wz.height * 0.5);
       },
+
+      screenHeight: function() { return this.screen().height; },
+      screenWidth: function() { return this.screen().width; },
 
       screen: function() {
         return cc.director.getWinSize();

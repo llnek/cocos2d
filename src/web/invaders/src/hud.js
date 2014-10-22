@@ -30,6 +30,7 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
 
       initAtlases: function() {
         this.regoAtlas('game-pics');
+        this.hudAtlas= 'game-pics';
       },
 
       initLabels: function() {

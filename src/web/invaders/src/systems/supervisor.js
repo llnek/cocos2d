@@ -36,25 +36,16 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
       },
 
       initAlienSize: function() {
-        var s= new cc.Sprite();
-        s.initWithSpriteFrameName( 'green_bug_0.png');
-        return this.state.alienSize= s.getContentSize();
+        this.state.alienSize= ccsx.createSpriteFrame('green_bug_0.png').getContentSize();
       },
 
       initShipSize: function() {
-        var s= new cc.Sprite();
-        s.initWithSpriteFrameName( 'ship_0.png');
-        return this.state.shipSize= s.getContentSize();
-      },
-
-      spawnAliens: function() {
-        sh.factory.createAliens();
+        this.state.shipSize= ccsx.createSpriteFrame( 'ship_0.png').getContentSize();
       },
 
       update: function (dt) {
         if (! this.inited) {
           this.onceOnly();
-          this.spawnAliens();
           this.inited=true;
         }
       },
@@ -67,11 +58,12 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
         this.initAlienSize();
         this.initShipSize();
 
-        sh.factory.createMissiles(sh.main,this.state,50);
-        sh.factory.createBombs(sh.main,this.state,50);
-        sh.factory.createExplosions(sh.main,this.state,50);
-        sh.factory.createShip(sh.main,this.state);
+        sh.factory.createMissiles();
+        sh.factory.createBombs();
+        sh.factory.createExplosions();
 
+        sh.factory.createAliens();
+        sh.factory.createShip();
       }
 
     });

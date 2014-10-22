@@ -11,34 +11,30 @@
 
 define("zotohlab/p/gnodes", ['zotohlab/p/components',
                             'cherimoia/skarojs',
-                            'zotohlab/asterix',
-                            'zotohlab/asx/xcfg',
-                            'ash-js'],
+                            'zotohlab/asterix'],
 
-  function (cobjs, sjs, sh, xcfg, Ash) { "use strict";
+  function (cobjs, sjs, sh) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
     ivs= {};
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ivs.AlienMotionNode = Ash.Node.create({
-      aliens  : cobjs.AlienSqad,
+    ivs.AlienMotionNode = sh.Ashley.nodeDef({
+      aliens  : cobjs.AlienSquad,
       looper  : cobjs.Looper
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ivs.CannonCtrlNode = Ash.Node.create({
+    ivs.CannonCtrlNode = sh.Ashley.nodeDef({
       looper  : cobjs.Looper,
       cannon  : cobjs.Cannon,
       ship    : cobjs.Ship
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ivs.ShipMotionNode = Ash.Node.create({
+    ivs.ShipMotionNode = sh.Ashley.nodeDef({
       velocity  : cobjs.Velocity,
       motion    : cobjs.Motion,
       ship      : cobjs.Ship

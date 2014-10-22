@@ -61,7 +61,7 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/s/utils',
       },
 
       collide: function(a, b) {
-
+        return ccsx.collide0(a.sprite, b.sprite);
       },
 
       checkMissilesBombs: function() {
@@ -96,7 +96,7 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/s/utils',
               }
             });
           }
-        }, sqad.aliens);
+        }, sqad.aliens.pool);
       },
 
       checkShipBombs: function(node) {
@@ -117,6 +117,7 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/s/utils',
       checkShipAliens: function(anode,snode) {
         var n, sqad= anode.aliens,
         ship = snode.ship,
+        me=this,
         sz= sqad.aliens.length;
 
         R.forEach(function(en) {
@@ -126,7 +127,7 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/s/utils',
             ship.hurt();
             en.hurt();
           }
-        }, sqad.aliens);
+        }, sqad.aliens.pool);
       }
 
     });

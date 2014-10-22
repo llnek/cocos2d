@@ -19,7 +19,8 @@ define("zotohlab/p/sysobjs", ['zotohlab/p/s/priorities',
                              'zotohlab/p/s/movemissiles',
                              'zotohlab/p/s/moveship',
                              'zotohlab/p/s/cannon',
-                             'zotohlab/p/s/collisions'],
+                             'zotohlab/p/s/collisions',
+                             'zotohlab/p/s/resolution'],
 
   function (Priorities, EntityFactory, SystemUtils,
             Supervisor, Motions, MovementAliens,
@@ -27,7 +28,8 @@ define("zotohlab/p/sysobjs", ['zotohlab/p/s/priorities',
             MovementMissiles,
             MovementShip,
             CannonControl,
-            CollisionSystem) { "use strict";
+            CollisionSystem,
+            Resolution) { "use strict";
 
     return {
 
@@ -41,7 +43,8 @@ define("zotohlab/p/sysobjs", ['zotohlab/p/s/priorities',
       MovementMissiles    : MovementMissiles,
       MovementShip        : MovementShip,
       CannonControl       : CannonControl,
-      CollisionSystem     : CollisionSystem
+      CollisionSystem     : CollisionSystem,
+      Resolution          : Resolution
 
     };
 

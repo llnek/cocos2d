@@ -70,14 +70,14 @@ define('zotohlab/p/s/movealiens', ['zotohlab/p/s/utils',
         var rc = [],
         pos,
         n;
-        for (n=0; n < sqad.aliens.length; ++n) {
-          if (sqad.aliens[n].status) {
+        for (n=0; n < sqad.aliens.pool.length; ++n) {
+          if (sqad.aliens.pool[n].status) {
             rc.push(n);
           }
         }
         if (rc.length > 0) {
           n = rc.length === 1 ? 0 : sjs.rand(rc.length);
-          pos= sqad.aliens[n].sprite.getPosition();
+          pos= sqad.aliens.pool[n].sprite.getPosition();
           this.dropBomb(pos.x, pos.y-4);
         }
       },
@@ -123,13 +123,13 @@ define('zotohlab/p/s/movealiens', ['zotohlab/p/s/utils',
 
       forwardOneAlien: function(a) {
         var pos= a.sprite.getPosition();
-        a.sprite.setPosition(pos.x, pos.y - ccsx.getHeight(a.sprite) - sh.xcfg.csts.OFF_Y);
+        a.sprite.setPosition(pos.x, pos.y - ccsx.getHeight(a.sprite) - csts.OFF_Y);
       },
 
       doShuffle: function(sqad) {
         var rc = R.filter(function(a) {
           return a.status;
-        }, sqad.aliens);
+        }, sqad.aliens.pool);
         R.forEach(function(a) {
           this.shuffleOneAlien(a,sqad.stepx);
         }.bind(this), rc);
@@ -139,7 +139,7 @@ define('zotohlab/p/s/movealiens', ['zotohlab/p/s/utils',
       doForward: function(sqad) {
         var rc = R.filter(function(a) {
           return a.status;
-        }, sqad.aliens);
+        }, sqad.aliens.pool);
         R.forEach(function(a) {
           this.forwardOneAlien(a);
         }.bind(this), rc);
@@ -154,7 +154,7 @@ define('zotohlab/p/s/movealiens', ['zotohlab/p/s/utils',
           } else {
             return Number.MAX_VALUE;
           }
-        }, sqad.aliens);
+        }, sqad.aliens.pool);
       },
 
       findMaxX: function(sqad) {
@@ -164,7 +164,7 @@ define('zotohlab/p/s/movealiens', ['zotohlab/p/s/utils',
           } else {
             return 0;
           }
-        }, sqad.aliens);
+        }, sqad.aliens.pool);
       }
 
     });

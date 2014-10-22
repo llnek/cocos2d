@@ -11,19 +11,17 @@
 
 define("zotohlab/p/components", ['cherimoia/skarojs',
                                 'zotohlab/asterix',
-                                'zotohlab/asx/xcfg',
-                                'zotohlab/asx/ccsx',
-                                'ash-js'],
+                                'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (sjs, sh, ccsx) { "use strict";
 
-    var csts= xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
     ivs={};
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ivs.AlienSqad = Ash.Class.extend({
+    ivs.AlienSquad = sh.Ashley.casDef({
 
       constructor: function(aliens,step) {
         this.aliens=aliens;
@@ -33,52 +31,29 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ivs.Alien = Ash.Class.extend({
+    ivs.Alien = sh.Ashley.compDef({
 
       constructor: function(sprite,value,rank) {
-        this.sprite=sprite;
-        this.value=value;
+        this.ctor(sprite, 1, value);
         this.rank=rank;
-        this.status=true;
       }
 
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ivs.Bomb = Ash.Class.extend({
+    ivs.Bomb = sh.Ashley.compDef({
 
-      constructor: function(sprite,value) {
-        this.sprite=sprite;
-        this.value=value;
+      constructor: function(sprite) {
+        this.ctor(sprite);
         this.vel={
           x: 0,
           y: -50
         };
-        this.status=false;
-      },
-
-      pid: function() { return this.sprite.getTag(); },
-      rtti: function() { return "Bomb"; },
-
-      deflate: function() {
-        this.sprite.setVisible(false);
-        this.sprite.setPosition(0,0);
-        this.status=false;
-      },
-
-      inflate: function(x,y) {
-        this.sprite.setVisible(true);
-        this.sprite.setPosition(x,y);
-        this.status=true;
       }
-
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ivs.Cannon = Ash.Class.extend({
+    ivs.Cannon = sh.Ashley.casDef({
 
       constructor: function(coolDownWindow) {
         this.coolDownWindow= coolDownWindow || 0.8;
@@ -88,43 +63,33 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ivs.Explosion = Ash.Class.extend({
+    ivs.Explosion = sh.Ashley.compDef({
 
       constructor: function(sprite) {
-        this.sprite = sprite;
+        this.ctor(sprite);
         this.frameTime= 0.1;
-        this.status=false;
       },
 
-      inflate: function(x,y) {
+      inflate: function(options) {
         var frames = [ccsx.getSpriteFrame('boom_0.png'),
                       ccsx.getSpriteFrame('boom_1.png'),
                       ccsx.getSpriteFrame('boom_2.png'),
                       ccsx.getSpriteFrame('boom_3.png') ],
         anim= new cc.Animation(frames, this.frameTime);
+        this.sprite.setPosition(options.x, options.y);
+        this.status=true;
         this.sprite.runAction(new cc.Sequence(new cc.Animate(anim),
           new cc.CallFunc(function() {
             sjs.loggr.debug('explosion done.!');
-            sh.pools[ csts.P_ES].add(this);
+            this.deflate();
           }, this)
         ));
-      },
-
-      deflate: function() {
-        this.sprite.setPosition(0,0);
-        this.sprite.setVisible(false);
-        this.status=false;
-      },
-
-      pid: function() { return this.sprite.getTag(); },
-      rtti: function() { return "Explosion"; }
+      }
 
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ivs.Looper = Ash.Class.extend({
+    ivs.Looper = sh.Ashley.casDef({
 
       constructor: function(count) {
         this.timers=sjs.makeArray(count,null);
@@ -133,39 +98,20 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ivs.Missile = Ash.Class.extend({
+    ivs.Missile = sh.Ashley.compDef({
 
-      constructor: function(sprite,value) {
-        this.value=value || 0;
-        this.sprite=sprite;
+      constructor: function(sprite) {
+        this.ctor(sprite);
         this.vel= {
           x: 0,
           y: 150
         };
-        this.status=false;
-      },
-
-      pid: function() { return this.sprite.getTag(); },
-      rtti: function() { return "Missile"; },
-
-      deflate: function() {
-        this.sprite.setVisible(false);
-        this.sprite.setPosition(0,0);
-        this.status=false;
-      },
-
-      inflate: function(x,y) {
-        this.sprite.setVisible(true);
-        this.sprite.setPosition(x,y);
-        this.status=true;
       }
 
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ivs.Motion = Ash.Class.extend({
+    ivs.Motion = sh.Ashley.casDef({
 
       constructor: function() {
         this.right = false;
@@ -175,19 +121,17 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ivs.Ship = Ash.Class.extend({
+    ivs.Ship = sh.Ashley.compDef({
 
       constructor: function(sprite,frames) {
-        this.sprite=sprite;
+        this.ctor(sprite);
         this.frames=frames;
       }
 
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ivs.Velocity = Ash.Class.extend({
+    ivs.Velocity = sh.Ashley.casDef({
 
       constructor: function(vx,vy) {
         this.vel = {

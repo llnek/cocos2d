@@ -16,7 +16,7 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
 
   function (sjs, Mustache, LZString, Ash) { "use strict";
 
-    var ComObj = {
+    var SEED=0, ComObj = {
 
       hurt: function(damage, from) {
         this.HP -= sjs.echt(damage) ? damage : 1;
@@ -86,7 +86,7 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
         this.origHP = health || 1;
         this.HP = this.origHP;
         this.value = score || 0;
-        this._tag= "unknown";
+        this._tag= ["component" , ++SEED].join(':');
         this.status=false;
       }
     },

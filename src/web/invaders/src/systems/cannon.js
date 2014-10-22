@@ -55,13 +55,12 @@ define('zotohlab/p/s/cannon', ['zotohlab/p/s/utils',
             gun.hasAmmo=true;
             lpr.timers[0]=ccsx.releaseTimer(t);
           }
-          return;
         } else {
-          this.processKeys(node,dt);
+          this.scanInput(node,dt);
         }
       },
 
-      inputKeys: function() {
+      checkInput: function() {
         var hit=false;
         if (cc.sys.capabilities['keyboard'] &&
             !cc.sys.isNative) {
@@ -76,24 +75,24 @@ define('zotohlab/p/s/cannon', ['zotohlab/p/s/utils',
         return hit;
       },
 
-      processKeys: function (node, dt) {
-        var hit= this.inputKeys();
+      scanInput: function (node, dt) {
+        var hit= this.checkInput();
         if (hit) {
           this.fireMissile(node,dt);
         }
       },
 
       fireMissile: function(node,dt) {
-        var p= sh.pools.Missiles,
+        var top= ccsx.getTop(node.ship.sprite),
+        p= sh.pools.Missiles,
+        ship=node.ship,
+        pos= ship.pos(),
         lpr= node.looper,
-        sp= node.ship,
         gun= node.cannon,
-        pos= sp.sprite.getPosition(),
-        top= ccsx.getTop(sp.sprite),
         ent= p.get();
 
         if (!ent) {
-          sh.factory.createMissiles(30);
+          sh.factory.createMissiles(36);
           ent= p.get();
         }
 
@@ -101,7 +100,7 @@ define('zotohlab/p/s/cannon', ['zotohlab/p/s/utils',
 
         lpr.timers[0] = ccsx.createTimer(sh.main, gun.coolDownWindow);
         gun.hasAmmo=false;
-        sp.sprite.setSpriteFrame(sp.frames[1]);
+        ship.sprite.setSpriteFrame(ship.frames[1]);
         sh.sfxPlay('ship-missile');
       }
 

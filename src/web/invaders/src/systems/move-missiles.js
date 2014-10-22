@@ -40,9 +40,9 @@ define('zotohlab/p/s/movemissiles', ['zotohlab/p/s/utils',
         y;
 
         mss.iter(function(m) {
-          pos= b.pos();
-          y = pos.y + dt * b.vel.y;
-          b.setPos(pos.x, y);
+          pos= m.pos();
+          y = pos.y + dt * m.vel.y;
+          m.setPos(pos.x, y);
         });
       }
 

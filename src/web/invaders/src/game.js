@@ -53,7 +53,8 @@ define('zotohlab/p/arena', ['zotohlab/p/s/utils',
         this.reset(newFlag);
         this.cleanSlate();
 
-        sh.factory=new sobjs.Factory(this.engine);
+        sh.factory=new sobjs.Factory(this.engine,
+                                     this.options);
         this.options.running = true;
 
         R.forEach(function(z) {
@@ -66,12 +67,14 @@ define('zotohlab/p/arena', ['zotohlab/p/s/utils',
           [sobjs.MovementBombs, pss.Movement],
           [sobjs.MovementShip, pss.Movement],
           [sobjs.MovementMissiles, pss.Movement],
-          [sobjs.CollisionSystem, pss.Collision] ]);
+          [sobjs.CollisionSystem, pss.Collision],
+          [sobjs.Resolution, pss.Resolve] ]);
+
 
       },
 
       spawnPlayer: function() {
-        sh.factory.createShip(sh.main,this.options);
+        sh.factory.bornShip();
       },
 
       onPlayerKilled: function(msg) {

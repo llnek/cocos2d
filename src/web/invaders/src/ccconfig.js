@@ -61,6 +61,7 @@ document.ccConfig = {
     '/public/ig/lib/game/invaders/systems/move-ship.js',
     '/public/ig/lib/game/invaders/systems/collision.js',
     '/public/ig/lib/game/invaders/systems/supervisor.js',
+    '/public/ig/lib/game/invaders/systems/resolution.js',
     '/public/ig/lib/game/invaders/systems/sysobjs.js',
 
       '/public/ig/lib/game/invaders/hud.js',

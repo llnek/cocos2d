@@ -21,6 +21,7 @@
     "src/invaders/systems/move-ship.js",
     "src/invaders/systems/collision.js",
     "src/invaders/systems/supervisor.js",
+    "src/invaders/systems/resolution.js",
     "src/invaders/systems/sysobjs.js",
 
       "src/invaders/hud.js",
