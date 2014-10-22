@@ -4,7 +4,7 @@ document.ccConfig = {
   chipmunk: true,
   box2d: false,
   showFPS: false,
-  frameRate: 60,
+  frameRate: 30,
 
   renderMode: 0,
   debugMode: 1,
@@ -63,6 +63,7 @@ document.ccConfig = {
 '/public/ig/lib/game/asteroids/systems/move-ship.js',
 '/public/ig/lib/game/asteroids/systems/collision.js',
 '/public/ig/lib/game/asteroids/systems/supervisor.js',
+'/public/ig/lib/game/asteroids/systems/resolution.js',
 '/public/ig/lib/game/asteroids/systems/sysobjs.js',
 
       '/public/ig/lib/game/asteroids/hud.js',

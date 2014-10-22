@@ -156,6 +156,10 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
         }
       },
 
+      getLevelCfg: function(level) {
+        return this.xcfg.levels['gamelevel' + level]['cfg'],
+      },
+
       // tests if 2 rectangles intersect.
       isIntersect: function(a1,a2) {
         return ! (a1.left > a2.right ||

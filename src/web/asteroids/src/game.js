@@ -12,27 +12,20 @@
 define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
                            'cherimoia/skarojs',
                            'zotohlab/asterix',
-                           'zotohlab/asx/xcfg',
                            'zotohlab/asx/ccsx',
                            'zotohlab/asx/xlayers',
                            'zotohlab/asx/xscenes',
                            'zotohlab/asx/xmmenus',
-                           'zotohlab/p/hud',
-                           'ash-js'],
+                           'zotohlab/p/hud'],
 
-  function(sobjs, sjs, sh, xcfg, ccsx, layers, scenes, mmenus, huds, Ash) { "use strict";
+  function(sobjs, sjs, sh, ccsx, layers, scenes, mmenus, huds) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     R = sjs.ramda,
     undef,
+
     GameLayer = layers.XGameLayer.extend({
-
-      getHUD: function() {
-        var rc= this.ptScene.getLayers();
-        return rc['HUD'];
-      },
-
-      getNode: function() { return this.atlasBatch; },
 
       replay: function() {
         this.play(false);
@@ -45,7 +38,7 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
         this.reset(newFlag);
         this.cleanSlate();
 
-        this.options.factory=new sobjs.EntityFactory(this.engine);
+        sh.factory=new sobjs.Factory(this.engine);
         this.options.world= this.getEnclosureBox();
         this.options.level=1;
         this.options.running=true;
@@ -63,10 +56,10 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
       },
 
       reset: function(newFlag) {
-        if (this.atlasBatch) { this.atlasBatch.removeAllChildren(); } else {
-          var img = cc.textureCache.addImage( sh.getAtlasPath('game-pics'));
-          this.atlasBatch = cc.SpriteBatchNode.create(img,320);
-          this.addChild(this.atlasBatch, ++this.lastZix, ++this.lastTag);
+        if (!sjs.isEmpty(this.atlases)) {
+          sjs.eachObj(function(v) { v.removeAllChildren(); }, this.atlases);
+        } else {
+          this.regoAtlas('game-pics');
         }
         if (newFlag) {
           this.getHUD().resetAsNew();
@@ -80,7 +73,7 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
       },
 
       spawnPlayer: function() {
-        this.options.factory.createShip(sh.main, this.options);
+        sh.factory.bornShip();
       },
 
       onPlayerKilled: function(msg) {
@@ -93,6 +86,7 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
 
       onDone: function() {
         this.reset();
+        this.options.running =false;
         this.getHUD().enableReplay();
       },
 
@@ -118,38 +112,38 @@ define('zotohlab/p/arena', ['zotohlab/p/sysobjs',
             GameLayer,
             huds.HUDLayer
           ]).create(options);
-          if (!!scene) {
-            scene.ebus.on('/game/objects/missiles/killed', function(topic, msg) {
-              sh.main.onMissileKilled(msg);
-            });
-            scene.ebus.on('/game/objects/ufos/killed', function(topic, msg) {
-              sh.main.onUfoKilled(msg);
-            });
-            scene.ebus.on('/game/objects/players/shoot',function(t,msg) {
-              sh.main.onFireMissile(msg);
-            });
-            scene.ebus.on('/game/objects/players/killed',function(t,msg) {
-              sh.main.onPlayerKilled(msg);
-            });
-            scene.ebus.on('/game/objects/ufos/shoot',function(t,msg) {
-              sh.main.onFireLaser(msg);
-            });
-            scene.ebus.on('/game/objects/stones/create',function(t,msg) {
-              sh.main.onCreateStones(msg);
-            });
-            scene.ebus.on('/game/objects/rocks/create',function(t,msg) {
-              sh.main.onCreateRocks(msg);
-            });
-            scene.ebus.on('/game/objects/players/earnscore', function(topic, msg) {
-              sh.main.onEarnScore(msg);
-            });
-            scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
-              mmenus.XMenuLayer.onShowMenu();
-            });
-            scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
-              sh.main.replay();
-            });
-          }
+
+          scene.ebus.on('/game/objects/missiles/killed', function(topic, msg) {
+            sh.main.onMissileKilled(msg);
+          });
+          scene.ebus.on('/game/objects/ufos/killed', function(topic, msg) {
+            sh.main.onUfoKilled(msg);
+          });
+          scene.ebus.on('/game/objects/players/shoot',function(t,msg) {
+            sh.main.onFireMissile(msg);
+          });
+          scene.ebus.on('/game/objects/players/killed',function(t,msg) {
+            sh.main.onPlayerKilled(msg);
+          });
+          scene.ebus.on('/game/objects/ufos/shoot',function(t,msg) {
+            sh.main.onFireLaser(msg);
+          });
+          scene.ebus.on('/game/objects/stones/create',function(t,msg) {
+            sh.main.onCreateStones(msg);
+          });
+          scene.ebus.on('/game/objects/rocks/create',function(t,msg) {
+            sh.main.onCreateRocks(msg);
+          });
+          scene.ebus.on('/game/objects/players/earnscore', function(topic, msg) {
+            sh.main.onEarnScore(msg);
+          });
+          scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
+            mmenus.XMenuLayer.onShowMenu();
+          });
+          scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
+            sh.main.replay();
+          });
+
           return scene;
         }
       }

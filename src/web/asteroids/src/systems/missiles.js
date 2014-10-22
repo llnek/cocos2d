@@ -13,15 +13,15 @@ define('zotohlab/p/s/missilecontrol', ['zotohlab/p/s/utils',
                                       'zotohlab/p/gnodes',
                                       'cherimoia/skarojs',
                                       'zotohlab/asterix',
-                                      'zotohlab/asx/xcfg',
-                                      'zotohlab/asx/ccsx',
-                                      'ash-js'],
+                                      'zotohlab/asx/ccsx'],
 
-  function (utils,  gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (utils,  gnodes, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
-    MissileControl = Ash.System.extend({
+
+    MissileControl = sh.Ashley.sysDef({
 
       constructor: function (options) {
         this.state=options;
@@ -64,7 +64,8 @@ define('zotohlab/p/s/missilecontrol', ['zotohlab/p/s/utils',
       scanInput: function (node, dt) {
         var hit=false;
 
-        if (cc.sys.capabilities['keyboard']) {
+        if (cc.sys.capabilities['keyboard'] &&
+            !cc.sys.isNative) {
           hit= sh.main.keyPoll(cc.KEY.space);
         }
         else
@@ -82,7 +83,7 @@ define('zotohlab/p/s/missilecontrol', ['zotohlab/p/s/utils',
       },
 
       fireMissile: function(node,dt) {
-        var p= sh.pools[csts.P_MS],
+        var p= sh.pools.Missiles,
         lpr= node.looper,
         ship= node.ship,
         gun= node.cannon,
@@ -94,17 +95,14 @@ define('zotohlab/p/s/missilecontrol', ['zotohlab/p/s/utils',
         ent= p.get();
 
         if (!ent) {
-          utils.createMissiles(sh.main,this.state,30);
+          sh.factory.createMissiles(30);
           ent= p.get();
         }
-
-        tag= ent.sprite.getTag();
-        sh.pools[csts.P_LMS][tag] = ent;
 
         var rc= sh.calcXY(deg, sz.height * 0.5);
         ent.vel.x = rc[0];
         ent.vel.y = rc[1];
-        ent.inflate( pos.x + rc[0], pos.y + rc[1]);
+        ent.inflate({ x: pos.x + rc[0], y: pos.y + rc[1]});
         ent.sprite.setRotation(deg);
 
         lpr.timers[0] = ccsx.createTimer(sh.main, gun.coolDownWindow);

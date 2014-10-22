@@ -12,19 +12,18 @@
 define('zotohlab/p/s/supervisor', ['zotohlab/p/components',
                                   'cherimoia/skarojs',
                                   'zotohlab/asterix',
-                                  'zotohlab/asx/xcfg',
                                   'zotohlab/asx/ccsx',
-                                  'zotohlab/asx/xpool',
-                                  'ash-js'],
+                                  'zotohlab/asx/xpool'],
 
-  function (cobjs, sjs, sh, xcfg, ccsx, XPool, Ash) { "use strict";
+  function (cobjs, sjs, sh, ccsx, XPool) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
-    GameSupervisor = Ash.System.extend({
+
+    GameSupervisor = sh.Ashley.sysDef({
 
       constructor: function(options) {
-        this.factory= options.factory;
         this.state= options;
         this.inited=false;
       },
@@ -45,48 +44,33 @@ define('zotohlab/p/s/supervisor', ['zotohlab/p/components',
 
       onceOnly: function() {
 
-        sh.pools[csts.P_MS] = new XPool({ entityProto: cobjs.Missile });
-        sh.pools[csts.P_LS] = new XPool({ entityProto: cobjs.Laser });
+        sh.pools.Missiles = new XPool();
+        sh.pools.Lasers = new XPool();
 
-        sh.pools[csts.P_AS3] = new XPool({ entityProto: cobjs.Asteroid });
-        sh.pools[csts.P_AS2] = new XPool({ entityProto: cobjs.Asteroid });
-        sh.pools[csts.P_AS1] = new XPool({ entityProto: cobjs.Asteroid });
-
-        sh.pools[csts.P_LMS] = {};
-        sh.pools[csts.P_LLS] = {};
-        sh.pools[csts.P_LAS] = {};
+        sh.pools.Astros3 = new XPool();
+        sh.pools.Astros2 = new XPool();
+        sh.pools.Astros1 = new XPool();
 
         this.initAsteroidSizes();
         this.initPlayerSize();
         this.initUfoSize();
-        this.factory.createAsteroids(sh.main,this.state, csts.P_AS1);
-        this.factory.createShip(sh.main,this.state);
+
+        sh.factory.createAsteroids(csts.P_AS1);
+        sh.factory.createShip();
       },
 
       initAsteroidSizes: function() {
-        var s = new cc.Sprite();
-        s.initWithSpriteFrameName('rock_small.png');
-        this.state.astro3 = s.getContentSize();
-
-        s = new cc.Sprite();
-        s.initWithSpriteFrameName('rock_med.png');
-        this.state.astro2 = s.getContentSize();
-
-        s = new cc.Sprite();
-        s.initWithSpriteFrameName('rock_large.png');
-        this.state.astro1 = s.getContentSize();
+        this.state.astro3 = ccsx.createSpriteFrame('rock_small.png').getContentSize();
+        this.state.astro2 = ccsx.createSpriteFrame('rock_med.png').getContentSize();
+        this.state.astro1 = ccsx.createSpriteFrame('rock_large.png').getContentSize();
       },
 
       initPlayerSize: function() {
-        var s = new cc.Sprite();
-        s.initWithSpriteFrameName('rship_0.png');
-        this.state.playerSize = s.getContentSize();
+        this.state.playerSize = ccsx.createSpriteFrame('rship_0.png').getContentSize();
       },
 
       initUfoSize: function() {
-        var s = new cc.Sprite();
-        s.initWithSpriteFrameName('ufo.png');
-        this.state.ufoSize = s.getContentSize();
+        this.state.ufoSize = ccsx.createSpriteFrame('ufo.png').getContentSize();
       }
 
     });

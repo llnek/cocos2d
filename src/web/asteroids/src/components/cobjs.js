@@ -11,32 +11,32 @@
 
 define('zotohlab/p/components', ['cherimoia/skarojs',
                                 'zotohlab/asterix',
-                                'zotohlab/asx/xcfg',
-                                'zotohlab/asx/ccsx',
-                                'ash-js'],
+                                'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
     ast= {};
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ast.Asteroid = Ash.Class.extend({
+    ast.Asteroid = sh.Ashley.compDef({
 
-      constructor: function(sprite,value,rank) {
-        this.sprite=sprite;
-        this.value=value;
+      constructor: function(sprite,value,rank, deg, vx, vy) {
+        this.ctor(sprite, 1, value);
         this.rank=rank;
-        this.status=true;
+        this.deg= deg;
+        this.vel = {
+          x: vx,
+          y: vy
+        }
       }
 
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ast.Cannon = Ash.Class.extend({
+    ast.Cannon = sh.Ashley.casDef({
 
       constructor: function(coolDownWindow) {
         this.coolDownWindow= coolDownWindow || 0.8;
@@ -46,8 +46,7 @@ define('zotohlab/p/components', ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ast.Looper = Ash.Class.extend({
+    ast.Looper = sh.Ashley.casDef({
 
       constructor: function(count) {
         this.timers=sjs.makeArray(count,null);
@@ -56,41 +55,21 @@ define('zotohlab/p/components', ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ast.Missile = Ash.Class.extend({
+    ast.Missile = sh.Ashley.compDef({
 
       constructor: function(sprite,speed) {
         this.speed=speed || 20;
-        this.sprite=sprite;
+        this.ctor(sprite);
         this.vel= {
           x: 0,
           y: 0
         };
-        this.status=false;
-      },
-
-      pid: function() { return this.sprite.getTag(); },
-      rtti: function() { return "Missile"; },
-
-      deflate: function() {
-        this.sprite.setVisible(false);
-        this.sprite.setPosition(0,0);
-        this.vel.x=0;
-        this.vel.y=0;
-        this.status=false;
-      },
-
-      inflate: function(x,y) {
-        this.sprite.setVisible(true);
-        this.sprite.setPosition(x,y);
-        this.status=true;
       }
 
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ast.Motion = Ash.Class.extend({
+    ast.Motion = sh.Ashley.casDef({
 
       constructor: function() {
         this.right = false;
@@ -102,19 +81,17 @@ define('zotohlab/p/components', ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ast.Ship = Ash.Class.extend({
+    ast.Ship = sh.Ashley.compDef({
 
       constructor: function(sprite,frames) {
-        this.sprite=sprite;
+        this.ctor(sprite);
         this.frames=frames;
       }
 
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ast.Velocity = Ash.Class.extend({
+    ast.Velocity = sh.Ashley.casDef({
 
       constructor: function(vx,vy,mx,my) {
         this.vel = {
@@ -134,8 +111,7 @@ define('zotohlab/p/components', ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ast.Rotation = Ash.Class.extend({
+    ast.Rotation = sh.Ashley.casDef({
 
       constructor: function(deg) {
         this.angle = deg;
@@ -144,15 +120,13 @@ define('zotohlab/p/components', ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ast.Thrust = Ash.Class.extend({
+    ast.Thrust = sh.Ashley.casDef({
 
       constructor: function(t) {
         this.power = t;
       }
 
     });
-
 
     return ast;
 });

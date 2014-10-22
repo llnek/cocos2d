@@ -19,18 +19,19 @@ define('zotohlab/p/sysobjs', ['zotohlab/p/s/utils',
                              'zotohlab/p/s/movelasers',
                              'zotohlab/p/s/movemissiles',
                              'zotohlab/p/s/moveship',
-                             'zotohlab/p/s/supervisor'],
+                             'zotohlab/p/s/supervisor',
+                             'zotohlab/p/s/resolution'],
 
   function(SystemUtils, Priorities, EntityFactory,
            Collisions, MissileControl, Motions,
            MoveAsteroids, MoveLasers, MoveMissiles,
-           MovementShip, Supervisor) {
+           MovementShip, Supervisor, Resolution) {
 
     return {
 
       SystemUtils     : SystemUtils,
       Priorities      : Priorities,
-      EntityFactory   : EntityFactory,
+      Factory   : EntityFactory,
       Collisions      : Collisions,
       MissileControl  : MissileControl,
       Motions         : Motions,
@@ -38,7 +39,8 @@ define('zotohlab/p/sysobjs', ['zotohlab/p/s/utils',
       MoveLasers      : MoveLasers,
       MoveMissiles    : MoveMissiles,
       MovementShip    : MovementShip,
-      Supervisor      : Supervisor
+      Supervisor      : Supervisor,
+      Resolution      : Resolution
 
     };
 

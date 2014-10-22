@@ -73,11 +73,11 @@ define('zotohlab/p/config', ['cherimoia/skarojs',
           },
           sprites : {
           },
-          fixtures: [
-            null,
-            [5, 'rock_large.png'],
-            [5, 'rock_med.png'],
-            [10, 'rock_small.png']
+          cfg: [
+            null, // place holder, leave it
+            [5, 'rock_large.png', 25],
+            [5, 'rock_med.png', 50],
+            [10, 'rock_small.png', 100]
           ]
         }
       },

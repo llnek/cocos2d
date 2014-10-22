@@ -11,24 +11,21 @@
 
 define('zotohlab/p/hud', ['cherimoia/skarojs',
                          'zotohlab/asterix',
-                         'zotohlab/asx/xcfg',
                          'zotohlab/asx/ccsx',
                          'zotohlab/asx/xlayers'],
 
-  function (sjs, sh, xcfg, ccsx, layers) { "use strict";
+  function (sjs, sh, ccsx, layers) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
+
     BackLayer = layers.XLayer.extend({
 
-      rtti: function() { return 'BackLayer'; },
-      pkInit: function() {
-        var map = cc.TMXTiledMap.create(sh.getTilesPath('gamelevel1.tiles.arena'));
-        this.addItem(map);
-        return this._super();
-      }
+      rtti: function() { return 'BackLayer'; }
 
     }),
+
     HUDLayer = layers.XGameHUDLayer.extend({
 
       updateScore: function(n) {
@@ -46,15 +43,10 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
         this.lives.resurrect();
       },
 
-      initParentNode: function() {
-        var img= cc.textureCache.addImage( sh.getAtlasPath('game-pics'));
-        this.atlasBatch = new cc.SpriteBatchNode(img);
-        this.addChild(this.atlasBatch, this.lastZix, ++this.lastTag);
-        var map = cc.TMXTiledMap.create(sh.getTilesPath('gamelevel1.tiles.hudwall'));
-        this.addChild(map,++this.lastZix, ++this.lastTag);
+      initAtlases: function() {
+        this.regoAtlas('game-pics');
+        this.hudAtlas= 'game-pics';
       },
-
-      getNode: function() { return this.atlasBatch; },
 
       drawScore: function() {
         this.scoreLabel.setString(Number(this.score).toString());
@@ -90,18 +82,6 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
         });
 
         this.lives.create();
-      },
-
-      removeItem: function(n) {
-        if (n instanceof cc.Sprite) { this._super(n); } else {
-          this.removeChild(n);
-        }
-      },
-
-      addItem: function(n) {
-        if (n instanceof cc.Sprite) { this._super(n); } else {
-          this.addChild(n, this.lastZix, ++this.lastTag);
-        }
       }
 
     });

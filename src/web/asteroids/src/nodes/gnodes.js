@@ -12,48 +12,24 @@
 define('zotohlab/p/gnodes', ['zotohlab/p/components',
                             'cherimoia/skarojs',
                             'zotohlab/asterix',
-                            'zotohlab/asx/xcfg',
-                            'zotohlab/asx/ccsx',
-                            'ash-js'],
+                            'zotohlab/asx/ccsx'],
 
-  function (cobjs, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (cobjs, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
     ast= {};
 
-    //////////////////////////////////////////////////////////////////////////
-    //
-    ast.AstroMotionNode = Ash.Class.extend({
-
-      constructor: function(astro,rotn,velo) {
-        this.velocity= velo;
-        this.rotation= rotn;
-        this.astro = astro;
-      },
-
-      pid: function() { return this.astro.sprite.getTag(); },
-      rtti: function() { return "Asteroid"; },
-
-      inflate: function() {
-      },
-
-      deflate: function() {
-      }
-
-    });
-
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ast.CannonCtrlNode = Ash.Node.create({
+    ast.CannonCtrlNode = sh.Ashley.nodeDef({
       looper    : cobjs.Looper,
       cannon    : cobjs.Cannon,
       ship      : cobjs.Ship
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    ast.ShipMotionNode = Ash.Node.create({
+    ast.ShipMotionNode = sh.Ashley.nodeDef({
       velocity    : cobjs.Velocity,
       rotation    : cobjs.Rotation,
       thrust      : cobjs.Thrust,

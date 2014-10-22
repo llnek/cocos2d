@@ -20,6 +20,7 @@
 "src/asteroids/systems/move-ship.js",
 "src/asteroids/systems/collision.js",
 "src/asteroids/systems/supervisor.js",
+"src/asteroids/systems/resolution.js",
 "src/asteroids/systems/sysobjs.js",
 
       "src/asteroids/hud.js",

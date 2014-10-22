@@ -11,16 +11,16 @@
 
 define('zotohlab/p/s/moveasteroids', ['cherimoia/skarojs',
                                      'zotohlab/asterix',
-                                     'zotohlab/asx/xcfg',
-                                     'zotohlab/asx/ccsx',
-                                     'ash-js'],
+                                     'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-    MoveAsteroids = Ash.System.extend({
+
+    MoveAsteroids = sh.Ashley.sysDef({
 
       constructor: function(options) {
         this.state= options;
@@ -33,23 +33,29 @@ define('zotohlab/p/s/moveasteroids', ['cherimoia/skarojs',
       },
 
       update: function (dt) {
-        var p= sh.pools[ csts.P_LAS];
-        sjs.eachObj(function(n) {
-          this.process(n,dt);
-        }.bind(this), p);
+        var me=this;
+        sh.pools.Astros3.iter(function(a) {
+          if (a.status) { me.process(a, dt); }
+        });
+        sh.pools.Astros2.iter(function(a) {
+          if (a.status) { me.process(a, dt); }
+        });
+        sh.pools.Astros1.iter(function(a) {
+          if (a.status) { me.process(a, dt); }
+        });
       },
 
-      process: function(node, dt) {
-        var rot= node.rotation,
+      process: function(astro, dt) {
+        var rot= astro.rotation,
         B = this.state.world,
-        velo= node.velocity,
-        sp= node.astro.sprite,
+        velo= astro.vel,
+        sp= astro.sprite,
         sz= sp.getContentSize(),
         pos= sp.getPosition(),
         r,x,y;
 
-        x = pos.x + dt * velo.vel.x;
-        y = pos.y + dt * velo.vel.y;
+        x = pos.x + dt * velo.x;
+        y = pos.y + dt * velo.y;
 
         rot.angle += 0.1;
         if (rot.angle > 360) { rot.angle -= 360; }
@@ -61,25 +67,25 @@ define('zotohlab/p/s/moveasteroids', ['cherimoia/skarojs',
         r= ccsx.bbox4(sp);
 
         if (r.bottom > B.top) {
-          if (velo.vel.y > 0) {
+          if (velo.y > 0) {
             y = B.bottom - sz.height;
           }
         }
 
         if (r.top < B.bottom) {
-          if (velo.vel.y < 0) {
+          if (velo.y < 0) {
             y = B.top + sz.height;
           }
         }
 
         if (r.left > B.right) {
-          if (velo.vel.x > 0) {
+          if (velo.x > 0) {
             x = B.left - sz.width;
           }
         }
 
         if (r.right < B.left) {
-          if (velo.vel.x < 0) {
+          if (velo.x < 0) {
             x = B.right + sz.width;
           }
         }

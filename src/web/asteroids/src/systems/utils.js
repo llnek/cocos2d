@@ -12,76 +12,16 @@
 define('zotohlab/p/s/utils', ['zotohlab/p/components',
                              'cherimoia/skarojs',
                              'zotohlab/asterix',
-                             'zotohlab/asx/xcfg',
-                             'zotohlab/asx/ccsx',
-                             'ash-js'],
+                             'zotohlab/asx/ccsx'],
 
-  function (cobjs, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (cobjs, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     R = sjs.ramda,
     undef,
+
     SystemUtils = {
-
-      createMissiles: function(layer,options,count) {
-        for (var n=0; n < count; ++n) {
-          var b= new cobjs.Missile(new cc.Sprite());
-          b.sprite.initWithSpriteFrameName('laserGreen.png');
-          layer.addItem(b.sprite);
-          sh.pools[ csts.P_MS].add(b);
-        }
-      },
-
-      killBomb: function(bb,explode) {
-        sh.fireEvent('/game/objects/players/earnscore', {score: bb.value});
-        var pos= bb.sprite.getPosition(),
-        tag= bb.sprite.getTag(),
-        x= pos.x,
-        y= pos.y,
-        p = sh.pools[csts.P_LBS];
-
-        delete p[tag];
-        sh.pools[csts.P_BS].add(bb);
-
-        if (explode) {
-        }
-      },
-
-      killMissile: function(mm,explode) {
-        var pos= mm.sprite.getPosition(),
-        tag= mm.sprite.getTag(),
-        x= pos.x,
-        y= pos.y,
-        p = sh.pools[csts.P_LMS];
-
-        delete p[tag];
-        sh.pools[csts.P_MS].add(mm);
-
-        if (explode) {
-        }
-        sjs.loggr.debug("missile killed - pid = " + tag);
-      },
-
-      killShip: function(ship, explode) {
-        sh.fireEvent('/game/objects/players/killed');
-        //sh.sfxPlay('xxx-explode');
-      },
-
-      killRock: function(rock,explode) {
-        var ps= sh.pools[ csts.P_LAS],
-        sp= rock.sprite,
-        pid= sp.getTag(),
-        r= ps[pid];
-
-        sh.main.removeItem(sp);
-        delete ps[pid];
-
-        sjs.loggr.debug("rock killed - " + rock.rank);
-        sh.fireEvent('/game/objects/players/earnscore',
-                     {score: rock.value});
-        //rock.status=false;
-        //rock.sfxPlay('xxx-explode');
-      }
 
     };
 
