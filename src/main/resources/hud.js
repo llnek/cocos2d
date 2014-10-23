@@ -11,14 +11,15 @@
 
 define('zotohlab/p/hud', ['cherimoia/skarojs',
                          'zotohlab/asterix',
-                         'zotohlab/asx/xcfg',
                          'zotohlab/asx/ccsx',
                          'zotohlab/asx/xlayers'],
 
-  function(sjs, sh, xcfg, ccsx, layers) { "use strict";
+  function(sjs, sh, ccsx, layers) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
+
     BackLayer = layers.XLayer.extend({
 
       rtti: function() { return 'BackLayer'; },
@@ -27,18 +28,15 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
       }
 
     }),
+
     HUDLayer = layers.XGameHUDLayer.extend({
 
-      initParentNode: function() {
-        var img= cc.textureCache.addImage( sh.getAtlasPath('game-pics'));
-        this.atlasBatch = new cc.SpriteBatchNode(img);
-        this.addChild(this.atlasBatch, this.lastZix, ++this.lastTag);
+      initAtlases: function() {
       },
 
-      getNode: function() { return this.atlasBatch; },
-
       initLabels: function() {
-        var wz = ccsx.screen();
+        var offset = csts.TILE - csts.S_OFF,
+        wz = ccsx.screen();
 
         this.scoreLabel = ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.TinyBoxBB'),
@@ -46,8 +44,9 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
           anchor: ccsx.AnchorBottomRight,
           scale: 12/72
         });
-        this.scoreLabel.setPosition( wz.width - csts.TILE - csts.S_OFF,
-          wz.height - csts.TILE - csts.S_OFF - ccsx.getScaledHeight(this.scoreLabel));
+
+        this.scoreLabel.setPosition(wz.width - offset,
+          wz.height - offset - ccsx.getScaledHeight(this.scoreLabel));
 
         this.addChild(this.scoreLabel, this.lastZix, ++this.lastTag);
       },
@@ -62,18 +61,6 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
         });
 
         this.lives.create();
-      },
-
-      removeItem: function(n) {
-        if (n instanceof cc.Sprite) { this._super(n); } else {
-          this.removeChild(n);
-        }
-      },
-
-      addItem: function(n) {
-        if (n instanceof cc.Sprite) { this._super(n); } else {
-          this.addChild(n, this.lastZix, ++this.lastTag);
-        }
       },
 
       initCtrlBtns: function(s) {

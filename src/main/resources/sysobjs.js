@@ -14,20 +14,20 @@ define("zotohlab/p/sysobjs", ['zotohlab/p/s/priorities',
                              'zotohlab/p/s/utils',
                              'zotohlab/p/s/supervisor',
                              'zotohlab/p/s/motions',
-                             'zotohlab/p/s/collisions'],
+                             'zotohlab/p/s/resolution'],
 
   function (Priorities, EntityFactory, SystemUtils,
             Supervisor, Motions,
-            CollisionSystem) { "use strict";
+            Resolution) { "use strict";
 
     return {
 
       Priorities          : Priorities,
-      EntityFactory       : EntityFactory,
+      Factory       : EntityFactory,
       SystemUtils         : SystemUtils,
       Supervisor          : Supervisor,
       Motions             : Motions,
-      CollisionSystem     : CollisionSystem
+      Resolution     : Resolution
 
     };
 

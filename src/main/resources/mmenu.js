@@ -11,36 +11,39 @@
 
 define('zotohlab/p/mmenu', ['cherimoia/skarojs',
                            'zotohlab/asterix',
-                           'zotohlab/asx/xcfg',
                            'zotohlab/asx/ccsx',
                            'zotohlab/asx/xlayers',
                            'zotohlab/asx/xscenes',
                            'zotohlab/asx/xmmenus'],
 
-  function (sjs, sh, xcfg, ccsx, layers, scenes, mmenus) { "use strict";
+  function (sjs, sh, ccsx, layers, scenes, mmenus) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
+
     MainMenuLayer = mmenus.XMenuLayer.extend({
 
       pkInit: function() {
         var cw = ccsx.center(),
         wz = ccsx.screen();
 
+        this._super();
+
         this.addItem( ccsx.tmenu1({
           fontPath: sh.getFontPath('font.OogieBoogie'),
           text: sh.l10n('%1player'),
           selector: function() {
-            sh.fireEvent('/mmenu/controls/newgame', { mode: sh.P1_GAME });
+            sh.fireEvent('/mmenu/controls/newgame', {
+              mode: sh.P1_GAME
+            });
           },
           target: this,
           scale: 0.5,
-          pos: cc.p(cw.x, wz.height * 0.75)
+          pos: cc.p(cw.x, wz.height * 0.20)
         }));
 
         this.doCtrlBtns();
-
-        return this._super();
       }
 
     });
@@ -54,11 +57,11 @@ define('zotohlab/p/mmenu', ['cherimoia/skarojs',
             mmenus.XMenuBackLayer,
             MainMenuLayer
           ]).create(options);
-          if (!!scene) {
-            scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
-              cc.director.runScene( sh.protos['GameArena'].create(msg));
-            });
-          }
+
+          scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
+            cc.director.runScene( sh.protos['GameArena'].create(msg));
+          });
+
           return scene;
         }
       }

@@ -12,13 +12,14 @@
 define("zotohlab/p/s/utils", ['zotohlab/p/components',
                              'cherimoia/skarojs',
                              'zotohlab/asterix',
-                             'zotohlab/asx/xcfg',
                              'zotohlab/asx/ccsx'],
 
-  function (cobjs, sjs, sh, xcfg, ccsx) { "use strict";
+  function (cobjs, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
+
     SystemUtils = {
 
     };

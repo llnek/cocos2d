@@ -1,0 +1,17 @@
+ {
+
+    "jsList"        : [
+
+    "src/@@APPID@@/config.js",
+    "src/@@APPID@@/i18n/game_en_US.js",
+
+    "src/@@APPID@@/splash.js",
+    "src/@@APPID@@/mmenu.js",
+    "src/@@APPID@@/hud.js",
+    "src/@@APPID@@/game.js",
+
+    "src/@@APPID@@/protos.js",
+    "src/zotohlab/ext/xboot.js"
+
+    ]
+}

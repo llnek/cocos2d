@@ -13,19 +13,18 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
                                   'zotohlab/p/s/utils',
                                   'cherimoia/skarojs',
                                   'zotohlab/asterix',
-                                  'zotohlab/asx/xcfg',
                                   'zotohlab/asx/ccsx',
-                                  'zotohlab/asx/xpool',
-                                  'ash-js'],
+                                  'zotohlab/asx/xpool'],
 
-  function (cobjs, utils, sjs, sh, xcfg, ccsx, xpool,Ash) { "use strict";
+  function (cobjs, utils, sjs, sh, ccsx, xpool) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
-    GameSupervisor = Ash.System.extend({
+
+    GameSupervisor = sh.Ashley.sysDef({
 
       constructor: function(options) {
-        this.factory= options.factory;
         this.state= options;
         this.inited=false;
       },

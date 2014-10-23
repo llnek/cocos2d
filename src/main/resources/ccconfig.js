@@ -1,25 +1,22 @@
 document.ccConfig = {
 
-  loadExtension: false,
-  chipmunk: true,
-  box2d: false,
-  showFPS: false,
-  frameRate: 30,
-
   // 0(default), 1(Canvas only), 2(WebGL only)
   renderMode: 0,
   debugMode: 1,
 
+  showFPS: false,
+  frameRate: 30,
+
   id: 'gameArea',
 
   engineDir: ['/public/extlibs/cocos2d-html5'],
-  modules: [ 'cocos2d', 'editbox', 'ccpool' ],
+  modules: ['cocos2d', 'editbox', "ccui"],
 
   jsList: [
 
+    "/public/vendors/mustache/mustache.js",
     "/public/vendors/ramda/ramda.js",
     "/public/vendors/l10njs/l10n.js",
-    "/public/vendors/mustache/mustache.js",
     "/public/vendors/helpers/dbg.js",
 
     "/public/vendors/js-signals/signals.js",
@@ -46,8 +43,16 @@ document.ccConfig = {
     "/public/ig/lib/zotohlab/gui/online.js",
     "/public/ig/lib/zotohlab/gui/mainmenu.js",
 
-    '/public/ig/lib/game/???/config.js',
-    '/public/ig/lib/game/???/i18n/game_en_US.js'
+    '/public/ig/lib/game/@@APPID@@/config.js',
+    '/public/ig/lib/game/@@APPID@@/i18n/game_en_US.js',
+
+    '/public/ig/lib/game/@@APPID@@/splash.js',
+    '/public/ig/lib/game/@@APPID@@/mmenu.js',
+    '/public/ig/lib/game/@@APPID@@/hud.js',
+    '/public/ig/lib/game/@@APPID@@/game.js',
+
+    '/public/ig/lib/game/@@APPID@@/protos.js',
+    '/public/ig/lib/zotohlab/ext/xboot.js'
 
   ]
 

@@ -9,23 +9,22 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define('zotohlab/p/s/collisions', ['zotohlab/p/s/utils',
+define('zotohlab/p/s/resolution', ['zotohlab/p/components',
                                   'zotohlab/p/gnodes',
                                   'cherimoia/skarojs',
                                   'zotohlab/asterix',
-                                  'zotohlab/asx/xcfg',
-                                  'zotohlab/asx/ccsx',
-                                  'ash-js'],
+                                  'zotohlab/asx/ccsx'],
 
-  function (utils, gnodes, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (cobjs, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-    CollisionSystem = Ash.System.extend({
+
+    Resolution = sh.Ashley.sysDef({
 
       constructor: function(options) {
-        this.factory= options.factory;
         this.state= options;
         this.inited=false;
       },
@@ -38,12 +37,11 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/s/utils',
       },
 
       update: function (dt) {
-
       }
 
     });
 
-    return CollisionSystem;
+    return Resolution;
 });
 
 //////////////////////////////////////////////////////////////////////////////

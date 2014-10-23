@@ -685,6 +685,7 @@ target (newapp: '') {
     format (property: "pubtime", pattern: "yyyy-MM-dd")
   }
   replace (file: "${webDir}/${appid}/info/game.mf", token: "@@PUBDATE@@", value: "${pubtime}")
+  replace (file: "${webDir}/${appid}/info/game.mf", token: "@@APPID@@", value: "${appid}")
   replace (file: "${webDir}/${appid}/info/game.json", token: "@@UUID@@", value: "${appkey}")
   ["game.js", "splash.js", "mmenu.js", "hud.js"].each { s ->
     copy (file: "${srcDir}/resources/${s}", todir: "${webDir}/${appid}/src")
@@ -692,7 +693,7 @@ target (newapp: '') {
   copy (file: "${srcDir}/resources/cobjs.js", todir: "${webDir}/${appid}/src/components")
   copy (file: "${srcDir}/resources/gnodes.js", todir: "${webDir}/${appid}/src/nodes")
   ["supervisor.js", "factory.js", "priorities.js", "motion.js",
-   "utils.js", "sysobjs.js"].each { s ->
+   "resolution.js", "utils.js", "sysobjs.js"].each { s ->
     copy (file: "${srcDir}/resources/${s}", todir: "${webDir}/${appid}/src/systems")
   }
 
@@ -701,7 +702,11 @@ target (newapp: '') {
   replace (file: "${webDir}/${appid}/src/config.js", token: "@@UUID@@", value: "${appkey}")
   copy (file: "${srcDir}/resources/l10n.js", tofile: "${webDir}/${appid}/src/i18n/game_en_US.js")
   copy (file: "${srcDir}/resources/ccconfig.js", todir: "${webDir}/${appid}/src")
-  echo (message: '{ "jsList" : [] }', file: "${webDir}/${appid}/src/project.json")
+  copy (file: "${srcDir}/resources/proj.json", tofile: "${webDir}/${appid}/src/project.json")
+
+  replace (file: "${webDir}/${appid}/src/project.json", token: "@@APPID@@", value: "${appid}")
+  replace (file: "${webDir}/${appid}/src/ccconfig.js", token: "@@APPID@@", value: "${appid}")
+
   //cocos_new("${appid}");
 }
 

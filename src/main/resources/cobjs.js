@@ -11,18 +11,16 @@
 
 define("zotohlab/p/components", ['cherimoia/skarojs',
                                 'zotohlab/asterix',
-                                'zotohlab/asx/xcfg',
-                                'zotohlab/asx/ccsx',
-                                'ash-js'],
+                                'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (sjs, sh, ccsx) { "use strict";
 
-    var csts= xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
     cobjs={};
 
     //////////////////////////////////////////////////////////////////////////
-    //
 
 
 

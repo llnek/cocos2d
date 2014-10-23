@@ -48,6 +48,8 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
           images: {
           },
           sprites: {
+          },
+          cfg {
           }
         }
       }

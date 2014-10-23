@@ -12,15 +12,15 @@
 define('zotohlab/p/s/factory', ['zotohlab/p/components',
                                'cherimoia/skarojs',
                                'zotohlab/asterix',
-                               'zotohlab/asx/xcfg',
-                               'zotohlab/asx/ccsx',
-                               'ash-js'],
+                               'zotohlab/asx/ccsx'],
 
-  function (cobjs, sjs, sh, xcfg, ccsx, Ash) { "use strict";
+  function (cobjs, sjs, sh, ccsx) { "use strict";
 
-    var csts = xcfg.csts,
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
     undef,
-    EntityFactory = Ash.Class.extend({
+
+    EntityFactory = sh.Ashley.casDef({
 
       constructor: function(engine) {
         this.engine=engine;

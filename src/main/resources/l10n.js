@@ -10,21 +10,21 @@
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 define("zotohlab/p/l10n", ['cherimoia/skarojs',
-                          'zotohlab/asterix',
-                          'zotohlab/asx/xcfg'],
+                          'zotohlab/asterix'],
 
-  function (sjs, sh, xcfg) { "use strict";
+  function (sjs, sh) { "use strict";
+
+    var xcfg = sh.xcfg,
+    undef;
 
     sjs.merge(xcfg.l10nTable, {
 
-    "en" : {
-
-    }
+      "en" : {
+      }
 
     });
 
     return xcfg.l10nTable;
-
 });
 
 //////////////////////////////////////////////////////////////////////////////
