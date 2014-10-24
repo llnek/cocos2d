@@ -27,7 +27,14 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
         if (!!this.sprite) {
           if (sjs.hasKey(options, 'x') &&
               sjs.hasKey(options, 'y')) {
-            this.sprite.setPosition(options.x, options.y);
+            this.sprite.setPosition(options.x,
+                                    options.y);
+          }
+          if (sjs.hasKey(options, 'deg')) {
+            this.sprite.setRotation(options.deg);
+          }
+          if (sjs.hasKey(options, 'scale')) {
+            this.sprite.setScale(options.scale);
           }
           this.sprite.setVisible(true);
         }
