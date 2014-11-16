@@ -39,6 +39,7 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
       //ipad retina
         //lanscape ? [2048, 1536] : [1536, 1048]
         ps = ['assets/res/hdr', 'res/hdr'];
+        xcfg.resourceDir = 'hdr';
       }
       else
       if (fsz.width >= 640 && fsz.height >= 640) {
@@ -50,11 +51,13 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
           //landscape ? [960,640] : [640,960]
         }
         ps = ['assets/res/hds', 'res/hds'];
+        xcfg.resourceDir = 'hds';
       }
       else {
       // default iphone 4, lowest common denominator
         //landscape ? [480, 320] : [320, 480]
         ps = ['assets/res/sd', 'res/sd'];
+        xcfg.resourceDir = 'sd';
       }
 
       ps= ps.concat(['assets/src', 'src']);
@@ -197,15 +200,23 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
     //
     function preLaunchApp(sjs, sh, xcfg, ldr,  ss1) {
       var fz= cc.view.getFrameSize(),
-      sz = xcfg.game.size,
+      paths,
+      sz,
       pfx,
       rs, pcy;
 
       if (cc.sys.isNative) {
         pcy = cc.ResolutionPolicy.NO_BORDER;
+        paths= maybeInitResources();
+        if (!!paths) {
+          jsb.fileUtils.setSearchPaths(paths);
+        }
       } else {
         pcy = cc.ResolutionPolicy.SHOW_ALL;
       }
+
+      //actual design size
+      sz= xcfg.game[xcfg.resourceDir];
 
       cc.view.setDesignResolutionSize(sz.width, sz.height, pcy);
       rs= cc.view.getDesignResolutionSize();
@@ -244,12 +255,6 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
     }
 
     sjs.loggr.info("About to create Cocos2D HTML5 Game");
-    if (cc.sys.isNative) {
-      var paths= maybeInitResources();
-      if (!!paths) {
-        jsb.fileUtils.setSearchPaths(paths);
-      }
-    }
 
     preLaunchApp(sjs, sh, xcfg, loader, ss1);
     sh.l10nInit(),

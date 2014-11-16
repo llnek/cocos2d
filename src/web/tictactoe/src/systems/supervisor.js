@@ -9,17 +9,19 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/s/supervisor", ['zotohlab/p/gnodes',
+define("zotohlab/p/s/supervisor", ['zotohlab/p/s/utils',
+                                  'zotohlab/p/gnodes',
                                   'cherimoia/skarojs',
                                   'zotohlab/asterix',
                                   'zotohlab/asx/ccsx',
                                   'zotohlab/asx/odin'],
 
-  function (gnodes, sjs, sh, ccsx, odin) { "use strict";
+  function (utils, gnodes, sjs, sh, ccsx, odin) { "use strict";
 
     var evts= odin.Events,
     xcfg=sh.xcfg,
     csts= xcfg.csts,
+    R=sjs.ramda,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -53,7 +55,24 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/gnodes',
         }
       },
 
+      showGrid: function(node) {
+        var mgs = utils.mapGridPos(),
+        cs=node.view.cells,
+        pos=0,
+        sp;
+
+        R.forEach(function(mp) {
+          sp= ccsx.createSpriteFrame('z.png');
+          sp.setPosition( mp.x1 + (mp.x2 - mp.x1) * 0.5,
+                          mp.y2 + (mp.y1 - mp.y2) * 0.5);
+          sh.main.addAtlasItem('markers',sp);
+          cs[pos++]=[sp, sp.getPositionX(), sp.getPositionY(), csts.CV_Z];
+        }, mgs);
+      },
+
       onceOnly: function(node,dt) {
+
+        this.showGrid(node);
 
         if (this.state.wsock) {
           // online play

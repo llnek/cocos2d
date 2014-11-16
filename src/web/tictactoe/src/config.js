@@ -22,7 +22,10 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
       appKey : "bd5f79bb-eb41-4ed5-bb44-2529dc27ed3c",
 
       appid: 'tictactoe',
-      color: 'sky',
+      color: 'white',
+
+      resourceDir: 'sd',
+      browser: false,
 
       csts: {
         GRID_W: 40,
@@ -38,14 +41,20 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
       },
 
       game: {
-        size: {width:320, height:480, scale:1}
+        hdr: { width: 960, height: 1440 },
+        hds: { width: 640, height: 960 },
+        sd : { width: 320, height: 480 }
       },
 
       assets: {
+        atlases: {
+          'markers' : 'res/{{appid}}/pics/markers'
+        },
         tiles: {
         },
         images: {
-          'splash.play-btn' : 'res/cocos2d/btns/play_blue_x64.png'
+          'splash.play-btn' : 'res/cocos2d/btns/play_blue_x64.png',
+          'arena.bg' : 'res/{{appid}}/pics/arena.png'
         },
         sounds: {
           'game_end' : 'res/cocos2d/sfx/MineExplosion',
@@ -66,9 +75,12 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
             'arena' : 'game/{{appid}}/levels/arena.png'
           },
           sprites: {
-            'markers' : [ 'res/{{appid}}/pics/markers.png', 72,72, -1]
           }
         }
+      },
+
+      runOnce: function() {
+        cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('markers'));
       }
 
     });

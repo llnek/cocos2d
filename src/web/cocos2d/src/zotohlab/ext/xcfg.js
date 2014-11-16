@@ -80,7 +80,6 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
         preloadLevels: true,
         sfx: 'mp3',
         landscape: false,
-        size: {},
         gravity: 0,
         version: "",
         trackingID: ""

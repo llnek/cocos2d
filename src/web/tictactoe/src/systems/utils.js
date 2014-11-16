@@ -22,15 +22,61 @@ define("zotohlab/p/s/utils", ['cherimoia/skarojs',
     //////////////////////////////////////////////////////////////////////////////
     return {
 
+      mapGridPos: function () {
+        // memorize the co-ordinates of each cell on the board, so
+        // we know which cell the user has clicked on.
+        var sp = ccsx.createSpriteFrame('z.png'),
+        csz = sp.getContentSize(),
+        ro= 8/72,
+        gh = csz.height * ro,
+        gw = csz.width * ro,
+        zh= csts.GRID_SIZE * csz.height + (csts.GRID_SIZE-1) * gh,
+        zw= csts.GRID_SIZE * csz.width + (csts.GRID_SIZE-1) * gw,
+        cw = ccsx.center(),
+        gridMap=[],
+        x2,y2,
+        x0 = cw.x - zw * 0.5,
+        y0 = cw.y + zh * 0.5,
+        x1= x0,
+        y1=y0;
+
+        for (var n=0; n < csts.CELLS; ++n) { gridMap.push(null); }
+        for (var r=0; r < csts.GRID_SIZE; ++r) {
+          for (var c= 0; c < csts.GRID_SIZE; ++c) {
+            y2 = y1 - csz.height;
+            x2 = x1 + csz.width;
+            gridMap[r * csts.GRID_SIZE + c] = { x1: x1, y1: y1, x2: x2, y2: y2};
+            x1 = x2 + gw;
+          }
+          y1 = y2 - gh;
+          x1 = x0;
+        }
+        return gridMap;
+      },
+
+      pkFlip: function(img,flip) {
+        if (flip) {
+          return img + ".i.png";
+        } else {
+          return img + ".png";
+        }
+      },
+
+      xrefImg: function(value) {
+        switch (value) {
+          case csts.CV_X: return 'x';
+          case csts.CV_O: return 'o';
+          case csts.CV_Z: return 'z';
+        }
+      },
+
       //pass in gridview
-      drawSymbol: function(view, x,y,offset) {
-        var s1= new cc.Sprite(view.url,
-                              cc.rect(offset * view.width,
-                                      0,
-                                      view.width, view.height));
+      drawSymbol: function(view, x,y,value,flip) {
+        var frame = this.pkFlip(this.xrefImg(value),flip),
+        s1= ccsx.createSpriteFrame(frame);
         s1.setAnchorPoint(ccsx.AnchorCenter);
         s1.setPosition(x,y);
-        view.layer.addItem(s1);
+        view.layer.addAtlasItem('markers', s1);
         return s1;
       }
 

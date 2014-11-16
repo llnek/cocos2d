@@ -9,12 +9,14 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/components", ['cherimoia/skarojs',
+define("zotohlab/p/components", ['zotohlab/p/s/utils',
+                                'cherimoia/skarojs',
                                 'zotohlab/asterix',
+                                'zotohlab/asx/ccsx',
                                 'zotohlab/asx/negamax',
                                 'zotohlab/p/c/board'],
 
-  function (sjs, sh, negax, GameBoard) { "use strict";
+  function (utils, sjs, sh, ccsx, negax, GameBoard) { "use strict";
 
     var xcfg = sh.xcfg,
     csts= xcfg.csts,
@@ -53,42 +55,18 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
 
     });
 
-
-    //////////////////////////////////////////////////////////////////////////////
-    function mapGridPos (self) {
-      // memorize the co-ordinates of each cell on the board, so
-      // we know which cell the user has clicked on.
-      var gzh = 3 * csts.HOLE + 2 * csts.R_GAP,
-      y2, y1 = csts.TILE * ((csts.GRID_H + gzh) * 0.5),
-      x2, x1 = csts.LEFT * csts.TILE,
-      hz = csts.TILE * csts.HOLE,
-      r,c,n, _results = [];
-
-      for (n=0; n < csts.CELLS; ++n) { self.gridMap[n] = []; }
-      for (r=0; r < csts.GRID_SIZE; ++r) {
-        for (c= 0; c < csts.GRID_SIZE; ++c) {
-          x2 = x1 + hz;
-          y2 = y1 - hz;
-          self.gridMap[r * csts.GRID_SIZE + c] = [x1, y1, x2, y2];
-          x1 = x2 + csts.C_GAP * csts.TILE;
-        }
-        y1 = y1 - (csts.HOLE + csts.R_GAP) * csts.TILE;
-        x1 = csts.LEFT * csts.TILE;
-        _results.push(x1);
-      }
-    }
-
     lib.GridView = sh.Ashley.casDef({
 
       constructor: function(size, layer) {
-        var m = xcfg.assets.sprites['gamelevel1.sprites.markers'];
-        this.gridMap= sjs.makeArray(size * size, null);
+        var sp = ccsx.createSpriteFrame('z.png'),
+        sz= sp.getContentSize();
+        //this.gridMap= sjs.makeArray(size * size, null);
         this.cells= sjs.makeArray(size * size, null);
         this.layer= layer;
-        this.width= m[1];
-        this.height= m[2];
-        this.url= sh.sanitizeUrl(m[0]);
-        mapGridPos(this);
+        this.width= sz.width;
+        this.height= sz.height;
+        this.url= "";
+        this.gridMap= utils.mapGridPos();
       }
 
     });

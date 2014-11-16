@@ -121,9 +121,9 @@ define("zotohlab/p/s/resolution", ['zotohlab/p/s/utils',
         if (combo===null) { return; }
 
         R.forEach.idx(function(z, n) {
-          if (! R.contains(n, combo)) { if (z) {
-            layer.removeItem(z[0]);
-            z[0] = utils.drawSymbol(view, z[1], z[2], z[3]+2);
+          if (! R.contains(n, combo)) { if (z && z[3] !== csts.CV_Z) {
+            layer.removeAtlasItem('markers', z[0]);
+            z[0] = utils.drawSymbol(view, z[1], z[2], z[3], true);
           } }
         }.bind(this), cs);
       },

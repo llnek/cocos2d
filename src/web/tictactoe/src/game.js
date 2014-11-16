@@ -102,12 +102,17 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
       },
 
       reset: function(newFlag) {
+        if (!sjs.isEmpty(this.atlases)) {
+          sjs.eachObj(function(v){ v.removeAllChildren(); }, this.atlases);
+        } else {
+          this.regoAtlas('markers');
+        }
         if (newFlag) {
           this.getHUD().resetAsNew();
         } else {
           this.getHUD().reset();
         }
-        this.removeAll();
+        //this.removeAll();
       },
 
       onclicked: function(mx,my) {

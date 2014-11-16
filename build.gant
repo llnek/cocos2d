@@ -506,7 +506,7 @@ def doCompileSCSS(wappid) {
 def doCompileMedia(wappid) {
   mkdir (dir: "${basedir}/public/ig/res/${wappid}")
   copy (todir: "${basedir}/public/ig/res/${wappid}") {
-    fileset (dir: "${webDir}/${wappid}/res/hds") {
+    fileset (dir: "${webDir}/${wappid}/res/sd") {
       include (name: '**/*')
     }
     fileset (dir: "${webDir}/${wappid}/res") {

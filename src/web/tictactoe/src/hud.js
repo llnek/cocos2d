@@ -24,10 +24,19 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
     BackLayer = layers.XLayer.extend({
 
       rtti: function() { return 'BackLayer'; },
+
       pkInit: function() {
+        var imgUrl= sh.getImagePath('arena.bg'),
+        s,
+        cw = ccsx.center();
+
         this._super();
-        this.addItem(new cc.TMXTiledMap(
-          sh.getTilesPath('gamelevel1.tiles.arena')));
+
+        if (!!imgUrl) {
+          s= new cc.Sprite(imgUrl);
+          s.setPosition(cw);
+          this.addItem(s);
+        }
       }
 
     }),

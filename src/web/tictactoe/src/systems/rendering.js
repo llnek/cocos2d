@@ -49,17 +49,19 @@ define("zotohlab/p/s/rendering", ['zotohlab/p/s/utils',
         var values= node.grid.values,
         view= node.view,
         cs= view.cells,
-        c, offset;
+        z,c, offset;
 
         R.forEach.idx(function(v, pos) {
 
-          if (!sjs.echt(cs[pos]) &&
-              v !== csts.CV_Z) {
+          if (v !== csts.CV_Z) {
             c= this.xrefCell(pos, view.gridMap);
-            offset= v === csts.CV_X ? 0 : 1;
             if (!!c) {
-              cs[pos] = [utils.drawSymbol(view, c[0], c[1], offset),
-                         c[0], c[1], offset, v];
+              z=cs[pos];
+              if (!!z) {
+                sh.main.removeAtlasItem('markers', z[0]);
+              }
+              cs[pos] = [utils.drawSymbol(view, c[0], c[1], v),
+                         c[0], c[1], v];
             }
           }
 
@@ -76,8 +78,8 @@ define("zotohlab/p/s/rendering", ['zotohlab/p/s/utils',
 
         if (pos >= 0 && pos < csts.CELLS) {
           gg = map[pos];
-          x = gg[0] + (gg[2] - gg[0]  - delta) / 2;
-          y = gg[1] - (gg[1] - gg[3] - delta ) / 2;
+          x = gg.x1 + (gg.x2 - gg.x1  - delta) * 0.5;
+          y = gg.y1 - (gg.y1 - gg.y2 - delta ) * 0.5;
           // the cell's center
           return [x, y];
         } else {
