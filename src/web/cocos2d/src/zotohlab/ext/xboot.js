@@ -32,6 +32,7 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
       landscape,
       ps;
 
+      sjs.loggr.info("view.frameSize = [" + fsz.width + ", " + fsz.height  + "]");
       sjs.loggr.info("Sorting out resource search paths...");
 
       // need to prefix "assets" for andriod
