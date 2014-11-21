@@ -113,7 +113,7 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
         this.addItem(this.score2);
 
         this.status= ccsx.bmfLabel({
-          fontPath: sh.getFontPath('font.Subito'),
+          fontPath: sh.getFontPath('font.CoffeeBuzzed'),
           text: '',
           scale: 0.06,
           pos: cc.p(cw.x, wb.bottom + csts.TILE * 10)
@@ -121,7 +121,7 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
         this.addItem(this.status);
 
         this.result= ccsx.bmfLabel({
-          fontPath: sh.getFontPath('font.Subito'),
+          fontPath: sh.getFontPath('font.CoffeeBuzzed'),
           text: '',
           scale: 0.06,
           pos: cc.p(cw.x, wb.bottom + csts.TILE * 10),
