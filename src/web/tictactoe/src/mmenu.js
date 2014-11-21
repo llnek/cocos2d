@@ -40,7 +40,8 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
       pkInit: function() {
 
         var cw = ccsx.center(),
-        wz = ccsx.screen(),
+        wz = ccsx.vrect(),
+        wb= ccsx.vbox(),
         pobj2,
         pobj1;
 
@@ -56,7 +57,7 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
           },
           target: this,
           scale: 0.5,
-          pos: cc.p(114, wz.height - csts.TILE * 18 - 2)
+          pos: cc.p(114, wb.top - csts.TILE * 18 - 2)
         }));
 
         pobj2={};
@@ -73,7 +74,7 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
           },
           target: this,
           scale: 0.5,
-          pos: cc.p(cw.x + 68, wz.height - csts.TILE * 28 - 4)
+          pos: cc.p(cw.x + 68, wb.top - csts.TILE * 28 - 4)
         }));
 
         pobj1={};
@@ -90,7 +91,7 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
           },
           target: this,
           scale: 0.5,
-          pos: cc.p(cw.x, csts.TILE * 19)
+          pos: cc.p(cw.x, wb.bottom + csts.TILE * 19)
         }));
 
         this.doCtrlBtns();

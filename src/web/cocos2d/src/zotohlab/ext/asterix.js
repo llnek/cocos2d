@@ -241,7 +241,7 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
       },
 
       getImagePath: function(key) {
-        cc.log('getSpritePath for key : ' + key);
+        //cc.log('getSpritePath for key : ' + key);
         return this.fixUrl(this.xcfg.assets.images[key]);
       },
 
@@ -260,7 +260,7 @@ define("zotohlab/asterix", ['cherimoia/skarojs',
       },
 
       getSpritePath: function(key) {
-        cc.log('getSpritePath for key : ' + key);
+        //cc.log('getSpritePath for key : ' + key);
         return this.fixUrl(this.xcfg.assets.sprites[key](0));
       },
 

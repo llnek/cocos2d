@@ -23,7 +23,7 @@ define("zotohlab/asx/xsplash", ['cherimoia/skarojs',
 
       pkInit: function() {
         var imgUrl= sh.getImagePath('splash.splash'),
-        wz = ccsx.screen(),
+        wz = ccsx.vrect(),
         cw = ccsx.center();
 
         this._super();

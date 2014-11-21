@@ -25,10 +25,11 @@ define("zotohlab/asx/xmmenus", ['cherimoia/skarojs',
       pkInit: function() {
 
         var imgUrl= sh.getImagePath('gui.mmenu.menu.bg'),
+        cw = ccsx.center(),
+        wz = ccsx.vrect(),
+        wb = ccsx.vbox(),
         s,
-        title,
-        wz = ccsx.screen(),
-        cw = ccsx.center();
+        title;
 
         this._super();
 
@@ -40,7 +41,7 @@ define("zotohlab/asx/xmmenus", ['cherimoia/skarojs',
 
         title = new cc.LabelBMFont(sh.l10n('%mmenu'),
                                    sh.getFontPath('font.JellyBelly')),
-        title.setPosition(cw.x, wz.height - csts.TILE * 8 / 2);
+        title.setPosition(cw.x, wb.top - csts.TILE * 8 / 2);
         title.setOpacity(0.9*255);
         title.setScale(0.6);
 
@@ -55,7 +56,8 @@ define("zotohlab/asx/xmmenus", ['cherimoia/skarojs',
 
       doCtrlBtns: function() {
         var audio = xcfg.assets.sprites['gui.audio'],
-        wz = ccsx.screen(),
+        wz = ccsx.vrect(),
+        wb = ccsx.vbox(),
         cw = ccsx.center(),
         s1 = [null, null, null],
         s2 = [null, null, null],
@@ -107,8 +109,8 @@ define("zotohlab/asx/xmmenus", ['cherimoia/skarojs',
         }, this);
         menu= new cc.Menu(t1,t2);
         menu.alignItemsHorizontallyWithPadding(10);
-        menu.setPosition(wz.width - csts.TILE - csts.S_OFF - (s2[0].getContentSize().width + s1[0].getContentSize().width + 10) * 0.5,
-          csts.TILE + csts.S_OFF + s2[0].getContentSize().height * 0.5);
+        menu.setPosition(wb.right - csts.TILE - csts.S_OFF - (s2[0].getContentSize().width + s1[0].getContentSize().width + 10) * 0.5,
+          wb.bottom + csts.TILE + csts.S_OFF + s2[0].getContentSize().height * 0.5);
         this.addItem(menu);
       },
 

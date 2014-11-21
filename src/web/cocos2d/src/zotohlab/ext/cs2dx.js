@@ -103,8 +103,7 @@ define("zotohlab/asx/ccsx", ['cherimoia/skarojs',
 
       outOfBound: function(ent,B) {
         var bx= this.bbox4(ent.sprite),
-        wz = this.screen(),
-        E = B || { bottom: 0, left: 0, top: wz.height, right: wz.width};
+        E = B || this.vbox();
 
         return (bx.bottom > E.top ||
                 bx.top < E.bottom ||
@@ -223,19 +222,38 @@ define("zotohlab/asx/ccsx", ['cherimoia/skarojs',
       centerX: function() { return this.center().x; },
       centerY: function() { return this.center().y; },
       center: function() {
-        var wz = this.screen();
-        return cc.p(wz.width * 0.5, wz.height * 0.5);
+        var rc = this.vrect();
+        return cc.p( rc.x + rc.width * 0.5, rc.y + rc.height * 0.5);
       },
 
       screenHeight: function() { return this.screen().height; },
       screenWidth: function() { return this.screen().width; },
 
+      vrect: function() {
+        var vo = cc.view.getVisibleOrigin(),
+        wz= cc.view.getVisibleSize();
+        return cc.rect(vo.x, vo.y, wz.width, wz.height);
+      },
+
+      vbox: function() {
+        var vo = cc.view.getVisibleOrigin(),
+        wz= cc.view.getVisibleSize();
+        return {
+          bottom: vo.y,
+          left: vo.x,
+          right: vo.x + wz.width,
+          top: vo.y + wz.height
+        };
+      },
+
       screen: function() {
-        return cc.director.getWinSize();
-        /*
-        return (cc.sys.isNative) ? cc.director.getWinSize()
-                                 : cc.director.getWinSizeInPixels();
-                                */
+        return cc.sys.isNative ? cc.view.getFrameSize()
+                               : cc.director.getWinSize();
+      },
+
+      scenter: function() {
+        var sz = this.screen();
+        return cc.p(sz.width * 0.5, sz.height * 0.5);
       },
 
       //tests if entity is hitting boundaries.

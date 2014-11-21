@@ -19,7 +19,6 @@ define("zotohlab/asx/xscenes", ['cherimoia/skarojs',
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    //
     var XScene = cc.Scene.extend({
 
       //ebus: global.ZotohLab.MakeEventBus(),
@@ -45,12 +44,18 @@ define("zotohlab/asx/xscenes", ['cherimoia/skarojs',
         //hold off init'ing game layer, leave that as last
         rc = R.some(function(proto) {
           obj= new (proto)(this.options);
-          obj.setParent(this);
           if ( obj instanceof xlayers.XGameLayer ) {
             glptr = obj;
-          } else {
+          }
+          else
+          if (obj instanceof xlayers.XLayer) {
             obj.init();
           }
+
+          if (obj instanceof xlayers.XLayer) {
+            obj.setParentScene(this);
+          }
+
           this.layers[ obj.rtti() ] = obj;
           this.addChild(obj);
           return false;
@@ -74,7 +79,6 @@ define("zotohlab/asx/xscenes", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
     var XSceneFactory = sjs.Class.xtends({
 
       create: function(options) {

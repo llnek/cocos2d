@@ -24,25 +24,27 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
       appid: 'tictactoe',
       color: 'white',
 
-      resourceDir: 'sd',
-      browser: false,
+      resolution: {
+        policy: cc.ResolutionPolicy.FIXED_HEIGHT,
+        resSize: [0,0]
+      },
 
       csts: {
-        GRID_W: 40,
-        GRID_H: 60,
-        C_GAP: 1,
-        R_GAP: 1,
-        LEFT: 4,
-        HOLE: 10,
-        GAP: 10,
+        //GRID_W: 40,
+        //GRID_H: 60,
+        //C_GAP: 1,
+        //R_GAP: 1,
+        //LEFT: 4,
+        //HOLE: 10,
+        //GAP: 10,
 
         PLAYER_THINK_TIME: 7,
         CV_Z: 0
       },
 
       game: {
-        hdr: { width: 960, height: 1440 },
-        hds: { width: 640, height: 960 },
+        //hdr: { width: 960, height: 1440 },
+        //hds: { width: 640, height: 960 },
         sd : { width: 320, height: 480 }
       },
 

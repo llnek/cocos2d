@@ -46,12 +46,13 @@ define("zotohlab/asx/msgbox", ['cherimoia/skarojs',
                                  sh.getFontPath('font.TinyBoxBB')),
       s1= [null,null,null],
       cw= ccsx.center(),
-      wz= ccsx.screen(),
+      wz= ccsx.vrect(),
+      wb = ccsx.vbox(),
       t1, menu;
 
       this._super();
 
-      qn.setPosition(cw.x, wz.height * 0.75);
+      qn.setPosition(cw.x, wb.top * 0.75);
       qn.setScale(18/72);
       qn.setOpacity(0.9*255);
       this.addItem(qn);
@@ -65,8 +66,8 @@ define("zotohlab/asx/msgbox", ['cherimoia/skarojs',
 
       menu= cc.Menu.create(t1);
       menu.alignItemsHorizontallyWithPadding(10);
-      menu.setPosition(wz.width - csts.TILE - csts.S_OFF - s1[0].getContentSize().width * 0.5,
-        csts.TILE + csts.S_OFF + s1[0].getContentSize().height * 0.5);
+      menu.setPosition(wb.right - csts.TILE - csts.S_OFF - s1[0].getContentSize().width * 0.5,
+        wb.bottom + csts.TILE + csts.S_OFF + s1[0].getContentSize().height * 0.5);
       this.addItem(menu);
 
     }

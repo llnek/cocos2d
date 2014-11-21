@@ -19,7 +19,6 @@ define("zotohlab/asx/xloader", ['cherimoia/skarojs',
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    //
     var XLoader = cc.Scene.extend({
 
       ctor: function () {
@@ -31,21 +30,22 @@ define("zotohlab/asx/xloader", ['cherimoia/skarojs',
       },
 
       pkLoad: function () {
-        var pfx; if (cc.sys.isNative) { pfx= '';  } else { pfx = "/public/ig/res/"; }
         var cw = ccsx.center(),
+        pfx='/public/ig/res/',
         s1,s2;
 
+        if (cc.sys.isNative) { pfx= '';  }
         this.unschedule(this.pkLoad);
 
         // logo
-        this.logoSprite = cc.Sprite.create(pfx + 'cocos2d/pics/ZotohLab.png');
+        this.logoSprite = new cc.Sprite(pfx + 'cocos2d/pics/ZotohLab.png');
         //this.logoSprite.setScale( cc.contentScaleFactor());
         this.logoSprite.setPosition(cw);
         this.bgLayer.addChild(this.logoSprite);
 
         // progress bar
-        this.progress = cc.ProgressTimer.create(
-                          cc.Sprite.create(pfx+'cocos2d/pics/preloader_bar.png'));
+        this.progress = new cc.ProgressTimer(
+                          new cc.Sprite(pfx+'cocos2d/pics/preloader_bar.png'));
         this.progress.setType(cc.ProgressTimer.TYPE_BAR);
         this.progress.setScaleX(0.8);
         this.progress.setScaleY(0.3);
@@ -88,13 +88,13 @@ define("zotohlab/asx/xloader", ['cherimoia/skarojs',
         s= this._pres[0],
         e= this._pres[1];
 
-        cc.log('start s = ' + s + ', e = ' + e);
+        //cc.log('start s = ' + s + ', e = ' + e);
 
-        cc.loader.load(res.slice(s,e), function(result, total, cnt) {
-          cc.log('total = ' + total + ', cnt = ' + cnt);
+        cc.loader.load(res.slice(s, e), function(result, total, cnt) {
+          //cc.log('total = ' + total + ', cnt = ' + cnt);
           me._count += 1;
         }, function() {
-          me._pres[2]=true;
+          me._pres[2] = true;
         });
       },
 
@@ -107,22 +107,6 @@ define("zotohlab/asx/xloader", ['cherimoia/skarojs',
 
         this.schedule(this.update, 0.25);
         this.loadChunk();
-      },
-
-      XXpkStartLoading: function () {
-        var res = this.resources,
-        me=this;
-
-        this._length = res.length;
-        this._count=0;
-
-        cc.loader.load(res, function(result,total, cnt) {
-          cc.log('total = ' + total + ', cnt = ' + cnt);
-          me._count= cnt;
-        }, function() {
-          me.niceFadeOut();
-        });
-        this.schedule(this.update, 0.25);
       },
 
       update: function () {
@@ -153,7 +137,6 @@ define("zotohlab/asx/xloader", ['cherimoia/skarojs',
 
 
     //////////////////////////////////////////////////////////////////////////////
-    //
     XLoader.preload = function (resources, selector, target) {
       var director = cc.director;
 
@@ -164,7 +147,6 @@ define("zotohlab/asx/xloader", ['cherimoia/skarojs',
 
       return _instance;
     };
-
 
     return XLoader;
 });

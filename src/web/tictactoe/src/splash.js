@@ -29,7 +29,7 @@ define("zotohlab/p/splash", ['cherimoia/skarojs',
       pkInit: function() {
 
         var cw = ccsx.center(),
-        wz = ccsx.screen();
+        wb = ccsx.vbox();
 
         this._super();
 
@@ -39,7 +39,7 @@ define("zotohlab/p/splash", ['cherimoia/skarojs',
             sh.fireEvent('/splash/controls/playgame');
           },
           target: this,
-          pos: cc.p(cw.x, 0.25 * wz.height)
+          pos: cc.p(cw.x, wb.top * 0.25)
         }));
 
       }

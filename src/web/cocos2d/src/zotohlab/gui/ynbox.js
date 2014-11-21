@@ -45,13 +45,14 @@ define("zotohlab/asx/ynbox", ['cherimoia/skarojs',
         var qn= new cc.LabelBMFont(sh.l10n('%quit?'),
                                    sh.getFontPath('font.TinyBoxBB')),
         cw= ccsx.center(),
-        wz= ccsx.screen(),
+        wz= ccsx.vrect(),
+        wb= ccsx.vbox(),
         t1, t2,
         menu;
 
         this._super();
 
-        qn.setPosition(cw.x, wz.height * 0.75);
+        qn.setPosition(cw.x, wb.top * 0.75);
         qn.setScale(18/72);
         qn.setOpacity(0.9*255);
         this.addItem(qn);
@@ -72,8 +73,8 @@ define("zotohlab/asx/ynbox", ['cherimoia/skarojs',
 
         menu= new cc.Menu(t1,t2);
         menu.alignItemsHorizontallyWithPadding(10);
-        menu.setPosition(wz.width - csts.TILE - csts.S_OFF - (s2[0].getContentSize().width + s1[0].getContentSize().width + 10) * 0.5,
-          csts.TILE + csts.S_OFF + s2[0].getContentSize().height * 0.5);
+        menu.setPosition(wb.right - csts.TILE - csts.S_OFF - (s2[0].getContentSize().width + s1[0].getContentSize().width + 10) * 0.5,
+          wb.bottom + csts.TILE + csts.S_OFF + s2[0].getContentSize().height * 0.5);
         this.addItem(menu);
 
       }

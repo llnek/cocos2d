@@ -22,12 +22,11 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    //
     var XLive = cc.Sprite.extend({
       ctor: function(x, y, options) {
         this._super();
         this.initWithSpriteFrameName(options.frames[0]);
-        if ( sjs.echt(options.scale)) {
+        if (!!options.scale) {
           this.setScale(options.scale);
         }
         this.setPosition(x,y);
@@ -35,7 +34,6 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
     var XHUDLives = sjs.Class.xtends({
 
       reduce: function(howmany) {
@@ -74,7 +72,7 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
           v= new XLive(x,y,this.options);
           this.hud.addIcon(v);
           this.icons.push(v);
-          if (this.options.direction > 0) {
+          if (this.options.dir> 0) {
             x += this.lifeSize.width + gap;
           } else {
             x -= this.lifeSize.width - gap;
@@ -96,8 +94,8 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
         this.hud= hud;
         this.curLives= -1;
         this.reset();
-        if ( !sjs.echt(this.options.direction)) {
-          this.options.direction = 1;
+        if (! sjs.echt(this.options.dir)) {
+          this.options.dir= 1;
         }
       }
 
@@ -105,31 +103,27 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
 
 
     //////////////////////////////////////////////////////////////////////////////
-    //
     var XLayer = cc.Layer.extend({
 
       rtti: function() { return "layer-" + Number(SEED++); },
 
       regoAtlas: function(name, z, tag) {
+        var a= new cc.SpriteBatchNode(
+                 cc.textureCache.addImage( sh.getAtlasPath(name)));
         if (! sjs.echt(tag)) {
           tag = ++this.lastTag;
         }
         if (! sjs.echt(z)) {
           z = this.lastZix;
         }
-        var a= new cc.SpriteBatchNode(
-                 cc.textureCache.addImage( sh.getAtlasPath(name)));
         this.addChild(a, z, tag);
         this.atlases[name] = a;
         return a;
       },
 
-      pkInit: function() {
-        this.pkInput();
-      },
+      pkInit: function() { this.pkInput(); },
 
-      pkInput: function() {
-      },
+      pkInput: function() {},
 
       getAtlas: function(key) {
         return this.atlases[key || ""];
@@ -181,7 +175,7 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
         this.addChild(n, zOrder, ptag);
       },
 
-      setParent: function(par) {
+      setParentScene: function(par) {
         this.ptScene=par;
       },
 
@@ -201,7 +195,6 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
     var XGameHUDLayer = XLayer.extend({
 
       rtti: function() { return 'HUD'; },
@@ -257,8 +250,8 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
 
       initCtrlBtns: function(scale, where) {
         var csts = xcfg.csts,
-        wz= ccsx.screen(),
         cw= ccsx.center(),
+        wz= ccsx.vrect(),
         y, c, menu;
 
         where = where || 'cc.ALIGN_BOTTOM';
@@ -301,7 +294,6 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
 
 
     //////////////////////////////////////////////////////////////////////////////
-    //
     var XGameLayer = XLayer.extend({
 
       pkInput: function() {
@@ -434,12 +426,15 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
       },
 
       getEnclosureBox: function() {
+        return ccsx.vbox();
+        /*
         var csts = xcfg.csts,
-        wz = ccsx.screen();
+        wz = ccsx.vrect();
         return { top: wz.height - csts.TILE,
                  left: csts.TILE,
                  bottom: csts.TILE,
                  right: wz.width - csts.TILE };
+         * */
       },
 
       setGameMode: function(mode) {

@@ -106,13 +106,14 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
         var qn= new cc.LabelBMFont(sh.l10n('%waitothers'),
                                    sh.getFontPath('font.TinyBoxBB')),
         cw= ccsx.center(),
-        wz= ccsx.screen(),
+        wz= ccsx.vrect(),
+        wb = ccsx.vbox(),
         t2, menu,
         s2 = R.map.idx(function(z,n) {
           return new cc.Sprite(sh.getImagePath('gui.mmenu.back'));
         }, [null,null,null]);
 
-        qn.setPosition(cw.x, wz.height * 0.90);
+        qn.setPosition(cw.x, wb.top * 0.90);
         qn.setScale(18/72);
         qn.setOpacity(0.9*255);
         this.addItem(qn);
@@ -123,8 +124,8 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
 
         menu= cc.Menu.create(t2);
         menu.alignItemsHorizontallyWithPadding(10);
-        menu.setPosition(wz.width - csts.TILE - csts.S_OFF - s2[0].getContentSize().width * 0.5,
-          csts.TILE + csts.S_OFF + s2[0].getContentSize().height * 0.5);
+        menu.setPosition(wb.right - csts.TILE - csts.S_OFF - s2[0].getContentSize().width * 0.5,
+          wb.bottom + csts.TILE + csts.S_OFF + s2[0].getContentSize().height * 0.5);
         this.addItem(menu);
       },
 
@@ -132,13 +133,14 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
         var qn= new cc.LabelBMFont(sh.l10n('%signinplay'),
                                    sh.getFontPath('font.TinyBoxBB')),
         cw= ccsx.center(),
-        wz= ccsx.screen(),
-        uid,pwd,
+        wz= ccsx.vrect(),
+        wb= ccsx.vbox(),
+        uid, pwd,
         menu;
 
         this._super();
 
-        qn.setPosition(cw.x, wz.height * 0.90);
+        qn.setPosition(cw.x, wb.top * 0.90);
         qn.setScale(18/72);
         qn.setOpacity(0.9*255);
         this.addItem(qn);
@@ -148,7 +150,7 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
         wcc= cc.color(255,255,255),
         bxz= cc.size(100,36);
 
-        uid = new cc.EditBox(bxz,s9);
+        uid = new cc.EditBox(bxz, s9);
         uid.x = cw.x
         uid.y = cw.y + bxz.height * 0.5 + 2; // + 2 for a gap
         uid.setPlaceHolder(sh.l10n('%userid'));
@@ -159,7 +161,7 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
         this.addItem(uid);
 
         s9= new cc.Scale9Sprite(url);
-        pwd= new cc.EditBox(bxz,s9);
+        pwd= new cc.EditBox(bxz, s9);
         pwd.y = cw.y - bxz.height * 0.5 - 2; // + 2 for a gap
         pwd.x= cw.x;
         pwd.setInputFlag(cc.EDITBOX_INPUT_FLAG_PASSWORD);
@@ -187,8 +189,8 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
 
         menu= new cc.Menu(t1,t2);
         menu.alignItemsHorizontallyWithPadding(10);
-        menu.setPosition(wz.width - csts.TILE - csts.S_OFF - (s2[0].getContentSize().width + s1[0].getContentSize().width + 10) * 0.5,
-          csts.TILE + csts.S_OFF + s2[0].getContentSize().height * 0.5);
+        menu.setPosition(wb.right - csts.TILE - csts.S_OFF - (s2[0].getContentSize().width + s1[0].getContentSize().width + 10) * 0.5,
+          wb.bottom + csts.TILE + csts.S_OFF + s2[0].getContentSize().height * 0.5);
         this.addItem(menu);
 
       }

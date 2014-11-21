@@ -21,7 +21,17 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
     csts= xcfg.csts,
     undef,
 
-    BackLayer = layers.XLayer.extend({
+    BackLayer = cc.LayerColor.extend({
+
+      rtti: function() { return 'BackLayer'; },
+
+      ctor: function() {
+        this._super(cc.color(38,119,120));
+      }
+
+    }),
+
+    XXBackLayer = layers.XLayer.extend({
 
       rtti: function() { return 'BackLayer'; },
 
@@ -68,14 +78,15 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
 
       initLabels: function() {
         var cw= ccsx.center(),
-        wz= ccsx.screen();
+        wz= ccsx.vrect(),
+        wb= ccsx.vbox();
 
         this.title = ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.TinyBoxBB'),
           text: '',
           anchor: ccsx.AnchorTop,
           scale: 12/72,
-          pos: cc.p(cw.x, wz.height - csts.TILE - csts.GAP)
+          pos: cc.p(cw.x, wb.top - csts.TILE - csts.GAP)
         });
         this.addItem(this.title);
 
@@ -85,7 +96,7 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
           scale: 20/72,
           color: cc.color(253,188,178), // 0xfdbcb2;
           pos: cc.p(csts.TILE + csts.S_OFF + 2,
-                    wz.height - csts.TILE - csts.S_OFF),
+                    wb.top - csts.TILE - csts.S_OFF),
           anchor: ccsx.AnchorTopLeft
         });
         this.addItem(this.score1);
@@ -95,8 +106,8 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
           text: '888',
           scale: 20/72,
           color: cc.color(255,102,0), // 0xff6600;
-          pos: cc.p(wz.width - csts.TILE - csts.S_OFF,
-                    wz.height - csts.TILE - csts.S_OFF),
+          pos: cc.p(wb.right - csts.TILE - csts.S_OFF,
+                    wb.top - csts.TILE - csts.S_OFF),
           anchor: ccsx.AnchorTopRight
         });
         this.addItem(this.score2);
@@ -105,7 +116,7 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
           fontPath: sh.getFontPath('font.TinyBoxBB'),
           text: '',
           scale: 12/72,
-          pos: cc.p(cw.x, csts.TILE * 10)
+          pos: cc.p(cw.x, wb.bottom + csts.TILE * 10)
         });
         this.addItem(this.status);
 
@@ -113,7 +124,7 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
           fontPath: sh.getFontPath('font.TinyBoxBB'),
           text: '',
           scale: 12/72,
-          pos: cc.p(cw.x, csts.TILE * 10),
+          pos: cc.p(cw.x, wb.bottom + csts.TILE * 10),
           visible: false
         });
         this.addItem(this.result);
@@ -122,7 +133,8 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
 
       showTimer: function() {
         var cw= ccsx.center(),
-        wz= ccsx.screen();
+        wz= ccsx.vrect(),
+        wb= ccsx.vbox();
 
         // timer is already showing, go away
         if (this.countDownState) {
@@ -135,8 +147,8 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
             text: '',
             scale: 20/72,
             color: cc.color(255,255,255), // 0xff6600;
-            pos: cc.p(wz.width/2,
-                      wz.height - csts.TILE - csts.S_OFF - 40),
+            pos: cc.p(cw.x,
+                      wb.top - csts.TILE - csts.S_OFF - 40),
             anchor: ccsx.AnchorCenter
           });
           this.addItem(this.countDown);
@@ -205,7 +217,7 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
       drawScores: function() {
         var s2 = this.scores[this.play2],
         s1 = this.scores[this.play1],
-        wz = ccsx.screen(),
+        wz = ccsx.vrect(),
         n2 = sjs.prettyNumber(s2,3),
         n1 = sjs.prettyNumber(s1,3);
 

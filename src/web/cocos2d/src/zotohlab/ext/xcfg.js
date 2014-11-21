@@ -21,6 +21,11 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
       appid: '',
       color: '',
 
+      resolution: {
+        web: cc.ResolutionPolicy.SHOW_ALL,
+        resDir: 'sd'
+      },
+
       levels: {
       },
 

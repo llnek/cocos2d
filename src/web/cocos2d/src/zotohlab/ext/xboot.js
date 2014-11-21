@@ -23,42 +23,58 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
     R = sjs.ramda,
     undef;
 
-    //////////////////////////////////////////////////////////////////////////////
-    //
+    function setdr(landscape, w, h, pcy) {
+      if (landscape) {
+        cc.view.setDesignResolutionSize(w, h, pcy);
+      } else {
+        cc.view.setDesignResolutionSize(h, w, pcy);
+      }
+    }
 
-    function maybeInitResources() {
+    //////////////////////////////////////////////////////////////////////////
+    function handleMultiDevices() {
       var searchPaths = jsb.fileUtils.getSearchPaths(),
+      landscape = xcfg.game.landscape,
+      pcy = xcfg.resolution.policy,
       fsz= cc.view.getFrameSize(),
-      landscape,
       ps;
 
-      sjs.loggr.info("view.frameSize = [" + fsz.width + ", " + fsz.height  + "]");
-      sjs.loggr.info("Sorting out resource search paths...");
+      sjs.loggr.info("view.frameSize = [" +
+                     fsz.width + ", " +
+                     fsz.height  + "]");
+
+      if (sjs.isFunction(xcfg.handleDevices)) {
+        return xcfg.handleDevices();
+      }
 
       // need to prefix "assets" for andriod
-      if (fsz.width >= 1536 && fsz.height >= 1536) {
-      //ipad retina
-        //lanscape ? [2048, 1536] : [1536, 1048]
+      if (fsz.width >= 2048 || fsz.height >= 2048) {
         ps = ['assets/res/hdr', 'res/hdr'];
-        xcfg.resourceDir = 'hdr';
+        xcfg.resolution.resDir = 'hdr';
+        setdr(landscape, 2048, 1536, pcy);
       }
       else
-      if (fsz.width >= 640 && fsz.height >= 640) {
-      // iphone hd & above or android high res
-        if (fsz.width >= 1136 ||
-            fsz.height >= 1136) {
-          //landscape ? [1136,640] : [640,1136]
-        } else {
-          //landscape ? [960,640] : [640,960]
-        }
+      if (fsz.width >= 1136 || fsz.height >= 1136) {
         ps = ['assets/res/hds', 'res/hds'];
-        xcfg.resourceDir = 'hds';
+        xcfg.resolution.resDir= 'hds';
+        setdr(landscape, 1136, 640, pcy);
+      }
+      else
+      if (fsz.width >= 1024 || fsz.height >= 1024) {
+        ps = ['assets/res/hds', 'res/hds'];
+        xcfg.resolution.resDir= 'hds';
+        setdr(landscape, 1024, 768, pcy);
+      }
+      else
+      if (fsz.width >= 960 || fsz.height >= 960) {
+        ps = ['assets/res/hds', 'res/hds'];
+        xcfg.resolution.resDir= 'hds';
+        setdr(landscape, 960, 640, pcy);
       }
       else {
-      // default iphone 4, lowest common denominator
-        //landscape ? [480, 320] : [320, 480]
         ps = ['assets/res/sd', 'res/sd'];
-        xcfg.resourceDir = 'sd';
+        xcfg.resolution.resDir= 'sd';
+        setdr(landscape, 480, 320, pcy);
       }
 
       ps= ps.concat(['assets/src', 'src']);
@@ -72,8 +88,6 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
     }
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-
     function pvLoadSound(sh, xcfg, k,v) { return sh.sanitizeUrl( v + '.' + xcfg.game.sfx ); }
     function pvLoadSprite(sh, xcfg, k, v) { return sh.sanitizeUrl(v[0]); }
     function pvLoadImage(sh, xcfg, k,v) { return sh.sanitizeUrl(v); }
@@ -84,11 +98,10 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
     }
 
     //////////////////////////////////////////////////////////////////////////////
-    //
     function pvLoadLevels(sjs, sh, xcfg) {
       var rc = [],
       f1= function(k) {
-        return function(v,n) {
+        return function(v, n) {
           var a = sjs.reduceObj( function(memo, item, key) {
             var z= k + '.' + n + '.' + key;
             switch (n) {
@@ -111,16 +124,11 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
         };
       };
 
-      sjs.eachObj(function(v,k) {
-        sjs.eachObj(f1(k), v);
-      },
-      xcfg.levels);
-
+      sjs.eachObj(function(v,k) { sjs.eachObj(f1(k), v); }, xcfg.levels);
       return rc;
     }
 
     /////////////////////////////////////////////////////////////////////////////
-    //
     function pvGatherPreloads(sjs, sh, xcfg) {
       var assets= xcfg.assets,
       p,
@@ -162,22 +170,23 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
       }, [], R.flatten(rc));
     }
 
+    /////////////////////////////////////////////////////////////////////////////
     var MyLoaderScene = cc.Scene.extend({
 
-      init: function() {
-        return true;
-      },
+      init: function() { return true; },
 
       _startLoading: function () {
-        var res, self = this;
+        var res = this.resources,
+        self=this;
+
         self.unschedule(self._startLoading);
-        res = self.resources;
         cc.loader.load(res,
-            function (result, count, loadedCount) {
-            }, function () {
-                if (self.cb)
-                    self.cb();
-            });
+                       function (result, count, loadedCount) {},
+                       function () {
+                         if (sjs.isFunction(self.cb)) {
+                           self.cb();
+                         }
+                       });
       },
 
       initWithResources: function (resources, cb) {
@@ -198,7 +207,6 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
     function preLaunchApp(sjs, sh, xcfg, ldr,  ss1) {
       var fz= cc.view.getFrameSize(),
       paths,
@@ -207,19 +215,16 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
       rs, pcy;
 
       if (cc.sys.isNative) {
-        pcy = cc.ResolutionPolicy.NO_BORDER;
-        paths= maybeInitResources();
+        paths= handleMultiDevices();
         if (!!paths) {
           jsb.fileUtils.setSearchPaths(paths);
         }
       } else {
-        pcy = cc.ResolutionPolicy.SHOW_ALL;
+        sz= xcfg.game[xcfg.resolution.resDir];
+        pcy = xcfg.resolution.web;
+        cc.view.setDesignResolutionSize(sz.width, sz.height, pcy);
       }
 
-      //actual design size
-      sz= xcfg.game[xcfg.resourceDir];
-
-      cc.view.setDesignResolutionSize(sz.width, sz.height, pcy);
       rs= cc.view.getDesignResolutionSize();
       sjs.loggr.info('DesignResolution, = [' +
                      rs.width + ", " + rs.height + "]");
@@ -238,10 +243,8 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
         cc.director.setDisplayStats(xcfg.game.showFPS);
       }
 
-      rs= [
-        pfx + 'cocos2d/pics/preloader_bar.png',
-        pfx + 'cocos2d/pics/ZotohLab.png'
-      ];
+      rs= [ pfx + 'cocos2d/pics/preloader_bar.png',
+            pfx + 'cocos2d/pics/ZotohLab.png' ];
       // hack to suppress the showing of cocos2d's logo
       cc.loaderScene = new MyLoaderScene();
       cc.loaderScene.init();
