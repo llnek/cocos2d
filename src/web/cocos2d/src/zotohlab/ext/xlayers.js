@@ -493,6 +493,11 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
         this.level= 1;
         this.actor= null;
         sh.main = this;
+        var vbox= ccsx.vbox();
+        sjs.loggr.debug('cc.view: vbox: left: ' + vbox.left +
+                        ', bottom: ' + vbox.bottom +
+                        ', top: ' + vbox.top +
+                        ', right: ' + vbox.right);
       }
 
     });

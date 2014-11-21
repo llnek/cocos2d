@@ -92,9 +92,9 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
 
         this.score1= ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.TinyBoxBB'),
-          text: '888',
+          text: '000',
           scale: 20/72,
-          color: cc.color(253,188,178), // 0xfdbcb2;
+          color: cc.color(220,104,90),
           pos: cc.p(csts.TILE + csts.S_OFF + 2,
                     wb.top - csts.TILE - csts.S_OFF),
           anchor: ccsx.AnchorTopLeft
@@ -103,9 +103,9 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
 
         this.score2= ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.TinyBoxBB'),
-          text: '888',
+          text: '000',
           scale: 20/72,
-          color: cc.color(255,102,0), // 0xff6600;
+          color: cc.color(236,175,79),
           pos: cc.p(wb.right - csts.TILE - csts.S_OFF,
                     wb.top - csts.TILE - csts.S_OFF),
           anchor: ccsx.AnchorTopRight
@@ -204,10 +204,11 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
         }
       },
 
-      endGame: function() {
+      endGame: function(winner) {
         this.replayBtn.setVisible(true);
         this.result.setVisible(true);
         this.status.setVisible(false);
+        this.drawResult(winner);
       },
 
       drawStatusText: function(obj, msg) {

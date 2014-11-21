@@ -244,7 +244,7 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
             sh.main.getHUD().updateScore(msg.color, msg.score);
           });
           scene.ebus.on('/game/hud/end',function(t,msg) {
-            sh.main.getHUD().endGame();
+            sh.main.getHUD().endGame(msg.winner);
           });
           scene.ebus.on('/game/hud/update',function(t,msg) {
             sh.main.getHUD().update(msg.running, msg.pnum);

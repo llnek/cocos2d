@@ -130,12 +130,14 @@ define("zotohlab/p/s/resolution", ['zotohlab/p/s/utils',
 
       doDone: function(node, pobj, combo) {
 
+        var pnum = !!pobj ? pobj.pnum : 0;
+
         this.showWinningIcons(node.view, combo);
         sh.fireEvent('/game/hud/timer/hide');
         sh.sfxPlay('game_end');
-        sh.fireEvent('/game/hud/end');
+        sh.fireEvent('/game/hud/end', { winner: pnum });
 
-        this.state.lastWinner = !!pobj ? pobj.pnum : null;
+        this.state.lastWinner = pnum;
         this.state.running=false;
       },
 
