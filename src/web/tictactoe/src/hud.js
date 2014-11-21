@@ -82,18 +82,18 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
         wb= ccsx.vbox();
 
         this.title = ccsx.bmfLabel({
-          fontPath: sh.getFontPath('font.TinyBoxBB'),
+          fontPath: sh.getFontPath('font.JellyBelly'),
           text: '',
           anchor: ccsx.AnchorTop,
-          scale: 12/72,
-          pos: cc.p(cw.x, wb.top - csts.TILE - csts.GAP)
+          scale: 0.1,
+          pos: cc.p(cw.x, wb.top - 2*csts.TILE)
         });
         this.addItem(this.title);
 
         this.score1= ccsx.bmfLabel({
-          fontPath: sh.getFontPath('font.TinyBoxBB'),
-          text: '000',
-          scale: 20/72,
+          fontPath: sh.getFontPath('font.SmallTypeWriting'),
+          text: '0',
+          scale: 0.2,
           color: cc.color(220,104,90),
           pos: cc.p(csts.TILE + csts.S_OFF + 2,
                     wb.top - csts.TILE - csts.S_OFF),
@@ -102,9 +102,9 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
         this.addItem(this.score1);
 
         this.score2= ccsx.bmfLabel({
-          fontPath: sh.getFontPath('font.TinyBoxBB'),
-          text: '000',
-          scale: 20/72,
+          fontPath: sh.getFontPath('font.SmallTypeWriting'),
+          text: '0',
+          scale: 0.2,
           color: cc.color(236,175,79),
           pos: cc.p(wb.right - csts.TILE - csts.S_OFF,
                     wb.top - csts.TILE - csts.S_OFF),
@@ -113,17 +113,17 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
         this.addItem(this.score2);
 
         this.status= ccsx.bmfLabel({
-          fontPath: sh.getFontPath('font.TinyBoxBB'),
+          fontPath: sh.getFontPath('font.Subito'),
           text: '',
-          scale: 12/72,
+          scale: 0.06,
           pos: cc.p(cw.x, wb.bottom + csts.TILE * 10)
         });
         this.addItem(this.status);
 
         this.result= ccsx.bmfLabel({
-          fontPath: sh.getFontPath('font.TinyBoxBB'),
+          fontPath: sh.getFontPath('font.Subito'),
           text: '',
-          scale: 12/72,
+          scale: 0.06,
           pos: cc.p(cw.x, wb.bottom + csts.TILE * 10),
           visible: false
         });
@@ -143,12 +143,12 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
 
         if (! this.countDown) {
           this.countDown= ccsx.bmfLabel({
-            fontPath: sh.getFontPath('font.TinyBoxBB'),
+            fontPath: sh.getFontPath('font.AutoMission'),
             text: '',
-            scale: 20/72,
+            scale: 0.1,
             color: cc.color(255,255,255), // 0xff6600;
             pos: cc.p(cw.x,
-                      wb.top - csts.TILE - csts.S_OFF - 40),
+                      wb.top - 10*csts.TILE),
             anchor: ccsx.AnchorCenter
           });
           this.addItem(this.countDown);
@@ -218,9 +218,8 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
       drawScores: function() {
         var s2 = this.scores[this.play2],
         s1 = this.scores[this.play1],
-        wz = ccsx.vrect(),
-        n2 = sjs.prettyNumber(s2,3),
-        n1 = sjs.prettyNumber(s1,3);
+        n2 = ''+s2,
+        n1 = ''+s1;
 
         this.score1.setString(n1);
         this.score2.setString(n2);

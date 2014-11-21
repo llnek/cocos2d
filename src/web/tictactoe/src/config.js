@@ -65,6 +65,9 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
           'game_quit' : 'res/cocos2d/sfx/Death'
         },
         fonts: {
+          'font.SmallTypeWriting' : [ 'res/cocos2d/fon/{{lang}}', 'SmallTypeWriting.png', 'SmallTypeWriting.fnt' ],
+          'font.AutoMission' : [ 'res/cocos2d/fon/{{lang}}', 'AutoMission.png', 'AutoMission.fnt' ],
+          'font.Subito' : [ 'res/cocos2d/fon/{{lang}}', 'Subito.png', 'Subito.fnt' ]
         }
       },
 

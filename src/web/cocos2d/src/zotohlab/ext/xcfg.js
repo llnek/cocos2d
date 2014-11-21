@@ -66,17 +66,9 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
           'start_game' : 'res/cocos2d/sfx/PowerUp'
         },
         fonts: {
-          'font.TinyBoxBB' : [ 'res/cocos2d/fon/{{lang}}', 'TinyBoxBlackBitA8.png', 'TinyBoxBlackBitA8.fnt' ],
-          'font.LaffRiotNF' : [ 'res/cocos2d/fon/{{lang}}', 'LaffRiotNF.png', 'LaffRiotNF.fnt' ],
-          'font.JellyBelly' : [ 'res/cocos2d/fon/{{lang}}', 'JellyBelly.png', 'JellyBelly.fnt' ],
-          'font.Subito' : [ 'res/cocos2d/fon/{{lang}}', 'Subito.png', 'Subito.fnt' ],
           'font.OogieBoogie' : [ 'res/cocos2d/fon/{{lang}}', 'OogieBoogie.png', 'OogieBoogie.fnt' ],
-          'font.DigitalDream' : [ 'res/cocos2d/fon/{{lang}}', 'DigitalDream.png', 'DigitalDream.fnt' ],
-          'font.AutoMission' : [ 'res/cocos2d/fon/{{lang}}', 'AutoMission.png', 'AutoMission.fnt' ],
-          'font.ConvWisdom' : [ 'res/cocos2d/fon/{{lang}}', 'ConvWisdom.png', 'ConvWisdom.fnt' ],
-          'font.Ubuntu' : [ 'res/cocos2d/fon/{{lang}}', 'Ubuntu.png', 'Ubuntu.fnt' ],
-          'font.OCR' : [ 'res/cocos2d/fon/{{lang}}', 'OCR.png', 'OCR.fnt' ],
-          'font.Downlink' : [ 'res/cocos2d/fon/{{lang}}', 'Downlink.png', 'Downlink.fnt' ]
+          'font.JellyBelly' : [ 'res/cocos2d/fon/{{lang}}', 'JellyBelly.png', 'JellyBelly.fnt' ],
+          'font.OCR' : [ 'res/cocos2d/fon/{{lang}}', 'OCR.png', 'OCR.fnt' ]
         }
       },
 

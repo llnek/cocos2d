@@ -104,7 +104,7 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
       showWaitOthers: function() {
         this.removeAll();
         var qn= new cc.LabelBMFont(sh.l10n('%waitothers'),
-                                   sh.getFontPath('font.TinyBoxBB')),
+                                   sh.getFontPath('font.OCR')),
         cw= ccsx.center(),
         wz= ccsx.vrect(),
         wb = ccsx.vbox(),
@@ -114,7 +114,7 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
         }, [null,null,null]);
 
         qn.setPosition(cw.x, wb.top * 0.90);
-        qn.setScale(18/72);
+        qn.setScale(0.06);
         qn.setOpacity(0.9*255);
         this.addItem(qn);
 
@@ -131,7 +131,7 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
 
       pkInit: function() {
         var qn= new cc.LabelBMFont(sh.l10n('%signinplay'),
-                                   sh.getFontPath('font.TinyBoxBB')),
+                                   sh.getFontPath('font.OCR')),
         cw= ccsx.center(),
         wz= ccsx.vrect(),
         wb= ccsx.vbox(),
@@ -141,7 +141,7 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
         this._super();
 
         qn.setPosition(cw.x, wb.top * 0.90);
-        qn.setScale(18/72);
+        qn.setScale(0.06);
         qn.setOpacity(0.9*255);
         this.addItem(qn);
 

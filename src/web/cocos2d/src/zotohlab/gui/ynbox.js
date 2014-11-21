@@ -43,7 +43,7 @@ define("zotohlab/asx/ynbox", ['cherimoia/skarojs',
 
       pkInit: function() {
         var qn= new cc.LabelBMFont(sh.l10n('%quit?'),
-                                   sh.getFontPath('font.TinyBoxBB')),
+                                   sh.getFontPath('font.OCR')),
         cw= ccsx.center(),
         wz= ccsx.vrect(),
         wb= ccsx.vbox(),
@@ -53,7 +53,7 @@ define("zotohlab/asx/ynbox", ['cherimoia/skarojs',
         this._super();
 
         qn.setPosition(cw.x, wb.top * 0.75);
-        qn.setScale(18/72);
+        qn.setScale(0.05);
         qn.setOpacity(0.9*255);
         this.addItem(qn);
 

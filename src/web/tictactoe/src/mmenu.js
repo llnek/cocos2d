@@ -56,7 +56,7 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
                                      { mode: sh.ONLINE_GAME }));
           },
           target: this,
-          scale: 0.5,
+          scale: 0.1,
           pos: cc.p(114, wb.top - csts.TILE * 18 - 2)
         }));
 
@@ -73,7 +73,7 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
                                       mode: sh.P2_GAME }));
           },
           target: this,
-          scale: 0.5,
+          scale: 0.1,
           pos: cc.p(cw.x + 68, wb.top - csts.TILE * 28 - 4)
         }));
 
@@ -90,7 +90,7 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
                                       mode: sh.P1_GAME }));
           },
           target: this,
-          scale: 0.5,
+          scale: 0.1,
           pos: cc.p(cw.x, wb.bottom + csts.TILE * 19)
         }));
 

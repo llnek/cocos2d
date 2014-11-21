@@ -43,7 +43,7 @@ define("zotohlab/asx/msgbox", ['cherimoia/skarojs',
 
     pkInit: function() {
       var qn= new cc.LabelBMFont(sh.l10n(this.options.msg),
-                                 sh.getFontPath('font.TinyBoxBB')),
+                                 sh.getFontPath('font.OCR')),
       s1= [null,null,null],
       cw= ccsx.center(),
       wz= ccsx.vrect(),
