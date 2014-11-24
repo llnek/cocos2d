@@ -55,7 +55,9 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
         tiles: {
         },
         images: {
-          'splash.play-btn' : 'res/{{appid}}/l10n/{{lang}}/play.png',
+          'splash.options' : 'res/{{appid}}/l10n/{{lang}}/options.png',
+          'splash.title' : 'res/{{appid}}/ui/title.png',
+          'splash.play' : 'res/{{appid}}/l10n/{{lang}}/play.png',
           'arena.bg' : 'res/{{appid}}/pics/arena.png'
         },
         sounds: {

@@ -18,6 +18,7 @@ define("zotohlab/p/splash", ['cherimoia/skarojs',
 
     var xcfg = sh.xcfg,
     csts= xcfg.csts,
+    R = sjs.ramda,
     undef,
 
     UILayer = cc.LayerColor.extend({
@@ -35,20 +36,34 @@ define("zotohlab/p/splash", ['cherimoia/skarojs',
       pkInit: function() {
 
         var wb = ccsx.vbox(),
+        s1= [null,null,null],
+        s2= [null,null,null],
+        tt, menu, t2, t1,
         cw = ccsx.center();
 
         this._super();
 
-        this.addItem(ccsx.pmenu1({
-          imgPath: sh.getImagePath('splash.play-btn'),
-          selector: function() {
-            sh.fireEvent('/splash/controls/playgame');
-          },
-          target: this,
-          scale: 1,
-          pos: cc.p(cw.x, wb.top *0.10)
-        }));
+        tt= new cc.Sprite(sh.getImagePath('splash.title'));
+        tt.setPosition(cw.x, wb.top * 0.9);
+        this.addItem(tt);
 
+        R.map.idx(function(z, pos, lst) {
+          lst[pos]= new cc.Sprite( sh.getImagePath('splash.options'));
+        }, s2);
+        R.map.idx(function(z, pos, lst) {
+          lst[pos]= new cc.Sprite( sh.getImagePath('splash.play'));
+        }, s1);
+
+        t2 = new cc.MenuItemSprite(s2[0], s2[1], s2[2], function() {
+        },this);
+        t1 = new cc.MenuItemSprite(s1[0], s1[1], s1[2], function() {
+          sh.fireEvent('/splash/controls/playgame');
+        }, this);
+
+        menu= new cc.Menu(t1,t2);
+        menu.alignItemsVerticallyWithPadding(2);
+        menu.setPosition(cw.x, wb.top * 0.15);
+        this.addItem(menu);
       },
 
       rtti: function() { return "SplashLayer"; }
