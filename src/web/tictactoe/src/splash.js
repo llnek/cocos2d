@@ -21,9 +21,9 @@ define("zotohlab/p/splash", ['cherimoia/skarojs',
     R = sjs.ramda,
     undef,
 
-    UILayer = cc.LayerColor.extend({
+    BGLayer = cc.LayerColor.extend({
 
-      rtti: function() { return "UILayer"; },
+      rtti: function() { return "BGLayer"; },
 
       ctor: function() {
         this._super(cc.color(38,119,120));
@@ -36,9 +36,8 @@ define("zotohlab/p/splash", ['cherimoia/skarojs',
       pkInit: function() {
 
         var wb = ccsx.vbox(),
-        s1= [null,null,null],
-        s2= [null,null,null],
-        tt, menu, t2, t1,
+        me=this,
+        tt, menu,
         cw = ccsx.center();
 
         this._super();
@@ -47,20 +46,14 @@ define("zotohlab/p/splash", ['cherimoia/skarojs',
         tt.setPosition(cw.x, wb.top * 0.9);
         this.addItem(tt);
 
-        R.map.idx(function(z, pos, lst) {
-          lst[pos]= new cc.Sprite( sh.getImagePath('splash.options'));
-        }, s2);
-        R.map.idx(function(z, pos, lst) {
-          lst[pos]= new cc.Sprite( sh.getImagePath('splash.play'));
-        }, s1);
+        menu= ccsx.pmenu([
+          { imgPath: sh.getImagePath('splash.play'),
+            cb: function() {
+              sh.fireEvent('/splash/controls/playgame');
+            },
+            target: me } ],
+          1, 2);
 
-        t2 = new cc.MenuItemSprite(s2[0], s2[1], s2[2], function() {
-        },this);
-        t1 = new cc.MenuItemSprite(s1[0], s1[1], s1[2], function() {
-          sh.fireEvent('/splash/controls/playgame');
-        }, this);
-
-        menu= new cc.Menu(t1,t2);
         menu.alignItemsVerticallyWithPadding(2);
         menu.setPosition(cw.x, wb.top * 0.15);
         this.addItem(menu);
@@ -75,7 +68,7 @@ define("zotohlab/p/splash", ['cherimoia/skarojs',
       'StartScreen' : {
         create: function(options) {
           var scene = new scenes.XSceneFactory([
-            UILayer, SplashLayer
+            BGLayer, SplashLayer
           ]).create(options);
           scene.ebus.on('/splash/controls/playgame',
                         function() {

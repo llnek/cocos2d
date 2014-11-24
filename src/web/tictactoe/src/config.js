@@ -56,6 +56,9 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
         },
         images: {
           'splash.options' : 'res/{{appid}}/l10n/{{lang}}/options.png',
+          'mmenu.online' : 'res/{{appid}}/l10n/{{lang}}/online.png',
+          'mmenu.play1' : 'res/{{appid}}/l10n/{{lang}}/player1.png',
+          'mmenu.play2' : 'res/{{appid}}/l10n/{{lang}}/player2.png',
           'splash.title' : 'res/{{appid}}/ui/title.png',
           'splash.play' : 'res/{{appid}}/l10n/{{lang}}/play.png',
           'arena.bg' : 'res/{{appid}}/pics/arena.png'

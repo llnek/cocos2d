@@ -367,6 +367,26 @@ define("zotohlab/asx/ccsx", ['cherimoia/skarojs',
         obj1.updatePosition(x,y);
       },
 
+      tmenu: function(items,scale) {
+        var menu= new cc.Menu(),
+        mi,
+        t=0,
+        obj, n;
+
+        scale = scale || 1;
+
+        for (n=0; n < items.length; ++n) {
+          obj= items[n];
+          mi= new cc.MenuItemLabel(new cc.LabelBMFont(obj.text, obj.fontPath),
+                                   obj.cb,
+                                   obj.target);
+          mi.setOpacity(255 * 0.9);
+          mi.setScale(scale);
+          mi.setTag(++t);
+        }
+        return menu;
+      },
+
       //make a text label menu button
       tmenu1: function(options) {
         var s1= new cc.LabelBMFont(options.text, options.fontPath),
@@ -385,27 +405,40 @@ define("zotohlab/asx/ccsx", ['cherimoia/skarojs',
         return menu;
       },
 
+      pmenu: function(items,scale) {
+        var menu = new cc.Menu(),
+        obj, n,
+        mi,
+        t=0;
+
+        for (n=0; n < items.length; ++n) {
+          obj=items[n];
+          mi= new cc.MenuItemSprite(new cc.Sprite(obj.imgPath),
+                                    new cc.Sprite(obj.imgPath),
+                                    new cc.Sprite(obj.imgPath),
+                                    obj.cb,
+                                    obj.target);
+          if (sjs.echt(scale)) { mi.setScale(scale); }
+          mi.setTag(++t);
+          menu.addChild(mi);
+        }
+        return menu;
+      },
+
       //make a gfx menu button
       pmenu1: function(options) {
-        var btn = new cc.Sprite(options.imgPath),
-        s1, d1,
-        mi,
+        var mi= new cc.MenuItemSprite(new cc.Sprite(options.imgPath),
+                                      new cc.Sprite(options.imgPath),
+                                      new cc.Sprite(options.imgPath),
+                                      options.selector,
+                                      options.target),
         menu;
-        if (options.selPath) {
-          s1= new cc.Sprite(options.selPath);
-        } else {
-          s1 = new cc.Sprite(options.imgPath);
-        }
-        if (options.disPath) {
-          d1= new cc.Sprite(options.disPath);
-        } else {
-          d1 = new cc.Sprite(options.imgPath);
-        }
-        mi= new cc.MenuItemSprite(btn,s1,d1,options.selector,options.target);
+
         mi.setScale(options.scale || 1);
         mi.setTag(1);
         menu = new cc.Menu(mi);
         menu.alignItemsVertically();
+
         if (options.anchor) { menu.setAnchorPoint(options.anchor); }
         if (options.pos) { menu.setPosition(options.pos); }
         if (options.visible === false) { menu.setVisible(false); }
