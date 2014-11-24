@@ -55,7 +55,7 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
         tiles: {
         },
         images: {
-          'splash.play-btn' : 'res/cocos2d/btns/play_blue_x64.png',
+          'splash.play-btn' : 'res/{{appid}}/l10n/{{lang}}/play.png',
           'arena.bg' : 'res/{{appid}}/pics/arena.png'
         },
         sounds: {

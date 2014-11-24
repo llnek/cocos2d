@@ -13,23 +13,29 @@ define("zotohlab/p/splash", ['cherimoia/skarojs',
                             'zotohlab/asterix',
                             'zotohlab/asx/ccsx',
                             'zotohlab/asx/xlayers',
-                            'zotohlab/asx/xscenes',
-                            'zotohlab/asx/xsplash'],
-  function (sjs, sh, ccsx,
-            layers, scenes, XSplashLayer) { "use strict";
+                            'zotohlab/asx/xscenes'],
+  function (sjs, sh, ccsx, layers, scenes) { "use strict";
 
     var xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
-    UILayer = layers.XLayer.extend({
+    UILayer = cc.LayerColor.extend({
 
       rtti: function() { return "UILayer"; },
 
+      ctor: function() {
+        this._super(cc.color(38,119,120));
+      }
+
+    }),
+
+    SplashLayer = layers.XLayer.extend({
+
       pkInit: function() {
 
-        var cw = ccsx.center(),
-        wb = ccsx.vbox();
+        var wb = ccsx.vbox(),
+        cw = ccsx.center();
 
         this._super();
 
@@ -39,10 +45,13 @@ define("zotohlab/p/splash", ['cherimoia/skarojs',
             sh.fireEvent('/splash/controls/playgame');
           },
           target: this,
-          pos: cc.p(cw.x, wb.top * 0.25)
+          scale: 1,
+          pos: cc.p(cw.x, wb.top *0.10)
         }));
 
-      }
+      },
+
+      rtti: function() { return "SplashLayer"; }
 
     });
 
@@ -51,7 +60,7 @@ define("zotohlab/p/splash", ['cherimoia/skarojs',
       'StartScreen' : {
         create: function(options) {
           var scene = new scenes.XSceneFactory([
-            XSplashLayer, UILayer
+            UILayer, SplashLayer
           ]).create(options);
           scene.ebus.on('/splash/controls/playgame',
                         function() {

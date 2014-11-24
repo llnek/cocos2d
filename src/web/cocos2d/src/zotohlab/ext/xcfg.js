@@ -68,6 +68,8 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
         fonts: {
           'font.OogieBoogie' : [ 'res/cocos2d/fon/{{lang}}', 'OogieBoogie.png', 'OogieBoogie.fnt' ],
           'font.JellyBelly' : [ 'res/cocos2d/fon/{{lang}}', 'JellyBelly.png', 'JellyBelly.fnt' ],
+          'font.AgentOrange' : [ 'res/cocos2d/fon/{{lang}}', 'AgentOrange.png', 'AgentOrange.fnt' ],
+          'font.Hiruko' : [ 'res/cocos2d/fon/{{lang}}', 'Hiruko.png', 'Hiruko.fnt' ],
           'font.OCR' : [ 'res/cocos2d/fon/{{lang}}', 'OCR.png', 'OCR.fnt' ]
         }
       },

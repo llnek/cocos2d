@@ -381,21 +381,25 @@ define("zotohlab/asx/ccsx", ['cherimoia/skarojs',
         if (options.anchor) { menu.setAnchorPoint(options.anchor); }
         if (options.pos) { menu.setPosition(options.pos); }
         if (options.visible === false) { menu.setVisible(false); }
+        //menu.setColor(cc.color(255,0,0));
         return menu;
       },
 
       //make a gfx menu button
       pmenu1: function(options) {
         var btn = new cc.Sprite(options.imgPath),
-        s1 = new cc.Sprite(options.imgPath),
-        d1 = new cc.Sprite(options.imgPath),
+        s1, d1,
         mi,
         menu;
         if (options.selPath) {
           s1= new cc.Sprite(options.selPath);
+        } else {
+          s1 = new cc.Sprite(options.imgPath);
         }
         if (options.disPath) {
           d1= new cc.Sprite(options.disPath);
+        } else {
+          d1 = new cc.Sprite(options.imgPath);
         }
         mi= new cc.MenuItemSprite(btn,s1,d1,options.selector,options.target);
         mi.setScale(options.scale || 1);

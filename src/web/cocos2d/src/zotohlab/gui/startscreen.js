@@ -22,17 +22,23 @@ define("zotohlab/asx/xsplash", ['cherimoia/skarojs',
     XSplashLayer = layers.XLayer.extend({
 
       pkInit: function() {
-        var imgUrl= sh.getImagePath('splash.splash'),
-        wz = ccsx.vrect(),
+
+        var wb = ccsx.vbox(),
         cw = ccsx.center();
 
         this._super();
 
-        if (imgUrl) {
-          var s= new cc.Sprite(imgUrl);
-          s.setPosition(cw);
-          this.addItem(s);
-        }
+        this.addItem(ccsx.tmenu1({
+          fontPath: sh.getFontPath('font.Hiruko'),
+          text: sh.l10n('%play'),
+          selector: function() {
+            sh.fireEvent('/splash/controls/playgame');
+          },
+          target: this,
+          scale: 1,
+          pos: cc.p(cw.x, wb.top *0.25)
+        }));
+
       },
 
       rtti: function() { return "SplashLayer"; }
