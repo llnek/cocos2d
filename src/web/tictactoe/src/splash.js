@@ -21,13 +21,16 @@ define("zotohlab/p/splash", ['cherimoia/skarojs',
     R = sjs.ramda,
     undef,
 
-    BGLayer = cc.LayerColor.extend({
+    BGLayer = layers.XLayer.extend({
 
       rtti: function() { return "BGLayer"; },
 
       ctor: function() {
-        //this._super(cc.color(38,119,120));
-        this._super(cc.color(72,142,142));
+        var bg= new cc.Sprite(sh.getImagePath('game.bg')),
+        cw= ccsx.center();
+        this._super();
+        bg.setPosition(cw.x, cw.y);
+        this.addItem(bg);
       }
 
     }),
@@ -43,12 +46,12 @@ define("zotohlab/p/splash", ['cherimoia/skarojs',
 
         this._super();
 
-        tt= new cc.Sprite(sh.getImagePath('splash.title'));
+        tt= ccsx.createSpriteFrame('title.png');
         tt.setPosition(cw.x, wb.top * 0.9);
         this.addItem(tt);
 
         menu= ccsx.pmenu([
-          { imgPath: sh.getImagePath('splash.play'),
+          { imgPath: '#play.png',
             cb: function() {
               sh.fireEvent('/splash/controls/playgame');
             },

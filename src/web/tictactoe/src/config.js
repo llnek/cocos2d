@@ -50,18 +50,13 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
 
       assets: {
         atlases: {
-          'markers' : 'res/{{appid}}/pics/markers'
+          'lang-pics' : 'res/{{appid}}/l10n/{{lang}}/images',
+          'game-pics' : 'res/{{appid}}/pics/images'
         },
         tiles: {
         },
         images: {
-          'splash.options' : 'res/{{appid}}/l10n/{{lang}}/options.png',
-          'mmenu.online' : 'res/{{appid}}/l10n/{{lang}}/online.png',
-          'mmenu.play1' : 'res/{{appid}}/l10n/{{lang}}/player1.png',
-          'mmenu.play2' : 'res/{{appid}}/l10n/{{lang}}/player2.png',
-          'splash.title' : 'res/{{appid}}/ui/title.png',
-          'splash.play' : 'res/{{appid}}/l10n/{{lang}}/play.png',
-          'arena.bg' : 'res/{{appid}}/pics/arena.png'
+          'game.bg' : 'res/{{appid}}/pics/bg.png'
         },
         sounds: {
           'game_end' : 'res/cocos2d/sfx/MineExplosion',
@@ -80,10 +75,8 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
       levels: {
         "gamelevel1" : {
           tiles: {
-            'arena' : 'game/{{appid}}/levels/arena.tmx'
           },
           images: {
-            'arena' : 'game/{{appid}}/levels/arena.png'
           },
           sprites: {
           }
@@ -91,7 +84,8 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
       },
 
       runOnce: function() {
-        cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('markers'));
+        cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
+        cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('lang-pics'));
       }
 
     });

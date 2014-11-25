@@ -38,7 +38,7 @@
         <key>dataFormat</key>
         <string>cocos2d</string>
         <key>textureFileName</key>
-        <filename>markers.png</filename>
+        <filename>images.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -86,9 +86,9 @@
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
-            <int>2048</int>
+            <int>4096</int>
             <key>height</key>
-            <int>2048</int>
+            <int>4096</int>
         </QSize>
         <key>fixedTextureSize</key>
         <QSize>
@@ -145,7 +145,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>markers.plist</filename>
+                <filename>images.plist</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -190,9 +190,12 @@
         <array>
             <filename>o.i.png</filename>
             <filename>o.png</filename>
+            <filename>title.png</filename>
             <filename>x.i.png</filename>
             <filename>x.png</filename>
             <filename>z.png</filename>
+            <filename>sound_off.png</filename>
+            <filename>sound_on.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

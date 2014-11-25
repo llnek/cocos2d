@@ -33,14 +33,18 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
     },
 
     //////////////////////////////////////////////////////////////////////////////
-    BGLayer = cc.LayerColor.extend({
+    BGLayer = layers.XLayer.extend({
 
       rtti: function() { return "BGLayer"; },
 
       ctor: function() {
-        //this._super(cc.color(38,119,120));
-        this._super(cc.color(72,142,142));
+        var bg= new cc.Sprite(sh.getImagePath('game.bg')),
+        cw= ccsx.center();
+        this._super();
+        bg.setPosition(cw.x, cw.y);
+        this.addItem(bg);
       }
+
 
     }),
 
@@ -64,12 +68,12 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
         tt.setPosition(cw.x, wb.top * 0.9);
         tt.setOpacity(0.9*255);
         tt.setScale(0.2);
-        tt.setColor(cc.color(23,98,98));
+        tt.setColor(cc.color(229,181,79));
 
         this.addItem(tt);
 
         menu= ccsx.pmenu([
-          { imgPath: sh.getImagePath('mmenu.online'),
+          { imgPath: '#online.png',
             cb: function() {
               sh.fireEvent('/mmenu/controls/online',
                            sjs.mergeEx(SEED,
@@ -77,7 +81,7 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
             },
             target: me },
 
-          { imgPath: sh.getImagePath('mmenu.play2'),
+          { imgPath: '#player2.png',
             cb: function() {
               var p={};
               p[ sh.l10n('%p1') ] = [ 1, sh.l10n('%player1') ];
@@ -89,7 +93,7 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
             },
             target: me },
 
-          { imgPath: sh.getImagePath('mmenu.play1'),
+          { imgPath: '#player1.png',
             cb: function() {
               var p={};
               p[ sh.l10n('%cpu') ] = [ 2, sh.l10n('%computer') ];
@@ -105,7 +109,41 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
         menu.setPosition(cw.x, cw.y);
         this.addItem(menu);
 
-        //this.doCtrlBtns();
+        this.doAudioToggle();
+      },
+
+      doAudioToggle: function() {
+        var off= new cc.MenuItemSprite(ccsx.createSpriteFrame('sound_off.png'),
+                                       ccsx.createSpriteFrame('sound_off.png'),
+                                       ccsx.createSpriteFrame('sound_off.png'),
+                                       sjs.NILFUNC, this),
+        on= new cc.MenuItemSprite(ccsx.createSpriteFrame('sound_on.png'),
+                                  ccsx.createSpriteFrame('sound_on.png'),
+                                  ccsx.createSpriteFrame('sound_on.png'),
+                                  sjs.NILFUNC, this),
+        audio, menu, wb = ccsx.vbox();
+        //off.setColor(cc.color(157,125,176));
+        //on.setColor(cc.color(157,125,176));
+        off.setColor(cc.color(94,49,120));
+        on.setColor(cc.color(94,49,120));
+        audio= new cc.MenuItemToggle(off, on, function(sender) {
+          if (sender.getSelectedIndex() === 0) {
+            sh.toggleSfx(true);
+          } else {
+            sh.toggleSfx(false);
+          }
+        });
+        audio.setAnchorPoint(cc.p(0,0));
+        if (xcfg.sound.open) {
+          audio.setSelectedIndex(0);
+        } else {
+          audio.setSelectedIndex(1);
+        }
+        audio.setScale(32/off.getContentSize().width);
+        menu= new cc.Menu(audio);
+        menu.setPosition(wb.left + csts.TILE + csts.S_OFF,
+                         wb.bottom + csts.TILE + csts.S_OFF);
+        this.addItem(menu);
       }
 
     });

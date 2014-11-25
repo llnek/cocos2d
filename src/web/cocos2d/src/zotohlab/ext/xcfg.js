@@ -31,7 +31,7 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
 
       assets: {
         sprites: {
-          'gui.audio' : [ 'res/cocos2d/btns/{{color}}/audio_onoff.png', 48,48, -1 ]
+          //'gui.audio' : [ 'res/cocos2d/btns/{{color}}/audio_onoff.png', 48,48, -1 ]
         },
         atlases : {
         },
@@ -40,26 +40,10 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
           //'gui.mmenu' : 'game/{{appid}}/levels/mainmenu.tmx'
         },
         images: {
-          'splash.splash' : 'res/{{appid}}/ui/splash.png',
-
-          "gui.mmenu.replay" : 'res/cocos2d/btns/{{color}}/replay.png',
-          "gui.mmenu.quit" : 'res/cocos2d/btns/{{color}}/quit.png',
-          "gui.mmenu.back" : 'res/cocos2d/btns/{{color}}/go_back.png',
-          "gui.mmenu.ok" : 'res/cocos2d/btns/{{color}}/go_ok.png',
-          "gui.mmenu.menu" : 'res/cocos2d/btns/{{color}}/go_mmenu.png',
-
           //'gui.mmenu.border16': 'res/cocos2d/pics/cbox-borders_x16.png',
           //'gui.mmenu.border8': 'res/cocos2d/pics/cbox-borders_x8.png',
 
-          'gui.mmenu.menu.bg' : 'res/{{appid}}/ui/mainmenu.png',
-          'gui.mmenu.bg' : 'res/{{appid}}/ui/bg.png',
-          'gui.mmenu.border': 'game/{{appid}}/levels/{{border-tiles}}',
-
-          'gui.blank' : 'res/{{appid}}/ui/bg.png',
-
-          'gui.edit.orange' : 'res/cocos2d/pics/orange_edit.png',
-          'gui.edit.green' : 'res/cocos2d/pics/green_edit.png',
-          'gui.edit.yellow' : 'res/cocos2d/pics/yellow_edit.png'
+          //'gui.mmenu.border': 'game/{{appid}}/levels/{{border-tiles}}',
 
         },
         sounds: {
