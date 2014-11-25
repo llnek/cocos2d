@@ -26,7 +26,8 @@ define("zotohlab/p/splash", ['cherimoia/skarojs',
       rtti: function() { return "BGLayer"; },
 
       ctor: function() {
-        this._super(cc.color(38,119,120));
+        //this._super(cc.color(38,119,120));
+        this._super(cc.color(72,142,142));
       }
 
     }),

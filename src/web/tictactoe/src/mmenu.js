@@ -38,7 +38,8 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
       rtti: function() { return "BGLayer"; },
 
       ctor: function() {
-        this._super(cc.color(38,119,120));
+        //this._super(cc.color(38,119,120));
+        this._super(cc.color(72,142,142));
       }
 
     }),
@@ -63,7 +64,8 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
         tt.setPosition(cw.x, wb.top * 0.9);
         tt.setOpacity(0.9*255);
         tt.setScale(0.2);
-        tt.setColor(cc.color(117,189,197));
+        tt.setColor(cc.color(23,98,98));
+
         this.addItem(tt);
 
         menu= ccsx.pmenu([
@@ -99,7 +101,7 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
             },
             target: me },
         ]);
-        menu.alignItemsVerticallyWithPadding(2);
+        menu.alignItemsVerticallyWithPadding(10);
         menu.setPosition(cw.x, cw.y);
         this.addItem(menu);
 
