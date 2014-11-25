@@ -435,6 +435,7 @@ define("zotohlab/asx/ccsx", ['cherimoia/skarojs',
                                       options.target),
         menu;
 
+        if (options.color) { mi.setColor(options.color); }
         mi.setScale(options.scale || 1);
         mi.setTag(1);
         menu = new cc.Menu(mi);

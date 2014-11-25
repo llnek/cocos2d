@@ -199,6 +199,8 @@
             <filename>quit.png</filename>
             <filename>icon_back.png</filename>
             <filename>icon_quit.png</filename>
+            <filename>icon_menu.png</filename>
+            <filename>icon_replay.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

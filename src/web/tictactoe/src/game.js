@@ -105,7 +105,8 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
         if (!sjs.isEmpty(this.atlases)) {
           sjs.eachObj(function(v){ v.removeAllChildren(); }, this.atlases);
         } else {
-          this.regoAtlas('markers');
+          this.regoAtlas('game-pics');
+          this.regoAtlas('lang-pics');
         }
         if (newFlag) {
           this.getHUD().resetAsNew();

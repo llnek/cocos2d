@@ -76,7 +76,7 @@ define("zotohlab/p/s/utils", ['cherimoia/skarojs',
         s1= ccsx.createSpriteFrame(frame);
         s1.setAnchorPoint(ccsx.AnchorCenter);
         s1.setPosition(x,y);
-        view.layer.addAtlasItem('markers', s1);
+        view.layer.addAtlasItem('game-pics', s1);
         return s1;
       }
 

@@ -21,38 +21,65 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
     csts= xcfg.csts,
     undef,
 
-    BackLayer = cc.LayerColor.extend({
+    BackLayer = layers.XLayer.extend({
 
       rtti: function() { return 'BackLayer'; },
 
       ctor: function() {
-        //this._super(cc.color(38,119,120));
-        this._super(cc.color(72,142,142));
-      }
-
-    }),
-
-    XXBackLayer = layers.XLayer.extend({
-
-      rtti: function() { return 'BackLayer'; },
-
-      pkInit: function() {
-        var imgUrl= sh.getImagePath('arena.bg'),
-        s,
-        cw = ccsx.center();
-
+        var bg= new cc.Sprite(sh.getImagePath('game.bg')),
+        cw= ccsx.center();
         this._super();
-
-        if (!!imgUrl) {
-          s= new cc.Sprite(imgUrl);
-          s.setPosition(cw);
-          this.addItem(s);
-        }
+        bg.setPosition(cw.x, cw.y);
+        this.addItem(bg);
       }
 
     }),
 
     HUDLayer = layers.XGameHUDLayer.extend({
+
+      initCtrlBtns: function(scale, where) {
+        var csts = xcfg.csts,
+        cw= ccsx.center(),
+        wz= ccsx.vbox(),
+        y, c, menu;
+
+        where = where || 'cc.ALIGN_BOTTOM';
+        scale = scale || 1;
+
+        menu= ccsx.pmenu1({
+          imgPath: '#icon_menu.png',
+          scale: scale,
+          color: cc.color(94,49,120),
+          selector: function() {
+            sh.fireEvent('/game/hud/controls/showmenu'); }
+        });
+        c= menu.getChildByTag(1);
+        if (where === 'cc.ALIGN_TOP') {
+          y = wz.top - csts.TILE  - ccsx.getScaledHeight(c) * 0.5;
+        } else {
+          y = wz.bottom + csts.TILE  + ccsx.getScaledHeight(c) * 0.5;
+        }
+        menu.setPosition(wz.right - csts.TILE - ccsx.getScaledWidth(c) * 0.5, y);
+        this.addItem(menu);
+
+        menu = ccsx.pmenu1({
+          imgPath: '#icon_replay.png',
+          color: cc.color(94,49,120),
+          scale : scale,
+          visible: false,
+          selector: function() {
+            sh.fireEvent('/game/hud/controls/replay'); }
+        });
+        c= menu.getChildByTag(1);
+        if (where === 'cc.ALIGN_TOP') {
+          y = wz.top - csts.TILE  - ccsx.getScaledHeight(c) * 0.5;
+        } else {
+          y = wz.bottom + csts.TILE  + ccsx.getScaledHeight(c) * 0.5;
+        }
+        menu.setPosition(wz.left + csts.TILE + ccsx.getScaledWidth(c) * 0.5, y);
+        this.replayBtn=menu;
+        this.addItem(menu);
+      },
 
       ctor: function(options) {
         this._super(options);
@@ -95,7 +122,7 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
           fontPath: sh.getFontPath('font.SmallTypeWriting'),
           text: '0',
           scale: 0.2,
-          color: cc.color(220,104,90),
+          color: cc.color(225,225,225),
           pos: cc.p(csts.TILE + csts.S_OFF + 2,
                     wb.top - csts.TILE - csts.S_OFF),
           anchor: ccsx.AnchorTopLeft
@@ -106,7 +133,7 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
           fontPath: sh.getFontPath('font.SmallTypeWriting'),
           text: '0',
           scale: 0.2,
-          color: cc.color(236,175,79),
+          color: cc.color(255,255,255),
           pos: cc.p(wb.right - csts.TILE - csts.S_OFF,
                     wb.top - csts.TILE - csts.S_OFF),
           anchor: ccsx.AnchorTopRight

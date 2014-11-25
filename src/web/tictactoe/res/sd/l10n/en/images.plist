@@ -56,10 +56,36 @@
                 <key>sourceSize</key>
                 <string>{37,37}</string>
             </dict>
+            <key>icon_menu.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{425,2},{37,37}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{37,37}}</string>
+                <key>sourceSize</key>
+                <string>{37,37}</string>
+            </dict>
             <key>icon_quit.png</key>
             <dict>
                 <key>frame</key>
                 <string>{{386,41},{37,37}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{37,37}}</string>
+                <key>sourceSize</key>
+                <string>{37,37}</string>
+            </dict>
+            <key>icon_replay.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{425,41},{37,37}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -155,9 +181,9 @@
             <key>realTextureFileName</key>
             <string>images.png</string>
             <key>size</key>
-            <string>{425,122}</string>
+            <string>{464,122}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:99fefab979e6abfbeaf7e34f0379a5a6:3baa0d25bf1140f1cb28f13c2ed05ff4:e1a9b31caf258d7c92150a6ccbde6fbd$</string>
+            <string>$TexturePacker:SmartUpdate:be4ae14ad574cb8c21acc8c8f5748ba3:206fd5a07a3bec0288350fe79e31f406:e1a9b31caf258d7c92150a6ccbde6fbd$</string>
             <key>textureFileName</key>
             <string>images.png</string>
         </dict>
