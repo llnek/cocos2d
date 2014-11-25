@@ -7,7 +7,7 @@
             <key>o.i.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{218,2},{80,80}}</string>
+                <string>{{2,2},{80,80}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -20,7 +20,7 @@
             <key>o.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{300,2},{80,80}}</string>
+                <string>{{84,2},{80,80}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -33,33 +33,33 @@
             <key>sound_off.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,2},{106,106}}</string>
+                <string>{{2,84},{37,37}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{106,106}}</string>
+                <string>{{0,0},{37,37}}</string>
                 <key>sourceSize</key>
-                <string>{106,106}</string>
+                <string>{37,37}</string>
             </dict>
             <key>sound_on.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{110,2},{106,106}}</string>
+                <string>{{41,84},{37,37}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{106,106}}</string>
+                <string>{{0,0},{37,37}}</string>
                 <key>sourceSize</key>
-                <string>{106,106}</string>
+                <string>{37,37}</string>
             </dict>
             <key>title.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{218,84},{277,33}}</string>
+                <string>{{80,84},{277,33}}</string>
                 <key>offset</key>
                 <string>{-1,-1}</string>
                 <key>rotated</key>
@@ -72,7 +72,7 @@
             <key>x.i.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{382,2},{80,80}}</string>
+                <string>{{166,2},{80,80}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -85,7 +85,7 @@
             <key>x.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{464,2},{80,80}}</string>
+                <string>{{248,2},{80,80}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -98,7 +98,7 @@
             <key>z.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{546,2},{80,80}}</string>
+                <string>{{330,2},{80,80}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -116,9 +116,9 @@
             <key>realTextureFileName</key>
             <string>images.png</string>
             <key>size</key>
-            <string>{628,119}</string>
+            <string>{412,123}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:36556a719004fc90cd83b67ebbbfdc07:d50d7d2da77c470517db7befe4510b50:e1a9b31caf258d7c92150a6ccbde6fbd$</string>
+            <string>$TexturePacker:SmartUpdate:c3a8c35b51d9e8dd4b2b72de1d82be93:6bcd0148e9dd271bdde9d573ef81686f:e1a9b31caf258d7c92150a6ccbde6fbd$</string>
             <key>textureFileName</key>
             <string>images.png</string>
         </dict>

@@ -139,7 +139,7 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
         } else {
           audio.setSelectedIndex(1);
         }
-        audio.setScale(32/off.getContentSize().width);
+        //audio.setScale(32/off.getContentSize().width);
         menu= new cc.Menu(audio);
         menu.setPosition(wb.left + csts.TILE + csts.S_OFF,
                          wb.bottom + csts.TILE + csts.S_OFF);
