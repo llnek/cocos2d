@@ -39,6 +39,8 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
         //GAP: 10,
 
         PLAYER_THINK_TIME: 7,
+        GRID_SIZE: 3,
+        CELLS: 9,
         CV_Z: 0
       },
 

@@ -22,16 +22,20 @@ define("zotohlab/p/s/utils", ['cherimoia/skarojs',
     //////////////////////////////////////////////////////////////////////////////
     return {
 
-      mapGridPos: function () {
+      mapGridPos: function (gsz, scale) {
+        gsz = gsz || csts.GRID_SIZE;
+        scale = scale || 1;
         // memorize the co-ordinates of each cell on the board, so
         // we know which cell the user has clicked on.
         var sp = ccsx.createSpriteFrame('z.png'),
-        csz = sp.getContentSize(),
-        ro= 8/72,
+        csz = cc.size(sp.getContentSize().width * scale,
+                      sp.getContentSize().height * scale),
+        cells= gsz * gsz,
+        ro= 8/72 * scale,
         gh = csz.height * ro,
         gw = csz.width * ro,
-        zh= csts.GRID_SIZE * csz.height + (csts.GRID_SIZE-1) * gh,
-        zw= csts.GRID_SIZE * csz.width + (csts.GRID_SIZE-1) * gw,
+        zh= gsz * csz.height + (gsz-1) * gh,
+        zw= gsz * csz.width + (gsz-1) * gw,
         cw = ccsx.center(),
         gridMap=[],
         x2,y2,
@@ -40,12 +44,12 @@ define("zotohlab/p/s/utils", ['cherimoia/skarojs',
         x1= x0,
         y1=y0;
 
-        for (var n=0; n < csts.CELLS; ++n) { gridMap.push(null); }
-        for (var r=0; r < csts.GRID_SIZE; ++r) {
-          for (var c= 0; c < csts.GRID_SIZE; ++c) {
+        for (var n=0; n < cells; ++n) { gridMap.push(null); }
+        for (var r=0; r < gsz; ++r) {
+          for (var c= 0; c < gsz; ++c) {
             y2 = y1 - csz.height;
             x2 = x1 + csz.width;
-            gridMap[r * csts.GRID_SIZE + c] = { x1: x1, y1: y1, x2: x2, y2: y2};
+            gridMap[r * gsz + c] = { x1: x1, y1: y1, x2: x2, y2: y2};
             x1 = x2 + gw;
           }
           y1 = y2 - gh;

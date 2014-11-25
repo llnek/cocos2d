@@ -9,12 +9,13 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/splash", ['cherimoia/skarojs',
+define("zotohlab/p/splash", ['zotohlab/p/s/utils',
+                            'cherimoia/skarojs',
                             'zotohlab/asterix',
                             'zotohlab/asx/ccsx',
                             'zotohlab/asx/xlayers',
                             'zotohlab/asx/xscenes'],
-  function (sjs, sh, ccsx, layers, scenes) { "use strict";
+  function (utils, sjs, sh, ccsx, layers, scenes) { "use strict";
 
     var xcfg = sh.xcfg,
     csts= xcfg.csts,
@@ -59,11 +60,34 @@ define("zotohlab/p/splash", ['cherimoia/skarojs',
           1, 2);
 
         menu.alignItemsVerticallyWithPadding(2);
-        menu.setPosition(cw.x, wb.top * 0.15);
+        menu.setPosition(cw.x, wb.top * 0.10);
         this.addItem(menu);
+
+        this.showGrid();
       },
 
-      rtti: function() { return "SplashLayer"; }
+      rtti: function() { return "SplashLayer"; },
+
+      showGrid: function() {
+        var scale= 0.75, me=this, pos=0, fm, sp,
+        mgs = utils.mapGridPos(3,scale);
+
+        R.forEach(function(mp) {
+          if (pos === 1 || pos===5 || pos===6 || pos===7) {
+            fm= 'x.png';
+          } else if (pos===0 || pos===4) {
+            fm= 'z.png';
+          } else {
+            fm= 'o.png';
+          }
+          sp= ccsx.createSpriteFrame(fm);
+          sp.setPosition( mp.x1 + (mp.x2 - mp.x1) * 0.5,
+                          mp.y2 + (mp.y1 - mp.y2) * 0.5);
+          sp.setScale(scale);
+          me.addItem(sp);
+          ++pos;
+        }, mgs);
+      },
 
     });
 
