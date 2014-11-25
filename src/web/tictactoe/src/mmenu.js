@@ -109,10 +109,10 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
         menu.setPosition(cw.x, cw.y);
         this.addItem(menu);
 
-        this.doAudioToggle();
+        this.doControls();
       },
 
-      doAudioToggle: function() {
+      doControls: function() {
         var off= new cc.MenuItemSprite(ccsx.createSpriteFrame('sound_off.png'),
                                        ccsx.createSpriteFrame('sound_off.png'),
                                        ccsx.createSpriteFrame('sound_off.png'),
@@ -121,6 +121,7 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
                                   ccsx.createSpriteFrame('sound_on.png'),
                                   ccsx.createSpriteFrame('sound_on.png'),
                                   sjs.NILFUNC, this),
+        sz, me=this,
         audio, menu, wb = ccsx.vbox();
         //off.setColor(cc.color(157,125,176));
         //on.setColor(cc.color(157,125,176));
@@ -133,17 +134,54 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
             sh.toggleSfx(false);
           }
         });
-        audio.setAnchorPoint(cc.p(0,0));
+        audio.setAnchorPoint(cc.p(1,0));
         if (xcfg.sound.open) {
           audio.setSelectedIndex(0);
         } else {
           audio.setSelectedIndex(1);
         }
-        //audio.setScale(32/off.getContentSize().width);
+
         menu= new cc.Menu(audio);
-        menu.setPosition(wb.left + csts.TILE + csts.S_OFF,
-                         wb.bottom + csts.TILE + csts.S_OFF);
+        menu.setPosition(wb.right - csts.TILE ,
+                         wb.bottom + csts.TILE);
         this.addItem(menu);
+
+        menu= ccsx.pmenu([
+          { imgPath: '#icon_back.png',
+            cb: function() {
+              this.options.onBack();
+            },
+            color: cc.color(94,49,120),
+            target: me },
+
+          { imgPath: '#icon_quit.png',
+            cb: function() {
+              this.onQuit();
+            },
+            color: cc.color(94,49,120),
+            target: me },
+        ]);
+        menu.alignItemsHorizontallyWithPadding(8);
+        sz= menu.getChildren()[0].getContentSize();
+        //menu.setAnchorPoint(cc.p(0,0.5));
+        menu.setPosition(wb.left + csts.TILE + sz.width * 1.1,
+                         wb.bottom + csts.TILE + sz.height * 0.45);
+        this.addItem(menu);
+      },
+
+      onQuit: function() {
+        var ss= sh.protos['StartScreen'],
+        yn= sh.protos['YesNo'],
+        dir = cc.director;
+
+        dir.pushScene( yn.create({
+          onBack: function() { dir.popScene(); },
+          yes: function() {
+            sh.sfxPlay('game_quit');
+            dir.popToRootScene();
+            dir.runScene(ss.create());
+          }
+        }));
       }
 
     });

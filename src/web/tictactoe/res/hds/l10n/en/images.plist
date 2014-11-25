@@ -20,7 +20,7 @@
             <key>continue.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{81,2},{252,77}}</string>
+                <string>{{2,256},{252,77}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -33,7 +33,7 @@
             <key>goback.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{160,2},{252,77}}</string>
+                <string>{{81,2},{252,77}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -43,10 +43,36 @@
                 <key>sourceSize</key>
                 <string>{252,77}</string>
             </dict>
+            <key>icon_back.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,764},{73,73}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{1,1},{73,73}}</string>
+                <key>sourceSize</key>
+                <string>{75,75}</string>
+            </dict>
+            <key>icon_quit.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{77,764},{73,73}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{1,1},{73,73}}</string>
+                <key>sourceSize</key>
+                <string>{75,75}</string>
+            </dict>
             <key>online.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,256},{252,77}}</string>
+                <string>{{160,2},{252,77}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -129,9 +155,9 @@
             <key>realTextureFileName</key>
             <string>images.png</string>
             <key>size</key>
-            <string>{239,766}</string>
+            <string>{239,839}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:2bf8c86372c2ea7d02486b5990944a86:b80b70d03506e84cded4b88cc480ee18:e1a9b31caf258d7c92150a6ccbde6fbd$</string>
+            <string>$TexturePacker:SmartUpdate:8e87d3e805e71a1a4d57acb7eb0dbc94:3baa0d25bf1140f1cb28f13c2ed05ff4:e1a9b31caf258d7c92150a6ccbde6fbd$</string>
             <key>textureFileName</key>
             <string>images.png</string>
         </dict>

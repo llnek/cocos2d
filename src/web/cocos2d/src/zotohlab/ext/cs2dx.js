@@ -418,7 +418,8 @@ define("zotohlab/asx/ccsx", ['cherimoia/skarojs',
                                     new cc.Sprite(obj.imgPath),
                                     obj.cb,
                                     obj.target);
-          if (sjs.echt(scale)) { mi.setScale(scale); }
+          if (!!obj.color) { mi.setColor(obj.color); }
+          if (!!scale) { mi.setScale(scale); }
           mi.setTag(++t);
           menu.addChild(mi);
         }

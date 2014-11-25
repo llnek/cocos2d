@@ -197,6 +197,8 @@
             <filename>player1.png</filename>
             <filename>player2.png</filename>
             <filename>quit.png</filename>
+            <filename>icon_back.png</filename>
+            <filename>icon_quit.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
