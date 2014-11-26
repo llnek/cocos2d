@@ -201,6 +201,7 @@
             <filename>icon_quit.png</filename>
             <filename>icon_menu.png</filename>
             <filename>icon_replay.png</filename>
+            <filename>ok.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

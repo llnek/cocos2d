@@ -33,7 +33,7 @@
             <key>sound_off.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1812,158},{180,180}}</string>
+                <string>{{1812,2},{180,180}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -46,7 +46,7 @@
             <key>sound_on.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1994,158},{180,180}}</string>
+                <string>{{1812,184},{180,180}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -59,13 +59,13 @@
             <key>title.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1812,2},{1326,154}}</string>
+                <string>{{2,364},{1314,140}}</string>
                 <key>offset</key>
-                <string>{-3,-6}</string>
+                <string>{-9,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{34,13},{1326,154}}</string>
+                <string>{{34,14},{1314,140}}</string>
                 <key>sourceSize</key>
                 <string>{1400,168}</string>
             </dict>
@@ -116,9 +116,9 @@
             <key>realTextureFileName</key>
             <string>images.png</string>
             <key>size</key>
-            <string>{3140,364}</string>
+            <string>{1994,506}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:3209e750f6e4a09be32f06aa72c55942:091777a071b55f657af12e3937a352a3:e1a9b31caf258d7c92150a6ccbde6fbd$</string>
+            <string>$TexturePacker:SmartUpdate:892d199c309e9fcc1665cba0cb7c5e86:415e56fd6a8f6fdfeec5a30eccb9d124:e1a9b31caf258d7c92150a6ccbde6fbd$</string>
             <key>textureFileName</key>
             <string>images.png</string>
         </dict>

@@ -22,55 +22,50 @@ define("zotohlab/asx/msgbox", ['cherimoia/skarojs',
     undef,
 
     BGLayer = layers.XLayer.extend({
+      rtti: function() { return "BGLayer"; },
 
-    pkInit: function() {
-      var imgUrl= sh.getImagePath('gui.blank'),
-      s,
-      cw = ccsx.center();
+      ctor: function() {
+        var bg= new cc.Sprite(sh.getImagePath('game.bg')),
+        cw= ccsx.center();
+        this._super();
+        bg.setPosition(cw.x, cw.y);
+        this.addItem(bg);
+      },
 
-      this._super();
-
-      if (!!imgUrl) {
-        s= new cc.Sprite(imgUrl);
-        s.setPosition(cw);
-        this.addItem(s);
-      }
-    }
+      pkInit: function() {}
 
     }),
 
     UILayer =  layers.XLayer.extend({
 
-    pkInit: function() {
-      var qn= new cc.LabelBMFont(sh.l10n(this.options.msg),
-                                 sh.getFontPath('font.OCR')),
-      s1= [null,null,null],
-      cw= ccsx.center(),
-      wz= ccsx.vrect(),
-      wb = ccsx.vbox(),
-      t1, menu;
+      pkInit: function() {
+        var qn= new cc.LabelBMFont(sh.l10n(this.options.msg),
+                                   sh.getFontPath('font.OCR')),
+        cw= ccsx.center(),
+        wz= ccsx.vrect(),
+        wb = ccsx.vbox(),
+        me=this,
+        menu;
 
-      this._super();
+        this._super();
 
-      qn.setPosition(cw.x, wb.top * 0.75);
-      qn.setScale(18/72);
-      qn.setOpacity(0.9*255);
-      this.addItem(qn);
+        qn.setPosition(cw.x, wb.top * 0.75);
+        qn.setScale(xcfg.game.scale * 0.25);
+        qn.setOpacity(0.9*255);
+        this.addItem(qn);
 
-      R.map.idx(function(z,n,a) {
-        a[n] = new cc.Sprite(sh.getImagePath('gui.mmenu.ok'));
-      },s1);
-      t1 = new cc.MenuItemSprite(s1[0], s1[1], s1[2], function() {
-        this.options.yes();
-      }, this);
-
-      menu= cc.Menu.create(t1);
-      menu.alignItemsHorizontallyWithPadding(10);
-      menu.setPosition(wb.right - csts.TILE - csts.S_OFF - s1[0].getContentSize().width * 0.5,
-        wb.bottom + csts.TILE + csts.S_OFF + s1[0].getContentSize().height * 0.5);
-      this.addItem(menu);
-
-    }
+        menu= ccsx.pmenu([
+          { imgPath: '#ok.png',
+            cb: function() {
+              me.options.yes();
+            },
+            target: me
+          }
+        ]);
+        menu.alignItemsVertically();
+        menu.setPosition(cw.x, wb.top * 0.1);
+        this.addItem(menu);
+      }
 
     });
 

@@ -25,19 +25,17 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
 
     BGLayer = layers.XLayer.extend({
 
-      pkInit: function() {
-        var imgUrl= sh.getImagePath('gui.blank'),
-        s,
-        cw = ccsx.center();
+      rtti: function() { return "BGLayer"; },
 
+      ctor: function() {
+        var bg= new cc.Sprite(sh.getImagePath('game.bg')),
+        cw= ccsx.center();
         this._super();
+        bg.setPosition(cw.x, cw.y);
+        this.addItem(bg);
+      },
 
-        if (!!imgUrl) {
-          s= new cc.Sprite(imgUrl);
-          s.setPosition(cw);
-          this.addItem(s);
-        }
-      }
+      pkInit: function() {}
 
     }),
 
@@ -103,29 +101,28 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
 
       showWaitOthers: function() {
         this.removeAll();
-        var qn= new cc.LabelBMFont(sh.l10n('%waitothers'),
+        var qn= new cc.LabelBMFont(sh.l10n('%waitother'),
                                    sh.getFontPath('font.OCR')),
         cw= ccsx.center(),
         wz= ccsx.vrect(),
         wb = ccsx.vbox(),
-        t2, menu,
-        s2 = R.map.idx(function(z,n) {
-          return new cc.Sprite(sh.getImagePath('gui.mmenu.back'));
-        }, [null,null,null]);
+        me=this, menu;
 
-        qn.setPosition(cw.x, wb.top * 0.90);
-        qn.setScale(0.06);
+        qn.setPosition(cw.x, wb.top * 0.75);
+        qn.setScale(xcfg.game.scale * 0.3);
         qn.setOpacity(0.9*255);
         this.addItem(qn);
 
-        t2= new cc.MenuItemSprite(s2[0], s2[1], s2[2], function() {
-          this.onCancelPlay();
-        }, this);
-
-        menu= cc.Menu.create(t2);
-        menu.alignItemsHorizontallyWithPadding(10);
-        menu.setPosition(wb.right - csts.TILE - csts.S_OFF - s2[0].getContentSize().width * 0.5,
-          wb.bottom + csts.TILE + csts.S_OFF + s2[0].getContentSize().height * 0.5);
+        menu= ccsx.pmenu([
+          { imgPath: '#cancel.png',
+            cb: function() {
+              this.onCancelPlay();
+            },
+            target: me
+          }
+        ]);
+        menu.alignItemsVertically();
+        menu.setPosition(cw.x, wb.top * 0.2);
         this.addItem(menu);
       },
 
@@ -136,12 +133,13 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
         wz= ccsx.vrect(),
         wb= ccsx.vbox(),
         uid, pwd,
+        me=this,
         menu;
 
         this._super();
 
-        qn.setPosition(cw.x, wb.top * 0.90);
-        qn.setScale(0.06);
+        qn.setPosition(cw.x, wb.top * 0.75);
+        qn.setScale(xcfg.game.scale * 0.3);
         qn.setOpacity(0.9*255);
         this.addItem(qn);
 
@@ -172,27 +170,22 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
         pwd.setDelegate(this);
         this.addItem(pwd);
 
-        var s2= R.map.idx(function(z,n,a) {
-          return new cc.Sprite(sh.getImagePath('gui.mmenu.back'));
-        },[0,1,2]),
-        s1= R.map.idx(function(z,n,a) {
-          return new cc.Sprite(sh.getImagePath('gui.mmenu.ok'));
-        },[0,1,2]),
-        t2,t1;
+        menu= ccsx.pmenu([
+          { imgPath: '#continue.png',
+            cb: function() {
+              this.onOnlineReq(uid.getString(),pwd.getString());
+            },
+            target: me },
 
-        t2 = new cc.MenuItemSprite(s2[0], s2[1], s2[2], function() {
-          this.options.onBack();
-        }, this);
-        t1 = new cc.MenuItemSprite(s1[0], s1[1], s1[2], function() {
-          this.onOnlineReq(uid.getString(),pwd.getString());
-        }, this);
-
-        menu= new cc.Menu(t1,t2);
-        menu.alignItemsHorizontallyWithPadding(10);
-        menu.setPosition(wb.right - csts.TILE - csts.S_OFF - (s2[0].getContentSize().width + s1[0].getContentSize().width + 10) * 0.5,
-          wb.bottom + csts.TILE + csts.S_OFF + s2[0].getContentSize().height * 0.5);
+          { imgPath: '#cancel.png',
+            cb: function() {
+              this.options.onBack();
+            },
+            target: me }
+        ]);
+        menu.alignItemsVerticallyWithPadding(10);
+        menu.setPosition(cw.x, wb.top * 0.2);
         this.addItem(menu);
-
       }
 
     });

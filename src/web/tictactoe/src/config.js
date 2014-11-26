@@ -58,6 +58,7 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
         tiles: {
         },
         images: {
+          'gui.edit.orange': 'res/cocos2d/pics/orange_edit.png',
           'game.bg' : 'res/{{appid}}/pics/bg.png'
         },
         sounds: {

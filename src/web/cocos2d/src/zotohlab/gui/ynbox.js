@@ -23,19 +23,17 @@ define("zotohlab/asx/ynbox", ['cherimoia/skarojs',
 
     BGLayer = layers.XLayer.extend({
 
-      pkInit: function() {
-        var imgUrl= sh.getImagePath('gui.blank'),
-        s,
-        cw = ccsx.center();
+      rtti: function() { return "BGLayer"; },
 
+      ctor: function() {
+        var bg= new cc.Sprite(sh.getImagePath('game.bg')),
+        cw= ccsx.center();
         this._super();
+        bg.setPosition(cw.x, cw.y);
+        this.addItem(bg);
+      },
 
-        if (!!imgUrl) {
-          s= new cc.Sprite(imgUrl);
-          s.setPosition(cw);
-          this.addItem(s);
-        }
-      }
+      pkInit: function() {}
 
     }),
 
@@ -47,36 +45,32 @@ define("zotohlab/asx/ynbox", ['cherimoia/skarojs',
         cw= ccsx.center(),
         wz= ccsx.vrect(),
         wb= ccsx.vbox(),
-        t1, t2,
+        me=this,
         menu;
 
         this._super();
 
         qn.setPosition(cw.x, wb.top * 0.75);
-        qn.setScale(0.05);
+        qn.setScale(xcfg.game.scale * 0.25);
         qn.setOpacity(0.9*255);
         this.addItem(qn);
 
-        var s2 = R.map.idx(function(v,n,a) {
-          return new cc.Sprite(sh.getImagePath('gui.mmenu.back'));
-        }, [null,null,null]),
-        s1= R.map.idx(function(v,n,a) {
-          return new cc.Sprite(sh.getImagePath('gui.mmenu.ok'));
-        }, [null,null,null]);
+        menu= ccsx.pmenu([
+          { imgPath: '#continue.png',
+            cb: function() {
+              me.options.yes();
+            },
+            target: me },
 
-        t2 = new cc.MenuItemSprite(s2[0], s2[1], s2[2], function() {
-          this.options.onBack();
-        }, this);
-        t1 = new cc.MenuItemSprite(s1[0], s1[1], s1[2], function() {
-          this.options.yes();
-        }, this);
-
-        menu= new cc.Menu(t1,t2);
-        menu.alignItemsHorizontallyWithPadding(10);
-        menu.setPosition(wb.right - csts.TILE - csts.S_OFF - (s2[0].getContentSize().width + s1[0].getContentSize().width + 10) * 0.5,
-          wb.bottom + csts.TILE + csts.S_OFF + s2[0].getContentSize().height * 0.5);
+          { imgPath: '#cancel.png',
+            cb: function() {
+              me.options.onBack();
+            },
+            target: me }
+        ]);
+        menu.alignItemsVerticallyWithPadding(10);
+        menu.setPosition(cw.x, cw.y);
         this.addItem(menu);
-
       }
 
     });

@@ -59,13 +59,13 @@
             <key>title.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{156,154},{553,66}}</string>
+                <string>{{156,154},{549,60}}</string>
                 <key>offset</key>
-                <string>{-1,-2}</string>
+                <string>{-4,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{14,4},{553,66}}</string>
+                <string>{{13,5},{549,60}}</string>
                 <key>sourceSize</key>
                 <string>{583,70}</string>
             </dict>
@@ -118,7 +118,7 @@
             <key>size</key>
             <string>{762,231}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:1074da89440ce7dd2b3f8e33b543d233:091777a071b55f657af12e3937a352a3:e1a9b31caf258d7c92150a6ccbde6fbd$</string>
+            <string>$TexturePacker:SmartUpdate:63bb566571412bf0332b545388a0fcfe:415e56fd6a8f6fdfeec5a30eccb9d124:e1a9b31caf258d7c92150a6ccbde6fbd$</string>
             <key>textureFileName</key>
             <string>images.png</string>
         </dict>

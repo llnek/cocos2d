@@ -98,11 +98,11 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
           "%replay" : 'REPLAY',
           "%play" : 'PLAY',
 
-          "%waitothers" : 'Waiting for other players to join...',
-          "%waitother" : 'Waiting for another player to join...',
+          "%waitothers" : 'Waiting...\nfor other players.',
+          "%waitother" : 'Waiting...\nfor another player.',
           "%signinplay" : 'Please sign in to play.',
 
-          "%quit?" : 'Continue to quit game?'
+          "%quit?" : 'Continue and quit game?'
         }
       },
 

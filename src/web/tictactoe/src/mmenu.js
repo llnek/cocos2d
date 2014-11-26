@@ -68,8 +68,8 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
         tt.setPosition(cw.x, wb.top * 0.9);
         tt.setOpacity(0.9 * 255);
         tt.setScale(xcfg.game.scale);
-        tt.setColor(cc.color(255,132,13));
-
+        //tt.setColor(cc.color(255,132,13));
+        tt.setColor(cc.color(246,177,127));
         this.addItem(tt);
 
         menu= ccsx.pmenu([
@@ -103,7 +103,7 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
                                        {ppids: p,
                                         mode: sh.P1_GAME }));
             },
-            target: me },
+            target: me }
         ]);
         menu.alignItemsVerticallyWithPadding(10);
         menu.setPosition(cw.x, cw.y);
@@ -127,7 +127,7 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
         //on.setColor(cc.color(157,125,176));
         off.setColor(cc.color(94,49,120));
         on.setColor(cc.color(94,49,120));
-        audio= new cc.MenuItemToggle(off, on, function(sender) {
+        audio= new cc.MenuItemToggle(on, off, function(sender) {
           if (sender.getSelectedIndex() === 0) {
             sh.toggleSfx(true);
           } else {
