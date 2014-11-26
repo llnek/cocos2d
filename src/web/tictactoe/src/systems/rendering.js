@@ -78,8 +78,8 @@ define("zotohlab/p/s/rendering", ['zotohlab/p/s/utils',
 
         if (pos >= 0 && pos < csts.CELLS) {
           gg = map[pos];
-          x = gg.x1 + (gg.x2 - gg.x1  - delta) * 0.5;
-          y = gg.y1 - (gg.y1 - gg.y2 - delta ) * 0.5;
+          x = gg.left + (gg.right - gg.left  - delta) * 0.5;
+          y = gg.top - (gg.top - gg.bottom - delta ) * 0.5;
           // the cell's center
           return [x, y];
         } else {

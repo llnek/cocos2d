@@ -23,30 +23,16 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
     R=sjs.ramda,
     undef,
     SEED= {
-      grid: [0,0,0,
-        0,0,0,
-        0,0,0],
-      size: 3,
       ppids: {},
+      grid: [
+        0,0,0,
+        0,0,0,
+        0,0,0
+      ],
+      size: 3,
       pnum: 1,
       mode: 0
     },
-
-    //////////////////////////////////////////////////////////////////////////////
-    BGLayer = layers.XLayer.extend({
-
-      rtti: function() { return "BGLayer"; },
-
-      ctor: function() {
-        var bg= new cc.Sprite(sh.getImagePath('game.bg')),
-        cw= ccsx.center();
-        this._super();
-        bg.setPosition(cw.x, cw.y);
-        this.addItem(bg);
-      }
-
-
-    }),
 
     //////////////////////////////////////////////////////////////////////////////
     MainMenuLayer = layers.XLayer.extend({
@@ -55,24 +41,25 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
 
       pkInit: function() {
 
-        var cw = ccsx.center(),
+        var bg= new cc.Sprite(sh.getImagePath('game.bg')),
+        cw = ccsx.center(),
         wz = ccsx.vrect(),
         wb= ccsx.vbox(),
         me=this,
         tt, menu;
 
-        this._super();
+        bg.setPosition(cw.x, cw.y);
+        this.addItem(bg);
 
         tt = new cc.LabelBMFont(sh.l10n('%mmenu'),
-                                sh.getFontPath('font.JellyBelly')),
+                                sh.getFontPath('font.JellyBelly'));
         tt.setPosition(cw.x, wb.top * 0.9);
+        tt.setColor(cc.color(246,177,127));
         tt.setOpacity(0.9 * 255);
         tt.setScale(xcfg.game.scale);
-        //tt.setColor(cc.color(255,132,13));
-        tt.setColor(cc.color(246,177,127));
         this.addItem(tt);
 
-        menu= ccsx.pmenu([
+        menu= ccsx.vmenu([
           { imgPath: '#online.png',
             cb: function() {
               sh.fireEvent('/mmenu/controls/online',
@@ -105,7 +92,6 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
             },
             target: me }
         ]);
-        menu.alignItemsVerticallyWithPadding(10);
         menu.setPosition(cw.x, cw.y);
         this.addItem(menu);
 
@@ -146,10 +132,10 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
                          wb.bottom + csts.TILE);
         this.addItem(menu);
 
-        menu= ccsx.pmenu([
+        menu= ccsx.hmenu([
           { imgPath: '#icon_back.png',
             cb: function() {
-              this.options.onBack();
+              if (!!this.options.onBack) { this.options.onBack(); }
             },
             color: cc.color(94,49,120),
             target: me },
@@ -161,9 +147,7 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
             color: cc.color(94,49,120),
             target: me },
         ]);
-        menu.alignItemsHorizontallyWithPadding(8);
         sz= menu.getChildren()[0].getContentSize();
-        //menu.setAnchorPoint(cc.p(0,0.5));
         menu.setPosition(wb.left + csts.TILE + sz.width * 1.1,
                          wb.bottom + csts.TILE + sz.height * 0.45);
         this.addItem(menu);
@@ -196,7 +180,6 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
           ol= sh.protos['OnlinePlay'],
           dir= cc.director,
           scene = new scenes.XSceneFactory([
-            BGLayer,
             MainMenuLayer
           ]).create(options);
 

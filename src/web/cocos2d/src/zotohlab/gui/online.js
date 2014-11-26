@@ -113,7 +113,7 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
         qn.setOpacity(0.9*255);
         this.addItem(qn);
 
-        menu= ccsx.pmenu([
+        menu= ccsx.vmenu([
           { imgPath: '#cancel.png',
             cb: function() {
               this.onCancelPlay();
@@ -121,7 +121,6 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
             target: me
           }
         ]);
-        menu.alignItemsVertically();
         menu.setPosition(cw.x, wb.top * 0.2);
         this.addItem(menu);
       },
@@ -167,7 +166,7 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
         pwd.setPosition(cw.x, cw.y - bxz.height * 0.5 - 2);
         this.addItem(pwd);
 
-        menu= ccsx.pmenu([
+        menu= ccsx.vmenu([
           { imgPath: '#continue.png',
             cb: function() {
               this.onOnlineReq(uid.getString(),pwd.getString());
@@ -180,7 +179,6 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
             },
             target: me }
         ]);
-        menu.alignItemsVerticallyWithPadding(10);
         menu.setPosition(cw.x, wb.top * 0.2);
         this.addItem(menu);
       }

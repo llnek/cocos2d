@@ -256,6 +256,11 @@ define("zotohlab/asx/ccsx", ['cherimoia/skarojs',
         return cc.p(sz.width * 0.5, sz.height * 0.5);
       },
 
+      vboxMID: function(box) {
+        return cc.p(box.left + (box.right-box.left) * 0.5,
+                    box.bottom + (box.top-box.bottom) * 0.5);
+      },
+
       //tests if entity is hitting boundaries.
       //rect.x & y are center positioned.
       traceEnclosure: function(dt,bbox,rect,vel) {
@@ -401,11 +406,19 @@ define("zotohlab/asx/ccsx", ['cherimoia/skarojs',
         if (options.anchor) { menu.setAnchorPoint(options.anchor); }
         if (options.pos) { menu.setPosition(options.pos); }
         if (options.visible === false) { menu.setVisible(false); }
-        //menu.setColor(cc.color(255,0,0));
+
         return menu;
       },
 
-      pmenu: function(items,scale) {
+      vmenu: function(items, scale, padding) {
+        return this.pmenu(true, items, scale, padding);
+      },
+
+      hmenu: function(items, scale, padding) {
+        return this.pmenu(false, items, scale, padding);
+      },
+
+      pmenu: function(vertical, items, scale, padding) {
         var menu = new cc.Menu(),
         obj, n,
         mi,
@@ -423,6 +436,14 @@ define("zotohlab/asx/ccsx", ['cherimoia/skarojs',
           mi.setTag(++t);
           menu.addChild(mi);
         }
+
+        padding = padding || 10;
+        if (!vertical) {
+          menu.alignItemsHorizontallyWithPadding(padding);
+        } else {
+          menu.alignItemsVerticallyWithPadding(padding);
+        }
+
         return menu;
       },
 

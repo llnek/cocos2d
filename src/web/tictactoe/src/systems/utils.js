@@ -49,7 +49,7 @@ define("zotohlab/p/s/utils", ['cherimoia/skarojs',
           for (var c= 0; c < gsz; ++c) {
             y2 = y1 - csz.height;
             x2 = x1 + csz.width;
-            gridMap[r * gsz + c] = { x1: x1, y1: y1, x2: x2, y2: y2};
+            gridMap[r * gsz + c] = { left: x1, top: y1, right: x2, bottom: y2};
             x1 = x2 + gw;
           }
           y1 = y2 - gh;

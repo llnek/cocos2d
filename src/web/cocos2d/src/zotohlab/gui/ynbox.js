@@ -55,7 +55,7 @@ define("zotohlab/asx/ynbox", ['cherimoia/skarojs',
         qn.setOpacity(0.9*255);
         this.addItem(qn);
 
-        menu= ccsx.pmenu([
+        menu= ccsx.vmenu([
           { imgPath: '#continue.png',
             cb: function() {
               me.options.yes();
@@ -68,7 +68,6 @@ define("zotohlab/asx/ynbox", ['cherimoia/skarojs',
             },
             target: me }
         ]);
-        menu.alignItemsVerticallyWithPadding(10);
         menu.setPosition(cw.x, cw.y);
         this.addItem(menu);
       }

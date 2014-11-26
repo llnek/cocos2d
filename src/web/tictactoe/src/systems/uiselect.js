@@ -66,8 +66,8 @@ define("zotohlab/p/s/uiselect", ['zotohlab/p/gnodes',
         //which cell did he click on?
         for (n=0; n < sz; ++n) {
           rect = map[n];
-          if (sel.px >= rect.x1 && sel.px <= rect.x2 &&
-              sel.py >= rect.y2 && sel.py <= rect.y1) {
+          if (sel.px >= rect.left && sel.px <= rect.right &&
+              sel.py >= rect.bottom && sel.py <= rect.top) {
             sel.cell= n;
             break;
           }

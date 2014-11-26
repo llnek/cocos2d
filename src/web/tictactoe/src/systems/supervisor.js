@@ -63,8 +63,7 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/s/utils',
 
         R.forEach(function(mp) {
           sp= ccsx.createSpriteFrame('z.png');
-          sp.setPosition( mp.x1 + (mp.x2 - mp.x1) * 0.5,
-                          mp.y2 + (mp.y1 - mp.y2) * 0.5);
+          sp.setPosition(ccsx.vboxMID(mp));
           sh.main.addAtlasItem('game-pics',sp);
           cs[pos++]=[sp, sp.getPositionX(), sp.getPositionY(), csts.CV_Z];
         }, mgs);

@@ -21,55 +21,44 @@ define("zotohlab/p/splash", ['zotohlab/p/s/utils',
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-
-    BGLayer = layers.XLayer.extend({
-
-      rtti: function() { return "BGLayer"; },
-
-      ctor: function() {
-        var bg= new cc.Sprite(sh.getImagePath('game.bg')),
-        cw= ccsx.center();
-        this._super();
-        bg.setPosition(cw.x, cw.y);
-        this.addItem(bg);
-      }
-
-    }),
-
+    //////////////////////////////////////////////////////////////////////////
     SplashLayer = layers.XLayer.extend({
+
+      rtti: function() { return "SplashLayer"; },
 
       pkInit: function() {
 
-        var wb = ccsx.vbox(),
+        var bg= new cc.Sprite(sh.getImagePath('game.bg')),
+        cw = ccsx.center(),
+        wb = ccsx.vbox(),
         me=this,
-        tt, menu,
-        cw = ccsx.center();
+        tt, menu;
 
-        this._super();
+        bg.setPosition(cw.x, cw.y);
+        this.addItem(bg);
 
         tt= ccsx.createSpriteFrame('title.png');
         tt.setPosition(cw.x, wb.top * 0.9);
         this.addItem(tt);
 
-        menu= ccsx.pmenu([
+        menu= ccsx.vmenu([
           { imgPath: '#play.png',
             cb: function() {
+              this.removeAll();
               sh.fireEvent('/splash/controls/playgame');
             },
-            target: me } ],
-          1, 2);
+            target: me
+          }
+        ]);
 
-        menu.alignItemsVerticallyWithPadding(2);
         menu.setPosition(cw.x, wb.top * 0.10);
         this.addItem(menu);
 
         this.showGrid();
       },
 
-      rtti: function() { return "SplashLayer"; },
-
       showGrid: function() {
-        var scale= 0.75, me=this, pos=0, fm, sp,
+        var scale= 0.75, me=this, pos=0, fm, sp, bx,
         mgs = utils.mapGridPos(3,scale);
 
         R.forEach(function(mp) {
@@ -81,9 +70,9 @@ define("zotohlab/p/splash", ['zotohlab/p/s/utils',
             fm= 'o.png';
           }
           sp= ccsx.createSpriteFrame(fm);
-          sp.setPosition( mp.x1 + (mp.x2 - mp.x1) * 0.5,
-                          mp.y2 + (mp.y1 - mp.y2) * 0.5);
+          bx=ccsx.vboxMID(mp);
           sp.setScale(scale);
+          sp.setPosition(bx);
           me.addItem(sp);
           ++pos;
         }, mgs);
@@ -96,16 +85,16 @@ define("zotohlab/p/splash", ['zotohlab/p/s/utils',
       'StartScreen' : {
         create: function(options) {
           var scene = new scenes.XSceneFactory([
-            BGLayer, SplashLayer
+            SplashLayer
           ]).create(options);
           scene.ebus.on('/splash/controls/playgame',
                         function() {
-            var ss= sh.protos['StartScreen'],
-            mm= sh.protos['MainMenu'],
-            dir= cc.director;
-            dir.runScene( mm.create({
-              onBack: function() { dir.runScene( ss.create() ); }
-            }));
+                          var ss= sh.protos['StartScreen'],
+                          mm= sh.protos['MainMenu'],
+                          dir= cc.director;
+                          dir.runScene( mm.create({
+                            onBack: function() { dir.runScene( ss.create() ); }
+                          }));
           });
           return scene;
         }

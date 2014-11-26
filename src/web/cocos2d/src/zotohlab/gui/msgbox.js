@@ -54,7 +54,7 @@ define("zotohlab/asx/msgbox", ['cherimoia/skarojs',
         qn.setOpacity(0.9*255);
         this.addItem(qn);
 
-        menu= ccsx.pmenu([
+        menu= ccsx.vmenu([
           { imgPath: '#ok.png',
             cb: function() {
               me.options.yes();
@@ -62,7 +62,6 @@ define("zotohlab/asx/msgbox", ['cherimoia/skarojs',
             target: me
           }
         ]);
-        menu.alignItemsVertically();
         menu.setPosition(cw.x, wb.top * 0.1);
         this.addItem(menu);
       }
