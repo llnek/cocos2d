@@ -7,33 +7,33 @@
             <key>o.i.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,2},{160,160}}</string>
+                <string>{{2,2},{150,150}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{160,160}}</string>
+                <string>{{0,0},{150,150}}</string>
                 <key>sourceSize</key>
-                <string>{160,160}</string>
+                <string>{150,150}</string>
             </dict>
             <key>o.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{164,2},{160,160}}</string>
+                <string>{{154,2},{150,150}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{160,160}}</string>
+                <string>{{0,0},{150,150}}</string>
                 <key>sourceSize</key>
-                <string>{160,160}</string>
+                <string>{150,150}</string>
             </dict>
             <key>sound_off.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,164},{75,75}}</string>
+                <string>{{2,154},{75,75}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -46,7 +46,7 @@
             <key>sound_on.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{79,164},{75,75}}</string>
+                <string>{{79,154},{75,75}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -59,7 +59,7 @@
             <key>title.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{156,164},{553,66}}</string>
+                <string>{{156,154},{553,66}}</string>
                 <key>offset</key>
                 <string>{-1,-2}</string>
                 <key>rotated</key>
@@ -72,41 +72,41 @@
             <key>x.i.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{326,2},{160,160}}</string>
+                <string>{{306,2},{150,150}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{160,160}}</string>
+                <string>{{0,0},{150,150}}</string>
                 <key>sourceSize</key>
-                <string>{160,160}</string>
+                <string>{150,150}</string>
             </dict>
             <key>x.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{488,2},{160,160}}</string>
+                <string>{{458,2},{150,150}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{160,160}}</string>
+                <string>{{0,0},{150,150}}</string>
                 <key>sourceSize</key>
-                <string>{160,160}</string>
+                <string>{150,150}</string>
             </dict>
             <key>z.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{650,2},{160,160}}</string>
+                <string>{{610,2},{150,150}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{160,160}}</string>
+                <string>{{0,0},{150,150}}</string>
                 <key>sourceSize</key>
-                <string>{160,160}</string>
+                <string>{150,150}</string>
             </dict>
         </dict>
         <key>metadata</key>
@@ -116,9 +116,9 @@
             <key>realTextureFileName</key>
             <string>images.png</string>
             <key>size</key>
-            <string>{812,241}</string>
+            <string>{762,231}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:2b852d48076b6c6a448c3b59d329c41f:6bcd0148e9dd271bdde9d573ef81686f:e1a9b31caf258d7c92150a6ccbde6fbd$</string>
+            <string>$TexturePacker:SmartUpdate:1074da89440ce7dd2b3f8e33b543d233:091777a071b55f657af12e3937a352a3:e1a9b31caf258d7c92150a6ccbde6fbd$</string>
             <key>textureFileName</key>
             <string>images.png</string>
         </dict>

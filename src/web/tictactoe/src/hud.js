@@ -110,10 +110,13 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
         wb= ccsx.vbox();
 
         this.title = ccsx.bmfLabel({
+          //fontPath: sh.getFontPath('font.SmallTypeWriting'),
           fontPath: sh.getFontPath('font.JellyBelly'),
           text: '',
+          //color: cc.color(255,132,13),
+          color: cc.color(94,49,120),
           anchor: ccsx.AnchorTop,
-          scale: 0.1,
+          scale: xcfg.game.scale * 0.6,
           pos: cc.p(cw.x, wb.top - 2*csts.TILE)
         });
         this.addItem(this.title);
@@ -121,7 +124,7 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
         this.score1= ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.SmallTypeWriting'),
           text: '0',
-          scale: 0.2,
+          scale: xcfg.game.scale,
           color: cc.color(225,225,225),
           pos: cc.p(csts.TILE + csts.S_OFF + 2,
                     wb.top - csts.TILE - csts.S_OFF),
@@ -132,7 +135,7 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
         this.score2= ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.SmallTypeWriting'),
           text: '0',
-          scale: 0.2,
+          scale: xcfg.game.scale,
           color: cc.color(255,255,255),
           pos: cc.p(wb.right - csts.TILE - csts.S_OFF,
                     wb.top - csts.TILE - csts.S_OFF),
@@ -143,15 +146,19 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
         this.status= ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.CoffeeBuzzed'),
           text: '',
-          scale: 0.06,
+          color: cc.color(255,255,255),
+          //color: cc.color(94,49,120),
+          scale: xcfg.game.scale * 0.3,// 0.06,
           pos: cc.p(cw.x, wb.bottom + csts.TILE * 10)
         });
         this.addItem(this.status);
 
         this.result= ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.CoffeeBuzzed'),
+          //color: cc.color(94,49,120),
+          color: cc.color(255,255,255),
           text: '',
-          scale: 0.06,
+          scale: xcfg.game.scale * 0.3,// 0.06,
           pos: cc.p(cw.x, wb.bottom + csts.TILE * 10),
           visible: false
         });
@@ -174,7 +181,8 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
             fontPath: sh.getFontPath('font.AutoMission'),
             text: '',
             scale: 0.1,
-            color: cc.color(255,255,255), // 0xff6600;
+            //color: cc.color(94,49,120),
+            color: cc.color(255,255,255),
             pos: cc.p(cw.x,
                       wb.top - 10*csts.TILE),
             anchor: ccsx.AnchorCenter
@@ -254,15 +262,13 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
       },
 
       drawResult: function(pnum) {
-        var msg;
+        var msg = sh.l10n('%whodraw');
 
         if (sjs.isNumber(pnum)) {
           switch (pnum) {
             case 2: msg= sh.l10n('%whowin', { who: this.p2Long}); break;
             case 1: msg= sh.l10n('%whowin', { who: this.p1Long}); break;
           }
-        } else {
-          msg= sh.l10n('%whodraw');
         }
 
         this.drawStatusText(this.result, msg);

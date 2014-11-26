@@ -22,7 +22,7 @@ define("zotohlab/p/l10n", ['cherimoia/skarojs',
       "en" : {
 
         "%whosturn" : "{{who}}'s TURN...",
-        "%whodraw" : "Draw!",
+        "%whodraw" : "No one wins!",
         "%whowin" : "{{who}} Wins!",
 
         "%p2" : "P2",

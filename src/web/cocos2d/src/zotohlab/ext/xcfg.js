@@ -62,6 +62,7 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
       game: {
         borderTiles: 'cbox-borders_x8.png',
         preloadLevels: true,
+        scale: 1,
         sfx: 'mp3',
         landscape: false,
         gravity: 0,
@@ -134,6 +135,7 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
         }
       },
 
+      handleResolution: function(rs) {},
       runOnce: function() {}
 
     };

@@ -66,9 +66,9 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
         tt = new cc.LabelBMFont(sh.l10n('%mmenu'),
                                 sh.getFontPath('font.JellyBelly')),
         tt.setPosition(cw.x, wb.top * 0.9);
-        tt.setOpacity(0.9*255);
-        tt.setScale(0.2);
-        tt.setColor(cc.color(229,181,79));
+        tt.setOpacity(0.9 * 255);
+        tt.setScale(xcfg.game.scale);
+        tt.setColor(cc.color(255,132,13));
 
         this.addItem(tt);
 

@@ -226,8 +226,11 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
       }
 
       rs= cc.view.getDesignResolutionSize();
+      xcfg.handleResolution(rs);
       sjs.loggr.info('DesignResolution, = [' +
-                     rs.width + ", " + rs.height + "]");
+                     rs.width + ", " +
+                     rs.height + "]" +
+                     ", scale = " + xcfg.game.scale);
 
       cc.director.setProjection(cc.Director.PROJECTION_2D);
       if (cc.sys.isNative) {

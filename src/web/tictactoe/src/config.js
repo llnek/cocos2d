@@ -85,6 +85,11 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
         }
       },
 
+      handleResolution: function(rs) {
+        //for default font, we use 48pt
+        this.game.scale = 52/256 * rs.width /320;
+      },
+
       runOnce: function() {
         cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
         cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('lang-pics'));

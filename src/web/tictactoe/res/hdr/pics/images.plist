@@ -7,59 +7,59 @@
             <key>o.i.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{516,158},{384,384}}</string>
+                <string>{{2,2},{360,360}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{384,384}}</string>
+                <string>{{0,0},{360,360}}</string>
                 <key>sourceSize</key>
-                <string>{384,384}</string>
+                <string>{360,360}</string>
             </dict>
             <key>o.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{902,158},{384,384}}</string>
+                <string>{{364,2},{360,360}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{384,384}}</string>
+                <string>{{0,0},{360,360}}</string>
                 <key>sourceSize</key>
-                <string>{384,384}</string>
+                <string>{360,360}</string>
             </dict>
             <key>sound_off.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1330,2},{512,512}}</string>
+                <string>{{1812,158},{180,180}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{512,512}}</string>
+                <string>{{0,0},{180,180}}</string>
                 <key>sourceSize</key>
-                <string>{512,512}</string>
+                <string>{180,180}</string>
             </dict>
             <key>sound_on.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,158},{512,512}}</string>
+                <string>{{1994,158},{180,180}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{512,512}}</string>
+                <string>{{0,0},{180,180}}</string>
                 <key>sourceSize</key>
-                <string>{512,512}</string>
+                <string>{180,180}</string>
             </dict>
             <key>title.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,2},{1326,154}}</string>
+                <string>{{1812,2},{1326,154}}</string>
                 <key>offset</key>
                 <string>{-3,-6}</string>
                 <key>rotated</key>
@@ -72,41 +72,41 @@
             <key>x.i.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{1288,516},{384,384}}</string>
+                <string>{{726,2},{360,360}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{384,384}}</string>
+                <string>{{0,0},{360,360}}</string>
                 <key>sourceSize</key>
-                <string>{384,384}</string>
+                <string>{360,360}</string>
             </dict>
             <key>x.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{516,544},{384,384}}</string>
+                <string>{{1088,2},{360,360}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{384,384}}</string>
+                <string>{{0,0},{360,360}}</string>
                 <key>sourceSize</key>
-                <string>{384,384}</string>
+                <string>{360,360}</string>
             </dict>
             <key>z.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{902,544},{384,384}}</string>
+                <string>{{1450,2},{360,360}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{384,384}}</string>
+                <string>{{0,0},{360,360}}</string>
                 <key>sourceSize</key>
-                <string>{384,384}</string>
+                <string>{360,360}</string>
             </dict>
         </dict>
         <key>metadata</key>
@@ -116,9 +116,9 @@
             <key>realTextureFileName</key>
             <string>images.png</string>
             <key>size</key>
-            <string>{1844,930}</string>
+            <string>{3140,364}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:fd35c63d330770bf528e2a2afb13b0aa:d50d7d2da77c470517db7befe4510b50:e1a9b31caf258d7c92150a6ccbde6fbd$</string>
+            <string>$TexturePacker:SmartUpdate:3209e750f6e4a09be32f06aa72c55942:091777a071b55f657af12e3937a352a3:e1a9b31caf258d7c92150a6ccbde6fbd$</string>
             <key>textureFileName</key>
             <string>images.png</string>
         </dict>
