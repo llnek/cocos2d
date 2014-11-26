@@ -143,31 +143,28 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
         qn.setOpacity(0.9*255);
         this.addItem(qn);
 
-        var url = sh.sanitizeUrl(xcfg.assets.images['gui.edit.orange']),
-        s9= new cc.Scale9Sprite(url),
-        wcc= cc.color(255,255,255),
-        bxz= cc.size(100,36);
+        var dummy = new cc.Sprite('#ok.png'),
+        bxz= dummy.getContentSize();
 
-        uid = new cc.EditBox(bxz, s9);
-        uid.x = cw.x
-        uid.y = cw.y + bxz.height * 0.5 + 2; // + 2 for a gap
-        uid.setPlaceHolder(sh.l10n('%userid'));
-        uid.setPlaceholderFontColor(wcc);
-        uid.setFontColor(wcc);
-        uid.setMaxLength(12);
-        uid.setDelegate(this);
+        uid = new ccui.TextField();
+        uid.setMaxLengthEnabled(true);
+        uid.setMaxLength(16);
+        uid.setTouchEnabled(true);
+        uid.fontName = "Arial";
+        uid.fontSize = 18;
+        uid.placeHolder = sh.l10n('%userid');
+        uid.setPosition(cw.x, cw.y + bxz.height * 0.5 + 2);
         this.addItem(uid);
 
-        s9= new cc.Scale9Sprite(url);
-        pwd= new cc.EditBox(bxz, s9);
-        pwd.y = cw.y - bxz.height * 0.5 - 2; // + 2 for a gap
-        pwd.x= cw.x;
-        pwd.setInputFlag(cc.EDITBOX_INPUT_FLAG_PASSWORD);
-        pwd.setPlaceHolder(sh.l10n('%passwd'));
-        pwd.setPlaceholderFontColor(wcc);
-        pwd.setFontColor(wcc);
-        pwd.setMaxLength(12);
-        pwd.setDelegate(this);
+        pwd = new ccui.TextField();
+        pwd.setPasswordEnabled(true);
+        pwd.setPasswordStyleText("*");
+        pwd.setTouchEnabled(true);
+        pwd.setMaxLength(16);
+        pwd.fontName = "Arial";
+        pwd.fontSize = 18;
+        pwd.placeHolder = sh.l10n('%passwd');
+        pwd.setPosition(cw.x, cw.y - bxz.height * 0.5 - 2);
         this.addItem(pwd);
 
         menu= ccsx.pmenu([

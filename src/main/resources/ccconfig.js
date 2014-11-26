@@ -10,7 +10,7 @@ document.ccConfig = {
   id: 'gameArea',
 
   engineDir: ['/public/extlibs/cocos2d-html5'],
-  modules: ['cocos2d', 'editbox', "ccui"],
+  modules: ['cocos2d', 'ccui', "ccui"],
 
   jsList: [
 
