@@ -21,46 +21,35 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
     csts= xcfg.csts,
     undef,
 
+    //////////////////////////////////////////////////////////////////////////
     BackLayer = layers.XLayer.extend({
 
-      rtti: function() { return 'BackLayer'; },
+      pkInit: function() {
+        this.centerImage(sh.getImagePath('game.bg'));
+      },
 
-      ctor: function() {
-        var bg= new cc.Sprite(sh.getImagePath('game.bg')),
-        cw= ccsx.center();
-        this._super();
-        bg.setPosition(cw.x, cw.y);
-        this.addItem(bg);
-      }
+      rtti: function() { return 'BackLayer'; }
 
     }),
 
+    //////////////////////////////////////////////////////////////////////////
     HUDLayer = layers.XGameHUDLayer.extend({
 
       initCtrlBtns: function(scale, where) {
         var csts = xcfg.csts,
-        cw= ccsx.center(),
-        wz= ccsx.vbox(),
-        y, c, menu;
+        menu;
 
-        where = where || 'cc.ALIGN_BOTTOM';
+        where = where || cc.ALIGN_BOTTOM;
         scale = scale || 1;
 
         menu= ccsx.pmenu1({
+          color: cc.color(94,49,120),
           imgPath: '#icon_menu.png',
           scale: scale,
-          color: cc.color(94,49,120),
           selector: function() {
             sh.fireEvent('/game/hud/controls/showmenu'); }
         });
-        c= menu.getChildByTag(1);
-        if (where === 'cc.ALIGN_TOP') {
-          y = wz.top - csts.TILE  - ccsx.getScaledHeight(c) * 0.5;
-        } else {
-          y = wz.bottom + csts.TILE  + ccsx.getScaledHeight(c) * 0.5;
-        }
-        menu.setPosition(wz.right - csts.TILE - ccsx.getScaledWidth(c) * 0.5, y);
-        this.addItem(menu);
+        this.addMenuIcon(menu);
 
         menu = ccsx.pmenu1({
           imgPath: '#icon_replay.png',
@@ -70,15 +59,7 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
           selector: function() {
             sh.fireEvent('/game/hud/controls/replay'); }
         });
-        c= menu.getChildByTag(1);
-        if (where === 'cc.ALIGN_TOP') {
-          y = wz.top - csts.TILE  - ccsx.getScaledHeight(c) * 0.5;
-        } else {
-          y = wz.bottom + csts.TILE  + ccsx.getScaledHeight(c) * 0.5;
-        }
-        menu.setPosition(wz.left + csts.TILE + ccsx.getScaledWidth(c) * 0.5, y);
-        this.replayBtn=menu;
-        this.addItem(menu);
+        this.addReplayIcon(menu);
       },
 
       ctor: function(options) {
@@ -106,14 +87,11 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
 
       initLabels: function() {
         var cw= ccsx.center(),
-        wz= ccsx.vrect(),
         wb= ccsx.vbox();
 
         this.title = ccsx.bmfLabel({
-          //fontPath: sh.getFontPath('font.SmallTypeWriting'),
           fontPath: sh.getFontPath('font.JellyBelly'),
           text: '',
-          //color: cc.color(255,132,13),
           color: cc.color(94,49,120),
           anchor: ccsx.AnchorTop,
           scale: xcfg.game.scale * 0.6,
@@ -147,7 +125,6 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
           fontPath: sh.getFontPath('font.CoffeeBuzzed'),
           text: '',
           color: cc.color(255,255,255),
-          //color: cc.color(94,49,120),
           scale: xcfg.game.scale * 0.3,// 0.06,
           pos: cc.p(cw.x, wb.bottom + csts.TILE * 10)
         });
@@ -155,7 +132,6 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
 
         this.result= ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.CoffeeBuzzed'),
-          //color: cc.color(94,49,120),
           color: cc.color(255,255,255),
           text: '',
           scale: xcfg.game.scale * 0.3,// 0.06,
@@ -163,12 +139,10 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
           visible: false
         });
         this.addItem(this.result);
-
       },
 
       showTimer: function() {
         var cw= ccsx.center(),
-        wz= ccsx.vrect(),
         wb= ccsx.vbox();
 
         // timer is already showing, go away
@@ -180,8 +154,7 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
           this.countDown= ccsx.bmfLabel({
             fontPath: sh.getFontPath('font.AutoMission'),
             text: '',
-            scale: 0.1,
-            //color: cc.color(94,49,120),
+            scale: xcfg.game.scale * 0.5,
             color: cc.color(255,255,255),
             pos: cc.p(cw.x,
                       wb.top - 10*csts.TILE),

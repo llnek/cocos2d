@@ -9,13 +9,16 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/s/turnbase", ['zotohlab/p/gnodes',
-                                'cherimoia/skarojs',
-                                'zotohlab/asterix',
-                                'zotohlab/asx/ccsx',
-                                'zotohlab/asx/odin'],
+define("zotohlab/p/s/turnbase",
 
-  function (gnodes, sjs, sh, ccsx, odin) { "use strict";
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/odin'],
+
+  function (pss, gnodes, sjs, sh, ccsx, odin) { "use strict";
 
     var evts= odin.Events,
     xcfg= sh.xcfg,
@@ -138,6 +141,7 @@ define("zotohlab/p/s/turnbase", ['zotohlab/p/gnodes',
 
     });
 
+    TurnBaseSystem.Priority = pss.TurnBase;
     return TurnBaseSystem;
 
 });

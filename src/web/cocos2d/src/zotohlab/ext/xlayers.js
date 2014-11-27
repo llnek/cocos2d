@@ -335,44 +335,31 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
         this.replayBtn.setVisible(true);
       },
 
-      initCtrlBtns: function(scale, where) {
-        var csts = xcfg.csts,
-        cw= ccsx.center(),
-        wz= ccsx.vrect(),
-        y, c, menu;
+      addMenuIcon: function(menu, where) {
+        var c= menu.getChildByTag(1),
+        wz= ccsx.vbox(),
+        x,y;
 
-        where = where || 'cc.ALIGN_BOTTOM';
-        scale = scale || 1;
-
-        menu= ccsx.pmenu1({
-          imgPath: sh.getImagePath('gui.mmenu.menu'),
-          scale: scale,
-          selector: function() {
-            sh.fireEvent('/game/hud/controls/showmenu'); }
-        });
-        c= menu.getChildByTag(1);
-        if (where === 'cc.ALIGN_TOP') {
-          y = wz.height - csts.TILE  - ccsx.getScaledHeight(c) / 2
+        if (where === cc.ALIGN_TOP) {
+          y = wz.top - csts.TILE - ccsx.getScaledHeight(c) * 0.5;
         } else {
-          y = csts.TILE  + ccsx.getScaledHeight(c) / 2
+          y = wz.bottom + csts.TILE  + ccsx.getScaledHeight(c) * 0.5;
         }
-        menu.setPosition(wz.width - csts.TILE - ccsx.getScaledWidth(c)/2, y);
+        menu.setPosition(wz.right - csts.TILE - ccsx.getScaledWidth(c) * 0.5, y);
         this.addItem(menu);
+      },
 
-        menu = ccsx.pmenu1({
-          imgPath: sh.getImagePath('gui.mmenu.replay'),
-          scale : scale,
-          visible: false,
-          selector: function() {
-            sh.fireEvent('/game/hud/controls/replay'); }
-        });
-        c= menu.getChildByTag(1);
-        if (where === 'cc.ALIGN_TOP') {
-          y = wz.height - csts.TILE  - ccsx.getScaledHeight(c) / 2
+      addReplayIcon: function(menu, where) {
+        var c= menu.getChildByTag(1),
+        wz= ccsx.vbox(),
+        x, y;
+
+        if (where === cc.ALIGN_TOP) {
+          y = wz.top - csts.TILE  - ccsx.getScaledHeight(c) * 0.5;
         } else {
-          y = csts.TILE  + ccsx.getScaledHeight(c) / 2
+          y = wz.bottom + csts.TILE  + ccsx.getScaledHeight(c) * 0.5;
         }
-        menu.setPosition(csts.TILE + ccsx.getScaledWidth(c)/2, y);
+        menu.setPosition(wz.left + csts.TILE + ccsx.getScaledWidth(c) * 0.5, y);
         this.replayBtn=menu;
         this.addItem(menu);
       }

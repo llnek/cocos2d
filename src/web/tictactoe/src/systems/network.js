@@ -9,12 +9,15 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/s/network", ['zotohlab/p/gnodes',
-                               'cherimoia/skarojs',
-                               'zotohlab/asterix',
-                               'zotohlab/asx/odin'],
+define("zotohlab/p/s/network",
 
-  function (gnodes, sjs, sh, odin) { "use strict";
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/odin'],
+
+  function (pss, gnodes, sjs, sh, odin) { "use strict";
 
     var evts= odin.Events,
     xcfg= sh.xcfg,
@@ -90,7 +93,7 @@ define("zotohlab/p/s/network", ['zotohlab/p/gnodes',
 
     });
 
-
+    NetworkSystem.Priority= pss.Movement;
     return NetworkSystem;
 });
 

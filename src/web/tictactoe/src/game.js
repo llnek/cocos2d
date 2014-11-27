@@ -67,9 +67,8 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
         this.reset(newFlag);
         this.cleanSlate();
 
-        this.factory= new sobjs.Factory(this.engine);
+        sh.factory= new sobjs.Factory(this.engine);
         this.options.running=true;
-        sh.factory= this.factory;
         this.initPlayers();
 
         this.options.selQ = [];
@@ -77,14 +76,15 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
         this.options.msgQ = [];
 
         R.forEach(function(z) {
-          this.engine.addSystem(new (z[0])(this.options), z[1]);
+          this.engine.addSystem(new (z)(this.options), z.Priority);
         }.bind(this),
-        [[sobjs.GameSupervisor,     prrs.PreUpdate],
-         [sobjs.SelectionSystem,    prrs.Movement],
-         [sobjs.NetworkSystem,      prrs.Movement],
-         [sobjs.TurnBaseSystem,     prrs.TurnBase],
-         [sobjs.ResolutionSystem,   prrs.Resolve],
-         [sobjs.RenderSystem,       prrs.Render]]);
+        [sobjs.GameSupervisor,
+         sobjs.SelectionSystem,
+         sobjs.NetworkSystem,
+         sobjs.TurnBaseSystem,
+         sobjs.ResolutionSystem,
+         sobjs.RenderSystem
+        ]);
 
         if (this.options.wsock) {
           this.options.wsock.unsubscribeAll();
@@ -113,13 +113,12 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
         } else {
           this.getHUD().reset();
         }
-        //this.removeAll();
       },
 
       onclicked: function(mx,my) {
         if (this.options.running &&
             this.options.selQ.length === 0) {
-          sjs.loggr.debug("selection made at pos = " + mx + "," + my);
+          //sjs.loggr.debug("selection made at pos = " + mx + "," + my);
           this.options.selQ.push({ x: mx, y: my, cell: -1 });
         }
       },

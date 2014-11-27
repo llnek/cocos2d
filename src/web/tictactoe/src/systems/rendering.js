@@ -9,13 +9,16 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/s/rendering", ['zotohlab/p/s/utils',
-                                 'zotohlab/p/gnodes',
-                                 'cherimoia/skarojs',
-                                 'zotohlab/asterix',
-                                 'zotohlab/asx/ccsx'],
+define("zotohlab/p/s/rendering",
 
-  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/s/utils',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
+
+  function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     var R = sjs.ramda,
     xcfg= sh.xcfg,
@@ -90,7 +93,7 @@ define("zotohlab/p/s/rendering", ['zotohlab/p/s/utils',
 
     });
 
-
+    RenderSystem.Priority = pss.Render;
     return RenderSystem;
 });
 

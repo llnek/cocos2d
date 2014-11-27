@@ -9,14 +9,17 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/s/supervisor", ['zotohlab/p/s/utils',
-                                  'zotohlab/p/gnodes',
-                                  'cherimoia/skarojs',
-                                  'zotohlab/asterix',
-                                  'zotohlab/asx/ccsx',
-                                  'zotohlab/asx/odin'],
+define("zotohlab/p/s/supervisor",
 
-  function (utils, gnodes, sjs, sh, ccsx, odin) { "use strict";
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/s/utils',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/odin'],
+
+  function (pss, utils, gnodes, sjs, sh, ccsx, odin) { "use strict";
 
     var evts= odin.Events,
     xcfg=sh.xcfg,
@@ -111,8 +114,8 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/s/utils',
 
     });
 
+    GameSupervisor.Priority= pss.PreUpdate;
     return GameSupervisor;
-
 });
 
 
