@@ -13,10 +13,9 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
                            'zotohlab/asterix',
                            'zotohlab/asx/ccsx',
                            'zotohlab/asx/xlayers',
-                           'zotohlab/asx/xscenes',
-                           'zotohlab/asx/xmmenus'],
+                           'zotohlab/asx/xscenes'],
 
-  function (sjs, sh, ccsx, layers, scenes, mmenus) { "use strict";
+  function (sjs, sh, ccsx, layers, scenes) { "use strict";
 
     var xcfg = sh.xcfg,
     csts= xcfg.csts,
@@ -41,33 +40,31 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
 
       pkInit: function() {
 
-        var bg= new cc.Sprite(sh.getImagePath('game.bg')),
-        cw = ccsx.center(),
-        wz = ccsx.vrect(),
+        var cw = ccsx.center(),
         wb= ccsx.vbox(),
-        me=this,
-        tt, menu;
+        sz, tt, menu;
 
-        bg.setPosition(cw.x, cw.y);
-        this.addItem(bg);
+        // show background image
+        this.centerImage(sh.getImagePath('game.bg'));
 
-        tt = new cc.LabelBMFont(sh.l10n('%mmenu'),
-                                sh.getFontPath('font.JellyBelly'));
-        tt.setPosition(cw.x, wb.top * 0.9);
-        tt.setColor(cc.color(246,177,127));
-        tt.setOpacity(0.9 * 255);
-        tt.setScale(xcfg.game.scale);
+        // show the title
+        tt=ccsx.bmfLabel({
+          fontPath: sh.getFontPath('font.JellyBelly'),
+          text: sh.l10n('%mmenu'),
+          pos: cc.p(cw.x, wb.top * 0.9),
+          color: cc.color(246,177,127),
+          scale: xcfg.game.scale
+        });
         this.addItem(tt);
 
+        // show the menu
         menu= ccsx.vmenu([
           { imgPath: '#online.png',
             cb: function() {
               sh.fireEvent('/mmenu/controls/online',
                            sjs.mergeEx(SEED,
                                        { mode: sh.ONLINE_GAME }));
-            },
-            target: me },
-
+            }},
           { imgPath: '#player2.png',
             cb: function() {
               var p={};
@@ -77,9 +74,7 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
                            sjs.mergeEx(SEED,
                                        {ppids: p,
                                         mode: sh.P2_GAME }));
-            },
-            target: me },
-
+            }},
           { imgPath: '#player1.png',
             cb: function() {
               var p={};
@@ -89,83 +84,38 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
                            sjs.mergeEx(SEED,
                                        {ppids: p,
                                         mode: sh.P1_GAME }));
-            },
-            target: me }
+            }}
         ]);
-        menu.setPosition(cw.x, cw.y);
+        menu.setPosition(cw);
         this.addItem(menu);
 
-        this.doControls();
-      },
-
-      doControls: function() {
-        var off= new cc.MenuItemSprite(ccsx.createSpriteFrame('sound_off.png'),
-                                       ccsx.createSpriteFrame('sound_off.png'),
-                                       ccsx.createSpriteFrame('sound_off.png'),
-                                       sjs.NILFUNC, this),
-        on= new cc.MenuItemSprite(ccsx.createSpriteFrame('sound_on.png'),
-                                  ccsx.createSpriteFrame('sound_on.png'),
-                                  ccsx.createSpriteFrame('sound_on.png'),
-                                  sjs.NILFUNC, this),
-        sz, me=this,
-        audio, menu, wb = ccsx.vbox();
-        //off.setColor(cc.color(157,125,176));
-        //on.setColor(cc.color(157,125,176));
-        off.setColor(cc.color(94,49,120));
-        on.setColor(cc.color(94,49,120));
-        audio= new cc.MenuItemToggle(on, off, function(sender) {
-          if (sender.getSelectedIndex() === 0) {
-            sh.toggleSfx(true);
-          } else {
-            sh.toggleSfx(false);
-          }
+        // show the control buttons
+        this.addAudioIcon({
+          pos: cc.p(wb.right - csts.TILE,
+                    wb.bottom + csts.TILE),
+          color: cc.color(94,49,120),
+          anchor: cc.p(1,0)
         });
-        audio.setAnchorPoint(cc.p(1,0));
-        if (xcfg.sound.open) {
-          audio.setSelectedIndex(0);
-        } else {
-          audio.setSelectedIndex(1);
-        }
 
-        menu= new cc.Menu(audio);
-        menu.setPosition(wb.right - csts.TILE ,
-                         wb.bottom + csts.TILE);
-        this.addItem(menu);
-
+        // show back & quit
         menu= ccsx.hmenu([
-          { imgPath: '#icon_back.png',
+          { color: cc.color(94,49,120),
+            imgPath: '#icon_back.png',
             cb: function() {
-              if (!!this.options.onBack) { this.options.onBack(); }
+              if (!!this.options.onBack) {
+                this.options.onBack();
+              }
             },
-            color: cc.color(94,49,120),
-            target: me },
-
-          { imgPath: '#icon_quit.png',
-            cb: function() {
-              this.onQuit();
-            },
-            color: cc.color(94,49,120),
-            target: me },
+            target: this },
+          { color: cc.color(94,49,120),
+            imgPath: '#icon_quit.png',
+            cb: function() { this.onQuit(); },
+            target: this }
         ]);
         sz= menu.getChildren()[0].getContentSize();
         menu.setPosition(wb.left + csts.TILE + sz.width * 1.1,
                          wb.bottom + csts.TILE + sz.height * 0.45);
         this.addItem(menu);
-      },
-
-      onQuit: function() {
-        var ss= sh.protos['StartScreen'],
-        yn= sh.protos['YesNo'],
-        dir = cc.director;
-
-        dir.pushScene( yn.create({
-          onBack: function() { dir.popScene(); },
-          yes: function() {
-            sh.sfxPlay('game_quit');
-            dir.popToRootScene();
-            dir.runScene(ss.create());
-          }
-        }));
       }
 
     });

@@ -125,6 +125,93 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
 
       pkInput: function() {},
 
+      addAudioIcon: function(options) {
+        var off= new cc.MenuItemSprite(new cc.Sprite('#sound_off.png'),
+                                       new cc.Sprite('#sound_off.png'),
+                                       new cc.Sprite('#sound_off.png'),
+                                       sjs.NILFUNC, this),
+        on= new cc.MenuItemSprite(new cc.Sprite('#sound_on.png'),
+                                  new cc.Sprite('#sound_on.png'),
+                                  new cc.Sprite('#sound_on.png'),
+                                  sjs.NILFUNC, this),
+        audio, menu,
+        wb = ccsx.vbox();
+
+        if (!!options.color) {
+          off.setColor(options.color);
+          on.setColor(options.color);
+        }
+
+        if (!!options.scale) {
+          off.setScale(options.scale);
+          on.setScale(options.scale);
+        }
+
+        audio= new cc.MenuItemToggle(on, off, function(sender) {
+          if (sender.getSelectedIndex() === 0) {
+            sh.toggleSfx(true);
+          } else {
+            sh.toggleSfx(false);
+          }
+        });
+
+        if (!!options.anchor) {
+          audio.setAnchorPoint(options.anchor);
+        }
+
+        if (xcfg.sound.open) {
+          audio.setSelectedIndex(0);
+        } else {
+          audio.setSelectedIndex(1);
+        }
+
+        menu= new cc.Menu(audio);
+        menu.setPosition(options.pos);
+        this.addItem(menu);
+      },
+
+      onQuit: function() {
+        var ss= sh.protos['StartScreen'],
+        yn= sh.protos['YesNo'],
+        dir = cc.director;
+
+        dir.pushScene( yn.create({
+          onBack: function() { dir.popScene(); },
+          yes: function() {
+            sh.sfxPlay('game_quit');
+            dir.popToRootScene();
+            dir.runScene(ss.create());
+          }
+        }));
+      },
+
+      centerAtlasImage: function(frame,atlas) {
+        var bg= new cc.Sprite(frame),
+        cw = ccsx.center();
+        bg.setPosition(cw);
+        if (!!atlas) {
+          this.addAtlasItem(atlas, bg);
+        } else {
+          this.addItem(bg);
+        }
+      },
+      centerImage: function(frame) {
+        this.centerAtlasImage(frame);
+      },
+
+      addAtlasFrame: function(frame,pos, atlas) {
+        var tt= new cc.Sprite(frame);
+        tt.setPosition(pos);
+        if (!!atlas) {
+          this.addAtlasItem(atlas, tt);
+        } else {
+          this.addItem(tt);
+        }
+      },
+      addFrame: function(frame,pos) {
+        this.addAtlasFrame(frame, pos);
+      },
+
       getAtlas: function(key) {
         return this.atlases[key || ""];
       },

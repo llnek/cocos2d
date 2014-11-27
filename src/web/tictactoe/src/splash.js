@@ -21,6 +21,7 @@ define("zotohlab/p/splash", ['zotohlab/p/s/utils',
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
+
     //////////////////////////////////////////////////////////////////////////
     SplashLayer = layers.XLayer.extend({
 
@@ -28,55 +29,51 @@ define("zotohlab/p/splash", ['zotohlab/p/s/utils',
 
       pkInit: function() {
 
-        var bg= new cc.Sprite(sh.getImagePath('game.bg')),
-        cw = ccsx.center(),
+        var cw = ccsx.center(),
         wb = ccsx.vbox(),
-        me=this,
-        tt, menu;
+        menu;
 
-        bg.setPosition(cw.x, cw.y);
-        this.addItem(bg);
+        // show the background and title
+        this.centerImage(sh.getImagePath('game.bg'));
+        this.addFrame('#title.png',
+                      cc.p(cw.x, wb.top * 0.9));
 
-        tt= ccsx.createSpriteFrame('title.png');
-        tt.setPosition(cw.x, wb.top * 0.9);
-        this.addItem(tt);
-
+        // show the play button
         menu= ccsx.vmenu([
           { imgPath: '#play.png',
             cb: function() {
               this.removeAll();
               sh.fireEvent('/splash/controls/playgame');
             },
-            target: me
-          }
+            target: this }
         ]);
-
         menu.setPosition(cw.x, wb.top * 0.10);
         this.addItem(menu);
 
+        // show the demo icons
         this.showGrid();
       },
 
       showGrid: function() {
-        var scale= 0.75, me=this, pos=0, fm, sp, bx,
-        mgs = utils.mapGridPos(3,scale);
+        var scale= 0.75, me=this,
+        pos=0,
+        fm, sp, bx;
 
+        // we scale down the icons to make it look nicer
         R.forEach(function(mp) {
-          if (pos === 1 || pos===5 || pos===6 || pos===7) {
-            fm= 'x.png';
-          } else if (pos===0 || pos===4) {
-            fm= 'z.png';
-          } else {
-            fm= 'o.png';
-          }
-          sp= ccsx.createSpriteFrame(fm);
+          // set up the grid icons
+          if (pos === 1 || pos===5 || pos===6 || pos===7) { fm= '#x.png'; }
+          else if (pos===0 || pos===4) { fm= '#z.png'; }
+          else { fm= '#o.png'; }
+          sp= new cc.Sprite(fm);
           bx=ccsx.vboxMID(mp);
           sp.setScale(scale);
           sp.setPosition(bx);
           me.addItem(sp);
           ++pos;
-        }, mgs);
-      },
+        },
+        utils.mapGridPos(3,scale));
+      }
 
     });
 
