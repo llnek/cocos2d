@@ -191,6 +191,7 @@
             <filename>green_paddle.png</filename>
             <filename>pongball.png</filename>
             <filename>red_paddle.png</filename>
+            <filename>title.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

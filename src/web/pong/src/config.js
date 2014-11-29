@@ -22,6 +22,11 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
       appid: 'pong',
       color: 'green',
 
+      resolution: {
+        policy: cc.ResolutionPolicy.FIXED_HEIGHT,
+        resSize: [0,0]
+      },
+
       csts: {
 
         BALL_SPEED: 150, // 25 incremental
@@ -33,10 +38,14 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
       },
 
       assets: {
+        atlases: {
+          'lang-pics' : 'res/{{appid}}/l10n/{{lang}}/images',
+          'game-pics' : 'res/{{appid}}/pics/images'
+        },
         tiles: {
         },
         images: {
-          'splash.play-btn' : 'res/cocos2d/btns/play_gray_x64.png'
+          'game.bg' : 'res/{{appid}}/pics/bg.png'
         },
         sounds: {
           'game_end' : 'res/cocos2d/sfx/MineExplosion',
@@ -45,30 +54,41 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
           'game_quit' : 'res/cocos2d/sfx/Death'
         },
         fonts: {
+          'font.SmallTypeWriting' : [ 'res/cocos2d/fon/{{lang}}', 'SmallTypeWriting.png', 'SmallTypeWriting.fnt' ],
+          'font.AutoMission' : [ 'res/cocos2d/fon/{{lang}}', 'AutoMission.png', 'AutoMission.fnt' ],
+          'font.Subito' : [ 'res/cocos2d/fon/{{lang}}', 'Subito.png', 'Subito.fnt' ],
+          'font.CoffeeBuzzed' : [ 'res/cocos2d/fon/{{lang}}', 'CoffeeBuzzed.png', 'CoffeeBuzzed.fnt' ]
         }
       },
 
       game: {
-        size: {height:480, width:320, scale:1}
+        sd: {width:320, height: 480}
       },
 
       levels: {
         "gamelevel1" : {
           'tiles' : {
-            'arena' : 'game/{{appid}}/levels/arena.tmx'
+            //'arena' : 'game/{{appid}}/levels/arena.tmx'
           },
           'images' : {
-            'p.paddle2' : 'res/{{appid}}/pics/green_paddle.png',
-            'p.paddle1' : 'res/{{appid}}/pics/red_paddle.png',
-            'ball' : 'res/{{appid}}/pics/pongball.png',
-            'arena' : 'game/{{appid}}/levels/arena.png'
+            //'p.paddle2' : 'res/{{appid}}/pics/green_paddle.png',
+            //'p.paddle1' : 'res/{{appid}}/pics/red_paddle.png',
+            //'ball' : 'res/{{appid}}/pics/pongball.png',
+            //'arena' : 'game/{{appid}}/levels/arena.png'
           },
           'sprites' : {
           }
         }
       },
 
+      handleResolution: function(rs) {
+        //for default font, we use 48pt
+        this.game.scale = 52/256 * rs.width /320;
+      },
+
       runOnce: function() {
+        cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
+        cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('lang-pics'));
       }
 
     });

@@ -9,36 +9,42 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/splash", ['cherimoia/skarojs',
-                            'zotohlab/asterix',
-                            'zotohlab/asx/ccsx',
-                            'zotohlab/asx/xlayers',
-                            'zotohlab/asx/xscenes',
-                            'zotohlab/asx/xsplash'],
+define("zotohlab/p/splash",
 
-  function (sjs, sh, ccsx,
-            layers, scenes, XSplashLayer) { "use strict";
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/xlayers',
+        'zotohlab/asx/xscenes'],
+
+  function (sjs, sh, ccsx, layers, scenes) { "use strict";
 
     var xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
-    UILayer = layers.XLayer.extend({
+    SplashLayer = layers.XLayer.extend({
+
+      rtti: function() { return 'SplashLayer'; },
 
       pkInit: function() {
         var cw = ccsx.center(),
-        wz = ccsx.screen();
+        wb = ccsx.vbox(),
+        menu;
 
-        this._super();
+        this.centerImage(sh.getImagePath('game.bg'));
 
-        this.addItem(ccsx.pmenu1({
-          imgPath: sh.getImagePath('splash.play-btn'),
-          selector: function() {
+        this.addFrame('#title.png',
+                      cc.p(cw.x, wb.top * 0.9));
+
+        menu = ccsx.pmenu1({
+          imgPath: '#play.png',
+          cb: function() {
             sh.fireEvent('/splash/controls/playgame');
-          },
-          target: this,
-          pos: cc.p(cw.x, wz.height * 0.20)
-        }));
+          }
+        });
+        menu.setPosition(cw.x, wb.top * 0.2);
+        this.addItem(menu);
       }
 
     });
@@ -48,8 +54,7 @@ define("zotohlab/p/splash", ['cherimoia/skarojs',
       'StartScreen' : {
         create: function(options) {
           var scene = new scenes.XSceneFactory([
-            XSplashLayer,
-            UILayer
+            SplashLayer
           ]).create(options);
 
           scene.ebus.on('/splash/controls/playgame', function() {

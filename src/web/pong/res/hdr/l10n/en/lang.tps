@@ -6,7 +6,7 @@
         <key>texturePackerVersion</key>
         <string>3.5.3</string>
         <key>fileName</key>
-        <string>/wdrive/mygithub/cocos2d/src/web/tictactoe/res/hdr/l10n/en/lang.tps</string>
+        <string>/wdrive/mygithub/cocos2d/src/web/pong/res/hdr/l10n/en/lang.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -191,17 +191,17 @@
             <filename>cancel.png</filename>
             <filename>continue.png</filename>
             <filename>goback.png</filename>
+            <filename>icon_back.png</filename>
+            <filename>icon_menu.png</filename>
+            <filename>icon_quit.png</filename>
+            <filename>icon_replay.png</filename>
+            <filename>ok.png</filename>
             <filename>online.png</filename>
             <filename>options.png</filename>
             <filename>play.png</filename>
             <filename>player1.png</filename>
             <filename>player2.png</filename>
             <filename>quit.png</filename>
-            <filename>icon_back.png</filename>
-            <filename>icon_quit.png</filename>
-            <filename>icon_menu.png</filename>
-            <filename>icon_replay.png</filename>
-            <filename>ok.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

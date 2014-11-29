@@ -12,7 +12,7 @@ document.ccConfig = {
   id: 'gameArea',
 
   engineDir: ['/public/extlibs/cocos2d-html5'],
-  modules: [ 'cocos2d', 'editbox', 'ccpool' ],
+  modules: [ 'cocos2d', 'ccui', 'ccpool' ],
 
   jsList: [
     "/public/vendors/ramda/ramda.js",
