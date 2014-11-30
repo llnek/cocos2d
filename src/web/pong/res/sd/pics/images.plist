@@ -7,11 +7,11 @@
             <key>green_paddle.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,2},{50,12}}</string>
+                <string>{{19,35},{50,12}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{50,12}}</string>
                 <key>sourceSize</key>
@@ -20,7 +20,7 @@
             <key>pongball.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{16,37},{15,15}}</string>
+                <string>{{2,35},{15,15}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -33,7 +33,7 @@
             <key>red_paddle.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{33,37},{50,12}}</string>
+                <string>{{71,35},{50,12}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -46,13 +46,13 @@
             <key>title.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{16,2},{77,33}}</string>
+                <string>{{2,2},{115,31}}</string>
                 <key>offset</key>
-                <string>{0,1}</string>
+                <string>{-2,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{107,0},{77,33}}</string>
+                <string>{{86,2},{115,31}}</string>
                 <key>sourceSize</key>
                 <string>{291,35}</string>
             </dict>
@@ -64,9 +64,9 @@
             <key>realTextureFileName</key>
             <string>images.png</string>
             <key>size</key>
-            <string>{95,54}</string>
+            <string>{123,52}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:df1bf1ec053c4881d4fa57e55c9774ab:f1ca3c596279b3ad661cd5bf3e263dc6:e1a9b31caf258d7c92150a6ccbde6fbd$</string>
+            <string>$TexturePacker:SmartUpdate:b621ea39796669121808b5538350fd41:811d78a1c393d1bc76dc554da1d6a1e0:e1a9b31caf258d7c92150a6ccbde6fbd$</string>
             <key>textureFileName</key>
             <string>images.png</string>
         </dict>
