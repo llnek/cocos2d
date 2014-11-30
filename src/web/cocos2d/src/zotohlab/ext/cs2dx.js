@@ -452,7 +452,7 @@ define("zotohlab/asx/ccsx", ['cherimoia/skarojs',
         var mi= new cc.MenuItemSprite(new cc.Sprite(options.imgPath),
                                       new cc.Sprite(options.imgPath),
                                       new cc.Sprite(options.imgPath),
-                                      options.selector,
+                                      options.selector || options.cb,
                                       options.target),
         menu;
 

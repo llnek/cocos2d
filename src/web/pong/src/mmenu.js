@@ -9,81 +9,107 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/mmenu", ['cherimoia/skarojs',
-                             'zotohlab/asterix',
-                             'zotohlab/asx/ccsx',
-                             'zotohlab/asx/xlayers',
-                             'zotohlab/asx/xscenes',
-                             'zotohlab/asx/xmmenus'],
+define("zotohlab/p/mmenu",
 
-  function (sjs, sh, ccsx,
-            layers, scenes, mmenus) { "use strict";
+       ['cherimoia/skarojs',
+       'zotohlab/asterix',
+       'zotohlab/asx/ccsx',
+       'zotohlab/asx/xlayers',
+       'zotohlab/asx/xscenes'],
+
+  function (sjs, sh, ccsx, layers, scenes) { "use strict";
 
     var SEED= { ppids: { }, pnum: 1, mode: 0 },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
-    MainMenuLayer = mmenus.XMenuLayer.extend({
+    MainMenuLayer = layers.XLayer.extend({
+
+      rtti: function() { return 'MainMenuLayer'; },
 
       pkInit: function() {
         var dir= cc.director,
-        pobj1, pobj2,
-        cw = ccsx.center(),
-        wz = ccsx.screen();
+        cw= ccsx.center(),
+        wb= ccsx.vbox(),
+        sz, tt, menu;
 
-        this._super();
+        // show background image
+        this.centerImage(sh.getImagePath('game.bg'));
 
-        this.addItem( ccsx.tmenu1({
-          fontPath: sh.getFontPath('font.OogieBoogie'),
-          text: sh.l10n('%online'),
-          selector: function() {
-            sh.fireEvent('/mmenu/controls/online',
-                         sjs.mergeEx(SEED,
-                                     { mode: sh.ONLINE_GAME }));
+        // show the title
+        tt=ccsx.bmfLabel({
+          fontPath: sh.getFontPath('font.JellyBelly'),
+          text: sh.l10n('%mmenu'),
+          pos: cc.p(cw.x, wb.top * 0.9),
+          color: cc.color('#EDFF90'),
+          scale: xcfg.game.scale
+        });
+        this.addItem(tt);
+
+        menu = ccsx.vmenu([
+          { imgPath: '#online.png',
+            cb: function() {
+              sh.fireEvent('/mmenu/controls/online',
+                           sjs.mergeEx(SEED,
+                                       { mode: sh.ONLINE_GAME }));
+            }
           },
-          target: this,
-          scale: 0.5,
-          pos: cc.p(114, wz.height - csts.TILE * 18 - 2)
-        }));
-
-        pobj2={};
-        pobj2[ sh.l10n('%p1') ] = [ 1, sh.l10n('%player1') ];
-        pobj2[ sh.l10n('%p2') ] = [ 2, sh.l10n('%player2') ];
-
-        this.addItem(ccsx.tmenu1({
-          fontPath: sh.getFontPath('font.OogieBoogie'),
-          text: sh.l10n('%2players'),
-          scale: 0.5,
-          selector: function() {
-            sh.fireEvent('/mmenu/controls/newgame',
-                         sjs.mergeEx(SEED, {
-                           ppids: pobj2,
-                           mode: sh.P2_GAME }));
+          { imgPath: '#player2.png',
+            cb: function() {
+              var pobj2={};
+              pobj2[ sh.l10n('%p1') ] = [ 1, sh.l10n('%player1') ];
+              pobj2[ sh.l10n('%p2') ] = [ 2, sh.l10n('%player2') ];
+              sh.fireEvent('/mmenu/controls/newgame',
+                           sjs.mergeEx(SEED, {
+                             ppids: pobj2,
+                             mode: sh.P2_GAME }));
+            }
           },
-          target: this,
-          pos: cc.p(cw.x + 68, wz.height - csts.TILE * 28 - 4)
-        }));
+          {
+            imgPath: '#player1.png',
+            cb: function() {
+              var pobj1={};
+              pobj1[ sh.l10n('%cpu') ] = [ 2, sh.l10n('%computer') ];
+              pobj1[ sh.l10n('%p1') ] = [ 1,  sh.l10n('%player1') ];
+              sh.fireEvent('/mmenu/controls/newgame',
+                           sjs.mergeEx(SEED, {
+                             ppids: pobj1,
+                             mode: sh.P1_GAME }));
+            }
+          }
+        ]);
+        menu.setPosition(cw);
+        this.addItem(menu);
 
-        pobj1={};
-        pobj1[ sh.l10n('%cpu') ] = [ 2, sh.l10n('%computer') ];
-        pobj1[ sh.l10n('%p1') ] = [ 1,  sh.l10n('%player1') ];
+        // show the control buttons
+        this.addAudioIcon({
+          pos: cc.p(wb.right - csts.TILE,
+                    wb.bottom + csts.TILE),
+          color: cc.color('#32baf4'),
+          anchor: cc.p(1,0)
+        });
 
-        this.addItem(ccsx.tmenu1({
-          fontPath: sh.getFontPath('font.OogieBoogie'),
-          text: sh.l10n('%1player'),
-          scale: 0.5,
-          selector: function() {
-            sh.fireEvent('/mmenu/controls/newgame',
-                         sjs.mergeEx(SEED, {
-                           ppids: pobj1,
-                           mode: sh.P1_GAME }));
-          },
-          target: this,
-          pos: cc.p(cw.x, csts.TILE * 19)
-        }));
+        // show back & quit
+        menu= ccsx.hmenu([
+          { color: cc.color('#32baf4'),
+            imgPath: '#icon_back.png',
+            cb: function() {
+              if (!!this.options.onBack) {
+                this.options.onBack();
+              }
+            },
+            target: this },
+          { color: cc.color('#32baf4'),
+            imgPath: '#icon_quit.png',
+            cb: function() { this.onQuit(); },
+            target: this }
+        ]);
+        sz= menu.getChildren()[0].getContentSize();
+        menu.setPosition(wb.left + csts.TILE + sz.width * 1.1,
+                         wb.bottom + csts.TILE + sz.height * 0.45);
+        this.addItem(menu);
 
-        this.doCtrlBtns();
       }
 
     });
@@ -95,7 +121,6 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
         create: function(options) {
 
           var scene = new scenes.XSceneFactory([
-            mmenus.XMenuBackLayer,
             MainMenuLayer
           ]).create(options),
           fac = sh.protos['GameArena'],

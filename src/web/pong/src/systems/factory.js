@@ -50,9 +50,9 @@ define("zotohlab/p/s/factory", ['zotohlab/p/components',
           vx = vy = 0;
         }
 
-        sp= new cc.Sprite(sh.getImagePath('gamelevel1.images.ball'));
+        sp= new cc.Sprite('#pongball.png');
         sp.setPosition(info.x, info.y);
-        layer.addItem(sp);
+        layer.addAtlasItem('game-pics', sp);
 
         ent.add(new cobjs.Ball(sp, info.speed));
         ent.add(new cobjs.Velocity(vx, vy));
@@ -60,8 +60,8 @@ define("zotohlab/p/s/factory", ['zotohlab/p/components',
       },
 
       createOnePaddle: function(layer, p, info, speed, options) {
-        var res1 = 'gamelevel1.images.p.paddle1',
-        res2= 'gamelevel1.images.p.paddle2',
+        var res1 = '#red_paddle.png',
+        res2= '#green_paddle.png',
         ent = sh.Ashley.newEntity(),
         res,
         sp, lp;
@@ -72,9 +72,9 @@ define("zotohlab/p/s/factory", ['zotohlab/p/components',
           res= res2;
         }
 
-        sp = new cc.Sprite(sh.getImagePath(res));
+        sp = new cc.Sprite(res);
         sp.setPosition(info.x, info.y);
-        layer.addItem(sp);
+        layer.addAtlasItem('game-pics', sp);
 
         ent.add(new cobjs.Paddle(sp, p.color, speed));
         ent.add(p);

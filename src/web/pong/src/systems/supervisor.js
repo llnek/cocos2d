@@ -9,10 +9,12 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/s/supervisor", ['cherimoia/skarojs',
-                                  'zotohlab/asterix',
-                                  'zotohlab/asx/ccsx',
-                                  'zotohlab/asx/odin'],
+define("zotohlab/p/s/supervisor",
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/odin'],
 
   function (sjs, sh, ccsx, odin) { "use strict";
 
@@ -47,13 +49,12 @@ define("zotohlab/p/s/supervisor", ['cherimoia/skarojs',
       onceOnly: function() {
         var world = this.state.world,
         cw= ccsx.center(),
-        wz= ccsx.screen(),
         ps = this.initPaddleSize(),
         bs = this.initBallSize(),
         // position of paddles
         // portrait
-        p1y = Math.floor(world.bottom + bs.height + sh.hh(ps)),
-        p2y = Math.floor(world.top - bs.height - sh.hh(ps)),
+        p1y = Math.floor(world.top * 0.1 + bs.height + sh.hh(ps)),
+        p2y = Math.floor(world.top * 0.9 - bs.height - sh.hh(ps)),
         // landscape
         p2x = Math.floor(world.right - bs.width - sh.hw(ps)),
         p1x = Math.floor(world.left + bs.width + sh.hw(ps));
@@ -102,17 +103,15 @@ define("zotohlab/p/s/supervisor", ['cherimoia/skarojs',
       },
 
       initPaddleSize: function() {
-        var dummy, id;
+        var dummy, id = '#red_paddle.png';
         if (ccsx.isPortrait()) {
-          id='gamelevel1.images.p.paddle1';
         } else {
-          id='gamelevel1.images.l.paddle1';
         }
-        return new cc.Sprite(sh.getImagePath(id)).getContentSize();
+        return new cc.Sprite(id).getContentSize();
       },
 
       initBallSize: function() {
-        var dummy= new cc.Sprite(sh.getImagePath('gamelevel1.images.ball'));
+        var dummy= new cc.Sprite('#pongball.png');
         return dummy.getContentSize();
       }
 

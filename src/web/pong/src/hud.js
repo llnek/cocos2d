@@ -9,10 +9,12 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/hud", ['cherimoia/skarojs',
-                         'zotohlab/asterix',
-                         'zotohlab/asx/ccsx',
-                         'zotohlab/asx/xlayers'],
+define("zotohlab/p/hud",
+
+       ['cherimoia/skarojs',
+       'zotohlab/asterix',
+       'zotohlab/asx/ccsx',
+       'zotohlab/asx/xlayers'],
 
   function(sjs, sh, ccsx, layers) { "use strict";
 
@@ -25,8 +27,7 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
       rtti: function() { return 'BackLayer'; },
 
       pkInit: function() {
-        this._super();
-        this.addItem(new cc.TMXTiledMap(sh.getTilesPath('gamelevel1.tiles.arena')));
+        this.centerImage(sh.getImagePath('game.bg'));
       }
 
     }),
@@ -52,7 +53,7 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
 
       regoPlayers: function(p1,p1ids,p2,p2ids) {
         var cw= ccsx.center(),
-        wz= ccsx.screen();
+        wb= ccsx.vbox();
 
         this.play2= p2;
         this.play1= p1;
@@ -64,10 +65,10 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
 
         this.score1.setPosition( cw.x - ccsx.getScaledWidth(this.title)/2 -
                                  ccsx.getScaledWidth(this.score1)/2 - 10,
-                                 wz.height - csts.TILE * 6 /2 - 2);
+                                 wb.top - csts.TILE * 6 /2 - 2);
         this.score2.setPosition( cw.x + ccsx.getScaledWidth(this.title)/2 +
                                  ccsx.getScaledWidth(this.score2)/2 + 6,
-                                 wz.height - csts.TILE * 6 /2 - 2);
+                                 wb.top - csts.TILE * 6 /2 - 2);
       },
 
       resetAsNew: function() {
@@ -91,45 +92,69 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
 
       initLabels: function() {
         var cw= ccsx.center(),
-        wz = ccsx.screen();
+        wb= ccsx.vbox();
 
         this.title= ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.TinyBoxBB'),
           text: '',
-          scale: 12/72,
-          pos: cc.p( cw.x, wz.height - csts.TILE * 6 /2 )
+          scale: xcfg.game.scale * 0.3,
+          pos: cc.p(cw.x, wb.top - csts.TILE * 6 /2 )
         });
         this.addItem(this.title);
 
         this.score1= ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.OCR'),
           text: '8',
-          scale: 36/72,
-          color: cc.color(255,0,0)
+          scale: xcfg.game.scale * 0.25,
+          color: cc.color('#ffffff')
         });
         this.addItem(this.score1);
 
         this.score2= ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.OCR'),
           text: '8',
-          scale: 36/72,
-          color: cc.color(106, 190, 97) //#6abe61
+          scale: xcfg.game.scale * 0.25,
+          color: cc.color('#ffffff')
         });
         this.addItem(this.score2);
 
         this.resultMsg = ccsx.bmfLabel({
-          fontPath: sh.getFontPath('font.TinyBoxBB'),
+          fontPath: sh.getFontPath('font.CoffeeBuzzed'),
           text: '',
           visible: false,
           pos: cc.p(cw.x,  100),
-          scale: 24/72
+          scale: xcfg.game.scale * 0.15
         });
         this.addItem(this.resultMsg);
 
+        this.initCtrlBtns(1, cc.ALIGN_TOP);
       },
 
-      initCtrlBtns: function() {
-        this._super(28/48, 'cc.ALIGN_TOP');
+      initCtrlBtns: function(scale, where) {
+        var csts = xcfg.csts,
+        menu;
+
+        where = where || cc.ALIGN_BOTTOM;
+        scale = scale || 1;
+
+        menu= ccsx.pmenu1({
+          color: cc.color('#32baf4'),
+          imgPath: '#icon_menu.png',
+          scale: scale,
+          selector: function() {
+            sh.fireEvent('/game/hud/controls/showmenu'); }
+        });
+        this.addMenuIcon(menu);
+
+        menu = ccsx.pmenu1({
+          imgPath: '#icon_replay.png',
+          color: cc.color('#32baf4'),
+          scale : scale,
+          visible: false,
+          selector: function() {
+            sh.fireEvent('/game/hud/controls/replay'); }
+        });
+        this.addReplayIcon(menu);
       },
 
       isDone: function() {

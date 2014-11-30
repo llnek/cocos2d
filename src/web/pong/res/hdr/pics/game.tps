@@ -192,6 +192,8 @@
             <filename>pongball.png</filename>
             <filename>red_paddle.png</filename>
             <filename>title.png</filename>
+            <filename>sound_off.png</filename>
+            <filename>sound_on.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

@@ -7,7 +7,7 @@
             <key>green_paddle.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{74,144},{240,56}}</string>
+                <string>{{366,164},{240,56}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -20,7 +20,7 @@
             <key>pongball.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,144},{70,70}}</string>
+                <string>{{894,2},{70,70}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -33,7 +33,7 @@
             <key>red_paddle.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{316,144},{240,56}}</string>
+                <string>{{608,164},{240,56}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -43,16 +43,42 @@
                 <key>sourceSize</key>
                 <string>{240,56}</string>
             </dict>
-            <key>title.png</key>
+            <key>sound_off.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,2},{544,140}}</string>
+                <string>{{2,2},{180,180}}</string>
                 <key>offset</key>
-                <string>{-9,0}</string>
+                <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{419,14},{544,140}}</string>
+                <string>{{0,0},{180,180}}</string>
+                <key>sourceSize</key>
+                <string>{180,180}</string>
+            </dict>
+            <key>sound_on.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{184,2},{180,180}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{180,180}}</string>
+                <key>sourceSize</key>
+                <string>{180,180}</string>
+            </dict>
+            <key>title.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{366,2},{526,160}}</string>
+                <key>offset</key>
+                <string>{1,-4}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{438,8},{526,160}}</string>
                 <key>sourceSize</key>
                 <string>{1400,168}</string>
             </dict>
@@ -64,9 +90,9 @@
             <key>realTextureFileName</key>
             <string>images.png</string>
             <key>size</key>
-            <string>{558,216}</string>
+            <string>{966,222}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:2c0935cc5e5a759cdbd4d0c87906506c:811d78a1c393d1bc76dc554da1d6a1e0:e1a9b31caf258d7c92150a6ccbde6fbd$</string>
+            <string>$TexturePacker:SmartUpdate:a7c3f5f9aaa493c818afc2d2f610fe02:2dafec6cab6a00d0ddd23ea9691eaa9c:e1a9b31caf258d7c92150a6ccbde6fbd$</string>
             <key>textureFileName</key>
             <string>images.png</string>
         </dict>

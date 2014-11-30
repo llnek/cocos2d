@@ -9,16 +9,18 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/arena", ['zotohlab/p/components',
-                           'zotohlab/p/sysobjs',
-                           'cherimoia/skarojs',
-                           'zotohlab/asterix',
-                           'zotohlab/asx/ccsx',
-                           'zotohlab/asx/odin',
-                           'zotohlab/asx/xlayers',
-                           'zotohlab/asx/xscenes',
-                           'zotohlab/asx/xmmenus',
-                           'zotohlab/p/hud'],
+define("zotohlab/p/arena",
+
+       ['zotohlab/p/components',
+       'zotohlab/p/sysobjs',
+       'cherimoia/skarojs',
+       'zotohlab/asterix',
+       'zotohlab/asx/ccsx',
+       'zotohlab/asx/odin',
+       'zotohlab/asx/xlayers',
+       'zotohlab/asx/xscenes',
+       'zotohlab/asx/xmmenus',
+       'zotohlab/p/hud'],
 
   function(cobjs, sobjs, sjs, sh, ccsx,
            odin, layers, scenes, mmenus, huds) { "use strict";
@@ -153,6 +155,12 @@ define("zotohlab/p/arena", ['zotohlab/p/components',
       },
 
       reset: function(newFlag) {
+        if (!sjs.isEmpty(this.atlases)) {
+          sjs.eachObj(function(v){ v.removeAllChildren(); }, this.atlases);
+        } else {
+          this.regoAtlas('game-pics');
+          this.regoAtlas('lang-pics');
+        }
         R.forEach(function(z) {
           if (z) { z.dispose(); }
         }, this.players);
@@ -211,7 +219,7 @@ define("zotohlab/p/arena", ['zotohlab/p/components',
       doDone: function(p) {
         this.getHUD().drawResult(p);
         this.getHUD().endGame();
-        this.removeAll();
+        //this.removeAll();
         sh.sfxPlay('game_end');
 
         this.options.running=false;
@@ -223,11 +231,7 @@ define("zotohlab/p/arena", ['zotohlab/p/components',
       },
 
       getEnclosureBox: function() {
-        var wz = ccsx.screen();
-        return { top: Math.floor(wz.height - 6 * csts.TILE),
-                 left: csts.TILE,
-                 bottom: csts.TILE,
-                 right: Math.floor(wz.width - csts.TILE) };
+        return ccsx.vbox();
       }
 
     });
@@ -240,8 +244,8 @@ define("zotohlab/p/arena", ['zotohlab/p/components',
 
           var scene = new scenes.XSceneFactory([
             huds.BackLayer,
-            GameLayer,
-            huds.HUDLayer
+            huds.HUDLayer,
+            GameLayer
           ]).create(options);
 
           scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
