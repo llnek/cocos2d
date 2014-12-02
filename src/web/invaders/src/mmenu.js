@@ -9,12 +9,14 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define('zotohlab/p/mmenu', ['cherimoia/skarojs',
-                           'zotohlab/asterix',
-                           'zotohlab/asx/ccsx',
-                           'zotohlab/asx/xlayers',
-                           'zotohlab/asx/xscenes',
-                           'zotohlab/asx/xmmenus'],
+define('zotohlab/p/mmenu',
+
+       ['cherimoia/skarojs',
+       'zotohlab/asterix',
+       'zotohlab/asx/ccsx',
+       'zotohlab/asx/xlayers',
+       'zotohlab/asx/xscenes',
+       'zotohlab/asx/xmmenus'],
 
   function (sjs, sh, ccsx, layers, scenes, mmenus) { "use strict";
 
@@ -22,26 +24,36 @@ define('zotohlab/p/mmenu', ['cherimoia/skarojs',
     csts= xcfg.csts,
     undef,
 
-    MainMenuLayer = mmenus.XMenuLayer.extend({
+    MainMenuLayer = layers.XLayer.extend({
+
+      rtti: function() { return 'MenuLayer'; },
 
       pkInit: function() {
         var cw = ccsx.center(),
-        wz = ccsx.screen();
+        wb = ccsx.vbox(),
+        tt, menu;
 
-        this._super();
+        this.centerImage(sh.getImagePath('game.bg'));
 
-        this.addItem( ccsx.tmenu1({
-          fontPath: sh.getFontPath('font.OogieBoogie'),
-          text: sh.l10n('%1player'),
-          selector: function() {
+        // show the title
+        tt=ccsx.bmfLabel({
+          fontPath: sh.getFontPath('font.JellyBelly'),
+          text: sh.l10n('%mmenu'),
+          pos: cc.p(cw.x, wb.top * 0.9),
+          color: cc.color(255,255,255),
+          scale: xcfg.game.scale
+        });
+        this.addItem(tt);
+
+        menu= ccsx.pmenu1({
+          imgPath: '#play.png',
+          cb: function() {
             sh.fireEvent('/mmenu/controls/newgame', { mode: sh.P1_GAME });
-          },
-          target: this,
-          scale: 0.5,
-          pos: cc.p(cw.x, wz.height * 0.75)
-        }));
+          }
+        });
+        menu.setPosition(cw);
+        this.addItem(menu);
 
-        this.doCtrlBtns();
       }
 
     });
@@ -52,7 +64,6 @@ define('zotohlab/p/mmenu', ['cherimoia/skarojs',
 
         create: function(options) {
           var scene = new scenes.XSceneFactory([
-            mmenus.XMenuBackLayer,
             MainMenuLayer
           ]).create(options);
 

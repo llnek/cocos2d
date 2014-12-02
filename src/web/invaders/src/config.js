@@ -9,9 +9,11 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define('zotohlab/p/config', ['cherimoia/skarojs',
-                            'zotohlab/asterix',
-                            'zotohlab/asx/xcfg'],
+define('zotohlab/p/config',
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/xcfg'],
 
   function (sjs, sh, xcfg) { "use strict";
 
@@ -22,9 +24,14 @@ define('zotohlab/p/config', ['cherimoia/skarojs',
       appid: 'invaders',
       color: 'red',
 
+      resolution: {
+        policy: cc.ResolutionPolicy.FIXED_HEIGHT,
+        resSize: [0,0]
+      },
+
       csts: {
-        GRID_W: 40,
-        GRID_H: 60,
+        //GRID_W: 40,
+        //GRID_H: 60,
 
         P_MS: 'missiles',
         P_BS: 'bombs',
@@ -44,12 +51,14 @@ define('zotohlab/p/config', ['cherimoia/skarojs',
 
       assets: {
         atlases: {
-          'game-pics' : 'res/{{appid}}/pics/sprites'
+          'lang-pics' : 'res/{{appid}}/l10n/{{lang}}/images',
+          'game-pics' : 'res/{{appid}}/pics/images'
         },
         tiles: {
         },
         images: {
-          'splash.play-btn' : 'res/cocos2d/btns/play_gray_x64.png'
+          'game.bg' : 'res/{{appid}}/pics/bg.png'
+          //'splash.play-btn' : 'res/cocos2d/btns/play_gray_x64.png'
         },
         sounds: {
           'game_end' : 'res/cocos2d/sfx/MineExplosion',
@@ -59,17 +68,20 @@ define('zotohlab/p/config', ['cherimoia/skarojs',
           'xxx-explode' : 'res/{{appid}}/sfx/explode'
         },
         fonts: {
+          'font.SmallTypeWriting' : [ 'res/cocos2d/fon/{{lang}}', 'SmallTypeWriting.png', 'SmallTypeWriting.fnt' ],
+          'font.AutoMission' : [ 'res/cocos2d/fon/{{lang}}', 'AutoMission.png', 'AutoMission.fnt' ],
+          'font.Subito' : [ 'res/cocos2d/fon/{{lang}}', 'Subito.png', 'Subito.fnt' ],
+          'font.CoffeeBuzzed' : [ 'res/cocos2d/fon/{{lang}}', 'CoffeeBuzzed.png', 'CoffeeBuzzed.fnt' ]
         }
       },
 
       game: {
-        size: {width:320, height:480, scale:1}
+        sd: {width:320, height:480 }
       },
 
       levels: {
         "gamelevel1" : {
           'tiles' : {
-            'arena' : 'game/{{appid}}/levels/arena.tmx'
           },
           'images' : {
           },
@@ -78,8 +90,14 @@ define('zotohlab/p/config', ['cherimoia/skarojs',
         }
       },
 
+      handleResolution: function(rs) {
+        //for default font, we use 48pt
+        this.game.scale = 52/256 * rs.width /320;
+      },
+
       runOnce: function() {
         cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
+        cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('lang-pics'));
       }
 
     });
