@@ -9,12 +9,15 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define('zotohlab/p/s/moveship', ['zotohlab/p/gnodes',
-                                'cherimoia/skarojs',
-                                'zotohlab/asterix',
-                                'zotohlab/asx/ccsx'],
+define('zotohlab/p/s/moveship',
 
-  function (gnodes, sjs, sh, ccsx) { "use strict";
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
+
+  function (pss, gnodes, sjs, sh, ccsx) { "use strict";
 
     var xcfg = sh.xcfg,
     csts= xcfg.csts,
@@ -80,6 +83,7 @@ define('zotohlab/p/s/moveship', ['zotohlab/p/gnodes',
 
     });
 
+    MovementShip.Priority= pss.Movement;
     return MovementShip;
 });
 

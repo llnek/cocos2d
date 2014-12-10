@@ -300,7 +300,7 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
         this.score= 0;
         this.replayBtn = null;
 
-        this.hudAtlas= 'hud-pics';
+        this.hudAtlas= 'game-pics';
         this._super();
 
         this.initAtlases();

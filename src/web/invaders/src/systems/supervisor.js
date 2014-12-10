@@ -9,14 +9,17 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
-                                  'zotohlab/p/s/utils',
-                                  'cherimoia/skarojs',
-                                  'zotohlab/asterix',
-                                  'zotohlab/asx/ccsx',
-                                  'zotohlab/asx/xpool'],
+define("zotohlab/p/s/supervisor",
 
-  function (cobjs, utils, sjs, sh, ccsx, XPool) { "use strict";
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/components',
+        'zotohlab/p/s/utils',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/xpool'],
+
+  function (pss, cobjs, utils, sjs, sh, ccsx, XPool) { "use strict";
 
     var xcfg = sh.xcfg,
     csts= xcfg.csts,
@@ -68,6 +71,7 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
 
     });
 
+    GameSupervisor.Priority= pss.PreUpdate;
     return GameSupervisor;
 });
 

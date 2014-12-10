@@ -9,13 +9,16 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define('zotohlab/p/s/movealiens', ['zotohlab/p/s/utils',
-                                  'zotohlab/p/gnodes',
-                                  'cherimoia/skarojs',
-                                  'zotohlab/asterix',
-                                  'zotohlab/asx/ccsx'],
+define('zotohlab/p/s/movealiens',
 
-  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/s/utils',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
+
+  function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     var xcfg = sh.xcfg,
     csts= xcfg.csts,
@@ -108,11 +111,13 @@ define('zotohlab/p/s/movealiens', ['zotohlab/p/s/utils',
       },
 
       testDirX: function(b, stepx) {
-        var sp= b.sprite;
+        var wz= ccsx.vrect(),
+        wb= ccsx.vbox(),
+        sp= b.sprite;
         if (stepx > 0) {
-          return ccsx.getRight(sp) + stepx < (csts.GRID_W - 2) * csts.TILE;
+          return ccsx.getRight(sp) + stepx < (wb.right - (38/40 * wz.width));
         } else {
-          return ccsx.getLeft(sp) + stepx > csts.LEFT * csts.TILE;
+          return ccsx.getLeft(sp) + stepx > (wb.left + (2/40 * wz.width));
         }
       },
 
@@ -122,8 +127,10 @@ define('zotohlab/p/s/movealiens', ['zotohlab/p/s/utils',
       },
 
       forwardOneAlien: function(a) {
-        var pos= a.sprite.getPosition();
-        a.sprite.setPosition(pos.x, pos.y - ccsx.getHeight(a.sprite) - csts.OFF_Y);
+        var pos= a.sprite.getPosition(),
+        wz= ccsx.vrect(),
+        wb= ccsx.vbox();
+        a.sprite.setPosition(pos.x, pos.y - ccsx.getHeight(a.sprite) - (2/480 * wz.height));
       },
 
       doShuffle: function(sqad) {
@@ -169,6 +176,7 @@ define('zotohlab/p/s/movealiens', ['zotohlab/p/s/utils',
 
     });
 
+    MovementAliens.Priority= pss.Movement;
     return MovementAliens;
 });
 

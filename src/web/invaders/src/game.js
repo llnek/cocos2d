@@ -9,15 +9,17 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-define('zotohlab/p/arena', ['zotohlab/p/s/utils',
-                           'zotohlab/p/sysobjs',
-                           'cherimoia/skarojs',
-                           'zotohlab/asterix',
-                           'zotohlab/asx/ccsx',
-                           'zotohlab/asx/xlayers',
-                           'zotohlab/asx/xscenes',
-                           'zotohlab/asx/xmmenus',
-                           'zotohlab/p/hud'],
+define('zotohlab/p/arena',
+
+       ['zotohlab/p/s/utils',
+       'zotohlab/p/sysobjs',
+       'cherimoia/skarojs',
+       'zotohlab/asterix',
+       'zotohlab/asx/ccsx',
+       'zotohlab/asx/xlayers',
+       'zotohlab/asx/xscenes',
+       'zotohlab/asx/xmmenus',
+       'zotohlab/p/hud'],
 
   function (utils, sobjs, sjs, sh, ccsx,
             layers, scenes, mmenus, huds) { "use strict";
@@ -34,6 +36,7 @@ define('zotohlab/p/arena', ['zotohlab/p/s/utils',
           sjs.eachObj(function(v){ v.removeAllChildren(); }, this.atlases);
         } else {
           this.regoAtlas('game-pics');
+          this.regoAtlas('lang-pics');
         }
         this.getHUD().reset();
       },
@@ -58,18 +61,17 @@ define('zotohlab/p/arena', ['zotohlab/p/s/utils',
         this.options.running = true;
 
         R.forEach(function(z) {
-          this.engine.addSystem(new (z[0])(this.options), z[1]);
+          this.engine.addSystem(new (z)(this.options), z.Priority);
         }.bind(this),
-        [ [sobjs.Supervisor, pss.PreUpdate],
-          [sobjs.Motions, pss.Motion],
-          [sobjs.CannonControl, pss.Motion],
-          [sobjs.MovementAliens, pss.Movement],
-          [sobjs.MovementBombs, pss.Movement],
-          [sobjs.MovementShip, pss.Movement],
-          [sobjs.MovementMissiles, pss.Movement],
-          [sobjs.CollisionSystem, pss.Collision],
-          [sobjs.Resolution, pss.Resolve] ]);
-
+        [ sobjs.Supervisor,
+          sobjs.Motions,
+          sobjs.CannonControl,
+          sobjs.MovementAliens,
+          sobjs.MovementBombs,
+          sobjs.MovementShip,
+          sobjs.MovementMissiles,
+          sobjs.CollisionSystem,
+          sobjs.Resolution ]);
 
       },
 

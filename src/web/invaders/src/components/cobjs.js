@@ -9,9 +9,11 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/components", ['cherimoia/skarojs',
-                                'zotohlab/asterix',
-                                'zotohlab/asx/ccsx'],
+define("zotohlab/p/components",
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (sjs, sh, ccsx) { "use strict";
 

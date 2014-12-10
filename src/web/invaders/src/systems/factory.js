@@ -9,11 +9,13 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define('zotohlab/p/s/factory', ['zotohlab/p/components',
-                               'cherimoia/skarojs',
-                               'zotohlab/asterix',
-                               'zotohlab/asx/ccsx',
-                               'zotohlab/asx/xpool'],
+define('zotohlab/p/s/factory',
+
+       ['zotohlab/p/components',
+       'cherimoia/skarojs',
+       'zotohlab/asterix',
+       'zotohlab/asx/ccsx',
+       'zotohlab/asx/xpool'],
 
   function (cobjs, sjs, sh, ccsx, XPool) { "use strict";
 
@@ -70,6 +72,8 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
 
       fillSquad: function(pool) {
         var az= this.state.alienSize,
+        wz= ccsx.vrect(),
+        wb= ccsx.vbox(),
         row = 0,
         info,
         aa,
@@ -77,9 +81,9 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
 
         for (n=0; n < csts.CELLS; ++n) {
           if (n % csts.COLS === 0) {
-            y = n === 0 ? (csts.GRID_H - csts.TOP) * csts.TILE
-                        : y - az.height - csts.OFF_Y;
-            x = csts.LEFT * csts.TILE + sh.hw(az);
+            y = n === 0 ? wb.top * 0.9
+                        : y - az.height - wz.height * 2/480;
+            x = wb.left + (2/40 * wz.width) + sh.hw(az);
             row += 1;
           }
           info= this.getRankInfo(row);
@@ -90,7 +94,7 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
                 [ccsx.getSpriteFrame(info[1][0]),
                  ccsx.getSpriteFrame(info[1][1]) ], 1))));
           sh.main.addAtlasItem('game-pics', aa);
-          x += az.width + csts.OFF_X;
+          x += az.width + (2/40 * wz.width);
           aa= new cobjs.Alien(aa,info[0],row);
           aa.status=true;
           pool.push(aa);
@@ -120,8 +124,10 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
       },
 
       createShip: function() {
-        var y = this.state.shipSize.height + 5*csts.TILE,
-        x = ccsx.centerX(),
+        var wz= ccsx.vrect(),
+        wb= ccsx.vbox(),
+        y = this.state.shipSize.height + wb.bottom + (5/60 * wz.height),
+        x = wb.left + wz.width * 0.5,
         ship,
         s= ccsx.createSpriteFrame('ship_1.png'),
         ent= new sh.Ashley.newEntity();

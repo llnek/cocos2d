@@ -31,7 +31,7 @@ define('zotohlab/p/mmenu',
       pkInit: function() {
         var cw = ccsx.center(),
         wb = ccsx.vbox(),
-        tt, menu;
+        sz, tt, menu;
 
         this.centerImage(sh.getImagePath('game.bg'));
 
@@ -52,6 +52,34 @@ define('zotohlab/p/mmenu',
           }
         });
         menu.setPosition(cw);
+        this.addItem(menu);
+
+        // show the control buttons
+        this.addAudioIcon({
+          pos: cc.p(wb.right - csts.TILE,
+                    wb.bottom + csts.TILE),
+          color: cc.color(255,255,255),
+          anchor: cc.p(1,0)
+        });
+
+        // show back & quit
+        menu= ccsx.hmenu([
+          { color: cc.color(94,49,120),
+            imgPath: '#icon_back.png',
+            cb: function() {
+              if (!!this.options.onBack) {
+                this.options.onBack();
+              }
+            },
+            target: this },
+          { color: cc.color(94,49,120),
+            imgPath: '#icon_quit.png',
+            cb: function() { this.onQuit(); },
+            target: this }
+        ]);
+        sz= menu.getChildren()[0].getContentSize();
+        menu.setPosition(wb.left + csts.TILE + sz.width * 1.1,
+                         wb.bottom + csts.TILE + sz.height * 0.45);
         this.addItem(menu);
 
       }

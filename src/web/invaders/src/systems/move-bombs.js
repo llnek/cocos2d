@@ -9,13 +9,16 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define('zotohlab/p/s/movebombs', ['zotohlab/p/s/utils',
-                                 'zotohlab/p/gnodes',
-                                 'cherimoia/skarojs',
-                                 'zotohlab/asterix',
-                                 'zotohlab/asx/ccsx'],
+define('zotohlab/p/s/movebombs',
 
-  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
+       ['zotohlab/p/s/priorities',
+         'zotohlab/p/s/utils',
+       'zotohlab/p/gnodes',
+       'cherimoia/skarojs',
+       'zotohlab/asterix',
+       'zotohlab/asx/ccsx'],
+
+  function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     var xcfg = sh.xcfg,
     csts= xcfg.csts,
@@ -50,6 +53,7 @@ define('zotohlab/p/s/movebombs', ['zotohlab/p/s/utils',
 
     });
 
+    MovementBombs.Priority= pss.Movement;
     return MovementBombs;
 });
 

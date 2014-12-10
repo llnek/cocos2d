@@ -9,10 +9,12 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-define('zotohlab/p/hud', ['cherimoia/skarojs',
-                         'zotohlab/asterix',
-                         'zotohlab/asx/ccsx',
-                         'zotohlab/asx/xlayers'],
+define('zotohlab/p/hud',
+
+       ['cherimoia/skarojs',
+       'zotohlab/asterix',
+       'zotohlab/asx/ccsx',
+       'zotohlab/asx/xlayers'],
 
   function(sjs, sh, ccsx, layers) { "use strict";
 
@@ -22,7 +24,11 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
 
     BackLayer = layers.XLayer.extend({
 
-      rtti: function() { return 'BackLayer'; }
+      rtti: function() { return 'BackLayer'; },
+
+      pkInit: function() {
+        this.centerImage(sh.getImagePath('game.bg'));
+      }
 
     }),
 
@@ -30,29 +36,28 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
 
       initAtlases: function() {
         this.regoAtlas('game-pics');
-        this.hudAtlas= 'game-pics';
       },
 
       initLabels: function() {
-        var wz = ccsx.screen();
+        var wb = ccsx.vbox();
 
         this.scoreLabel = ccsx.bmfLabel({
-          fontPath: sh.getFontPath('font.TinyBoxBB'),
+          fontPath: sh.getFontPath('font.SmallTypeWriting'),
           text: '0',
           anchor: ccsx.AnchorBottomRight,
-          scale: 12/72
+          scale: xcfg.game.scale// * 2
         });
-        this.scoreLabel.setPosition( wz.width - csts.TILE - csts.S_OFF,
-          wz.height - csts.TILE - csts.S_OFF - ccsx.getScaledHeight(this.scoreLabel));
+        this.scoreLabel.setPosition(wb.right - csts.TILE - csts.S_OFF,
+          wb.top - csts.TILE - csts.S_OFF - ccsx.getScaledHeight(this.scoreLabel));
 
         this.addChild(this.scoreLabel, this.lastZix, ++this.lastTag);
       },
 
       initIcons: function() {
-        var wz = ccsx.screen();
+        var wb = ccsx.vbox();
 
         this.lives = new layers.XHUDLives( this, csts.TILE + csts.S_OFF,
-          wz.height - csts.TILE - csts.S_OFF, {
+          wb.top - csts.TILE - csts.S_OFF, {
           frames: ['health.png'],
           totalLives: 3
         });
@@ -60,8 +65,31 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
         this.lives.create();
       },
 
-      initCtrlBtns: function(s) {
-        this._super(32/48);
+      initCtrlBtns: function(scale, where) {
+        var csts = xcfg.csts,
+        menu;
+
+        where = where || cc.ALIGN_BOTTOM;
+        scale = scale || 1;
+
+        menu= ccsx.pmenu1({
+          color: cc.color(255,255,255),
+          imgPath: '#icon_menu.png',
+          scale: scale,
+          selector: function() {
+            sh.fireEvent('/game/hud/controls/showmenu'); }
+        });
+        this.addMenuIcon(menu);
+
+        menu = ccsx.pmenu1({
+          imgPath: '#icon_replay.png',
+          color: cc.color(255,255,255),
+          scale : scale,
+          visible: false,
+          selector: function() {
+            sh.fireEvent('/game/hud/controls/replay'); }
+        });
+        this.addReplayIcon(menu);
       }
 
     });
