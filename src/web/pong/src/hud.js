@@ -134,7 +134,7 @@ define("zotohlab/p/hud",
         var csts = xcfg.csts,
         menu;
 
-        where = where || cc.ALIGN_BOTTOM;
+        where = where || ccsx.AnchorBottom;
         scale = scale || 1;
 
         menu= ccsx.pmenu1({
@@ -144,7 +144,7 @@ define("zotohlab/p/hud",
           selector: function() {
             sh.fireEvent('/game/hud/controls/showmenu'); }
         });
-        this.addMenuIcon(menu);
+        this.addMenuIcon(menu, where);
 
         menu = ccsx.pmenu1({
           imgPath: '#icon_replay.png',
@@ -154,7 +154,7 @@ define("zotohlab/p/hud",
           selector: function() {
             sh.fireEvent('/game/hud/controls/replay'); }
         });
-        this.addReplayIcon(menu);
+        this.addReplayIcon(menu, where);
       },
 
       isDone: function() {

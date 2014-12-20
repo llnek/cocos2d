@@ -39,7 +39,8 @@ define("zotohlab/p/s/supervisor",
       },
 
       initAlienSize: function() {
-        this.state.alienSize= ccsx.createSpriteFrame('green_bug_0.png').getContentSize();
+        //pick purple since it is the largest
+        this.state.alienSize= ccsx.createSpriteFrame('purple_bug_0.png').getContentSize();
       },
 
       initShipSize: function() {

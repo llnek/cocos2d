@@ -115,7 +115,7 @@ define('zotohlab/p/s/movealiens',
         wb= ccsx.vbox(),
         sp= b.sprite;
         if (stepx > 0) {
-          return ccsx.getRight(sp) + stepx < (wb.right - (38/40 * wz.width));
+          return ccsx.getRight(sp) + stepx < (wb.right - (2/40 * wz.width));
         } else {
           return ccsx.getLeft(sp) + stepx > (wb.left + (2/40 * wz.width));
         }
@@ -126,11 +126,12 @@ define('zotohlab/p/s/movealiens',
         a.sprite.setPosition(pos.x + stepx, pos.y);
       },
 
-      forwardOneAlien: function(a) {
+      forwardOneAlien: function(a, delta) {
         var pos= a.sprite.getPosition(),
         wz= ccsx.vrect(),
         wb= ccsx.vbox();
-        a.sprite.setPosition(pos.x, pos.y - ccsx.getHeight(a.sprite) - (2/480 * wz.height));
+        a.sprite.setPosition(pos.x,  pos.y - delta);
+                             //pos.y - ccsx.getHeight(a.sprite) - (2/480 * wz.height));
       },
 
       doShuffle: function(sqad) {
@@ -146,9 +147,10 @@ define('zotohlab/p/s/movealiens',
       doForward: function(sqad) {
         var rc = R.filter(function(a) {
           return a.status;
-        }, sqad.aliens.pool);
+        }, sqad.aliens.pool),
+        delta= Math.abs(sqad.stepx);
         R.forEach(function(a) {
-          this.forwardOneAlien(a);
+          this.forwardOneAlien(a, delta);
         }.bind(this), rc);
         sqad.stepx = - sqad.stepx;
         return rc.length > 0;
@@ -167,7 +169,7 @@ define('zotohlab/p/s/movealiens',
       findMaxX: function(sqad) {
         return R.maxWith(function(a) {
           if (a.status) {
-            return ccsx.getLeft(a.sprite);
+            return ccsx.getRight(a.sprite);
           } else {
             return 0;
           }

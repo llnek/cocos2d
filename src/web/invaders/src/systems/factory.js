@@ -57,16 +57,23 @@ define('zotohlab/p/s/factory',
         }, count || 24);
       },
 
+      calcImgSize: function(img) {
+        return ccsx.createSpriteFrame(img).getContentSize();
+      },
+
       getRankInfo: function(rank) {
         if (rank < 3) {
-          return [100, [ 'blue_bug_1.png', 'blue_bug_0.png' ] ];
+          return [100, [ 'blue_bug_0.png', 'blue_bug_1.png' ] ,
+            this.calcImgSize('blue_bug_0.png') ];
         }
         else
         if (rank < 5) {
-          return [50, [ 'green_bug_1.png', 'green_bug_0.png' ] ];
+          return [50, [ 'green_bug_0.png', 'green_bug_1.png' ] ,
+            this.calcImgSize('green_bug_0.png') ];
         }
         else {
-          return [30,  [ 'purple_bug_0.png', 'purple_bug_1.png' ]];
+          return [30,  [ 'purple_bug_0.png', 'purple_bug_1.png' ] ,
+            this.calcImgSize('purple_bug_0.png') ];
         }
       },
 
@@ -79,14 +86,17 @@ define('zotohlab/p/s/factory',
         aa,
         n,x,y;
 
+        info= this.getRankInfo(row);
+        az= info[2];
         for (n=0; n < csts.CELLS; ++n) {
           if (n % csts.COLS === 0) {
             y = n === 0 ? wb.top * 0.9
-                        : y - az.height - wz.height * 2/480;
-            x = wb.left + (2/40 * wz.width) + sh.hw(az);
+                        : y - az.height - wz.height * 4/480;
+            x = wb.left + (8/320 * wz.width) + sh.hw( az);
             row += 1;
+            info= this.getRankInfo(row);
+            az= info[2];
           }
-          info= this.getRankInfo(row);
           aa= ccsx.createSpriteFrame(info[1][0]);
           aa.setPosition( x + sh.hw(az), y - sh.hh(az));
           aa.runAction(new cc.RepeatForever(
@@ -94,7 +104,7 @@ define('zotohlab/p/s/factory',
                 [ccsx.getSpriteFrame(info[1][0]),
                  ccsx.getSpriteFrame(info[1][1]) ], 1))));
           sh.main.addAtlasItem('game-pics', aa);
-          x += az.width + (2/40 * wz.width);
+          x += az.width + (8/320 * wz.width);
           aa= new cobjs.Alien(aa,info[0],row);
           aa.status=true;
           pool.push(aa);

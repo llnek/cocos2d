@@ -39,9 +39,9 @@ define('zotohlab/p/config',
         P_LMS: 'live-missiles',
         P_LBS: 'live-bombs',
 
-        COLS: 7,
+        COLS: 6,
         ROWS: 7,
-        CELLS: 49,
+        CELLS: 42,
 
         LEFT : 2,
         TOP: 6,

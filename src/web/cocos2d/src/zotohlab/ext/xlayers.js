@@ -340,7 +340,7 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
         wz= ccsx.vbox(),
         x,y;
 
-        if (where === cc.ALIGN_TOP) {
+        if (where === ccsx.AnchorTop) {
           y = wz.top - csts.TILE - ccsx.getScaledHeight(c) * 0.5;
         } else {
           y = wz.bottom + csts.TILE  + ccsx.getScaledHeight(c) * 0.5;
@@ -354,7 +354,7 @@ define("zotohlab/asx/xlayers", ['cherimoia/skarojs',
         wz= ccsx.vbox(),
         x, y;
 
-        if (where === cc.ALIGN_TOP) {
+        if (where === ccsx.AnchorTop) {
           y = wz.top - csts.TILE  - ccsx.getScaledHeight(c) * 0.5;
         } else {
           y = wz.bottom + csts.TILE  + ccsx.getScaledHeight(c) * 0.5;

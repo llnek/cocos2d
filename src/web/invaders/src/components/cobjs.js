@@ -46,10 +46,11 @@ define("zotohlab/p/components",
     ivs.Bomb = sh.Ashley.compDef({
 
       constructor: function(sprite) {
+        var wz= ccsx.vrect();
         this.ctor(sprite);
         this.vel={
           x: 0,
-          y: -50
+          y: -50 * wz.height / 480
         };
       }
     });
@@ -103,10 +104,11 @@ define("zotohlab/p/components",
     ivs.Missile = sh.Ashley.compDef({
 
       constructor: function(sprite) {
+        var wz= ccsx.vrect();
         this.ctor(sprite);
         this.vel= {
           x: 0,
-          y: 150
+          y: 150 * wz.height / 480
         };
       }
 
