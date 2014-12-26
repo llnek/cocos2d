@@ -9,33 +9,45 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/splash", ['cherimoia/skarojs',
-                            'zotohlab/asterix',
-                            'zotohlab/asx/ccsx',
-                            'zotohlab/asx/xlayers',
-                            'zotohlab/asx/xscenes',
-                            'zotohlab/asx/xsplash'],
+define("zotohlab/p/splash",
 
-  function (sjs, sh, ccsx,
-            layers, scenes, XSplashLayer) { "use strict";
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/xlayers',
+        'zotohlab/asx/xscenes'],
+
+  function (sjs, sh, ccsx, layers, scenes) { "use strict";
+
+    var xcfg = sh.xcfg,
+    csts= xcfg.csts,
+    R= sjs.ramda,
+    undef,
 
     //////////////////////////////////////////////////////////////////////////////
-    var undef, UILayer = layers.XLayer.extend({
+    SplashLayer = layers.XLayer.extend({
+
+      rtti: function() { return "SplashLayer" ; },
 
       pkInit: function() {
         var cw = ccsx.center(),
-        sz= ccsx.screen();
+        wb= ccsx.vbox(),
+        menu;
 
-        this._super();
+        this.centerImage(sh.getImagePath('game.bg'));
+        this.addFrame('#title.png', cc.p(cw.x, wb.top * 0.9));
 
-        this.addItem(ccsx.pmenu1({
-          imgPath: sh.getImagePath('splash.play-btn'),
-          selector: function() {
-            sh.fireEvent('/splash/controls/playgame');
-          },
-          target: this,
-          pos: cc.p(cw.x, sz.height * 0.20)
-        }));
+        menu= ccsx.vmenu([
+          { imgPath: '#play.png',
+            cb: function() {
+              this.removeAll();
+              sh.fireEvent('/splash/controls/playgame');
+            },
+            target: this }
+        ]);
+
+        menu.setPosition(cw.x, wb.top * 0.10);
+        this.addItem(menu);
 
       }
 
@@ -47,8 +59,7 @@ define("zotohlab/p/splash", ['cherimoia/skarojs',
 
         create: function(options) {
           var scene = new scenes.XSceneFactory([
-            XSplashLayer,
-            UILayer
+            SplashLayer
           ]).create(options);
 
           scene.ebus.on('/splash/controls/playgame', function() {

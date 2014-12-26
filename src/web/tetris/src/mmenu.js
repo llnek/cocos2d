@@ -9,40 +9,82 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/mmenu", ['cherimoia/skarojs',
-                           'zotohlab/asterix',
-                           'zotohlab/asx/ccsx',
-                           'zotohlab/asx/xlayers',
-                           'zotohlab/asx/xscenes',
-                           'zotohlab/asx/xmmenus'],
+define("zotohlab/p/mmenu",
 
-  function (sjs, sh, ccsx,
-            layers, scenes, mmenus) { "use strict";
+       ['cherimoia/skarojs',
+       'zotohlab/asterix',
+       'zotohlab/asx/ccsx',
+       'zotohlab/asx/xlayers',
+       'zotohlab/asx/xscenes'],
+
+  function (sjs, sh, ccsx, layers, scenes) { "use strict";
 
     var xcfg = sh.xcfg,
     csts= xcfg.csts,
+    R= sjs.ramda,
     undef,
-    MainMenuLayer = mmenus.XMenuLayer.extend({
+
+    //////////////////////////////////////////////////////////////////////////
+    MainMenuLayer = layers.XLayer.extend({
+
+      rtti: function() { return "MainMenuLayer"; },
 
       pkInit: function() {
         var dir= cc.director,
         cw = ccsx.center(),
-        wz = ccsx.screen();
+        wb = ccsx.vbox(),
+        sz, tt, menu;
 
-        this._super();
+        this.centerImage(sh.getImagePath('game.bg'));
 
-        this.addItem(ccsx.tmenu1({
-          fontPath: sh.getFontPath('font.OogieBoogie'),
-          text: sh.l10n('%1player'),
-          scale: 0.5,
-          selector: function() {
-            sh.fireEvent('/mmenu/controls/newgame', { mode: sh.P1_GAME});
-          },
-          target: this,
-          pos: cc.p(cw.x, wz.height * 0.5)
-        }));
+        // show the title
+        tt=ccsx.bmfLabel({
+          fontPath: sh.getFontPath('font.JellyBelly'),
+          text: sh.l10n('%mmenu'),
+          pos: cc.p(cw.x, wb.top * 0.9),
+          color: cc.color(246,177,127),
+          scale: xcfg.game.scale
+        });
+        this.addItem(tt);
 
-        this.doCtrlBtns();
+        // show the menu
+        menu= ccsx.vmenu([
+          { imgPath: '#player1.png',
+            cb: function() {
+              sh.fireEvent('/mmenu/controls/newgame', { mode: sh.P1_GAME});
+            }}
+        ]);
+        menu.setPosition(cw);
+        this.addItem(menu);
+
+        // show the control buttons
+        this.addAudioIcon({
+          pos: cc.p(wb.right - csts.TILE,
+                    wb.bottom + csts.TILE),
+          color: cc.color(94,49,120),
+          anchor: cc.p(1,0)
+        });
+
+        // show back & quit
+        menu= ccsx.hmenu([
+          { color: cc.color(94,49,120),
+            imgPath: '#icon_back.png',
+            cb: function() {
+              if (!!this.options.onBack) {
+                this.options.onBack();
+              }
+            },
+            target: this },
+          { color: cc.color(94,49,120),
+            imgPath: '#icon_quit.png',
+            cb: function() { this.onQuit(); },
+            target: this }
+        ]);
+        sz= menu.getChildren()[0].getContentSize();
+        menu.setPosition(wb.left + csts.TILE + sz.width * 1.1,
+                         wb.bottom + csts.TILE + sz.height * 0.45);
+        this.addItem(menu);
+
       }
     });
 
@@ -52,7 +94,6 @@ define("zotohlab/p/mmenu", ['cherimoia/skarojs',
 
         create: function(options) {
           var scene = new scenes.XSceneFactory([
-            mmenus.XMenuBackLayer,
             MainMenuLayer
           ]).create(options);
 

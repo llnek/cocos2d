@@ -9,14 +9,17 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/s/generator", ['zotohlab/p/components',
-                                 'zotohlab/p/gnodes',
-                                 "zotohlab/p/s/utils",
-                                 'cherimoia/skarojs',
-                                 'zotohlab/asterix',
-                                 'zotohlab/asx/ccsx'],
+define("zotohlab/p/s/generator",
 
-  function (cobjs, gnodes, utils, sjs, sh, ccsx) { "use strict";
+       ['zotohlab/p/s/priorities',
+         'zotohlab/p/components',
+       'zotohlab/p/gnodes',
+       "zotohlab/p/s/utils",
+       'cherimoia/skarojs',
+       'zotohlab/asterix',
+       'zotohlab/asx/ccsx'],
+
+  function (pss, cobjs, gnodes, utils, sjs, sh, ccsx) { "use strict";
 
     var xcfg = sh.xcfg,
     csts= xcfg.csts,
@@ -48,10 +51,10 @@ define("zotohlab/p/s/generator", ['zotohlab/p/components',
           sl = node.shell;
           if (sl.shape) {}
           else {
-            sl.shape = this.reifyNextShape(sh.main, node);
+            sl.shape = this.reifyNextShape(node, sh.main);
             if (!!sl.shape) {
               //show new next shape in preview window
-              this.previewNextShape(sh.main);
+              this.previewNextShape(node, sh.main);
               //activate drop timer
               dp.dropSpeed= csts.DROPSPEED;
               utils.initDropper(sh.main, dp);
@@ -62,10 +65,12 @@ define("zotohlab/p/s/generator", ['zotohlab/p/components',
         }
       },
 
-      reifyNextShape: function(layer, node) {
-        var shape= new cobjs.Shape(5 * csts.TILE,
-                                   ccsx.screen().height - csts.FIELD_TOP * csts.TILE,
-                                   this.nextShapeInfo);
+      reifyNextShape: function(node, layer) {
+        var gbox= node.gbox,
+        wz= ccsx.vrect(),
+        shape= new cobjs.Shape(gbox.box.left + 5 * csts.TILE,
+                               gbox.box.top - csts.TILE,
+                               this.nextShapeInfo);
         shape= utils.reifyShape(layer, node.collision.tiles, shape);
         if (!!shape) {} else {
           sjs.loggr.debug("game over.  you lose.");
@@ -75,14 +80,14 @@ define("zotohlab/p/s/generator", ['zotohlab/p/components',
         return shape;
       },
 
-      previewNextShape: function(layer) {
+      previewNextShape: function(node, layer) {
         var info = this.randNext(),
-        wz = ccsx.screen(),
+        gbox= node.gbox,
         cw = ccsx.center(),
+        wz = ccsx.vrect(),
         shape,
         sz = info.model.dim * csts.TILE,
-
-        left = (csts.FIELD_W + 2) * csts.TILE,
+        left = cw + 2 * csts.TILE,
         x = left + (wz.width - left - csts.TILE) * 0.5,
         y = cw.y;
 
@@ -109,6 +114,7 @@ define("zotohlab/p/s/generator", ['zotohlab/p/components',
 
     });
 
+    ShapeGenerator.Priority= pss.Generate;
     return ShapeGenerator;
 });
 

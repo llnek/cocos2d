@@ -13,7 +13,7 @@ document.ccConfig = {
 
   engineDir: ['/public/extlibs/cocos2d-html5'],
 
-  modules: [ 'cocos2d','editbox','ccpool' ],
+  modules: [ 'cocos2d','ccui','ccpool' ],
   jsList: [
 
 

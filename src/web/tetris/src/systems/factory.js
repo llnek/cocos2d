@@ -9,11 +9,13 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/s/factory", ['zotohlab/p/components',
-                               'zotohlab/p/s/utils',
-                               'cherimoia/skarojs',
-                               'zotohlab/asterix',
-                               'zotohlab/asx/ccsx'],
+define("zotohlab/p/s/factory",
+
+       ['zotohlab/p/components',
+       'zotohlab/p/s/utils',
+       'cherimoia/skarojs',
+       'zotohlab/asterix',
+       'zotohlab/asx/ccsx'],
 
   function (cobjs, utils, sjs, sh, ccsx) { "use strict";
 
@@ -36,39 +38,8 @@ define("zotohlab/p/s/factory", ['zotohlab/p/components',
         ent.add(new cobjs.Motion());
         ent.add(new cobjs.Dropper());
         ent.add(new cobjs.Pauser());
+        ent.add(new cobjs.GridBox());
         return ent;
-      },
-
-      createShape: function(layer, options) {
-        var ent = sh.Ashley.newEntity();
-
-        ent.add(this.spawn(layer, options));
-        utils.initDropper(options);
-
-        return ent;
-      },
-
-      spawn: function(layer, options) {
-        var info = options.nextShapeInfo,
-        proto,
-        comp,
-        png,
-        formID,
-        wz = ccsx.screen();
-
-        if (!!info) {
-          formID = info.formID;
-          png = info.png;
-          proto = info.model;
-        } else {
-          proto = cobjs.Shapes[ sjs.rand(Shapes.length) ];
-        }
-
-        return new (proto)(5 * csts.TILE,
-                          wz.height - csts.FIELD_TOP * csts.TILE,
-                          formID,
-                          png,
-                          layer);
       }
 
     });

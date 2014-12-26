@@ -9,15 +9,17 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/arena", ['cherimoia/skarojs',
-                           'zotohlab/asterix',
-                           'zotohlab/asx/ccsx',
-                           'zotohlab/asx/xlayers',
-                           'zotohlab/asx/xscenes',
-                           'zotohlab/asx/xmmenus',
-                           'zotohlab/p/hud',
-                           'zotohlab/p/components',
-                           'zotohlab/p/sysobjs'],
+define("zotohlab/p/arena",
+
+       ['cherimoia/skarojs',
+       'zotohlab/asterix',
+       'zotohlab/asx/ccsx',
+       'zotohlab/asx/xlayers',
+       'zotohlab/asx/xscenes',
+       'zotohlab/asx/xmmenus',
+       'zotohlab/p/hud',
+       'zotohlab/p/components',
+       'zotohlab/p/sysobjs'],
 
   function(sjs, sh, ccsx, layers, scenes,
            mmenus, huds, cobjs, sobjs) { "use strict";
@@ -27,15 +29,17 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
     R = sjs.ramda,
     undef,
 
+    //////////////////////////////////////////////////////////////////////////
     GameLayer = layers.XGameLayer.extend({
 
       reset: function(newFlag) {
-        if (sjs.isEmpty(this.atlases)) {
+        if (!sjs.isEmpty(this.atlases)) {
           sjs.eachObj(function(v) {
             v.removeAllChildren();
           }, this.atlases);
         } else {
           this.regoAtlas('game-pics');
+          this.regoAtlas('lang-pics');
         }
         if (newFlag) {
           this.getHUD().resetAsNew();
@@ -68,15 +72,15 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
         this.options.running=true;
 
         R.forEach(function(z) {
-          this.engine.addSystem(new (z[0])(this.options), z[1]);
+          this.engine.addSystem(new (z)(this.options), z.Priority);
         }.bind(this),
-        [[sobjs.Supervisor, pss.PreUpdate],
-         [sobjs.RowClearance, pss.Clear],
-         [sobjs.Generator, pss.Generate],
-         [sobjs.Movements, pss.Move],
-         [sobjs.MotionControl, pss.Motion],
-         [sobjs.Rendering, pss.Render],
-         [sobjs.Resolution, pss.Resolve]]);
+        [sobjs.Supervisor,
+         sobjs.RowClearance,
+         sobjs.Generator,
+         sobjs.Movements,
+         sobjs.MotionControl,
+         sobjs.Rendering,
+         sobjs.Resolution ]);
       },
 
       endGame: function() {

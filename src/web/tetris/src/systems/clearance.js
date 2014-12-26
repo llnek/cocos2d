@@ -9,12 +9,16 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/s/clearance", ['zotohlab/p/gnodes',
-                                 'cherimoia/skarojs',
-                                 'zotohlab/asterix',
-                                 'zotohlab/asx/ccsx'],
+define("zotohlab/p/s/clearance",
 
-  function (gnodes, sjs, sh, ccsx) { "use strict";
+       ['zotohlab/p/s/priorities',
+         'zotohlab/p/s/utils',
+         'zotohlab/p/gnodes',
+       'cherimoia/skarojs',
+       'zotohlab/asterix',
+       'zotohlab/asx/ccsx'],
+
+  function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     var xcfg = sh.xcfg,
     csts= xcfg.csts,
@@ -80,16 +84,16 @@ define("zotohlab/p/s/clearance", ['zotohlab/p/gnodes',
       //clear collision mark
       resetOneRow: function(node, r) {
         var row= node.collision.tiles[r],
-        c,
-        h= csts.FIELD_SIDE,
-        len= csts.FIELD_W;
-        for (c=0; c < len; ++c) {
-          row[h+c]= 0;
+        c;
+        for (c=0; c < row.length; ++c) {
+          row[c]= r===0 ? 1 : 0;
         }
+        row[0]=1;
+        row[row.length-1]=1;
       },
 
       shiftDownLines: function(node) {
-        var top = csts.GRID_H - csts.FIELD_TOP,
+        var top= utils.topLine(node),
         r,
         f, e, d;
 
@@ -108,7 +112,7 @@ define("zotohlab/p/s/clearance", ['zotohlab/p/gnodes',
       },
 
       findFirstDirty: function(node) {
-        var t = csts.GRID_H - csts.FIELD_TOP - 1,
+        var t = utils.topLine(node),// - 1,
         r;
 
         for (r = t; r > 0; --r) {
@@ -119,7 +123,7 @@ define("zotohlab/p/s/clearance", ['zotohlab/p/gnodes',
       },
 
       findLastEmpty: function(node) {
-        var t = csts.GRID_H - csts.FIELD_TOP,
+        var t = utils.topLine(node),
         r;
 
         for (r=1; r < t; ++r) {
@@ -131,12 +135,13 @@ define("zotohlab/p/s/clearance", ['zotohlab/p/gnodes',
 
       isEmptyRow: function(node, r) {
         var row= node.collision.tiles[r],
-        c,
-        h= csts.FIELD_SIDE,
-        len= csts.FIELD_W;
+        len= row.length-1,
+        c;
 
-        for (c=0; c < len; ++c) {
-          if (row[h+c] !== 0) { return false; }
+        if (r===0) { return false; }
+
+        for (c=1; c < len; ++c) {
+          if (row[c] !== 0) { return false; }
         }
         return true;
       },
@@ -144,15 +149,16 @@ define("zotohlab/p/s/clearance", ['zotohlab/p/gnodes',
       copyLine: function(node, from, to) {
         var line_f = node.collision.tiles[from],
         line_t = node.collision.tiles[to],
-        pos,
-        c,h= csts.FIELD_SIDE,
-        len= csts.FIELD_W;
+        c, pos;
 
-        for (c=0; c < len; ++c) {
-          line_t[h+c] = line_f[h+c];
-          line_f[h+c]= 0;
+        for (c=0; c < line_f.length; ++c) {
+          line_t[c] = line_f[c];
+          line_f[c]= 0;
         }
+        line_f[0]=1;
+        line_f[line_f.length-1]=1;
 
+        // deal with actual shape
         line_f = node.blocks.grid[from];
         line_t = node.blocks.grid[to];
 
@@ -168,6 +174,7 @@ define("zotohlab/p/s/clearance", ['zotohlab/p/gnodes',
 
     });
 
+    RowClearance.Priority= pss.Clear;
     return RowClearance;
 });
 

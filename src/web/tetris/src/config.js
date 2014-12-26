@@ -9,9 +9,11 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/config", ["cherimoia/skarojs",
-                            'zotohlab/asterix',
-                            'zotohlab/asx/xcfg'],
+define("zotohlab/p/config",
+
+       ["cherimoia/skarojs",
+        'zotohlab/asterix',
+        'zotohlab/asx/xcfg'],
 
   function (sjs, sh, xcfg) { "use strict";
 
@@ -22,59 +24,75 @@ define("zotohlab/p/config", ["cherimoia/skarojs",
       appid: 'tetris',
       color: 'silver',
 
+      resolution: {
+        policy: cc.ResolutionPolicy.FIXED_WIDTH,
+        resSize: [0,0]
+      },
+
       csts: {
         BLOCK_COLORS: 8,
-        FIELD_SIDE: 1,
-        FIELD_TOP: 1,
+        //FIELD_SIDE: 1,
+        //FIELD_TOP: 1,
         FIELD_W: 12,
-        FIELD_BOTTOM: 1,
+        //FIELD_BOTTOM: 1,
 
         THROTTLEWAIT: 100,
         DROPSPEED: 1000,
 
         BTN_SIZE: 32,
-        GRID_W: 30,
-        GRID_H: 20,
-        TILE: 16
+        //GRID_W: 30,
+        //GRID_H: 20,
+        CBOX: null,
+        FENCE: 0,
+        TILE: 0 // set via code
       },
 
       assets: {
         atlases: {
-          'game-pics' : 'res/{{appid}}/pics/sprites'
+          'lang-pics' : 'res/{{appid}}/l10n/{{lang}}/images',
+          'game-pics' : 'res/{{appid}}/pics/images'
         },
         tiles: {
         },
         images: {
-          'splash.play-btn' : 'res/cocos2d/btns/play_gray_x64.png'
+          'game.bg' : 'res/{{appid}}/pics/bg.png'
         },
         sounds: {
           'game_end' : 'res/cocos2d/sfx/MineExplosion',
           'game_quit' : 'res/cocos2d/sfx/Death'
         },
         fonts: {
+          'font.SmallTypeWriting' : [ 'res/cocos2d/fon/{{lang}}', 'SmallTypeWriting.png', 'SmallTypeWriting.fnt' ],
+          'font.AutoMission' : [ 'res/cocos2d/fon/{{lang}}', 'AutoMission.png', 'AutoMission.fnt' ],
+          'font.Subito' : [ 'res/cocos2d/fon/{{lang}}', 'Subito.png', 'Subito.fnt' ],
+          'font.CoffeeBuzzed' : [ 'res/cocos2d/fon/{{lang}}', 'CoffeeBuzzed.png', 'CoffeeBuzzed.fnt' ]
         }
       },
 
       game: {
-        size: {height:320, width:480, scale:1},
-        borderTiles: 'cbox-borders_x16.png'
+        sd: {height:320, width:480, scale:1},
+        landscape: true
       },
 
       levels: {
         "gamelevel1" : {
           'tiles' : {
-            'arena' : 'game/{{appid}}/levels/arena.tmx'
           },
           'images' : {
-            'arena' : 'game/{{appid}}/levels/arena.png'
           },
           'sprites' : {
           }
         }
       },
 
+      handleResolution: function(rs) {
+        //for default font, we use 48pt
+        this.game.scale = 12/72 * rs.width /480;
+      },
+
       runOnce: function() {
         cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
+        cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('lang-pics'));
       }
 
     });

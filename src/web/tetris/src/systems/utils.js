@@ -38,6 +38,12 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
         return shape;
       },
 
+      topLine: function(node) {
+        var gbox= node.gbox,
+        bx= gbox.box;
+        return Math.floor((bx.top - bx.bottom) / csts.TILE);
+      },
+
       previewShape: function(layer, shape) {
         var bbox= this.findBBox([],shape.model,
                                 shape.x,shape.y,shape.rot,true),
@@ -112,7 +118,8 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
 
         sjs.loggr.debug("tile = " + tile.row + ", " + tile.col);
 
-        if (cmap[tile.row][tile.col] !== 0)  {
+        if (tile.row < 0 || tile.col < 0 ||
+            cmap[tile.row][tile.col] !== 0)  {
           sjs.loggr.debug("collide! tile = " + tile.row + ", " + tile.col);
           return true;
         } else {
@@ -122,9 +129,14 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
 
       xrefTile: function (x,y) {
         var co = csts.TILE * 0.5;
+
         // find center, instead of top left
         y -= co;
         x += co;
+
+        // realign actual x,y
+        x -= csts.CBOX.left - csts.FENCE;
+
         return { row: Math.floor(y / csts.TILE),
                  col: Math.floor(x / csts.TILE) };
       },
@@ -162,11 +174,12 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
 
         // search bottom up until top.
         var rows= cmap.length,
-        top= rows - csts.FIELD_TOP,
+        top= rows - 0,//csts.FIELD_TOP,
         r,
         rc=[];
 
-        for (r = csts.FIELD_BOTTOM; r < top; ++r) {
+        //for (r = csts.FIELD_BOTTOM; r < top; ++r) {
+        for (r = 0; r < top; ++r) {
           if (this.testFilledRow(cmap, r)) {
             rc.push(r);
           }
@@ -179,14 +192,12 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
       },
 
       testFilledRow: function(cmap, r) {
-        var h= csts.FIELD_SIDE,
-        len= csts.FIELD_W,
-        row= cmap[r],
+        var row= cmap[r],
         c;
 
         // negative if any holes in the row
-        for (c=0; c < len; ++c) {
-          if (row[h+c] !== 1) { return false; }
+        for (c=0; c < row.length; ++c) {
+          if (row[c] !== 1) { return false; }
         }
 
         // entire row msut be filled.

@@ -23,6 +23,7 @@ define("zotohlab/p/gnodes", ['zotohlab/p/components',
     bks.ArenaNode = sh.Ashley.nodeDef({
 
       collision   : cobjs.TileGrid,
+      gbox        : cobjs.GridBox,
       blocks      : cobjs.BlockGrid,
       motion      : cobjs.Motion,
       pauser      : cobjs.Pauser,

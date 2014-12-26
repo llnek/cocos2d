@@ -9,14 +9,17 @@
 // this software.
 // Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
-define("zotohlab/p/s/motioncontrol", ['zotohlab/p/components',
-                                     'zotohlab/p/gnodes',
-                                     'zotohlab/p/s/utils',
-                                     'cherimoia/skarojs',
-                                     'zotohlab/asterix',
-                                     'zotohlab/asx/ccsx'],
+define("zotohlab/p/s/motioncontrol",
 
-  function (cobjs, gnodes, utils, sjs, sh, ccsx) { "use strict";
+       ['zotohlab/p/s/priorities',
+         'zotohlab/p/components',
+       'zotohlab/p/gnodes',
+       'zotohlab/p/s/utils',
+       'cherimoia/skarojs',
+       'zotohlab/asterix',
+       'zotohlab/asx/ccsx'],
+
+  function (pss, cobjs, gnodes, utils, sjs, sh, ccsx) { "use strict";
 
     var xcfg = sh.xcfg,
     csts= xcfg.csts,
@@ -122,6 +125,7 @@ define("zotohlab/p/s/motioncontrol", ['zotohlab/p/components',
 
     });
 
+    MotionCtrlSystem.Priority= pss.Motion;
     return MotionCtrlSystem;
 });
 

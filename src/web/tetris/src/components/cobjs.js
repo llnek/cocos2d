@@ -44,6 +44,15 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
+    bks.GridBox = sh.Ashley.casDef({
+
+      constructor: function() {
+        this.box= {};
+      }
+
+    });
+
+    //////////////////////////////////////////////////////////////////////////////
     bks.BlockGrid= sh.Ashley.casDef({
 
       constructor: function() {
