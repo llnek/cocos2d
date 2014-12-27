@@ -87,7 +87,7 @@ define("zotohlab/p/s/generator",
         wz = ccsx.vrect(),
         shape,
         sz = info.model.dim * csts.TILE,
-        left = cw + 2 * csts.TILE,
+        left = cw.x + 2 * csts.TILE,
         x = left + (wz.width - left - csts.TILE) * 0.5,
         y = cw.y;
 
