@@ -61,9 +61,10 @@ define("zotohlab/p/s/supervisor",
         hfzh= fz.height * 0.5,
         hfzw= fz.width * 0.5;
 
-        this.xh(fz, lf_boundary);
+        this.xh(fz, lf_boundary, cw.x, wb.bottom + hfzh);
         this.xv(fz, lf_boundary);
         this.xv(fz, cw.x);
+        this.xh(fz, cw.x + fz.width, wb.right + fz.width, cw.y);
 
         this.onceOnly_2(node, fz, bz, {
           left: lf_boundary + hfzw,
@@ -71,18 +72,67 @@ define("zotohlab/p/s/supervisor",
           top:  wb.top,
           bottom: wb.bottom + fz.height
         });
+
+        this.doCtrl(node);
       },
 
-      xh: function(fz, lf_bdy) {
+      doCtrl: function(node) {
+        var hsps= node.cpad.hotspots,
+        cw = ccsx.center(),
+        wb= ccsx.vbox(),
+        wz= ccsx.vrect(),
+        //sp= ccsx.createSpriteFrame('shadedLight09.png'),
+        sp= ccsx.createSpriteFrame('shadedDark09.png'),
+        cz= sp.getContentSize(),
+        cbx,
+        ch3= cz.height / 3,
+        cw3= cz.width / 3,
+        //x= cw.x + (wb.right - cw.x) * 0.5,
+        x= wb.right * 0.75,
+        y= wb.top * 0.25;
+
+        sp.setPosition(x,y);
+        sh.main.addAtlasItem('game-pics', sp);
+
+        cbx= ccsx.bbox4(sp);
+
+        //calc hotspots for touch & mouse
+        hsps.rr= { left: cbx.left + cw3,
+              top: cbx.top,
+              right: cbx.right - cw3,
+              bottom: cbx.top - ch3 };
+
+        hsps.rl= { left: cbx.left + cw3,
+              top: cbx.top- 2* ch3,
+              right: cbx.right - cw3,
+              bottom: cbx.bottom };
+
+        hsps.sl= { left: cbx.left,
+              top: cbx.top - ch3,
+              right: cbx.left + cw3,
+              bottom: cbx.top - 2 * ch3 };
+
+        hsps.sr= { left: cbx.left + 2 * cw3,
+              top: cbx.top - ch3,
+              right: cbx.right,
+              bottom: cbx.top - 2 * ch3 };
+
+        hsps.cd= { left: cbx.left + cw3,
+              top: cbx.top - ch3,
+              right: cbx.right - cw3,
+              bottom: cbx.top - 2 * ch3 };
+      },
+
+      xh: function(fz, lf_bdy, rt_bdy, ypos) {
         var cw = ccsx.center(),
         wb= ccsx.vbox(),
         wz= ccsx.vrect(),
         hfzw = fz.width * 0.5,
         f, x, y;
 
-        y = wb.bottom + fz.height * 0.5;
+        y = ypos;//wb.bottom + fz.height * 0.5;
         x = lf_bdy;
-        while (x < cw.x) {
+        while (x < rt_bdy){ //}cw.x) {
           f=ccsx.createSpriteFrame('gray.png');
           f.setPosition(x, y);
           sh.main.addAtlasItem('game-pics',f);

@@ -44,6 +44,15 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
+    bks.CtrlPad = sh.Ashley.casDef({
+
+      constructor: function() {
+        this.hotspots= {};
+      }
+
+    });
+
+    //////////////////////////////////////////////////////////////////////////////
     bks.GridBox = sh.Ashley.casDef({
 
       constructor: function() {

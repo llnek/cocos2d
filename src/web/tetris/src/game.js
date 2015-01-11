@@ -58,6 +58,15 @@ define("zotohlab/p/arena",
         return this.options.running;
       },
 
+      onclicked: function(mx,my) {
+        if (this.options.running &&
+            this.options.selQ.length === 0) {
+          sjs.loggr.debug("selection made at pos = " + mx + "," + my);
+          this.options.selQ.push({ x: mx, y: my, cell: -1 });
+        }
+      },
+
+
       replay: function() {
         this.play(false);
       },
@@ -70,6 +79,7 @@ define("zotohlab/p/arena",
 
         sh.factory = new sobjs.Factory(this.engine);
         this.options.running=true;
+        this.options.selQ=[];
 
         R.forEach(function(z) {
           this.engine.addSystem(new (z)(this.options), z.Priority);

@@ -39,6 +39,7 @@ define("zotohlab/p/s/factory",
         ent.add(new cobjs.Dropper());
         ent.add(new cobjs.Pauser());
         ent.add(new cobjs.GridBox());
+        ent.add(new cobjs.CtrlPad());
         return ent;
       }
 

@@ -209,14 +209,14 @@
             <filename>blue.png</filename>
             <filename>gray.png</filename>
             <filename>green.png</filename>
-            <filename>images.png</filename>
             <filename>magenta.png</filename>
             <filename>orange.png</filename>
             <filename>red.png</filename>
-            <filename>yellow.png</filename>
+            <filename>shadedDark09.png</filename>
             <filename>sound_off.png</filename>
             <filename>sound_on.png</filename>
             <filename>title.png</filename>
+            <filename>yellow.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

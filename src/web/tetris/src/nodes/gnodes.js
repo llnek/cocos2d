@@ -29,7 +29,8 @@ define("zotohlab/p/gnodes", ['zotohlab/p/components',
       pauser      : cobjs.Pauser,
       dropper     : cobjs.Dropper,
       shell       : cobjs.ShapeShell,
-      flines      : cobjs.FilledLines
+      flines      : cobjs.FilledLines,
+      cpad        : cobjs.CtrlPad
 
     });
 

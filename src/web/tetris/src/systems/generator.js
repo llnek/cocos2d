@@ -84,12 +84,13 @@ define("zotohlab/p/s/generator",
         var info = this.randNext(),
         gbox= node.gbox,
         cw = ccsx.center(),
-        wz = ccsx.vrect(),
+        wb = ccsx.vbox(),
         shape,
-        sz = info.model.dim * csts.TILE,
-        left = cw.x + 2 * csts.TILE,
-        x = left + (wz.width - left - csts.TILE) * 0.5,
-        y = cw.y;
+        sz = (1 + info.model.dim) * csts.TILE,
+        //left = cw.x + 2 * csts.TILE,
+        //x = left + (wz.width - left - csts.TILE) * 0.5,
+        x = cw.x + (wb.right - cw.x) * 0.5,
+        y = wb.top * 0.7;//cw.y;
 
         x -= sz * 0.5;
         y += sz * 0.5;

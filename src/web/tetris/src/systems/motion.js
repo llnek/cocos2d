@@ -43,14 +43,19 @@ define("zotohlab/p/s/motioncontrol",
       },
 
       checkInput: function(node, dt) {
-        if (cc.sys.capabilities['keyboard']) {
-          this.processKeys(node, dt);
+        if (cc.sys.capabilities['touches']) {
         }
         else
         if (cc.sys.capabilities['mouse']) {
+          if (this.state.selQ.length > 0) {
+            var evt= this.state.selQ.shift();
+            this.processMouse(node, evt, dt);
+            this.state.selQ.length=0;
+          }
         }
         else
-        if (cc.sys.capabilities['touches']) {
+        if (cc.sys.capabilities['keyboard']) {
+          this.processKeys(node, dt);
         }
       },
 
@@ -59,6 +64,32 @@ define("zotohlab/p/s/motioncontrol",
         if (this.state.running &&
            !!node) {
           this.checkInput(node, dt);
+        }
+      },
+
+      processMouse: function(node, evt,dt) {
+        var hsps= node.cpad.hotspots,
+        px= evt.x,
+        py= evt.y;
+
+        if (ccsx.pointInBox(hsps.rr, px,py)) {
+          this.ops.rotRight(node, dt);
+        }
+
+        if (ccsx.pointInBox(hsps.rl, px,py)) {
+          this.ops.rotLeft(node, dt);
+        }
+
+        if (ccsx.pointInBox(hsps.sr, px,py)) {
+          this.ops.sftRight(node, dt);
+        }
+
+        if (ccsx.pointInBox(hsps.sl, px,py)) {
+          this.ops.sftLeft(node, dt);
+        }
+
+        if (ccsx.pointInBox(hsps.cd, px,py)) {
+          this.ops.sftDown(node, dt);
         }
       },
 
