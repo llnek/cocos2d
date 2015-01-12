@@ -64,7 +64,7 @@ define("zotohlab/p/s/supervisor",
         this.xh(fz, lf_boundary, cw.x, wb.bottom + hfzh);
         this.xv(fz, lf_boundary);
         this.xv(fz, cw.x);
-        this.xh(fz, cw.x + fz.width, wb.right + fz.width, cw.y);
+        //this.xh(fz, cw.x + fz.width, wb.right + fz.width, cw.y);
 
         this.onceOnly_2(node, fz, bz, {
           left: lf_boundary + hfzw,

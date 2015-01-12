@@ -61,8 +61,8 @@ define("zotohlab/p/hud",
         this.status= ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.CoffeeBuzzed'),
           text: '',
-          scale: xcfg.game.scale,//12/72,
-          pos: cc.p(cw.x, wb.top * 0.1)
+          scale: xcfg.game.scale * 0.5,//12/72,
+          pos: cc.p(cw.x * 1.5, cw.y)//wb.top * 0.1)
           //pos: cc.p(21 * csts.TILE, wz.height - csts.TILE * 4)
         });
         this.addItem(this.status);

@@ -79,7 +79,7 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
         for (i=0; i < bs.length; ++i) {
           pt= bs[i];
           obj= new cobjs.Brick( pt.x, pt.y, { frame: png } );
-          layer.addItem(obj.create());
+          layer.addAtlasItem('game-pics',obj.create());
           bricks.push(obj);
         }
 

@@ -61,13 +61,12 @@ define("zotohlab/p/mmenu",
         this.addAudioIcon({
           pos: cc.p(wb.right - csts.TILE,
                     wb.bottom + csts.TILE),
-          color: cc.color(94,49,120),
           anchor: cc.p(1,0)
         });
 
         // show back & quit
         menu= ccsx.hmenu([
-          { color: cc.color(94,49,120),
+          {
             imgPath: '#icon_back.png',
             cb: function() {
               if (!!this.options.onBack) {
@@ -75,7 +74,7 @@ define("zotohlab/p/mmenu",
               }
             },
             target: this },
-          { color: cc.color(94,49,120),
+          {
             imgPath: '#icon_quit.png',
             cb: function() { this.onQuit(); },
             target: this }

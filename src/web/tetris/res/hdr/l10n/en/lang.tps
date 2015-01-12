@@ -4,9 +4,9 @@
         <key>fileFormatVersion</key>
         <int>3</int>
         <key>texturePackerVersion</key>
-        <string>3.5.3</string>
+        <string>3.6.0</string>
         <key>fileName</key>
-        <string>/wdrive/mygithub/cocos2d/src/web/tictactoe/res/hdr/l10n/en/lang.tps</string>
+        <string>/wdrive/mygithub/cocos2d/src/web/tetris/res/hdr/l10n/en/lang.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">

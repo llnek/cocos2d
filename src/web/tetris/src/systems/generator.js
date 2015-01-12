@@ -23,6 +23,7 @@ define("zotohlab/p/s/generator",
 
     var xcfg = sh.xcfg,
     csts= xcfg.csts,
+    R= sjs.ramda,
     undef,
 
     ShapeGenerator = sh.Ashley.sysDef({
@@ -73,6 +74,18 @@ define("zotohlab/p/s/generator",
                                this.nextShapeInfo);
         shape= utils.reifyShape(layer, node.collision.tiles, shape);
         if (!!shape) {} else {
+          //sh.main.removeAtlasAll('game-pics');
+          node.blocks.grid=[];
+          /*
+          R.forEach(function(g) {
+            R.forEach(function(z) {
+              if (!!z && !!z.sprite) {
+                sh.main.removeAtlasItem('game-pics',z.sprite);
+              }
+            },g);
+          },
+          node.blocks.grid);
+          */
           sjs.loggr.debug("game over.  you lose.");
           sh.fireEvent('/game/hud/end');
         }
