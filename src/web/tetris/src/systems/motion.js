@@ -42,16 +42,21 @@ define("zotohlab/p/s/motioncontrol",
         this.initKeyOps();
       },
 
+      onXXXEvent: function(node,dt) {
+        if (this.state.selQ.length > 0) {
+          var evt= this.state.selQ.shift();
+          this.processMouse(node, evt, dt);
+          this.state.selQ.length=0;
+        }
+      },
+
       checkInput: function(node, dt) {
         if (cc.sys.capabilities['touches']) {
+          this.onXXXEvent(node, dt);
         }
         else
         if (cc.sys.capabilities['mouse']) {
-          if (this.state.selQ.length > 0) {
-            var evt= this.state.selQ.shift();
-            this.processMouse(node, evt, dt);
-            this.state.selQ.length=0;
-          }
+          this.onXXXEvent(node, dt);
         }
         else
         if (cc.sys.capabilities['keyboard']) {
