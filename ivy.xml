@@ -1,6 +1,6 @@
 <ivy-module version="2.0">
 
-  <info organisation="cmzlabs.cocos2d" module="cocos2d"/>
+  <info organisation="com.zotohlab" module="cocos2d"/>
 
   <configurations defaultconf="libjar">
     <conf name="libjar"  description="the core jar library"/>

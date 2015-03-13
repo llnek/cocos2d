@@ -328,13 +328,16 @@ def doFinzBuild() {
       */
   delete (file: "${basedir}/public/c/webcommon.js", quiet: 'true')
   concat (destfile: "${basedir}/public/c/webcommon.js", append: 'true') {
-    fileset (file: "${basedir}/public/vendors/underscore/underscore-min.js")
-    fileset (file: "${basedir}/public/vendors/jquery/jquery-2.1.1.min.js")
-    fileset (file: "${basedir}/public/vendors/l10njs/l10n.min.js")
+    //fileset (file: "${basedir}/public/vendors/jquery/jquery-2.1.1.min.js")
+    fileset (file: "${basedir}/public/vendors/almond/almond.js")
+    fileset (file: "${basedir}/public/vendors/ramda/ramda.js")
+    fileset (file: "${basedir}/public/vendors/l10njs/l10n.js")
     fileset (file: "${basedir}/public/vendors/mustache/mustache.js")
     fileset (file: "${basedir}/public/vendors/helpers/dbg.js")
+    fileset (file: "${basedir}/public/vendors/js-signals/signals.js")
+    fileset (file: "${basedir}/public/vendors/ash-js/ash.js")
     fileset (file: "${basedir}/public/vendors/jquery-plugins/detectmobilebrowser.js")
-    fileset (file: "${basedir}/public/vendors/jquery-plugins/jquery.cookie.js")
+    //fileset (file: "${basedir}/public/vendors/jquery-plugins/jquery.cookie.js")
     fileset (file: "${basedir}/public/vendors/crypto-js/components/core-min.js")
     fileset (file: "${basedir}/public/vendors/crypto-js/components/enc-utf16-min.js")
     fileset (file: "${basedir}/public/vendors/crypto-js/components/enc-base64-min.js")
@@ -481,6 +484,7 @@ def doCompileSCSS(wappid) {
     fileset (dir: "${buildDir}/web_styles/${wappid}") {
       include (name: '**/*.scss')
     }
+    arg (value: '--sourcemap=none')
     srcfile ()
     chainedmapper() {
       mapper (type: 'glob', from: '*.scss', to: '*.css')
