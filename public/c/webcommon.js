@@ -6854,9 +6854,12 @@ define("global/window",[],function() {
     if (typeof exports === 'object') {
         module.exports = R;
     } else if (typeof define === 'function' && define.amd) {
-        define(function() { return R; });
+        //define(function() { return R; });
+      //kenl
+        define('ramda',[], function(){});
     } else {
         this.R = R;
+        this.ramda=R;
     }
 
 }.call(this));

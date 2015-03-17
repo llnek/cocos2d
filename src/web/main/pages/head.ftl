@@ -20,7 +20,6 @@
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" />
 -->
 
-<link rel="stylesheet" href="/public/vendors/bootstrap/css/bootstrap.journal.min.css" />
 <link rel="stylesheet" href="/public/vendors/font-awesome/css/font-awesome.min.css" />
 
 <#list stylesheets as csspath>

@@ -7,7 +7,7 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013, Ken Leung. All rights reserved.
 
 //////////////////////////////////////////////////////////////////////////////
 // external tools
@@ -29,12 +29,14 @@ includeTool << gant.tools.Ivy
 // global properties
 //////////////////////////////////////////////////////////////////////////////
 
-property( name: 'gantProjectName' , value: 'cocos2d')
-property( name: 'PID_DISTRO', value: "${gantProjectName}-distro")
-property( name: "PID", value: "${gantProjectName}")
-property( environment: "env" )
 property( name: 'ivySettingsDir', value: "${basedir}")
+property( name: 'gantProjectName' , value: 'cocos2d')
+property( name: "PID", value: "${gantProjectName}")
+property( name: 'DISTRO', value: "${PID}-distro")
 loadproperties (srcFile: "${basedir}/build.xs") {}
+property( name: 'websrc', value: "${buildDir}/webscripts")
+property( name: 'webcss', value: "${buildDir}/webstyles")
+property( environment: "env" )
 
 //////////////////////////////////////////////////////////////////////////////
 // language compilers
@@ -55,9 +57,9 @@ ant.path (id: 'test.path.id') {
   path (refid: "compile.path.id")
 }
 
-  /* =================================
-        target: ivy stuff
-       ================================= */
+//////////////////////////////////////////////////////////////////////////////
+// ivy stuff
+//////////////////////////////////////////////////////////////////////////////
 
 ivy.settings( file: "${ivySettingsDir}/ivy.config.xml" )
 
@@ -90,9 +92,10 @@ target (clean_local: '') {
 //////////////////////////////////////////////////////////////////////////////
 // (called by skaro)
 target (buildr: '') {
-  depends (clean,resolve,preBuild)
+  depends (clean, resolve, preBuild)
   println "#############################################"
   println "# building: ${gantProjectName}"
+  println "# type: ${buildType}"
   println "#############################################"
   doCompileAndJar()
   doBuildWebApps()
@@ -105,8 +108,8 @@ target (preBuild: '') {
   mkdir (dir: "${basedir}/POD-INF/lib")
   mkdir (dir: "${basedir}/POD-INF/patch")
   mkdir (dir: "${buildDir}")
-  mkdir (dir: "${buildDir}/web_scripts")
-  mkdir (dir: "${buildDir}/web_styles")
+  mkdir (dir: "${buildDir}/websrc")
+  mkdir (dir: "${buildDir}/webcss")
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -126,7 +129,7 @@ target (compileAndJar: '') {
 //////////////////////////////////////////////////////////////////////////////
 //
 target (cclj: '') {
-  depends (clean,compileJava,compileClj)
+  depends (clean, compileJava, compileClj)
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -257,12 +260,10 @@ def doCleanPublic() {
 //////////////////////////////////////////////////////////////////////////////
 //
 def doBuildWebApps() {
-  if ("web" == "${buildType}") {
-    new File("${webDir}").eachDir( { f ->
-      doBuildOneWebApp(f)
-    });
-    //doBuildForCC2DX()
-  }
+  new File("${webDir}").eachDir( { f ->
+    doBuildOneWebApp(f)
+  });
+  //doBuildForCC2DX()
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -270,8 +271,9 @@ def doBuildWebApps() {
 def doBuildOneWebApp (dir) {
   final wappid= dir.getName()
 
-  mkdir (dir: "${buildDir}/web_scripts/${wappid}")
-  mkdir (dir: "${buildDir}/web_styles/${wappid}")
+  mkdir (dir: "${websrc}/${wappid}")
+  mkdir (dir: "${webcss}/${wappid}")
+
   if ("clojurescript" == "${jslang}") {
     doCompileCljScript(wappid)
   }
@@ -298,7 +300,7 @@ def doBuildOneWebApp (dir) {
 //
 def doCompileCljScript(wappid) {
   final sdir= "${webDir}/${wappid}/src"
-  copy (todir: "${buildDir}/web_scripts/${wappid}") {
+  copy (todir: "${websrc}/${wappid}") {
     fileset (dir: "${sdir}") {
       include (name: '**/*.cljs')
     }
@@ -314,7 +316,7 @@ def doCompileCljScript(wappid) {
     arg (value: 'true')
     // advanced none whitespace simple
     arg (value: 'none')
-    arg (value: "${buildDir}/web_scripts/${wappid}")
+    arg (value: "${websrc}/${wappid}")
   }
 }
 
@@ -383,15 +385,15 @@ def doBuildForCC2DX() {
 //////////////////////////////////////////////////////////////////////////////
 //
 def doCompileTypeScript(wappid) {
-  copy (todir: "${buildDir}/web_scripts/${wappid}") {
+  copy (todir: "${websrc}/${wappid}") {
     fileset (dir: "${webDir}/${wappid}/src") {
       include (name: '**/*.ts')
     }
   }
-  exec (executable: 'tsc', dir: "${buildDir}/web_scripts/${wappid}") {
+  exec (executable: 'tsc', dir: "${websrc}/${wappid}") {
     arg (value: '--outDir')
     arg (value: '--output')
-    arg (value: "${buildDir}/web_scripts/${wappid}")
+    arg (value: "${websrc}/${wappid}")
     arg (value: '**/*.ts')
   }
 }
@@ -399,7 +401,7 @@ def doCompileTypeScript(wappid) {
 //////////////////////////////////////////////////////////////////////////////
 //
 def doCompileCoffeeScript(wappid) {
-  copy (todir: "${buildDir}/web_scripts/${wappid}") {
+  copy (todir: "${websrc}/${wappid}") {
     fileset (dir: "${webDir}/${wappid}/src") {
       include (name: '**/*.coffee')
     }
@@ -407,16 +409,16 @@ def doCompileCoffeeScript(wappid) {
   exec (executable: 'coffee') {
     arg (value: '--bare')
     arg (value: '--output')
-    arg (value: "${buildDir}/web_scripts/${wappid}")
+    arg (value: "${websrc}/${wappid}")
     arg (value: '--compile')
-    arg (value: "${buildDir}/web_scripts/${wappid}")
+    arg (value: "${websrc}/${wappid}")
   }
 }
 
 //////////////////////////////////////////////////////////////////////////////
 //
 def doCompileJS(wappid) {
-  copy (todir: "${buildDir}/web_scripts/${wappid}") {
+  copy (todir: "${websrc}/${wappid}") {
     fileset (dir: "${webDir}/${wappid}/src")
   }
   mkdir (dir: "${basedir}/public/ig/lib/game")
@@ -424,17 +426,17 @@ def doCompileJS(wappid) {
   switch (wappid) {
     case "cocos2d":
       copy (todir: "${basedir}/public/ig/lib") {
-        fileset (dir: "${buildDir}/web_scripts/${wappid}")
+        fileset (dir: "${websrc}/${wappid}")
       }
     break
     case "main":
       copy (todir: "${basedir}/public/scripts") {
-        fileset (dir: "${buildDir}/web_scripts/${wappid}")
+        fileset (dir: "${websrc}/${wappid}")
       }
     break
     default:
       copy (todir: "${basedir}/public/ig/lib/game/${wappid}") {
-        fileset (dir: "${buildDir}/web_scripts/${wappid}")
+        fileset (dir: "${websrc}/${wappid}")
       }
     break
   }
@@ -443,30 +445,30 @@ def doCompileJS(wappid) {
 //////////////////////////////////////////////////////////////////////////////
 //
 def doCompileLESS(wappid) {
-  copy (todir: "${buildDir}/web_styles/${wappid}") {
-    fileset (dir: "${webDir}/${wappid}/styles",erroronmissingdir: false) {
+  copy (todir: "${webcss}/${wappid}") {
+    fileset (dir: "${webDir}/${wappid}/styles", erroronmissingdir: false) {
       include (name: '**/*.less')
     }
   }
   apply (executable: "lessc", parallel: 'false') {
-    fileset (dir: "${buildDir}/web_styles/${wappid}") {
+    fileset (dir: "${webcss}/${wappid}") {
       include (name: '**/*.less')
     }
     srcfile ()
     chainedmapper () {
       mapper (type: 'glob', from: '*.less', to: '*.css')
-      globmapper (from: '*', to: "${buildDir}/web_styles/${wappid}/*")
+      globmapper (from: '*', to: "${webcss}/${wappid}/*")
     }
     targetfile ()
   }
-  copy (todir: "${buildDir}/web_styles/${wappid}") {
+  copy (todir: "${webcss}/${wappid}") {
     fileset (dir: "${webDir}/${wappid}/styles", erroronmissingdir: false) {
       include (name: '**/*.css')
     }
   }
   mkdir (dir: "${basedir}/public/styles/${wappid}")
   copy (todir: "${basedir}/public/styles/${wappid}") {
-    fileset (dir: "${buildDir}/web_styles/${wappid}") {
+    fileset (dir: "${webcss}/${wappid}") {
       include (name: '**/*.css')
     }
   }
@@ -475,31 +477,31 @@ def doCompileLESS(wappid) {
 //////////////////////////////////////////////////////////////////////////////
 //
 def doCompileSCSS(wappid) {
-  copy (todir: "${buildDir}/web_styles/${wappid}") {
+  copy (todir: "${webcss}/${wappid}") {
     fileset (dir: "${webDir}/${wappid}/styles", erroronmissingdir: false){
       include (name: '**/*.scss')
     }
   }
   apply (executable: 'sass', parallel: 'false') {
-    fileset (dir: "${buildDir}/web_styles/${wappid}") {
+    fileset (dir: "${webcss}/${wappid}") {
       include (name: '**/*.scss')
     }
     arg (value: '--sourcemap=none')
     srcfile ()
     chainedmapper() {
       mapper (type: 'glob', from: '*.scss', to: '*.css')
-      globmapper (from: '*', to: "${buildDir}/web_styles/${wappid}/*")
+      globmapper (from: '*', to: "${webcss}/${wappid}/*")
     }
     targetfile ()
   }
-  copy (todir: "${buildDir}/web_styles/${wappid}") {
+  copy (todir: "${webcss}/${wappid}") {
     fileset (dir: "${webDir}/${wappid}/styles", erroronmissingdir: false) {
       include (name: '**/*.css')
     }
   }
   mkdir (dir: "${basedir}/public/styles/${wappid}")
   copy (todir: "${basedir}/public/styles/${wappid}") {
-    fileset (dir: "${buildDir}/web_styles/${wappid}") {
+    fileset (dir: "${webcss}/${wappid}") {
       include (name: '**/*.css')
     }
   }
@@ -612,7 +614,7 @@ def doYuiCSS() {
       include (name: '**/*.css')
     }
     arg (line: '-jar')
-    arg (path: "${skaroHome}/lib/yuicompressor-2.4.7.jar")
+    arg (path: "${skaroHome}/lib/yuicompressor-2.4.8.jar")
     srcfile ()
     arg (line: '-o')
     chainedmapper () {
@@ -632,7 +634,7 @@ def doYuiJS() {
       include (name: '**/*.js')
     }
     arg (line: '-jar')
-    arg (path: "${skaroHome}/lib/yuicompressor-2.4.7.jar")
+    arg (path: "${skaroHome}/lib/yuicompressor-2.4.8.jar")
     srcfile ()
     arg (line: '-o')
     chainedmapper () {
