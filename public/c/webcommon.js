@@ -7092,8 +7092,6 @@ if (typeof document !== undef_type) {
 	}
 }
 
-
-
 //kenl
 //exports to multiple environments
 if (typeof gDefine === 'function' && gDefine.amd) {

@@ -1,5 +1,5 @@
 <!--  scripts =========================================================================== -->
-<script src="/public/vendors/jquery/jquery-2.1.1.min.js"></script>
+<script src="/public/vendors/jquery/jquery.min.js"></script>
 <script src="/public/vendors/bootstrap/js/bootstrap.min.js"></script>
 <script src="/public/vendors/jquery-plugins/jquery.easing.min.js"></script>
 <script src="/public/vendors/jquery-plugins/jquery.cookie.js"></script>
