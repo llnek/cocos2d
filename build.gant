@@ -41,17 +41,17 @@ loadproperties (srcFile: "${basedir}/build.xs") {}
 //////////////////////////////////////////////////////////////////////////////
 
 ant.path (id: 'compile.path.id') {
+  path (location: "${srcDir}/clojure")
   path (location: "${outJarDir}")
   path (location: "${buildDir}")
-  path (location: "${srcDir}/clojure")
   fileset (dir: "${libDir}")
   fileset (dir: "${skaroHome}/dist")
   fileset (dir: "${skaroHome}/lib")
 }
 
 ant.path (id: 'test.path.id') {
-  path (location: "${outTestDir}")
   path (location: "${testDir}/clojure")
+  path (location: "${outTestDir}")
   path (refid: "compile.path.id")
 }
 
