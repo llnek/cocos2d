@@ -9,9 +9,9 @@
 // this software.
 // Copyright (c) 2013-2014, Ken Leung. All rights reserved.
 
-define("cocos2d/site", ['global/window', 'cherimoia/skarojs'],
+define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar'],
 
-  function (global, sjs) { "use strict";
+  function (global, sjs, caesar) { "use strict";
     var ModalWindow=global.ModalWindow,
     document=global.document,
     undef,
@@ -129,7 +129,7 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs'],
           var dn= pobj.attr("data-name");
           var dv= pobj.val() || '';
           if ( (dn === 'credential'|| dn=== 'principal') && dv && nonce) {
-            dv= sjs.caesarEncrypt(sjs.base64_encode(dv), 13);
+            dv= caesar.encrypt(sjs.base64_encode(dv), 13);
           }
           memo[dn] = dv;
           return memo;
@@ -165,7 +165,7 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs'],
 
       regoSend.on('click',function(evt){
         var fb= $('.login-feedback');
-        skaro.pde(evt);
+        sjs.pde(evt);
         function ecb(xhr) {
           var reason= "Bad request.";
           if (xhr.status === 409) {
@@ -197,7 +197,7 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs'],
 
       loginSend.on('click',function(evt){
         var fb= $('.login-feedback');
-        skaro.pde(evt);
+        sjs.pde(evt);
         function ecb(xhr) {
           fb.empty().html('<p>Login failed.  Did you mistype?</p>');
           fb.show();
@@ -211,7 +211,7 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs'],
 
       forgSend.on('click',function(evt){
         var fb= $('.login-feedback');
-        skaro.pde(evt);
+        sjs.pde(evt);
         function ecb(xhr) {
           fb.empty().html('<p>Failed to send message.  Please try again later.</p>');
           fb.show();
@@ -295,7 +295,7 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs'],
       // scroll on top
       $('.scrolltotop, .XXXnavbar-brand').on('click', function(e) {
         $('html, body').animate({scrollTop: '0'}, 1200, 'easeInOutCubic');
-        skaro.pde(e);
+        sjs.pde(e);
       });
 
 

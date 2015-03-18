@@ -6856,7 +6856,7 @@ define("global/window",[],function() {
     } else if (typeof define === 'function' && define.amd) {
         //define(function() { return R; });
       //kenl
-        define('ramda',[], function(){});
+        define('ramda',[], function(){ return R; });
     } else {
         this.R = R;
         this.ramda=R;
