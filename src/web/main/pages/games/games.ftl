@@ -34,7 +34,7 @@
           </div>
           <div class="caption">
             <h3>${gg.name}</h3>
-            <p>${gg.desc}</p>
+            <p>${gg.description}</p>
             <a class="btn btn-primary" href="${gg.uri}"><i class="fa fa-play"></i>&nbsp; Play</a>
           </div>
         </div>
