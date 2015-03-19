@@ -7,7 +7,7 @@
     :enabled true
     :minp 2
     :maxp 2
-    :engine  "cmzlabclj.frigga.tictactoe.core.TicTacToe" }
+    :engine  "czlabclj.frigga.tictactoe.core.TicTacToe" }
 
   :uri "/arena/tictactoe"
   :image "ui/catalog.png"
