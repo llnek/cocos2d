@@ -20,10 +20,10 @@
             [clojure.string :as cstr])
             ;;[clojure.core.async :as async])
 
-  (:use [cmzlabclj.nucleus.util.core
+  (:use [cmzlabclj.xlib.util.core
          :only [MakeMMap ternary notnil? RandomSign TryC] ]
-        [cmzlabclj.nucleus.util.process :only [Coroutine]]
-        [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
+        [cmzlabclj.xlib.util.process :only [Coroutine]]
+        [cmzlabclj.xlib.util.str :only [strim nsb hgl?] ])
 
   (:use [cmzlabclj.cocos2d.games.meta]
         [cmzlabclj.odin.event.core])
@@ -115,9 +115,9 @@
 ;;
 (defn- clamp "Ensure paddle does not go out of bound."
 
-  [^cmzlabclj.nucleus.util.core.MubleAPI
+  [^cmzlabclj.xlib.util.core.MubleAPI
    impl
-   ^cmzlabclj.nucleus.util.core.MubleAPI
+   ^cmzlabclj.xlib.util.core.MubleAPI
    paddle bbox]
 
   (let [h2 (halve (.getf paddle :height))
@@ -160,9 +160,9 @@
 ;; The *enclosure* is the bounding box => the world.
 (defn- traceEnclosure "Check if the ball has just hit a wall."
 
-  [^cmzlabclj.nucleus.util.core.MubleAPI impl
+  [^cmzlabclj.xlib.util.core.MubleAPI impl
    dt
-   ^cmzlabclj.nucleus.util.core.MubleAPI ball
+   ^cmzlabclj.xlib.util.core.MubleAPI ball
    bbox]
 
   (with-local-vars [y (+ (.getf ball :y) (* dt (.getf ball :vy)))
@@ -205,10 +205,10 @@
 ;;
 (defn- collide? "Check if the ball has collided with a paddle."
 
-  [^cmzlabclj.nucleus.util.core.MubleAPI impl
-   ^cmzlabclj.nucleus.util.core.MubleAPI p1
-   ^cmzlabclj.nucleus.util.core.MubleAPI p2
-   ^cmzlabclj.nucleus.util.core.MubleAPI ball
+  [^cmzlabclj.xlib.util.core.MubleAPI impl
+   ^cmzlabclj.xlib.util.core.MubleAPI p1
+   ^cmzlabclj.xlib.util.core.MubleAPI p2
+   ^cmzlabclj.xlib.util.core.MubleAPI ball
    bbox]
 
   (with-local-vars [winner 0]
@@ -257,7 +257,7 @@
 (defn- resetPoint "A point has been won.
                    Let the UI know, and reset local entities."
 
-  [^cmzlabclj.nucleus.util.core.MubleAPI impl
+  [^cmzlabclj.xlib.util.core.MubleAPI impl
    winner]
 
   (let [^PlayerSession ps2 (:session (.getf impl :p2))
@@ -285,7 +285,7 @@
 ;;
 (defn- gameOver "Game over.  Let the UI know."
 
-  [^cmzlabclj.nucleus.util.core.MubleAPI impl
+  [^cmzlabclj.xlib.util.core.MubleAPI impl
    winner]
 
   (let [^PlayerSession ps2 (:session (.getf impl :p2))
@@ -319,7 +319,7 @@
 (defn- updatePoint "A point has been won. Update the score,
                     and maybe trigger game-over."
 
-  [^cmzlabclj.nucleus.util.core.MubleAPI impl
+  [^cmzlabclj.xlib.util.core.MubleAPI impl
    winner]
 
   (let [nps (.getf impl :numpts)
@@ -343,14 +343,14 @@
 ;;
 (defn- updateEntities "Move local entities per game loop."
 
-  [^cmzlabclj.nucleus.util.core.MubleAPI impl
+  [^cmzlabclj.xlib.util.core.MubleAPI impl
    dt bbox]
 
-  (let [^cmzlabclj.nucleus.util.core.MubleAPI
+  (let [^cmzlabclj.xlib.util.core.MubleAPI
         pad2 (.getf impl :paddle2)
-        ^cmzlabclj.nucleus.util.core.MubleAPI
+        ^cmzlabclj.xlib.util.core.MubleAPI
         pad1 (.getf impl :paddle1)
-        ^cmzlabclj.nucleus.util.core.MubleAPI
+        ^cmzlabclj.xlib.util.core.MubleAPI
         ball (.getf impl :ball)]
 
     (if (.getf impl :portrait)
@@ -378,13 +378,13 @@
 ;;
 (defn- syncClients "Update UI with states of local entities."
 
-  [^cmzlabclj.nucleus.util.core.MubleAPI impl]
+  [^cmzlabclj.xlib.util.core.MubleAPI impl]
 
-  (let [^cmzlabclj.nucleus.util.core.MubleAPI
+  (let [^cmzlabclj.xlib.util.core.MubleAPI
         pad2 (.getf impl :paddle2)
-        ^cmzlabclj.nucleus.util.core.MubleAPI
+        ^cmzlabclj.xlib.util.core.MubleAPI
         pad1 (.getf impl :paddle1)
-        ^cmzlabclj.nucleus.util.core.MubleAPI
+        ^cmzlabclj.xlib.util.core.MubleAPI
         ball (.getf impl :ball)
         ^PlayerSession ps2 (:session (.getf impl :p2))
         ^PlayerSession ps1 (:session (.getf impl :p1))
@@ -416,7 +416,7 @@
 ;;
 (defn- updateArena "Update the state of the Arena per game loop."
 
-  [options ^cmzlabclj.nucleus.util.core.MubleAPI impl]
+  [options ^cmzlabclj.xlib.util.core.MubleAPI impl]
 
   (if (true? (.getf impl :resetting-point))
     nil ;; wait for new point to start, do nothing now
@@ -449,7 +449,7 @@
 
   [^GameEngine engine
    options
-   ^cmzlabclj.nucleus.util.core.MubleAPI impl]
+   ^cmzlabclj.xlib.util.core.MubleAPI impl]
 
   (let [fps (/ 1000 (:framespersec options))
         nps (:numpts options)
@@ -473,7 +473,7 @@
 (defn- rerunGameLoop "When a new point starts, re run the
                      current game loop."
 
-  [engine options ^cmzlabclj.nucleus.util.core.MubleAPI impl]
+  [engine options ^cmzlabclj.xlib.util.core.MubleAPI impl]
 
   (.setf! impl :lastTick (System/currentTimeMillis))
   (.setf! impl :lastSync 0)
@@ -484,7 +484,7 @@
 ;;
 (defn- runGameLoop "Spawn a game loop in a separate thread."
 
-  [engine options ^cmzlabclj.nucleus.util.core.MubleAPI impl]
+  [engine options ^cmzlabclj.xlib.util.core.MubleAPI impl]
 
   (.setf! impl :lastTick (System/currentTimeMillis))
   (.setf! impl :numpts (:numpts options))
@@ -501,7 +501,7 @@
 ;;
 (defn- initEntities "Initialize all local entities."
 
-  [^cmzlabclj.nucleus.util.core.MubleAPI impl
+  [^cmzlabclj.xlib.util.core.MubleAPI impl
    pp1 pp2
    pd ba]
 
@@ -514,7 +514,7 @@
                                       (:y pp1)
                                       (:width pd)
                                       (:height pd)))
-  (let [^cmzlabclj.nucleus.util.core.MubleAPI
+  (let [^cmzlabclj.xlib.util.core.MubleAPI
         b (reifyBall (:x ba)
                      (:y ba)
                      (:width ba)
@@ -528,11 +528,11 @@
 (defn- pokeAndStartUI ""
 
   [engine options
-   ^cmzlabclj.nucleus.util.core.MubleAPI impl]
+   ^cmzlabclj.xlib.util.core.MubleAPI impl]
 
   (let [^PlayerSession p2 (:session (.getf impl :p2))
         ^PlayerSession p1 (:session (.getf impl :p1))
-        ^cmzlabclj.nucleus.util.core.MubleAPI
+        ^cmzlabclj.xlib.util.core.MubleAPI
         ball (.getf impl :ball)
         src {:ball {:vx (.getf ball :vx)
                     :vy (.getf ball :vy)
@@ -608,7 +608,7 @@
               cmd (json/read-str src :key-fn keyword)
               ;;pv (* (:dir (kw cmd)) (:speed pd))
               pv (:pv (kw cmd))
-              ^cmzlabclj.nucleus.util.core.MubleAPI
+              ^cmzlabclj.xlib.util.core.MubleAPI
               other (if (== pnum 2)
                       (.getf impl :paddle2)
                       (.getf impl :paddle1))]

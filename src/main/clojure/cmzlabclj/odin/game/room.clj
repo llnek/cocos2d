@@ -18,10 +18,10 @@
             [clojure.data.json :as json]
             [clojure.string :as cstr])
 
-  (:use [cmzlabclj.nucleus.util.core :only [MakeMMap ternary notnil? ] ]
-        [cmzlabclj.nucleus.util.guids :only [NewUUid]]
-        [cmzlabclj.nucleus.util.meta :only [MakeObjArgN]]
-        [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
+  (:use [cmzlabclj.xlib.util.core :only [MakeMMap ternary notnil? ] ]
+        [cmzlabclj.xlib.util.guids :only [NewUUid]]
+        [cmzlabclj.xlib.util.meta :only [MakeObjArgN]]
+        [cmzlabclj.xlib.util.str :only [strim nsb hgl?] ])
 
   (:use [cmzlabclj.odin.system.util]
         [cmzlabclj.odin.event.core]

@@ -17,8 +17,8 @@
   (:require [clojure.tools.logging :as log :only [info warn error debug] ]
             [clojure.string :as cstr])
 
-  (:use [cmzlabclj.nucleus.util.core :only [MakeMMap ternary notnil? ] ]
-        [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
+  (:use [cmzlabclj.xlib.util.core :only [MakeMMap ternary notnil? ] ]
+        [cmzlabclj.xlib.util.str :only [strim nsb hgl?] ])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom Player PlayerSession Session]
             [com.zotohlab.odin.event EventDispatcher]))

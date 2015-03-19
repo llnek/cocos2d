@@ -19,10 +19,10 @@
             [clojure.string :as cstr])
             ;;[clojure.core.async :as async])
 
-  (:use [cmzlabclj.nucleus.util.core :only [MakeMMap ternary notnil? ] ]
-        [cmzlabclj.nucleus.util.process]
-        [cmzlabclj.nucleus.util.guids]
-        [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
+  (:use [cmzlabclj.xlib.util.core :only [MakeMMap ternary notnil? ] ]
+        [cmzlabclj.xlib.util.process]
+        [cmzlabclj.xlib.util.guids]
+        [cmzlabclj.xlib.util.str :only [strim nsb hgl?] ])
 
   (:use [cmzlabclj.odin.net.senders]
         [cmzlabclj.odin.event.core]

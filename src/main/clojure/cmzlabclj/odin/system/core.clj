@@ -18,8 +18,8 @@
             [clojure.data.json :as json]
             [clojure.string :as cstr])
 
-  (:use [cmzlabclj.nucleus.util.core :only [MakeMMap ternary notnil? ] ]
-        [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
+  (:use [cmzlabclj.xlib.util.core :only [MakeMMap ternary notnil? ] ]
+        [cmzlabclj.xlib.util.str :only [strim nsb hgl?] ])
 
   (:use [cmzlabclj.odin.event.core]
         [cmzlabclj.odin.game.room]

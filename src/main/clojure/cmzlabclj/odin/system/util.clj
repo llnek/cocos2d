@@ -18,8 +18,8 @@
             [clojure.data.json :as json]
             [clojure.string :as cstr])
 
-  (:use [cmzlabclj.nucleus.util.core :only [MakeMMap ternary notnil? juid] ]
-        [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
+  (:use [cmzlabclj.xlib.util.core :only [MakeMMap ternary notnil? juid] ]
+        [cmzlabclj.xlib.util.str :only [strim nsb hgl?] ])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom
                                     Player PlayerSession]

@@ -18,9 +18,9 @@
             [clojure.data.json :as json]
             [clojure.string :as cstr])
 
-  (:use [cmzlabclj.nucleus.util.core
+  (:use [cmzlabclj.xlib.util.core
          :only [ThrowUOE MakeMMap ternary test-nonil notnil? ] ]
-        [cmzlabclj.nucleus.util.str :only [strim nsb hgl?] ])
+        [cmzlabclj.xlib.util.str :only [strim nsb hgl?] ])
 
   (:import  [org.jetlang.core Callback Disposable]
             [org.jetlang.fibers Fiber ThreadFiber]

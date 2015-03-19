@@ -18,8 +18,8 @@
             [clojure.string :as cstr]
             [clojure.data.json :as json])
 
-  (:use [cmzlabclj.nucleus.util.core :only [notnil? ternary MakeMMap RandomSign]]
-        [cmzlabclj.nucleus.util.str :only [hgl? strim] ])
+  (:use [cmzlabclj.xlib.util.core :only [notnil? ternary MakeMMap RandomSign]]
+        [cmzlabclj.xlib.util.str :only [hgl? strim] ])
 
   (:use [cmzlabclj.cocos2d.games.meta]
         [cmzlabclj.odin.event.core]

@@ -19,8 +19,8 @@
             [clojure.string :as cstr]
             [clojure.data.json :as json])
 
-  (:use [cmzlabclj.nucleus.util.dates :only [ParseDate] ]
-        [cmzlabclj.nucleus.util.str :only [nsb hgl? strim] ]
+  (:use [cmzlabclj.xlib.util.dates :only [ParseDate] ]
+        [cmzlabclj.xlib.util.str :only [nsb hgl? strim] ]
         [cmzlabclj.tardis.core.constants]
         [cmzlabclj.tardis.core.wfs]
         [cmzlabclj.tardis.impl.ext :only [GetAppKeyFromEvent] ]

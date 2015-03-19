@@ -19,8 +19,8 @@
             [clojure.data.json :as json]
             [clojure.string :as cstr])
 
-  (:use [cmzlabclj.nucleus.util.core :only [ternary test-nonil ]]
-        [cmzlabclj.nucleus.util.str :only [nsb strim  hgl?]]
+  (:use [cmzlabclj.xlib.util.core :only [ternary test-nonil ]]
+        [cmzlabclj.xlib.util.str :only [nsb strim  hgl?]]
         [cmzlabclj.tardis.core.wfs]
         [cmzlabclj.tardis.auth.plugin :only [MaybeSignupTest
                                                   MaybeLoginTest] ]
