@@ -128,7 +128,7 @@
   (DefWFTask
     (fn [fw ^Job job arg]
       (let [^HTTPEvent evt (.event job)
-            ^czlabclj.tardis.io.webss.WebSession
+            ^czlabclj.tardis.io.webss.WebSS
             mvs (.getSession evt)
             ^czlabclj.tardis.core.sys.Element
             src (.emitter evt)
@@ -242,7 +242,7 @@
   (DefWFTask
     (fn [fw ^Job job arg]
       (let [^HTTPEvent evt (.event job)
-            ^czlabclj.tardis.io.webss.WebSession
+            ^czlabclj.tardis.io.webss.WebSS
             mvs (.getSession evt)
             ^czlabclj.tardis.core.sys.Element
             src (.emitter evt)

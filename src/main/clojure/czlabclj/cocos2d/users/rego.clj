@@ -51,7 +51,7 @@
   ^Map
   [^HTTPEvent evt ^String csrf]
 
-  (let [^czlabclj.tardis.io.webss.WebSession
+  (let [^czlabclj.tardis.io.webss.WebSS
         mvs (.getSession evt)
         dm (GetDftModel evt)
         ^Map bd (.get dm "body")
@@ -69,7 +69,7 @@
   ^Map
   [^HTTPEvent evt ^String csrf]
 
-  (let [^czlabclj.tardis.io.webss.WebSession
+  (let [^czlabclj.tardis.io.webss.WebSS
         mvs (.getSession evt)
         dm (GetDftModel evt)
         ^Map bd (.get dm "body")
@@ -86,7 +86,7 @@
   ^Map
   [^HTTPEvent evt ^String csrf]
 
-  (let [^czlabclj.tardis.io.webss.WebSession
+  (let [^czlabclj.tardis.io.webss.WebSS
         mvs (.getSession evt)
         dm (GetDftModel evt)
         ^Map bd (.get dm "body")
@@ -112,7 +112,7 @@
             src (.emitter evt)
             cfg (.getAttr src :emcfg)
             co (.container ^Emitter src)
-            ^czlabclj.tardis.io.webss.WebSession
+            ^czlabclj.tardis.io.webss.WebSS
             mvs (.getSession evt)
             csrf (.generateCsrf ^czlabclj.tardis.impl.ext.ContainerAPI co)
             est (:sessionAgeSecs cfg)
