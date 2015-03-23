@@ -1,4 +1,4 @@
-skaroHome=/wdrive/dev/builds/skaro/package
+skaroHome=/wdrive/dev/builds/skaro/pack
 
 ivyRoot=${skaroHome}/.ivyroot
 ivyLCacheDir=${ivyRoot}/cache
