@@ -95,10 +95,10 @@ define("zotohlab/asx/xmmenus", ['cherimoia/skarojs',
         this.addItem(menu);
 
         //all these to make 2 buttons
-        R.map.idx(function(z, pos, lst) {
+        R.mapIndexed(function(z, pos, lst) {
           lst[pos]= new cc.Sprite( sh.getImagePath('gui.mmenu.back'));
         }, s2);
-        R.map.idx(function(z, pos, lst) {
+        R.mapIndexed(function(z, pos, lst) {
           lst[pos]= new cc.Sprite( sh.getImagePath('gui.mmenu.quit'));
         }, s1);
         t2 = new cc.MenuItemSprite(s2[0], s2[1], s2[2], function() {

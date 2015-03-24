@@ -54,7 +54,7 @@ define("zotohlab/p/s/rendering",
         cs= view.cells,
         z,c, offset;
 
-        R.forEach.idx(function(v, pos) {
+        R.forEachIndexed(function(v, pos) {
 
           if (v !== csts.CV_Z) {
             c= this.xrefCell(pos, view.gridMap);

@@ -106,7 +106,7 @@ define("zotohlab/p/s/resolution",
                       score: 1});
 
         //gray out the losing icons
-        R.forEach.idx(function(z, n) {
+        R.forEachIndexed(function(z, n) {
           if (!!z && z[4] === v2) {
             layer.removeItem(z[0]);
             z[0] = utils.drawSymbol(node.view, z[1], z[2], z[3]+2);
@@ -123,7 +123,7 @@ define("zotohlab/p/s/resolution",
 
         if (combo===null) { return; }
 
-        R.forEach.idx(function(z, n) {
+        R.forEachIndexed(function(z, n) {
           if (! R.contains(n, combo)) { if (z && z[3] !== csts.CV_Z) {
             layer.removeAtlasItem('markers', z[0]);
             z[0] = utils.drawSymbol(view, z[1], z[2], z[3], true);
@@ -152,9 +152,9 @@ define("zotohlab/p/s/resolution",
 
       checkWin: function(actor, game) {
         //sjs.loggr.debug('checking win for ' + actor.color);
-        var combo, rc= R.some(function(r) {
+        var combo, rc= R.any(function(r) {
           combo=r;
-          return R.every(function(n) {
+          return R.all(function(n) {
             return actor.value === n;
           },
           R.map(function(i) { return game[i]; }, r));

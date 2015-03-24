@@ -111,7 +111,7 @@ define("zotohlab/p/c/board", ['cherimoia/skarojs'],
       },
 
       isStalemate: function(game) {
-        return ! R.some(function(n) {
+        return ! R.any(function(n) {
           return n === this.CV_Z;
         }.bind(this),
         game || this.grid);
@@ -120,9 +120,9 @@ define("zotohlab/p/c/board", ['cherimoia/skarojs'],
       isWinner: function(actor, gameVals) {
         var game= gameVals || this.grid,
         combo,
-        rc= R.some(function(r) {
+        rc= R.any(function(r) {
           combo=r;
-          return R.every(function (n) { return n === actor; }, R.map(function(i) {
+          return R.all(function (n) { return n === actor; }, R.map(function(i) {
             return game[i];
           }, r) );
         }, this.GOALSPACE);

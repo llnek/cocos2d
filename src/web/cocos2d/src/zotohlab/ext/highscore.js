@@ -62,7 +62,7 @@ define("zotohlab/asx/highscores", ['cherimoia/skarojs',
         if (this.hasSlots()) {
           return true;
         } else {
-          return R.some(function(z) {
+          return R.any(function(z) {
             return z.value < score;
           }, this.scores);
         }

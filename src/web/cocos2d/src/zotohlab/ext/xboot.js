@@ -134,15 +134,15 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
       p,
       rc= [
 
-        R.values(R.mapObj.idx(function(v,k) {
+        R.values(R.mapObjIndexed(function(v,k) {
           return pvLoadSprite(sh,xcfg,k,v);
         }, assets.sprites)),
 
-        R.values(R.mapObj.idx(function(v,k) {
+        R.values(R.mapObjIndexed(function(v,k) {
           return pvLoadImage(sh,xcfg,k,v);
         }, assets.images)),
 
-        R.values(R.mapObj.idx(function(v,k) {
+        R.values(R.mapObjIndexed(function(v,k) {
           return pvLoadSound(sh,xcfg,k,v);
         }, assets.sounds)),
 
@@ -156,7 +156,7 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
           return memo.concat( pvLoadAtlas(sh, xcfg, k,v));
         }, [], assets.atlases),
 
-        R.values(R.mapObj.idx(function(v,k) {
+        R.values(R.mapObjIndexed(function(v,k) {
           return pvLoadTile(sh, xcfg, k,v);
         }, assets.tiles)),
 

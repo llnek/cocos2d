@@ -146,17 +146,17 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
       },
 
       maybeOverlap: function (ship) {
-        var rc= R.some(function(z) {
+        var rc= R.any(function(z) {
           return z.status ? sh.isIntersect(ship, ccsx.bbox4(z.sprite)) : false;
         }, sh.pools.Astros1.pool);
         if (rc) { return true; }
 
-        rc= R.some(function(z) {
+        rc= R.any(function(z) {
           return z.status ? sh.isIntersect(ship, ccsx.bbox4(z.sprite)) : false;
         }, sh.pools.Astros2.pool);
         if (rc) { return true; }
 
-        rc= R.some(function(z) {
+        rc= R.any(function(z) {
           return z.status ? sh.isIntersect(ship, ccsx.bbox4(z.sprite)) : false;
         }, sh.pools.Astros3.pool);
         if (rc) { return true; }

@@ -42,7 +42,7 @@ define("zotohlab/asx/xscenes", ['cherimoia/skarojs',
         rc,
         obj;
         //hold off init'ing game layer, leave that as last
-        rc = R.some(function(proto) {
+        rc = R.any(function(proto) {
           obj= new (proto)(this.options);
           if ( obj instanceof xlayers.XGameLayer ) {
             glptr = obj;
