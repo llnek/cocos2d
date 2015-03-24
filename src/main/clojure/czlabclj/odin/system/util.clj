@@ -32,7 +32,7 @@
             [org.apache.commons.io FileUtils]
             [java.io File]
             [com.zotohlab.gallifrey.core Container]
-            [com.zotohlab.frwk.netty SimpleInboundFilter]
+            [com.zotohlab.frwk.netty NettyFW SimpleInboundFilter]
             [com.zotohlab.odin.event InvalidEventError
                                      Events EventDispatcher]))
 
@@ -105,6 +105,7 @@
                 "ErrorSinkFilter"
                 "OdinProtocolHandler" (protocolHandler ps))
     (.bind ps ch)
+    (NettyFW/dbgPipelineHandlers pipe)
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

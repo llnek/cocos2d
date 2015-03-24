@@ -25,6 +25,7 @@
         [czlabclj.tardis.auth.plugin :only [MaybeSignupTest
                                                   MaybeLoginTest] ]
         [czlabclj.tardis.io.basicauth]
+        [czlabclj.xlib.i18n.resources :only [RStr]]
         [czlabclj.tardis.core.constants]
         [czlabclj.cocos2d.site.core ])
 
@@ -33,7 +34,9 @@
                                  Pipeline PipelineDelegate PTask Work]
             [com.zotohlab.gallifrey.io HTTPEvent HTTPResult]
             [org.apache.commons.codec.net URLCodec]
+            [com.zotohlab.frwk.i18n I18N]
             [java.net HttpCookie]
+            [com.zotohlab.frwk.core Identifiable]
             [com.zotohlab.frwk.util CrappyDataError]
             [com.zotohlab.frwk.io XData]
             [com.zotohlab.wflow.core Job]))
@@ -56,7 +59,9 @@
             err (:error (.getLastResult job)) ]
         (cond
           (instance? DuplicateUser err)
-          (let [json { :error { :msg "An account with same id already exist." }} ]
+          (let [rcb (I18N/getBundle (.id ^Identifiable (.container job)))
+                json {:error
+                      {:msg (RStr rcb "acct.dup.user") }} ]
             (.setStatus res 409)
             (.setContent res (XData. (json/write-str json))))
 
