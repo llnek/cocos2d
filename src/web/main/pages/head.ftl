@@ -1,6 +1,5 @@
 <!--  head stuff ================================================================= -->
 
-
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta charset="${encoding}" />
 
@@ -18,19 +17,20 @@
 <!--
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="/public/vendors/codrops/modal-win.css"/>
+<link rel="stylesheet" href="/public/vendors/codrops/btmenu.css"/>
 -->
-
+<link rel="stylesheet" href="/public/vendors/bootstrap/css/bootstrap.min.css" />
 <link rel="stylesheet" href="/public/vendors/font-awesome/css/font-awesome.min.css" />
 
 <#list stylesheets as csspath>
 <link rel="stylesheet" href="${csspath}"/>
 </#list>
 
-<link rel="stylesheet" href="/public/vendors/codrops/modal-win.css"/>
-<link rel="stylesheet" href="/public/vendors/codrops/btmenu.css"/>
 <link rel="stylesheet" href="/public/styles/main/site.css"/>
 
 <script src="/public/vendors/modernizr/modernizr.custom.js"></script>
+<script src="/public/vendors/modernizr/modernizr-ie.js"></script>
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
   <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>

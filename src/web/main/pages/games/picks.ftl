@@ -1,8 +1,12 @@
-
-<section id="picks-list" class="picks-list-section">
+<!-- Picks Section -->
+<section id="toppicks" class="toppicks-section light-section dark-content">
   <div class="container">
-    <h1 class="box-heading">Top Picks</h1>
 
+    <h1 class="special-heading dark-special">Top Picks</h1>
+
+    <div class="row">
+
+      <div class="col-md-6 col-md-offset-3">
       <div class="owl-carousel">
 
         <#list body.picks as pick>
@@ -24,8 +28,17 @@
         </#list>
 
       </div>
+      </div>
+
+    </div>
+
 
   </div>
 </section>
+<!-- End of Picks Section -->
+
+
+
+
 
 

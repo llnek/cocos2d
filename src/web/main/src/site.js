@@ -19,16 +19,16 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar']
 
     /////////////////////////////////////////////
     //
-    function toggleMenuItems() {
+    function toggleNavMenuItems() {
       var uid= $.cookie('__u982i');
       if (sjs.isString(uid) && uid.length > 0) {
-        $('#register-btn').parent().hide();
-        $('#login-btn').parent().hide();
-        $('#logout-btn').parent().show();
+        $('#rego-mitem').parent().hide();
+        $('#login-mitem').parent().hide();
+        $('#logout-mitem').parent().show();
       } else {
-        $('#register-btn').parent().show();
-        $('#login-btn').parent().show();
-        $('#logout-btn').parent().hide();
+        $('#rego-mitem').parent().show();
+        $('#login-mitem').parent().show();
+        $('#logout-mitem').parent().hide();
       }
     }
 
@@ -46,84 +46,33 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar']
       }, 1500);
     }
 
+    ///////////////////////////////////////////
+    //
     function initOverlay() {
-      var regBtn= $('#register-btn'),
-      logoutBtn= $('#logout-btn' ),
-      loginBtn= $('#login-btn' ),
-      regForm=$('#register-form'),
-      loginForm=$('#login-form'),
-      forgForm=$('#forgot-form'),
+      var regBtn= $('#rego-mitem'),
+      logoutBtn= $('#logout-mitem' ),
+      loginBtn= $('#login-mitem' ),
+
+      regForm=$('#register_form'),
+      loginForm=$('#login_form'),
+      forgForm=$('#forgotpwd_form'),
+
       forgPwd=$('#forgot-password'),
       backLogin=$('#backto-login'),
+
       regoSend=$('#register-send'),
       loginSend=$('#login-send'),
-      forgSend=$('#forgot-send'),
-      overlay = document.querySelector( 'div.fs-overlay' ),
-      closeBtn = $( 'button.fs-overlay-close' ),
-      transEndEventNames = {
-        'WebkitTransition': 'webkitTransitionEnd',
-        'MozTransition': 'transitionend',
-        'OTransition': 'oTransitionEnd',
-        'msTransition': 'MSTransitionEnd',
-        'transition': 'transitionend'
-      },
-      transEndEventName = transEndEventNames[ Modernizr.prefixed( 'transition' ) ],
-      support = { transitions : Modernizr.csstransitions };
+      forgSend=$('#forgot-send');
 
-      function toggleOverlay() {
-        if ( classie.has( overlay, 'open' )) {
-          classie.remove( overlay, 'open' );
-          classie.add( overlay, 'close' );
-          var onEndTransitionFn = function(ev) {
-            if (support.transitions) {
-              if (ev.propertyName !== 'visibility') { return; }
-              this.removeEventListener( transEndEventName, onEndTransitionFn );
-            }
-            classie.remove( overlay, 'close' );
-          };
-          if (support.transitions) {
-            overlay.addEventListener( transEndEventName, onEndTransitionFn );
-          } else {
-            onEndTransitionFn();
-          }
-        }
-        else if( !classie.has( overlay, 'close' ) ) {
-          classie.add( overlay, 'open' );
-        }
-      }
-      function onklick(reg,login,forgot,finz,toggle) {
-        if (finz) {
-          AnimatedBorderMenu.FinzBorderMenu();
-        }
-        loginForm.css('display', login);
-        regForm.css('display', reg);
-        forgForm.css('display', forgot);
-        if (toggle===false) {} else {
-          toggleOverlay();
-        }
-      }
-
-      /*
-      loginBtn.on( 'click', function() {
-        onklick('none','block','none',true);
-      });
-      regBtn.on( 'click', function() {
-        onklick('block','none','none',true);
-      });
-      closeBtn.on('click', function() {
-        onklick('none','none','none',false);
-      });
-      */
-
-      backLogin.on('click',function(){
-        document.location.href= document.location.origin + "/users/login";
-      });
       forgPwd.on('click',function(){
         document.location.href= document.location.origin + "/users/forgotlogin";
       });
+      backLogin.on('click',function(){
+        document.location.href= document.location.origin + "/users/login";
+      });
 
       function packFormAsJson(formObj) {
-        var nonce= $('#pgfooter').attr('data-ref') || '';
+        var nonce= $('#pg-footer').attr('data-ref') || '';
         return sjs.R.reduce(function(memo, obj) {
           var pobj=$(obj);
           var dn= pobj.attr("data-name");
@@ -163,8 +112,8 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar']
         }).done(ok).fail(error);
       }
 
-      regoSend.on('click',function(evt){
-        var fb= $('.login-feedback');
+      regoSend.on('click',function(evt) {
+        var fb= $('#register .acctxxx-result');
         sjs.pde(evt);
         function ecb(xhr) {
           var reason= "Bad request.";
@@ -182,7 +131,7 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar']
           fb.empty().html(xxx);
           fb.show();
         }
-        postToServer('#register-form',ok,ecb);
+        postToServer('#register_form',ok,ecb);
       });
 
       logoutBtn.on('click',function(evt){
@@ -196,7 +145,7 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar']
       });
 
       loginSend.on('click',function(evt){
-        var fb= $('.login-feedback');
+        var fb= $('#login .acctxxxx-result');
         sjs.pde(evt);
         function ecb(xhr) {
           fb.empty().html('<p>Login failed.  Did you mistype?</p>');
@@ -206,11 +155,11 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar']
           document.location.href= document.location.origin + "/games/toppicks";
         }
         fb.hide();
-        postToServer('#login-form', ok, ecb, 'login-email','login-password');
+        postToServer('#login_form', ok, ecb, 'login-email','login-password');
       });
 
       forgSend.on('click',function(evt){
-        var fb= $('.login-feedback');
+        var fb= $('#forgotpwd .acctxxxx-result');
         sjs.pde(evt);
         function ecb(xhr) {
           fb.empty().html('<p>Failed to send message.  Please try again later.</p>');
@@ -221,12 +170,12 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar']
           fb.show();
         }
         fb.hide();
-        postToServer('#forgot-form', ok, ecb);
+        postToServer('#forgotpwd_form', ok, ecb);
       });
     }
 
     function initCarousel() {
-      var el = $("#picks-list .owl-carousel");
+      var el = $("#toppicks .owl-carousel");
       if (el === null || el.length === 0) {} else {
 
         el.owlCarousel({
@@ -262,10 +211,10 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar']
         $('#main-nav').removeClass('in').addClass('collapse');
       });
 
-      $('.XXXnavbar-nav li a').on('click', function(evt) {
-        var place = $(this).attr('href');
-        var off = $(place).offset().top;
-        $('html, body').animate({ scrollTop: off }, 1200, 'easeInOutCubic');
+      $('.intro-section .scroll-more').click(function(evt) {
+        var place = $('body').children('section').eq(1);
+        // var offsetTop = $('.navbar').outerHeight();
+        $('html, body').animate({scrollTop: $(place).offset().top}, 1200, 'easeInOutCubic');
         sjs.pde(evt);
       });
 
@@ -274,15 +223,13 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar']
         $('.navbar').toggleClass('minified dark-menu');
       }, { offset: '-200px' });
 
-
-      AnimatedBorderMenu.InitBorderMenu();
       initCarousel();
       initOverlay();
       paintDoors();
 
       // show "back to top" button
       $(document).scroll( function () {
-        var headerHt = $('#welcome').outerHeight();
+        var headerHt = $('#intro').outerHeight();
         var pos = $(document).scrollTop();
         var em= $('.scrolltotop');
         if (pos >= headerHt - 100){
@@ -292,14 +239,7 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar']
         }
       });
 
-      // scroll on top
-      $('.scrolltotop, .XXXnavbar-brand').on('click', function(e) {
-        $('html, body').animate({scrollTop: '0'}, 1200, 'easeInOutCubic');
-        sjs.pde(e);
-      });
-
-
-      toggleMenuItems();
+      toggleNavMenuItems();
     }
 
     $(document).ready(boot);

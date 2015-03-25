@@ -1,52 +1,47 @@
+<!-- Browse Games Section -->
+<section id="games" class="games-section light-section dark-content">
 
-<section id="games-list" class="games-list-section">
   <div class="container">
-    <h1 class="box-heading">Latest</h1>
 
-    <ul>
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <h1 class="special-heading dark-special">Games</h1>
+      </div>
+    </div>
 
-    <#list body.games as gg >
-    <#if gg.status = true >
-    <li class="game-item">
 
-      <div class="row">
-        <div class="col-lg-7 col-md-7">
-          <a href="${gg.uri}">
-            <img class="img-responsive"
-                 src="/public/ig/res/${gg.gamedir}/${gg.image}"
+    <div class="main">
+      <ul id="og-grid" class="og-grid">
+
+      <#list body.games as gg >
+      <#if gg.status = true >
+
+        <li class="games-item visible-item" data-id="">
+        <a href="${gg.uri}" data-largesrc="${gg.uri}"
+          data-category="" data-date="" data-title="" data-description="">
+            <img src="/public/ig/res/${gg.gamedir}/${gg.image}" 
                  <#if gg.image_alt?? >
                       alt= "${gg.image_alt}"
                  <#else>
                       alt= "${gg.name}"
                  </#if>
-            ></a>
-        </div>
-        <div class="col-lg-5 col-md-5">
-          <div class="ratings">
-              <p class="pull-right">15 reviews</p>
-              <p>
-                  <span class="glyphicon glyphicon-star"></span>
-                  <span class="glyphicon glyphicon-star"></span>
-                  <span class="glyphicon glyphicon-star"></span>
-                  <span class="glyphicon glyphicon-star"></span>
-                  <span class="glyphicon glyphicon-star"></span>
-              </p>
-          </div>
-          <div class="caption">
-            <h3>${gg.name}</h3>
-            <p>${gg.description}</p>
-            <a class="btn btn-primary" href="${gg.uri}"><i class="fa fa-play"></i>&nbsp; Play</a>
-          </div>
-        </div>
-      </div>
+            />
+            <div class="overlay-content">
+              <h4>${gg.name}</h4>
+              <p>${gg.description}</p>
+            </div>
+          </a>
+        </li>
 
-    </li>
-    </#if>
-    </#list>
+      </#if>
+      </#list>
 
-    </ul>
-
+      </ul>
+    </div>
   </div>
 </section>
+<!-- End of games Section -->
+
+
 
 

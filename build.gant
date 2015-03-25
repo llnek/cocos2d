@@ -647,6 +647,15 @@ def doYuiJS() {
        public TARGETS
        */
 
+target (fast: '') {
+  property( name: 'pmode' , value: 'release')
+  //depends (buildr)
+  doBuildWebApps()
+  doYuiCSS()
+  doYuiJS()
+  doFinzBuild()
+}
+
 target (release: '') {
   property( name: 'pmode' , value: 'release')
   depends (buildr)

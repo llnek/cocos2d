@@ -7,20 +7,14 @@
 
 </head>
 
-<body>
+<body data-spy="scroll" data-target="#my-nav">
 
-<div class="container">
-<#include "/main/hud.ftl" >
+<#include "/main/nav.ftl" >
 
-        <#include "${body.content}">
+<#include "${body.content}">
 
 
 <#include "/main/footer.ftl" >
-<#import "/main/menu.ftl" as my>
-<@my.btmenu_index />
-</div>
-
-<#include "/main/modal.ftl" >
 <#include "/main/scripts.ftl" >
 </body>
 </html>
