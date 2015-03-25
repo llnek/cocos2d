@@ -9,10 +9,6 @@
 // this software.
 // Copyright (c) 2013, Ken Leung. All rights reserved.
 
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,600,700,800,300);
-
-@import url(http://fonts.googleapis.com/css?family=Titillium+Web:400,400italic,600,600italic,700,700italic,300italic,300,200italic,200);
-
 //////////////////////////////////////////////////////////////////////////////
 //Parameters
 
@@ -27,7 +23,7 @@ html {
 }
 
 body {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 16px;
   line-height: 1.75;
   height: 100%;
@@ -89,7 +85,9 @@ a {
 // SECTION STYLES
 
 .sectionXXX {
-  padding: 200px 0;
+  padding: 0 0;
+  padding-bottom: 400px;
+  padding-top: 200px;
   overflow: hidden;
 }
 
@@ -1328,8 +1326,9 @@ a {
   }
 
   p {
+    font-family: 'Lora', sans-serif;
     margin-bottom: 0;
-    font-size: 0.875em;
+    font-size: 0.675em;
     font-weight: 300;
   }
 
