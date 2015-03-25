@@ -7,13 +7,14 @@
 
 </head>
 
-<body data-spy="scroll" data-target="#my-nav">
+<body data-spy="scroll" data-target="#main-nav">
+<div id="stickyBottomWrap">
 
-<#include "/main/nav.ftl" >
+  <#include "/main/nav.ftl" >
 
-<#include "${body.content}">
+  <#include "${body.content}">
 
-
+</div>
 <#include "/main/footer.ftl" >
 <#include "/main/scripts.ftl" >
 </body>

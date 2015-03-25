@@ -1,5 +1,5 @@
 <!-- Browse Games Section -->
-<section id="games" class="games-section light-section dark-content">
+<section id="games" class="games-section dark-section">
 
   <div class="container">
 

@@ -1,5 +1,5 @@
 <!-- Picks Section -->
-<section id="toppicks" class="toppicks-section light-section dark-content">
+<section id="toppicks" class="toppicks-section dark-section">
   <div class="container">
 
     <h1 class="special-heading dark-special">Top Picks</h1>

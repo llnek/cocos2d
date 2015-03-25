@@ -1,5 +1,5 @@
 <!-- Forgot Section -->
-<section id="forgotpwd" class="acctxxxx-section light-section dark-content">
+<section id="forgotpwd" class="acctxxxx-section dark-section">
   <div class="container">
 
       <div class="col-md-4 col-md-offset-4">

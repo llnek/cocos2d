@@ -1,6 +1,6 @@
 
 <!-- Intro Section -->
-<section id="intro" class="intro-section dark-section light-content">
+<section id="intro" class="intro-section">
   <div class="bg-overlay"></div>
   <div class="container">
     <div class="content-wrapper">

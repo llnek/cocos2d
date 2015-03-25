@@ -1,6 +1,6 @@
 
 <!-- Register Section -->
-<section id="register" class="acctxxxx-section dark-content light-section">
+<section id="register" class="acctxxxx-section dark-section">
   <div class="container">
 
       <div class="col-md-4 col-md-offset-4">

@@ -1,10 +1,30 @@
+// This library is distributed in  the hope that it will be useful but without
+// any  warranty; without  even  the  implied  warranty of  merchantability or
+// fitness for a particular purpose.
+// The use and distribution terms for this software are covered by the Eclipse
+// Public License 1.0  (http://opensource.org/licenses/eclipse-1.0.php)  which
+// can be found in the file epl-v10.html at the root of this distribution.
+// By using this software in any  fashion, you are agreeing to be bound by the
+// terms of this license. You  must not remove this notice, or any other, from
+// this software.
+// Copyright (c) 2013, Ken Leung. All rights reserved.
+
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,600,700,800,300);
 
 @import url(http://fonts.googleapis.com/css?family=Titillium+Web:400,400italic,600,600italic,700,700italic,300italic,300,200italic,200);
 
-/* ==========================================================================
-   General Styles
-   ========================================================================== */
+//////////////////////////////////////////////////////////////////////////////
+//Parameters
+
+$footerHeightNeg: -150px;
+$footerHeight: 150px;
+
+//////////////////////////////////////////////////////////////////////////////
+//General Stuff
+
+html {
+  height: 100%;
+}
 
 body {
   font-family: 'Open Sans', sans-serif;
@@ -12,11 +32,11 @@ body {
   line-height: 1.75;
   height: 100%;
   width: 100%;
-  margin: 0px auto;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  bottom: 0px;
+  margin: 0; //0px auto;
+  //position: absolute;
+  //top: 0px;
+  //left: 0px;
+  //bottom: 0px;
   overflow-x: hidden;
 }
 
@@ -53,11 +73,23 @@ a {
   color: #fff;
 }
 
+#stickyBottomWrap {
+  background-color: #000;
+  min-height: 100%;
+  height: auto;
+
+  // Negative indent footer by its height
+  margin: 0 auto $footerHeightNeg;
+
+  // Pad bottom by footer height
+  padding: 0 0 //$footerHeight;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // SECTION STYLES
 
 .sectionXXX {
-  padding: 120px 0;
+  padding: 200px 0;
   overflow: hidden;
 }
 
@@ -365,7 +397,7 @@ a {
 }
 
 .dark-menu {
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: #000;//rgba(0, 0, 0, 0.8);
   -webkit-transition: all 0.4s ease-out;
   -moz-transition: all 0.4s ease-out;
   -o-transition: all 0.4s ease-out;
@@ -974,7 +1006,7 @@ a {
   width: 100%;
   min-width: 100%;
   text-align: center;
-  padding: 120px 0;
+  //padding: 120px 0;
   position: relative;
 
   .special-heading {
@@ -1181,7 +1213,7 @@ a {
   width: 100%;
   min-width: 100%;
   text-align: center;
-  padding: 120px 0;
+  //padding: 120px 0;
 
   .special-heading {
     margin-bottom: 70px;
@@ -1280,11 +1312,12 @@ a {
 // Footer Section
 
 .footer {
+  //border-top: solid 2px #fff;
+  height: $footerHeight;
   width: 100%;
   min-width: 100%;
   text-align: center;
-  padding: 60px 0;
-  //background-image: url(../assets/welcome-img.jpg);
+  padding: 0; //60px 0;
   position: relative;
   z-index: 0;
 
@@ -1301,6 +1334,7 @@ a {
   }
 
   .social-icons {
+    padding-top: 20px;
     margin-bottom: 8px;
   }
 
@@ -1503,6 +1537,7 @@ a {
 
     .intro-content {
       p {
+        padding-top: 100px;
         font-size: 1.875em;
       }
 

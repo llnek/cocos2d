@@ -11,14 +11,14 @@
       <a href="index.html#"><i class="fa fa-google-plus"></i></a>
     </div>
 
+    <!--
     <p></p>
-
     <p>
       <a href="/">
         <img class="logo" src="/public/ig/res/main/ZotohLab_x100.png" alt="logo"></a>
     </p>
-
     <p></p>
+    -->
 
     <p>© 2015 Zotohlab designed and coded by Ken Leung.</p>
 
