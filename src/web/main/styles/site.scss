@@ -522,7 +522,7 @@ a {
       display: none;
 
       &.open-door {
-        display: block;
+        display: inline;
       }
     }
 
@@ -543,6 +543,21 @@ a {
   .special-heading {
     margin-bottom: 40px;
   }
+
+}
+
+#main-door-entry {
+    background-color: #fff;
+    border-radius: 50%;
+    width: 240px;
+    height: 240px;
+    line-height: 240px;
+    text-align: center;
+    position: relative;
+
+    img {
+      vertical-align: middle;
+    }
 
 }
 
