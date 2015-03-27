@@ -35,14 +35,17 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar']
     ///////////////////////////////////////////
     //
     function paintDoors() {
-      var intro= $('#intro');
-      var len= 6, ptr=1;
-      if (intro && intro.length > 0) {} else { return; }
+      var doors= $('#intro img')
+      if (doors === null || doors.length <= 0) { return; }
+      var len= doors.length, ptr=0;
+
+      $(doors[0]).addClass('open-door');
+
       global.setInterval(function() {
-        $('#intro img').removeClass('open-door');
+        doors.removeClass('open-door');
         ++ptr;
-        if (ptr > len) { ptr=1; }
-        $('#intro #door' + ptr).addClass('open-door');
+        if (ptr >= len) { ptr=0; }
+        $(doors[ptr]).addClass('open-door');
       }, 1500);
     }
 

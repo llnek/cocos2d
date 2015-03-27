@@ -7,12 +7,11 @@
       <div class="intro-content">
         <div id="main-door-entry">
         <a href="/games/toppicks">
-          <img class= "main-door open-door" id="door1" src="/public/ig/res/main/doors/magenta_door.png" alt="entry"/>
-          <img class= "main-door" id="door2" src="/public/ig/res/main/doors/amber_door.png" alt="entry"/>
-          <img class= "main-door" id="door3" src="/public/ig/res/main/doors/blue_door.png" alt="entry"/>
-          <img class= "main-door" id="door4" src="/public/ig/res/main/doors/green_door.png" alt="entry"/>
-          <img class= "main-door" id="door5" src="/public/ig/res/main/doors/purple_door.png" alt="entry"/>
-          <img class= "main-door" id="door6" src="/public/ig/res/main/doors/red_door.png" alt="entry"/>
+
+          <#list body.doors as door>
+          <img class= "main-door" id="door-${door}" src="/public/ig/res/main/doors/${door}" alt="entry"/>
+          </#list>
+
         </a>
         </div>
       </div>

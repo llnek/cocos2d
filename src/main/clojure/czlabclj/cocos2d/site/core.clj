@@ -45,6 +45,22 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (def ^:dynamic *USER-FLAG* :__u982i) ;; user id
+(def ^:private DOORS (atom []))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- maybeCheckDoors  ""
+
+  [^File appDir]
+
+  (with-local-vars [rc (transient [])]
+    (let [fds (IOUtils/listFiles (File. appDir "public/ig/res/main/doors")
+                                 "png" false) ]
+      (doseq [^File fd (seq fds) ]
+        (var-set rc (conj! @rc (.getName fd)))))
+    (reset! DOORS (persistent! @rc))
+    (log/debug "How many doors ? " (count @DOORS))
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -52,7 +68,10 @@
 
   (contextualize [_ ctr]
     (require 'czlabclj.cocos2d.games.meta)
-    (ScanGameManifests (.getAppDir ^Container ctr))
+    (require 'czlabclj.cocos2d.site.core)
+    (let [d (.getAppDir ^Container ctr)]
+      (ScanGameManifests d)
+      (maybeCheckDoors d))
     (require 'czlabclj.odin.system.core)
     (OdinInit ctr)
     (log/info "My AppMain contextualized by container " ctr))
@@ -114,6 +133,7 @@
         ^Map bd (.get dm "body")
         ^List jss (.get dm "scripts")
         ^List css (.get dm "stylesheets") ]
+    (.put bd "doors" @DOORS)
     (.put bd "content" "/main/index.ftl")
     dm
   ))
