@@ -31,7 +31,7 @@
 
   (:import  [com.zotohlab.gallifrey.runtime DuplicateUser]
             [com.zotohlab.wflow If FlowNode Activity Block
-                                 Pipeline PipelineDelegate PTask Work]
+                                 Pipeline PDelegate PTask Work]
             [com.zotohlab.gallifrey.io HTTPEvent HTTPResult]
             [org.apache.commons.codec.net URLCodec]
             [com.zotohlab.frwk.i18n I18N]
@@ -91,7 +91,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype SignupHandler [] PipelineDelegate
+(deftype SignupHandler [] PDelegate
 
   (getStartActivity [_  pipe]
     (require 'czlabclj.cocos2d.users.accounts)
@@ -159,7 +159,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype LoginHandler [] PipelineDelegate
+(deftype LoginHandler [] PDelegate
 
   (getStartActivity [_  pipe]
     (require 'czlabclj.cocos2d.users.accounts)
@@ -221,7 +221,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype ForgotHandler [] PipelineDelegate
+(deftype ForgotHandler [] PDelegate
 
   (getStartActivity [_  pipe]
     (require 'czlabclj.cocos2d.users.accounts)
@@ -270,7 +270,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype LogoutHandler [] PipelineDelegate
+(deftype LogoutHandler [] PDelegate
 
   (getStartActivity [_  pipe]
     (require 'czlabclj.cocos2d.users.accounts)

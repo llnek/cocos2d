@@ -30,7 +30,7 @@
   (:import  [com.zotohlab.gallifrey.core Container ConfigError]
             [org.apache.commons.io FileUtils]
             [com.zotohlab.wflow FlowNode Activity
-                                Pipeline PipelineDelegate PTask Work]
+                                Pipeline PDelegate PTask Work]
             [com.zotohlab.gallifrey.io WebSockEvent Emitter]
             [com.zotohlab.frwk.io IOUtils XData]
             [com.zotohlab.wflow.core Job]
@@ -59,7 +59,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype Handler [] PipelineDelegate
+(deftype Handler [] PDelegate
 
   (getStartActivity [_  pipe]
     (require 'czlabclj.odin.net.wsock)

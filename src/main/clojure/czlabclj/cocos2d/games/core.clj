@@ -31,7 +31,7 @@
   (:import  [com.zotohlab.gallifrey.core Container ConfigError]
             [org.apache.commons.io FileUtils]
             [com.zotohlab.wflow FlowNode Activity
-                                 Pipeline PipelineDelegate PTask Work]
+                                 Pipeline PDelegate PTask Work]
             [com.zotohlab.gallifrey.io HTTPEvent HTTPResult Emitter]
             [com.zotohlab.frwk.io IOUtils XData]
             [com.zotohlab.wflow.core Job]
@@ -128,7 +128,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype AllGamesPage [] PipelineDelegate
+(deftype AllGamesPage [] PDelegate
 
   (getStartActivity [_  pipe]
     (require 'czlabclj.cocos2d.games.core)
@@ -142,7 +142,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype TopPicksPage [] PipelineDelegate
+(deftype TopPicksPage [] PDelegate
 
   (getStartActivity [_  pipe]
     (require 'czlabclj.cocos2d.games.core)
@@ -156,7 +156,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype GameArenaPage [] PipelineDelegate
+(deftype GameArenaPage [] PDelegate
 
   (getStartActivity [_  pipe]
     (require 'czlabclj.cocos2d.games.core)

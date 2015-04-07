@@ -31,7 +31,7 @@
   (:import  [com.zotohlab.gallifrey.core Container ConfigError]
             [org.apache.commons.io FileUtils]
             [com.zotohlab.wflow FlowNode Activity
-                                Pipeline PipelineDelegate PTask Work]
+                                Pipeline PDelegate PTask Work]
             [com.zotohlab.gallifrey.io HTTPEvent HTTPResult Emitter]
             [com.zotohlab.frwk.io IOUtils XData]
             [com.zotohlab.wflow.core Job]
@@ -165,7 +165,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype IndexPage [] PipelineDelegate
+(deftype IndexPage [] PDelegate
 
   (getStartActivity [_  pipe]
     (require 'czlabclj.cocos2d.site.core)
