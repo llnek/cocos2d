@@ -39,7 +39,7 @@
             [com.zotohlab.frwk.core Identifiable]
             [com.zotohlab.frwk.util CrappyDataError]
             [com.zotohlab.frwk.io XData]
-            [com.zotohlab.wflow.core Job]))
+            [com.zotohlab.wflow Job]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)

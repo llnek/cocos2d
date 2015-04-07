@@ -33,7 +33,7 @@
                                 Pipeline PDelegate PTask Work]
             [com.zotohlab.gallifrey.io WebSockEvent Emitter]
             [com.zotohlab.frwk.io IOUtils XData]
-            [com.zotohlab.wflow.core Job]
+            [com.zotohlab.wflow Job]
             [java.io File]
             [java.util Date ArrayList List HashMap Map]))
 
