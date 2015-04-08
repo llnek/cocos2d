@@ -110,7 +110,7 @@
   ^PTask
   [interpolateFunc]
 
-  (DefWFTask
+  (DefPTask
     (fn [fw ^Job job arg]
       (let [tpl (:template (.getv job EV_OPTS))
             ^HTTPEvent evt (.event job)

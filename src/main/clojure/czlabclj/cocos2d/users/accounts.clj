@@ -52,7 +52,7 @@
   ^PTask
   []
 
-  (DefWFTask
+  (DefPTask
     (fn [fw ^Job job arg]
       (let [^HTTPEvent evt (.event job)
             ^HTTPResult res (.getResultObj evt)
@@ -77,7 +77,7 @@
   ^PTask
   []
 
-  (DefWFTask
+  (DefPTask
     (fn [fw ^Job job arg]
       (let [^HTTPEvent evt (.event job)
             ^HTTPResult res (.getResultObj evt)
@@ -115,7 +115,7 @@
   ^PTask
   []
 
-  (DefWFTask
+  (DefPTask
     (fn [fw ^Job job arg]
       (let [^HTTPEvent evt (.event job)
             ^HTTPResult res (.getResultObj evt) ]
@@ -130,7 +130,7 @@
   ^PTask
   []
 
-  (DefWFTask
+  (DefPTask
     (fn [fw ^Job job arg]
       (let [^HTTPEvent evt (.event job)
             ^czlabclj.tardis.io.webss.WebSS
@@ -179,7 +179,7 @@
   ^PTask
   []
 
-  (DefWFTask
+  (DefPTask
     (fn [fw ^Job job arg]
       (let [^czlabclj.tardis.core.sys.Element ctr (.container job)
             ^czlabclj.tardis.auth.plugin.AuthPlugin
@@ -209,7 +209,7 @@
   ^PTask
   []
 
-  (DefWFTask
+  (DefPTask
     (fn [fw ^Job job arg]
       (let [^HTTPEvent evt (.event ^Job job)
             ^HTTPResult res (.getResultObj evt)
@@ -244,7 +244,7 @@
   ^PTask
   []
 
-  (DefWFTask
+  (DefPTask
     (fn [fw ^Job job arg]
       (let [^HTTPEvent evt (.event job)
             ^czlabclj.tardis.io.webss.WebSS

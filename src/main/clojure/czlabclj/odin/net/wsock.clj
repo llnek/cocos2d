@@ -48,7 +48,7 @@
   ^PTask
   []
 
-  (DefWFTask
+  (DefPTask
     (fn [fw ^Job job arg]
       (let [^WebSockEvent evt (.event job)
             ^XData data (.getData evt)
