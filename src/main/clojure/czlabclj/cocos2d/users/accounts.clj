@@ -31,7 +31,7 @@
 
   (:import  [com.zotohlab.gallifrey.runtime DuplicateUser]
             [com.zotohlab.wflow If FlowNode Activity Block
-                                 Pipeline PDelegate PTask Work]
+             BoolExpr Pipeline PDelegate PTask Work]
             [com.zotohlab.gallifrey.io HTTPEvent HTTPResult]
             [org.apache.commons.codec.net URLCodec]
             [com.zotohlab.frwk.i18n I18N]
