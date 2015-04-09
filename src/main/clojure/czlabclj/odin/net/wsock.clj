@@ -61,7 +61,7 @@
 ;;
 (deftype Handler [] PDelegate
 
-  (getStartActivity [_  pipe]
+  (startWith [_  pipe]
     (require 'czlabclj.odin.net.wsock)
     (doStart))
 

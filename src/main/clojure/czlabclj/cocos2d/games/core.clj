@@ -130,7 +130,7 @@
 ;;
 (deftype AllGamesPage [] PDelegate
 
-  (getStartActivity [_  pipe]
+  (startWith [_  pipe]
     (require 'czlabclj.cocos2d.games.core)
     (doShowPage interpolateBrowsePage))
 
@@ -144,7 +144,7 @@
 ;;
 (deftype TopPicksPage [] PDelegate
 
-  (getStartActivity [_  pipe]
+  (startWith [_  pipe]
     (require 'czlabclj.cocos2d.games.core)
     (doShowPage interpolatePicksPage))
 
@@ -158,7 +158,7 @@
 ;;
 (deftype GameArenaPage [] PDelegate
 
-  (getStartActivity [_  pipe]
+  (startWith [_  pipe]
     (require 'czlabclj.cocos2d.games.core)
     (doShowPage interpolateArenaPage))
 

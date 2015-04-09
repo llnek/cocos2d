@@ -131,7 +131,7 @@
 ;;
 (deftype RegisterPage [] PDelegate
 
-  (getStartActivity [_  pipe]
+  (startWith [_  pipe]
     (require 'czlabclj.cocos2d.users.rego)
     (doShowPage interpolateRegisterPage))
 
@@ -145,7 +145,7 @@
 ;;
 (deftype LoginPage [] PDelegate
 
-  (getStartActivity [_  pipe]
+  (startWith [_  pipe]
     (require 'czlabclj.cocos2d.users.rego)
     (doShowPage interpolateLoginPage))
 
@@ -159,7 +159,7 @@
 ;;
 (deftype ForgotPage [] PDelegate
 
-  (getStartActivity [_  pipe]
+  (startWith [_  pipe]
     (require 'czlabclj.cocos2d.users.rego)
     (doShowPage interpolateForgotPage))
 

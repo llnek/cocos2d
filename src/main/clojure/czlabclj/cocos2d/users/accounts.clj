@@ -93,7 +93,7 @@
 ;;
 (deftype SignupHandler [] PDelegate
 
-  (getStartActivity [_  pipe]
+  (startWith [_  pipe]
     (require 'czlabclj.cocos2d.users.accounts)
     (log/debug "signup pipe-line - called.")
     (If. (MaybeSignupTest "32") (doSignupOK) (doSignupFail)))
@@ -161,7 +161,7 @@
 ;;
 (deftype LoginHandler [] PDelegate
 
-  (getStartActivity [_  pipe]
+  (startWith [_  pipe]
     (require 'czlabclj.cocos2d.users.accounts)
     (log/debug "login pipe-line - called.")
     (If. (MaybeLoginTest) (doLoginOK) (doLoginFail)))
@@ -223,7 +223,7 @@
 ;;
 (deftype ForgotHandler [] PDelegate
 
-  (getStartActivity [_  pipe]
+  (startWith [_  pipe]
     (require 'czlabclj.cocos2d.users.accounts)
     (log/debug "Forgot-login pipe-line - called.")
     (doto (Block.)
@@ -272,7 +272,7 @@
 ;;
 (deftype LogoutHandler [] PDelegate
 
-  (getStartActivity [_  pipe]
+  (startWith [_  pipe]
     (require 'czlabclj.cocos2d.users.accounts)
     (log/debug "logout pipe-line - called.")
     (doLogout))

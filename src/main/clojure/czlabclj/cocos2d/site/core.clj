@@ -167,7 +167,7 @@
 ;;
 (deftype IndexPage [] PDelegate
 
-  (getStartActivity [_  pipe]
+  (startWith [_  pipe]
     (require 'czlabclj.cocos2d.site.core)
     (doShowPage interpolateIndexPage))
 
