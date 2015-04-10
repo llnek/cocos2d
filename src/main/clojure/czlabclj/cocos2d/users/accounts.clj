@@ -227,7 +227,7 @@
     (require 'czlabclj.cocos2d.users.accounts)
     (log/debug "Forgot-login pipe-line - called.")
     (-> (doAckReply)
-        (.chain (doLookupEmail))))
+        (.ensue (doLookupEmail))))
 
   (onStop [_ pipe]
     (log/debug "ForgotHandler: stopped."))
