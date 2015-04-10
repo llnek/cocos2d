@@ -30,7 +30,7 @@
         [czlabclj.cocos2d.site.core ])
 
   (:import  [com.zotohlab.gallifrey.runtime DuplicateUser]
-            [com.zotohlab.wflow If FlowNode Activity Block
+            [com.zotohlab.wflow If FlowNode Activity
              BoolExpr Pipeline PDelegate PTask Work]
             [com.zotohlab.gallifrey.io HTTPEvent HTTPResult]
             [org.apache.commons.codec.net URLCodec]
@@ -226,9 +226,8 @@
   (startWith [_  pipe]
     (require 'czlabclj.cocos2d.users.accounts)
     (log/debug "Forgot-login pipe-line - called.")
-    (doto (Block.)
-      (.chain (doAckReply))
-      (.chain (doLookupEmail))))
+    (-> (doAckReply)
+        (.chain (doLookupEmail))))
 
   (onStop [_ pipe]
     (log/debug "ForgotHandler: stopped."))
