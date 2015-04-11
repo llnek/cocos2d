@@ -37,7 +37,7 @@
             [org.apache.commons.io FileUtils]
             [java.io File]
             [com.zotohlab.frwk.util CoreUtils]
-            [com.zotohlab.gallifrey.core Container]
+            [com.zotohlab.skaro.core Container]
             [com.zotohlab.odin.net MessageSender]
             [com.zotohlab.odin.event Events
                                      Eventable EventDispatcher]))

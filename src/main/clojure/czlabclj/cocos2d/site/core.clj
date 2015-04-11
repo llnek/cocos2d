@@ -28,11 +28,11 @@
   (:use [czlabclj.cocos2d.games.meta]
         [czlabclj.odin.system.core])
 
-  (:import  [com.zotohlab.gallifrey.core Container ConfigError]
+  (:import  [com.zotohlab.skaro.core Container ConfigError]
             [org.apache.commons.io FileUtils]
             [com.zotohlab.wflow FlowNode Activity
                                 Pipeline PDelegate PTask Work]
-            [com.zotohlab.gallifrey.io HTTPEvent HTTPResult Emitter]
+            [com.zotohlab.skaro.io HTTPEvent HTTPResult Emitter]
             [com.zotohlab.frwk.io IOUtils XData]
             [com.zotohlab.wflow Job]
             [java.io File]

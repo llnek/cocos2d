@@ -31,7 +31,7 @@
                               ChannelHandlerContext]
             [org.apache.commons.io FileUtils]
             [java.io File]
-            [com.zotohlab.gallifrey.core Container]
+            [com.zotohlab.skaro.core Container]
             [com.zotohlab.frwk.netty NettyFW SimpleInboundFilter]
             [com.zotohlab.odin.event InvalidEventError
                                      Events EventDispatcher]))

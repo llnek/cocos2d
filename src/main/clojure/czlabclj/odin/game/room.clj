@@ -39,7 +39,7 @@
             [java.util.concurrent ConcurrentHashMap]
             [java.util ArrayList]
             [java.io File]
-            [com.zotohlab.gallifrey.core Container]
+            [com.zotohlab.skaro.core Container]
             [com.zotohlab.odin.event Events EventHandler
                                      Eventable EventDispatcher]))
 

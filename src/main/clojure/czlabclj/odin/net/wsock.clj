@@ -27,11 +27,11 @@
   (:use [czlabclj.odin.system.core]
         [czlabclj.odin.event.core])
 
-  (:import  [com.zotohlab.gallifrey.core Container ConfigError]
+  (:import  [com.zotohlab.skaro.core Container ConfigError]
             [org.apache.commons.io FileUtils]
             [com.zotohlab.wflow FlowNode Activity
                                 Pipeline PDelegate PTask Work]
-            [com.zotohlab.gallifrey.io WebSockEvent Emitter]
+            [com.zotohlab.skaro.io WebSockEvent Emitter]
             [com.zotohlab.frwk.io IOUtils XData]
             [com.zotohlab.wflow Job]
             [java.io File]

@@ -29,10 +29,10 @@
         [czlabclj.tardis.core.constants]
         [czlabclj.cocos2d.site.core ])
 
-  (:import  [com.zotohlab.gallifrey.runtime DuplicateUser]
+  (:import  [com.zotohlab.skaro.runtime DuplicateUser]
             [com.zotohlab.wflow If FlowNode Activity
              BoolExpr Pipeline PDelegate PTask Work]
-            [com.zotohlab.gallifrey.io HTTPEvent HTTPResult]
+            [com.zotohlab.skaro.io HTTPEvent HTTPResult]
             [org.apache.commons.codec.net URLCodec]
             [com.zotohlab.frwk.i18n I18N]
             [java.net HttpCookie]
