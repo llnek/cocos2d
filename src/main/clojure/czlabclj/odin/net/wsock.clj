@@ -21,7 +21,7 @@
   (:use [czlabclj.xlib.util.dates :only [ParseDate] ]
         [czlabclj.xlib.util.str :only [hgl? strim] ]
         [czlabclj.tardis.core.constants]
-        [czlabclj.tardis.core.wfs]
+        [czlabclj.xlib.util.wfs :only [SimPTask]]
         [czlabclj.tardis.impl.ext :only [GetAppKeyFromEvent] ])
 
   (:use [czlabclj.odin.system.core]
@@ -48,8 +48,8 @@
   ^PTask
   []
 
-  (DefPTask
-    (fn [fw ^Job job arg]
+  (SimPTask
+    (fn [^Job job]
       (let [^WebSockEvent evt (.event job)
             ^XData data (.getData evt)
             co (.container (.emitter evt)) ]

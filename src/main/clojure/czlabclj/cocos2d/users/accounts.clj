@@ -21,7 +21,7 @@
 
   (:use [czlabclj.xlib.util.core :only [ternary test-nonil ]]
         [czlabclj.xlib.util.str :only [nsb strim  hgl?]]
-        [czlabclj.tardis.core.wfs]
+        [czlabclj.xlib.util.wfs :only [SimPTask]]
         [czlabclj.tardis.auth.plugin :only [MaybeSignupTest
                                                   MaybeLoginTest] ]
         [czlabclj.tardis.io.basicauth]
@@ -49,11 +49,11 @@
 ;;
 (defn- doSignupFail ""
 
-  ^PTask
+  ^Activity
   []
 
-  (DefPTask
-    (fn [fw ^Job job arg]
+  (SimPTask
+    (fn [^Job job]
       (let [^HTTPEvent evt (.event job)
             ^HTTPResult res (.getResultObj evt)
             err (:error (.getLastResult job)) ]
@@ -74,11 +74,11 @@
 ;;
 (defn- doSignupOK ""
 
-  ^PTask
+  ^Activity
   []
 
-  (DefPTask
-    (fn [fw ^Job job arg]
+  (SimPTask
+    (fn [^Job job]
       (let [^HTTPEvent evt (.event job)
             ^HTTPResult res (.getResultObj evt)
             json { :status { :code 200 } }
@@ -112,11 +112,11 @@
 ;;
 (defn- doLoginFail ""
 
-  ^PTask
+  ^Activity
   []
 
-  (DefPTask
-    (fn [fw ^Job job arg]
+  (SimPTask
+    (fn [^Job job]
       (let [^HTTPEvent evt (.event job)
             ^HTTPResult res (.getResultObj evt) ]
         (.setStatus res 403)
@@ -127,11 +127,11 @@
 ;;
 (defn- doLoginOK ""
 
-  ^PTask
+  ^Activity
   []
 
-  (DefPTask
-    (fn [fw ^Job job arg]
+  (SimPTask
+    (fn [^Job job]
       (let [^HTTPEvent evt (.event job)
             ^czlabclj.tardis.io.webss.WebSS
             mvs (.getSession evt)
@@ -176,11 +176,11 @@
 ;;
 (defn- doLookupEmail ""
 
-  ^PTask
+  ^Activity
   []
 
-  (DefPTask
-    (fn [fw ^Job job arg]
+  (SimPTask
+    (fn [^Job job]
       (let [^czlabclj.tardis.core.sys.Element ctr (.container job)
             ^czlabclj.tardis.auth.plugin.AuthPlugin
             pa (:auth (.getAttr ctr K_PLUGINS))
@@ -206,11 +206,11 @@
 ;;
 (defn- doAckReply ""
 
-  ^PTask
+  ^Activity
   []
 
-  (DefPTask
-    (fn [fw ^Job job arg]
+  (SimPTask
+    (fn [^Job job]
       (let [^HTTPEvent evt (.event ^Job job)
             ^HTTPResult res (.getResultObj evt)
             json { :status { :code 200 } } ]
@@ -240,11 +240,11 @@
 ;;
 (defn- doLogout ""
 
-  ^PTask
+  ^Activity
   []
 
-  (DefPTask
-    (fn [fw ^Job job arg]
+  (SimPTask
+    (fn [^Job job]
       (let [^HTTPEvent evt (.event job)
             ^czlabclj.tardis.io.webss.WebSS
             mvs (.getSession evt)

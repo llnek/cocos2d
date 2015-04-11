@@ -22,7 +22,7 @@
   (:use [czlabclj.xlib.util.dates :only [ParseDate] ]
         [czlabclj.xlib.util.str :only [nsb hgl? strim] ]
         [czlabclj.tardis.core.constants]
-        [czlabclj.tardis.core.wfs]
+        [czlabclj.xlib.util.wfs :only [SimPTask]]
         [czlabclj.tardis.impl.ext :only [GetAppKeyFromEvent] ])
 
   (:use [czlabclj.cocos2d.games.meta]
@@ -143,11 +143,11 @@
 ;;
 (defn- doShowPage ""
 
-  ^PTask
+  ^Activity
   [interpolateFunc]
 
-  (DefPTask
-    (fn [fw ^Job job arg]
+  (SimPTask
+    (fn [^Job job]
       (let [tpl (:template (.getv job EV_OPTS))
             ^HTTPEvent evt (.event job)
             src (.emitter evt)
