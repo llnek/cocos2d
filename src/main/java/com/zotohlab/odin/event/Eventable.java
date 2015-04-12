@@ -1,4 +1,3 @@
-/*??
 // This library is distributed in  the hope that it will be useful but without
 // any  warranty; without  even  the  implied  warranty of  merchantability or
 // fitness for a particular purpose.
@@ -9,7 +8,6 @@
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
 // Copyright (c) 2014, Ken Leung. All rights reserved.
- ??*/
 
 package com.zotohlab.odin.event;
 
@@ -20,13 +18,9 @@ import com.zotohlab.odin.event.EventHandler;
  */
 public interface Eventable {
 
-  public void onEvent(Object event);
-//  public EventDispatcher getEventDispatcher();
-
-  //public Collection<EventHandler> getHandlers(int eventType);
   public void removeHandler(EventHandler eventHandler);
   public void addHandler(EventHandler eventHandler);
   public void sendMessage(Object msg);
 
-
+  public void onEvent(Object event);
 }
