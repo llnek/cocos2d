@@ -22,9 +22,8 @@
   (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ] ]
         [czlabclj.xlib.util.process]
         [czlabclj.xlib.util.guids]
-        [czlabclj.xlib.util.str :only [strim nsb hgl?] ])
-
-  (:use [czlabclj.odin.net.senders]
+        [czlabclj.xlib.util.str :only [strim nsb hgl?] ]
+        [czlabclj.odin.net.senders]
         [czlabclj.odin.event.core]
         [czlabclj.odin.system.util]
         [czlabclj.odin.system.rego])

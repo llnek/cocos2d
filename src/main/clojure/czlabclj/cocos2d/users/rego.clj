@@ -105,18 +105,20 @@
   [interpolateFunc]
 
   (SimPTask
-    (fn [^Job job]
-      (let [tpl (:template (.getv job EV_OPTS))
-            ^HTTPEvent evt (.event job)
+    (fn [^Job j]
+      (let [tpl (nsb (:template (.getv j EV_OPTS)))
+            ^HTTPEvent evt (.event j)
             ^czlabclj.tardis.core.sys.Element
             src (.emitter evt)
             cfg (.getAttr src :emcfg)
             co (.container ^Emitter src)
             ^czlabclj.tardis.io.webss.WebSS
             mvs (.getSession evt)
-            csrf (.generateCsrf ^czlabclj.tardis.impl.ext.ContainerAPI co)
+            csrf (-> ^czlabclj.tardis.impl.ext.ContainerAPI co
+                     (.generateCsrf))
+            ;;csrf (.generateCsrf ^czlabclj.tardis.impl.ext.ContainerAPI co)
             est (:sessionAgeSecs cfg)
-            [rdata ct] (.loadTemplate co (nsb tpl)
+            [rdata ct] (.loadTemplate co tpl
                                       (interpolateFunc evt csrf))
             ^HTTPResult res (.getResultObj evt) ]
         (.setHeader res "content-type" ct)
@@ -135,9 +137,7 @@
     (require 'czlabclj.cocos2d.users.rego)
     (doShowPage interpolateRegisterPage))
 
-  (onStop [_ pipe]
-    (log/debug "RegisterPage: stopped."))
-
+  (onStop [_ pipe] )
   (onError [ _ err curPt]
     (log/error "RegisterPage: I got an error!")))
 
@@ -149,9 +149,7 @@
     (require 'czlabclj.cocos2d.users.rego)
     (doShowPage interpolateLoginPage))
 
-  (onStop [_ pipe]
-    (log/debug "LoginPage: stopped."))
-
+  (onStop [_ pipe] )
   (onError [ _ err curPt]
     (log/error "LoginPage: I got an error!")))
 
@@ -163,9 +161,7 @@
     (require 'czlabclj.cocos2d.users.rego)
     (doShowPage interpolateForgotPage))
 
-  (onStop [_ pipe]
-    (log/debug "ForgotPage: stopped."))
-
+  (onStop [_ pipe] )
   (onError [ _ err curPt]
     (log/error "ForgotPage: I got an error!")))
 

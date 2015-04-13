@@ -92,7 +92,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ApplyProtocol ""
+(defn ApplyProtocol "Jiggle the pipeline, replace standard websocket handlers
+                    with Odin."
 
   [^PlayerSession ps
    ^Channel ch]

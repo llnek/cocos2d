@@ -18,9 +18,9 @@
             [clojure.string :as cstr]
             [clojure.data.json :as json])
 
-  (:use [czlabclj.xlib.util.dates :only [ParseDate] ]
-        [czlabclj.xlib.util.str :only [nsb hgl? strim] ]
-        [czlabclj.xlib.util.files :only [ReadEdn] ]
+  (:use [czlabclj.xlib.util.str :only [nsb hgl? strim] ]
+        [czlabclj.xlib.util.dates :only [ParseDate] ]
+        [czlabclj.xlib.util.files :only [ReadEdn ReadOneFile] ]
         [czlabclj.tardis.core.constants])
 
   (:import  [org.apache.commons.io FileUtils]
@@ -57,7 +57,7 @@
       (doseq [^File fd (seq fds) ]
         (let [info (merge (assoc (ReadEdn (File. fd "game.mf"))
                                  :gamedir (.getName fd))
-                          (json/read-str (FileUtils/readFileToString (File. fd "game.json") "utf-8")
+                          (json/read-str (ReadOneFile (File. fd "game.json"))
                                          :key-fn keyword))
               net (:network info)
               uid (:uuid info)
@@ -80,17 +80,17 @@
     (reset! GAMES-LIST (vec (sort #(compare (.getTime ^Date (%1 "pubdate"))
                                             (.getTime ^Date (%2 "pubdate")))
                                   (persistent! @gc))))
-
-    (log/debug "############ game manifests ##########################")
-    (log/debug @GAMES-MNFS)
-    (log/debug "############ game UriHash ##########################")
-    (log/debug @GAMES-HASH)
-    (log/debug "############ game UUID ##########################")
-    (log/debug @GAMES-UUID)
-    (log/debug "############ game SimpleList ##########################")
-    (log/debug @GAMES-LIST)
+    ;;set true for debugging
+    (when false
+      (log/debug "############ game manifests ##########################")
+      (log/debug @GAMES-MNFS)
+      (log/debug "############ game UriHash ##########################")
+      (log/debug @GAMES-HASH)
+      (log/debug "############ game UUID ##########################")
+      (log/debug @GAMES-UUID)
+      (log/debug "############ game SimpleList ##########################")
+      (log/debug @GAMES-LIST))
   ))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

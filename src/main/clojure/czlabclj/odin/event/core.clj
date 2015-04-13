@@ -18,11 +18,11 @@
             [clojure.data.json :as json]
             [clojure.string :as cstr])
 
-  (:use [czlabclj.xlib.util.core
-         :only [ThrowUOE MakeMMap ternary test-nonil notnil? ] ]
-        [czlabclj.xlib.util.str :only [strim nsb hgl?] ])
-
-  (:use [czlabclj.odin.system.util])
+  (:use [czlabclj.xlib.util.str :only [strim nsb hgl?] ]
+        [czlabclj.xlib.util.core
+         :only
+         [ThrowUOE MakeMMap ternary test-nonil notnil? ] ]
+        [czlabclj.odin.system.util])
 
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
             [com.zotohlab.odin.event Events InvalidEventError]))

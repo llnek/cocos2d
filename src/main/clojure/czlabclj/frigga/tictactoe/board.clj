@@ -18,10 +18,11 @@
             [clojure.string :as cstr]
             [clojure.data.json :as json])
 
-  (:use [czlabclj.xlib.util.core :only [notnil? ternary MakeMMap RandomSign]]
-        [czlabclj.xlib.util.str :only [hgl? strim] ])
-
-  (:use [czlabclj.cocos2d.games.meta]
+  (:use [czlabclj.xlib.util.str :only [hgl? strim] ]
+        [czlabclj.xlib.util.core
+         :only
+         [notnil? ternary MakeMMap RandomSign]]
+        [czlabclj.cocos2d.games.meta]
         [czlabclj.odin.event.core]
         [czlabclj.odin.system.core])
 
@@ -81,6 +82,7 @@
 (defprotocol BoardAPI
 
   ""
+
   (broadcastStatus [_ ecode cmd status] )
   (registerPlayers [_ p1 p2])
   (getCurActor [_])

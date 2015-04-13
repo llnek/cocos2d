@@ -19,6 +19,7 @@
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ] ]
+        [czlabclj.xlib.util.files :only [ReadOneFile] ]
         [czlabclj.xlib.util.str :only [strim nsb hgl?] ])
 
   (:use [czlabclj.odin.event.core]
@@ -174,7 +175,7 @@
   ;;TODO: loading in Odin config file. do something with it?
   (let [appDir (.getAppDir ctr)
         fp (File. appDir "conf/odin.conf")
-        json (json/read-str (FileUtils/readFileToString fp "utf-8")) ]
+        json (json/read-str (ReadOneFile fp)) ]
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -18,22 +18,20 @@
             [clojure.string :as cstr]
             [clojure.data.json :as json])
 
-  (:use [czlabclj.xlib.util.dates :only [ParseDate] ]
+  (:use [czlabclj.tardis.impl.ext :only [GetAppKeyFromEvent] ]
+        [czlabclj.xlib.util.dates :only [ParseDate] ]
         [czlabclj.xlib.util.str :only [hgl? strim] ]
         [czlabclj.tardis.core.constants]
         [czlabclj.xlib.util.wfs :only [SimPTask]]
-        [czlabclj.tardis.impl.ext :only [GetAppKeyFromEvent] ])
-
-  (:use [czlabclj.odin.system.core]
+        [czlabclj.odin.system.core]
         [czlabclj.odin.event.core])
 
   (:import  [com.zotohlab.skaro.core Container ConfigError]
             [org.apache.commons.io FileUtils]
-            [com.zotohlab.wflow FlowNode Activity
+            [com.zotohlab.wflow Job FlowNode Activity
                                 Pipeline PDelegate PTask Work]
             [com.zotohlab.skaro.io WebSockEvent Emitter]
             [com.zotohlab.frwk.io IOUtils XData]
-            [com.zotohlab.wflow Job]
             [java.io File]
             [java.util Date ArrayList List HashMap Map]))
 
@@ -45,12 +43,12 @@
 ;;
 (defn- doStart ""
 
-  ^PTask
+  ^Activity
   []
 
   (SimPTask
-    (fn [^Job job]
-      (let [^WebSockEvent evt (.event job)
+    (fn [^Job j]
+      (let [^WebSockEvent evt (.event j)
             ^XData data (.getData evt)
             co (.container (.emitter evt)) ]
         (OdinOnEvent (DecodeEvent (.stringify data)
@@ -65,9 +63,7 @@
     (require 'czlabclj.odin.net.wsock)
     (doStart))
 
-  (onStop [_ pipe]
-    (log/debug "Handler: stopped."))
-
+  (onStop [_ pipe] )
   (onError [ _ err curPt]
     (log/error "Handler: I got an error!")))
 

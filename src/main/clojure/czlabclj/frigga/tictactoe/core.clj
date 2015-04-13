@@ -60,7 +60,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype TicTacToe [stateAtom stateRef] com.zotohlab.odin.game.GameEngine
+(deftype TicTacToe [stateAtom stateRef]
+
+  com.zotohlab.odin.game.GameEngine
 
   (initialize [_ players]
     (require 'czlabclj.frigga.tictactoe.core)
@@ -99,15 +101,16 @@
       (.onNetworkMsg this evt)
 
       Events/C_PLAY_MOVE
-      (let [^czlabclj.frigga.tictactoe.board.BoardAPI
-            bd (:board @stateAtom)
-            cp (.getCurActor bd)
+      (let [bd (:board @stateAtom)
+            ;;cp (.getCurActor bd)
             pss (:context evt)
             src (:source evt)
             cmd (json/read-str src
                                :key-fn keyword) ]
         (log/debug "TicTacToe received cmd " src " from session " pss)
-        (.enqueue bd cmd))
+        (-> ^czlabclj.frigga.tictactoe.board.BoardAPI
+            bd
+            (.enqueue cmd)))
 
       Events/C_STARTED
       (do
@@ -137,7 +140,7 @@
       (dosync (ref-set stateRef m))
       (.broadcast ^PlayRoom room evt)))
 
-  (ready [_  room]
+  (ready [_ room]
     (require 'czlabclj.frigga.tictactoe.core)
     (let [src (mapPlayersEx (:players @stateAtom))
           evt (ReifyEvent Events/NETWORK_MSG

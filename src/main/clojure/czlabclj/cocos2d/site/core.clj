@@ -138,7 +138,6 @@
     dm
   ))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- doShowPage ""
@@ -147,13 +146,13 @@
   [interpolateFunc]
 
   (SimPTask
-    (fn [^Job job]
-      (let [tpl (:template (.getv job EV_OPTS))
-            ^HTTPEvent evt (.event job)
+    (fn [^Job j]
+      (let [tpl (nsb (:template (.getv j EV_OPTS)))
+            ^HTTPEvent evt (.event j)
             src (.emitter evt)
             co (.container src)
             [rdata ct]
-            (.loadTemplate co (nsb tpl)
+            (.loadTemplate co tpl
                            (interpolateFunc evt))
             ^HTTPResult res (.getResultObj evt) ]
         (.setHeader res "content-type" ct)
@@ -161,7 +160,6 @@
         (.setStatus res 200)
         (.replyResult evt)))
   ))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -171,9 +169,7 @@
     (require 'czlabclj.cocos2d.site.core)
     (doShowPage interpolateIndexPage))
 
-  (onStop [_ pipe]
-    (log/debug "IndexPage: stopped."))
-
+  (onStop [_ pipe] )
   (onError [ _ err curPt]
     (log/error "IndexPage: I got an error!")))
 

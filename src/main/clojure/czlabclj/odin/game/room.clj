@@ -21,9 +21,8 @@
   (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ] ]
         [czlabclj.xlib.util.guids :only [NewUUid]]
         [czlabclj.xlib.util.meta :only [MakeObjArgN]]
-        [czlabclj.xlib.util.str :only [strim nsb hgl?] ])
-
-  (:use [czlabclj.odin.system.util]
+        [czlabclj.xlib.util.str :only [strim nsb hgl?] ]
+        [czlabclj.odin.system.util]
         [czlabclj.odin.event.core]
         [czlabclj.odin.event.disp]
         [czlabclj.odin.game.session]

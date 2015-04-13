@@ -74,8 +74,8 @@
     (.put tags "viewport" "content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\"")
     (.put tags "apple-mobile-web-app-capable" "content=\"yes\"")
     (when-not (nil? mf)
-        (.put tags "screen-orientation" (str "content=\"" (:layout mf) "\""))
-        (.put bd "gameid" (:uuid mf)))
+      (.put tags "screen-orientation" (str "content=\"" (:layout mf) "\""))
+      (.put bd "gameid" (:uuid mf)))
     (.put tags "full-screen" "content=\"yes\"")
     (.put tags "x5-fullscreen" "content=\"true\"")
     (.put tags "360-fullscreen" "content=\"true\"")
@@ -107,17 +107,17 @@
 ;;
 (defn- doShowPage ""
 
-  ^PTask
+  ^Activity
   [interpolateFunc]
 
   (SimPTask
-    (fn [^Job job]
-      (let [tpl (:template (.getv job EV_OPTS))
-            ^HTTPEvent evt (.event job)
+    (fn [^Job j]
+      (let [tpl (nsb (:template (.getv j EV_OPTS)))
+            ^HTTPEvent evt (.event j)
             ^Emitter src (.emitter evt)
             co (.container src)
             [rdata ct]
-            (.loadTemplate co (nsb tpl)
+            (.loadTemplate co tpl
                            (interpolateFunc evt))
             ^HTTPResult res (.getResultObj evt) ]
         (.setHeader res "content-type" ct)
@@ -134,9 +134,7 @@
     (require 'czlabclj.cocos2d.games.core)
     (doShowPage interpolateBrowsePage))
 
-  (onStop [_ pipe]
-    (log/debug "AllGamesPage: stopped."))
-
+  (onStop [_ pipe])
   (onError [ _ err curPt]
     (log/error "AllGamesPage: I got an error!")))
 
@@ -148,9 +146,7 @@
     (require 'czlabclj.cocos2d.games.core)
     (doShowPage interpolatePicksPage))
 
-  (onStop [_ pipe]
-    (log/debug "TopPicksPage: stopped."))
-
+  (onStop [_ pipe])
   (onError [ _ err curPt]
     (log/error "TopPicksPage: I got an error!")))
 
@@ -162,9 +158,7 @@
     (require 'czlabclj.cocos2d.games.core)
     (doShowPage interpolateArenaPage))
 
-  (onStop [_ pipe]
-    (log/debug "GameArenaPage: stopped."))
-
+  (onStop [_ pipe])
   (onError [ _ err curPt]
     (log/error "GameArenaPage: I got an error!")))
 

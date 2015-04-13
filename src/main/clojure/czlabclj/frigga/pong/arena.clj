@@ -113,6 +113,24 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+(defn- rect "Make a rect with all 4 corners."
+
+  ([^czlabclj.xlib.util.core.MubleAPI obj]
+   (rect (.getf obj :x)
+         (.getf obj :y)
+         (.getf obj :width)
+         (.getf obj :height)))
+
+  ([x y w h]
+   (let [h2 (halve h)
+         w2 (halve w) ]
+     {:left (- x w2)
+     :right (+ x w2)
+     :top (+ y h2)
+     :bottom (- y h2) })))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 (defn- clamp "Ensure paddle does not go out of bound."
 
   [^czlabclj.xlib.util.core.MubleAPI
@@ -122,38 +140,18 @@
 
   (let [h2 (halve (.getf paddle :height))
         w2 (halve (.getf paddle :width))
-        y (.getf paddle :y)
-        x (.getf paddle :x)
-        bt (- y h2)
-        tp (+ y h2)
-        rt (+ x w2)
-        lf (- x w2)]
+        rc (rect paddle)]
     (if (.getf impl :portrait)
       (do
-        (when (< lf (:left bbox))
+        (when (< (:left rc) (:left bbox))
           (.setf! paddle :x (+ (:left bbox) w2)))
-        (when (> rt (:right bbox))
+        (when (> (:right rc) (:right bbox))
           (.setf! paddle :x (- (:right bbox) w2))))
       (do
-        (when (< bt (:bottom bbox))
+        (when (< (:bottom rc) (:bottom bbox))
           (.setf! paddle :y (+ (:bottom bbox) h2)))
-        (when (> tp (:top bbox))
+        (when (> (:top rc) (:top bbox))
           (.setf! paddle :y (- (:top bbox) h2)))))
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- rect "Make a rect with all 4 corners."
-
-  [x y w h]
-
-  (let [h2 (halve h)
-        w2 (halve w) ]
-
-    {:left (- x w2)
-     :right (+ x w2)
-     :top (+ y h2)
-     :bottom (- y h2) }
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -264,7 +262,6 @@
         ^PlayerSession ps1 (:session (.getf impl :p1))
         s2 (.getf impl :score2)
         s1 (.getf impl :score1)
-        ^czlabclj.frigga.pong.arena.ArenaAPI
         arena (.getf impl :arena)
         src {:scores {:p2 s2 :p1 s1 }}]
     ;;TODO should be network msg
@@ -278,7 +275,8 @@
     ;; toggle flag to skip game loop logic until new
     ;; point starts
     (.setf! impl :resetting-point true)
-    (.resetPoint arena)
+    (-> ^czlabclj.frigga.pong.arena.ArenaAPI arena
+        (.resetPoint))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -293,11 +291,8 @@
         s2 (.getf impl :score2)
         s1 (.getf impl :score1)
         pwin (if (> s2 s1) ps2 ps1)
-        ^czlabclj.frigga.pong.arena.ArenaAPI
-        arena (.getf impl :arena)
         src {:winner {:pnum (.number pwin)
                       :scores {:p2 s2 :p1 s1 }}}]
-    ;; TODO: use network-msg
     ;; end game
     (log/debug "game over: winner of this game is " src)
     (.sendMessage ps2 (ReifyEvent Events/SESSION_MSG
@@ -380,14 +375,14 @@
 
   [^czlabclj.xlib.util.core.MubleAPI impl]
 
-  (let [^czlabclj.xlib.util.core.MubleAPI
+  (let [^PlayerSession ps2 (:session (.getf impl :p2))
+        ^PlayerSession ps1 (:session (.getf impl :p1))
+        ^czlabclj.xlib.util.core.MubleAPI
         pad2 (.getf impl :paddle2)
         ^czlabclj.xlib.util.core.MubleAPI
         pad1 (.getf impl :paddle1)
         ^czlabclj.xlib.util.core.MubleAPI
         ball (.getf impl :ball)
-        ^PlayerSession ps2 (:session (.getf impl :p2))
-        ^PlayerSession ps1 (:session (.getf impl :p1))
         src {:p2 {:y (.getf pad2 :y)
                   :x (.getf pad2 :x)
                   :pv (if (.getf impl :portrait)

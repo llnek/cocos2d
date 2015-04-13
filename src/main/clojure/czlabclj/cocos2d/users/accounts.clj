@@ -9,7 +9,6 @@
 ;; this software.
 ;; Copyright (c) 2013, Ken Leung. All rights reserved.
 
-
 (ns  ^{:doc ""
        :author "kenl" }
 
@@ -53,13 +52,13 @@
   []
 
   (SimPTask
-    (fn [^Job job]
-      (let [^HTTPEvent evt (.event job)
+    (fn [^Job j]
+      (let [^HTTPEvent evt (.event j)
             ^HTTPResult res (.getResultObj evt)
-            err (:error (.getLastResult job)) ]
+            err (:error (.getLastResult j)) ]
         (cond
           (instance? DuplicateUser err)
-          (let [rcb (I18N/getBundle (.id ^Identifiable (.container job)))
+          (let [rcb (I18N/getBundle (.id ^Identifiable (.container j)))
                 json {:error
                       {:msg (RStr rcb "acct.dup.user") }} ]
             (.setStatus res 409)
@@ -78,11 +77,11 @@
   []
 
   (SimPTask
-    (fn [^Job job]
-      (let [^HTTPEvent evt (.event job)
+    (fn [^Job j]
+      (let [^HTTPEvent evt (.event j)
             ^HTTPResult res (.getResultObj evt)
             json { :status { :code 200 } }
-            acct (:account (.getLastResult job)) ]
+            acct (:account (.getLastResult j)) ]
         (log/debug "successfully signed up new account " acct)
         (.setStatus res 200)
         (.setContent res (XData. (json/write-str json)))
@@ -98,9 +97,7 @@
     (log/debug "signup pipe-line - called.")
     (If. (MaybeSignupTest "32") (doSignupOK) (doSignupFail)))
 
-  (onStop [_ pipe]
-    (log/debug "SignupHandler: stopped."))
-
+  (onStop [_ pipe] )
   (onError [ _ err curPt]
     (log/error "SignupHandler: I got an error!")))
 
@@ -116,8 +113,8 @@
   []
 
   (SimPTask
-    (fn [^Job job]
-      (let [^HTTPEvent evt (.event job)
+    (fn [^Job j]
+      (let [^HTTPEvent evt (.event j)
             ^HTTPResult res (.getResultObj evt) ]
         (.setStatus res 403)
         (.replyResult evt)))
@@ -131,14 +128,14 @@
   []
 
   (SimPTask
-    (fn [^Job job]
-      (let [^HTTPEvent evt (.event job)
+    (fn [^Job j]
+      (let [^HTTPEvent evt (.event j)
             ^czlabclj.tardis.io.webss.WebSS
             mvs (.getSession evt)
             ^czlabclj.tardis.core.sys.Element
             src (.emitter evt)
             cfg (.getAttr src :emcfg)
-            acct (:account (.getLastResult job))
+            acct (:account (.getLastResult j))
             json { :status { :code 200 } }
             est (:sessionAgeSecs cfg)
             ck (HttpCookie. (name *USER-FLAG*)
@@ -166,9 +163,7 @@
     (log/debug "login pipe-line - called.")
     (If. (MaybeLoginTest) (doLoginOK) (doLoginFail)))
 
-  (onStop [_ pipe]
-    (log/debug "LoginHandler: stopped."))
-
+  (onStop [_ pipe] )
   (onError [ _ err curPt]
     (log/info "LoginHandler: I got an error!")))
 
@@ -180,11 +175,11 @@
   []
 
   (SimPTask
-    (fn [^Job job]
-      (let [^czlabclj.tardis.core.sys.Element ctr (.container job)
+    (fn [^Job j]
+      (let [^czlabclj.tardis.core.sys.Element ctr (.container j)
             ^czlabclj.tardis.auth.plugin.AuthPlugin
             pa (:auth (.getAttr ctr K_PLUGINS))
-            ^HTTPEvent evt (.event ^Job job)
+            ^HTTPEvent evt (.event j)
             si (try (MaybeGetAuthInfo evt) (catch CrappyDataError e#  { :e e# }))
             info (ternary si {} )
             email (nsb (:email info)) ]
@@ -210,8 +205,8 @@
   []
 
   (SimPTask
-    (fn [^Job job]
-      (let [^HTTPEvent evt (.event ^Job job)
+    (fn [^Job j]
+      (let [^HTTPEvent evt (.event j)
             ^HTTPResult res (.getResultObj evt)
             json { :status { :code 200 } } ]
         (.setStatus res 200)
@@ -229,9 +224,7 @@
     (-> (doAckReply)
         (.chain (doLookupEmail))))
 
-  (onStop [_ pipe]
-    (log/debug "ForgotHandler: stopped."))
-
+  (onStop [_ pipe] )
   (onError [ _ err curPt]
     (log/error "ForgotHandler: I got an error!")))
 
@@ -244,8 +237,8 @@
   []
 
   (SimPTask
-    (fn [^Job job]
-      (let [^HTTPEvent evt (.event job)
+    (fn [^Job j]
+      (let [^HTTPEvent evt (.event j)
             ^czlabclj.tardis.io.webss.WebSS
             mvs (.getSession evt)
             ^czlabclj.tardis.core.sys.Element
@@ -276,9 +269,7 @@
     (log/debug "logout pipe-line - called.")
     (doLogout))
 
-  (onStop [_ pipe]
-    (log/debug "LogoutHandler: stopped."))
-
+  (onStop [_ pipe] )
   (onError [ _ err curPt]
     (log/error "LogoutHandler: I got an error!")))
 

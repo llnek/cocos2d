@@ -19,10 +19,10 @@
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.core
-         :only [ThrowUOE MakeMMap ternary test-nonil notnil? ] ]
-        [czlabclj.xlib.util.str :only [strim nsb hgl?] ])
-
-  (:use [czlabclj.odin.event.core])
+         :only
+         [ThrowUOE MakeMMap ternary test-nonil notnil? TryC]]
+        [czlabclj.xlib.util.str :only [strim nsb hgl?] ]
+        [czlabclj.odin.event.core])
 
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
             [com.zotohlab.odin.net MessageSender TCPSender]
@@ -43,12 +43,9 @@
   (reify TCPSender
     (sendMessage [_ msg] (.writeAndFlush ch (EventToFrame msg)))
     (isReliable [_] true)
-    (shutdown [this]
+    (shutdown [_]
       (log/debug "going to close tcp connection " ch)
-      (try
-        (.close ch)
-        (catch Throwable e#
-          (log/warn "failed to close channel " ch))))
+      (TryC (.close ch)))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

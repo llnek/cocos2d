@@ -18,9 +18,8 @@
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ] ]
-        [czlabclj.xlib.util.str :only [strim nsb hgl?] ])
-
-  (:use [czlabclj.cocos2d.games.meta])
+        [czlabclj.xlib.util.str :only [strim nsb hgl?] ]
+        [czlabclj.cocos2d.games.meta])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom
                                     Player PlayerSession]
@@ -88,7 +87,7 @@
       r))
   ))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn RemoveFreeRoom "Remove a waiting room."
 

@@ -12,7 +12,7 @@
 (ns ^{:doc ""
       :author "kenl"}
 
-  czlabclj.frigga.common.negamax
+  czlabclj.frigga.core.negamax
 
   (:require [clojure.tools.logging :as log :only [info warn error debug] ]
             [clojure.string :as cstr])
@@ -100,13 +100,13 @@
 ;;
 (defn ReifyNegaMaxAlgo  ""
 
-  ^czlabclj.frigga.common.negamax.NegaAlgoAPI
+  ^czlabclj.frigga.core.negamax.NegaAlgoAPI
   [board]
 
   (reify NegaAlgoAPI
     (evaluate [_]
       (let [snapshot (.takeSnapshot board) ]
-        ;;(require 'czlabclj.frigga.common.negamax)
+        ;;(require 'czlabclj.frigga.core.negamax)
         (NegaMax board snapshot 10 10 (- PINF) PINF)
         (.lastBestMove snapshot)))))
 
@@ -115,7 +115,7 @@
 ;;
 (defn ReifySnapshot ""
 
-  ^czlabclj.frigga.common.negamax.NegaSnapshotAPI
+  ^czlabclj.frigga.core.negamax.NegaSnapshotAPI
   []
 
   (let [impl (MakeMMap)]
