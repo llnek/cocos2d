@@ -15,14 +15,5 @@ package com.zotohlab.odin.core;
 public enum Config {
 ;
 
-  public static final String RECONNECT_REGISTRY = "RECONNECT_REGISTRY";
-  public static final String RECONNECT_KEY = "RECONNECT_KEY";
-
-  /**
-   * By default wait for 3 minutes for remote client to reconnect, before
-   * closing session.
-   */
-  public static final int RECONNECT_DELAY_SECS =  3 * 60;
-
 }
 

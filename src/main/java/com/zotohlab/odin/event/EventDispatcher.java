@@ -19,8 +19,8 @@ import com.zotohlab.odin.core.Session;
  */
 public interface EventDispatcher {
 
-  public void unsubscribe(EventHandler eventHandler);
-  public void subscribe( EventHandler eventHandler );
+  public void unsubscribe(EventHandler h);
+  public void subscribe( EventHandler h);
   public void unsubscribeIfSession(Session s);
   public void publish( Object event );
   public void shutdown();

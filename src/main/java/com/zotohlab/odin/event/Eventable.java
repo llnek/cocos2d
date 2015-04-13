@@ -18,8 +18,8 @@ import com.zotohlab.odin.event.EventHandler;
  */
 public interface Eventable {
 
-  public void removeHandler(EventHandler eventHandler);
-  public void addHandler(EventHandler eventHandler);
+  public void removeHandler(EventHandler h);
+  public void addHandler(EventHandler h);
   public void sendMessage(Object msg);
 
   public void onEvent(Object event);

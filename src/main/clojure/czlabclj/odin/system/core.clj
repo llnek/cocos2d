@@ -14,28 +14,26 @@
 
   czlabclj.odin.system.core
 
-  (:require [clojure.tools.logging :as log :only [info warn error debug] ]
+  (:require [clojure.tools.logging :as log :only [info warn error debug]]
             [clojure.data.json :as json]
             [clojure.string :as cstr])
 
-  (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ] ]
-        [czlabclj.xlib.util.files :only [ReadOneFile] ]
-        [czlabclj.xlib.util.str :only [strim nsb hgl?] ])
-
-  (:use [czlabclj.odin.event.core]
+  (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil?]]
+        [czlabclj.xlib.util.files :only [ReadOneFile]]
+        [czlabclj.xlib.util.str :only [strim nsb hgl?]]
+        [czlabclj.odin.event.core]
         [czlabclj.odin.game.room]
         [czlabclj.odin.system.rego])
 
-  (:import  [com.zotohlab.odin.game Game PlayRoom
+  (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
+            [com.zotohlab.odin.game Game PlayRoom
                                     Player PlayerSession]
-            [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
             [io.netty.channel ChannelHandlerContext ChannelHandler
                               ChannelPipeline Channel]
             [org.apache.commons.io FileUtils]
             [java.io File]
             [com.zotohlab.skaro.core Container]
             [com.zotohlab.odin.event Events EventDispatcher]))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -47,7 +45,7 @@
 
   [^Channel ch error msg]
 
-  (let [rsp (ReifyEvent Events/SESSION_MSG
+  (let [rsp (ReifyEvent Events/MSG_SESS
                         error
                         (json/write-str {:message (nsb msg)})) ]
     (log/debug "replying back an error session/code " error)
@@ -62,7 +60,7 @@
 
   (let [^Channel ch (:socket evt)
         arr (:source evt) ]
-    (cond
+    (if
       (and (notnil? arr)
            (vector? arr)
            (== (count arr) 3))
@@ -70,7 +68,7 @@
                         gm nil
                         pss nil
                         room nil]
-        ;; maybe get the request game?
+        ;; maybe get the requested game?
         (let [g (LookupGame (nth arr 0))]
           (if (and (notnil? g)
                    (.supportMultiPlayers g))
@@ -97,8 +95,7 @@
                     Events/C_ROOMS_FULL
                     "no room available.")))
         @pss)
-
-      :else
+      ;;else
       (rError ch
               Events/C_PLAYREQ_NOK
               "bad request."))
@@ -113,7 +110,7 @@
 
   (let [^Channel ch (:socket evt)
         arr (:source evt) ]
-    (cond
+    (if
       (and (notnil? arr)
            (vector? arr)
            (== (count arr) 4))
@@ -143,8 +140,7 @@
                           Events/C_ROOM_FILLED
                           "no more room."))))))
         @pss)
-
-      :else
+      ;;else
       (rError ch
               Events/C_JOINREQ_NOK
               "bad request."))

@@ -65,8 +65,8 @@
                   fiber
                   (reify Callback
                     (onMessage [_ msg]
-                      (when (== (.eventType hdlr)
-                                (int (:type msg)))
+                      (when (= (.eventType hdlr)
+                               (int (:type msg)))
                         (.onEvent hdlr msg))))) ]
           (dosync
             (alter handlers assoc cb d))

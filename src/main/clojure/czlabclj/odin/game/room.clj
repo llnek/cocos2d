@@ -58,7 +58,7 @@
   [^PlayerSession ps]
 
   (reify EventHandler
-    (eventType [_] Events/NETWORK_MSG)
+    (eventType [_] Events/MSG_BCAST)
     (session [_] ps)
     (onEvent [_ evt]
       ;; if a context is given, then only the
@@ -111,7 +111,7 @@
             (alter sessions assoc (.id ps) ps)
             (alter pssArr conj ps))
           (.addSession py ps)
-          (.broadcast this (ReifyEvent Events/NETWORK_MSG
+          (.broadcast this (ReifyEvent Events/MSG_BCAST
                                        Events/C_PLAYER_JOINED
                                        (json/write-str src)))
           ps))
@@ -161,8 +161,8 @@
         (let [^GameEngine sm (.engine this) ]
           (log/debug "room got an event " evt)
           (condp == (:type evt)
-            Events/NETWORK_MSG (.broadcast this evt)
-            Events/SESSION_MSG (.update sm evt)
+            Events/MSG_BCAST (.broadcast this evt)
+            Events/MSG_SESS (.update sm evt)
             (log/warn "room.onevent: unhandled event " evt))))
 
       Object
@@ -219,10 +219,10 @@
             src {:room (.roomId room)
                  :game (.id game)
                  :pnum (.number ps)}
-            evt (ReifyEvent Events/SESSION_MSG
+            evt (ReifyEvent Events/MSG_SESS
                             Events/C_PLAYREQ_OK
                             (json/write-str src)) ]
-        (ApplyProtocol ps ch)
+        (ApplyGameHandler ps ch)
         (log/debug "replying back to user: " evt)
         (.writeAndFlush ch (EventToFrame evt))
         (when (.canActivate room)
@@ -246,10 +246,10 @@
             src {:room (.roomId room)
                  :game (.id game)
                  :pnum (.number pss) }
-            evt (ReifyEvent Events/SESSION_MSG
+            evt (ReifyEvent Events/MSG_SESS
                             Events/C_JOINREQ_OK
                             (json/write-str src)) ]
-        (ApplyProtocol pss ch)
+        (ApplyGameHandler pss ch)
         (.writeAndFlush ch (EventToFrame evt))
         (when-not (.isActive room)
           (if (.canActivate room)

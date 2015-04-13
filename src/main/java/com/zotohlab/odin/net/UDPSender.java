@@ -16,6 +16,4 @@ package com.zotohlab.odin.net;
  * @author kenl
  */
 public interface UDPSender extends MessageSender {
-
-
 }

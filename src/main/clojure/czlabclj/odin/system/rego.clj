@@ -14,11 +14,11 @@
 
   czlabclj.odin.system.rego
 
-  (:require [clojure.tools.logging :as log :only [info warn error debug] ]
+  (:require [clojure.tools.logging :as log :only [info warn error debug]]
             [clojure.string :as cstr])
 
-  (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ] ]
-        [czlabclj.xlib.util.str :only [strim nsb hgl?] ]
+  (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ]]
+        [czlabclj.xlib.util.str :only [strim nsb hgl?]]
         [czlabclj.cocos2d.games.meta])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom
@@ -153,18 +153,16 @@
   [^Game game]
 
   (dosync
-    (if-let [gm (get @FREE-ROOMS (.id game)) ]
+    (when-let [gm (get @FREE-ROOMS (.id game)) ]
       (when-let [^PlayRoom r (if (> (count gm) 0)
                                (first (vals gm))
                                nil) ]
-        (log/debug "LookupFreeRoom: found a free room: "
-                   (.roomId r))
+        (log/debug "LookupFreeRoom: found a free room: " (.roomId r))
         (alter FREE-ROOMS
                assoc
                (.id game)
                (dissoc gm (.roomId r)))
-        r)
-      nil)
+        r))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -192,7 +190,7 @@
   [^String game ^String room]
 
   (dosync
-    (if-let [gm (get @GAME-ROOMS game) ]
+    (when-let [gm (get @GAME-ROOMS game) ]
       (get gm room))
   ))
 
@@ -215,7 +213,7 @@
 
       (removeSession [_ ps]
         (dosync
-          (if-let [m (get @PLAYER-SESS user) ]
+          (when-let [m (get @PLAYER-SESS user) ]
             (alter PLAYER-SESS
                    assoc
                    user
@@ -237,7 +235,7 @@
 
       (logout [_ ps]
         (dosync
-          (if-let [m (get @PLAYER-SESS user)]
+          (when-let [m (get @PLAYER-SESS user)]
             (doseq [^PlayerSession
                     pss (vals m)]
               (.close pss))
@@ -254,7 +252,7 @@
   (dosync
     (when-let [p (get @PLAYER-REGO user) ]
       (alter PLAYER-REGO dissoc user)
-      (if-let [m (get @PLAYER-SESS user)]
+      (when-let [m (get @PLAYER-SESS user)]
         (doseq [^PlayerSession
                 v (vals m)]
           (.close v)))

@@ -97,7 +97,7 @@
    (ReifyNetworkEvent ecode source true))
 
   ([ecode source reliable?]
-   (-> (ReifyEvent Events/NETWORK_MSG ecode source)
+   (-> (ReifyEvent Events/MSG_BCAST ecode source)
        (assoc :reliable (true? reliable?)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -108,7 +108,7 @@
    (ReifySessionMessage ecode source nil))
 
   ([ecode source ctx]
-   (ReifyEvent Events/SESSION_MSG ecode source ctx)))
+   (ReifyEvent Events/MSG_SESS ecode source ctx)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

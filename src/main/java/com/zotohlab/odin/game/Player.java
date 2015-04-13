@@ -16,11 +16,11 @@ package com.zotohlab.odin.game;
  */
 public interface Player {
 
-  public void removeSession(PlayerSession session);
-  public void addSession(PlayerSession session);
+  public void removeSession(PlayerSession s);
+  public void addSession(PlayerSession s);
   public int countSessions();
 
-  public void logout(PlayerSession playerSession);
+  public void logout(PlayerSession s);
 
   public void setName(String name);
   public String getName();

@@ -16,5 +16,4 @@ package com.zotohlab.odin.net;
  * @author kenl
  */
 public interface TCPSender extends MessageSender {
-
 }

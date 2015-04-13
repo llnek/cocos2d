@@ -14,15 +14,15 @@
 
   czlabclj.odin.game.session
 
-  (:require [clojure.tools.logging :as log :only [info warn error debug] ]
+  (:require [clojure.tools.logging :as log :only [info warn error debug]]
             [clojure.data.json :as json]
             [clojure.string :as cstr])
             ;;[clojure.core.async :as async])
 
-  (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ] ]
+  (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ]]
         [czlabclj.xlib.util.process]
         [czlabclj.xlib.util.guids]
-        [czlabclj.xlib.util.str :only [strim nsb hgl?] ]
+        [czlabclj.xlib.util.str :only [strim nsb hgl?]]
         [czlabclj.odin.net.senders]
         [czlabclj.odin.event.core]
         [czlabclj.odin.system.util]
@@ -56,7 +56,7 @@
         sid (GenerateUID (class Session))
         ;;ch (async/chan (async/sliding-buffer 10))
         impl (MakeMMap) ]
-    (.setf! impl :status Session$Status/NOT_CONNECTED)
+    (.setf! impl :status Events/S_NOT_CONNECTED)
     (.setf! impl :shutting-down false)
     (reify PlayerSession
 
@@ -78,7 +78,7 @@
         ;; it means only the same socket should apply the message,
         ;; others should ignore - do nothing.
         (when-not (.getf impl :shutting-down)
-          (if (and (== Events/NETWORK_MSG (:type evt))
+          (if (and (= Events/MSG_BCAST (:type evt))
                    (notnil? (:context evt)))
             (when (identical? this
                               (:context evt))
@@ -86,13 +86,12 @@
               ;; change the type to SESSION_MSG.
               (.sendMessage this
                             (assoc evt
-                                   :type Events/SESSION_MSG)))
+                                   :type Events/MSG_SESS)))
             (.sendMessage this evt))))
 
       (removeHandler [_ h] )
 
       (addHandler [_ h] )
-      ;;(getHandlers [_ etype] (.getHandlers disp etype))
 
       Session
 
@@ -100,26 +99,24 @@
 
       (bind [this soc]
         (.setf! impl :tcp (ReifyReliableSender soc))
-        (.setStatus this Session$Status/CONNECTED))
+        (.setStatus this Events/S_CONNECTED))
 
       (id [_] sid)
 
       (setStatus [_ s] (.setf! impl :status s))
       (getStatus [_] (.getf impl :status))
 
-      (isConnected [_] (= Session$Status/CONNECTED
-                          (.getf impl :status)))
+      (isConnected [_] (= Events/S_CONNECTED (.getf impl :status)))
       (close [this]
         (locking this
           (when (.isConnected this)
             (.setf! impl :shutting-down true)
-            ;;(.close disp)
             (when-let [^MessageSender
                        s (.getf impl :tcp)]
               (.shutdown s))
             (.clrf! impl :tcp)
             (.setf! impl :shutting-down false)
-            (.setf! impl :status Session$Status/NOT_CONNECTED))))
+            (.setf! impl :status Events/S_NOT_CONNECTED))))
 
       Object
 
