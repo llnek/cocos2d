@@ -51,7 +51,7 @@
   [^String gameid]
 
   (log/debug "Looking for game with uuid = " gameid)
-  (if-let [g (get (GetGamesAsUUID) gameid) ]
+  (when-let [g (get (GetGamesAsUUID) gameid) ]
     ;; inner objects are still normal EDN objects with keywords
     (let [{flag :enabled minp :minp maxp :maxp eng :engine
            :or {flag false minp 1 maxp 1 eng ""}}
@@ -68,7 +68,6 @@
         ;;TODO: unload is an extreme action, what about the
         ;;game rooms???
         (unload [_] nil)))
-    nil
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -78,6 +77,7 @@
   ^PlayRoom
   [^String game ^String room]
 
+  (log/debug "Removing room: " room ", belonging to game: " game)
   (dosync
     (when-let [gm (get @GAME-ROOMS game) ]
       (when-let [r (get gm room)]

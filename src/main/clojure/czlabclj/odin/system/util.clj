@@ -18,8 +18,10 @@
             [clojure.data.json :as json]
             [clojure.string :as cstr])
 
-  (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? juid]]
-        [czlabclj.xlib.util.str :only [strim nsb hgl?]])
+  (:use [czlabclj.xlib.util.str :only [strim nsb hgl?]]
+        [czlabclj.xlib.util.core
+         :only
+         [TryCR MakeMMap ternary notnil? juid]])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom
                                     Player PlayerSession]
@@ -46,14 +48,12 @@
   [^String data socket]
 
   (log/debug "wsock: received json event: " data)
-  (try
+  (TryCR
+    {:type -1}
     (let [evt (json/read-str data :key-fn keyword) ]
       (when-not (number? (:type evt))
         (throw (InvalidEventError. "event object has no type info.")))
       (assoc evt :socket socket))
-    (catch Throwable e#
-      (log/error e# "")
-      {:type -1})
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -92,8 +92,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ApplyGameHandler "Jiggle the pipeline, replace standard websocket handlers
-                       with Odin."
+(defn ApplyGameHandler "Jiggle the pipeline, replace standard websocket
+                       handlers with Odin."
 
   [^PlayerSession ps
    ^Channel ch]
