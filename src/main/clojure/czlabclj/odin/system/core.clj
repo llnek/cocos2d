@@ -33,7 +33,8 @@
             [org.apache.commons.io FileUtils]
             [java.io File]
             [com.zotohlab.skaro.core Container]
-            [com.zotohlab.odin.event Events EventDispatcher]))
+            [com.zotohlab.odin.event
+             Msgs Events EventDispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -45,7 +46,7 @@
 
   [^Channel ch error msg]
 
-  (let [rsp (ReifyEvent Events/MSG_SESS
+  (let [rsp (ReifyEvent Msgs/SESSION
                         error
                         (json/write-str {:message (nsb msg)})) ]
     (log/debug "replying back an error session/code " error)
@@ -63,19 +64,20 @@
     (if
       (and (notnil? arr)
            (vector? arr)
-           (== (count arr) 3))
+           (= (count arr) 3))
       (with-local-vars [plyr nil
                         gm nil
                         pss nil
                         room nil]
         ;; maybe get the requested game?
-        (let [g (LookupGame (nth arr 0))]
+        (let [g (LookupGame (first arr))]
           (if (and (notnil? g)
                    (.supportMultiPlayers g))
             (var-set gm g)
             (rError ch
                     Events/C_GAME_NOK
-                    (str "no such game/not network enabled. id="
+                    (str "no such game/not "
+                         "network enabled. id="
                          (nth arr 0)))))
         ;; maybe get the player?
         (if-let [p (LookupPlayer (nth arr 1)
@@ -113,7 +115,7 @@
     (if
       (and (notnil? arr)
            (vector? arr)
-           (== (count arr) 4))
+           (= (count arr) 4))
       (with-local-vars [plyr nil
                         pss nil
                         gm nil
@@ -153,7 +155,7 @@
   [evt]
 
   (let [etype (:type evt)]
-    (condp == etype
+    (condp = etype
       Events/PLAYGAME_REQ
       (onPlayReq evt)
 
@@ -171,7 +173,9 @@
   ;;TODO: loading in Odin config file. do something with it?
   (let [appDir (.getAppDir ctr)
         fp (File. appDir "conf/odin.conf")
-        json (json/read-str (ReadOneFile fp)) ]
+        s (ReadOneFile fp)
+        json (json/read-str s) ]
+    (log/info "Odin config= " s)
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

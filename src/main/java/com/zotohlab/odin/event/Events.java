@@ -16,10 +16,6 @@ package com.zotohlab.odin.event;
  */
 public interface Events {
 
-  // Message types
-  public static final long MSG_BCAST           = 1L;
-  public static final long MSG_SESS          = 2L;
-  
   // Event types
   public static final long PLAYGAME_REQ          = 3L;
   public static final long JOINGAME_REQ          = 4L;

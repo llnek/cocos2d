@@ -52,15 +52,18 @@
 
   (log/debug "Looking for game with uuid = " gameid)
   (when-let [g (get (GetGamesAsUUID) gameid) ]
-    ;; inner objects are still normal EDN objects with keywords
     (let [{flag :enabled minp :minp maxp :maxp eng :engine
            :or {flag false minp 1 maxp 1 eng ""}}
           (:network g)]
       (log/debug "Found game with uuid = " gameid)
       (reify Game
-        (maxPlayers [_] (if (> maxp 0) (int maxp) Integer/MAX_VALUE))
-        (minPlayers [_] (if (> minp 0) (int minp) (int 1)))
         (supportMultiPlayers [_] (true? flag))
+        (maxPlayers [_] (if (> maxp 0)
+                          (int maxp)
+                          Integer/MAX_VALUE))
+        (minPlayers [_] (if (> minp 0)
+                          (int minp)
+                          (int 1)))
         (getName [_] (:name g))
         (engineClass [_] eng)
         (info [_] g)
@@ -77,10 +80,11 @@
   ^PlayRoom
   [^String game ^String room]
 
-  (log/debug "Removing room: " room ", belonging to game: " game)
   (dosync
-    (when-let [gm (get @GAME-ROOMS game) ]
+    (when-let [gm (@GAME-ROOMS game) ]
       (when-let [r (get gm room)]
+        (log/debug "Removing active room: " room
+                   ", belonging to game: " game)
         (alter GAME-ROOMS
                assoc
                game (dissoc gm room))
@@ -95,8 +99,10 @@
   [^String game ^String room]
 
   (dosync
-    (when-let [gm (get @FREE-ROOMS game) ]
+    (when-let [gm (@FREE-ROOMS game) ]
       (when-let [r (get gm room)]
+        (log/debug "Removing free room: " room
+                   ", belonging to game: " game)
         (alter FREE-ROOMS
                assoc
                game (dissoc gm room))
@@ -112,14 +118,15 @@
   [^PlayRoom room]
 
   (dosync
-    (let [g (.game room)
+    (let [rid (.roomId room)
+          g (.game room)
           gid (.id g)
-          m (ternary (get @FREE-ROOMS gid)
-                     {}) ]
+          m (ternary (@FREE-ROOMS gid) {}) ]
+      (log/debug "Adding a free room: " rid ", game: " gid)
       (alter FREE-ROOMS
              assoc
              gid
-             (assoc m (.roomId room) room))
+             (assoc m rid room))
       room)
   ))
 
@@ -131,14 +138,15 @@
   [^PlayRoom room]
 
   (dosync
-    (let [g (.game room)
+    (let [rid (.roomId room)
+          g (.game room)
           gid (.id g)
-          m (ternary (get @GAME-ROOMS gid)
-                     {}) ]
+          m (ternary (@GAME-ROOMS gid) {}) ]
+      (log/debug "Adding a game room: " rid ", game: " gid)
       (alter GAME-ROOMS
              assoc
              gid
-             (assoc m (.roomId room) room))
+             (assoc m rid room))
       room)
   ))
 
@@ -153,15 +161,17 @@
   [^Game game]
 
   (dosync
-    (when-let [gm (get @FREE-ROOMS (.id game)) ]
-      (when-let [^PlayRoom r (if (> (count gm) 0)
-                               (first (vals gm))
-                               nil) ]
-        (log/debug "LookupFreeRoom: found a free room: " (.roomId r))
-        (alter FREE-ROOMS
-               assoc
-               (.id game)
-               (dissoc gm (.roomId r)))
+    (let [gid (.id game)
+          gm (@FREE-ROOMS gid) ]
+      (when-let [^PlayRoom r (if (not-empty gm)
+                               (first (vals gm))) ]
+        (let [rid (.roomId r)]
+          (log/debug "Found a free room: " rid
+                     ", belonging to game: " gid)
+          (alter FREE-ROOMS
+                 assoc
+                 gid
+                 (dissoc gm rid)))
         r))
   ))
 
@@ -172,9 +182,10 @@
   [^String game ^String room]
 
   (dosync
-    (when-let [gm (get @FREE-ROOMS game) ]
+    (when-let [gm (@FREE-ROOMS game) ]
       (when-let [r (get gm room)]
-        (log/debug "LookupFreeRoom: found a free room: " room)
+        (log/debug "Found a free room: " room
+                     ", belonging to game: " game)
         (alter FREE-ROOMS
                assoc
                game
@@ -190,7 +201,9 @@
   [^String game ^String room]
 
   (dosync
-    (when-let [gm (get @GAME-ROOMS game) ]
+    (when-let [gm (@GAME-ROOMS game) ]
+      (log/debug "Looking for room: " room
+                 ", running game: " game)
       (get gm room))
   ))
 
@@ -213,7 +226,7 @@
 
       (removeSession [_ ps]
         (dosync
-          (when-let [m (get @PLAYER-SESS user) ]
+          (when-let [m (@PLAYER-SESS user) ]
             (alter PLAYER-SESS
                    assoc
                    user
@@ -221,13 +234,13 @@
 
       (countSessions [_]
         (dosync
-          (if-let [m (get @PLAYER-SESS user)]
+          (if-let [m (@PLAYER-SESS user)]
             (int (count m))
             (int 0))))
 
       (addSession [_ ps]
         (dosync
-          (let [m (ternary (get @PLAYER-SESS user) {}) ]
+          (let [m (ternary (@PLAYER-SESS user) {}) ]
             (alter PLAYER-SESS
                    assoc
                    user
@@ -235,7 +248,7 @@
 
       (logout [_ ps]
         (dosync
-          (when-let [m (get @PLAYER-SESS user)]
+          (when-let [m (@PLAYER-SESS user)]
             (doseq [^PlayerSession
                     pss (vals m)]
               (.close pss))
@@ -250,11 +263,10 @@
   [^String user]
 
   (dosync
-    (when-let [p (get @PLAYER-REGO user) ]
+    (when-let [p (@PLAYER-REGO user) ]
       (alter PLAYER-REGO dissoc user)
-      (when-let [m (get @PLAYER-SESS user)]
-        (doseq [^PlayerSession
-                v (vals m)]
+      (when-let [m (@PLAYER-SESS user)]
+        (doseq [^Session v (vals m)]
           (.close v)))
       (alter PLAYER-SESS dissoc user)
       p)
@@ -268,7 +280,7 @@
   [^String user ^String pwd]
 
   (dosync
-    (if-let [p (get @PLAYER-REGO user)]
+    (if-let [p (@PLAYER-REGO user)]
       p
       (let [p2 (ReifyPlayer user pwd)]
         (alter PLAYER-REGO assoc user p2)
