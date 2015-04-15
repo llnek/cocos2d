@@ -16,7 +16,7 @@ package com.zotohlab.odin.net;
  */
 public interface MessageSender {
 
-  public Object sendMessage(Object msg);
+  public Object sendMsg(Object msg);
 
   public boolean isReliable();
 

@@ -65,8 +65,8 @@
       ;; matching one gets the message.
       (if-let [c (:context evt)]
         (when (identical? c ps)
-          (.onEvent ps evt))
-        (.onEvent ps evt)))
+          (.onMsg ps evt))
+        (.onMsg ps evt)))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -145,7 +145,7 @@
           (log/debug "activating room " rid)
           (.setf! impl :active true)
           (doseq [v sss]
-            (.add this (mkNetworkSubr v)))
+            (.addHandler this (mkNetworkSubr v)))
           (.initialize sm sss)
           (.ready sm this)))
 
@@ -155,7 +155,7 @@
 
       (addHandler [_ h] (.subscribe disp h))
 
-      (sendMessage [this msg] (.onMsg this msg))
+      (sendMsg [this msg] (.onMsg this msg))
 
       (onMsg [this evt]
         (let [^GameEngine sm (.engine this) ]

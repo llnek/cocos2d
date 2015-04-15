@@ -27,7 +27,7 @@
   (:import  [com.zotohlab.odin.game Game PlayRoom
                                     Player PlayerSession]
             [com.zotohlab.odin.event Msgs
-             Events EventDispatcher]))
+             Events Dispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -101,7 +101,7 @@
   (update [this evt]
     (log/debug "game engine got an update " evt)
     (condp = (:type evt)
-      Msgs/NETWORK (throw. (Exception. "POO!!!!!!!"));;(.onNetworkMsg this evt)
+      Msgs/NETWORK (throw (Exception. "POO!!!!!!!"));;(.onNetworkMsg this evt)
       Msgs/SESSION (.onSessionMsg this evt)
       (log/warn "game engine: unhandled update event " evt)))
 
@@ -123,7 +123,7 @@
             src (:source evt)
             pss (:context evt)]
         (log/debug "received paddle-move "
-                   s
+                   src
                    " from session " pss)
         (.enqueue aa evt))
 

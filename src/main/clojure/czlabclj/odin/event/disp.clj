@@ -58,15 +58,15 @@
           (dosync (alter handlers dissoc cb))))
 
       (subscribe [_ cb]
-        (let [^Eventee subr cb
-              c (cas/chan 4)]
+        (let [c (cas/chan 4)]
           (dosync (alter handlers assoc cb c))
           (cas/go-loop []
             (if-let [msg (cas/<! c)]
-              (when (= (.eventType subr)
-                       (int (:type msg)))
-                (.onEvent subr msg))
-              (recur)))))
+              (let [^Eventee ee cb]
+                (when (= (.eventType ee)
+                         (int (:type msg)))
+                  (.onEvent ee msg))
+                (recur))))))
 
       (shutdown [_]
         (doseq [c (vals @handlers)]

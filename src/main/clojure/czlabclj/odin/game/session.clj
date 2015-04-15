@@ -66,11 +66,11 @@
       Eventable
 
       ;; send a message to client
-      (sendMessage [this msg]
+      (sendMsg [this msg]
         (when (.isConnected this)
           (-> ^MessageSender
               (.getf impl :tcp)
-              (.sendMessage msg))))
+              (.sendMsg msg))))
 
       (onMsg [this evt]
         (log/debug "player session " sid " , onevent called: " evt)
@@ -84,10 +84,10 @@
                               (:context evt))
               ;; TODO: check if we really need to do this swapping
               ;; change the type to SESSION_MSG.
-              (.sendMessage this
+              (.sendMsg this
                             (assoc evt
                                    :type Msgs/SESSION)))
-            (.sendMessage this evt))))
+            (.sendMsg this evt))))
 
       (removeHandler [_ h] )
 

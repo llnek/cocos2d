@@ -40,7 +40,7 @@
   [^Channel ch]
 
   (reify TCPSender
-    (sendMessage [_ msg] (.writeAndFlush ch (EventToFrame msg)))
+    (sendMsg [_ msg] (.writeAndFlush ch (EventToFrame msg)))
     (isReliable [_] true)
     (shutdown [_]
       (log/debug "going to close tcp connection " ch)

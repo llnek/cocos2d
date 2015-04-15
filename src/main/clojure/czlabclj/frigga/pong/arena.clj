@@ -29,7 +29,7 @@
   (:import  [com.zotohlab.odin.game GameEngine Game
              PlayRoom Player PlayerSession]
             [com.zotohlab.odin.event Msgs
-             Events EventDispatcher]))
+             Events Dispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -265,12 +265,12 @@
         src {:scores {:p2 s2 :p1 s1 }}]
     ;;TODO should be network msg
     ;; update scores
-    (.sendMessage ps2 (ReifyEvent Msgs/SESSION
-                                  Msgs/C_SYNC_ARENA
-                                  (json/write-str src)))
-    (.sendMessage ps1 (ReifyEvent Msgs/SESSION
-                                  Events/C_SYNC_ARENA
-                                  (json/write-str src)))
+    (.sendMsg ps2 (ReifyEvent Msgs/SESSION
+                              Events/C_SYNC_ARENA
+                              (json/write-str src)))
+    (.sendMsg ps1 (ReifyEvent Msgs/SESSION
+                              Events/C_SYNC_ARENA
+                              (json/write-str src)))
     ;; toggle flag to skip game loop logic until new
     ;; point starts
     (.setf! impl :resetting-point true)
@@ -294,17 +294,17 @@
                       :scores {:p2 s2 :p1 s1 }}}]
     ;; end game
     (log/debug "game over: winner of this game is " src)
-    (.sendMessage ps2 (ReifyEvent Msgs/SESSION
-                                  Events/C_SYNC_ARENA
-                                  (json/write-str src)))
-    (.sendMessage ps1 (ReifyEvent Msgs/SESSION
-                                  Events/C_SYNC_ARENA
-                                  (json/write-str src)))
+    (.sendMsg ps2 (ReifyEvent Msgs/SESSION
+                              Events/C_SYNC_ARENA
+                              (json/write-str src)))
+    (.sendMsg ps1 (ReifyEvent Msgs/SESSION
+                              Events/C_SYNC_ARENA
+                              (json/write-str src)))
 
-    (.sendMessage ps2 (ReifyEvent Msgs/NETWORK
-                                  Events/C_STOP))
-    (.sendMessage ps1 (ReifyEvent Msgs/NETWORK
-                                  Events/C_STOP))
+    (.sendMsg ps2 (ReifyEvent Msgs/NETWORK
+                              Events/C_STOP))
+    (.sendMsg ps1 (ReifyEvent Msgs/NETWORK
+                              Events/C_STOP))
 
   ))
 
@@ -325,7 +325,7 @@
     (log/debug "increment score by 1, "
                "someone lost a point. " s1  " , " s2)
     (.setf! impl :sync false)
-    (if (== winner 2)
+    (if (= winner 2)
       (.setf! impl :score2 sx)
       (.setf! impl :score1 sx))
     (resetPoint impl winner)
@@ -398,12 +398,12 @@
                     :vx (.getf ball :vx) }} ]
     ;; TODO: use network-msg
     (log/debug "sync new BALL values " (:ball src))
-    (.sendMessage ps2 (ReifyEvent Msgs/SESSION
-                                  Events/C_SYNC_ARENA
-                                  (json/write-str src)))
-    (.sendMessage ps1 (ReifyEvent Msgs/SESSION
-                                  Events/C_SYNC_ARENA
-                                  (json/write-str src)))
+    (.sendMsg ps2 (ReifyEvent Msgs/SESSION
+                              Events/C_SYNC_ARENA
+                              (json/write-str src)))
+    (.sendMsg ps1 (ReifyEvent Msgs/SESSION
+                              Events/C_SYNC_ARENA
+                              (json/write-str src)))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -532,19 +532,19 @@
                     :vy (.getf ball :vy)
                     :x (.getf ball :x)
                     :y (.getf ball :y)} }]
-    (.sendMessage p2 (ReifyEvent Msgs/SESSION
-                                 Events/C_POKE_MOVE
-                                 (json/write-str {:pnum (.number p2)})))
-    (.sendMessage p1 (ReifyEvent Msgs/SESSION
-                                 Events/C_POKE_MOVE
-                                 (json/write-str {:pnum (.number p1)})))
+    (.sendMsg p2 (ReifyEvent Msgs/SESSION
+                             Events/C_POKE_MOVE
+                             (json/write-str {:pnum (.number p2)})))
+    (.sendMsg p1 (ReifyEvent Msgs/SESSION
+                             Events/C_POKE_MOVE
+                             (json/write-str {:pnum (.number p1)})))
     ;;TODO: network msg
-    (.sendMessage p2 (ReifyEvent Msgs/SESSION
-                                 Events/C_SYNC_ARENA
-                                 (json/write-str src)))
-    (.sendMessage p1 (ReifyEvent Msgs/SESSION
-                                 Events/C_SYNC_ARENA
-                                 (json/write-str src)))
+    (.sendMsg p2 (ReifyEvent Msgs/SESSION
+                             Events/C_SYNC_ARENA
+                             (json/write-str src)))
+    (.sendMsg p1 (ReifyEvent Msgs/SESSION
+                             Events/C_SYNC_ARENA
+                             (json/write-str src)))
     (log/debug "setting default ball values " src)
   ))
 
@@ -575,9 +575,9 @@
         (initEntities impl pp1 pp2 pd ba))
 
       (getPlayer2 [_] (-> (.getf impl :p2)
-                          (.player)))
+                          (:player)))
       (getPlayer1 [_] (-> (.getf impl :p1)
-                          (.player)))
+                          (:player)))
 
       (restart [_]
         (.setf! impl :resetting-point false)
@@ -612,9 +612,9 @@
           (if (.getf impl :portrait)
             (.setf! other :vx pv)
             (.setf! other :vy pv))
-          (.sendMessage pt (ReifyEvent Msgs/SESSION
-                                       Events/C_SYNC_ARENA
-                                       (json/write-str cmd)))))
+          (.sendMsg pt (ReifyEvent Msgs/SESSION
+                                   Events/C_SYNC_ARENA
+                                   (json/write-str cmd)))))
     )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

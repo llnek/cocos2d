@@ -18,7 +18,7 @@
             [clojure.string :as cstr]
             [clojure.data.json :as json])
 
-  (:use [czlabclj.xlib.util.str :only [hgl? strim] ]
+  (:use [czlabclj.xlib.util.str :only [hgl? strim]]
         [czlabclj.xlib.util.core
          :only
          [notnil? ternary MakeMMap RandomSign]]
@@ -28,7 +28,7 @@
 
   (:import  [com.zotohlab.odin.game Game PlayRoom
                                     Player PlayerSession]
-            [com.zotohlab.odin.event Events]
+            [com.zotohlab.odin.event Msgs Events]
             [java.util Date ArrayList List HashMap Map]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -37,7 +37,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (def ^:private CV_Z 0)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -58,7 +57,9 @@
         (var-set rowsp (conj! @rowsp h))
         (var-set colsp (conj! @colsp v))
         (aset ^longs @dx r (long (+ r (* r bsize))))
-        (aset ^longs @dy r (long (+ r (* bsize (dec (- bsize r))))))))
+        (aset ^longs @dy r
+              (long (+ r (* bsize
+                            (dec (- bsize r))))))))
     (into [] (concat [@dx] [@dy]
                      (persistent! @rowsp)
                      (persistent! @colsp)))
@@ -139,21 +140,24 @@
                     {:grid (vec grid) })
               ^PlayerSession cpss (:session cp)
               ^PlayerSession opss (:session op) ]
-          (.sendMessage opss (ReifyEvent Events/NETWORK_MSG
-                                         Events/C_POKE_WAIT
-                                         (json/write-str (assoc src :pnum (.number opss)))))
-          (.sendMessage cpss (ReifyEvent Events/NETWORK_MSG
-                                         Events/C_POKE_MOVE
-                                         (json/write-str (assoc src :pnum (.number cpss)))))))
+          (->> (json/write-str (assoc src
+                                      :pnum (.number opss)))
+               (ReifyEvent Msgs/SESSION
+                           Events/C_POKE_WAIT)
+               (.sendMsg opss))
+          (->> (json/write-str (assoc src
+                                      :pnum (.number cpss)))
+               (ReifyEvent Msgs/SESSION
+                           Events/C_POKE_MOVE)
+               (.sendMsg cpss))))
 
       (repoke [this]
-        (let [^PlayerSession pss (:session (.getCurActor this))
-              src {:pnum (.number pss)
-                   :grid (vec grid) } ]
-          (.sendMessage pss
-                        (ReifyEvent Events/SESSION_MSG
-                                    Events/C_POKE_MOVE
-                                    (json/write-str src )))))
+        (let [^PlayerSession pss (:session (.getCurActor this))]
+          (->> (json/write-str {:pnum (.number pss)
+                                :grid (vec grid) })
+               (ReifyEvent Msgs/SESSION
+                           Events/C_POKE_MOVE)
+                (.sendMsg pss))))
 
       (enqueue [this src]
         (let [gvs (:grid src)
@@ -181,19 +185,20 @@
 
       (broadcastStatus [this ecode data status]
         (let [^PlayerSession pss (:session (.getCurActor this))
-              ^PlayRoom room (.room pss)
-              src (merge {:grid (vec grid) :status status }
+              room (.room pss)
+              src (merge {:grid (vec grid)
+                          :status status }
                          data)
-              evt (ReifyEvent Events/NETWORK_MSG
+              evt (ReifyEvent Msgs/NETWORK
                               ecode
                               (json/write-str src)) ]
           (.broadcast room evt)))
 
       (drawGame [this cmd]
         (.onStopReset this)
-        (.broadcastStatus this Events/C_STOP
-                               {:cmd cmd :combo []}
-                               0))
+        (.broadcastStatus this
+                          Events/C_STOP
+                          {:cmd cmd :combo []} 0))
 
       (endGame [this cmd combo]
         (let [^PlayerSession pss (:session (.getCurActor this))]
@@ -201,8 +206,7 @@
           (.onStopReset this)
           (.broadcastStatus this
                             Events/C_STOP
-                            {:cmd cmd :combo combo}
-                            (.number pss))))
+                            {:cmd cmd :combo combo} (.number pss))))
 
       (toggleActor [this cmd]
         (aset #^"[Ljava.lang.Object;" actors 0
@@ -240,7 +244,6 @@
           (aget #^"[Ljava.lang.Object;" actors 1)
 
           nil))
-
   )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

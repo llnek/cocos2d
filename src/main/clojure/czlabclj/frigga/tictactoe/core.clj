@@ -15,20 +15,20 @@
 
   czlabclj.frigga.tictactoe.core
 
-  (:require [clojure.tools.logging :as log :only [info warn error debug] ]
+  (:require [clojure.tools.logging :as log :only [info warn error debug]]
             [clojure.data.json :as json]
             [clojure.string :as cstr])
 
-  (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ] ]
-        [czlabclj.xlib.util.str :only [strim nsb hgl?] ])
-
-  (:use [czlabclj.cocos2d.games.meta]
+  (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ]]
+        [czlabclj.xlib.util.str :only [strim nsb hgl?]]
+        [czlabclj.cocos2d.games.meta]
         [czlabclj.odin.event.core]
         [czlabclj.frigga.tictactoe.board])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom
                                     Player PlayerSession]
-            [com.zotohlab.odin.event Events EventDispatcher]))
+            [com.zotohlab.odin.event Msgs
+             Events Dispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -83,20 +83,20 @@
 
   (update [this evt]
     (log/debug "game engine got an update " evt)
-    (condp == (:type evt)
-      Events/NETWORK_MSG (.onNetworkMsg this evt)
-      Events/SESSION_MSG (.onSessionMsg this evt)
+    (condp = (:type evt)
+      Msgs/NETWORK (.onNetworkMsg this evt)
+      Msgs/SESSION (.onSessionMsg this evt)
       (log/warn "game engine: unhandled update event " evt)))
 
   (onNetworkMsg [this evt]
-    (condp == (:code evt)
+    (condp = (:code evt)
       Events/C_REPLAY
       (.restart this {})
 
       nil))
 
   (onSessionMsg [this evt]
-    (condp == (:code evt)
+    (condp = (:code evt)
       Events/C_REPLAY
       (.onNetworkMsg this evt)
 
@@ -107,7 +107,7 @@
             src (:source evt)
             cmd (json/read-str src
                                :key-fn keyword) ]
-        (log/debug "TicTacToe received cmd " src " from session " pss)
+        (log/debug "TicTacToe rec'ved cmd " src " from session " pss)
         (-> ^czlabclj.frigga.tictactoe.board.BoardAPI
             bd
             (.enqueue cmd)))
@@ -118,7 +118,7 @@
         (let [^PlayerSession ps (:context evt) ]
         (dosync
           (let [m (dissoc @stateRef (.id ps)) ]
-            (if (= (count m) 0)
+            (if (empty? m)
               (do
                 (ref-set stateRef {})
                 (.start this {}))
@@ -127,23 +127,23 @@
       (log/warn "game engine: unhandled session msg " evt)))
 
   (restart [this options]
-    (log/debug "restarting game one more time.....................")
+    (log/debug "restarting tictactoe game one more time...")
     (require 'czlabclj.frigga.tictactoe.core)
     (let [parr (:players @stateAtom)
-          pss (first parr)
-          room (.room ^PlayerSession pss)
-          m (mapPlayers parr)
+          room (-> ^PlayerSession
+                   (first parr) (.room))
           src (mapPlayersEx parr)
-          evt (ReifyEvent Events/NETWORK_MSG
+          m (mapPlayers parr)
+          evt (ReifyEvent Msgs/NETWORK
                           Events/C_RESTART
                           (json/write-str src)) ]
       (dosync (ref-set stateRef m))
-      (.broadcast ^PlayRoom room evt)))
+      (.broadcast room evt)))
 
   (ready [_ room]
     (require 'czlabclj.frigga.tictactoe.core)
     (let [src (mapPlayersEx (:players @stateAtom))
-          evt (ReifyEvent Events/NETWORK_MSG
+          evt (ReifyEvent Msgs/NETWORK
                           Events/C_START
                           (json/write-str src)) ]
       (.broadcast ^PlayRoom room evt)))
