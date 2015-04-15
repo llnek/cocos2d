@@ -18,7 +18,7 @@ package com.zotohlab.odin.core;
 public interface Session {
 
   public void setStatus(int status);
-  public int getStatus();
+  public int status();
 
   public boolean isShuttingDown();
   public boolean isConnected();

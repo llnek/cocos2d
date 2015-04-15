@@ -33,8 +33,9 @@ public interface GameEngine {
   public void update(Object event);
   public Object state();
 
-  public void onNetworkMsg(Object evt);
-  public void onSessionMsg(Object evt);
+//  public void onNetworkMsg(Object evt);
+//  public void onSessionMsg(Object evt);
 
+  public void onMsg(Object evt);
 
 }
