@@ -31,7 +31,7 @@
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
             [com.zotohlab.odin.game Game PlayRoom PlayerSession
                                     Player GameEngine]
-            [com.zotohlab.odin.core Session$Status Session]
+            [com.zotohlab.odin.core Session]
             [io.netty.channel Channel]
             [org.apache.commons.io FileUtils]
             [java.util.concurrent.atomic AtomicLong]

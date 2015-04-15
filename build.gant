@@ -42,6 +42,7 @@ property( environment: "env" )
 ant.path (id: 'compile.path.id') {
   path (location: "${srcDir}/clojure")
   path (location: "${outJarDir}")
+  path (location: "${cljBuildDir}")
   path (location: "${buildDir}")
   fileset (dir: "${libDir}")
   fileset (dir: "${skaroHome}/dist")
@@ -143,6 +144,7 @@ def doCompileAndJar() {
     }
   }
   ant.jar (destfile: "${libDir}/${PID}-${buildVersion}.jar") {
+    fileset (dir: "${cljBuildDir}")
     fileset (dir: "${outJarDir}")
   }
 }

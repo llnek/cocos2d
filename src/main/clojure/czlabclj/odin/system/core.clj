@@ -34,7 +34,7 @@
             [java.io File]
             [com.zotohlab.skaro.core Container]
             [com.zotohlab.odin.event
-             Msgs Events EventDispatcher]))
+             Msgs Events Dispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)

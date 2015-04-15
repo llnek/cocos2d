@@ -1,12 +1,17 @@
-skaroHome=/wdrive/dev/builds/skaro/pack
+skaroHome=/wdrive/myspace/skaro/alchemy.dir/skaro/pack
+
+
+cljBuildDir=${basedir}/alchemy.dir/clojure.org
+buildDir=${basedir}/alchemy.dir/build
+
+
+reportDir=${buildDir}/reports
+podDir=${basedir}/POD-INF
 
 ivyRoot=${skaroHome}/.ivyroot
 ivyLCacheDir=${ivyRoot}/cache
 ivyLRepoDir=${ivyRoot}/repos
 
-buildDir=${basedir}/build.output.folder
-reportDir=${buildDir}/reports
-podDir=${basedir}/POD-INF
 
 buildVersion=0.9.0
 buildDebug=true

@@ -17,7 +17,6 @@
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
             [clojure.data.json :as json]
             [clojure.string :as cstr])
-            ;;[clojure.core.async :as async])
 
   (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ]]
         [czlabclj.xlib.util.process]
@@ -31,7 +30,7 @@
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
             [com.zotohlab.odin.game Game PlayRoom
                                     Player PlayerSession]
-            [com.zotohlab.odin.core Session$Status Session]
+            [com.zotohlab.odin.core Session]
             [io.netty.channel Channel]
             [org.apache.commons.io FileUtils]
             [java.io File]
@@ -39,7 +38,7 @@
             [com.zotohlab.skaro.core Container]
             [com.zotohlab.odin.net MessageSender]
             [com.zotohlab.odin.event Events
-             Msgs Eventable EventDispatcher]))
+             Msgs Eventable Dispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -73,7 +72,7 @@
               (.getf impl :tcp)
               (.sendMessage msg))))
 
-      (onEvent [this evt]
+      (onMsg [this evt]
         (log/debug "player session " sid " , onevent called: " evt)
         ;; when it is a network msg with a specific socket attached.
         ;; it means only the same socket should apply the message,

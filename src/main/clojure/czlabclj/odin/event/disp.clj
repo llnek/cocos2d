@@ -16,17 +16,16 @@
 
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
             [clojure.data.json :as json]
-            [clojure.core.async :as async :refer :all]
+            [clojure.core.async :as cas
+             :only
+             [close! go go-loop chan >! <! ]]
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.core
          :only [ThrowUOE MakeMMap ternary test-nonil notnil? ]]
         [czlabclj.xlib.util.str :only [strim nsb hgl?] ])
 
-  (:import  [org.jetlang.core Callback Disposable]
-            [org.jetlang.fibers Fiber ThreadFiber]
-            [org.jetlang.channels MemoryChannel]
-            [com.zotohlab.odin.event Eventee Dispatcher]))
+  (:import  [com.zotohlab.odin.event Eventee Dispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -51,27 +50,27 @@
       (publish [_ msg]
         (log/debug "pub message ==== " msg)
         (doseq [c (vals @handlers)]
-          (go (>! c msg))))
+          (cas/go (cas/>! c msg))))
 
       (unsubscribe [_ cb]
         (when-let [c (@handlers cb)]
-          (close! c)
+          (cas/close! c)
           (dosync (alter handlers dissoc cb))))
 
       (subscribe [_ cb]
-        (let [^Eventee sub cb
-              c (chan 4)]
+        (let [^Eventee subr cb
+              c (cas/chan 4)]
           (dosync (alter handlers assoc cb c))
-          (go-loop []
-            (if-let [msg (<! c)]
-              (when (= (.eventType sub)
+          (cas/go-loop []
+            (if-let [msg (cas/<! c)]
+              (when (= (.eventType subr)
                        (int (:type msg)))
-                (.onEvent sub msg))
+                (.onEvent subr msg))
               (recur)))))
 
       (shutdown [_]
         (doseq [c (vals @handlers)]
-          (close! c))
+          (cas/close! c))
         (dosync (ref-set handlers {}))))
   ))
 

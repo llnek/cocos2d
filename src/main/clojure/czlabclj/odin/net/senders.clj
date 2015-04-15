@@ -14,20 +14,19 @@
 
   czlabclj.odin.net.senders
 
-  (:require [clojure.tools.logging :as log :only [info warn error debug] ]
+  (:require [clojure.tools.logging :as log :only [info warn error debug]]
             [clojure.data.json :as json]
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.core
          :only
          [ThrowUOE MakeMMap ternary test-nonil notnil? TryC]]
-        [czlabclj.xlib.util.str :only [strim nsb hgl?] ]
+        [czlabclj.xlib.util.str :only [strim nsb hgl?]]
         [czlabclj.odin.event.core])
 
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
             [com.zotohlab.odin.net MessageSender TCPSender]
-            [io.netty.channel Channel ChannelFutureListener]
-            [com.zotohlab.odin.event Events]))
+            [io.netty.channel Channel ChannelFutureListener]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)

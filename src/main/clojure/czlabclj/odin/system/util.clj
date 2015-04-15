@@ -72,8 +72,9 @@
           (log/debug "player session sent us a closed message.")
 
           TextWebSocketFrame
-          (let [^TextWebSocketFrame fr msg
-                evt (DecodeJsonEvent (.text fr) ch) ]
+          (let [evt (-> ^TextWebSocketFrame msg
+                        (.text)
+                        (DecodeJsonEvent ch))]
             (.onMsg (.room ps)
                     (assoc evt :context ps)))
 
