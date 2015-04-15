@@ -14,19 +14,19 @@
 
   czlabclj.odin.event.disp
 
-  (:require [clojure.tools.logging :as log :only [info warn error debug] ]
+  (:require [clojure.tools.logging :as log :only [info warn error debug]]
             [clojure.data.json :as json]
+            [clojure.core.async :as async :refer :all]
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.core
-         :only [ThrowUOE MakeMMap ternary test-nonil notnil? ] ]
+         :only [ThrowUOE MakeMMap ternary test-nonil notnil? ]]
         [czlabclj.xlib.util.str :only [strim nsb hgl?] ])
 
   (:import  [org.jetlang.core Callback Disposable]
             [org.jetlang.fibers Fiber ThreadFiber]
             [org.jetlang.channels MemoryChannel]
-            [java.util HashMap]
-            [com.zotohlab.odin.event EventHandler EventDispatcher]))
+            [com.zotohlab.odin.event Eventee Dispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -34,52 +34,45 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ReifyEventDispatcher ""
+(defn ReifyDispatcher ""
 
-  ^EventDispatcher
+  ^Dispatcher
   []
 
-  (let [queue (MemoryChannel.)
-        handlers (ref {})
-        fiber (ThreadFiber.) ]
-    (.start fiber)
-    (reify EventDispatcher
-      (unsubscribeIfSession [_ s]
-        (dosync
-          (doseq [^EventHandler k (keys @handlers)]
-            (when-let [ps (.session k)]
-              (when (identical? ps s)
-                (.dispose ^Disposable (get @handlers k))
-                (alter handlers dissoc k))))))
+  (let [handlers (ref {})]
+    (reify Dispatcher
 
-      (unsubscribe [_ cb]
-        (dosync
-        (if-let [^Disposable d (get @handlers cb) ]
-          (.dispose d)
-          (alter handlers dissoc cb))))
-
-      (subscribe [_ cb]
-        (let [^EventHandler hdlr cb
-              d (.subscribe
-                  queue
-                  fiber
-                  (reify Callback
-                    (onMessage [_ msg]
-                      (when (= (.eventType hdlr)
-                               (int (:type msg)))
-                        (.onEvent hdlr msg))))) ]
-          (dosync
-            (alter handlers assoc cb d))
-          d))
+      (unsubscribeIfSession [this s]
+        (doseq [^Eventee cb (keys @handlers)]
+          (when-let [ps (.session cb)]
+            (when (identical? ps s)
+              (.unsubscribe this cb)))))
 
       (publish [_ msg]
-        (log/debug "publishing message ==== " msg)
-        (.publish queue msg))
+        (log/debug "pub message ==== " msg)
+        (doseq [c (vals @handlers)]
+          (go (>! c msg))))
+
+      (unsubscribe [_ cb]
+        (when-let [c (@handlers cb)]
+          (close! c)
+          (dosync (alter handlers dissoc cb))))
+
+      (subscribe [_ cb]
+        (let [^Eventee sub cb
+              c (chan 4)]
+          (dosync (alter handlers assoc cb c))
+          (go-loop []
+            (if-let [msg (<! c)]
+              (when (= (.eventType sub)
+                       (int (:type msg)))
+                (.onEvent sub msg))
+              (recur)))))
 
       (shutdown [_]
-        (.clearSubscribers queue)
-        (.dispose fiber)
-        (dosync (ref-set handlers nil))))
+        (doseq [c (vals @handlers)]
+          (close! c))
+        (dosync (ref-set handlers {}))))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

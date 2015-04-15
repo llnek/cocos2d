@@ -24,7 +24,7 @@
   (:import  [com.zotohlab.odin.game Game PlayRoom
                                     Player PlayerSession]
             [com.zotohlab.odin.core Session]
-            [com.zotohlab.odin.event EventDispatcher]))
+            [com.zotohlab.odin.event Dispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)

@@ -14,18 +14,19 @@
 
   czlabclj.odin.event.core
 
-  (:require [clojure.tools.logging :as log :only [info warn error debug] ]
+  (:require [clojure.tools.logging :as log :only [info warn error debug]]
             [clojure.data.json :as json]
             [clojure.string :as cstr])
 
-  (:use [czlabclj.xlib.util.str :only [strim nsb hgl?] ]
+  (:use [czlabclj.xlib.util.str :only [strim nsb hgl?]]
         [czlabclj.xlib.util.core
          :only
-         [ThrowUOE MakeMMap ternary test-nonil notnil? ] ]
+         [ThrowUOE MakeMMap ternary test-nonil notnil? ]]
         [czlabclj.odin.system.util])
 
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
-            [com.zotohlab.odin.event Events InvalidEventError]))
+            [com.zotohlab.odin.event Msgs
+             Events InvalidEventError]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -97,7 +98,7 @@
    (ReifyNetworkEvent ecode source true))
 
   ([ecode source reliable?]
-   (-> (ReifyEvent Events/MSG_BCAST ecode source)
+   (-> (ReifyEvent Msgs/NETWORK ecode source)
        (assoc :reliable (true? reliable?)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -108,7 +109,7 @@
    (ReifySessionMessage ecode source nil))
 
   ([ecode source ctx]
-   (ReifyEvent Events/MSG_SESS ecode source ctx)))
+   (ReifyEvent Msgs/SESSION ecode source ctx)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

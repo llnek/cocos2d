@@ -11,9 +11,13 @@
 
 package com.zotohlab.odin.core;
 
-
+/**
+ * 
+ * @author kenl
+ *
+ */
 public enum Config {
 ;
-
+// nothing for now
 }
 

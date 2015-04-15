@@ -17,13 +17,12 @@ import com.zotohlab.odin.core.Session;
 /**
  * @author kenl
  */
-public interface EventDispatcher {
+public interface Eventee {
 
-  public void unsubscribe(EventHandler h);
-  public void subscribe( EventHandler h);
-  public void unsubscribeIfSession(Session s);
-  public void publish( Object event );
-  public void shutdown();
+  public void onEvent(Object event);
 
+  public int eventType();
+
+  public Session session();
 }
 

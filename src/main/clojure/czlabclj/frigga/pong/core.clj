@@ -14,21 +14,20 @@
 
   czlabclj.frigga.pong.core
 
-  (:require [clojure.tools.logging :as log :only [info warn error debug] ]
+  (:require [clojure.tools.logging :as log :only [info warn error debug]]
             [clojure.data.json :as json]
             [clojure.string :as cstr])
 
-  (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ] ]
-        [czlabclj.xlib.util.str :only [strim nsb hgl?] ])
-
-  (:use [czlabclj.cocos2d.games.meta]
-        [czlabclj.odin.event.core])
-
-  (:use [czlabclj.frigga.pong.arena])
+  (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ]]
+        [czlabclj.xlib.util.str :only [strim nsb hgl?]]
+        [czlabclj.cocos2d.games.meta]
+        [czlabclj.odin.event.core]
+        [czlabclj.frigga.pong.arena])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom
                                     Player PlayerSession]
-            [com.zotohlab.odin.event Events EventDispatcher]))
+            [com.zotohlab.odin.event Msgs
+             Events EventDispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -62,11 +61,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- bcastAll ""
+(defn- bcastAll "Broadcast message to all player sessions."
 
   [^PlayRoom room code cmd]
 
-  (let [evt (ReifyEvent Events/NETWORK_MSG
+  (let [evt (ReifyEvent Msgs/NETWORK
                         code
                         (if-not (nil? cmd)
                           (json/write-str cmd))) ]
@@ -101,11 +100,12 @@
   ;; updates from clients
   (update [this evt]
     (log/debug "game engine got an update " evt)
-    (condp == (:type evt)
-      Events/NETWORK_MSG (.onNetworkMsg this evt)
-      Events/SESSION_MSG (.onSessionMsg this evt)
+    (condp = (:type evt)
+      Msgs/NETWORK (throw. (Exception. "POO!!!!!!!"));;(.onNetworkMsg this evt)
+      Msgs/SESSION (.onSessionMsg this evt)
       (log/warn "game engine: unhandled update event " evt)))
 
+  ;;TODO: get rid of this
   (onNetworkMsg [this evt]
     (condp == (:code evt)
       Events/C_REPLAY
@@ -120,9 +120,10 @@
       Events/C_PLAY_MOVE
       (let [^czlabclj.frigga.pong.arena.ArenaAPI
             aa (:arena @stateAtom)
+            src (:source evt)
             pss (:context evt)]
         (log/debug "received paddle-move "
-                   (:source evt)
+                   s
                    " from session " pss)
         (.enqueue aa evt))
 
@@ -134,7 +135,7 @@
           (log/debug "received started-event from " pss)
           (dosync
             (let [m (dissoc @stateRef (.id pss)) ]
-              (if (== (count m) 0)
+              (if (empty? m)
                 (do
                   (ref-set stateRef {})
                   (.start this cmd))
@@ -147,8 +148,9 @@
     (require 'czlabclj.frigga.pong.core)
     (let [parr (:players @stateAtom)
           m (mapPlayers parr)
-          ^PlayerSession pss (first parr)
-          ^PlayRoom room (.room pss)]
+          room (-> ^PlayerSession
+                   (first parr)
+                   (.room ))]
       (dosync (ref-set stateRef m))
       (bcastAll room
                 Events/C_RESTART

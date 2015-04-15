@@ -11,16 +11,17 @@
 
 package com.zotohlab.odin.event;
 
-import com.zotohlab.odin.event.EventHandler;
+import com.zotohlab.odin.event.Eventee;
 
 /**
  * @author kenl
  */
 public interface Eventable {
 
-  public void removeHandler(EventHandler h);
-  public void addHandler(EventHandler h);
   public void sendMessage(Object msg);
-
-  public void onEvent(Object event);
+  public void onMsg(Object event);
+  
+  public void removeHandler(Eventee h);
+  public void addHandler(Eventee h);
+  
 }

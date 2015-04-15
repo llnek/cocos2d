@@ -25,10 +25,9 @@
 
   (:import  [com.zotohlab.odin.game Game PlayRoom
                                     Player PlayerSession]
-            [io.netty.handler.codec.http.websocketx TextWebSocketFrame
-                                                    PingWebSocketFrame
-                                                    PongWebSocketFrame
-                                                    CloseWebSocketFrame]
+            [io.netty.handler.codec.http.websocketx
+             TextWebSocketFrame PingWebSocketFrame
+             PongWebSocketFrame CloseWebSocketFrame]
             [io.netty.channel Channel ChannelHandler
                               ChannelHandlerContext]
             [org.apache.commons.io FileUtils]
@@ -36,7 +35,7 @@
             [com.zotohlab.skaro.core Container]
             [com.zotohlab.frwk.netty NettyFW SimpleInboundFilter]
             [com.zotohlab.odin.event InvalidEventError
-                                     Events EventDispatcher]))
+                                     Events Dispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -58,7 +57,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- protocolHandler ""
+(defn- protocolHandler "Odin event handler."
 
   ^ChannelHandler
   [^PlayerSession ps]
@@ -75,8 +74,8 @@
           TextWebSocketFrame
           (let [^TextWebSocketFrame fr msg
                 evt (DecodeJsonEvent (.text fr) ch) ]
-            (.onEvent (.room ps)
-                      (assoc evt :context ps)))
+            (.onMsg (.room ps)
+                    (assoc evt :context ps)))
 
           PingWebSocketFrame
           (let [^PingWebSocketFrame fr msg

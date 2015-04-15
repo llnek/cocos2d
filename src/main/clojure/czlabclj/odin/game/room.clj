@@ -14,14 +14,14 @@
 
   czlabclj.odin.game.room
 
-  (:require [clojure.tools.logging :as log :only [info warn error debug] ]
+  (:require [clojure.tools.logging :as log :only [info warn error debug]]
             [clojure.data.json :as json]
             [clojure.string :as cstr])
 
-  (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ] ]
+  (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ]]
         [czlabclj.xlib.util.guids :only [NewUUid]]
         [czlabclj.xlib.util.meta :only [MakeObjArgN]]
-        [czlabclj.xlib.util.str :only [strim nsb hgl?] ]
+        [czlabclj.xlib.util.str :only [strim nsb hgl?]]
         [czlabclj.odin.system.util]
         [czlabclj.odin.event.core]
         [czlabclj.odin.event.disp]
@@ -39,8 +39,8 @@
             [java.util ArrayList]
             [java.io File]
             [com.zotohlab.skaro.core Container]
-            [com.zotohlab.odin.event Events EventHandler
-                                     Eventable EventDispatcher]))
+            [com.zotohlab.odin.event Events Eventee
+             Msgs Eventable Dispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -54,11 +54,11 @@
 ;;
 (defn- mkNetworkSubr ""
 
-  ^EventHandler
+  ^Eventee
   [^PlayerSession ps]
 
-  (reify EventHandler
-    (eventType [_] Events/MSG_BCAST)
+  (reify Eventee
+    (eventType [_] Msgs/NETWORK)
     (session [_] ps)
     (onEvent [_ evt]
       ;; if a context is given, then only the
@@ -80,7 +80,7 @@
                             (atom {})
                             (ref {}))
         created (System/currentTimeMillis)
-        disp (ReifyEventDispatcher)
+        disp (ReifyDispatcher)
         sessions (ref {})
         pssArr (ref [])
         pcount (AtomicLong.)
@@ -111,7 +111,7 @@
             (alter sessions assoc (.id ps) ps)
             (alter pssArr conj ps))
           (.addSession py ps)
-          (.broadcast this (ReifyEvent Events/MSG_BCAST
+          (.broadcast this (ReifyEvent Msgs/NETWORK
                                        Events/C_PLAYER_JOINED
                                        (json/write-str src)))
           ps))
@@ -145,7 +145,7 @@
           (log/debug "activating room " rid)
           (.setf! impl :active true)
           (doseq [v sss]
-            (.addHandler this (mkNetworkSubr v)))
+            (.add this (mkNetworkSubr v)))
           (.initialize sm sss)
           (.ready sm this)))
 
@@ -155,14 +155,14 @@
 
       (addHandler [_ h] (.subscribe disp h))
 
-      (sendMessage [this msg] (.onEvent this msg))
+      (sendMessage [this msg] (.onMsg this msg))
 
-      (onEvent [this evt]
+      (onMsg [this evt]
         (let [^GameEngine sm (.engine this) ]
           (log/debug "room got an event " evt)
-          (condp == (:type evt)
-            Events/MSG_BCAST (.broadcast this evt)
-            Events/MSG_SESS (.update sm evt)
+          (condp = (:type evt)
+            Msgs/NETWORK (.broadcast this evt)
+            Msgs/SESSION (.update sm evt)
             (log/warn "room.onevent: unhandled event " evt))))
 
       Object
@@ -176,12 +176,11 @@
         (if (nil? obj)
           false
           (or (identical? this obj)
-              (and (= (.getClass this)
-                      (.getClass obj))
-                   (= (.roomId ^PlayRoom obj)
-                      (.roomId this))))))
-      )
-  ))
+              (and (== (.getClass this)
+                       (.getClass obj))
+                   (== (.roomId ^PlayRoom obj)
+                       (.roomId this))))))
+  )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -219,7 +218,7 @@
             src {:room (.roomId room)
                  :game (.id game)
                  :pnum (.number ps)}
-            evt (ReifyEvent Events/MSG_SESS
+            evt (ReifyEvent Msgs/SESSION
                             Events/C_PLAYREQ_OK
                             (json/write-str src)) ]
         (ApplyGameHandler ps ch)
@@ -246,7 +245,7 @@
             src {:room (.roomId room)
                  :game (.id game)
                  :pnum (.number pss) }
-            evt (ReifyEvent Events/MSG_SESS
+            evt (ReifyEvent Msgs/SESSION
                             Events/C_JOINREQ_OK
                             (json/write-str src)) ]
         (ApplyGameHandler pss ch)

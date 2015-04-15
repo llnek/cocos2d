@@ -9,28 +9,27 @@
 ;; this software.
 ;; Copyright (c) 2013-2014, Ken Leung. All rights reserved.
 
-
 (ns ^{:doc ""
       :author "kenl"}
 
   czlabclj.frigga.pong.arena
 
-  (:require [clojure.tools.logging :as log :only [info warn error debug] ]
+  (:require [clojure.tools.logging :as log :only [info warn error debug]]
             [clojure.data.json :as json]
             [clojure.string :as cstr])
             ;;[clojure.core.async :as async])
 
   (:use [czlabclj.xlib.util.core
-         :only [MakeMMap ternary notnil? RandomSign TryC] ]
+         :only [MakeMMap ternary notnil? RandomSign TryC]]
         [czlabclj.xlib.util.process :only [Coroutine]]
-        [czlabclj.xlib.util.str :only [strim nsb hgl?] ])
-
-  (:use [czlabclj.cocos2d.games.meta]
+        [czlabclj.xlib.util.str :only [strim nsb hgl?]]
+        [czlabclj.cocos2d.games.meta]
         [czlabclj.odin.event.core])
 
-  (:import  [com.zotohlab.odin.game GameEngine Game PlayRoom
-                                    Player PlayerSession]
-            [com.zotohlab.odin.event Events EventDispatcher]))
+  (:import  [com.zotohlab.odin.game GameEngine Game
+             PlayRoom Player PlayerSession]
+            [com.zotohlab.odin.event Msgs
+             Events EventDispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -266,10 +265,10 @@
         src {:scores {:p2 s2 :p1 s1 }}]
     ;;TODO should be network msg
     ;; update scores
-    (.sendMessage ps2 (ReifyEvent Events/SESSION_MSG
-                                  Events/C_SYNC_ARENA
+    (.sendMessage ps2 (ReifyEvent Msgs/SESSION
+                                  Msgs/C_SYNC_ARENA
                                   (json/write-str src)))
-    (.sendMessage ps1 (ReifyEvent Events/SESSION_MSG
+    (.sendMessage ps1 (ReifyEvent Msgs/SESSION
                                   Events/C_SYNC_ARENA
                                   (json/write-str src)))
     ;; toggle flag to skip game loop logic until new
@@ -295,16 +294,16 @@
                       :scores {:p2 s2 :p1 s1 }}}]
     ;; end game
     (log/debug "game over: winner of this game is " src)
-    (.sendMessage ps2 (ReifyEvent Events/SESSION_MSG
+    (.sendMessage ps2 (ReifyEvent Msgs/SESSION
                                   Events/C_SYNC_ARENA
                                   (json/write-str src)))
-    (.sendMessage ps1 (ReifyEvent Events/SESSION_MSG
+    (.sendMessage ps1 (ReifyEvent Msgs/SESSION
                                   Events/C_SYNC_ARENA
                                   (json/write-str src)))
 
-    (.sendMessage ps2 (ReifyEvent Events/NETWORK_MSG
+    (.sendMessage ps2 (ReifyEvent Msgs/NETWORK
                                   Events/C_STOP))
-    (.sendMessage ps1 (ReifyEvent Events/NETWORK_MSG
+    (.sendMessage ps1 (ReifyEvent Msgs/NETWORK
                                   Events/C_STOP))
 
   ))
@@ -399,10 +398,10 @@
                     :vx (.getf ball :vx) }} ]
     ;; TODO: use network-msg
     (log/debug "sync new BALL values " (:ball src))
-    (.sendMessage ps2 (ReifyEvent Events/SESSION_MSG
+    (.sendMessage ps2 (ReifyEvent Msgs/SESSION
                                   Events/C_SYNC_ARENA
                                   (json/write-str src)))
-    (.sendMessage ps1 (ReifyEvent Events/SESSION_MSG
+    (.sendMessage ps1 (ReifyEvent Msgs/SESSION
                                   Events/C_SYNC_ARENA
                                   (json/write-str src)))
   ))
@@ -533,16 +532,17 @@
                     :vy (.getf ball :vy)
                     :x (.getf ball :x)
                     :y (.getf ball :y)} }]
-    (.sendMessage p2 (ReifyEvent Events/SESSION_MSG
+    (.sendMessage p2 (ReifyEvent Msgs/SESSION
                                  Events/C_POKE_MOVE
                                  (json/write-str {:pnum (.number p2)})))
-    (.sendMessage p1 (ReifyEvent Events/SESSION_MSG
+    (.sendMessage p1 (ReifyEvent Msgs/SESSION
                                  Events/C_POKE_MOVE
                                  (json/write-str {:pnum (.number p1)})))
-    (.sendMessage p2 (ReifyEvent Events/SESSION_MSG
+    ;;TODO: network msg
+    (.sendMessage p2 (ReifyEvent Msgs/SESSION
                                  Events/C_SYNC_ARENA
                                  (json/write-str src)))
-    (.sendMessage p1 (ReifyEvent Events/SESSION_MSG
+    (.sendMessage p1 (ReifyEvent Msgs/SESSION
                                  Events/C_SYNC_ARENA
                                  (json/write-str src)))
     (log/debug "setting default ball values " src)
@@ -567,15 +567,17 @@
             (> (- (:top world)(:bottom world))
                (- (:right world)(:left world))))
     (reify ArenaAPI
-      (registerPlayers [this ps1 ps2]
+      (registerPlayers [this p1Wrap p2Wrap]
         ;;(require 'czlabclj.frigga.pong.arena)
         (.setf! impl :arena this)
-        (.setf! impl :p2 ps2)
-        (.setf! impl :p1 ps1)
+        (.setf! impl :p2 p2Wrap)
+        (.setf! impl :p1 p1Wrap)
         (initEntities impl pp1 pp2 pd ba))
 
-      (getPlayer2 [_] (.getf impl :p2))
-      (getPlayer1 [_] (.getf impl :p1))
+      (getPlayer2 [_] (-> (.getf impl :p2)
+                          (.player)))
+      (getPlayer1 [_] (-> (.getf impl :p1)
+                          (.player)))
 
       (restart [_]
         (.setf! impl :resetting-point false)
@@ -597,23 +599,22 @@
               ^PlayerSession p1 (:session (.getf impl :p1))
               ^PlayerSession pss (:context evt)
               pnum (.number pss)
-              kw (if (== pnum 1) :p1 :p2)
-              pt (if (== pnum 1) p2 p1)
+              kw (if (= pnum 1) :p1 :p2)
+              pt (if (= pnum 1) p2 p1)
               src (:source evt)
               cmd (json/read-str src :key-fn keyword)
               ;;pv (* (:dir (kw cmd)) (:speed pd))
               pv (:pv (kw cmd))
               ^czlabclj.xlib.util.core.MubleAPI
-              other (if (== pnum 2)
+              other (if (= pnum 2)
                       (.getf impl :paddle2)
                       (.getf impl :paddle1))]
           (if (.getf impl :portrait)
             (.setf! other :vx pv)
             (.setf! other :vy pv))
-          (.sendMessage pt (ReifyEvent Events/SESSION_MSG
+          (.sendMessage pt (ReifyEvent Msgs/SESSION
                                        Events/C_SYNC_ARENA
                                        (json/write-str cmd)))))
-
     )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

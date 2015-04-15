@@ -39,7 +39,7 @@
             [com.zotohlab.skaro.core Container]
             [com.zotohlab.odin.net MessageSender]
             [com.zotohlab.odin.event Events
-                                     Eventable EventDispatcher]))
+             Msgs Eventable EventDispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -69,8 +69,9 @@
       ;; send a message to client
       (sendMessage [this msg]
         (when (.isConnected this)
-          (let [^MessageSender s (.getf impl :tcp)]
-            (.sendMessage s msg))))
+          (-> ^MessageSender
+              (.getf impl :tcp)
+              (.sendMessage msg))))
 
       (onEvent [this evt]
         (log/debug "player session " sid " , onevent called: " evt)
@@ -78,7 +79,7 @@
         ;; it means only the same socket should apply the message,
         ;; others should ignore - do nothing.
         (when-not (.getf impl :shutting-down)
-          (if (and (= Events/MSG_BCAST (:type evt))
+          (if (and (= Msgs/NETWORK (:type evt))
                    (notnil? (:context evt)))
             (when (identical? this
                               (:context evt))
@@ -86,7 +87,7 @@
               ;; change the type to SESSION_MSG.
               (.sendMessage this
                             (assoc evt
-                                   :type Events/MSG_SESS)))
+                                   :type Msgs/SESSION)))
             (.sendMessage this evt))))
 
       (removeHandler [_ h] )
@@ -106,7 +107,8 @@
       (setStatus [_ s] (.setf! impl :status s))
       (getStatus [_] (.getf impl :status))
 
-      (isConnected [_] (= Events/S_CONNECTED (.getf impl :status)))
+      (isConnected [_] (= Events/S_CONNECTED
+                          (.getf impl :status)))
       (close [this]
         (locking this
           (when (.isConnected this)
@@ -120,21 +122,17 @@
 
       Object
 
-      (hashCode [this]
-        (if-let [ n (.id this) ]
-          (.hashCode n)
-          31))
+      (hashCode [me] (if-let [n (.id me)] (.hashCode n) 31))
 
       (equals [this obj]
         (if (nil? obj)
           false
           (or (identical? this obj)
-              (and (= (.getClass this)
-                      (.getClass obj))
-                   (= (.id ^Session obj)
-                      (.id this))))))
-    )
-  ))
+              (and (== (.getClass this)
+                       (.getClass obj))
+                   (== (.id ^Session obj)
+                       (.id this))))))
+  )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
