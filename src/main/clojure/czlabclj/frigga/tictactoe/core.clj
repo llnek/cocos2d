@@ -16,13 +16,14 @@
   czlabclj.frigga.tictactoe.core
 
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
-            [clojure.data.json :as json]
+            [clojure.data.json :as js]
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ]]
         [czlabclj.xlib.util.str :only [strim nsb hgl?]]
         [czlabclj.cocos2d.games.meta]
         [czlabclj.odin.event.core]
+        [czlabclj.frigga.core.util]
         [czlabclj.frigga.tictactoe.board])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom GameEngine
@@ -32,32 +33,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- mapPlayers ""
-
-  [players]
-
-  (reduce #(assoc %1 (.id ^PlayerSession %2) %2)
-          {}
-          players
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- mapPlayersEx ""
-
-  [players]
-
-  {:ppids (reduce (fn [memo ^PlayerSession ps]
-                      (assoc memo
-                             (.id (.player ps))
-                             [ (.number ps) (.id (.player ps)) ]))
-                    {}
-                    players) })
-
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -80,6 +55,7 @@
   [^GameEngine eng evt stateAtom stateRef]
 
   (condp = (:code evt)
+    ;;TODO: remove this
     Events/C_REPLAY
     (onNetworkMsg eng evt)
 

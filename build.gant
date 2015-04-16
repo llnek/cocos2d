@@ -217,6 +217,8 @@ def doCompileClj() {
     arg (value: 'czlabclj.odin.game.room')
     arg (value: 'czlabclj.odin.game.msgreq')
 
+    arg (value: 'czlabclj.frigga.core.util')
+
     arg (value: 'czlabclj.frigga.tictactoe.board')
     arg (value: 'czlabclj.frigga.tictactoe.core')
     arg (value: 'czlabclj.frigga.pong.arena')
