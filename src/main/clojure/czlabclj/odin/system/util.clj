@@ -64,7 +64,9 @@
 
   (proxy [SimpleInboundFilter][]
     (channelRead0 [ctx msg]
-      (let [ch (.channel ^ChannelHandlerContext ctx) ]
+      (let [ch (-> ^ChannelHandlerContext
+                   ctx
+                   (.channel))]
         (condp instance? msg
 
           ;; TODO: handle closing of socket
@@ -79,8 +81,9 @@
                     (assoc evt :context ps)))
 
           PingWebSocketFrame
-          (let [^PingWebSocketFrame fr msg
-                ct (.content fr) ]
+          (let [ct (-> ^PingWebSocketFrame
+                       msg
+                       (.content)) ]
             (.retain ct)
             (.writeAndFlush ch (PongWebSocketFrame. ct)))
 
