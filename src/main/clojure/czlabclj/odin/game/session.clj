@@ -104,7 +104,7 @@
       (id [_] sid)
 
       (setStatus [_ s] (.setf! impl :status s))
-      (getStatus [_] (.getf impl :status))
+      (status [_] (.getf impl :status))
 
       (isConnected [_] (= Events/S_CONNECTED
                           (.getf impl :status)))

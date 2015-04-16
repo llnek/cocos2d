@@ -24,7 +24,7 @@
         [czlabclj.odin.event.core]
         [czlabclj.frigga.pong.arena])
 
-  (:import  [com.zotohlab.odin.game Game PlayRoom
+  (:import  [com.zotohlab.odin.game Game PlayRoom GameEngine
                                     Player PlayerSession]
             [com.zotohlab.odin.event Msgs
              Events Dispatcher]))
@@ -74,6 +74,58 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+(defn- onNetworkMsg
+
+  ""
+
+  [^GameEngine eng evt stateAtom stateRef]
+
+  (condp = (:code evt)
+    Events/C_REPLAY
+    (.restart eng {})
+
+    (log/warn "game engine: unhandled network msg " evt)
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- onSessionMsg ""
+
+  [^GameEngine eng evt stateAtom stateRef]
+
+  (condp = (:code evt)
+    Events/C_REPLAY
+    (onNetworkMsg eng evt stateAtom stateRef)
+
+    Events/C_PLAY_MOVE
+    (let [^czlabclj.frigga.pong.arena.ArenaAPI
+          aa (:arena @stateAtom)
+          src (:source evt)
+          pss (:context evt)]
+      (log/debug "received paddle-move "
+                 src
+                 " from session " pss)
+      (.enqueue aa evt))
+
+    Events/C_STARTED
+    (do
+      (let [^PlayerSession pss (:context evt)
+            src (:source evt)
+            cmd (json/read-str src :key-fn keyword) ]
+        (log/debug "received started-event from " pss)
+        (dosync
+          (let [m (dissoc @stateRef (.id pss)) ]
+            (if (empty? m)
+              (do
+                (ref-set stateRef {})
+                (.start eng cmd))
+              (ref-set stateRef m))))))
+
+    (log/warn "game engine: unhandled session msg " evt)
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 (deftype Pong [stateAtom stateRef] com.zotohlab.odin.game.GameEngine
 
   ;; one time only, sets up the players
@@ -100,48 +152,14 @@
   ;; updates from clients
   (update [this evt]
     (log/debug "game engine got an update " evt)
+    (.onMsg this evt))
+
+  (onMsg [this evt]
     (condp = (:type evt)
-      Msgs/NETWORK (throw (Exception. "POO!!!!!!!"));;(.onNetworkMsg this evt)
-      Msgs/SESSION (.onSessionMsg this evt)
-      (log/warn "game engine: unhandled update event " evt)))
-
-  ;;TODO: get rid of this
-  (onNetworkMsg [this evt]
-    (condp == (:code evt)
-      Events/C_REPLAY
-      (.restart this {})
+      Msgs/NETWORK
+      (onNetworkMsg this evt stateAtom stateRef)
+      (onSessionMsg this evt stateAtom stateRef)
       nil))
-
-  (onSessionMsg [this evt]
-    (condp == (:code evt)
-      Events/C_REPLAY
-      (.onNetworkMsg this evt)
-
-      Events/C_PLAY_MOVE
-      (let [^czlabclj.frigga.pong.arena.ArenaAPI
-            aa (:arena @stateAtom)
-            src (:source evt)
-            pss (:context evt)]
-        (log/debug "received paddle-move "
-                   src
-                   " from session " pss)
-        (.enqueue aa evt))
-
-      Events/C_STARTED
-      (do
-        (let [^PlayerSession pss (:context evt)
-              src (:source evt)
-              cmd (json/read-str src :key-fn keyword) ]
-          (log/debug "received started-event from " pss)
-          (dosync
-            (let [m (dissoc @stateRef (.id pss)) ]
-              (if (empty? m)
-                (do
-                  (ref-set stateRef {})
-                  (.start this cmd))
-                (ref-set stateRef m))))))
-
-      (log/warn "game engine: unhandled session msg " evt)))
 
   (restart [this options]
     (log/debug "restarting game one more time.")

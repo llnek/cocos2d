@@ -25,7 +25,7 @@
         [czlabclj.odin.event.core]
         [czlabclj.frigga.tictactoe.board])
 
-  (:import  [com.zotohlab.odin.game Game PlayRoom
+  (:import  [com.zotohlab.odin.game Game PlayRoom GameEngine
                                     Player PlayerSession]
             [com.zotohlab.odin.event Msgs
              Events Dispatcher]))
@@ -58,6 +58,58 @@
                     {}
                     players) })
 
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- onNetworkMsg ""
+
+  [^GameEngine eng evt stateAtom stateRef]
+
+  (condp = (:code evt)
+    Events/C_REPLAY
+    (.restart eng {})
+
+    (log/warn "game engine: unhandled network msg " evt)
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- onSessionMsg ""
+
+  [^GameEngine eng evt stateAtom stateRef]
+
+  (condp = (:code evt)
+    Events/C_REPLAY
+    (onNetworkMsg eng evt)
+
+    Events/C_PLAY_MOVE
+    (let [bd (:board @stateAtom)
+          ;;cp (.getCurActor bd)
+          pss (:context evt)
+          src (:source evt)
+          cmd (json/read-str src
+                             :key-fn keyword) ]
+      (log/debug "TicTacToe rec'ved cmd " src " from session " pss)
+      (-> ^czlabclj.frigga.tictactoe.board.BoardAPI
+          bd
+          (.enqueue cmd)))
+
+    Events/C_STARTED
+    (do
+      (log/debug "TicTacToe received started event " evt)
+      (let [^PlayerSession ps (:context evt) ]
+      (dosync
+        (let [m (dissoc @stateRef (.id ps)) ]
+          (if (empty? m)
+            (do
+              (ref-set stateRef {})
+              (.start eng {}))
+            (ref-set stateRef m))))))
+
+    (log/warn "game engine: unhandled session msg " evt)
+  ))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (deftype TicTacToe [stateAtom stateRef]
@@ -83,48 +135,17 @@
 
   (update [this evt]
     (log/debug "game engine got an update " evt)
+    (.onMsg this evt))
+
+  (onMsg [this evt]
     (condp = (:type evt)
-      Msgs/NETWORK (.onNetworkMsg this evt)
-      Msgs/SESSION (.onSessionMsg this evt)
-      (log/warn "game engine: unhandled update event " evt)))
+      Msgs/NETWORK
+      (onNetworkMsg this evt stateAtom stateRef)
 
-  (onNetworkMsg [this evt]
-    (condp = (:code evt)
-      Events/C_REPLAY
-      (.restart this {})
+      Msgs/SESSION
+      (onSessionMsg this evt stateAtom stateRef)
 
-      nil))
-
-  (onSessionMsg [this evt]
-    (condp = (:code evt)
-      Events/C_REPLAY
-      (.onNetworkMsg this evt)
-
-      Events/C_PLAY_MOVE
-      (let [bd (:board @stateAtom)
-            ;;cp (.getCurActor bd)
-            pss (:context evt)
-            src (:source evt)
-            cmd (json/read-str src
-                               :key-fn keyword) ]
-        (log/debug "TicTacToe rec'ved cmd " src " from session " pss)
-        (-> ^czlabclj.frigga.tictactoe.board.BoardAPI
-            bd
-            (.enqueue cmd)))
-
-      Events/C_STARTED
-      (do
-        (log/debug "TicTacToe received started event " evt)
-        (let [^PlayerSession ps (:context evt) ]
-        (dosync
-          (let [m (dissoc @stateRef (.id ps)) ]
-            (if (empty? m)
-              (do
-                (ref-set stateRef {})
-                (.start this {}))
-              (ref-set stateRef m))))))
-
-      (log/warn "game engine: unhandled session msg " evt)))
+      (log/warn "game engine: unhandled msg " evt)))
 
   (restart [this options]
     (log/debug "restarting tictactoe game one more time...")

@@ -23,7 +23,7 @@ public interface Player {
   public void logout(PlayerSession s);
 
   public void setName(String name);
-  public String name();
+  public String getName();
 
   public void setEmailId(String emailId);
   public String emailId();
