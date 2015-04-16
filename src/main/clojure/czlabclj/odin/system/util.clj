@@ -15,13 +15,14 @@
   czlabclj.odin.system.util
 
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
-            [clojure.data.json :as json]
+            ;;[clojure.data.json :as js]
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.str :only [strim nsb hgl?]]
         [czlabclj.xlib.util.core
          :only
-         [TryCR MakeMMap ternary notnil? juid]])
+         [MakeMMap ternary notnil? juid]]
+        [czlabclj.odin.event.core])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom
                                     Player PlayerSession]
@@ -30,30 +31,14 @@
              PongWebSocketFrame CloseWebSocketFrame]
             [io.netty.channel Channel ChannelHandler
                               ChannelHandlerContext]
-            [org.apache.commons.io FileUtils]
-            [java.io File]
             [com.zotohlab.skaro.core Container]
             [com.zotohlab.frwk.netty NettyFW SimpleInboundFilter]
             [com.zotohlab.odin.event InvalidEventError
-                                     Events Dispatcher]))
+             Msgs Events Dispatcher]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn DecodeJsonEvent "returns event with socket info attached."
-
-  [^String data socket]
-
-  (log/debug "wsock: received json event: " data)
-  (TryCR
-    {:type -1}
-    (let [evt (json/read-str data :key-fn keyword) ]
-      (when-not (number? (:type evt))
-        (throw (InvalidEventError. "event object has no type info.")))
-      (assoc evt :socket socket))
-  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -69,9 +54,9 @@
                    (.channel))]
         (condp instance? msg
 
-          ;; TODO: handle closing of socket
           CloseWebSocketFrame
-          (log/debug "player session sent us a closed message.")
+          (->> (ReifyNWEvent Events/C_QUIT_GAME nil ps)
+               (.onMsg (.room ps)))
 
           TextWebSocketFrame
           (let [evt (-> ^TextWebSocketFrame msg

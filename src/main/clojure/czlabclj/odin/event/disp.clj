@@ -15,21 +15,38 @@
   czlabclj.odin.event.disp
 
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
-            [clojure.data.json :as json]
             [clojure.core.async :as cas
              :only
              [close! go go-loop chan >! <! ]]
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.core
-         :only [ThrowUOE MakeMMap ternary test-nonil notnil? ]]
-        [czlabclj.xlib.util.str :only [strim nsb hgl?] ])
+         :only
+         [ternary TryC]]
+        [czlabclj.odin.event.core]
+        [czlabclj.xlib.util.str :only [strim nsb hgl?]])
 
-  (:import  [com.zotohlab.odin.event Eventee Dispatcher]))
+  (:import  [com.zotohlab.odin.event Eventee Dispatcher]
+            [com.zotohlab.odin.net TCPSender]
+            [io.netty.channel Channel]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn ReifyReliableSender ""
+
+  ^TCPSender
+  [^Channel ch]
+
+  (reify TCPSender
+    (sendMsg [_ msg] (.writeAndFlush ch (EventToFrame msg)))
+    (isReliable [_] true)
+    (shutdown [_]
+      (log/debug "going to close tcp connection " ch)
+      (TryC (.close ch)))
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

@@ -15,25 +15,22 @@
   czlabclj.odin.game.session
 
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
-            [clojure.data.json :as json]
+            ;;[clojure.data.json :as js]
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ]]
         [czlabclj.xlib.util.process]
         [czlabclj.xlib.util.guids]
         [czlabclj.xlib.util.str :only [strim nsb hgl?]]
-        [czlabclj.odin.net.senders]
         [czlabclj.odin.event.core]
-        [czlabclj.odin.system.util]
-        [czlabclj.odin.system.rego])
+        [czlabclj.odin.net.wsock]
+        [czlabclj.odin.system.util])
 
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
             [com.zotohlab.odin.game Game PlayRoom
                                     Player PlayerSession]
             [com.zotohlab.odin.core Session]
             [io.netty.channel Channel]
-            [org.apache.commons.io FileUtils]
-            [java.io File]
             [com.zotohlab.frwk.util CoreUtils]
             [com.zotohlab.skaro.core Container]
             [com.zotohlab.odin.net MessageSender]

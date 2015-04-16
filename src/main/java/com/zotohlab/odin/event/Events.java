@@ -44,6 +44,8 @@ public interface Events {
   public static final long C_PLAY_MOVE            = 55L;
   public static final long C_REPLAY         = 56L;
 
+  public static final long C_QUIT_GAME         = 60L;
+  
 
   public static final long C_PLAYER_JOINED       = 90L;
   public static final long C_STARTED             = 95L;

@@ -15,14 +15,13 @@
   czlabclj.odin.event.core
 
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
-            [clojure.data.json :as json]
+            [clojure.data.json :as js]
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.str :only [strim nsb hgl?]]
         [czlabclj.xlib.util.core
          :only
-         [ThrowUOE MakeMMap ternary test-nonil notnil? ]]
-        [czlabclj.odin.system.util])
+         [TryCR ternary]])
 
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
             [com.zotohlab.odin.event Msgs
@@ -57,9 +56,25 @@
           evt (if (nil? ecode)
                 b2
                 (assoc b2 :code ecode)) ]
-      (TextWebSocketFrame. ^String
-                           (json/write-str evt)))))
+      (TextWebSocketFrame. ^String (js/write-str evt)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn DecodeJsonEvent
+
+  "returns event with socket info attached.
+  If error, catch and return it with an invalid type."
+
+  [^String data socket]
+
+  (log/debug "decoding json: " data)
+  (TryCR
+    {:type -1}
+    (let [evt (js/read-str data :key-fn keyword) ]
+      (when-not (number? (:type evt))
+        (throw (InvalidEventError. "event has no type info.")))
+      (assoc evt :socket socket))
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -92,10 +107,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ReifyNetworkEvent "Make a Network Event."
+(defn ReifyNWEvent "Make a Network Event."
 
   ([ecode source]
-   (ReifyNetworkEvent ecode source true))
+   (ReifyNWEvent ecode source true))
 
   ([ecode source reliable?]
    (-> (ReifyEvent Msgs/NETWORK ecode source)
@@ -103,10 +118,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ReifySessionMessage "Make a Session Event."
+(defn ReifySSEvent "Make a Session Event."
 
   ([ecode source]
-   (ReifySessionMessage ecode source nil))
+   (ReifySSEvent ecode source nil))
 
   ([ecode source ctx]
    (ReifyEvent Msgs/SESSION ecode source ctx)))
