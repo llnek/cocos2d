@@ -34,8 +34,7 @@
             [com.zotohlab.frwk.util CoreUtils]
             [com.zotohlab.skaro.core Container]
             [com.zotohlab.odin.net MessageSender]
-            [com.zotohlab.odin.event Events
-             Msgs Eventable Dispatcher]))
+            [com.zotohlab.odin.event Events Msgs Eventable]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -50,7 +49,6 @@
 
   (let [created (System/currentTimeMillis)
         sid (GenerateUID (class Session))
-        ;;ch (async/chan (async/sliding-buffer 10))
         impl (MakeMMap) ]
     (.setf! impl :status Events/S_NOT_CONNECTED)
     (.setf! impl :shutting-down false)

@@ -33,8 +33,7 @@
             [java.io File]
             [io.netty.channel Channel]
             [com.zotohlab.skaro.core Container]
-            [com.zotohlab.odin.event
-             Msgs Events Dispatcher]))
+            [com.zotohlab.odin.event Msgs Events]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -44,15 +43,15 @@
 ;; Main entry point.
 (defn OdinOnEvent ""
 
-  [evt]
+  [^Container ctr evt]
 
   (let [etype (:type evt)]
     (condp = etype
       Events/PLAYGAME_REQ
-      (DoPlayReq evt)
+      (DoPlayReq ctr evt)
 
       Events/JOINGAME_REQ
-      (DoJoinReq evt)
+      (DoJoinReq ctr evt)
 
       (log/warn "unhandled event " evt))))
 
@@ -82,7 +81,7 @@
       (let [^WebSockEvent evt (.event j)
             ^XData data (.getData evt)
             co (.container (.emitter evt)) ]
-        (OdinOnEvent (DecodeEvent (.stringify data)
+        (OdinOnEvent co (DecodeEvent (.stringify data)
                                   (.getSocket evt)))))
   ))
 

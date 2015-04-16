@@ -21,37 +21,37 @@ public interface Events {
   public static final long JOINGAME_REQ          = 4L;
 
   // Event code
-  public static final long C_PLAYREQ_NOK         = 10L;
-  public static final long C_JOINREQ_NOK         = 11L;
-  public static final long C_USER_NOK            = 12L;
-  public static final long C_GAME_NOK            = 13L;
-  public static final long C_ROOM_NOK            = 14L;
-  public static final long C_ROOM_FILLED         = 15L;
-  public static final long C_ROOMS_FULL          = 16L;
+  public static final long PLAYREQ_NOK         = 10L;
+  public static final long JOINREQ_NOK         = 11L;
+  public static final long USER_NOK            = 12L;
+  public static final long GAME_NOK            = 13L;
+  public static final long ROOM_NOK            = 14L;
+  public static final long ROOM_FILLED         = 15L;
+  public static final long ROOMS_FULL          = 16L;
 
-  public static final long C_PLAYREQ_OK          = 30L;
-  public static final long C_JOINREQ_OK          = 31L;
+  public static final long PLAYREQ_OK          = 30L;
+  public static final long JOINREQ_OK          = 31L;
 
-  public static final long C_AWAIT_START         = 40L;
-  public static final long C_SYNC_ARENA          = 45;
-  public static final long C_POKE_RUMBLE         = 46;
+  public static final long AWAIT_START         = 40L;
+  public static final long SYNC_ARENA          = 45;
+  public static final long POKE_RUMBLE         = 46;
 
-  public static final long C_RESTART                 = 50L;
-  public static final long C_START               = 51L;
-  public static final long C_STOP                = 52L;
-  public static final long C_POKE_MOVE           = 53L;
-  public static final long C_POKE_WAIT           = 54L;
-  public static final long C_PLAY_MOVE            = 55L;
-  public static final long C_REPLAY         = 56L;
+  public static final long RESTART                 = 50L;
+  public static final long START               = 51L;
+  public static final long STOP                = 52L;
+  public static final long POKE_MOVE           = 53L;
+  public static final long POKE_WAIT           = 54L;
+  public static final long PLAY_MOVE            = 55L;
+  public static final long REPLAY         = 56L;
 
-  public static final long C_QUIT_GAME         = 60L;
-  
+  public static final long QUIT_GAME         = 60L;
 
-  public static final long C_PLAYER_JOINED       = 90L;
-  public static final long C_STARTED             = 95L;
-  public static final long C_CONNECTED           = 98L;
-  public static final long C_ERROR               = 99L;
-  public static final long C_CLOSED              = 100L;
+
+  public static final long PLAYER_JOINED       = 90L;
+  public static final long STARTED             = 95L;
+  public static final long CONNECTED           = 98L;
+  public static final long ERROR               = 99L;
+  public static final long CLOSED              = 100L;
 
   public static final long S_NOT_CONNECTED       = 0L;
   public static final long S_CONNECTED           = 1L;

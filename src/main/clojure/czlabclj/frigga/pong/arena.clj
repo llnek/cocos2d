@@ -15,9 +15,8 @@
   czlabclj.frigga.pong.arena
 
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
-            [clojure.data.json :as json]
+            [clojure.data.json :as js]
             [clojure.string :as cstr])
-            ;;[clojure.core.async :as async])
 
   (:use [czlabclj.xlib.util.core
          :only [MakeMMap ternary notnil? RandomSign TryC]]
@@ -28,8 +27,7 @@
 
   (:import  [com.zotohlab.odin.game GameEngine Game
              PlayRoom Player PlayerSession]
-            [com.zotohlab.odin.event Msgs
-             Events Dispatcher]))
+            [com.zotohlab.odin.event Msgs Events]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -266,11 +264,11 @@
     ;;TODO should be network msg
     ;; update scores
     (.sendMsg ps2 (ReifyEvent Msgs/SESSION
-                              Events/C_SYNC_ARENA
-                              (json/write-str src)))
+                              Events/SYNC_ARENA
+                              (js/write-str src)))
     (.sendMsg ps1 (ReifyEvent Msgs/SESSION
-                              Events/C_SYNC_ARENA
-                              (json/write-str src)))
+                              Events/SYNC_ARENA
+                              (js/write-str src)))
     ;; toggle flag to skip game loop logic until new
     ;; point starts
     (.setf! impl :resetting-point true)
@@ -295,16 +293,16 @@
     ;; end game
     (log/debug "game over: winner of this game is " src)
     (.sendMsg ps2 (ReifyEvent Msgs/SESSION
-                              Events/C_SYNC_ARENA
-                              (json/write-str src)))
+                              Events/SYNC_ARENA
+                              (js/write-str src)))
     (.sendMsg ps1 (ReifyEvent Msgs/SESSION
-                              Events/C_SYNC_ARENA
-                              (json/write-str src)))
+                              Events/SYNC_ARENA
+                              (js/write-str src)))
 
     (.sendMsg ps2 (ReifyEvent Msgs/NETWORK
-                              Events/C_STOP))
+                              Events/STOP))
     (.sendMsg ps1 (ReifyEvent Msgs/NETWORK
-                              Events/C_STOP))
+                              Events/STOP))
 
   ))
 
@@ -399,11 +397,11 @@
     ;; TODO: use network-msg
     (log/debug "sync new BALL values " (:ball src))
     (.sendMsg ps2 (ReifyEvent Msgs/SESSION
-                              Events/C_SYNC_ARENA
-                              (json/write-str src)))
+                              Events/SYNC_ARENA
+                              (js/write-str src)))
     (.sendMsg ps1 (ReifyEvent Msgs/SESSION
-                              Events/C_SYNC_ARENA
-                              (json/write-str src)))
+                              Events/SYNC_ARENA
+                              (js/write-str src)))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -533,18 +531,18 @@
                     :x (.getf ball :x)
                     :y (.getf ball :y)} }]
     (.sendMsg p2 (ReifyEvent Msgs/SESSION
-                             Events/C_POKE_MOVE
-                             (json/write-str {:pnum (.number p2)})))
+                             Events/POKE_MOVE
+                             (js/write-str {:pnum (.number p2)})))
     (.sendMsg p1 (ReifyEvent Msgs/SESSION
-                             Events/C_POKE_MOVE
-                             (json/write-str {:pnum (.number p1)})))
+                             Events/POKE_MOVE
+                             (js/write-str {:pnum (.number p1)})))
     ;;TODO: network msg
     (.sendMsg p2 (ReifyEvent Msgs/SESSION
-                             Events/C_SYNC_ARENA
-                             (json/write-str src)))
+                             Events/SYNC_ARENA
+                             (js/write-str src)))
     (.sendMsg p1 (ReifyEvent Msgs/SESSION
-                             Events/C_SYNC_ARENA
-                             (json/write-str src)))
+                             Events/SYNC_ARENA
+                             (js/write-str src)))
     (log/debug "setting default ball values " src)
   ))
 
@@ -602,7 +600,7 @@
               kw (if (= pnum 1) :p1 :p2)
               pt (if (= pnum 1) p2 p1)
               src (:source evt)
-              cmd (json/read-str src :key-fn keyword)
+              cmd (js/read-str src :key-fn keyword)
               ;;pv (* (:dir (kw cmd)) (:speed pd))
               pv (:pv (kw cmd))
               ^czlabclj.xlib.util.core.MubleAPI
@@ -613,8 +611,8 @@
             (.setf! other :vx pv)
             (.setf! other :vy pv))
           (.sendMsg pt (ReifyEvent Msgs/SESSION
-                                   Events/C_SYNC_ARENA
-                                   (json/write-str cmd)))))
+                                   Events/SYNC_ARENA
+                                   (js/write-str cmd)))))
     )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

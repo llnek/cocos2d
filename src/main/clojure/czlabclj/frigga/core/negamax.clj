@@ -14,14 +14,14 @@
 
   czlabclj.frigga.core.negamax
 
-  (:require [clojure.tools.logging :as log :only [info warn error debug] ]
+  (:require [clojure.tools.logging :as log :only [info warn error debug]]
             [clojure.string :as cstr])
 
-  (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ] ]
-        [czlabclj.xlib.util.str :only [strim nsb hgl?] ])
+  (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ]]
+        [czlabclj.xlib.util.str :only [strim nsb hgl?]])
 
-  (:import  [com.zotohlab.odin.game Game PlayRoom Player PlayerSession Session]
-            [com.zotohlab.odin.event EventDispatcher]))
+  (:import  [com.zotohlab.odin.game Game PlayRoom
+             Player PlayerSession Session]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -58,7 +58,7 @@
   [board game maxDepth depth alpha beta]
 
   (cond
-    (or (== depth 0)
+    (or (= depth 0)
         (.isOver board game))
     (.evalScore board game)
 
@@ -69,7 +69,7 @@
                       halt false
                       rc 0
                       bestMove (nth openMoves 0) ]
-      (when (== depth maxDepth)
+      (when (= depth maxDepth)
         (.setLastBestMove game (nth @openMoves 0))) ;; this will change overtime, most likely
       (loop [n 0]
         (when-not (or (> n (count @openMoves))

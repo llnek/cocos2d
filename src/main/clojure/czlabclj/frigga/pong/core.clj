@@ -15,62 +15,23 @@
   czlabclj.frigga.pong.core
 
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
-            [clojure.data.json :as json]
+            [clojure.data.json :as js]
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ]]
         [czlabclj.xlib.util.str :only [strim nsb hgl?]]
         [czlabclj.cocos2d.games.meta]
         [czlabclj.odin.event.core]
+        [czlabclj.frigga.core.util]
         [czlabclj.frigga.pong.arena])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom GameEngine
                                     Player PlayerSession]
-            [com.zotohlab.odin.event Msgs
-             Events Dispatcher]))
+            [com.zotohlab.odin.event Msgs Events]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- mapPlayers ""
-
-  ;; outputs map {id -> player-session}
-  [players]
-
-  (reduce #(assoc %1 (.id ^PlayerSession %2) %2)
-          {}
-          players
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- mapPlayersEx ""
-
-  ;; outputs map {id -> [player-number, player-id]}
-  [players]
-
-  {:ppids (reduce (fn [memo ^PlayerSession ps]
-                      (assoc memo
-                             (.id (.player ps))
-                             [ (.number ps) (.id (.player ps)) ]))
-                    {}
-                    players) })
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- bcastAll "Broadcast message to all player sessions."
-
-  [^PlayRoom room code cmd]
-
-  (let [evt (ReifyEvent Msgs/NETWORK
-                        code
-                        (if-not (nil? cmd)
-                          (json/write-str cmd))) ]
-    (.broadcast room evt)
-  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -81,7 +42,7 @@
   [^GameEngine eng evt stateAtom stateRef]
 
   (condp = (:code evt)
-    Events/C_REPLAY
+    Events/REPLAY
     (.restart eng {})
 
     (log/warn "game engine: unhandled network msg " evt)
@@ -94,10 +55,11 @@
   [^GameEngine eng evt stateAtom stateRef]
 
   (condp = (:code evt)
-    Events/C_REPLAY
+    ;;TODO: fix this
+    Events/REPLAY
     (onNetworkMsg eng evt stateAtom stateRef)
 
-    Events/C_PLAY_MOVE
+    Events/PLAY_MOVE
     (let [^czlabclj.frigga.pong.arena.ArenaAPI
           aa (:arena @stateAtom)
           src (:source evt)
@@ -107,11 +69,11 @@
                  " from session " pss)
       (.enqueue aa evt))
 
-    Events/C_STARTED
+    Events/STARTED
     (do
       (let [^PlayerSession pss (:context evt)
             src (:source evt)
-            cmd (json/read-str src :key-fn keyword) ]
+            cmd (js/read-str src :key-fn keyword) ]
         (log/debug "received started-event from " pss)
         (dosync
           (let [m (dissoc @stateRef (.id pss)) ]
@@ -126,12 +88,13 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype Pong [stateAtom stateRef] com.zotohlab.odin.game.GameEngine
+(deftype Pong [stateAtom stateRef] ;;com.zotohlab.odin.game.GameEngine
+
+  GameEngine
 
   ;; one time only, sets up the players
   (initialize [_ players]
-    (require 'czlabclj.frigga.pong.core)
-    (let [m (mapPlayers players) ]
+    (let [m (MapPlayers players) ]
       (dosync
         (reset! stateAtom {:players players})
         (ref-set stateRef m))))
@@ -139,7 +102,7 @@
   ;; starts a new game by creating a new arena and players
   ;; follow by starting the first point.
   (start [this options]
-    (require 'czlabclj.frigga.pong.arena)
+    ;;(require 'czlabclj.frigga.pong.arena)
     (let [ps (:players @stateAtom)
           p1 (ReifyPlayer (long \X) \X (nth ps 0))
           p2 (ReifyPlayer (long \O) \O (nth ps 1))
@@ -165,20 +128,20 @@
     (log/debug "restarting game one more time.")
     (require 'czlabclj.frigga.pong.core)
     (let [parr (:players @stateAtom)
-          m (mapPlayers parr)
+          m (MapPlayers parr)
           room (-> ^PlayerSession
                    (first parr)
                    (.room ))]
       (dosync (ref-set stateRef m))
-      (bcastAll room
-                Events/C_RESTART
-                (mapPlayersEx parr))))
+      (BCastAll room
+                Events/RESTART
+                (MapPlayersEx parr))))
 
   (ready [_ room]
     (require 'czlabclj.frigga.pong.core)
-    (bcastAll room
-              Events/C_START
-              (mapPlayersEx (:players @stateAtom))))
+    (BCastAll room
+              Events/START
+              (MapPlayersEx (:players @stateAtom))))
 
   (startRound [_ cmd]
     (let [^czlabclj.frigga.pong.arena.ArenaAPI

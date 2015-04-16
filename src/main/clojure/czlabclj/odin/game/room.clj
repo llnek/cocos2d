@@ -270,7 +270,7 @@
             (alter sessions assoc (.id ps) ps)
             (alter pssArr conj ps))
           (.addSession py ps)
-          (.broadcast this (ReifyNWEvent Events/C_PLAYER_JOINED
+          (.broadcast this (ReifyNWEvent Events/PLAYER_JOINED
                                          (js/write-str src)))
           ps))
 
@@ -377,7 +377,7 @@
                  :game (.id game)
                  :pnum (.number ps)}
             evt (ReifyEvent Msgs/SESSION
-                            Events/C_PLAYREQ_OK
+                            Events/PLAYREQ_OK
                             (js/write-str src)) ]
         (ApplyGameHandler ps ch)
         (log/debug "replying back to user: " evt)
@@ -404,7 +404,7 @@
                  :game (.id game)
                  :pnum (.number pss) }
             evt (ReifyEvent Msgs/SESSION
-                            Events/C_JOINREQ_OK
+                            Events/JOINREQ_OK
                             (js/write-str src)) ]
         (ApplyGameHandler pss ch)
         (.writeAndFlush ch (EventToFrame evt))

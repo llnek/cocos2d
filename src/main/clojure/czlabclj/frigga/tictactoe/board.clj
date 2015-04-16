@@ -16,7 +16,7 @@
 
   (:require [clojure.tools.logging :as log :only (info warn error debug)]
             [clojure.string :as cstr]
-            [clojure.data.json :as json])
+            [clojure.data.json :as js])
 
   (:use [czlabclj.xlib.util.str :only [hgl? strim]]
         [czlabclj.xlib.util.core
@@ -139,23 +139,23 @@
                     {:grid (vec grid) })
               ^PlayerSession cpss (:session cp)
               ^PlayerSession opss (:session op) ]
-          (->> (json/write-str (assoc src
+          (->> (js/write-str (assoc src
                                       :pnum (.number opss)))
                (ReifyEvent Msgs/SESSION
-                           Events/C_POKE_WAIT)
+                           Events/POKE_WAIT)
                (.sendMsg opss))
-          (->> (json/write-str (assoc src
+          (->> (js/write-str (assoc src
                                       :pnum (.number cpss)))
                (ReifyEvent Msgs/SESSION
-                           Events/C_POKE_MOVE)
+                           Events/POKE_MOVE)
                (.sendMsg cpss))))
 
       (repoke [this]
         (let [^PlayerSession pss (:session (.getCurActor this))]
-          (->> (json/write-str {:pnum (.number pss)
+          (->> (js/write-str {:pnum (.number pss)
                                 :grid (vec grid) })
                (ReifyEvent Msgs/SESSION
-                           Events/C_POKE_MOVE)
+                           Events/POKE_MOVE)
                 (.sendMsg pss))))
 
       (enqueue [this src]
@@ -190,13 +190,13 @@
                          data)
               evt (ReifyEvent Msgs/NETWORK
                               ecode
-                              (json/write-str src)) ]
+                              (js/write-str src)) ]
           (.broadcast room evt)))
 
       (drawGame [this cmd]
         (.onStopReset this)
         (.broadcastStatus this
-                          Events/C_STOP
+                          Events/STOP
                           {:cmd cmd :combo []} 0))
 
       (endGame [this cmd combo]
@@ -204,7 +204,7 @@
           (log/debug "game to end, winner found! combo = " combo)
           (.onStopReset this)
           (.broadcastStatus this
-                            Events/C_STOP
+                            Events/STOP
                             {:cmd cmd :combo combo} (.number pss))))
 
       (toggleActor [this cmd]

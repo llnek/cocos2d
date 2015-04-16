@@ -33,7 +33,7 @@
             [com.zotohlab.skaro.core Container]
             [com.zotohlab.frwk.netty NettyFW SimpleInboundFilter]
             [com.zotohlab.odin.event InvalidEventError
-             Msgs Events Dispatcher]))
+             Msgs Events]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -54,7 +54,7 @@
         (condp instance? msg
 
           CloseWebSocketFrame
-          (->> (ReifyNWEvent Events/C_QUIT_GAME nil ps)
+          (->> (ReifyNWEvent Events/QUIT_GAME nil ps)
                (.onMsg (.room ps)))
 
           TextWebSocketFrame

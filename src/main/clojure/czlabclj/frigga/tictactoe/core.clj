@@ -42,7 +42,7 @@
   [^GameEngine eng evt stateAtom stateRef]
 
   (condp = (:code evt)
-    Events/C_REPLAY
+    Events/REPLAY
     (.restart eng {})
 
     (log/warn "game engine: unhandled network msg " evt)
@@ -56,22 +56,22 @@
 
   (condp = (:code evt)
     ;;TODO: remove this
-    Events/C_REPLAY
+    Events/REPLAY
     (onNetworkMsg eng evt)
 
-    Events/C_PLAY_MOVE
+    Events/PLAY_MOVE
     (let [bd (:board @stateAtom)
           ;;cp (.getCurActor bd)
           pss (:context evt)
           src (:source evt)
-          cmd (json/read-str src
+          cmd (js/read-str src
                              :key-fn keyword) ]
       (log/debug "TicTacToe rec'ved cmd " src " from session " pss)
       (-> ^czlabclj.frigga.tictactoe.board.BoardAPI
           bd
           (.enqueue cmd)))
 
-    Events/C_STARTED
+    Events/STARTED
     (do
       (log/debug "TicTacToe received started event " evt)
       (let [^PlayerSession ps (:context evt) ]
@@ -94,7 +94,7 @@
 
   (initialize [_ players]
     (require 'czlabclj.frigga.tictactoe.core)
-    (let [m (mapPlayers players) ]
+    (let [m (MapPlayers players) ]
       (dosync
         (reset! stateAtom {:players players})
         (ref-set stateRef m))))
@@ -129,20 +129,20 @@
     (let [parr (:players @stateAtom)
           room (-> ^PlayerSession
                    (first parr) (.room))
-          src (mapPlayersEx parr)
-          m (mapPlayers parr)
+          src (MapPlayersEx parr)
+          m (MapPlayers parr)
           evt (ReifyEvent Msgs/NETWORK
-                          Events/C_RESTART
-                          (json/write-str src)) ]
+                          Events/RESTART
+                          (js/write-str src)) ]
       (dosync (ref-set stateRef m))
       (.broadcast room evt)))
 
   (ready [_ room]
     (require 'czlabclj.frigga.tictactoe.core)
-    (let [src (mapPlayersEx (:players @stateAtom))
+    (let [src (MapPlayersEx (:players @stateAtom))
           evt (ReifyEvent Msgs/NETWORK
-                          Events/C_START
-                          (json/write-str src)) ]
+                          Events/START
+                          (js/write-str src)) ]
       (.broadcast ^PlayRoom room evt)))
 
   (startRound [_ obj])

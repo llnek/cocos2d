@@ -22,6 +22,7 @@
         [czlabclj.xlib.util.files :only [ReadOneFile]]
         [czlabclj.xlib.util.str :only [strim nsb hgl?]]
         [czlabclj.xlib.util.wfs :only [SimPTask]]
+        [czlabclj.xlib.i18n.resources :only [RStr]]
         [czlabclj.odin.event.core]
         [czlabclj.odin.game.room]
         [czlabclj.odin.game.player])
@@ -33,10 +34,12 @@
                                 Pipeline PDelegate PTask]
             [com.zotohlab.skaro.io WebSockEvent Emitter]
             [com.zotohlab.frwk.io IOUtils XData]
+            [com.zotohlab.frwk.core Identifiable]
+            [com.zotohlab.frwk.i18n I18N]
+            [java.util ResourceBundle]
             [io.netty.channel Channel]
             [com.zotohlab.skaro.core Container]
-            [com.zotohlab.odin.event
-             Msgs Events Dispatcher]))
+            [com.zotohlab.odin.event Msgs Events]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -58,13 +61,13 @@
 ;; source json = [gameid, userid, password]
 (defn DoPlayReq ""
 
-  [evt]
+  [ctr evt]
 
-  (let [^Channel ch (:socket evt)
+  (let [rcb (I18N/getBundle (.id ^Identifiable ctr))
+        ^Channel ch (:socket evt)
         arr (:source evt) ]
     (if
-      (and (notnil? arr)
-           (vector? arr)
+      (and (vector? arr)
            (= (count arr) 3))
       (with-local-vars [plyr nil
                         gm nil
@@ -76,17 +79,15 @@
                    (.supportMultiPlayers g))
             (var-set gm g)
             (rError ch
-                    Events/C_GAME_NOK
-                    (str "no such game/not "
-                         "network enabled. id="
-                         (nth arr 0)))))
+                    Events/GAME_NOK
+                    (RStr rcb "game.notok"))))
         ;; maybe get the player?
         (if-let [p (LookupPlayer (nth arr 1)
                                  (nth arr 2)) ]
           (var-set plyr p)
           (rError ch
-                  Events/C_USER_NOK
-                  "user or password error."))
+                  Events/USER_NOK
+                  (RStr rcb "login.error")))
         ;; maybe try to find or create a game room?
         (when (and (notnil? @plyr)
                    (notnil? @gm))
@@ -95,13 +96,13 @@
               (var-set room (.room ps))
               (var-set pss ps))
             (rError ch
-                    Events/C_ROOMS_FULL
-                    "no room available.")))
+                    Events/ROOMS_FULL
+                    (RStr rcb "room.none"))))
         @pss)
       ;;else
       (rError ch
-              Events/C_PLAYREQ_NOK
-              "bad request."))
+              Events/PLAYREQ_NOK
+              (RStr rcb "bad.req")))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -109,13 +110,13 @@
 ;; source json = [gameid, roomid, userid, password]
 (defn DoJoinReq ""
 
-  [evt]
+  [ctr evt]
 
-  (let [^Channel ch (:socket evt)
+  (let [rcb (I18N/getBundle (.id ^Identifiable ctr))
+        ^Channel ch (:socket evt)
         arr (:source evt) ]
     (if
-      (and (notnil? arr)
-           (vector? arr)
+      (and (vector? arr)
            (= (count arr) 4))
       (with-local-vars [plyr nil
                         pss nil
@@ -126,8 +127,8 @@
                                  (nth arr 3)) ]
           (var-set plyr p)
           (rError ch
-                  Events/C_USER_NOK
-                  "no such player."))
+                  Events/USER_NOK
+                  (RStr rcb "login.error")))
         ;; maybe get the requested room?
         (when-not (nil? @plyr)
           (let [gid (nth arr 0)
@@ -135,18 +136,18 @@
                 r (ternary (LookupGameRoom gid rid)
                            (LookupFreeRoom gid rid)) ]
             (if (nil? r)
-              (rError ch Events/C_ROOM_NOK "no such room.")
+              (rError ch Events/ROOM_NOK (RStr rcb "room.bad"))
               (do
                 (var-set pss (JoinRoom r @plyr evt))
                 (when (nil? @pss)
                   (rError ch
-                          Events/C_ROOM_FILLED
-                          "no more room."))))))
+                          Events/ROOM_FILLED
+                          (RStr rcb "room.full")))))))
         @pss)
       ;;else
       (rError ch
-              Events/C_JOINREQ_NOK
-              "bad request."))
+              Events/JOINREQ_NOK
+              (RStr rcb "bad.req")))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
