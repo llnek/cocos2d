@@ -22,9 +22,9 @@
         [czlabclj.xlib.util.process]
         [czlabclj.xlib.util.guids]
         [czlabclj.xlib.util.str :only [strim nsb hgl?]]
+        [czlabclj.odin.system.util]
         [czlabclj.odin.event.core]
-        [czlabclj.odin.net.wsock]
-        [czlabclj.odin.system.util])
+        [czlabclj.odin.event.disp])
 
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
             [com.zotohlab.odin.game Game PlayRoom

@@ -23,15 +23,14 @@
         [czlabclj.xlib.util.str :only [strim nsb hgl?]]
         [czlabclj.xlib.util.wfs :only [SimPTask]]
         [czlabclj.odin.event.core]
-        [czlabclj.odin.game.player])
+        [czlabclj.odin.game.msgreq])
 
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
-            [com.zotohlab.odin.game Game PlayRoom
-                                    Player PlayerSession]
             [com.zotohlab.wflow Job Activity
                                 Pipeline PDelegate PTask]
             [com.zotohlab.skaro.io WebSockEvent Emitter]
             [com.zotohlab.frwk.io IOUtils XData]
+            [java.io File]
             [io.netty.channel Channel]
             [com.zotohlab.skaro.core Container]
             [com.zotohlab.odin.event
@@ -50,10 +49,10 @@
   (let [etype (:type evt)]
     (condp = etype
       Events/PLAYGAME_REQ
-      (onPlayReq evt)
+      (DoPlayReq evt)
 
       Events/JOINGAME_REQ
-      (onJoinReq evt)
+      (DoJoinReq evt)
 
       (log/warn "unhandled event " evt))))
 

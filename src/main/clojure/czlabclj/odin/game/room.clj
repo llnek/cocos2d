@@ -23,7 +23,6 @@
         [czlabclj.xlib.util.meta :only [MakeObjArgN]]
         [czlabclj.xlib.util.str :only [strim nsb hgl?]]
         [czlabclj.odin.system.util]
-        [czlabclj.odin.system.rego]
         [czlabclj.odin.event.core]
         [czlabclj.odin.event.disp]
         [czlabclj.odin.game.session]

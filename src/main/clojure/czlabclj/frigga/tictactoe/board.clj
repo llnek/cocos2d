@@ -23,8 +23,7 @@
          :only
          [notnil? ternary MakeMMap RandomSign]]
         [czlabclj.cocos2d.games.meta]
-        [czlabclj.odin.event.core]
-        [czlabclj.odin.system.core])
+        [czlabclj.odin.event.core])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom
                                     Player PlayerSession]

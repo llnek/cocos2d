@@ -23,6 +23,7 @@
         [czlabclj.xlib.util.str :only [strim nsb hgl?]]
         [czlabclj.xlib.util.wfs :only [SimPTask]]
         [czlabclj.odin.event.core]
+        [czlabclj.odin.game.room]
         [czlabclj.odin.game.player])
 
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
@@ -55,7 +56,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; source json = [gameid, userid, password]
-(defn- onPlayReq ""
+(defn DoPlayReq ""
 
   [evt]
 
@@ -106,7 +107,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Request to join a specific game room.  Not used now.
 ;; source json = [gameid, roomid, userid, password]
-(defn- onJoinReq ""
+(defn DoJoinReq ""
 
   [evt]
 

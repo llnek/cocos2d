@@ -15,7 +15,6 @@
   czlabclj.odin.system.util
 
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
-            ;;[clojure.data.json :as js]
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.str :only [strim nsb hgl?]]
