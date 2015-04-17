@@ -39,8 +39,8 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
         if (sjs.isObject(this.options.wsock)) {
           // request server to restart a new game
           this.options.wsock.send({
-            type: evts.SESSION_MSG,
-            code: evts.C_REPLAY
+            type: evts.MSG_SESSION,
+            code: evts.REPLAY
           });
         } else {
           this.play(false);
@@ -169,10 +169,10 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
       onevent: function(topic, evt) {
         //sjs.loggr.debug(evt);
         switch (evt.type) {
-          case evts.NETWORK_MSG:
+          case evts.MSG_NETWORK:
             this.onNetworkEvent(evt);
           break;
-          case evts.SESSION_MSG:
+          case evts.MSG_SESSION:
             this.onSessionEvent(evt);
           break;
         }
@@ -180,12 +180,12 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
 
       onNetworkEvent: function(evt) {
         switch (evt.code) {
-          case evts.C_RESTART:
+          case evts.RESTART:
             sjs.loggr.debug("restarting a new game...");
             this.getHUD().killTimer();
             this.play(false);
           break;
-          case evts.C_STOP:
+          case evts.STOP:
             sjs.loggr.debug("game will stop");
             this.getHUD().killTimer();
             this.onStop(evt);
@@ -207,8 +207,8 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
           this.options.netQ.push(evt);
         }
         switch (evt.code) {
-          case evts.C_POKE_MOVE:
-          case evts.C_POKE_WAIT:
+          case evts.POKE_MOVE:
+          case evts.POKE_WAIT:
           break;
         }
 

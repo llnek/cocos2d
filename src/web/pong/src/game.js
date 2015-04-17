@@ -39,10 +39,10 @@ define("zotohlab/p/arena",
         sjs.loggr.debug(evt);
 
         switch (evt.type) {
-          case evts.NETWORK_MSG:
+          case evts.MSG_NETWORK:
             this.onNetworkEvent(evt);
           break;
-          case evts.SESSION_MSG:
+          case evts.MSG_SESSION:
             this.onSessionEvent(evt);
           break;
         }
@@ -53,11 +53,11 @@ define("zotohlab/p/arena",
 
       onNetworkEvent: function(evt) {
         switch (evt.code) {
-          case evts.C_RESTART:
+          case evts.RESTART:
             sjs.loggr.debug("restarting a new game...");
             this.play(false);
           break;
-          case evts.C_STOP:
+          case evts.STOP:
             sjs.loggr.debug("game will stop");
             this.onStop(evt);
           break;
@@ -71,7 +71,7 @@ define("zotohlab/p/arena",
       onSessionEvent: function(evt) {
         if (!sjs.isObject(evt.source)) { return; }
         switch (evt.code) {
-          case evts.C_POKE_MOVE:
+          case evts.POKE_MOVE:
             sjs.loggr.debug("activate arena, start to rumble!");
             if (this.options.pnum === evt.source.pnum) {
               this.options.poked=true;
@@ -80,7 +80,7 @@ define("zotohlab/p/arena",
                               evt.source.pnum);
             }
           break;
-          case evts.C_SYNC_ARENA:
+          case evts.SYNC_ARENA:
             sjs.loggr.debug("synchronize ui as defined by server.");
             this.options.netQ.push(evt);
             this.options.poked=true;
@@ -93,8 +93,8 @@ define("zotohlab/p/arena",
 
           // request server to restart a new game
           this.options.wsock.send({
-            type: evts.SESSION_MSG,
-            code: evts.C_REPLAY
+            type: evts.MSG_SESSION,
+            code: evts.REPLAY
           });
         } else {
           this.play(false);

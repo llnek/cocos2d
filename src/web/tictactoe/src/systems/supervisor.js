@@ -80,8 +80,8 @@ define("zotohlab/p/s/supervisor",
           // online play
           sjs.loggr.debug("reply to server: session started ok");
           this.state.wsock.send({
-            type: evts.SESSION_MSG,
-            code: evts.C_STARTED
+            type: evts.MSG_SESSION,
+            code: evts.STARTED
           });
           this.state.actor= 0;
         } else {

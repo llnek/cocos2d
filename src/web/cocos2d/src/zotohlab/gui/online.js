@@ -59,18 +59,18 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
       onOdinEvent: function(topic,evt) {
         //sjs.loggr.debug(evt);
         switch (evt.type) {
-          case events.NETWORK_MSG: this.onNetworkEvent(evt); break;
-          case events.SESSION_MSG: this.onSessionEvent(evt); break;
+          case events.MSG_NETWORK: this.onNetworkEvent(evt); break;
+          case events.MSG_SESSION: this.onSessionEvent(evt); break;
         }
       },
 
       onNetworkEvent: function(evt) {
         switch (evt.code) {
-          case events.C_PLAYER_JOINED:
+          case events.PLAYER_JOINED:
             //TODO
             sjs.loggr.debug("another player joined room. " + evt.source.puid);
           break;
-          case events.C_START:
+          case events.START:
             sjs.loggr.info("play room is ready, game can start.");
             this.wss.unsubscribeAll();
             // flip to game scene
@@ -81,7 +81,7 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
 
       onSessionEvent: function(evt) {
         switch (evt.code) {
-          case events.C_PLAYREQ_OK:
+          case events.PLAYREQ_OK:
             sjs.loggr.debug("player " +
                             evt.source.pnum +
                             ": request to play game was successful.");

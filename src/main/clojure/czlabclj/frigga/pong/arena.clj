@@ -15,14 +15,16 @@
   czlabclj.frigga.pong.arena
 
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
-            [clojure.data.json :as js]
+            ;;[clojure.data.json :as js]
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.core
          :only [MakeMMap ternary notnil? RandomSign TryC]]
         [czlabclj.xlib.util.process :only [Coroutine]]
+        [czlabclj.xlib.util.format]
         [czlabclj.xlib.util.str :only [strim nsb hgl?]]
         [czlabclj.cocos2d.games.meta]
+        [czlabclj.frigga.core.util]
         [czlabclj.odin.event.core])
 
   (:import  [com.zotohlab.odin.game GameEngine Game
@@ -249,8 +251,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- resetPoint "A point has been won.
-                   Let the UI know, and reset local entities."
+(defn- maybeStartNewPoint "A point has been won.
+                          Let the UI know, and reset local entities."
 
   [^czlabclj.xlib.util.core.MubleAPI impl
    winner]
@@ -261,18 +263,11 @@
         s1 (.getf impl :score1)
         arena (.getf impl :arena)
         src {:scores {:p2 s2 :p1 s1 }}]
-    ;;TODO should be network msg
-    ;; update scores
-    (.sendMsg ps2 (ReifyEvent Msgs/SESSION
-                              Events/SYNC_ARENA
-                              (js/write-str src)))
-    (.sendMsg ps1 (ReifyEvent Msgs/SESSION
-                              Events/SYNC_ARENA
-                              (js/write-str src)))
+    (BCastAll (.room ps1) Events/SYNC_ARENA (WriteJson src))
     ;; toggle flag to skip game loop logic until new
     ;; point starts
     (.setf! impl :resetting-point true)
-    (-> ^czlabclj.frigga.pong.arena.ArenaAPI arena
+    (->> ^czlabclj.frigga.pong.arena.ArenaAPI arena
         (.resetPoint))
   ))
 
@@ -285,6 +280,7 @@
 
   (let [^PlayerSession ps2 (:session (.getf impl :p2))
         ^PlayerSession ps1 (:session (.getf impl :p1))
+        room (.room ps1)
         s2 (.getf impl :score2)
         s1 (.getf impl :score1)
         pwin (if (> s2 s1) ps2 ps1)
@@ -292,18 +288,8 @@
                       :scores {:p2 s2 :p1 s1 }}}]
     ;; end game
     (log/debug "game over: winner of this game is " src)
-    (.sendMsg ps2 (ReifyEvent Msgs/SESSION
-                              Events/SYNC_ARENA
-                              (js/write-str src)))
-    (.sendMsg ps1 (ReifyEvent Msgs/SESSION
-                              Events/SYNC_ARENA
-                              (js/write-str src)))
-
-    (.sendMsg ps2 (ReifyEvent Msgs/NETWORK
-                              Events/STOP))
-    (.sendMsg ps1 (ReifyEvent Msgs/NETWORK
-                              Events/STOP))
-
+    (BCastAll room Events/SYNC_ARENA (WriteJson src))
+    (BCastAll room Events/STOP nil)
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -317,7 +303,7 @@
   (let [nps (.getf impl :numpts)
         s2 (.getf impl :score2)
         s1 (.getf impl :score1)
-        sx (if (== winner 2)
+        sx (if (= winner 2)
              (inc s2)
              (inc s1))]
     (log/debug "increment score by 1, "
@@ -326,7 +312,7 @@
     (if (= winner 2)
       (.setf! impl :score2 sx)
       (.setf! impl :score1 sx))
-    (resetPoint impl winner)
+    (maybeStartNewPoint impl winner)
     (when (>= sx nps)
       (gameOver impl winner))
   ))
@@ -374,6 +360,7 @@
 
   (let [^PlayerSession ps2 (:session (.getf impl :p2))
         ^PlayerSession ps1 (:session (.getf impl :p1))
+        room (.room ps1)
         ^czlabclj.xlib.util.core.MubleAPI
         pad2 (.getf impl :paddle2)
         ^czlabclj.xlib.util.core.MubleAPI
@@ -396,12 +383,7 @@
                     :vx (.getf ball :vx) }} ]
     ;; TODO: use network-msg
     (log/debug "sync new BALL values " (:ball src))
-    (.sendMsg ps2 (ReifyEvent Msgs/SESSION
-                              Events/SYNC_ARENA
-                              (js/write-str src)))
-    (.sendMsg ps1 (ReifyEvent Msgs/SESSION
-                              Events/SYNC_ARENA
-                              (js/write-str src)))
+    (BCastAll room Events/SYNC_ARENA (WriteJson src))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -524,25 +506,20 @@
 
   (let [^PlayerSession p2 (:session (.getf impl :p2))
         ^PlayerSession p1 (:session (.getf impl :p1))
+        room (.room p1)
         ^czlabclj.xlib.util.core.MubleAPI
         ball (.getf impl :ball)
         src {:ball {:vx (.getf ball :vx)
                     :vy (.getf ball :vy)
                     :x (.getf ball :x)
                     :y (.getf ball :y)} }]
-    (.sendMsg p2 (ReifyEvent Msgs/SESSION
-                             Events/POKE_MOVE
-                             (js/write-str {:pnum (.number p2)})))
-    (.sendMsg p1 (ReifyEvent Msgs/SESSION
-                             Events/POKE_MOVE
-                             (js/write-str {:pnum (.number p1)})))
-    ;;TODO: network msg
-    (.sendMsg p2 (ReifyEvent Msgs/SESSION
-                             Events/SYNC_ARENA
-                             (js/write-str src)))
-    (.sendMsg p1 (ReifyEvent Msgs/SESSION
-                             Events/SYNC_ARENA
-                             (js/write-str src)))
+    (->> (ReifySSEvent Events/POKE_MOVE
+                       (WriteJson {:pnum (.number p2)}))
+         (.sendMsg p2))
+    (->> (ReifySSEvent Events/POKE_MOVE
+                       (WriteJson {:pnum (.number p1)}))
+         (.sendMsg p1))
+    (BCastAll room Events/SYNC_ARENA (WriteJson src))
     (log/debug "setting default ball values " src)
   ))
 
@@ -600,7 +577,7 @@
               kw (if (= pnum 1) :p1 :p2)
               pt (if (= pnum 1) p2 p1)
               src (:source evt)
-              cmd (js/read-str src :key-fn keyword)
+              cmd (ReadJsonKW src)
               ;;pv (* (:dir (kw cmd)) (:speed pd))
               pv (:pv (kw cmd))
               ^czlabclj.xlib.util.core.MubleAPI
@@ -610,9 +587,9 @@
           (if (.getf impl :portrait)
             (.setf! other :vx pv)
             (.setf! other :vy pv))
-          (.sendMsg pt (ReifyEvent Msgs/SESSION
-                                   Events/SYNC_ARENA
-                                   (js/write-str cmd)))))
+          (->> (ReifySSEvent Events/SYNC_ARENA
+                             (WriteJson cmd))
+               (.sendMsg pt))))
     )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

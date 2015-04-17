@@ -15,7 +15,6 @@
   czlabclj.odin.game.session
 
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
-            ;;[clojure.data.json :as js]
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ]]
@@ -68,7 +67,7 @@
               (.sendMsg msg))))
 
       (onMsg [this evt]
-        (log/debug "player session " sid " , onevent called: " evt)
+        (log/debug "player session " sid " , onmsg called: " evt)
         ;; when it is a network msg with a specific socket attached.
         ;; it means only the same socket should apply the message,
         ;; others should ignore - do nothing.
@@ -77,11 +76,8 @@
                    (notnil? (:context evt)))
             (when (identical? this
                               (:context evt))
-              ;; TODO: check if we really need to do this swapping
-              ;; change the type to SESSION_MSG.
-              (.sendMsg this
-                            (assoc evt
-                                   :type Msgs/SESSION)))
+              (->> (assoc evt :type Msgs/SESSION)
+                   (.sendMsg this)))
             (.sendMsg this evt))))
 
       (removeHandler [_ h] )

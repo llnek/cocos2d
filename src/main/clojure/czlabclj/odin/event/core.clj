@@ -15,17 +15,16 @@
   czlabclj.odin.event.core
 
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
-            [clojure.data.json :as js]
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.str :only [strim nsb hgl?]]
+        [czlabclj.xlib.util.format]
         [czlabclj.xlib.util.core
          :only
          [TryCR ternary]])
 
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
-            [com.zotohlab.odin.event Msgs
-             Events InvalidEventError]))
+            [com.zotohlab.odin.event Msgs Events InvalidEventError]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -56,7 +55,7 @@
           evt (if (nil? ecode)
                 b2
                 (assoc b2 :code ecode)) ]
-      (TextWebSocketFrame. ^String (js/write-str evt)))))
+      (TextWebSocketFrame. (WriteJson evt)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -70,7 +69,7 @@
   (log/debug "decoding json: " data)
   (TryCR
     {:type -1}
-    (let [evt (js/read-str data :key-fn keyword) ]
+    (let [evt (ReadJsonKW data) ]
       (when-not (number? (:type evt))
         (throw (InvalidEventError. "event has no type info.")))
       (assoc evt :socket socket))

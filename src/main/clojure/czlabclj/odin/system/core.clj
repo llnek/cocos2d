@@ -15,11 +15,11 @@
   czlabclj.odin.system.core
 
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
-            [clojure.data.json :as js]
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil?]]
         [czlabclj.xlib.util.files :only [ReadOneFile]]
+        [czlabclj.xlib.util.format]
         [czlabclj.xlib.util.str :only [strim nsb hgl?]]
         [czlabclj.xlib.util.wfs :only [SimPTask]]
         [czlabclj.odin.event.core]
@@ -65,7 +65,7 @@
   (let [appDir (.getAppDir ctr)
         fp (File. appDir "conf/odin.conf")
         s (ReadOneFile fp)
-        json (js/read-str s) ]
+        json (ReadJsonKW s) ]
     (log/info "Odin config= " s)
   ))
 

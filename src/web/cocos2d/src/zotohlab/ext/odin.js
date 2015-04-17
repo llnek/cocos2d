@@ -18,42 +18,44 @@ define("zotohlab/asx/odin", ['cherimoia/skarojs',
 
     var undef, Events = {
 
-    // Event type
-    NETWORK_MSG           : 1,
-    SESSION_MSG           : 2,
+    // Msg type
+    MSG_NETWORK           : 1,
+    MSG_SESSION           : 2,
 
     PLAYGAME_REQ          : 3,
     JOINGAME_REQ          : 4,
 
     // Event code
-    C_PLAYREQ_NOK         : 10,
-    C_JOINREQ_NOK         : 11,
-    C_USER_NOK            : 12,
-    C_GAME_NOK            : 13,
-    C_ROOM_NOK            : 14,
-    C_ROOM_FILLED         : 15,
-    C_ROOMS_FULL          : 16,
+    PLAYREQ_NOK         : 10,
+    JOINREQ_NOK         : 11,
+    USER_NOK            : 12,
+    GAME_NOK            : 13,
+    ROOM_NOK            : 14,
+    ROOM_FILLED         : 15,
+    ROOMS_FULL          : 16,
 
-    C_PLAYREQ_OK          : 30,
-    C_JOINREQ_OK          : 31,
+    PLAYREQ_OK          : 30,
+    JOINREQ_OK          : 31,
 
-    C_AWAIT_START         : 40,
-    C_SYNC_ARENA          : 45,
-    C_POKE_RUMBLE         : 46,
+    AWAIT_START         : 40,
+    SYNC_ARENA          : 45,
+    POKE_RUMBLE         : 46,
 
-    C_RESTART             : 50,
-    C_START               : 51,
-    C_STOP                : 52,
-    C_POKE_MOVE           : 53,
-    C_POKE_WAIT           : 54,
-    C_PLAY_MOVE           : 55,
-    C_REPLAY              : 56,
+    RESTART             : 50,
+    START               : 51,
+    STOP                : 52,
+    POKE_MOVE           : 53,
+    POKE_WAIT           : 54,
+    PLAY_MOVE           : 55,
+    REPLAY              : 56,
 
-    C_PLAYER_JOINED       : 90,
-    C_STARTED             : 95,
-    C_CONNECTED           : 98,
-    C_ERROR               : 99,
-    C_CLOSED              : 100,
+    QUIT_GAME           : 60,
+
+    PLAYER_JOINED       : 90,
+    STARTED             : 95,
+    CONNECTED           : 98,
+    ERROR               : 99,
+    CLOSED              : 100,
 
     S_NOT_CONNECTED       : 0,
     S_CONNECTED           : 1
@@ -154,8 +156,8 @@ define("zotohlab/asx/odin", ['cherimoia/skarojs',
       },
 
       subscribeAll: function(callback,target) {
-        return [ this.subscribe(Events.NETWORK_MSG, '*', callback, target),
-                 this.subscribe(Events.SESSION_MSG, '*', callback, target) ];
+        return [ this.subscribe(Events.MSG_NETWORK, '*', callback, target),
+                 this.subscribe(Events.MSG_SESSION, '*', callback, target) ];
       },
 
       unsubscribeAll: function() {
@@ -210,8 +212,8 @@ define("zotohlab/asx/odin", ['cherimoia/skarojs',
         ws.onmessage= function (e) {
           var evt= json_decode(e);
           switch (evt.type) {
-            case Events.NETWORK_MSG:
-            case Events.SESSION_MSG:
+            case Events.MSG_NETWORK:
+            case Events.MSG_SESSION:
               me.onevent(evt);
             break;
             default:
@@ -223,11 +225,11 @@ define("zotohlab/asx/odin", ['cherimoia/skarojs',
         };
 
         ws.onclose= function (e) {
-          me.onevent(mkEvent(Events.NETWORK_MSG, Events.C_CLOSED));
+          me.onevent(mkEvent(Events.MSG_NETWORK, Events.CLOSED));
         };
 
         ws.onerror= function (e) {
-          me.onevent(mkEvent(Events.NETWORK_MSG, Events.C_ERROR, e));
+          me.onevent(mkEvent(Events.MSG_NETWORK, Events.ERROR, e));
         };
 
         return this.ws=ws;

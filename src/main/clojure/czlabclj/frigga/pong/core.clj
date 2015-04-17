@@ -15,11 +15,12 @@
   czlabclj.frigga.pong.core
 
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
-            [clojure.data.json :as js]
+            ;;[clojure.data.json :as js]
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ]]
         [czlabclj.xlib.util.str :only [strim nsb hgl?]]
+        [czlabclj.xlib.util.format]
         [czlabclj.cocos2d.games.meta]
         [czlabclj.odin.event.core]
         [czlabclj.frigga.core.util]
@@ -41,12 +42,7 @@
 
   [^GameEngine eng evt stateAtom stateRef]
 
-  (condp = (:code evt)
-    Events/REPLAY
-    (.restart eng {})
-
-    (log/warn "game engine: unhandled network msg " evt)
-  ))
+  nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -55,9 +51,9 @@
   [^GameEngine eng evt stateAtom stateRef]
 
   (condp = (:code evt)
-    ;;TODO: fix this
+
     Events/REPLAY
-    (onNetworkMsg eng evt stateAtom stateRef)
+    (.restart eng {})
 
     Events/PLAY_MOVE
     (let [^czlabclj.frigga.pong.arena.ArenaAPI
@@ -73,7 +69,7 @@
     (do
       (let [^PlayerSession pss (:context evt)
             src (:source evt)
-            cmd (js/read-str src :key-fn keyword) ]
+            cmd (ReadJsonKW src)]
         (log/debug "received started-event from " pss)
         (dosync
           (let [m (dissoc @stateRef (.id pss)) ]
@@ -121,24 +117,24 @@
     (condp = (:type evt)
       Msgs/NETWORK
       (onNetworkMsg this evt stateAtom stateRef)
+      Msgs/SESSION
       (onSessionMsg this evt stateAtom stateRef)
       nil))
 
   (restart [this options]
     (log/debug "restarting game one more time.")
-    (require 'czlabclj.frigga.pong.core)
+    ;;(require 'czlabclj.frigga.pong.core)
     (let [parr (:players @stateAtom)
           m (MapPlayers parr)
           room (-> ^PlayerSession
-                   (first parr)
-                   (.room ))]
+                   (first parr) (.room ))]
       (dosync (ref-set stateRef m))
       (BCastAll room
                 Events/RESTART
                 (MapPlayersEx parr))))
 
   (ready [_ room]
-    (require 'czlabclj.frigga.pong.core)
+    ;;(require 'czlabclj.frigga.pong.core)
     (BCastAll room
               Events/START
               (MapPlayersEx (:players @stateAtom))))

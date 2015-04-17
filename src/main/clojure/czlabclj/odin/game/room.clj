@@ -15,11 +15,11 @@
   czlabclj.odin.game.room
 
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
-            [clojure.data.json :as js]
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ]]
         [czlabclj.xlib.util.guids :only [NewUUid]]
+        [czlabclj.xlib.util.format]
         [czlabclj.xlib.util.meta :only [MakeObjArgN]]
         [czlabclj.xlib.util.str :only [strim nsb hgl?]]
         [czlabclj.odin.system.util]
@@ -270,8 +270,8 @@
             (alter sessions assoc (.id ps) ps)
             (alter pssArr conj ps))
           (.addSession py ps)
-          (.broadcast this (ReifyNWEvent Events/PLAYER_JOINED
-                                         (js/write-str src)))
+          (->> (ReifyNWEvent Events/PLAYER_JOINED (WriteJson src))
+               (.broadcast this ))
           ps))
 
       (isShuttingDown [_] (.getf impl :shutting))
@@ -302,8 +302,8 @@
               sss (seq @pssArr)]
           (log/debug "activating room " rid)
           (.setf! impl :active true)
-          (doseq [v sss]
-            (.addHandler this (mkNetworkSubr v)))
+          (doseq [s sss]
+            (.addHandler this (mkNetworkSubr s)))
           (.initialize sm sss)
           (.ready sm this)))
 
@@ -376,10 +376,9 @@
             src {:room (.roomId room)
                  :game (.id game)
                  :pnum (.number ps)}
-            evt (ReifyEvent Msgs/SESSION
-                            Events/PLAYREQ_OK
-                            (js/write-str src)) ]
-        (ApplyGameHandler ps ch)
+            evt (ReifySSEvent Events/PLAYREQ_OK
+                            (WriteJson src)) ]
+        (ApplyGameHandler (:container options) ps ch)
         (log/debug "replying back to user: " evt)
         (.writeAndFlush ch (EventToFrame evt))
         (when (.canActivate room)
@@ -403,10 +402,9 @@
             src {:room (.roomId room)
                  :game (.id game)
                  :pnum (.number pss) }
-            evt (ReifyEvent Msgs/SESSION
-                            Events/JOINREQ_OK
-                            (js/write-str src)) ]
-        (ApplyGameHandler pss ch)
+            evt (ReifySSEvent Events/JOINREQ_OK
+                            (WriteJson src)) ]
+        (ApplyGameHandler (:container options) pss ch)
         (.writeAndFlush ch (EventToFrame evt))
         (when-not (.isActive room)
           (if (.canActivate room)

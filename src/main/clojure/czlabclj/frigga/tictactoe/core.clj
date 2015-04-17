@@ -1,4 +1,4 @@
-;; This library is distributed in  the hope that it will be useful but without
+; This library is distributed in  the hope that it will be useful but without
 ;; any  warranty; without  even  the  implied  warranty of  merchantability or
 ;; fitness for a particular purpose.
 ;; The use and distribution terms for this software are covered by the Eclipse
@@ -9,17 +9,17 @@
 ;; this software.
 ;; Copyright (c) 2013-2014, Ken Leung. All rights reserved.
 
-
 (ns ^{:doc ""
       :author "kenl"}
 
   czlabclj.frigga.tictactoe.core
 
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
-            [clojure.data.json :as js]
+            ;;[clojure.data.json :as js]
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ]]
+        [czlabclj.xlib.util.format]
         [czlabclj.xlib.util.str :only [strim nsb hgl?]]
         [czlabclj.cocos2d.games.meta]
         [czlabclj.odin.event.core]
@@ -28,8 +28,7 @@
 
   (:import  [com.zotohlab.odin.game Game PlayRoom GameEngine
                                     Player PlayerSession]
-            [com.zotohlab.odin.event Msgs
-             Events Dispatcher]))
+            [com.zotohlab.odin.event Msgs Events]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -41,12 +40,7 @@
 
   [^GameEngine eng evt stateAtom stateRef]
 
-  (condp = (:code evt)
-    Events/REPLAY
-    (.restart eng {})
-
-    (log/warn "game engine: unhandled network msg " evt)
-  ))
+  nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -55,17 +49,15 @@
   [^GameEngine eng evt stateAtom stateRef]
 
   (condp = (:code evt)
-    ;;TODO: remove this
+
     Events/REPLAY
-    (onNetworkMsg eng evt)
+    (.restart eng {})
 
     Events/PLAY_MOVE
     (let [bd (:board @stateAtom)
-          ;;cp (.getCurActor bd)
           pss (:context evt)
           src (:source evt)
-          cmd (js/read-str src
-                             :key-fn keyword) ]
+          cmd (ReadJsonKW src)]
       (log/debug "TicTacToe rec'ved cmd " src " from session " pss)
       (-> ^czlabclj.frigga.tictactoe.board.BoardAPI
           bd
@@ -90,17 +82,18 @@
 ;;
 (deftype TicTacToe [stateAtom stateRef]
 
-  com.zotohlab.odin.game.GameEngine
+  ;;com.zotohlab.odin.game.GameEngine
+  GameEngine
 
   (initialize [_ players]
-    (require 'czlabclj.frigga.tictactoe.core)
+    ;;(require 'czlabclj.frigga.tictactoe.core)
     (let [m (MapPlayers players) ]
       (dosync
         (reset! stateAtom {:players players})
         (ref-set stateRef m))))
 
   (start [_ options]
-    (require 'czlabclj.frigga.tictactoe.board)
+    ;;(require 'czlabclj.frigga.tictactoe.board)
     (let [ps (:players @stateAtom)
           p1 (ReifyPlayer (long \X) \X (nth ps 0))
           p2 (ReifyPlayer (long \O) \O (nth ps 1))
@@ -125,24 +118,22 @@
 
   (restart [this options]
     (log/debug "restarting tictactoe game one more time...")
-    (require 'czlabclj.frigga.tictactoe.core)
+    ;;(require 'czlabclj.frigga.tictactoe.core)
     (let [parr (:players @stateAtom)
           room (-> ^PlayerSession
                    (first parr) (.room))
           src (MapPlayersEx parr)
           m (MapPlayers parr)
-          evt (ReifyEvent Msgs/NETWORK
-                          Events/RESTART
-                          (js/write-str src)) ]
+          evt (ReifyNWEvent Events/RESTART
+                            (WriteJson src)) ]
       (dosync (ref-set stateRef m))
       (.broadcast room evt)))
 
   (ready [_ room]
-    (require 'czlabclj.frigga.tictactoe.core)
+    ;;(require 'czlabclj.frigga.tictactoe.core)
     (let [src (MapPlayersEx (:players @stateAtom))
-          evt (ReifyEvent Msgs/NETWORK
-                          Events/START
-                          (js/write-str src)) ]
+          evt (ReifyNWEvent Events/START
+                            (WriteJson src)) ]
       (.broadcast ^PlayRoom room evt)))
 
   (startRound [_ obj])

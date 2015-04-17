@@ -15,11 +15,11 @@
   czlabclj.odin.game.msgreq
 
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
-            [clojure.data.json :as js]
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil?]]
         [czlabclj.xlib.util.files :only [ReadOneFile]]
+        [czlabclj.xlib.util.format]
         [czlabclj.xlib.util.str :only [strim nsb hgl?]]
         [czlabclj.xlib.util.wfs :only [SimPTask]]
         [czlabclj.xlib.i18n.resources :only [RStr]]
@@ -51,10 +51,11 @@
 
   [^Channel ch error msg]
 
-  (let [rsp (ReifySSEvent error
-                          (js/write-str {:message (nsb msg)}))]
-    (log/debug "replying back an error code: " error)
-    (.writeAndFlush ch (EventToFrame rsp))
+  (log/debug "replying back an error code: " error)
+  (->> (ReifySSEvent error
+                     (WriteJson {:message (nsb msg)}))
+       (EventToFrame)
+       (.writeAndFlush ch)
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -64,6 +65,7 @@
   [ctr evt]
 
   (let [rcb (I18N/getBundle (.id ^Identifiable ctr))
+        opts (assoc evt :container ctr)
         ^Channel ch (:socket evt)
         arr (:source evt) ]
     (if
@@ -91,7 +93,7 @@
         ;; maybe try to find or create a game room?
         (when (and (notnil? @plyr)
                    (notnil? @gm))
-          (if-let [ps (OpenRoom @gm @plyr evt)]
+          (if-let [ps (OpenRoom @gm @plyr opts)]
             (do
               (var-set room (.room ps))
               (var-set pss ps))
@@ -113,6 +115,7 @@
   [ctr evt]
 
   (let [rcb (I18N/getBundle (.id ^Identifiable ctr))
+        opts (assoc evt :container ctr)
         ^Channel ch (:socket evt)
         arr (:source evt) ]
     (if
@@ -138,7 +141,7 @@
             (if (nil? r)
               (rError ch Events/ROOM_NOK (RStr rcb "room.bad"))
               (do
-                (var-set pss (JoinRoom r @plyr evt))
+                (var-set pss (JoinRoom r @plyr opts))
                 (when (nil? @pss)
                   (rError ch
                           Events/ROOM_FILLED

@@ -56,12 +56,12 @@ define("zotohlab/p/s/network",
         var pnum= sjs.isNumber(evt.source.pnum) ? evt.source.pnum : -1;
         if (pnum === 1 || pnum === 2) {} else { return; }
         switch (evt.code) {
-          case evts.C_POKE_MOVE:
+          case evts.POKE_MOVE:
             sjs.loggr.debug("player " + pnum + ": my turn to move");
             sh.fireEvent('/game/hud/timer/show');
             this.state.actor= pnum;
           break;
-          case evts.C_POKE_WAIT:
+          case evts.POKE_WAIT:
             sjs.loggr.debug("player " + pnum + ": my turn to wait");
             sh.fireEvent('/game/hud/timer/hide');
             // toggle color

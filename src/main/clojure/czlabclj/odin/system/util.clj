@@ -44,7 +44,7 @@
 (defn- protocolHandler "Odin event handler."
 
   ^ChannelHandler
-  [^PlayerSession ps]
+  [^Container ctr ^PlayerSession ps]
 
   (proxy [SimpleInboundFilter][]
     (channelRead0 [ctx msg]
@@ -54,15 +54,17 @@
         (condp instance? msg
 
           CloseWebSocketFrame
-          (->> (ReifyNWEvent Events/QUIT_GAME nil ps)
+          (->> (-> (ReifyNWEvent Events/QUIT_GAME nil ps)
+                   (assoc :container ctr))
                (.onMsg (.room ps)))
 
           TextWebSocketFrame
           (let [evt (-> ^TextWebSocketFrame msg
                         (.text)
-                        (DecodeJsonEvent ch))]
-            (.onMsg (.room ps)
-                    (assoc evt :context ps)))
+                        (DecodeJsonEvent ch)
+                        (assoc :context ps)
+                        (assoc :container ctr))]
+            (.onMsg (.room ps) evt))
 
           PingWebSocketFrame
           (let [ct (-> ^PingWebSocketFrame
@@ -82,7 +84,7 @@
 (defn ApplyGameHandler "Jiggle the pipeline, replace standard websocket
                        handlers with Odin."
 
-  [^PlayerSession ps
+  [^Container ctr ^PlayerSession ps
    ^Channel ch]
 
   (let [pipe (.pipeline ch)]
@@ -91,7 +93,7 @@
     (.remove pipe "WSOCKDispatcher")
     (.addBefore pipe
                 "ErrorSinkFilter"
-                "OdinProtocolHandler" (protocolHandler ps))
+                "OdinProtocolHandler" (protocolHandler ctr ps))
     (.bind ps ch)
     (NettyFW/dbgPipelineHandlers pipe)
   ))

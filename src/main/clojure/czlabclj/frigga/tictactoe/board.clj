@@ -15,10 +15,11 @@
   czlabclj.frigga.tictactoe.board
 
   (:require [clojure.tools.logging :as log :only (info warn error debug)]
-            [clojure.string :as cstr]
-            [clojure.data.json :as js])
+            ;;[clojure.data.json :as js]
+            [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.str :only [hgl? strim]]
+        [czlabclj.xlib.util.format]
         [czlabclj.xlib.util.core
          :only
          [notnil? ternary MakeMMap RandomSign]]
@@ -27,8 +28,7 @@
 
   (:import  [com.zotohlab.odin.game Game PlayRoom
                                     Player PlayerSession]
-            [com.zotohlab.odin.event Msgs Events]
-            [java.util Date ArrayList List HashMap Map]))
+            [com.zotohlab.odin.event Msgs Events]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -85,7 +85,8 @@
 
   (broadcastStatus [_ ecode cmd status] )
   (registerPlayers [_ p1 p2])
-  (getCurActor [_])
+  (getCur [_])
+  (getOther [_ a])
   (isActive [_])
   (getPlayer2 [_])
   (getPlayer1 [_])
@@ -99,8 +100,7 @@
   (broadcast [_ cmd])
   (finz [_])
   (isStalemate [_])
-  (isWinner [_ a])
-  (getOtherPlayer [_ a]))
+  (isWinner [_ a]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -117,7 +117,7 @@
     (.setf! impl :gameon false)
     (reify BoardAPI
 
-      (getCurActor [_] (aget #^"[Ljava.lang.Object;" actors 0))
+      (getCur [_] (aget #^"[Ljava.lang.Object;" actors 0))
       (isActive [_] (.getf impl :gameon))
 
       (registerPlayers [this p1 p2]
@@ -131,41 +131,36 @@
       (getPlayer1 [_] (aget #^"[Ljava.lang.Object;" actors 1))
 
       (broadcast [this cmd]
-        (let [cp (.getCurActor this)
-              op (.getOtherPlayer this cp)
+        (let [cp (.getCur this)
+              op (.getOther this cp)
               gvs (vec grid)
-              src (if (notnil? cmd)
+              src (if-not (nil? cmd)
                     {:grid (vec grid) :cmd cmd}
                     {:grid (vec grid) })
               ^PlayerSession cpss (:session cp)
               ^PlayerSession opss (:session op) ]
-          (->> (js/write-str (assoc src
-                                      :pnum (.number opss)))
-               (ReifyEvent Msgs/SESSION
-                           Events/POKE_WAIT)
+          (->> (WriteJson (assoc src :pnum (.number opss)))
+               (ReifySSEvent Events/POKE_WAIT)
                (.sendMsg opss))
-          (->> (js/write-str (assoc src
-                                      :pnum (.number cpss)))
-               (ReifyEvent Msgs/SESSION
-                           Events/POKE_MOVE)
+          (->> (WriteJson (assoc src :pnum (.number cpss)))
+               (ReifySSEvent Events/POKE_MOVE)
                (.sendMsg cpss))))
 
       (repoke [this]
-        (let [^PlayerSession pss (:session (.getCurActor this))]
-          (->> (js/write-str {:pnum (.number pss)
-                                :grid (vec grid) })
-               (ReifyEvent Msgs/SESSION
-                           Events/POKE_MOVE)
-                (.sendMsg pss))))
+        (let [^PlayerSession pss (:session (.getCur this))]
+          (->> (WriteJson {:pnum (.number pss)
+                           :grid (vec grid) })
+               (ReifySSEvent Events/POKE_MOVE)
+               (.sendMsg pss))))
 
       (enqueue [this src]
-        (let [gvs (:grid src)
-              cmd (dissoc src :grid) ]
+        (let [cmd (dissoc src :grid)
+              gvs (:grid src)]
           (if (and (>= (:cell cmd) 0)
                    (< (:cell cmd) numcells)
-                   (== (:value (.getCurActor this)
-                               (:value cmd)))
-                   (== CV_Z (aget grid (:cell cmd))))
+                   (= (:value (.getCur this)
+                              (:value cmd)))
+                   (= CV_Z (aget grid (:cell cmd))))
             (do
               (aset ^longs grid (:cell cmd)
                     (long (:value cmd)))
@@ -176,22 +171,20 @@
         (log/debug "checking for win " (:color cmd)
                    ", pos = " (:cell cmd))
         (log/debug "current grid = " (vec grid))
-        (if-let [combo (.isWinner this (.getCurActor this)) ]
+        (if-let [combo (.isWinner this (.getCur this)) ]
           (.endGame this cmd combo)
           (if (.isStalemate this)
             (.drawGame this cmd)
             (.toggleActor this cmd))))
 
       (broadcastStatus [this ecode data status]
-        (let [^PlayerSession pss (:session (.getCurActor this))
+        (let [^PlayerSession pss (:session (.getCur this))
               room (.room pss)
               src (merge {:grid (vec grid)
                           :status status }
-                         data)
-              evt (ReifyEvent Msgs/NETWORK
-                              ecode
-                              (js/write-str src)) ]
-          (.broadcast room evt)))
+                         data)]
+          (->> (ReifyNWEvent ecode (WriteJson src))
+               (.broadcast room))))
 
       (drawGame [this cmd]
         (.onStopReset this)
@@ -200,16 +193,17 @@
                           {:cmd cmd :combo []} 0))
 
       (endGame [this cmd combo]
-        (let [^PlayerSession pss (:session (.getCurActor this))]
+        (let [^PlayerSession pss (:session (.getCur this))]
           (log/debug "game to end, winner found! combo = " combo)
           (.onStopReset this)
           (.broadcastStatus this
                             Events/STOP
-                            {:cmd cmd :combo combo} (.number pss))))
+                            {:cmd cmd :combo combo}
+                            (.number pss))))
 
       (toggleActor [this cmd]
         (aset #^"[Ljava.lang.Object;" actors 0
-              (.getOtherPlayer this (.getCurActor this)))
+              (.getOther this (.getCur this)))
         (.broadcast this cmd))
 
       (finz [this] (.onStopReset this))
@@ -223,7 +217,7 @@
       (isWinner [this actor]
         (log/debug "test isWinner - actor value = " (:value actor))
         (some (fn [r]
-                (if (every? #(== (:value actor) %)
+                (if (every? #(= (:value actor) %)
                             ;;(map #(aget grid %) r))
                             (let [xxx
                             (amap ^longs r idx ret
@@ -234,7 +228,7 @@
                   nil))
               goalspace))
 
-      (getOtherPlayer [_ cp]
+      (getOther [_ cp]
         (condp identical? cp
           (aget #^"[Ljava.lang.Object;" actors 1)
           (aget #^"[Ljava.lang.Object;" actors 2)

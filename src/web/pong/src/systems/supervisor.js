@@ -95,8 +95,8 @@ define("zotohlab/p/s/supervisor",
                           'numpts'], this.state);
           this.state.wsock.send({
             source: JSON.stringify(src),
-            type: evts.SESSION_MSG,
-            code: evts.C_STARTED
+            type: evts.MSG_SESSION,
+            code: evts.STARTED
           });
         }
 

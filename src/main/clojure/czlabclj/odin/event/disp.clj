@@ -20,9 +20,7 @@
              [close! go go-loop chan >! <! ]]
             [clojure.string :as cstr])
 
-  (:use [czlabclj.xlib.util.core
-         :only
-         [ternary TryC]]
+  (:use [czlabclj.xlib.util.core :only [ternary TryC]]
         [czlabclj.odin.event.core]
         [czlabclj.xlib.util.str :only [strim nsb hgl?]])
 

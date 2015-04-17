@@ -130,8 +130,8 @@ define("zotohlab/p/s/turnbase",
         snd = pnum===1 ? 'x_pick' : 'o_pick',
         evt= {
           source: JSON.stringify(src),
-          type: evts.SESSION_MSG,
-          code: evts.C_PLAY_MOVE
+          type: evts.MSG_SESSION,
+          code: evts.PLAY_MOVE
         };
         this.state.wsock.send(evt);
         this.state.actor=0;

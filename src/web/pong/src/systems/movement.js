@@ -247,8 +247,8 @@ define("zotohlab/p/s/movements", ['zotohlab/p/gnodes',
         }
         this.state.wsock.send({
           source: JSON.stringify(src),
-          type: evts.SESSION_MSG,
-          code: evts.C_PLAY_MOVE
+          type: evts.MSG_SESSION,
+          code: evts.PLAY_MOVE
         });
       },
 
