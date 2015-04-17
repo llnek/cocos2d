@@ -59,12 +59,12 @@
                (.onMsg (.room ps)))
 
           TextWebSocketFrame
-          (let [evt (-> ^TextWebSocketFrame msg
+          (->> (-> ^TextWebSocketFrame msg
                         (.text)
                         (DecodeJsonEvent ch)
                         (assoc :context ps)
-                        (assoc :container ctr))]
-            (.onMsg (.room ps) evt))
+                        (assoc :container ctr)) 
+               (.onMsg (.room ps) ))
 
           PingWebSocketFrame
           (let [ct (-> ^PingWebSocketFrame

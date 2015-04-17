@@ -79,9 +79,9 @@
   (SimPTask
     (fn [^Job j]
       (let [^WebSockEvent evt (.event j)
-            ^XData data (.getData evt)
-            co (.container (.emitter evt)) ]
-        (OdinOnEvent co (DecodeEvent (.stringify data)
+            ^XData data (.getData evt)]
+        (OdinOnEvent (.container (.emitter evt))
+                     (DecodeEvent (.stringify data)
                                   (.getSocket evt)))))
   ))
 
