@@ -26,7 +26,7 @@
         [czlabclj.cocos2d.games.meta]
         [czlabclj.odin.event.core])
 
-  (:import  [com.zotohlab.odin.game Game PlayRoom
+  (:import  [com.zotohlab.odin.game Game PlayRoom GameEngine
                                     Player PlayerSession]
             [com.zotohlab.odin.event Msgs Events]))
 
@@ -85,6 +85,7 @@
 
   (broadcastStatus [_ ecode cmd status] )
   (registerPlayers [_ p1 p2])
+  (engine [_])
   (getCur [_])
   (getOther [_ a])
   (isActive [_])
@@ -97,7 +98,7 @@
   (toggleActor [_ cmd])
   (onStopReset [_])
   (repoke [_])
-  (broadcast [_ cmd])
+  (dequeue [_ cmd])
   (finz [_])
   (isStalemate [_])
   (isWinner [_ a]))
@@ -107,9 +108,10 @@
 (defn ReifyTicTacToeBoard ""
 
   ^czlabclj.frigga.tictactoe.board.BoardAPI
-  [bsize]
+  [^GameEngine theEngine options]
 
-  (let [grid (long-array (* bsize bsize) CV_Z)
+  (let [bsize (ternary (:size options) 3)
+        grid (long-array (* bsize bsize) CV_Z)
         goalspace (mapGoalSpace bsize)
         actors (object-array 3)
         numcells (alength grid)
@@ -119,6 +121,8 @@
 
       (getCur [_] (aget #^"[Ljava.lang.Object;" actors 0))
       (isActive [_] (.getf impl :gameon))
+
+      (engine [_] theEngine)
 
       (registerPlayers [this p1 p2]
         (let [which (if (> (RandomSign) 0) p1 p2)]
@@ -130,8 +134,9 @@
       (getPlayer2 [_] (aget #^"[Ljava.lang.Object;" actors 2))
       (getPlayer1 [_] (aget #^"[Ljava.lang.Object;" actors 1))
 
-      (broadcast [this cmd]
-        (let [cp (.getCur this)
+      (dequeue [this cmd]
+        (let [^PlayRoom room (.container theEngine)
+              cp (.getCur this)
               op (.getOther this cp)
               gvs (vec grid)
               src (if-not (nil? cmd)
@@ -139,19 +144,26 @@
                     {:grid (vec grid) })
               ^PlayerSession cpss (:session cp)
               ^PlayerSession opss (:session op) ]
-          (->> (WriteJson (assoc src :pnum (.number opss)))
-               (ReifySSEvent Events/POKE_WAIT)
-               (.sendMsg opss))
-          (->> (WriteJson (assoc src :pnum (.number cpss)))
-               (ReifySSEvent Events/POKE_MOVE)
-               (.sendMsg cpss))))
+          (->> (ReifySSEvent Events/POKE_WAIT
+                             (-> (assoc src :pnum (.number opss))
+                                 (WriteJson))
+                             opss)
+               (.sendMsg room))
+          (->> (ReifySSEvent Events/POKE_MOVE
+                             (-> (assoc src :pnum (.number cpss))
+                                 (WriteJson))
+                             cpss)
+               (.sendMsg room))))
 
       (repoke [this]
-        (let [^PlayerSession pss (:session (.getCur this))]
-          (->> (WriteJson {:pnum (.number pss)
-                           :grid (vec grid) })
-               (ReifySSEvent Events/POKE_MOVE)
-               (.sendMsg pss))))
+        (let [^PlayerSession pss (:session (.getCur this))
+              ^PlayRoom room (.container theEngine)]
+          (->> (ReifySSEvent Events/POKE_MOVE
+                             (-> {:pnum (.number pss)
+                                  :grid (vec grid) }
+                                 (WriteJson))
+                             pss)
+               (.sendMsg room))))
 
       (enqueue [this src]
         (let [cmd (dissoc src :grid)
@@ -178,13 +190,12 @@
             (.toggleActor this cmd))))
 
       (broadcastStatus [this ecode data status]
-        (let [^PlayerSession pss (:session (.getCur this))
-              room (.room pss)
+        (let [^PlayRoom room (.container theEngine)
               src (merge {:grid (vec grid)
                           :status status }
                          data)]
           (->> (ReifyNWEvent ecode (WriteJson src))
-               (.broadcast room))))
+               (.sendMsg room))))
 
       (drawGame [this cmd]
         (.onStopReset this)
@@ -204,7 +215,7 @@
       (toggleActor [this cmd]
         (aset #^"[Ljava.lang.Object;" actors 0
               (.getOther this (.getCur this)))
-        (.broadcast this cmd))
+        (.dequeue this cmd))
 
       (finz [this] (.onStopReset this))
 

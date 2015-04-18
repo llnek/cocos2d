@@ -62,10 +62,10 @@
 ;; source json = [gameid, userid, password]
 (defn DoPlayReq ""
 
-  [ctr evt]
+  [evt]
 
-  (let [rcb (I18N/getBundle (.id ^Identifiable ctr))
-        opts (assoc evt :container ctr)
+  (let [^Identifiable ctr (.container ^Emitter (:emitter evt))
+        rcb (I18N/getBundle (.id ctr))
         ^Channel ch (:socket evt)
         arr (:source evt) ]
     (if
@@ -93,7 +93,7 @@
         ;; maybe try to find or create a game room?
         (when (and (notnil? @plyr)
                    (notnil? @gm))
-          (if-let [ps (OpenRoom @gm @plyr opts)]
+          (if-let [ps (OpenRoom @gm @plyr evt)]
             (do
               (var-set room (.room ps))
               (var-set pss ps))
@@ -112,10 +112,10 @@
 ;; source json = [gameid, roomid, userid, password]
 (defn DoJoinReq ""
 
-  [ctr evt]
+  [evt]
 
-  (let [rcb (I18N/getBundle (.id ^Identifiable ctr))
-        opts (assoc evt :container ctr)
+  (let [^Identifiable ctr (.container ^Emitter (:emitter evt))
+        rcb (I18N/getBundle (.id ctr))
         ^Channel ch (:socket evt)
         arr (:source evt) ]
     (if
@@ -141,7 +141,7 @@
             (if (nil? r)
               (rError ch Events/ROOM_NOK (RStr rcb "room.bad"))
               (do
-                (var-set pss (JoinRoom r @plyr opts))
+                (var-set pss (JoinRoom r @plyr evt))
                 (when (nil? @pss)
                   (rError ch
                           Events/ROOM_FILLED

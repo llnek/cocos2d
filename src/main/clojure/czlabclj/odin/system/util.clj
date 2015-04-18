@@ -30,10 +30,10 @@
              PongWebSocketFrame CloseWebSocketFrame]
             [io.netty.channel Channel ChannelHandler
                               ChannelHandlerContext]
+            [com.zotohlab.skaro.io Emitter]
             [com.zotohlab.skaro.core Container]
             [com.zotohlab.frwk.netty NettyFW SimpleInboundFilter]
-            [com.zotohlab.odin.event InvalidEventError
-             Msgs Events]))
+            [com.zotohlab.odin.event EventError Msgs Events]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -44,7 +44,7 @@
 (defn- protocolHandler "Odin event handler."
 
   ^ChannelHandler
-  [^Container ctr ^PlayerSession ps]
+  [^PlayerSession ps]
 
   (proxy [SimpleInboundFilter][]
     (channelRead0 [ctx msg]
@@ -54,17 +54,15 @@
         (condp instance? msg
 
           CloseWebSocketFrame
-          (->> (-> (ReifyNWEvent Events/QUIT_GAME nil ps)
-                   (assoc :container ctr))
+          (->> (-> (ReifyNWEvent Events/QUIT_GAME nil)
+                   (assoc :context ps))
                (.onMsg (.room ps)))
 
           TextWebSocketFrame
           (->> (-> ^TextWebSocketFrame msg
-                        (.text)
-                        (DecodeJsonEvent ch)
-                        (assoc :context ps)
-                        (assoc :container ctr)) 
-               (.onMsg (.room ps) ))
+                   (.text)
+                   (DecodeEvent {:context ps}))
+               (.onMsg (.room ps)))
 
           PingWebSocketFrame
           (let [ct (-> ^PingWebSocketFrame
@@ -84,17 +82,17 @@
 (defn ApplyGameHandler "Jiggle the pipeline, replace standard websocket
                        handlers with Odin."
 
-  [^Container ctr ^PlayerSession ps
+  [^PlayerSession ps ^Emitter em
    ^Channel ch]
 
+  (.bind ps {:socket ch :emitter em})
   (let [pipe (.pipeline ch)]
     (.remove pipe "WebSocketServerProtocolHandler")
     (.remove pipe "WS403Responder")
     (.remove pipe "WSOCKDispatcher")
     (.addBefore pipe
                 "ErrorSinkFilter"
-                "OdinProtocolHandler" (protocolHandler ctr ps))
-    (.bind ps ch)
+                "OdinProtocolHandler" (protocolHandler ps))
     (NettyFW/dbgPipelineHandlers pipe)
   ))
 

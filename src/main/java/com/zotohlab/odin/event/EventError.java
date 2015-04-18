@@ -11,16 +11,20 @@
 
 package com.zotohlab.odin.event;
 
-
-import com.zotohlab.odin.core.Session;
-
 /**
  * @author kenl
  */
-public interface Eventee extends Receiver {
+public class EventError extends Exception {
 
-  public int eventType();
+  private static final long serialVersionUID = 1L;
 
-  public Session session();
+  public EventError(String msg) {
+    super(msg);
+  }
+
+  public EventError(String msg, Exception e) {
+    super(msg,e);
+  }
+
 }
 

@@ -24,7 +24,7 @@
         [czlabclj.odin.event.core]
         [czlabclj.xlib.util.str :only [strim nsb hgl?]])
 
-  (:import  [com.zotohlab.odin.event Eventee Dispatcher]
+  (:import  [com.zotohlab.odin.event Eventee PubSub]
             [com.zotohlab.odin.net TCPSender]
             [io.netty.channel Channel]))
 
@@ -50,11 +50,11 @@
 ;;
 (defn ReifyDispatcher ""
 
-  ^Dispatcher
+  ^PubSub
   []
 
   (let [handlers (ref {})]
-    (reify Dispatcher
+    (reify PubSub
 
       (unsubscribeIfSession [this s]
         (doseq [^Eventee cb (keys @handlers)]
@@ -80,7 +80,7 @@
               (let [^Eventee ee cb]
                 (when (= (.eventType ee)
                          (int (:type msg)))
-                  (.onEvent ee msg))
+                  (.onMsg ee msg))
                 (recur))))))
 
       (shutdown [_]

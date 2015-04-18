@@ -15,7 +15,6 @@
   czlabclj.frigga.pong.arena
 
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
-            ;;[clojure.data.json :as js]
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.core
@@ -51,6 +50,8 @@
 
   (registerPlayers [_ p1 p2])
   (startPoint [_ cmd])
+  (innards [_] )
+  (engine [_])
   (resetPoint [_])
   (restart [_])
   (getPlayer2 [_])
@@ -133,14 +134,12 @@
 (defn- clamp "Ensure paddle does not go out of bound."
 
   [^czlabclj.xlib.util.core.MubleAPI
-   impl
-   ^czlabclj.xlib.util.core.MubleAPI
-   paddle bbox]
+   paddle bbox port?]
 
   (let [h2 (halve (.getf paddle :height))
         w2 (halve (.getf paddle :width))
         rc (rect paddle)]
-    (if (.getf impl :portrait)
+    (if port?
       (do
         (when (< (:left rc) (:left bbox))
           (.setf! paddle :x (+ (:left bbox) w2)))
@@ -157,17 +156,16 @@
 ;; The *enclosure* is the bounding box => the world.
 (defn- traceEnclosure "Check if the ball has just hit a wall."
 
-  [^czlabclj.xlib.util.core.MubleAPI impl
+  [^czlabclj.xlib.util.core.MubleAPI ball
    dt
-   ^czlabclj.xlib.util.core.MubleAPI ball
-   bbox]
+   bbox port?]
 
   (with-local-vars [y (+ (.getf ball :y) (* dt (.getf ball :vy)))
                     x (+ (.getf ball :x) (* dt (.getf ball :vx)))
                     hit false]
     (let [sz (halve (.getf ball :height))
           sw (halve (.getf ball :width))]
-      (if (.getf impl :portrait)
+      (if port?
         (do
           ;;check left and right walls
           (when (cond
@@ -202,16 +200,14 @@
 ;;
 (defn- collide? "Check if the ball has collided with a paddle."
 
-  [^czlabclj.xlib.util.core.MubleAPI impl
-   ^czlabclj.xlib.util.core.MubleAPI p1
+  [^czlabclj.xlib.util.core.MubleAPI p1
    ^czlabclj.xlib.util.core.MubleAPI p2
    ^czlabclj.xlib.util.core.MubleAPI ball
-   bbox]
+   bbox port?]
 
   (with-local-vars [winner 0]
     (let [hh (halve (.getf ball :height))
           hw (halve (.getf ball :width))
-          vert (.getf impl :portrait)
           br (rect (.getf ball :x)
                    (.getf ball :y)
                    (.getf ball :width)
@@ -222,7 +218,7 @@
                     (.getf p2 :width)
                     (.getf p2 :height))]
         (if (rectXrect br r)
-          (if vert
+          (if port?
             (do
               (.setf! ball :vy (- (.getf ball :vy)))
               (.setf! ball :y (- (:bottom r) hh)))
@@ -237,7 +233,7 @@
                     (.getf p1 :width)
                     (.getf p1 :height))]
         (if (rectXrect br r)
-          (if vert
+          (if port?
             (do
               (.setf! ball :vy (- (.getf ball :vy)))
               (.setf! ball :y (+ (:top r) hh)))
@@ -254,33 +250,32 @@
 (defn- maybeStartNewPoint "A point has been won.
                           Let the UI know, and reset local entities."
 
-  [^czlabclj.xlib.util.core.MubleAPI impl
-   winner]
+  [^czlabclj.frigga.pong.arena.ArenaAPI arena winner]
 
-  (let [^PlayerSession ps2 (:session (.getf impl :p2))
-        ^PlayerSession ps1 (:session (.getf impl :p1))
+  (let [^czlabclj.xlib.util.core.MubleAPI impl
+        (.innards arena)
+        ^GameEngine eng (.engine arena)
         s2 (.getf impl :score2)
         s1 (.getf impl :score1)
-        arena (.getf impl :arena)
         src {:scores {:p2 s2 :p1 s1 }}]
-    (BCastAll (.room ps1) Events/SYNC_ARENA (WriteJson src))
+    (BCastAll eng Events/SYNC_ARENA (WriteJson src))
     ;; toggle flag to skip game loop logic until new
     ;; point starts
     (.setf! impl :resetting-point true)
-    (->> ^czlabclj.frigga.pong.arena.ArenaAPI arena
-        (.resetPoint))
+    (.resetPoint arena)
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- gameOver "Game over.  Let the UI know."
 
-  [^czlabclj.xlib.util.core.MubleAPI impl
-   winner]
+  [^czlabclj.frigga.pong.arena.ArenaAPI arena winner]
 
-  (let [^PlayerSession ps2 (:session (.getf impl :p2))
+  (let [^czlabclj.xlib.util.core.MubleAPI impl
+        (.innards arena)
+        ^GameEngine eng (.engine arena)
+        ^PlayerSession ps2 (:session (.getf impl :p2))
         ^PlayerSession ps1 (:session (.getf impl :p1))
-        room (.room ps1)
         s2 (.getf impl :score2)
         s1 (.getf impl :score1)
         pwin (if (> s2 s1) ps2 ps1)
@@ -288,8 +283,8 @@
                       :scores {:p2 s2 :p1 s1 }}}]
     ;; end game
     (log/debug "game over: winner of this game is " src)
-    (BCastAll room Events/SYNC_ARENA (WriteJson src))
-    (BCastAll room Events/STOP nil)
+    (BCastAll eng Events/SYNC_ARENA (WriteJson src))
+    (BCastAll eng Events/STOP nil)
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -297,10 +292,12 @@
 (defn- updatePoint "A point has been won. Update the score,
                     and maybe trigger game-over."
 
-  [^czlabclj.xlib.util.core.MubleAPI impl
-   winner]
+  [^czlabclj.frigga.pong.arena.ArenaAPI arena winner]
 
-  (let [nps (.getf impl :numpts)
+  (let [^czlabclj.xlib.util.core.MubleAPI impl
+        (.innards arena)
+        ^GameEngine eng (.engine arena)
+        nps (.getf impl :numpts)
         s2 (.getf impl :score2)
         s1 (.getf impl :score1)
         sx (if (= winner 2)
@@ -312,26 +309,30 @@
     (if (= winner 2)
       (.setf! impl :score2 sx)
       (.setf! impl :score1 sx))
-    (maybeStartNewPoint impl winner)
+    (maybeStartNewPoint arena winner)
     (when (>= sx nps)
-      (gameOver impl winner))
+      (gameOver arena winner))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- updateEntities "Move local entities per game loop."
 
-  [^czlabclj.xlib.util.core.MubleAPI impl
+  [^czlabclj.frigga.pong.arena.ArenaAPI arena
    dt bbox]
 
-  (let [^czlabclj.xlib.util.core.MubleAPI
+  (let [^czlabclj.xlib.util.core.MubleAPI impl
+        (.innards arena)
+        ^GameEngine eng (.engine arena)
+        ^czlabclj.xlib.util.core.MubleAPI
         pad2 (.getf impl :paddle2)
         ^czlabclj.xlib.util.core.MubleAPI
         pad1 (.getf impl :paddle1)
         ^czlabclj.xlib.util.core.MubleAPI
-        ball (.getf impl :ball)]
+        ball (.getf impl :ball)
+        port? (.getf impl :portrait)]
 
-    (if (.getf impl :portrait)
+    (if port?
       (do
         (.setf! pad2 :x (+ (* dt (.getf pad2 :vx))
                            (.getf pad2 :x)))
@@ -343,24 +344,24 @@
         (.setf! pad1 :y (+ (* dt (.getf pad1 :vy))
                            (.getf pad1 :y)))))
 
-    (clamp impl pad2 bbox)
-    (clamp impl pad1 bbox)
-    (traceEnclosure impl dt ball bbox)
+    (clamp pad2 bbox port?)
+    (clamp pad1 bbox port?)
+    (traceEnclosure ball dt bbox port?)
 
-    (let [winner (collide? impl pad1 pad2 ball bbox) ]
+    (let [winner (collide? pad1 pad2 ball bbox port?) ]
       (when (> winner 0)
-        (updatePoint impl winner)))
+        (updatePoint arena winner)))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- syncClients "Update UI with states of local entities."
 
-  [^czlabclj.xlib.util.core.MubleAPI impl]
+  [^czlabclj.frigga.pong.arena.ArenaAPI arena]
 
-  (let [^PlayerSession ps2 (:session (.getf impl :p2))
-        ^PlayerSession ps1 (:session (.getf impl :p1))
-        room (.room ps1)
+  (let [^czlabclj.xlib.util.core.MubleAPI impl
+        (.innards arena)
+        ^GameEngine eng (.engine arena)
         ^czlabclj.xlib.util.core.MubleAPI
         pad2 (.getf impl :paddle2)
         ^czlabclj.xlib.util.core.MubleAPI
@@ -383,37 +384,38 @@
                     :vx (.getf ball :vx) }} ]
     ;; TODO: use network-msg
     (log/debug "sync new BALL values " (:ball src))
-    (BCastAll room Events/SYNC_ARENA (WriteJson src))
+    (BCastAll eng Events/SYNC_ARENA (WriteJson src))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- updateArena "Update the state of the Arena per game loop."
 
-  [options ^czlabclj.xlib.util.core.MubleAPI impl]
+  [^czlabclj.frigga.pong.arena.ArenaAPI arena options]
 
-  (if (true? (.getf impl :resetting-point))
-    nil ;; wait for new point to start, do nothing now
-    (let [waitIntv (:syncMillis options)
-          maxpts (:numpts options)
-          world (:world options)
-          lastTick (.getf impl :lastTick)
-          lastSync (.getf impl :lastSync)
-          now (System/currentTimeMillis)]
-      ;; --- update the game with the difference
-      ;;in ms since the
-      ;; --- last tick
-      (let [diff (- now lastTick)
-            lastSync2 (+ lastSync diff)]
-        (updateEntities impl (/ diff 1000) world)
-        (.setf! impl :lastSync lastSync2)
-        (.setf! impl :lastTick now)
-        ;; --- check if time to send a ball update
-        (when (> lastSync waitIntv)
-          (when (.getf impl :sync)
-            (syncClients impl))
-          (.setf! impl :lastSync 0))))
-  ))
+  (let [^czlabclj.xlib.util.core.MubleAPI impl
+        (.innards arena)]
+    (if-not (true? (.getf impl :resetting-point))
+      (let [waitIntv (:syncMillis options)
+            maxpts (:numpts options)
+            world (:world options)
+            lastTick (.getf impl :lastTick)
+            lastSync (.getf impl :lastSync)
+            now (System/currentTimeMillis)]
+        ;; --- update the game with the difference
+        ;;in ms since the
+        ;; --- last tick
+        (let [diff (- now lastTick)
+              lastSync2 (+ lastSync diff)]
+          (updateEntities arena (/ diff 1000) world)
+          (.setf! impl :lastSync lastSync2)
+          (.setf! impl :lastTick now)
+          ;; --- check if time to send a ball update
+          (when (> lastSync waitIntv)
+            (when (.getf impl :sync)
+              (syncClients arena))
+            (.setf! impl :lastSync 0)))))
+    ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -421,11 +423,13 @@
                        score has reached the target value, and if
                        so, end the game else pause and loop again."
 
-  [^GameEngine engine
-   options
-   ^czlabclj.xlib.util.core.MubleAPI impl]
+  [^czlabclj.frigga.pong.arena.ArenaAPI arena
+   options]
 
-  (let [fps (/ 1000 (:framespersec options))
+  (let [^czlabclj.xlib.util.core.MubleAPI impl
+        (.innards arena)
+        ^GameEngine eng (.engine arena)
+        fps (/ 1000 (:framespersec options))
         nps (:numpts options)
         s2 (.getf impl :score2)
         s1 (.getf impl :score1)]
@@ -436,7 +440,7 @@
         (log/debug "haha score " s2
                    " vs " s1
                    " :-------------------> game over.")
-        (.endRound engine nil)
+        (.endRound eng nil)
         ;; use this to get out of the while loop
         (throw (Exception. "game over.")))
       (TryC (Thread/sleep fps)))
@@ -444,69 +448,66 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- rerunGameLoop "When a new point starts, re run the
-                     current game loop."
-
-  [engine options ^czlabclj.xlib.util.core.MubleAPI impl]
-
-  (.setf! impl :lastTick (System/currentTimeMillis))
-  (.setf! impl :lastSync 0)
-  (.setf! impl :sync true)
-  (.setf! impl :resetting-point false))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 (defn- runGameLoop "Spawn a game loop in a separate thread."
 
-  [engine options ^czlabclj.xlib.util.core.MubleAPI impl]
+  [^czlabclj.frigga.pong.arena.ArenaAPI arena options rerun?]
 
-  (.setf! impl :lastTick (System/currentTimeMillis))
-  (.setf! impl :numpts (:numpts options))
-  (.setf! impl :resetting-point false)
-  (.setf! impl :lastSync 0)
-  (.setf! impl :sync true)
-  (.setf! impl :score2 0)
-  (.setf! impl :score1 0)
-  (Coroutine #(while true
-                (TryC (updateArena options impl))
-                (postUpdateArena engine options impl))))
+  (let [^czlabclj.xlib.util.core.MubleAPI impl
+        (.innards arena)]
+    (.setf! impl :lastTick (System/currentTimeMillis))
+    (.setf! impl :lastSync 0)
+    (.setf! impl :sync true)
+    (.setf! impl :resetting-point false)
+    (when-not rerun?
+      (.setf! impl :numpts (:numpts options))
+      (.setf! impl :score2 0)
+      (.setf! impl :score1 0)
+      (Coroutine #(while true
+                    (TryC (updateArena arena options))
+                    (postUpdateArena arena options))))
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- initEntities "Initialize all local entities."
 
-  [^czlabclj.xlib.util.core.MubleAPI impl
+  [^czlabclj.frigga.pong.arena.ArenaAPI arena
    pp1 pp2
    pd ba]
 
-  (log/debug "resetting all entities back to default positions.")
-  (.setf! impl :paddle2 (reifyPaddle (:x pp2)
-                                      (:y pp2)
-                                      (:width pd)
-                                      (:height pd)))
-  (.setf! impl :paddle1 (reifyPaddle (:x pp1)
-                                      (:y pp1)
-                                      (:width pd)
-                                      (:height pd)))
-  (let [^czlabclj.xlib.util.core.MubleAPI
-        b (reifyBall (:x ba)
-                     (:y ba)
-                     (:width ba)
-                     (:height ba))]
-    (.setf! b :vx (* (RandomSign) (:speed ba)))
-    (.setf! b :vy (* (RandomSign) (:speed ba)))
-    (.setf! impl :ball b)))
+  (let [^czlabclj.xlib.util.core.MubleAPI impl
+        (.innards arena)]
+    (log/debug "resetting all entities back to default positions.")
+    (.setf! impl :paddle2 (reifyPaddle (:x pp2)
+                                        (:y pp2)
+                                        (:width pd)
+                                        (:height pd)))
+    (.setf! impl :paddle1 (reifyPaddle (:x pp1)
+                                        (:y pp1)
+                                        (:width pd)
+                                        (:height pd)))
+    (let [^czlabclj.xlib.util.core.MubleAPI
+          b (reifyBall (:x ba)
+                       (:y ba)
+                       (:width ba)
+                       (:height ba))]
+      (.setf! b :vx (* (RandomSign) (:speed ba)))
+      (.setf! b :vy (* (RandomSign) (:speed ba)))
+      (.setf! impl :ball b))
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- pokeAndStartUI ""
 
-  [engine options
-   ^czlabclj.xlib.util.core.MubleAPI impl]
+  [^czlabclj.frigga.pong.arena.ArenaAPI arena options]
 
-  (let [^PlayerSession p2 (:session (.getf impl :p2))
+  (let [^czlabclj.xlib.util.core.MubleAPI impl
+        (.innards arena)
+        ^GameEngine eng (.engine arena)
+        ^PlayRoom room (.container eng)
+        ^PlayerSession p2 (:session (.getf impl :p2))
         ^PlayerSession p1 (:session (.getf impl :p1))
-        room (.room p1)
         ^czlabclj.xlib.util.core.MubleAPI
         ball (.getf impl :ball)
         src {:ball {:vx (.getf ball :vx)
@@ -514,12 +515,12 @@
                     :x (.getf ball :x)
                     :y (.getf ball :y)} }]
     (->> (ReifySSEvent Events/POKE_MOVE
-                       (WriteJson {:pnum (.number p2)}))
-         (.sendMsg p2))
+                       (WriteJson {:pnum (.number p2)}) p2)
+         (.sendMsg room))
     (->> (ReifySSEvent Events/POKE_MOVE
-                       (WriteJson {:pnum (.number p1)}))
-         (.sendMsg p1))
-    (BCastAll room Events/SYNC_ARENA (WriteJson src))
+                       (WriteJson {:pnum (.number p1)}) p1)
+         (.sendMsg room))
+    (BCastAll eng Events/SYNC_ARENA (WriteJson src))
     (log/debug "setting default ball values " src)
   ))
 
@@ -528,7 +529,7 @@
 (defn ReifyPongArena "The local game arena."
 
   ^czlabclj.frigga.pong.arena.ArenaAPI
-  [engine options]
+  [^GameEngine theEngine options]
 
   (let [maxpts (:numpts options)
         world (:world options)
@@ -544,15 +545,16 @@
     (reify ArenaAPI
       (registerPlayers [this p1Wrap p2Wrap]
         ;;(require 'czlabclj.frigga.pong.arena)
-        (.setf! impl :arena this)
         (.setf! impl :p2 p2Wrap)
         (.setf! impl :p1 p1Wrap)
-        (initEntities impl pp1 pp2 pd ba))
+        (initEntities this pp1 pp2 pd ba))
 
       (getPlayer2 [_] (-> (.getf impl :p2)
                           (:player)))
       (getPlayer1 [_] (-> (.getf impl :p1)
                           (:player)))
+
+      (engine [_] theEngine)
 
       (restart [_]
         (.setf! impl :resetting-point false)
@@ -560,19 +562,20 @@
         (.setf! impl :score1 0))
 
       (resetPoint [this]
-        (initEntities impl pp1 pp2 pd ba)
+        (initEntities this pp1 pp2 pd ba)
         (.startPoint this {}))
 
-      (startPoint [_ cmd]
-        (pokeAndStartUI engine options impl)
+      (startPoint [this cmd]
+        (pokeAndStartUI this options)
         (if (true? (:new cmd))
-          (runGameLoop engine options impl)
-          (rerunGameLoop engine options impl)))
+          (runGameLoop this options false)
+          (runGameLoop this options true)))
 
       (enqueue [_ evt]
         (let [^PlayerSession p2 (:session (.getf impl :p2))
               ^PlayerSession p1 (:session (.getf impl :p1))
               ^PlayerSession pss (:context evt)
+              ^PlayRoom room (.container theEngine)
               pnum (.number pss)
               kw (if (= pnum 1) :p1 :p2)
               pt (if (= pnum 1) p2 p1)
@@ -588,8 +591,8 @@
             (.setf! other :vx pv)
             (.setf! other :vy pv))
           (->> (ReifySSEvent Events/SYNC_ARENA
-                             (WriteJson cmd))
-               (.sendMsg pt))))
+                             (WriteJson cmd) pt)
+               (.sendMsg room))))
     )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

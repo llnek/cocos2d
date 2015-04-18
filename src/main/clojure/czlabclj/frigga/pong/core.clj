@@ -15,7 +15,6 @@
   czlabclj.frigga.pong.core
 
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
-            ;;[clojure.data.json :as js]
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ]]
@@ -28,7 +27,7 @@
 
   (:import  [com.zotohlab.odin.game Game PlayRoom GameEngine
                                     Player PlayerSession]
-            [com.zotohlab.odin.event Msgs Events]))
+            [com.zotohlab.odin.event EventError Msgs Events]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -48,7 +47,7 @@
 ;;
 (defn- onSessionMsg ""
 
-  [^GameEngine eng evt stateAtom stateRef]
+  [^GameEngine eng evt stateRef]
 
   (condp = (:code evt)
 
@@ -57,7 +56,7 @@
 
     Events/PLAY_MOVE
     (let [^czlabclj.frigga.pong.arena.ArenaAPI
-          aa (:arena @stateAtom)
+          aa (:arena (.state eng))
           src (:source evt)
           pss (:context evt)]
       (log/debug "received paddle-move "
@@ -84,7 +83,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype Pong [stateAtom stateRef] ;;com.zotohlab.odin.game.GameEngine
+(deftype Pong [stateAtom stateRef]
 
   GameEngine
 
@@ -111,31 +110,29 @@
   ;; updates from clients
   (update [this evt]
     (log/debug "game engine got an update " evt)
-    (.onMsg this evt))
-
-  (onMsg [this evt]
     (condp = (:type evt)
       Msgs/NETWORK
-      (onNetworkMsg this evt stateAtom stateRef)
+      (throw (EventError. "Unexpected network event."))
+
       Msgs/SESSION
-      (onSessionMsg this evt stateAtom stateRef)
-      nil))
+      (onSessionMsg this evt stateRef)
+
+      (log/warn "game engine: unhandled msg " evt)))
 
   (restart [this options]
     (log/debug "restarting game one more time.")
     ;;(require 'czlabclj.frigga.pong.core)
     (let [parr (:players @stateAtom)
-          m (MapPlayers parr)
-          room (-> ^PlayerSession
-                   (first parr) (.room ))]
+          m (MapPlayers parr)]
       (dosync (ref-set stateRef m))
-      (BCastAll room
+      (BCastAll this
                 Events/RESTART
                 (MapPlayersEx parr))))
 
-  (ready [_ room]
+  (ready [this room]
     ;;(require 'czlabclj.frigga.pong.core)
-    (BCastAll room
+    (swap! stateAtom assoc :room room)
+    (BCastAll this
               Events/START
               (MapPlayersEx (:players @stateAtom))))
 
@@ -146,6 +143,8 @@
 
   (endRound [_ obj]
     (swap! stateAtom dissoc :arena))
+
+  (container [_] (:room @stateAtom))
 
   (stop [_] )
   (finz [_] )

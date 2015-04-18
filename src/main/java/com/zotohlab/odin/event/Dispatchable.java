@@ -7,24 +7,16 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
 
 package com.zotohlab.odin.event;
-
-
-import com.zotohlab.odin.core.Session;
 
 /**
  * @author kenl
  */
-public interface Dispatcher {
+public interface Dispatchable {
 
-  public void unsubscribeIfSession(Session s);
-  public void unsubscribe(Eventee h);
-  public void subscribe( Eventee h);
+  public void removeHandler(Eventee h);
+  public void addHandler(Eventee h);
   
-  public void publish( Object event );
-  public void shutdown();
-
 }
-

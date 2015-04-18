@@ -28,12 +28,13 @@
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
             [com.zotohlab.odin.game Game PlayRoom
                                     Player PlayerSession]
+            [com.zotohlab.frwk.core Hierarchial]
             [com.zotohlab.odin.core Session]
             [io.netty.channel Channel]
             [com.zotohlab.frwk.util CoreUtils]
             [com.zotohlab.skaro.core Container]
             [com.zotohlab.odin.net MessageSender]
-            [com.zotohlab.odin.event Events Msgs Eventable]))
+            [com.zotohlab.odin.event Events Msgs Sender Receiver]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -57,39 +58,32 @@
       (player [_] plyr)
       (room [_] room)
 
-      Eventable
+      Hierarchial
+
+      (parent [_] (.getf impl :parent))
+
+      Sender
 
       ;; send a message to client
       (sendMsg [this msg]
-        (when (.isConnected this)
+        (when (and (not (.isShuttingDown this))
+                   (.isConnected this))
           (-> ^MessageSender
               (.getf impl :tcp)
               (.sendMsg msg))))
 
+      Receiver
+
       (onMsg [this evt]
-        (log/debug "player session " sid " , onmsg called: " evt)
-        ;; when it is a network msg with a specific socket attached.
-        ;; it means only the same socket should apply the message,
-        ;; others should ignore - do nothing.
-        (when-not (.getf impl :shutting-down)
-          (if (and (= Msgs/NETWORK (:type evt))
-                   (notnil? (:context evt)))
-            (when (identical? this
-                              (:context evt))
-              (->> (assoc evt :type Msgs/SESSION)
-                   (.sendMsg this)))
-            (.sendMsg this evt))))
-
-      (removeHandler [_ h] )
-
-      (addHandler [_ h] )
+        (log/debug "player session " sid " , onmsg called: " evt))
 
       Session
 
       (isShuttingDown [_] (.getf impl :shutting-down))
 
-      (bind [this soc]
-        (.setf! impl :tcp (ReifyReliableSender soc))
+      (bind [this options]
+        (.setf! impl :tcp (ReifyReliableSender (:socket options)))
+        (.setf! impl :parent (:emitter options))
         (.setStatus this Events/S_CONNECTED))
 
       (id [_] sid)
@@ -99,6 +93,7 @@
 
       (isConnected [_] (= Events/S_CONNECTED
                           (.getf impl :status)))
+
       (close [this]
         (locking this
           (when (.isConnected this)

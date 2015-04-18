@@ -19,7 +19,7 @@ import java.util.Map;
 public interface GameEngine {
 
   public void initialize(Object players);
-  public Object ready(Object room);
+  public Object ready(PlayRoom room);
 
   public Object restart(Map<?,?> options);
   public Object start(Map<?,?> options);
@@ -33,9 +33,5 @@ public interface GameEngine {
   public void update(Object event);
   public Object state();
 
-//  public void onNetworkMsg(Object evt);
-//  public void onSessionMsg(Object evt);
-
-  public void onMsg(Object evt);
-
+  public Object container();  
 }

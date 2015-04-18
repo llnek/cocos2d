@@ -15,15 +15,14 @@
   czlabclj.frigga.core.util
 
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
-            [clojure.data.json :as js]
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.core :only [ternary notnil? ]]
         [czlabclj.xlib.util.str :only [strim nsb hgl?]]
+        [czlabclj.xlib.util.format]
         [czlabclj.odin.event.core])
 
-  (:import  [com.zotohlab.odin.game PlayRoom
-                                    PlayerSession]))
+  (:import  [com.zotohlab.odin.game PlayRoom GameEngine PlayerSession]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -59,12 +58,12 @@
 ;;
 (defn BCastAll "Broadcast message to all player sessions."
 
-  [^PlayRoom room code cmd]
+  [^GameEngine eng code body]
 
   (->> (ReifyNWEvent code
-                     (if-not (nil? cmd)
-                       (js/write-str cmd)))
-       (.broadcast room)
+                     (if-not (nil? body)
+                       (WriteJson body)))
+       (.sendMsg ^PlayRoom (.container eng))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

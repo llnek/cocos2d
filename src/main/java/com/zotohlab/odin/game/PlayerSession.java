@@ -11,13 +11,14 @@
 
 package com.zotohlab.odin.game;
 
-import com.zotohlab.odin.event.Eventable;
 import com.zotohlab.odin.core.Session;
+import com.zotohlab.odin.event.Receiver;
+import com.zotohlab.odin.event.Sender;
 
 /**
  * @author kenl
  */
-public interface PlayerSession extends Session, Eventable {
+public interface PlayerSession extends Session, Sender, Receiver {
 
   public PlayRoom room();
   public Player player();

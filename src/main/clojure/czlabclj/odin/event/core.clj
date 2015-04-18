@@ -24,7 +24,7 @@
          [TryCR ternary]])
 
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
-            [com.zotohlab.odin.event Msgs Events InvalidEventError]))
+            [com.zotohlab.odin.event Msgs Events EventError]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -59,29 +59,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn DecodeJsonEvent
+(defn- decodeJsonEvent ""
 
-  "returns event with socket info attached.
-  If error, catch and return it with an invalid type."
-
-  [^String data socket]
+  [^String data extraBits]
 
   (log/debug "decoding json: " data)
   (TryCR
     {:type -1}
     (let [evt (ReadJsonKW data) ]
       (when-not (number? (:type evt))
-        (throw (InvalidEventError. "event has no type info.")))
-      (assoc evt :socket socket))
+        (throw (EventError. "Event has no type info.")))
+      (merge evt extraBits))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn DecodeEvent ""
+(defn DecodeEvent
 
-  [^String data socket]
+  "returns event with socket info attached.
+  If error, catch and return it with an invalid type."
 
-  (DecodeJsonEvent data socket))
+  ([^String data extraBits] (decodeJsonEvent data extraBits))
+  ([^String data] (DecodeEvent data {})))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

@@ -7,24 +7,14 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
 
 package com.zotohlab.odin.event;
 
 /**
  * @author kenl
  */
-public class InvalidEventError extends Exception {
+public interface Receiver {
 
-  private static final long serialVersionUID = 1L;
-
-  public InvalidEventError(String msg) {
-    super(msg);
-  }
-
-  public InvalidEventError(String msg, Exception e) {
-    super(msg,e);
-  }
-
+  public void onMsg(Object msg);
 }
-

@@ -43,17 +43,21 @@
 ;; Main entry point.
 (defn OdinOnEvent ""
 
-  [^Container ctr evt]
+  [^WebSockEvent ws]
 
-  (let [etype (:type evt)]
-    (condp = etype
+  (let [^XData data (.getData ws)
+        req (->> {:socket (.getSocket ws)
+                  :emitter (.emitter ws) }
+                 (DecodeEvent (.stringify data))) ]
+    (condp = (:type req)
       Events/PLAYGAME_REQ
-      (DoPlayReq ctr evt)
+      (DoPlayReq req)
 
       Events/JOINGAME_REQ
-      (DoJoinReq ctr evt)
+      (DoJoinReq req)
 
-      (log/warn "unhandled event " evt))))
+      (log/warn "unhandled event " req))
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; One time init from the MainApp.
@@ -71,30 +75,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- doStart ""
-
-  ^Activity
-  []
-
-  (SimPTask
-    (fn [^Job j]
-      (let [^WebSockEvent evt (.event j)
-            ^XData data (.getData evt)]
-        (OdinOnEvent (.container (.emitter evt))
-                     (DecodeEvent (.stringify data)
-                                  (.getSocket evt)))))
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 (deftype Handler [] PDelegate
 
   (onError [ _ err curPt] (log/error "Handler: I got an error!"))
   (onStop [_ pipe] )
-
-  (startWith [_  pipe]
-    (require 'czlabclj.odin.system.core)
-    (doStart)))
+  (startWith [_  pipe] (SimPTask (fn [^Job j] (OdinOnEvent (.event j))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

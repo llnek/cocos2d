@@ -15,7 +15,6 @@
   czlabclj.frigga.tictactoe.core
 
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
-            ;;[clojure.data.json :as js]
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ]]
@@ -28,7 +27,7 @@
 
   (:import  [com.zotohlab.odin.game Game PlayRoom GameEngine
                                     Player PlayerSession]
-            [com.zotohlab.odin.event Msgs Events]))
+            [com.zotohlab.odin.event EventError Msgs Events]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -82,7 +81,6 @@
 ;;
 (deftype TicTacToe [stateAtom stateRef]
 
-  ;;com.zotohlab.odin.game.GameEngine
   GameEngine
 
   (initialize [_ players]
@@ -92,24 +90,21 @@
         (reset! stateAtom {:players players})
         (ref-set stateRef m))))
 
-  (start [_ options]
+  (start [this options]
     ;;(require 'czlabclj.frigga.tictactoe.board)
     (let [ps (:players @stateAtom)
           p1 (ReifyPlayer (long \X) \X (nth ps 0))
           p2 (ReifyPlayer (long \O) \O (nth ps 1))
-          bd (ReifyTicTacToeBoard 3) ]
+          bd (ReifyTicTacToeBoard this {}) ]
       (swap! stateAtom assoc :board bd)
       (.registerPlayers bd p1 p2)
-      (.broadcast bd nil)))
+      (.dequeue bd nil)))
 
   (update [this evt]
     (log/debug "game engine got an update " evt)
-    (.onMsg this evt))
-
-  (onMsg [this evt]
     (condp = (:type evt)
       Msgs/NETWORK
-      (onNetworkMsg this evt stateAtom stateRef)
+      (throw (EventError. "Unexpected network event."))
 
       Msgs/SESSION
       (onSessionMsg this evt stateAtom stateRef)
@@ -120,21 +115,19 @@
     (log/debug "restarting tictactoe game one more time...")
     ;;(require 'czlabclj.frigga.tictactoe.core)
     (let [parr (:players @stateAtom)
-          room (-> ^PlayerSession
-                   (first parr) (.room))
-          src (MapPlayersEx parr)
-          m (MapPlayers parr)
-          evt (ReifyNWEvent Events/RESTART
-                            (WriteJson src)) ]
+          m (MapPlayers parr)]
       (dosync (ref-set stateRef m))
-      (.broadcast room evt)))
+      (BCastAll this
+                Events/RESTART (MapPlayersEx parr))))
 
-  (ready [_ room]
+  (ready [this room]
     ;;(require 'czlabclj.frigga.tictactoe.core)
-    (let [src (MapPlayersEx (:players @stateAtom))
-          evt (ReifyNWEvent Events/START
-                            (WriteJson src)) ]
-      (.broadcast ^PlayRoom room evt)))
+    (swap! stateAtom assoc :room room)
+    (BCastAll this
+              Events/START
+              (MapPlayersEx (:players @stateAtom))))
+
+  (container [_] (:room @stateAtom))
 
   (startRound [_ obj])
   (endRound [_ obj])

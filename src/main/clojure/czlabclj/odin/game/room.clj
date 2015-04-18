@@ -35,8 +35,8 @@
             [java.util.concurrent.atomic AtomicLong]
             [io.netty.channel Channel]
             [com.zotohlab.skaro.core Container]
-            [com.zotohlab.odin.event Events Eventee
-             Msgs Eventable Dispatcher]))
+            [com.zotohlab.odin.event Events Eventee PubSub
+             Msgs Sender Receiver Dispatchable]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -217,16 +217,33 @@
   [^PlayerSession ps]
 
   (reify Eventee
+
     (eventType [_] Msgs/NETWORK)
     (session [_] ps)
-    (onEvent [_ evt]
-      ;; if a context is given, then only the
-      ;; matching one gets the message.
-      (if-let [c (:context evt)]
-        (when (identical? c ps)
-          (.onMsg ps evt))
-        (.onMsg ps evt)))
+
+    Receiver
+    (onMsg [_ evt] (.onMsg ps evt))
   ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- onSessionMsg ""
+
+  [^PlayRoom room evt]
+
+  (when-let [^Sender s (:context evt)]
+    (.sendMsg s evt)
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- onNetworkMsg ""
+
+  [^PlayRoom room evt]
+
+  ;;for now, just bcast everything
+
+  (.broadcast room evt))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -307,21 +324,28 @@
           (.initialize sm sss)
           (.ready sm this)))
 
-      Eventable
+      Dispatchable
 
       (removeHandler [_ h] (.unsubscribe disp h))
-
       (addHandler [_ h] (.subscribe disp h))
 
-      (sendMsg [this msg] (.onMsg this msg))
+      Sender
+
+      (sendMsg [this msg]
+        (condp = (:type msg)
+          Msgs/NETWORK (onNetworkMsg this msg)
+          Msgs/SESSION (onSessionMsg this msg)
+          (log/warn "room.sendmsg: unhandled event " msg)))
+
+      Receiver
 
       (onMsg [this evt]
         (let [^GameEngine sm (.engine this) ]
           (log/debug "room got an event " evt)
           (condp = (:type evt)
-            Msgs/NETWORK (.broadcast this evt)
+            Msgs/NETWORK (onNetworkMsg this evt)
             Msgs/SESSION (.update sm evt)
-            (log/warn "room.onevent: unhandled event " evt))))
+            (log/warn "room.onmsg: unhandled event " evt))))
 
       Object
 
@@ -378,7 +402,7 @@
                  :pnum (.number ps)}
             evt (ReifySSEvent Events/PLAYREQ_OK
                             (WriteJson src)) ]
-        (ApplyGameHandler (:container options) ps ch)
+        (ApplyGameHandler ps (:emitter options) ch)
         (log/debug "replying back to user: " evt)
         (.writeAndFlush ch (EventToFrame evt))
         (when (.canActivate room)
@@ -404,11 +428,13 @@
                  :pnum (.number pss) }
             evt (ReifySSEvent Events/JOINREQ_OK
                             (WriteJson src)) ]
-        (ApplyGameHandler (:container options) pss ch)
+        (ApplyGameHandler pss (:emitter options) ch)
         (.writeAndFlush ch (EventToFrame evt))
+        (log/debug "replying back to user: " evt)
         (when-not (.isActive room)
           (if (.canActivate room)
             (do
+              (log/debug "room.canActivate = true")
               (.activate room)
               (AddGameRoom room))
             (AddFreeRoom room)))
