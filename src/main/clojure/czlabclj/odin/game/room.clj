@@ -75,8 +75,6 @@
         (engineClass [_] eng)
         (info [_] g)
         (id [_] (:uuid g))
-        ;;TODO: unload is an extreme action, what about the
-        ;;game rooms???
         (unload [_] nil)))
   ))
 
@@ -287,8 +285,6 @@
             (alter sessions assoc (.id ps) ps)
             (alter pssArr conj ps))
           (.addSession py ps)
-          (->> (ReifyNWEvent Events/PLAYER_JOINED (WriteJson src))
-               (.broadcast this ))
           ps))
 
       (isShuttingDown [_] (.getf impl :shutting))
@@ -309,20 +305,23 @@
       (close [_]
         (dosync
           (doseq [^PlayerSession v (vals @sessions)]
+            (-> (.player v)
+                (.removeSession v))
             (.close v))
           (ref-set sessions {})))
 
       (isActive [_] (true? (.getf impl :active)))
 
       (activate [this]
-        (let [^GameEngine sm (.engine this)
+        (let [^GameEngine eng (.engine this)
               sss (seq @pssArr)]
           (log/debug "activating room " rid)
           (.setf! impl :active true)
           (doseq [s sss]
             (.addHandler this (mkNetworkSubr s)))
-          (.initialize sm sss)
-          (.ready sm this)))
+          (doto eng
+            (.initialize  sss)
+            (.ready  this))))
 
       Dispatchable
 
@@ -340,11 +339,11 @@
       Receiver
 
       (onMsg [this evt]
-        (let [^GameEngine sm (.engine this) ]
+        (let [^GameEngine eng (.engine this) ]
           (log/debug "room got an event " evt)
           (condp = (:type evt)
             Msgs/NETWORK (onNetworkMsg this evt)
-            Msgs/SESSION (.update sm evt)
+            Msgs/SESSION (.update eng evt)
             (log/warn "room.onmsg: unhandled event " evt))))
 
       Object
@@ -405,6 +404,11 @@
         (ApplyGameHandler ps (:emitter options) ch)
         (log/debug "replying back to user: " evt)
         (.writeAndFlush ch (EventToFrame evt))
+        (->> (ReifyNWEvent Events/PLAYER_JOINED
+                           (->> {:pnum (.number ps)
+                                 :puid (.id plyr)}
+                                (WriteJson src)))
+             (.broadcast this))
         (when (.canActivate room)
           (log/debug "room.canActivate = true")
           (.activate room))))

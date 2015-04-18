@@ -75,9 +75,12 @@
       Receiver
 
       (onMsg [this evt]
-        (log/debug "player session " sid " , onmsg called: " evt))
+        (throw (Exception. "Unexpected onmsg called in PlayerSession.")))
+        ;;(log/debug "player session " sid " , onmsg called: " evt))
 
       Session
+
+      (isConnected [this] (= Events/S_CONNECTED (.status this)))
 
       (isShuttingDown [_] (.getf impl :shutting-down))
 
@@ -90,9 +93,6 @@
 
       (setStatus [_ s] (.setf! impl :status s))
       (status [_] (.getf impl :status))
-
-      (isConnected [_] (= Events/S_CONNECTED
-                          (.getf impl :status)))
 
       (close [this]
         (locking this
