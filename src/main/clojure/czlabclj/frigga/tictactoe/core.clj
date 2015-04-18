@@ -23,7 +23,7 @@
         [czlabclj.cocos2d.games.meta]
         [czlabclj.odin.event.core]
         [czlabclj.frigga.core.util]
-        [czlabclj.frigga.tictactoe.board])
+        [czlabclj.frigga.tictactoe.arena])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom GameEngine
                                     Player PlayerSession]
@@ -32,20 +32,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- onNetworkMsg ""
-
-  [^GameEngine eng evt stateAtom stateRef]
-
-  nil)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- onSessionMsg ""
 
-  [^GameEngine eng evt stateAtom stateRef]
+  [^GameEngine eng evt stateRef]
 
   (condp = (:code evt)
 
@@ -53,14 +44,12 @@
     (.restart eng {})
 
     Events/PLAY_MOVE
-    (let [bd (:board @stateAtom)
+    (let [bd (:arena (.state eng))
           pss (:context evt)
           src (:source evt)
           cmd (ReadJsonKW src)]
       (log/debug "TicTacToe rec'ved cmd " src " from session " pss)
-      (-> ^czlabclj.frigga.tictactoe.board.BoardAPI
-          bd
-          (.enqueue cmd)))
+      (-> ^czlabclj.frigga.tictactoe.arena.BoardAPI bd (.enqueue cmd)))
 
     Events/STARTED
     (do
@@ -84,19 +73,16 @@
   GameEngine
 
   (initialize [_ players]
-    ;;(require 'czlabclj.frigga.tictactoe.core)
-    (let [m (MapPlayers players) ]
-      (dosync
-        (reset! stateAtom {:players players})
-        (ref-set stateRef m))))
+    (dosync
+      (ref-set stateRef (MapPlayers players))
+      (reset! stateAtom {:players players})))
 
   (start [this options]
-    ;;(require 'czlabclj.frigga.tictactoe.board)
-    (let [ps (:players @stateAtom)
-          p1 (ReifyPlayer (long \X) \X (nth ps 0))
-          p2 (ReifyPlayer (long \O) \O (nth ps 1))
-          bd (ReifyTicTacToeBoard this {}) ]
-      (swap! stateAtom assoc :board bd)
+    (let [[ps1 ps2] (:players @stateAtom)
+          p1 (ReifyPlayer (long \X) \X ps1)
+          p2 (ReifyPlayer (long \O) \O ps2)
+          bd (ReifyArena this {}) ]
+      (swap! stateAtom assoc :arena bd)
       (.registerPlayers bd p1 p2)
       (.dequeue bd nil)))
 
@@ -107,23 +93,21 @@
       (throw (EventError. "Unexpected network event."))
 
       Msgs/SESSION
-      (onSessionMsg this evt stateAtom stateRef)
+      (onSessionMsg this evt stateRef)
 
       (log/warn "game engine: unhandled msg " evt)))
 
   (restart [this options]
     (log/debug "restarting tictactoe game one more time...")
-    ;;(require 'czlabclj.frigga.tictactoe.core)
     (let [parr (:players @stateAtom)
           m (MapPlayers parr)]
       (dosync (ref-set stateRef m))
-      (BCastAll this
+      (BCastAll (.container this)
                 Events/RESTART (MapPlayersEx parr))))
 
   (ready [this room]
-    ;;(require 'czlabclj.frigga.tictactoe.core)
     (swap! stateAtom assoc :room room)
-    (BCastAll this
+    (BCastAll (.container this)
               Events/START
               (MapPlayersEx (:players @stateAtom))))
 

@@ -12,7 +12,7 @@
 (ns ^{:doc ""
       :author "kenl"}
 
-  czlabclj.frigga.tictactoe.board
+  czlabclj.frigga.tictactoe.arena
 
   (:require [clojure.tools.logging :as log :only (info warn error debug)]
             ;;[clojure.data.json :as js]
@@ -105,9 +105,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ReifyTicTacToeBoard ""
+(defn ReifyArena ""
 
-  ^czlabclj.frigga.tictactoe.board.BoardAPI
+  ^czlabclj.frigga.tictactoe.arena.BoardAPI
   [^GameEngine theEngine options]
 
   (let [bsize (ternary (:size options) 3)
@@ -252,5 +252,5 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(def ^:private board-eof nil)
+(def ^:private arena-eof nil)
 

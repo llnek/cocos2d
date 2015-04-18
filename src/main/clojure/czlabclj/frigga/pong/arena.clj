@@ -258,7 +258,7 @@
         s2 (.getf impl :score2)
         s1 (.getf impl :score1)
         src {:scores {:p2 s2 :p1 s1 }}]
-    (BCastAll eng Events/SYNC_ARENA (WriteJson src))
+    (BCastAll (.container eng) Events/SYNC_ARENA (WriteJson src))
     ;; toggle flag to skip game loop logic until new
     ;; point starts
     (.setf! impl :resetting-point true)
@@ -271,9 +271,9 @@
 
   [^czlabclj.frigga.pong.arena.ArenaAPI arena winner]
 
-  (let [^czlabclj.xlib.util.core.MubleAPI impl
+  (let [^PlayRoom room (.container ^GameEngine (.engine arena))
+        ^czlabclj.xlib.util.core.MubleAPI impl
         (.innards arena)
-        ^GameEngine eng (.engine arena)
         ^PlayerSession ps2 (:session (.getf impl :p2))
         ^PlayerSession ps1 (:session (.getf impl :p1))
         s2 (.getf impl :score2)
@@ -283,8 +283,8 @@
                       :scores {:p2 s2 :p1 s1 }}}]
     ;; end game
     (log/debug "game over: winner of this game is " src)
-    (BCastAll eng Events/SYNC_ARENA (WriteJson src))
-    (BCastAll eng Events/STOP nil)
+    (BCastAll room Events/SYNC_ARENA (WriteJson src))
+    (BCastAll room Events/STOP nil)
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -296,7 +296,6 @@
 
   (let [^czlabclj.xlib.util.core.MubleAPI impl
         (.innards arena)
-        ^GameEngine eng (.engine arena)
         nps (.getf impl :numpts)
         s2 (.getf impl :score2)
         s1 (.getf impl :score1)
@@ -323,7 +322,6 @@
 
   (let [^czlabclj.xlib.util.core.MubleAPI impl
         (.innards arena)
-        ^GameEngine eng (.engine arena)
         ^czlabclj.xlib.util.core.MubleAPI
         pad2 (.getf impl :paddle2)
         ^czlabclj.xlib.util.core.MubleAPI
@@ -359,9 +357,9 @@
 
   [^czlabclj.frigga.pong.arena.ArenaAPI arena]
 
-  (let [^czlabclj.xlib.util.core.MubleAPI impl
+  (let [^PlayRoom room (.container ^GameEngine (.engine arena))
+        ^czlabclj.xlib.util.core.MubleAPI impl
         (.innards arena)
-        ^GameEngine eng (.engine arena)
         ^czlabclj.xlib.util.core.MubleAPI
         pad2 (.getf impl :paddle2)
         ^czlabclj.xlib.util.core.MubleAPI
@@ -384,7 +382,7 @@
                     :vx (.getf ball :vx) }} ]
     ;; TODO: use network-msg
     (log/debug "sync new BALL values " (:ball src))
-    (BCastAll eng Events/SYNC_ARENA (WriteJson src))
+    (BCastAll room Events/SYNC_ARENA (WriteJson src))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -502,10 +500,9 @@
 
   [^czlabclj.frigga.pong.arena.ArenaAPI arena options]
 
-  (let [^czlabclj.xlib.util.core.MubleAPI impl
+  (let [^PlayRoom room (.container ^GameEngine (.engine arena))
+        ^czlabclj.xlib.util.core.MubleAPI impl
         (.innards arena)
-        ^GameEngine eng (.engine arena)
-        ^PlayRoom room (.container eng)
         ^PlayerSession p2 (:session (.getf impl :p2))
         ^PlayerSession p1 (:session (.getf impl :p1))
         ^czlabclj.xlib.util.core.MubleAPI
@@ -520,13 +517,13 @@
     (->> (ReifySSEvent Events/POKE_MOVE
                        (WriteJson {:pnum (.number p1)}) p1)
          (.sendMsg room))
-    (BCastAll eng Events/SYNC_ARENA (WriteJson src))
+    (BCastAll room Events/SYNC_ARENA (WriteJson src))
     (log/debug "setting default ball values " src)
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ReifyPongArena "The local game arena."
+(defn ReifyArena "The local game arena."
 
   ^czlabclj.frigga.pong.arena.ArenaAPI
   [^GameEngine theEngine options]
@@ -544,7 +541,6 @@
                (- (:right world)(:left world))))
     (reify ArenaAPI
       (registerPlayers [this p1Wrap p2Wrap]
-        ;;(require 'czlabclj.frigga.pong.arena)
         (.setf! impl :p2 p2Wrap)
         (.setf! impl :p1 p1Wrap)
         (initEntities this pp1 pp2 pd ba))

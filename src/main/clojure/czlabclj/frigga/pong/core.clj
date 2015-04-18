@@ -32,17 +32,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- onNetworkMsg
-
-  ""
-
-  [^GameEngine eng evt stateAtom stateRef]
-
-  nil)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- onSessionMsg ""
@@ -89,20 +78,18 @@
 
   ;; one time only, sets up the players
   (initialize [_ players]
-    (let [m (MapPlayers players) ]
-      (dosync
-        (reset! stateAtom {:players players})
-        (ref-set stateRef m))))
+    (dosync
+      (ref-set stateRef (MapPlayers players))
+      (reset! stateAtom {:players players})))
 
   ;; starts a new game by creating a new arena and players
   ;; follow by starting the first point.
   (start [this options]
-    ;;(require 'czlabclj.frigga.pong.arena)
-    (let [ps (:players @stateAtom)
-          p1 (ReifyPlayer (long \X) \X (nth ps 0))
-          p2 (ReifyPlayer (long \O) \O (nth ps 1))
+    (let [[ps1 ps2] (:players @stateAtom)
+          p1 (ReifyPlayer (long \X) \X ps1)
+          p2 (ReifyPlayer (long \O) \O ps2)
           ^czlabclj.frigga.pong.arena.ArenaAPI
-          aa (ReifyPongArena this options) ]
+          aa (ReifyArena this options) ]
       (swap! stateAtom assoc :arena aa)
       (.registerPlayers aa p1 p2)
       (.startRound this {:new true})))
@@ -121,18 +108,16 @@
 
   (restart [this options]
     (log/debug "restarting game one more time.")
-    ;;(require 'czlabclj.frigga.pong.core)
     (let [parr (:players @stateAtom)
           m (MapPlayers parr)]
       (dosync (ref-set stateRef m))
-      (BCastAll this
+      (BCastAll (.container this)
                 Events/RESTART
                 (MapPlayersEx parr))))
 
   (ready [this room]
-    ;;(require 'czlabclj.frigga.pong.core)
     (swap! stateAtom assoc :room room)
-    (BCastAll this
+    (BCastAll (.container this)
               Events/START
               (MapPlayersEx (:players @stateAtom))))
 
@@ -142,7 +127,7 @@
       (.startPoint arena cmd)))
 
   (endRound [_ obj]
-    (swap! stateAtom dissoc :arena))
+    );;(swap! stateAtom dissoc :arena))
 
   (container [_] (:room @stateAtom))
 

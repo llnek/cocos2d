@@ -58,12 +58,12 @@
 ;;
 (defn BCastAll "Broadcast message to all player sessions."
 
-  [^GameEngine eng code body]
+  [^PlayRoom room code body]
 
   (->> (ReifyNWEvent code
                      (if-not (nil? body)
                        (WriteJson body)))
-       (.sendMsg ^PlayRoom (.container eng))
+       (.sendMsg room)
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
