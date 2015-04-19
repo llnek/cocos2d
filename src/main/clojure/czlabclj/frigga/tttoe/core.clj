@@ -122,23 +122,23 @@
   GameEngine
 
   (initialize [this players]
-    (require 'czlabclj.frigga.tttoe.core')
+    (require 'czlabclj.frigga.tttoe.core)
     (onInitialize stateAtom stateRef players))
 
   (start [this options]
-    (require 'czlabclj.frigga.tttoe.core')
+    (require 'czlabclj.frigga.tttoe.core)
     (onStart this stateAtom options))
 
   (update [this evt]
-    (require 'czlabclj.frigga.tttoe.core')
-    (onUpdate this stateRef options))
+    (require 'czlabclj.frigga.tttoe.core)
+    (onUpdate this stateRef evt))
 
   (restart [this options]
-    (require 'czlabclj.frigga.tttoe.core')
+    (require 'czlabclj.frigga.tttoe.core)
     (onRestart this stateAtom stateRef options))
 
   (ready [this room]
-    (require 'czlabclj.frigga.tttoe.core')
+    (require 'czlabclj.frigga.tttoe.core)
     (onReady this stateAtom room))
 
   (container [_] (:room @stateAtom))

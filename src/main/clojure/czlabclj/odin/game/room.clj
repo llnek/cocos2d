@@ -220,7 +220,7 @@
     (session [_] ps)
 
     Receiver
-    (onMsg [_ evt] (.onMsg ps evt))
+    (onMsg [_ evt] (.sendMsg ps evt))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
