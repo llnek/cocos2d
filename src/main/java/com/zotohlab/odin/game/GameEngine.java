@@ -18,6 +18,10 @@ import java.util.Map;
  */
 public interface GameEngine {
 
+  //life cycle of engine
+  //1. initialize
+  //2. ready
+  //3. start/restart
   public void initialize(Object players);
   public Object ready(PlayRoom room);
 

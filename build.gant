@@ -219,8 +219,8 @@ def doCompileClj() {
 
     arg (value: 'czlabclj.frigga.core.util')
 
-    arg (value: 'czlabclj.frigga.tictactoe.arena')
-    arg (value: 'czlabclj.frigga.tictactoe.core')
+    arg (value: 'czlabclj.frigga.tttoe.arena')
+    arg (value: 'czlabclj.frigga.tttoe.core')
     arg (value: 'czlabclj.frigga.pong.arena')
     arg (value: 'czlabclj.frigga.pong.core')
 

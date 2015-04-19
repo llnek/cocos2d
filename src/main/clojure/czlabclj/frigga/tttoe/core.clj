@@ -12,7 +12,7 @@
 (ns ^{:doc ""
       :author "kenl"}
 
-  czlabclj.frigga.tictactoe.core
+  czlabclj.frigga.tttoe.core
 
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
             [clojure.string :as cstr])
@@ -23,7 +23,7 @@
         [czlabclj.cocos2d.games.meta]
         [czlabclj.odin.event.core]
         [czlabclj.frigga.core.util]
-        [czlabclj.frigga.tictactoe.arena])
+        [czlabclj.frigga.tttoe.arena])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom GameEngine
                                     Player PlayerSession]
@@ -49,7 +49,7 @@
           src (:source evt)
           cmd (ReadJsonKW src)]
       (log/debug "TicTacToe rec'ved cmd " src " from session " pss)
-      (-> ^czlabclj.frigga.tictactoe.arena.BoardAPI bd (.enqueue cmd)))
+      (-> ^czlabclj.frigga.tttoe.arena.BoardAPI bd (.enqueue cmd)))
 
     Events/STARTED
     (do
@@ -68,48 +68,78 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+(defn- onInitialize [stateAtom stateRef players]
+  (dosync
+    (ref-set stateRef (MapPlayers players))
+    (reset! stateAtom {:players players})))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- onStart [this stateAtom options]
+  (let [[ps1 ps2] (:players @stateAtom)
+        p1 (ReifyPlayer (long \X) \X ps1)
+        p2 (ReifyPlayer (long \O) \O ps2)
+        bd (ReifyArena this {}) ]
+    (swap! stateAtom assoc :arena bd)
+    (.registerPlayers bd p1 p2)
+    (.dequeue bd nil)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- onUpdate [this stateRef evt]
+  (log/debug "game engine got an update " evt)
+  (condp = (:type evt)
+    Msgs/NETWORK
+    (throw (EventError. "Unexpected network event."))
+
+    Msgs/SESSION
+    (onSessionMsg this evt stateRef)
+
+    (log/warn "game engine: unhandled msg " evt)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- onRestart [this stateAtom stateRef options]
+  (log/debug "restarting tictactoe game one more time...")
+  (let [parr (:players @stateAtom)
+        m (MapPlayers parr)]
+    (dosync (ref-set stateRef m))
+    (BCastAll (.container this)
+              Events/RESTART (MapPlayersEx parr))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- onReady [this stateAtom room]
+  (swap! stateAtom assoc :room room)
+  (BCastAll (.container this)
+            Events/START
+            (MapPlayersEx (:players @stateAtom))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 (deftype TicTacToe [stateAtom stateRef]
 
   GameEngine
 
-  (initialize [_ players]
-    (dosync
-      (ref-set stateRef (MapPlayers players))
-      (reset! stateAtom {:players players})))
+  (initialize [this players]
+    (require 'czlabclj.frigga.tttoe.core')
+    (onInitialize stateAtom stateRef players))
 
   (start [this options]
-    (let [[ps1 ps2] (:players @stateAtom)
-          p1 (ReifyPlayer (long \X) \X ps1)
-          p2 (ReifyPlayer (long \O) \O ps2)
-          bd (ReifyArena this {}) ]
-      (swap! stateAtom assoc :arena bd)
-      (.registerPlayers bd p1 p2)
-      (.dequeue bd nil)))
+    (require 'czlabclj.frigga.tttoe.core')
+    (onStart this stateAtom options))
 
   (update [this evt]
-    (log/debug "game engine got an update " evt)
-    (condp = (:type evt)
-      Msgs/NETWORK
-      (throw (EventError. "Unexpected network event."))
-
-      Msgs/SESSION
-      (onSessionMsg this evt stateRef)
-
-      (log/warn "game engine: unhandled msg " evt)))
+    (require 'czlabclj.frigga.tttoe.core')
+    (onUpdate this stateRef options))
 
   (restart [this options]
-    (log/debug "restarting tictactoe game one more time...")
-    (let [parr (:players @stateAtom)
-          m (MapPlayers parr)]
-      (dosync (ref-set stateRef m))
-      (BCastAll (.container this)
-                Events/RESTART (MapPlayersEx parr))))
+    (require 'czlabclj.frigga.tttoe.core')
+    (onRestart this stateAtom stateRef options))
 
   (ready [this room]
-    (swap! stateAtom assoc :room room)
-    (BCastAll (.container this)
-              Events/START
-              (MapPlayersEx (:players @stateAtom))))
+    (require 'czlabclj.frigga.tttoe.core')
+    (onReady this stateAtom room))
 
   (container [_] (:room @stateAtom))
 

@@ -12,7 +12,7 @@
 (ns ^{:doc ""
       :author "kenl"}
 
-  czlabclj.frigga.tictactoe.arena
+  czlabclj.frigga.tttoe.arena
 
   (:require [clojure.tools.logging :as log :only (info warn error debug)]
             [clojure.string :as cstr])
@@ -106,7 +106,7 @@
 ;;
 (defn ReifyArena ""
 
-  ^czlabclj.frigga.tictactoe.arena.BoardAPI
+  ^czlabclj.frigga.tttoe.arena.BoardAPI
   [^GameEngine theEngine options]
 
   (let [bsize (ternary (:size options) 3)

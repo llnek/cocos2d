@@ -407,8 +407,8 @@
         (->> (ReifyNWEvent Events/PLAYER_JOINED
                            (->> {:pnum (.number ps)
                                  :puid (.id plyr)}
-                                (WriteJson src)))
-             (.broadcast this))
+                                (WriteJson)))
+             (.broadcast room))
         (when (.canActivate room)
           (log/debug "room.canActivate = true")
           (.activate room))))
