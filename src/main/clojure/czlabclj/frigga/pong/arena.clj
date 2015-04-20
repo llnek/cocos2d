@@ -360,6 +360,7 @@
   (let [^PlayRoom room (.container ^GameEngine (.engine arena))
         ^czlabclj.xlib.util.core.MubleAPI impl
         (.innards arena)
+        port? (.getf impl :portrait)
         ^czlabclj.xlib.util.core.MubleAPI
         pad2 (.getf impl :paddle2)
         ^czlabclj.xlib.util.core.MubleAPI
@@ -368,19 +369,18 @@
         ball (.getf impl :ball)
         src {:p2 {:y (.getf pad2 :y)
                   :x (.getf pad2 :x)
-                  :pv (if (.getf impl :portrait)
+                  :pv (if port?
                         (.getf pad2 :vx)
                         (.getf pad2 :vy))}
              :p1 {:y (.getf pad1 :y)
                   :x (.getf pad1 :x)
-                  :pv (if (.getf impl :portrait)
+                  :pv (if port?
                         (.getf pad1 :vx)
                         (.getf pad1 :vy))}
              :ball {:y (.getf ball :y)
                     :x (.getf ball :x)
                     :vy (.getf ball :vy)
                     :vx (.getf ball :vx) }} ]
-    ;; TODO: use network-msg
     (log/debug "sync new BALL values " (:ball src))
     (BCastAll room Events/SYNC_ARENA (WriteJson src))
   ))
@@ -448,7 +448,7 @@
 ;;
 (defn- runGameLoop "Spawn a game loop in a separate thread."
 
-  [^czlabclj.frigga.pong.arena.ArenaAPI arena options rerun?]
+  [^czlabclj.frigga.pong.arena.ArenaAPI arena options new?]
 
   (let [^czlabclj.xlib.util.core.MubleAPI impl
         (.innards arena)]
@@ -456,13 +456,14 @@
     (.setf! impl :lastSync 0)
     (.setf! impl :sync true)
     (.setf! impl :resetting-point false)
-    (when-not rerun?
+    (when new?
       (.setf! impl :numpts (:numpts options))
       (.setf! impl :score2 0)
       (.setf! impl :score1 0)
       (Coroutine #(while true
                     (TryC (updateArena arena options))
-                    (postUpdateArena arena options))))
+                    (postUpdateArena arena options))
+                 {:daemon true}))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -564,9 +565,8 @@
 
       (startPoint [this cmd]
         (pokeAndStartUI this options)
-        (if (true? (:new cmd))
-          (runGameLoop this options false)
-          (runGameLoop this options true)))
+        (runGameLoop this options
+                     (true? (:new cmd))))
 
       (enqueue [_ evt]
         (let [^PlayerSession p2 (:session (.getf impl :p2))
