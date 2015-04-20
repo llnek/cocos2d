@@ -52,8 +52,7 @@
   [^Channel ch error msg]
 
   (log/debug "replying back an error code: " error)
-  (->> (ReifySSEvent error
-                     (WriteJson {:message (nsb msg)}))
+  (->> (ReifySSEvent error {:message (nsb msg)})
        (EventToFrame)
        (.writeAndFlush ch)
   ))

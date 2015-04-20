@@ -401,15 +401,13 @@
             src {:room (.roomId room)
                  :game (.id game)
                  :pnum (.number ps)}
-            evt (ReifySSEvent Events/PLAYREQ_OK
-                            (WriteJson src)) ]
+            evt (ReifySSEvent Events/PLAYREQ_OK src) ]
         (ApplyGameHandler ps (:emitter options) ch)
         (log/debug "replying back to user: " evt)
         (.writeAndFlush ch (EventToFrame evt))
         (->> (ReifyNWEvent Events/PLAYER_JOINED
-                           (->> {:pnum (.number ps)
-                                 :puid (.id plyr)}
-                                (WriteJson)))
+                           {:pnum (.number ps)
+                            :puid (.id plyr)})
              (.broadcast room))
         (when (.canActivate room)
           (log/debug "room.canActivate = true")
@@ -432,8 +430,7 @@
             src {:room (.roomId room)
                  :game (.id game)
                  :pnum (.number pss) }
-            evt (ReifySSEvent Events/JOINREQ_OK
-                            (WriteJson src)) ]
+            evt (ReifySSEvent Events/JOINREQ_OK src) ]
         (ApplyGameHandler pss (:emitter options) ch)
         (.writeAndFlush ch (EventToFrame evt))
         (log/debug "replying back to user: " evt)

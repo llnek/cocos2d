@@ -89,6 +89,7 @@ define("zotohlab/p/arena",
       },
 
       replay: function() {
+        sjs.loggr.debug('replay game called');
         if (sjs.isObject(this.options.wsock)) {
 
           // request server to restart a new game
@@ -244,8 +245,8 @@ define("zotohlab/p/arena",
 
           var scene = new scenes.XSceneFactory([
             huds.BackLayer,
-            huds.HUDLayer,
-            GameLayer
+            GameLayer,
+            huds.HUDLayer
           ]).create(options);
 
           scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {

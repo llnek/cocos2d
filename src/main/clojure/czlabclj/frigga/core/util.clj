@@ -60,9 +60,7 @@
 
   [^PlayRoom room code body]
 
-  (->> (ReifyNWEvent code
-                     (if-not (nil? body)
-                       (WriteJson body)))
+  (->> (ReifyNWEvent code body)
        (.sendMsg room)
   ))
 

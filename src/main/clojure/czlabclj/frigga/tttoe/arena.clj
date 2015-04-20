@@ -144,13 +144,11 @@
               ^PlayerSession cpss (:session cp)
               ^PlayerSession opss (:session op) ]
           (->> (ReifySSEvent Events/POKE_WAIT
-                             (-> (assoc src :pnum (.number opss))
-                                 (WriteJson))
+                             (assoc src :pnum (.number opss))
                              opss)
                (.sendMsg room))
           (->> (ReifySSEvent Events/POKE_MOVE
-                             (-> (assoc src :pnum (.number cpss))
-                                 (WriteJson))
+                             (assoc src :pnum (.number cpss))
                              cpss)
                (.sendMsg room))))
 
@@ -158,9 +156,8 @@
         (let [^PlayerSession pss (:session (.getCur this))
               ^PlayRoom room (.container theEngine)]
           (->> (ReifySSEvent Events/POKE_MOVE
-                             (-> {:pnum (.number pss)
-                                  :grid (vec grid) }
-                                 (WriteJson))
+                             {:pnum (.number pss)
+                              :grid (vec grid) }
                              pss)
                (.sendMsg room))))
 
@@ -193,7 +190,7 @@
               src (merge {:grid (vec grid)
                           :status status }
                          data)]
-          (->> (ReifyNWEvent ecode (WriteJson src))
+          (->> (ReifyNWEvent ecode src)
                (.sendMsg room))))
 
       (drawGame [this cmd]

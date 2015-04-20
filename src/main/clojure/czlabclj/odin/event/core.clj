@@ -92,7 +92,7 @@
                :code (int ecode) }
          e1 (if (nil? source)
               base
-              (assoc base :source source)) ]
+              (assoc base :source (WriteJson source))) ]
      (if (nil? ctx)
        e1
        (assoc e1 :context ctx))))

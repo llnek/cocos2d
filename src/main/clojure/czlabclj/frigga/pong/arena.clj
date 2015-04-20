@@ -208,15 +208,8 @@
   (with-local-vars [winner 0]
     (let [hh (halve (.getf ball :height))
           hw (halve (.getf ball :width))
-          br (rect (.getf ball :x)
-                   (.getf ball :y)
-                   (.getf ball :width)
-                   (.getf ball :height)) ]
-
-      (let [r (rect (.getf p2 :x)
-                    (.getf p2 :y)
-                    (.getf p2 :width)
-                    (.getf p2 :height))]
+          br (rect ball)]
+      (let [r (rect p2)]
         (if (rectXrect br r)
           (if port?
             (do
@@ -227,11 +220,7 @@
               (.setf! ball :x (- (:left r) hw))))
           (when (> (:bottom br)(:top r))
             (var-set winner 1))))
-
-      (let [r (rect (.getf p1 :x)
-                    (.getf p1 :y)
-                    (.getf p1 :width)
-                    (.getf p1 :height))]
+      (let [r (rect p1)]
         (if (rectXrect br r)
           (if port?
             (do
@@ -254,11 +243,12 @@
 
   (let [^czlabclj.xlib.util.core.MubleAPI impl
         (.innards arena)
-        ^GameEngine eng (.engine arena)
         s2 (.getf impl :score2)
         s1 (.getf impl :score1)
         src {:scores {:p2 s2 :p1 s1 }}]
-    (BCastAll (.container eng) Events/SYNC_ARENA src)
+    (BCastAll (-> ^GameEngine
+                  (.engine arena)
+                  (.container)) Events/SYNC_ARENA src)
     ;; toggle flag to skip game loop logic until new
     ;; point starts
     (.setf! impl :resetting-point true)
@@ -283,8 +273,9 @@
                       :scores {:p2 s2 :p1 s1 }}}]
     ;; end game
     (log/debug "game over: winner of this game is " src)
-    (BCastAll room Events/SYNC_ARENA src)
-    (BCastAll room Events/STOP nil)
+    (doto room
+      (BCastAll Events/SYNC_ARENA src)
+      (BCastAll Events/STOP nil))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -513,10 +504,10 @@
                     :x (.getf ball :x)
                     :y (.getf ball :y)} }]
     (->> (ReifySSEvent Events/POKE_MOVE
-                       (WriteJson {:pnum (.number p2)}) p2)
+                       {:pnum (.number p2)} p2)
          (.sendMsg room))
     (->> (ReifySSEvent Events/POKE_MOVE
-                       (WriteJson {:pnum (.number p1)}) p1)
+                       {:pnum (.number p1)} p1)
          (.sendMsg room))
     (BCastAll room Events/SYNC_ARENA src)
     (log/debug "setting default ball values " src)
@@ -587,8 +578,7 @@
           (if (.getf impl :portrait)
             (.setf! other :vx pv)
             (.setf! other :vy pv))
-          (->> (ReifySSEvent Events/SYNC_ARENA
-                             (WriteJson cmd) pt)
+          (->> (ReifySSEvent Events/SYNC_ARENA cmd pt)
                (.sendMsg room))))
     )))
 
