@@ -137,13 +137,13 @@ define("zotohlab/p/s/networking", ['zotohlab/p/gnodes',
 
         for (var node = nl.head; node; node=node.next) {
 
-          if (sys.isObject(evt.source.p2) &&
+          if (sjs.isObject(evt.source.p2) &&
               node.player.pnum===2) {
             sjs.loggr.debug("server says: P2 got SYNC'ED !!!");
             this.syncOnePaddle(node, evt.source.p2);
           }
 
-          if (sys.isObject(evt.source.p1) &&
+          if (sjs.isObject(evt.source.p1) &&
               node.player.pnum===1) {
             sjs.loggr.debug("server says: P1 got SYNC'ED !!!");
             this.syncOnePaddle(node, evt.source.p1);

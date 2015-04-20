@@ -258,7 +258,7 @@
         s2 (.getf impl :score2)
         s1 (.getf impl :score1)
         src {:scores {:p2 s2 :p1 s1 }}]
-    (BCastAll (.container eng) Events/SYNC_ARENA (WriteJson src))
+    (BCastAll (.container eng) Events/SYNC_ARENA src)
     ;; toggle flag to skip game loop logic until new
     ;; point starts
     (.setf! impl :resetting-point true)
@@ -283,7 +283,7 @@
                       :scores {:p2 s2 :p1 s1 }}}]
     ;; end game
     (log/debug "game over: winner of this game is " src)
-    (BCastAll room Events/SYNC_ARENA (WriteJson src))
+    (BCastAll room Events/SYNC_ARENA src)
     (BCastAll room Events/STOP nil)
   ))
 
@@ -382,7 +382,7 @@
                     :vy (.getf ball :vy)
                     :vx (.getf ball :vx) }} ]
     (log/debug "sync new BALL values " (:ball src))
-    (BCastAll room Events/SYNC_ARENA (WriteJson src))
+    (BCastAll room Events/SYNC_ARENA src)
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -518,7 +518,7 @@
     (->> (ReifySSEvent Events/POKE_MOVE
                        (WriteJson {:pnum (.number p1)}) p1)
          (.sendMsg room))
-    (BCastAll room Events/SYNC_ARENA (WriteJson src))
+    (BCastAll room Events/SYNC_ARENA src)
     (log/debug "setting default ball values " src)
   ))
 
