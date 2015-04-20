@@ -31,6 +31,7 @@
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
             [com.zotohlab.odin.game Game PlayRoom PlayerSession
                                     Player GameEngine]
+            [com.zotohlab.frwk.core Morphable]
             [com.zotohlab.odin.core Session]
             [java.util.concurrent.atomic AtomicLong]
             [io.netty.channel Channel]
@@ -250,9 +251,10 @@
   ^PlayRoom
   [^Game gameObj]
 
-  (let [engObj (MakeObjArgN (.engineClass gameObj)
-                            (atom {})
-                            (ref {}))
+  (let [engObj (-> (MakeObjArgN (.engineClass gameObj)
+                                (atom {})
+                                (ref {}))
+                   (.morph))
         created (System/currentTimeMillis)
         disp (ReifyDispatcher)
         sessions (ref {})

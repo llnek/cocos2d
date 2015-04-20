@@ -26,7 +26,8 @@
         [czlabclj.frigga.pong.arena])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom GameEngine
-                                    Player PlayerSession]
+             Player PlayerSession]
+            [com.zotohlab.frwk.core Morphable]
             [com.zotohlab.odin.event EventError Msgs Events]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -72,123 +73,83 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- onInitialize ""
+(defn- reifyEngine ""
 
-  [this stateAtom stateRef  players]
+  [stateAtom stateRef]
 
-  (dosync
-    (ref-set stateRef (MapPlayers players))
-    (reset! stateAtom {:players players})))
+  (let []
+    (reify GameEngine
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- onStart ""
+      ;; one time only, sets up the players
+      (initialize [this players]
+        (dosync
+          (ref-set stateRef (MapPlayers players))
+          (reset! stateAtom {:players players})))
 
-  [this stateAtom options]
+      ;; starts a new game by creating a new arena and players
+      ;; follow by starting the first point.
+      (start [this options]
+        (let [[ps1 ps2] (:players @stateAtom)
+              p1 (ReifyPlayer (long \X) \X ps1)
+              p2 (ReifyPlayer (long \O) \O ps2)
+              ^czlabclj.frigga.pong.arena.ArenaAPI
+              aa (ReifyArena this options) ]
+          (swap! stateAtom assoc :arena aa)
+          (.registerPlayers aa p1 p2)
+          (.startRound this {:new true})))
 
-  (let [[ps1 ps2] (:players @stateAtom)
-        p1 (ReifyPlayer (long \X) \X ps1)
-        p2 (ReifyPlayer (long \O) \O ps2)
-        ^czlabclj.frigga.pong.arena.ArenaAPI
-        aa (ReifyArena this options) ]
-    (swap! stateAtom assoc :arena aa)
-    (.registerPlayers aa p1 p2)
-    (.startRound this {:new true})))
+      ;; updates from clients
+      (update [this evt]
+        (log/debug "game engine got an update " evt)
+        (condp = (:type evt)
+          Msgs/NETWORK
+          (throw (EventError. "Unexpected network event."))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- onUpdate ""
+          Msgs/SESSION
+          (onSessionMsg this evt stateRef)
 
-  [this stateRef evt]
+          (log/warn "game engine: unhandled msg " evt)))
 
-  (log/debug "game engine got an update " evt)
-  (condp = (:type evt)
-    Msgs/NETWORK
-    (throw (EventError. "Unexpected network event."))
+      (restart [this options]
+        (log/debug "restarting game one more time.")
+        (let [parr (:players @stateAtom)
+              m (MapPlayers parr)]
+          (dosync (ref-set stateRef m))
+          (BCastAll (.container this)
+                    Events/RESTART
+                    (MapPlayersEx parr))))
 
-    Msgs/SESSION
-    (onSessionMsg this evt stateRef)
+      (ready [this room]
+        (swap! stateAtom assoc :room room)
+        (BCastAll (.container this)
+                  Events/START
+                  (MapPlayersEx (:players @stateAtom))))
 
-    (log/warn "game engine: unhandled msg " evt)))
+      (startRound [this cmd]
+        (let [^czlabclj.frigga.pong.arena.ArenaAPI
+              arena (:arena @stateAtom)]
+          (.startPoint arena cmd)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- onRestart ""
+      (endRound [_ obj]
+        );;(swap! stateAtom dissoc :arena))
 
-  [this stateAtom stateRef options]
+      (container [_] (:room @stateAtom))
 
-  (log/debug "restarting game one more time.")
-  (let [parr (:players @stateAtom)
-        m (MapPlayers parr)]
-    (dosync (ref-set stateRef m))
-    (BCastAll (.container this)
-              Events/RESTART
-              (MapPlayersEx parr))))
+      (stop [_] )
+      (finz [_] )
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- onReady ""
-
-  [this stateAtom room]
-
-  (swap! stateAtom assoc :room room)
-  (BCastAll (.container this)
-            Events/START
-            (MapPlayersEx (:players @stateAtom))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- onStartRound ""
-
-  [this stateAtom cmd]
-
-  (let [^czlabclj.frigga.pong.arena.ArenaAPI
-        arena (:arena @stateAtom)]
-    (.startPoint arena cmd)))
+      (state [_] @stateAtom))
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (deftype Pong [stateAtom stateRef]
 
-  GameEngine
+  Morphable
 
-  ;; one time only, sets up the players
-  (initialize [this players]
+  (morph [_]
     (require 'czlabclj.frigga.pong.core)
-    (onInitialize this stateAtom stateRef players))
-
-  ;; starts a new game by creating a new arena and players
-  ;; follow by starting the first point.
-  (start [this options]
-    (require 'czlabclj.frigga.pong.core)
-    (onStart this stateAtom options))
-
-  ;; updates from clients
-  (update [this evt]
-    (require 'czlabclj.frigga.pong.core)
-    (onUpdate this stateRef evt))
-
-  (restart [this options]
-    (require 'czlabclj.frigga.pong.core)
-    (onRestart this stateAtom stateRef options))
-
-  (ready [this room]
-    (require 'czlabclj.frigga.pong.core)
-    (onReady this stateAtom room))
-
-  (startRound [this cmd]
-    (require 'czlabclj.frigga.pong.core)
-    (onStartRound this stateAtom cmd))
-
-  (endRound [_ obj]
-    );;(swap! stateAtom dissoc :arena))
-
-  (container [_] (:room @stateAtom))
-
-  (stop [_] )
-  (finz [_] )
-
-  (state [_] @stateAtom))
+    (reifyEngine stateAtom stateRef)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

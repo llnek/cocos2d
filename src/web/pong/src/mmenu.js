@@ -21,6 +21,7 @@ define("zotohlab/p/mmenu",
 
     var SEED= { ppids: { }, pnum: 1, mode: 0 },
     xcfg = sh.xcfg,
+    R=sjs.ramda,
     csts= xcfg.csts,
     undef,
 

@@ -551,6 +551,7 @@
                           (:player)))
 
       (engine [_] theEngine)
+      (innards [_] impl)
 
       (restart [_]
         (.setf! impl :resetting-point false)
