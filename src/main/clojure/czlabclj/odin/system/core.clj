@@ -41,7 +41,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main entry point.
-(defn OdinOnEvent ""
+(defn- odinOnEvent ""
 
   [^WebSockEvent ws]
 
@@ -79,7 +79,7 @@
 
   (onError [ _ err curPt] (log/error "Handler: I got an error!"))
   (onStop [_ pipe] )
-  (startWith [_  pipe] (SimPTask (fn [^Job j] (OdinOnEvent (.event j))))))
+  (startWith [_  pipe] (SimPTask (fn [^Job j] (odinOnEvent (.event j))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
