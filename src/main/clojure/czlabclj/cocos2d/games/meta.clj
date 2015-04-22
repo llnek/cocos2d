@@ -20,7 +20,8 @@
 
   (:use [czlabclj.xlib.util.str :only [nsb hgl? strim] ]
         [czlabclj.xlib.util.dates :only [ParseDate] ]
-        [czlabclj.xlib.util.files :only [ReadEdn ReadOneFile] ]
+        [czlabclj.xlib.util.format :only [ReadEdn]]
+        [czlabclj.xlib.util.files :only [ReadOneFile] ]
         [czlabclj.tardis.core.constants])
 
   (:import  [org.apache.commons.io FileUtils]
