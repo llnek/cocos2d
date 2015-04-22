@@ -22,7 +22,7 @@
         [czlabclj.xlib.util.dates :only [ParseDate] ]
         [czlabclj.xlib.util.format :only [ReadEdn]]
         [czlabclj.xlib.util.files :only [ReadOneFile] ]
-        [czlabclj.tardis.core.constants])
+        [czlabclj.tardis.core.consts])
 
   (:import  [org.apache.commons.io FileUtils]
             [com.zotohlab.frwk.io IOUtils]

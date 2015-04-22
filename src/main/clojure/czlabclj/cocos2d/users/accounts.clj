@@ -25,7 +25,7 @@
                                                   MaybeLoginTest] ]
         [czlabclj.tardis.io.basicauth]
         [czlabclj.xlib.i18n.resources :only [RStr]]
-        [czlabclj.tardis.core.constants]
+        [czlabclj.tardis.core.consts]
         [czlabclj.cocos2d.site.core ])
 
   (:import  [com.zotohlab.skaro.runtime DuplicateUser]
