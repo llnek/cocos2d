@@ -11,14 +11,14 @@
 
 package com.zotohlab.odin.game;
 
-import com.zotohlab.odin.event.Eventee;
+import com.zotohlab.odin.event.Dispatchable;
 import com.zotohlab.odin.event.Receiver;
 import com.zotohlab.odin.event.Sender;
 
 /**
  * @author kenl
  */
-public interface PlayRoom extends Sender, Receiver {
+public interface PlayRoom extends Sender, Receiver, Dispatchable {
 
   public void broadcast(Object networkEvent);
 
@@ -39,10 +39,7 @@ public interface PlayRoom extends Sender, Receiver {
   public boolean isActive();
 
   public Object attribs();
-  
-  public void removeHandler(Eventee h);
-  public void addHandler(Eventee h);
-  
+    
 }
 
 
