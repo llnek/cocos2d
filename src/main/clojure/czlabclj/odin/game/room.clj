@@ -251,9 +251,9 @@
   ^PlayRoom
   [^Game gameObj]
 
-  (let [engObj (-> (MakeObjArgN (.engineClass gameObj)
-                                (atom {})
-                                (ref {}))
+  (let [engObj (-> ^Morphable (MakeObjArgN (.engineClass gameObj)
+                                           (atom {})
+                                           (ref {}))
                    (.morph))
         created (System/currentTimeMillis)
         disp (ReifyDispatcher)
