@@ -17,7 +17,7 @@
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
             [clojure.string :as cstr])
 
-  (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ]]
+  (:use [czlabclj.xlib.util.core :only [MakeMMap notnil? ]]
         [czlabclj.xlib.util.format]
         [czlabclj.xlib.util.str :only [strim nsb hgl?]]
         [czlabclj.cocos2d.games.meta]

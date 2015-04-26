@@ -20,7 +20,7 @@
   (:use [czlabclj.xlib.util.str :only [strim nsb hgl?]]
         [czlabclj.xlib.util.core
          :only
-         [MakeMMap ternary notnil? juid]]
+         [MakeMMap notnil? juid]]
         [czlabclj.odin.event.core])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom

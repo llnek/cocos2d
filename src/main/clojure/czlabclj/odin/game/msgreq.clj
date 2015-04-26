@@ -17,7 +17,7 @@
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
             [clojure.string :as cstr])
 
-  (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil?]]
+  (:use [czlabclj.xlib.util.core :only [MakeMMap notnil?]]
         [czlabclj.xlib.util.files :only [ReadOneFile]]
         [czlabclj.xlib.util.format]
         [czlabclj.xlib.util.str :only [strim nsb hgl?]]
@@ -135,7 +135,7 @@
         (when-not (nil? @plyr)
           (let [gid (nth arr 0)
                 rid (nth arr 1)
-                r (ternary (LookupGameRoom gid rid)
+                r (or (LookupGameRoom gid rid)
                            (LookupFreeRoom gid rid)) ]
             (if (nil? r)
               (rError ch Events/ROOM_NOK (RStr rcb "room.bad"))

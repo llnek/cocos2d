@@ -17,7 +17,7 @@
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
             [clojure.string :as cstr])
 
-  (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ]]
+  (:use [czlabclj.xlib.util.core :only [MakeMMap notnil? ]]
         [czlabclj.xlib.util.guids :only [NewUUid]]
         [czlabclj.xlib.util.format]
         [czlabclj.xlib.util.meta :only [MakeObjArgN]]
@@ -125,7 +125,7 @@
     (let [rid (.roomId room)
           g (.game room)
           gid (.id g)
-          m (ternary (@FREE-ROOMS gid) {}) ]
+          m (or (@FREE-ROOMS gid) {}) ]
       (log/debug "Add a room(F): " rid ", game: " gid)
       (alter FREE-ROOMS
              assoc
@@ -145,7 +145,7 @@
     (let [rid (.roomId room)
           g (.game room)
           gid (.id g)
-          m (ternary (@GAME-ROOMS gid) {}) ]
+          m (or (@GAME-ROOMS gid) {}) ]
       (log/debug "Add a room(A): " rid ", game: " gid)
       (alter GAME-ROOMS
              assoc

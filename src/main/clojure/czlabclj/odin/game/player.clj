@@ -17,7 +17,7 @@
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
             [clojure.string :as cstr])
 
-  (:use [czlabclj.xlib.util.core :only [MakeMMap ternary notnil? ]]
+  (:use [czlabclj.xlib.util.core :only [MakeMMap notnil? ]]
         [czlabclj.xlib.util.str :only [strim nsb hgl?]])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom
@@ -68,7 +68,7 @@
 
       (addSession [_ ps]
         (dosync
-          (let [m (ternary (@PLAYER-SESS user) {}) ]
+          (let [m (or (@PLAYER-SESS user) {}) ]
             (alter PLAYER-SESS
                    assoc
                    user

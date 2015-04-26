@@ -21,7 +21,7 @@
         [czlabclj.xlib.util.format]
         [czlabclj.xlib.util.core
          :only
-         [TryCR ternary]])
+         [TryCR]])
 
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
             [com.zotohlab.odin.event Msgs Events EventError]))

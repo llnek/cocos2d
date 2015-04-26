@@ -18,7 +18,7 @@
             [clojure.data.json :as json]
             [clojure.string :as cstr])
 
-  (:use [czlabclj.xlib.util.core :only [ternary test-nonil ]]
+  (:use [czlabclj.xlib.util.core :only [test-nonil ]]
         [czlabclj.xlib.util.str :only [nsb strim  hgl?]]
         [czlabclj.xlib.util.wfs :only [SimPTask]]
         [czlabclj.tardis.auth.plugin :only [MaybeSignupTest
@@ -181,7 +181,7 @@
             pa (:auth (.getAttr ctr K_PLUGINS))
             ^HTTPEvent evt (.event j)
             si (try (MaybeGetAuthInfo evt) (catch CrappyDataError e#  { :e e# }))
-            info (ternary si {} )
+            info (or si {} )
             email (nsb (:email info)) ]
         (test-nonil "AuthPlugin" pa)
         (cond

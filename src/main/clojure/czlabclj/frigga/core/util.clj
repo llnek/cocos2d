@@ -17,7 +17,7 @@
   (:require [clojure.tools.logging :as log :only [info warn error debug]]
             [clojure.string :as cstr])
 
-  (:use [czlabclj.xlib.util.core :only [ternary notnil? ]]
+  (:use [czlabclj.xlib.util.core :only [notnil? ]]
         [czlabclj.xlib.util.str :only [strim nsb hgl?]]
         [czlabclj.xlib.util.format]
         [czlabclj.odin.event.core])

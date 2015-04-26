@@ -21,7 +21,7 @@
         [czlabclj.xlib.util.format]
         [czlabclj.xlib.util.core
          :only
-         [notnil? ternary MakeMMap RandomSign]]
+         [notnil? MakeMMap RandomSign]]
         [czlabclj.cocos2d.games.meta]
         [czlabclj.odin.event.core])
 
@@ -109,7 +109,7 @@
   ^czlabclj.frigga.tttoe.arena.BoardAPI
   [^GameEngine theEngine options]
 
-  (let [bsize (ternary (:size options) 3)
+  (let [bsize (or (:size options) 3)
         grid (long-array (* bsize bsize) CV_Z)
         goalspace (mapGoalSpace bsize)
         actors (object-array 3)

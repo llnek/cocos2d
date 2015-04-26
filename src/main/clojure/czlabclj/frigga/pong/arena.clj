@@ -18,7 +18,7 @@
             [clojure.string :as cstr])
 
   (:use [czlabclj.xlib.util.core
-         :only [MakeMMap ternary notnil? RandomSign TryC]]
+         :only [MakeMMap notnil? RandomSign TryC]]
         [czlabclj.xlib.util.process :only [Coroutine]]
         [czlabclj.xlib.util.format]
         [czlabclj.xlib.util.str :only [strim nsb hgl?]]
