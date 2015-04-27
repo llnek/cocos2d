@@ -22,7 +22,7 @@
   (:use [czlabclj.xlib.util.dates :only [ParseDate] ]
         [czlabclj.xlib.util.str :only [nsb hgl? strim] ]
         [czlabclj.tardis.core.consts]
-        [czlabclj.xlib.util.wfs :only [SimPTask]]
+        [czlabclj.xlib.util.wfs]
         [czlabclj.tardis.impl.ext :only [GetAppKeyFromEvent] ])
 
   (:use [czlabclj.cocos2d.games.meta]
@@ -31,7 +31,7 @@
   (:import  [com.zotohlab.skaro.core Container ConfigError]
             [org.apache.commons.io FileUtils]
             [com.zotohlab.wflow FlowNode Activity
-                                Pipeline PDelegate PTask Work]
+                                Pipeline SDelegate PTask Work]
             [com.zotohlab.skaro.io HTTPEvent HTTPResult Emitter]
             [com.zotohlab.frwk.io IOUtils XData]
             [com.zotohlab.wflow Job]
@@ -140,11 +140,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- doShowPage ""
-
-  ^Activity
-  [interpolateFunc]
-
+(DefPipe
+  doShowPage
   (SimPTask
     (fn [^Job j]
       (let [tpl (nsb (:template (.getv j EV_OPTS)))
@@ -153,26 +150,16 @@
             co (.container src)
             [rdata ct]
             (.loadTemplate co tpl
-                           (interpolateFunc evt))
+                               (interpolateIndexPage evt))
             ^HTTPResult res (.getResultObj evt) ]
         (.setHeader res "content-type" ct)
         (.setContent res rdata)
         (.setStatus res 200)
-        (.replyResult evt)))
-  ))
+        (.replyResult evt)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype IndexPage [] PDelegate
-
-  (startWith [_  pipe]
-    (require 'czlabclj.cocos2d.site.core)
-    (doShowPage interpolateIndexPage))
-
-  (onStop [_ pipe] )
-  (onError [ _ err curPt]
-    (log/error "IndexPage: I got an error!")))
-
+(DefMorphable IndexPage doShowPage)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
