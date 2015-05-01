@@ -14,11 +14,10 @@
 
   czlabclj.odin.event.disp
 
-  (:require [clojure.tools.logging :as log :only [info warn error debug]]
+  (:require [clojure.tools.logging :as log]
             [clojure.core.async :as cas
              :only
-             [close! go go-loop chan >! <! ]]
-            [clojure.string :as cstr])
+             [close! go go-loop chan >! <! ]])
 
   (:use [czlabclj.xlib.util.core :only [TryC]]
         [czlabclj.odin.event.core]

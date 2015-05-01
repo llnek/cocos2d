@@ -20,6 +20,7 @@
   (:use [czlabclj.xlib.util.dates :only [ParseDate] ]
         [czlabclj.xlib.util.str :only [nsb hgl? strim] ]
         [czlabclj.tardis.core.consts]
+        [czlabclj.xlib.util.consts]
         [czlabclj.xlib.util.wfs]
         [czlabclj.tardis.impl.ext :only [GetAppKeyFromEvent] ]
         [czlabclj.cocos2d.site.core ])

@@ -19,6 +19,7 @@
 
   (:use [czlabclj.xlib.util.str :only [nsb hgl? strim] ]
         [czlabclj.tardis.core.consts]
+        [czlabclj.xlib.util.consts]
         [czlabclj.xlib.util.wfs :only [SimPTask]]
         [czlabclj.cocos2d.games.meta]
         [czlabclj.cocos2d.site.core ])
@@ -74,10 +75,10 @@
       (.put "games" (GetGamesAsListForUI))
       (.put "content" "/main/games/arena.ftl"))
     (when-not (nil? mf)
-      (.put tags
+      (.put ^Map tags
             "screen-orientation"
             (str "content=\"" (:layout mf) "\""))
-      (.put bd "gameid" (:uuid mf)))
+      (.put ^Map bd "gameid" (:uuid mf)))
     dm
   ))
 

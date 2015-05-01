@@ -14,8 +14,7 @@
 
   czlabclj.odin.game.msgreq
 
-  (:require [clojure.tools.logging :as log :only [info warn error debug]]
-            [clojure.string :as cstr])
+  (:require [clojure.tools.logging :as log])
 
   (:use [czlabclj.xlib.util.core :only [MakeMMap notnil?]]
         [czlabclj.xlib.util.files :only [ReadOneFile]]
@@ -30,8 +29,6 @@
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
             [com.zotohlab.odin.game Game PlayRoom
                                     Player PlayerSession]
-            [com.zotohlab.wflow Job Activity
-                                Pipeline PDelegate PTask]
             [com.zotohlab.skaro.io WebSockEvent Emitter]
             [com.zotohlab.frwk.io IOUtils XData]
             [com.zotohlab.frwk.core Identifiable]

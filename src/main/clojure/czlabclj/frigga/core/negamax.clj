@@ -14,8 +14,7 @@
 
   czlabclj.frigga.core.negamax
 
-  (:require [clojure.tools.logging :as log :only [info warn error debug]]
-            [clojure.string :as cstr])
+  (:require [clojure.tools.logging :as log])
 
   (:use [czlabclj.xlib.util.core :only [MakeMMap notnil? ]]
         [czlabclj.xlib.util.str :only [strim nsb hgl?]])
@@ -26,11 +25,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (def ^:private PINF 1000000)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -57,32 +54,33 @@
 
   [board game maxDepth depth alpha beta]
 
-  (cond
-    (or (= depth 0)
+  (if
+    (or (== depth 0)
         (.isOver board game))
     (.evalScore board game)
-
-    :else
+    ;;:else
     (with-local-vars [openMoves (.getNextMoves board game)
                       bestValue (- PINF)
                       localAlpha alpha
                       halt false
                       rc 0
                       bestMove (nth openMoves 0) ]
-      (when (= depth maxDepth)
+      (when (== depth maxDepth)
         (.setLastBestMove game (nth @openMoves 0))) ;; this will change overtime, most likely
       (loop [n 0]
         (when-not (or (> n (count @openMoves))
                       (true? @halt))
           (let [move (nth @openMoves n) ]
-            (.makeMove board game move)
-            (.switchPlayer board game)
+            (doto board
+              (.makeMove game move)
+              (.switchPlayer game))
             (var-set rc (- (NegaMax board game maxDepth
                                     (dec depth)
                                     (- beta)
                                     (- @localAlpha))))
-            (.switchPlayer board game)
-            (.unmakeMove board game move)
+            (doto board
+              (.switchPlayer game)
+              (.unmakeMove game move))
             (var-set bestValue (Math/max @bestValue @rc))
             (when (< @localAlpha @rc)
               (var-set localAlpha @rc)
@@ -94,7 +92,6 @@
             (recur (inc n) ))))
       @bestValue)
   ))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -109,7 +106,6 @@
         ;;(require 'czlabclj.frigga.core.negamax)
         (NegaMax board snapshot 10 10 (- PINF) PINF)
         (.lastBestMove snapshot)))))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

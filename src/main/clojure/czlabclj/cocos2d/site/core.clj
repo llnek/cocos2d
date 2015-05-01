@@ -23,6 +23,7 @@
         [czlabclj.xlib.util.wfs]
         [czlabclj.tardis.impl.ext :only [GetAppKeyFromEvent]]
         [czlabclj.cocos2d.games.meta]
+        [czlabclj.xlib.util.consts]
         [czlabclj.odin.system.core])
 
   (:import  [com.zotohlab.skaro.core Container ConfigError]

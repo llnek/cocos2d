@@ -14,8 +14,7 @@
 
   czlabclj.odin.system.core
 
-  (:require [clojure.tools.logging :as log :only [info warn error debug]]
-            [clojure.string :as cstr])
+  (:require [clojure.tools.logging :as log])
 
   (:use [czlabclj.xlib.util.core :only [MakeMMap notnil?]]
         [czlabclj.xlib.util.files :only [ReadOneFile]]
@@ -26,10 +25,10 @@
         [czlabclj.odin.game.msgreq])
 
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
-            [com.zotohlab.wflow Job Activity
-                                Pipeline PDelegate PTask]
+            [com.zotohlab.wflow Job Activity PTask]
             [com.zotohlab.skaro.io WebSockEvent Emitter]
             [com.zotohlab.frwk.io IOUtils XData]
+            [com.zotohlab.server WorkFlow]
             [java.io File]
             [io.netty.channel Channel]
             [com.zotohlab.skaro.core Container]
@@ -75,11 +74,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype Handler [] PDelegate
+(deftype Handler [] WorkFlow
 
-  (onError [ _ err curPt] (log/error "Handler: I got an error!"))
-  (onStop [_ pipe] )
-  (startWith [_  pipe] (SimPTask (fn [^Job j] (odinOnEvent (.event j))))))
+  (startWith [_ ]
+    (require 'czlabclj.odin.system.core)
+    (SimPTask (fn [^Job j] (odinOnEvent (.event j))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
