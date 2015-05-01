@@ -15,27 +15,19 @@
 
   czlabclj.cocos2d.games.core
 
-  (:require [clojure.tools.logging :as log :only (info warn error debug)]
-            [clojure.string :as cstr]
-            [clojure.data.json :as json])
+  (:require [clojure.tools.logging :as log])
 
-  (:use [czlabclj.xlib.util.dates :only [ParseDate] ]
-        [czlabclj.xlib.util.str :only [nsb hgl? strim] ]
+  (:use [czlabclj.xlib.util.str :only [nsb hgl? strim] ]
         [czlabclj.tardis.core.consts]
         [czlabclj.xlib.util.wfs :only [SimPTask]]
-        [czlabclj.tardis.impl.ext :only [GetAppKeyFromEvent] ])
-
-  (:use [czlabclj.cocos2d.games.meta]
+        [czlabclj.cocos2d.games.meta]
         [czlabclj.cocos2d.site.core ])
 
-  (:import  [com.zotohlab.skaro.core Container ConfigError]
-            [org.apache.commons.io FileUtils]
-            [com.zotohlab.wflow FlowNode Activity
-                                 Pipeline PDelegate PTask Work]
+  (:import  [com.zotohlab.skaro.core Container]
+            [com.zotohlab.wflow Activity
+             Job PTask]
             [com.zotohlab.skaro.io HTTPEvent HTTPResult Emitter]
-            [com.zotohlab.frwk.io IOUtils XData]
-            [com.zotohlab.wflow Job]
-            [java.io File]
+            [com.zotohlab.server WorkFlow]
             [java.util Date ArrayList List HashMap Map]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -50,11 +42,12 @@
   [^HTTPEvent evt]
 
   (let [dm (GetDftModel evt)
-        ^Map bd (.get dm "body")
-        ^List jss (.get dm "scripts")
-        ^List css (.get dm "stylesheets") ]
-    (.put bd "games" (GetGamesAsListForUI))
-    (.put bd "content" "/main/games/games.ftl")
+        {css "stylesheets"
+         bd "body"
+         jss "scripts"} dm]
+    (doto ^Map bd
+      (.put "games" (GetGamesAsListForUI))
+      (.put "content" "/main/games/games.ftl"))
     dm
   ))
 
@@ -65,22 +58,26 @@
   ^Map
   [^HTTPEvent evt]
 
-  (let [mf (get (GetGamesAsHash) (.getUri evt))
+  (let [mf ((GetGamesAsHash) (.getUri evt))
         dm (GetDftModel evt)
-        ^Map tags (.get dm "metatags")
-        ^Map bd (.get dm "body")
-        ^List jss (.get dm "scripts")
-        ^List css (.get dm "stylesheets") ]
-    (.put tags "viewport" "content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\"")
-    (.put tags "apple-mobile-web-app-capable" "content=\"yes\"")
+        {tags "metatags"
+         bd  "body"
+         jss "scripts"
+         css "stylesheets"} dm]
+    (doto ^Map tags
+      (.put "viewport" "content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\"")
+      (.put "full-screen" "content=\"yes\"")
+      (.put "x5-fullscreen" "content=\"true\"")
+      (.put "360-fullscreen" "content=\"true\"")
+      (.put "apple-mobile-web-app-capable" "content=\"yes\""))
+    (doto ^Map bd
+      (.put "games" (GetGamesAsListForUI))
+      (.put "content" "/main/games/arena.ftl"))
     (when-not (nil? mf)
-      (.put tags "screen-orientation" (str "content=\"" (:layout mf) "\""))
+      (.put tags
+            "screen-orientation"
+            (str "content=\"" (:layout mf) "\""))
       (.put bd "gameid" (:uuid mf)))
-    (.put tags "full-screen" "content=\"yes\"")
-    (.put tags "x5-fullscreen" "content=\"true\"")
-    (.put tags "360-fullscreen" "content=\"true\"")
-    (.put bd "games" (GetGamesAsListForUI))
-    (.put bd "content" "/main/games/arena.ftl")
     dm
   ))
 
@@ -92,14 +89,17 @@
   [^HTTPEvent evt]
 
   (let [dm (GetDftModel evt)
-        ^Map bd (.get dm "body")
-        ^List jss (.get dm "scripts")
-        ^List css (.get dm "stylesheets") ]
-    (.add css "/public/vendors/owl-carousel/owl.carousel.css")
-    (.add css "/public/vendors/owl-carousel/owl.theme.css")
-    (.add jss "/public/vendors/owl-carousel/owl.carousel.min.js")
-    (.put bd "picks" (GetGamesAsListForUI))
-    (.put bd "content" "/main/games/picks.ftl")
+        {bd "body"
+         jss "scripts"
+         css "stylesheets"} dm]
+    (doto ^List css
+      (.add "/public/vendors/owl-carousel/owl.carousel.css")
+      (.add "/public/vendors/owl-carousel/owl.theme.css"))
+    (doto ^List jss
+      (.add "/public/vendors/owl-carousel/owl.carousel.min.js"))
+    (doto ^Map bd
+      (.put "picks" (GetGamesAsListForUI))
+      (.put "content" "/main/games/picks.ftl"))
     dm
   ))
 
@@ -128,39 +128,27 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype AllGamesPage [] PDelegate
+(deftype AllGamesPage [] WorkFlow
 
-  (startWith [_  pipe]
+  (startWith [_]
     (require 'czlabclj.cocos2d.games.core)
-    (doShowPage interpolateBrowsePage))
-
-  (onStop [_ pipe])
-  (onError [ _ err curPt]
-    (log/error "AllGamesPage: I got an error!")))
+    (doShowPage interpolateBrowsePage)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype TopPicksPage [] PDelegate
+(deftype TopPicksPage [] WorkFlow
 
-  (startWith [_  pipe]
+  (startWith [_]
     (require 'czlabclj.cocos2d.games.core)
-    (doShowPage interpolatePicksPage))
-
-  (onStop [_ pipe])
-  (onError [ _ err curPt]
-    (log/error "TopPicksPage: I got an error!")))
+    (doShowPage interpolatePicksPage)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype GameArenaPage [] PDelegate
+(deftype GameArenaPage [] WorkFlow
 
-  (startWith [_  pipe]
+  (startWith [_]
     (require 'czlabclj.cocos2d.games.core)
-    (doShowPage interpolateArenaPage))
-
-  (onStop [_ pipe])
-  (onError [ _ err curPt]
-    (log/error "GameArenaPage: I got an error!")))
+    (doShowPage interpolateArenaPage)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

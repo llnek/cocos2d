@@ -16,14 +16,12 @@
 
   (:gen-class)
 
-  (:require [clojure.tools.logging :as log :only [warn error info debug] ]
-            [clojure.string :as cstr])
+  (:require [clojure.tools.logging :as log])
 
-  (:use [czlabclj.xlib.util.core :only [test-cond] ]
-        [czlabclj.xlib.util.str :only [MakeString] ]
-        [czlabclj.xlib.util.files :only [DirRead?] ])
-
-  (:use [czlabclj.cocos2d.games.meta])
+  (:use [czlabclj.xlib.util.core :only [test-cond]]
+        [czlabclj.xlib.util.str :only [MakeString]]
+        [czlabclj.xlib.util.files :only [DirRead?]]
+        [czlabclj.cocos2d.games.meta])
 
   (:import  [java.util List Locale]
             [java.io File]))

@@ -14,13 +14,11 @@
 
   czlabclj.cocos2d.games.meta
 
-  (:require [clojure.tools.logging :as log :only (info warn error debug)]
-            [clojure.string :as cstr]
-            [clojure.data.json :as json])
+  (:require [clojure.tools.logging :as log])
 
-  (:use [czlabclj.xlib.util.str :only [nsb hgl? strim] ]
+  (:use [czlabclj.xlib.util.format :only [ReadJson ReadEdn]]
+        [czlabclj.xlib.util.str :only [nsb hgl? strim] ]
         [czlabclj.xlib.util.dates :only [ParseDate] ]
-        [czlabclj.xlib.util.format :only [ReadEdn]]
         [czlabclj.xlib.util.files :only [ReadOneFile] ]
         [czlabclj.tardis.core.consts])
 
@@ -29,8 +27,6 @@
             [java.io File]
             [java.util Date ArrayList List HashMap Map]))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
 
@@ -58,8 +54,7 @@
       (doseq [^File fd (seq fds) ]
         (let [info (merge (assoc (ReadEdn (File. fd "game.mf"))
                                  :gamedir (.getName fd))
-                          (json/read-str (ReadOneFile (File. fd "game.json"))
-                                         :key-fn keyword))
+                          (ReadJson (ReadOneFile (File. fd "game.json"))))
               net (:network info)
               uid (:uuid info)
               uri (:uri info)

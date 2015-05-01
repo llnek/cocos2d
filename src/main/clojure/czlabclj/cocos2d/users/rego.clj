@@ -15,9 +15,7 @@
 
   czlabclj.cocos2d.users.rego
 
-  (:require [clojure.tools.logging :as log :only (info warn error debug)]
-            [clojure.string :as cstr]
-            [clojure.data.json :as json])
+  (:require [clojure.tools.logging :as log])
 
   (:use [czlabclj.xlib.util.dates :only [ParseDate] ]
         [czlabclj.xlib.util.str :only [nsb hgl? strim] ]
@@ -28,20 +26,15 @@
 
   (:import  [com.zotohlab.skaro.core Container ConfigError]
             [org.apache.commons.io FileUtils]
-            [com.zotohlab.wflow FlowNode Activity
-                                Pipeline PDelegate PTask Work]
+            [com.zotohlab.wflow Job Activity PTask]
             [com.zotohlab.skaro.io HTTPEvent HTTPResult Emitter]
             [com.zotohlab.frwk.io IOUtils XData]
-            [com.zotohlab.wflow Job]
+            [com.zotohlab.server WorkFlow]
             [java.io File]
             [java.util Date ArrayList List HashMap Map]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -54,11 +47,12 @@
   (let [^czlabclj.tardis.io.webss.WebSS
         mvs (.getSession evt)
         dm (GetDftModel evt)
-        ^Map bd (.get dm "body")
-        ^List jss (.get dm "scripts")
-        ^List css (.get dm "stylesheets") ]
-    (.put bd "content" "/main/users/register.ftl")
-    (.put bd "csrf" csrf)
+        {bd "body"
+         jss "scripts"
+         css "stylesheets"} dm]
+    (doto ^Map bd
+      (.put "content" "/main/users/register.ftl")
+      (.put "csrf" csrf))
     dm
   ))
 
@@ -72,13 +66,15 @@
   (let [^czlabclj.tardis.io.webss.WebSS
         mvs (.getSession evt)
         dm (GetDftModel evt)
-        ^Map bd (.get dm "body")
-        ^List jss (.get dm "scripts")
-        ^List css (.get dm "stylesheets") ]
-    (.put bd "content" "/main/users/login.ftl")
-    (.put bd "csrf" csrf)
+        {bd "body"
+         jss "scripts"
+         css "stylesheets"} dm]
+    (doto ^Map bd
+      (.put "content" "/main/users/login.ftl")
+      (.put "csrf" csrf))
     dm
   ))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- interpolateForgotPage ""
@@ -89,11 +85,12 @@
   (let [^czlabclj.tardis.io.webss.WebSS
         mvs (.getSession evt)
         dm (GetDftModel evt)
-        ^Map bd (.get dm "body")
-        ^List jss (.get dm "scripts")
-        ^List css (.get dm "stylesheets") ]
-    (.put bd "content" "/main/users/forgot.ftl")
-    (.put bd "csrf" csrf)
+        {bd "body"
+         jss "scripts"
+         css "stylesheets"} dm]
+    (doto ^Map bd
+      (.put "content" "/main/users/forgot.ftl")
+      (.put "csrf" csrf))
     dm
   ))
 
@@ -114,9 +111,9 @@
             co (.container ^Emitter src)
             ^czlabclj.tardis.io.webss.WebSS
             mvs (.getSession evt)
-            csrf (-> ^czlabclj.tardis.impl.ext.ContainerAPI co
+            csrf (-> ^czlabclj.tardis.impl.ext.ContainerAPI
+                     co
                      (.generateCsrf))
-            ;;csrf (.generateCsrf ^czlabclj.tardis.impl.ext.ContainerAPI co)
             est (:sessionAgeSecs cfg)
             [rdata ct] (.loadTemplate co tpl
                                       (interpolateFunc evt csrf))
@@ -131,39 +128,27 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype RegisterPage [] PDelegate
+(deftype RegisterPage [] WorkFlow
 
-  (startWith [_  pipe]
+  (startWith [_]
     (require 'czlabclj.cocos2d.users.rego)
-    (doShowPage interpolateRegisterPage))
-
-  (onStop [_ pipe] )
-  (onError [ _ err curPt]
-    (log/error "RegisterPage: I got an error!")))
+    (doShowPage interpolateRegisterPage)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype LoginPage [] PDelegate
+(deftype LoginPage [] WorkFlow
 
-  (startWith [_  pipe]
+  (startWith [_]
     (require 'czlabclj.cocos2d.users.rego)
-    (doShowPage interpolateLoginPage))
-
-  (onStop [_ pipe] )
-  (onError [ _ err curPt]
-    (log/error "LoginPage: I got an error!")))
+    (doShowPage interpolateLoginPage)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype ForgotPage [] PDelegate
+(deftype ForgotPage [] WorkFlow
 
-  (startWith [_  pipe]
+  (startWith [_]
     (require 'czlabclj.cocos2d.users.rego)
-    (doShowPage interpolateForgotPage))
-
-  (onStop [_ pipe] )
-  (onError [ _ err curPt]
-    (log/error "ForgotPage: I got an error!")))
+    (doShowPage interpolateForgotPage)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

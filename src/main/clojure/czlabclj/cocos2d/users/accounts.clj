@@ -14,31 +14,29 @@
 
   czlabclj.cocos2d.users.accounts
 
-  (:require [clojure.tools.logging :as log :only (info warn error debug)]
-            [clojure.data.json :as json]
-            [clojure.string :as cstr])
+  (:require [clojure.tools.logging :as log])
 
   (:use [czlabclj.xlib.util.core :only [test-nonil ]]
         [czlabclj.xlib.util.str :only [nsb strim  hgl?]]
         [czlabclj.xlib.util.wfs :only [SimPTask]]
         [czlabclj.tardis.auth.plugin :only [MaybeSignupTest
-                                                  MaybeLoginTest] ]
+                                            MaybeLoginTest]]
         [czlabclj.tardis.io.basicauth]
+        [czlabclj.xlib.util.format :only [WriteJson]]
         [czlabclj.xlib.i18n.resources :only [RStr]]
         [czlabclj.tardis.core.consts]
         [czlabclj.cocos2d.site.core ])
 
   (:import  [com.zotohlab.skaro.runtime DuplicateUser]
-            [com.zotohlab.wflow If FlowNode Activity
-             BoolExpr Pipeline PDelegate PTask Work]
+            [com.zotohlab.wflow If Activity
+             Job BoolExpr PTask Work]
             [com.zotohlab.skaro.io HTTPEvent HTTPResult]
             [org.apache.commons.codec.net URLCodec]
             [com.zotohlab.frwk.i18n I18N]
             [java.net HttpCookie]
             [com.zotohlab.frwk.core Identifiable]
             [com.zotohlab.frwk.util CrappyDataError]
-            [com.zotohlab.frwk.io XData]
-            [com.zotohlab.wflow Job]))
+            [com.zotohlab.frwk.io XData]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -54,15 +52,17 @@
   (SimPTask
     (fn [^Job j]
       (let [^HTTPEvent evt (.event j)
+            ctr (-> ^Emitter
+                    (.emitter evt) (.container))
             ^HTTPResult res (.getResultObj evt)
             err (:error (.getLastResult j)) ]
         (cond
           (instance? DuplicateUser err)
-          (let [rcb (I18N/getBundle (.id ^Identifiable (.container j)))
+          (let [rcb (I18N/getBundle (.id ^Identifiable ctr))
                 json {:error
                       {:msg (RStr rcb "acct.dup.user") }} ]
             (.setStatus res 409)
-            (.setContent res (XData. (json/write-str json))))
+            (.setContent res (XData. (WriteJson json))))
 
           :else
           (.setStatus res 400))
@@ -84,26 +84,18 @@
             acct (:account (.getLastResult j)) ]
         (log/debug "successfully signed up new account " acct)
         (.setStatus res 200)
-        (.setContent res (XData. (json/write-str json)))
+        (.setContent res (XData. (WriteJson json)))
         (.replyResult evt)))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype SignupHandler [] PDelegate
+(deftype SignupHandler [] WorkFlow
 
-  (startWith [_  pipe]
+  (startWith [_]
     (require 'czlabclj.cocos2d.users.accounts)
     (log/debug "signup pipe-line - called.")
-    (If. (MaybeSignupTest "32") (doSignupOK) (doSignupFail)))
-
-  (onStop [_ pipe] )
-  (onError [ _ err curPt]
-    (log/error "SignupHandler: I got an error!")))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+    (If. (MaybeSignupTest "32") (doSignupOK) (doSignupFail))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -141,7 +133,7 @@
             ck (HttpCookie. (name *USER-FLAG*)
                             (nsb (:acctid acct)))
             ^HTTPResult res (.getResultObj evt) ]
-        (.setContent res (XData. (json/write-str json)))
+        (.setContent res (XData. (WriteJson json)))
         (.setStatus res 200)
         (.setNew! mvs true est)
         (doto ck
@@ -156,16 +148,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype LoginHandler [] PDelegate
+(deftype LoginHandler [] WorkFlow
 
-  (startWith [_  pipe]
+  (startWith [_]
     (require 'czlabclj.cocos2d.users.accounts)
     (log/debug "login pipe-line - called.")
-    (If. (MaybeLoginTest) (doLoginOK) (doLoginFail)))
-
-  (onStop [_ pipe] )
-  (onError [ _ err curPt]
-    (log/info "LoginHandler: I got an error!")))
+    (If. (MaybeLoginTest) (doLoginOK) (doLoginFail))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -176,11 +164,15 @@
 
   (SimPTask
     (fn [^Job j]
-      (let [^czlabclj.tardis.core.sys.Element ctr (.container j)
+      (let [^HTTPEvent evt (.event j)
+            ^czlabclj.tardis.core.sys.Element
+            ctr
+            (-> ^Emitter
+                (.emitter evt) (.container))
             ^czlabclj.tardis.auth.plugin.AuthPlugin
             pa (:auth (.getAttr ctr K_PLUGINS))
-            ^HTTPEvent evt (.event j)
-            si (try (MaybeGetAuthInfo evt) (catch CrappyDataError e#  { :e e# }))
+            si (try (MaybeGetAuthInfo evt)
+                    (catch CrappyDataError e#  { :e e# }))
             info (or si {} )
             email (nsb (:email info)) ]
         (test-nonil "AuthPlugin" pa)
@@ -210,24 +202,19 @@
             ^HTTPResult res (.getResultObj evt)
             json { :status { :code 200 } } ]
         (.setStatus res 200)
-        (.setContent res (XData. (json/write-str json)))
+        (.setContent res (XData. (WriteJson json)))
         (.replyResult evt)))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype ForgotHandler [] PDelegate
+(deftype ForgotHandler [] WorkFlow
 
-  (startWith [_  pipe]
+  (startWith [_]
     (require 'czlabclj.cocos2d.users.accounts)
     (log/debug "Forgot-login pipe-line - called.")
     (-> (doAckReply)
-        (.chain (doLookupEmail))))
-
-  (onStop [_ pipe] )
-  (onError [ _ err curPt]
-    (log/error "ForgotHandler: I got an error!")))
-
+        (.chain (doLookupEmail)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -247,7 +234,7 @@
             json { :status { :code 200 } }
             ck (HttpCookie. (name *USER-FLAG*) "")
             ^HTTPResult res (.getResultObj evt) ]
-        (.setContent res (XData. (json/write-str json)))
+        (.setContent res (XData. (WriteJson json)))
         (.setStatus res 200)
         (.invalidate! mvs)
         (doto ck
@@ -262,21 +249,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype LogoutHandler [] PDelegate
+(deftype LogoutHandler [] WorkFlow
 
-  (startWith [_  pipe]
+  (startWith [_]
     (require 'czlabclj.cocos2d.users.accounts)
     (log/debug "logout pipe-line - called.")
-    (doLogout))
-
-  (onStop [_ pipe] )
-  (onError [ _ err curPt]
-    (log/error "LogoutHandler: I got an error!")))
+    (doLogout)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (def ^:private accounts-eof nil)
-
-
-
 

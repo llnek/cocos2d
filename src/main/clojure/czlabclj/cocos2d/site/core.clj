@@ -15,26 +15,23 @@
 
   czlabclj.cocos2d.site.core
 
-  (:require [clojure.tools.logging :as log :only (info warn error debug)]
-            [clojure.string :as cstr]
-            [clojure.data.json :as json])
+  (:require [clojure.tools.logging :as log])
 
-  (:use [czlabclj.xlib.util.dates :only [ParseDate] ]
-        [czlabclj.xlib.util.str :only [nsb hgl? strim] ]
+  (:use [czlabclj.xlib.util.dates :only [ParseDate]]
+        [czlabclj.xlib.util.str :only [nsb hgl? strim]]
         [czlabclj.tardis.core.consts]
         [czlabclj.xlib.util.wfs]
-        [czlabclj.tardis.impl.ext :only [GetAppKeyFromEvent] ])
-
-  (:use [czlabclj.cocos2d.games.meta]
+        [czlabclj.tardis.impl.ext :only [GetAppKeyFromEvent]]
+        [czlabclj.cocos2d.games.meta]
         [czlabclj.odin.system.core])
 
   (:import  [com.zotohlab.skaro.core Container ConfigError]
             [org.apache.commons.io FileUtils]
-            [com.zotohlab.wflow FlowNode Activity
-                                Pipeline SDelegate PTask Work]
+            [com.zotohlab.wflow Activity
+             Job PTask]
             [com.zotohlab.skaro.io HTTPEvent HTTPResult Emitter]
             [com.zotohlab.frwk.io IOUtils XData]
-            [com.zotohlab.wflow Job]
+            [com.zotohlab.server WorkFlow]
             [java.io File]
             [java.util Date ArrayList List HashMap Map]))
 
@@ -111,16 +108,16 @@
       (.put "appkey" (GetAppKeyFromEvent evt))
       (.put "profile" pf)
       (.put "body" (HashMap.)))
-    (.put tags "keywords" "content=\"web browser games mobile ios android windows phone\"")
-    (.put tags "description" "content=\"Hello World!\"")
-    (.put tags "viewport" "content=\"width=device-width, initial-scale=1.0\"")
+    (doto tags
+      (.put "keywords" "content=\"web browser games mobile ios android windows phone\"")
+      (.put "description" "content=\"Hello World!\"")
+      (.put "viewport" "content=\"width=device-width, initial-scale=1.0\""))
     (.put pf "user" "Guest")
     (when-let [ck (.getCookie evt (name *USER-FLAG*)) ]
       (let [s (strim (.getValue ck)) ]
         (.put pf "user" s)))
     dm
   ))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -130,27 +127,30 @@
   [^HTTPEvent evt]
 
   (let [dm (GetDftModel evt)
-        ^Map bd (.get dm "body")
-        ^List jss (.get dm "scripts")
-        ^List css (.get dm "stylesheets") ]
-    (.put bd "doors" @DOORS)
-    (.put bd "content" "/main/index.ftl")
+        {bd "body"
+         jss "scripts"
+         css "stylesheets"} dm]
+    (doto ^Map bd
+      (.put "doors" @DOORS)
+      (.put "content" "/main/index.ftl"))
     dm
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(DefPipe
-  doShowPage
+(defn- doShowPage ""
+
+  []
+
   (SimPTask
     (fn [^Job j]
       (let [tpl (nsb (:template (.getv j EV_OPTS)))
             ^HTTPEvent evt (.event j)
-            src (.emitter evt)
+            ^Emitter src (.emitter evt)
             co (.container src)
             [rdata ct]
             (.loadTemplate co tpl
-                               (interpolateIndexPage evt))
+                           (interpolateIndexPage evt))
             ^HTTPResult res (.getResultObj evt) ]
         (.setHeader res "content-type" ct)
         (.setContent res rdata)
@@ -159,7 +159,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(DefMorphable IndexPage doShowPage)
+(deftype IndexPage [] WorkFlow
+  (startWith [_]
+    (require 'czlabclj.cocos2d.site.core)
+    (doShowPage)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
