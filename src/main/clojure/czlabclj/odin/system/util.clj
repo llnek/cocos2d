@@ -29,7 +29,7 @@
              PongWebSocketFrame CloseWebSocketFrame]
             [io.netty.channel Channel ChannelHandler
                               ChannelHandlerContext]
-            [com.zotohlab.skaro.io Emitter]
+            [com.zotohlab.frwk.server Emitter]
             [com.zotohlab.skaro.core Container]
             [com.zotohlab.frwk.netty NettyFW SimpleInboundFilter]
             [com.zotohlab.odin.event EventError Msgs Events]))

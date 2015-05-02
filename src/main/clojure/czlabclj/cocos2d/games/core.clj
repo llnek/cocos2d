@@ -27,7 +27,8 @@
   (:import  [com.zotohlab.skaro.core Container]
             [com.zotohlab.wflow Activity
              Job PTask]
-            [com.zotohlab.skaro.io HTTPEvent HTTPResult Emitter]
+            [com.zotohlab.frwk.server Emitter]
+            [com.zotohlab.skaro.io HTTPEvent HTTPResult]
             [com.zotohlab.server WorkFlow]
             [java.util Date ArrayList List HashMap Map]))
 
@@ -115,8 +116,8 @@
     (fn [^Job j]
       (let [tpl (nsb (:template (.getv j EV_OPTS)))
             ^HTTPEvent evt (.event j)
-            ^Emitter src (.emitter evt)
-            co (.container src)
+            src (.emitter evt)
+            ^Container co (.container src)
             [rdata ct]
             (.loadTemplate co tpl
                            (interpolateFunc evt))

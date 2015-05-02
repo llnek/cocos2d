@@ -28,8 +28,9 @@
   (:import  [com.zotohlab.skaro.core Container ConfigError]
             [org.apache.commons.io FileUtils]
             [com.zotohlab.wflow Job Activity PTask]
-            [com.zotohlab.skaro.io HTTPEvent HTTPResult Emitter]
+            [com.zotohlab.skaro.io HTTPEvent HTTPResult]
             [com.zotohlab.frwk.io IOUtils XData]
+            [com.zotohlab.frwk.server Emitter]
             [com.zotohlab.server WorkFlow]
             [java.io File]
             [java.util Date ArrayList List HashMap Map]))
@@ -109,7 +110,7 @@
             ^czlabclj.tardis.core.sys.Element
             src (.emitter evt)
             cfg (.getAttr src :emcfg)
-            co (.container ^Emitter src)
+            ^Container co (.container ^Emitter src)
             ^czlabclj.tardis.io.webss.WebSS
             mvs (.getSession evt)
             csrf (-> ^czlabclj.tardis.impl.ext.ContainerAPI

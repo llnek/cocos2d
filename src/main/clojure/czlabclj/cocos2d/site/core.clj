@@ -28,9 +28,10 @@
 
   (:import  [com.zotohlab.skaro.core Container ConfigError]
             [org.apache.commons.io FileUtils]
+            [com.zotohlab.frwk.server Emitter]
             [com.zotohlab.wflow Activity
              Job PTask]
-            [com.zotohlab.skaro.io HTTPEvent HTTPResult Emitter]
+            [com.zotohlab.skaro.io HTTPEvent HTTPResult]
             [com.zotohlab.frwk.io IOUtils XData]
             [com.zotohlab.server WorkFlow]
             [java.io File]
@@ -148,7 +149,7 @@
       (let [tpl (nsb (:template (.getv j EV_OPTS)))
             ^HTTPEvent evt (.event j)
             ^Emitter src (.emitter evt)
-            co (.container src)
+            ^Container co (.container src)
             [rdata ct]
             (.loadTemplate co tpl
                            (interpolateIndexPage evt))

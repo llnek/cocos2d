@@ -29,8 +29,9 @@
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
             [com.zotohlab.odin.game Game PlayRoom
                                     Player PlayerSession]
-            [com.zotohlab.skaro.io WebSockEvent Emitter]
+            [com.zotohlab.skaro.io WebSockEvent]
             [com.zotohlab.frwk.io IOUtils XData]
+            [com.zotohlab.frwk.server Emitter]
             [com.zotohlab.frwk.core Identifiable]
             [com.zotohlab.frwk.i18n I18N]
             [java.util ResourceBundle]

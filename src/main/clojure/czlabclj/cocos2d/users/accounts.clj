@@ -31,10 +31,11 @@
             [com.zotohlab.server WorkFlow]
             [com.zotohlab.wflow If Activity
              Job BoolExpr PTask Work]
-            [com.zotohlab.skaro.io Emitter HTTPEvent HTTPResult]
+            [com.zotohlab.skaro.io HTTPEvent HTTPResult]
             [org.apache.commons.codec.net URLCodec]
             [com.zotohlab.frwk.i18n I18N]
             [java.net HttpCookie]
+            [com.zotohlab.frwk.server Emitter]
             [com.zotohlab.frwk.core Identifiable]
             [com.zotohlab.frwk.util CrappyDataError]
             [com.zotohlab.frwk.io XData]))
