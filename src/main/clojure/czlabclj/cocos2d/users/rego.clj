@@ -107,7 +107,7 @@
     (fn [^Job j]
       (let [tpl (nsb (:template (.getv j EV_OPTS)))
             ^HTTPEvent evt (.event j)
-            ^czlabclj.tardis.core.sys.Element
+            ^czlabclj.tardis.core.sys.Elmt
             src (.emitter evt)
             cfg (.getAttr src :emcfg)
             ^Container co (.container ^Emitter src)

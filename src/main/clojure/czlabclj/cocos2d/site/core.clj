@@ -63,7 +63,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype MyAppMain [] czlabclj.tardis.impl.ext.CljAppMain
+(deftype MyAppMain [] czlabclj.tardis.core.sys.CljAppMain
 
   (contextualize [_ ctr]
     (require 'czlabclj.cocos2d.games.meta)

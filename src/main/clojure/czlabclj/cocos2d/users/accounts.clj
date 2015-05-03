@@ -126,7 +126,7 @@
       (let [^HTTPEvent evt (.event j)
             ^czlabclj.tardis.io.webss.WebSS
             mvs (.getSession evt)
-            ^czlabclj.tardis.core.sys.Element
+            ^czlabclj.tardis.core.sys.Elmt
             src (.emitter evt)
             cfg (.getAttr src :emcfg)
             acct (:account (.getLastResult j))
@@ -167,7 +167,7 @@
   (SimPTask
     (fn [^Job j]
       (let [^HTTPEvent evt (.event j)
-            ^czlabclj.tardis.core.sys.Element
+            ^czlabclj.tardis.core.sys.Elmt
             ctr
             (-> ^Emitter
                 (.emitter evt) (.container))
@@ -230,7 +230,7 @@
       (let [^HTTPEvent evt (.event j)
             ^czlabclj.tardis.io.webss.WebSS
             mvs (.getSession evt)
-            ^czlabclj.tardis.core.sys.Element
+            ^czlabclj.tardis.core.sys.Elmt
             src (.emitter evt)
             cfg (.getAttr src :emcfg)
             json { :status { :code 200 } }

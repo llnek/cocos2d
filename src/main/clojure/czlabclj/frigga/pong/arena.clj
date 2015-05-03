@@ -114,7 +114,7 @@
 ;;
 (defn- rect "Make a rect with all 4 corners."
 
-  ([^czlabclj.xlib.util.core.MubleAPI obj]
+  ([^czlabclj.xlib.util.core.Muble obj]
    (rect (.getf obj :x)
          (.getf obj :y)
          (.getf obj :width)
@@ -132,7 +132,7 @@
 ;;
 (defn- clamp "Ensure paddle does not go out of bound."
 
-  [^czlabclj.xlib.util.core.MubleAPI
+  [^czlabclj.xlib.util.core.Muble
    paddle bbox port?]
 
   (let [h2 (halve (.getf paddle :height))
@@ -155,7 +155,7 @@
 ;; The *enclosure* is the bounding box => the world.
 (defn- traceEnclosure "Check if the ball has just hit a wall."
 
-  [^czlabclj.xlib.util.core.MubleAPI ball
+  [^czlabclj.xlib.util.core.Muble ball
    dt
    bbox port?]
 
@@ -199,9 +199,9 @@
 ;;
 (defn- collide? "Check if the ball has collided with a paddle."
 
-  [^czlabclj.xlib.util.core.MubleAPI p1
-   ^czlabclj.xlib.util.core.MubleAPI p2
-   ^czlabclj.xlib.util.core.MubleAPI ball
+  [^czlabclj.xlib.util.core.Muble p1
+   ^czlabclj.xlib.util.core.Muble p2
+   ^czlabclj.xlib.util.core.Muble ball
    bbox port?]
 
   (with-local-vars [winner 0]
@@ -240,7 +240,7 @@
 
   [^czlabclj.frigga.pong.arena.ArenaAPI arena winner]
 
-  (let [^czlabclj.xlib.util.core.MubleAPI impl
+  (let [^czlabclj.xlib.util.core.Muble impl
         (.innards arena)
         s2 (.getf impl :score2)
         s1 (.getf impl :score1)
@@ -261,7 +261,7 @@
   [^czlabclj.frigga.pong.arena.ArenaAPI arena winner]
 
   (let [^PlayRoom room (.container ^GameEngine (.engine arena))
-        ^czlabclj.xlib.util.core.MubleAPI impl
+        ^czlabclj.xlib.util.core.Muble impl
         (.innards arena)
         ^PlayerSession ps2 (:session (.getf impl :p2))
         ^PlayerSession ps1 (:session (.getf impl :p1))
@@ -284,7 +284,7 @@
 
   [^czlabclj.frigga.pong.arena.ArenaAPI arena winner]
 
-  (let [^czlabclj.xlib.util.core.MubleAPI impl
+  (let [^czlabclj.xlib.util.core.Muble impl
         (.innards arena)
         nps (.getf impl :numpts)
         s2 (.getf impl :score2)
@@ -310,13 +310,13 @@
   [^czlabclj.frigga.pong.arena.ArenaAPI arena
    dt bbox]
 
-  (let [^czlabclj.xlib.util.core.MubleAPI impl
+  (let [^czlabclj.xlib.util.core.Muble impl
         (.innards arena)
-        ^czlabclj.xlib.util.core.MubleAPI
+        ^czlabclj.xlib.util.core.Muble
         pad2 (.getf impl :paddle2)
-        ^czlabclj.xlib.util.core.MubleAPI
+        ^czlabclj.xlib.util.core.Muble
         pad1 (.getf impl :paddle1)
-        ^czlabclj.xlib.util.core.MubleAPI
+        ^czlabclj.xlib.util.core.Muble
         ball (.getf impl :ball)
         port? (.getf impl :portrait)]
 
@@ -348,14 +348,14 @@
   [^czlabclj.frigga.pong.arena.ArenaAPI arena]
 
   (let [^PlayRoom room (.container ^GameEngine (.engine arena))
-        ^czlabclj.xlib.util.core.MubleAPI impl
+        ^czlabclj.xlib.util.core.Muble impl
         (.innards arena)
         port? (.getf impl :portrait)
-        ^czlabclj.xlib.util.core.MubleAPI
+        ^czlabclj.xlib.util.core.Muble
         pad2 (.getf impl :paddle2)
-        ^czlabclj.xlib.util.core.MubleAPI
+        ^czlabclj.xlib.util.core.Muble
         pad1 (.getf impl :paddle1)
-        ^czlabclj.xlib.util.core.MubleAPI
+        ^czlabclj.xlib.util.core.Muble
         ball (.getf impl :ball)
         src {:p2 {:y (.getf pad2 :y)
                   :x (.getf pad2 :x)
@@ -381,7 +381,7 @@
 
   [^czlabclj.frigga.pong.arena.ArenaAPI arena options]
 
-  (let [^czlabclj.xlib.util.core.MubleAPI impl
+  (let [^czlabclj.xlib.util.core.Muble impl
         (.innards arena)]
     (if-not (true? (.getf impl :resetting-point))
       (let [waitIntv (:syncMillis options)
@@ -414,7 +414,7 @@
   [^czlabclj.frigga.pong.arena.ArenaAPI arena
    options]
 
-  (let [^czlabclj.xlib.util.core.MubleAPI impl
+  (let [^czlabclj.xlib.util.core.Muble impl
         (.innards arena)
         ^GameEngine eng (.engine arena)
         fps (/ 1000 (:framespersec options))
@@ -440,7 +440,7 @@
 
   [^czlabclj.frigga.pong.arena.ArenaAPI arena options new?]
 
-  (let [^czlabclj.xlib.util.core.MubleAPI impl
+  (let [^czlabclj.xlib.util.core.Muble impl
         (.innards arena)]
     (.setf! impl :lastTick (System/currentTimeMillis))
     (.setf! impl :lastSync 0)
@@ -464,7 +464,7 @@
    pp1 pp2
    pd ba]
 
-  (let [^czlabclj.xlib.util.core.MubleAPI impl
+  (let [^czlabclj.xlib.util.core.Muble impl
         (.innards arena)]
     (log/debug "resetting all entities back to default positions.")
     (.setf! impl :paddle2 (reifyPaddle (:x pp2)
@@ -475,7 +475,7 @@
                                         (:y pp1)
                                         (:width pd)
                                         (:height pd)))
-    (let [^czlabclj.xlib.util.core.MubleAPI
+    (let [^czlabclj.xlib.util.core.Muble
           b (reifyBall (:x ba)
                        (:y ba)
                        (:width ba)
@@ -492,11 +492,11 @@
   [^czlabclj.frigga.pong.arena.ArenaAPI arena options]
 
   (let [^PlayRoom room (.container ^GameEngine (.engine arena))
-        ^czlabclj.xlib.util.core.MubleAPI impl
+        ^czlabclj.xlib.util.core.Muble impl
         (.innards arena)
         ^PlayerSession p2 (:session (.getf impl :p2))
         ^PlayerSession p1 (:session (.getf impl :p1))
-        ^czlabclj.xlib.util.core.MubleAPI
+        ^czlabclj.xlib.util.core.Muble
         ball (.getf impl :ball)
         src {:ball {:vx (.getf ball :vx)
                     :vy (.getf ball :vy)
@@ -570,7 +570,7 @@
               cmd (ReadJsonKW src)
               ;;pv (* (:dir (kw cmd)) (:speed pd))
               pv (:pv (kw cmd))
-              ^czlabclj.xlib.util.core.MubleAPI
+              ^czlabclj.xlib.util.core.Muble
               other (if (= pnum 2)
                       (.getf impl :paddle2)
                       (.getf impl :paddle1))]
