@@ -27,11 +27,10 @@
 
   (:import  [com.zotohlab.skaro.core Container ConfigError]
             [org.apache.commons.io FileUtils]
-            [com.zotohlab.wflow Job Activity PTask]
+            [com.zotohlab.wflow WorkFlow Job Activity PTask]
             [com.zotohlab.skaro.io HTTPEvent HTTPResult]
             [com.zotohlab.frwk.io IOUtils XData]
             [com.zotohlab.frwk.server Emitter]
-            [com.zotohlab.server WorkFlow]
             [java.io File]
             [java.util Date ArrayList List HashMap Map]))
 

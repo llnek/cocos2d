@@ -28,9 +28,8 @@
         [czlabclj.cocos2d.site.core ])
 
   (:import  [com.zotohlab.skaro.runtime DuplicateUser]
-            [com.zotohlab.server WorkFlow]
             [com.zotohlab.wflow If Activity
-             Job BoolExpr PTask Work]
+             WorkFlow Job BoolExpr PTask Work]
             [com.zotohlab.skaro.io HTTPEvent HTTPResult]
             [org.apache.commons.codec.net URLCodec]
             [com.zotohlab.frwk.i18n I18N]
