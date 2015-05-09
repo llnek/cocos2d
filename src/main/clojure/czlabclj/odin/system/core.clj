@@ -27,7 +27,7 @@
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
             [com.zotohlab.wflow WorkFlow Job Activity PTask]
             [com.zotohlab.skaro.io WebSockEvent]
-            [com.zotohlab.frwk.io IOUtils XData]
+            [com.zotohlab.frwk.io XData]
             [com.zotohlab.frwk.server Emitter]
             [java.io File]
             [io.netty.channel Channel]

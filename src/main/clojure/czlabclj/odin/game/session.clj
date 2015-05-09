@@ -30,7 +30,6 @@
             [com.zotohlab.frwk.core Hierarchial]
             [com.zotohlab.odin.core Session]
             [io.netty.channel Channel]
-            [com.zotohlab.frwk.util CoreUtils]
             [com.zotohlab.skaro.core Container]
             [com.zotohlab.odin.net MessageSender]
             [com.zotohlab.odin.event Events Msgs Sender Receiver]))

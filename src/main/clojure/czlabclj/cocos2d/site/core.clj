@@ -32,7 +32,7 @@
             [com.zotohlab.wflow Activity
              WorkFlow Job PTask]
             [com.zotohlab.skaro.io HTTPEvent HTTPResult]
-            [com.zotohlab.frwk.io IOUtils XData]
+            [com.zotohlab.frwk.io IO XData]
             [java.io File]
             [java.util Date ArrayList List HashMap Map]))
 
@@ -52,7 +52,7 @@
   [^File appDir]
 
   (with-local-vars [rc (transient [])]
-    (let [fds (IOUtils/listFiles (File. appDir "public/ig/res/main/doors")
+    (let [fds (IO/listFiles (File. appDir "public/ig/res/main/doors")
                                  "png" false) ]
       (doseq [^File fd (seq fds) ]
         (var-set rc (conj! @rc (.getName fd)))))

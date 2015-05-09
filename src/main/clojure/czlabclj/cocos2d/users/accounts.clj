@@ -19,8 +19,8 @@
   (:use [czlabclj.xlib.util.core :only [test-nonil ]]
         [czlabclj.xlib.util.str :only [nsb strim  hgl?]]
         [czlabclj.xlib.util.wfs :only [SimPTask]]
-        [czlabclj.tardis.auth.plug :only [MaybeSignupTest
-                                          MaybeLoginTest]]
+        [czlabclj.tardis.auth.plugin :only [MaybeSignupTest
+                                            MaybeLoginTest]]
         [czlabclj.tardis.io.basicauth]
         [czlabclj.xlib.util.format :only [WriteJson]]
         [czlabclj.xlib.i18n.resources :only [RStr]]
@@ -170,7 +170,7 @@
             ctr
             (-> ^Emitter
                 (.emitter evt) (.container))
-            ^czlabclj.tardis.auth.plug.AuthPlug
+            ^czlabclj.tardis.auth.plugin.AuthPlugin
             pa (:auth (.getAttr ctr K_PLUGINS))
             si (try (MaybeGetAuthInfo evt)
                     (catch CrappyDataError e#  { :e e# }))

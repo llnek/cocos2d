@@ -29,7 +29,7 @@
             [org.apache.commons.io FileUtils]
             [com.zotohlab.wflow WorkFlow Job Activity PTask]
             [com.zotohlab.skaro.io HTTPEvent HTTPResult]
-            [com.zotohlab.frwk.io IOUtils XData]
+            [com.zotohlab.frwk.io XData]
             [com.zotohlab.frwk.server Emitter]
             [java.io File]
             [java.util Date ArrayList List HashMap Map]))

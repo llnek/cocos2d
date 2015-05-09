@@ -23,7 +23,7 @@
         [czlabclj.tardis.core.consts])
 
   (:import  [org.apache.commons.io FileUtils]
-            [com.zotohlab.frwk.io IOUtils]
+            [com.zotohlab.frwk.io IO]
             [java.io File]
             [java.util Date ArrayList List HashMap Map]))
 
@@ -50,7 +50,7 @@
                     tmp nil
                     gc (transient [])
                     rc (transient []) ]
-    (let [fds (IOUtils/listDirs (File. appDir "public/ig/info")) ]
+    (let [fds (IO/listDirs (File. appDir "public/ig/info")) ]
       (doseq [^File fd (seq fds) ]
         (let [info (merge (assoc (ReadEdn (File. fd "game.mf"))
                                  :gamedir (.getName fd))
