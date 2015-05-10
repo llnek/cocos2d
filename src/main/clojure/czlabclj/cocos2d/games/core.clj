@@ -121,9 +121,10 @@
             (.loadTemplate co tpl
                            (interpolateFunc evt))
             ^HTTPResult res (.getResultObj evt) ]
-        (.setHeader res "content-type" ct)
-        (.setContent res rdata)
-        (.setStatus res 200)
+        (doto res
+          (.setHeader "content-type" ct)
+          (.setContent rdata)
+          (.setStatus 200))
         (.replyResult evt)))
   ))
 
@@ -153,6 +154,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+(ns-unmap *ns* '->AllGamesPage)
+(ns-unmap *ns* '->TopPicksPage)
+(ns-unmap *ns* '->GameArenaPage)
 (def ^:private core-eof nil)
 
 

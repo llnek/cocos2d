@@ -15,7 +15,8 @@
 
   czlabclj.cocos2d.site.core
 
-  (:require [clojure.tools.logging :as log])
+  (:require [clojure.tools.logging :as log]
+            [clojure.java.io :as io])
 
   (:use [czlabclj.xlib.util.dates :only [ParseDate]]
         [czlabclj.xlib.util.str :only [nsb hgl? strim]]
@@ -52,9 +53,10 @@
   [^File appDir]
 
   (with-local-vars [rc (transient [])]
-    (let [fds (IO/listFiles (File. appDir "public/ig/res/main/doors")
-                                 "png" false) ]
-      (doseq [^File fd (seq fds) ]
+    (let [fds (IO/listFiles (io/file appDir "public" "ig"
+                                     "res" "main" "doors")
+                            "png" false) ]
+      (doseq [^File fd fds]
         (var-set rc (conj! @rc (.getName fd)))))
     (reset! DOORS (persistent! @rc))
     (log/debug "How many doors ? " (count @DOORS))
@@ -89,9 +91,10 @@
   (dispose [_]
     (log/info "My AppMain finz'ed")))
 
+(ns-unmap *ns* '->MyAppMain)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn GetDftModel ""
+(defn GetDftModel "Return a default object for Freemarker processing."
 
   ^Map
   [^HTTPEvent evt]
@@ -153,9 +156,10 @@
             (.loadTemplate co tpl
                            (interpolateIndexPage evt))
             ^HTTPResult res (.getResultObj evt) ]
-        (.setHeader res "content-type" ct)
-        (.setContent res rdata)
-        (.setStatus res 200)
+        (doto res
+          (.setHeader "content-type" ct)
+          (.setContent rdata)
+          (.setStatus 200))
         (.replyResult evt)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -164,6 +168,8 @@
   (startWith [_]
     (require 'czlabclj.cocos2d.site.core)
     (doShowPage)))
+
+(ns-unmap *ns* '->IndexPage)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

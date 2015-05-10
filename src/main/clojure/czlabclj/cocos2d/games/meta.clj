@@ -14,7 +14,8 @@
 
   czlabclj.cocos2d.games.meta
 
-  (:require [clojure.tools.logging :as log])
+  (:require [clojure.tools.logging :as log]
+            [clojure.java.io :as io])
 
   (:use [czlabclj.xlib.util.format :only [ReadJson ReadEdn]]
         [czlabclj.xlib.util.str :only [nsb hgl? strim] ]
@@ -41,7 +42,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ScanGameManifests ""
+(defn ScanGameManifests "Fetch game manifests and build an internal
+                        model of each game.  These models are then
+                        consumed by the GUI and game-engines."
 
   [^File appDir]
 
@@ -50,23 +53,23 @@
                     tmp nil
                     gc (transient [])
                     rc (transient []) ]
-    (let [fds (IO/listDirs (File. appDir "public/ig/info")) ]
+    (let [fds (IO/listDirs (io/file appDir "public" "ig" "info")) ]
       (doseq [^File fd (seq fds) ]
-        (let [info (merge (assoc (ReadEdn (File. fd "game.mf"))
+        (let [info (merge (assoc (ReadEdn (io/file fd "game.mf"))
                                  :gamedir (.getName fd))
-                          (ReadJson (ReadOneFile (File. fd "game.json"))))
-              net (:network info)
-              uid (:uuid info)
-              uri (:uri info)
-              online (true? (:enabled net))]
+                          (-> (io/file fd "game.json")
+                              (ReadOneFile)
+                              (ReadJson)))
+              {:keys [network uuid uri]} info
+              online (true? (:enabled network))]
           ;; create a UI friendly version for freemarker
           (var-set tmp (transient{}))
-          (doseq [[k v] (seq info)]
+          (doseq [[k v] info]
             (var-set tmp (assoc! @tmp (name k) v)))
           (var-set tmp (assoc! @tmp "network" online))
           (var-set gc (conj! @gc (persistent! @tmp)))
+          (var-set uc (assoc! @uc uuid info))
           (var-set mc (assoc! @mc uri info))
-          (var-set uc (assoc! @uc uid info))
           (var-set rc (conj! @rc info)))))
     (reset! GAMES-MNFS (vec (sort #(compare (.getTime ^Date (%1 :pubdate))
                                             (.getTime ^Date (%2 :pubdate)))
@@ -90,7 +93,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn GetGamesAsListForUI ""
+(defn GetGamesAsListForUI "Return the game models as a list
+                          for the UI."
 
   []
 
@@ -98,7 +102,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn GetGamesAsList ""
+(defn GetGamesAsList "Return the list of manifests."
 
   []
 
@@ -106,7 +110,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn GetGamesAsHash ""
+(defn GetGamesAsHash "Return the manifests keyed by the
+                     game uri."
 
   []
 
@@ -114,7 +119,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn GetGamesAsUUID ""
+(defn GetGamesAsUUID "Return the manifests keyed by the
+                     game uuid."
 
   []
 

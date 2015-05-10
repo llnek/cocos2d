@@ -62,8 +62,9 @@
           (let [rcb (I18N/getBundle (.id ^Identifiable ctr))
                 json {:error
                       {:msg (RStr rcb "acct.dup.user") }} ]
-            (.setStatus res 409)
-            (.setContent res (XData. (WriteJson json))))
+            (doto res
+              (.setStatus 409)
+              (.setContent (XData. (WriteJson json)))))
 
           :else
           (.setStatus res 400))
@@ -84,8 +85,9 @@
             json { :status { :code 200 } }
             acct (:account (.getLastResult j)) ]
         (log/debug "successfully signed up new account " acct)
-        (.setStatus res 200)
-        (.setContent res (XData. (WriteJson json)))
+        (doto res
+          (.setStatus 200)
+          (.setContent (XData. (WriteJson json))))
         (.replyResult evt)))
   ))
 
@@ -97,6 +99,8 @@
     (require 'czlabclj.cocos2d.users.accounts)
     (log/debug "signup pipe-line - called.")
     (If. (MaybeSignupTest "32") (doSignupOK) (doSignupFail))))
+
+(ns-unmap *ns* '->SignupHandler)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -134,16 +138,17 @@
             ck (HttpCookie. (name *USER-FLAG*)
                             (nsb (:acctid acct)))
             ^HTTPResult res (.getResultObj evt) ]
-        (.setContent res (XData. (WriteJson json)))
-        (.setStatus res 200)
-        (.setNew! mvs true est)
         (doto ck
           (.setMaxAge est)
           (.setHttpOnly false)
           (.setSecure (.isSSL? mvs))
           (.setPath (:domainPath cfg))
           (.setDomain (:domain cfg)))
-        (.addCookie res ck)
+        (doto res
+          (.setContent (XData. (WriteJson json)))
+          (.addCookie ck)
+          (.setStatus 200))
+        (.setNew! mvs true est)
         (.replyResult evt)))
   ))
 
@@ -155,6 +160,8 @@
     (require 'czlabclj.cocos2d.users.accounts)
     (log/debug "login pipe-line - called.")
     (If. (MaybeLoginTest) (doLoginOK) (doLoginFail))))
+
+(ns-unmap *ns* '->LoginHandler)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -202,8 +209,9 @@
       (let [^HTTPEvent evt (.event j)
             ^HTTPResult res (.getResultObj evt)
             json { :status { :code 200 } } ]
-        (.setStatus res 200)
-        (.setContent res (XData. (WriteJson json)))
+        (doto res
+          (.setStatus 200)
+          (.setContent (XData. (WriteJson json))))
         (.replyResult evt)))
   ))
 
@@ -216,6 +224,8 @@
     (log/debug "Forgot-login pipe-line - called.")
     (-> (doAckReply)
         (.chain (doLookupEmail)))))
+
+(ns-unmap *ns* '->ForgotHandler)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -235,16 +245,17 @@
             json { :status { :code 200 } }
             ck (HttpCookie. (name *USER-FLAG*) "")
             ^HTTPResult res (.getResultObj evt) ]
-        (.setContent res (XData. (WriteJson json)))
-        (.setStatus res 200)
-        (.invalidate! mvs)
         (doto ck
           (.setMaxAge 0)
           (.setHttpOnly false)
           (.setSecure (.isSSL? mvs))
           (.setPath (:domainPath cfg))
           (.setDomain (:domain cfg)))
-        (.addCookie res ck)
+        (doto res
+          (.setContent (XData. (WriteJson json)))
+          (.setStatus 200)
+          (.addCookie ck))
+        (.invalidate! mvs)
         (.replyResult evt)))
   ))
 
@@ -256,6 +267,8 @@
     (require 'czlabclj.cocos2d.users.accounts)
     (log/debug "logout pipe-line - called.")
     (doLogout)))
+
+(ns-unmap *ns* '->LogoutHandler)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
