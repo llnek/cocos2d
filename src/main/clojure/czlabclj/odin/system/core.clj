@@ -14,7 +14,8 @@
 
   czlabclj.odin.system.core
 
-  (:require [clojure.tools.logging :as log])
+  (:require [clojure.tools.logging :as log]
+            [clojure.java.io :as io])
 
   (:use [czlabclj.xlib.util.core :only [MakeMMap notnil?]]
         [czlabclj.xlib.util.files :only [ReadOneFile]]
@@ -66,7 +67,7 @@
 
   ;;TODO: loading in Odin config file. do something with it?
   (let [appDir (.getAppDir ctr)
-        fp (File. appDir "conf/odin.conf")
+        fp (io/file appDir "conf" "odin.conf")
         s (ReadOneFile fp)
         json (ReadJsonKW s) ]
     (log/info "Odin config= " s)

@@ -135,6 +135,8 @@
     (require 'czlabclj.frigga.tttoe.core)
     (reifyEngine stateAtom stateRef)))
 
+(ns-unmap *ns* '->TicTacToe)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (def ^:private core-eof nil)

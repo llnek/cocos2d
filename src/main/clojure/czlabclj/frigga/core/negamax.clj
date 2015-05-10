@@ -50,7 +50,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn NegaMax ""
+(defn NegaMax "The Nega-Max algo implementation."
 
   [board game maxDepth depth alpha beta]
 
@@ -95,7 +95,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ReifyNegaMaxAlgo  ""
+(defn ReifyNegaMaxAlgo  "Create an implementation of nega-max."
 
   ^czlabclj.frigga.core.negamax.NegaAlgoAPI
   [board]
@@ -109,7 +109,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ReifySnapshot ""
+(defn ReifySnapshot "Create a snapshot."
 
   ^czlabclj.frigga.core.negamax.NegaSnapshotAPI
   []

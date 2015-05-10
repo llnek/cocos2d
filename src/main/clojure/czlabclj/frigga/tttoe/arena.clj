@@ -113,8 +113,7 @@
         goalspace (mapGoalSpace bsize)
         actors (object-array 3)
         numcells (alength grid)
-        impl (MakeMMap) ]
-    (.setf! impl :gameon false)
+        impl (MakeMMap {:gameon false}) ]
     (reify BoardAPI
 
       (getCur [_] (aget #^"[Ljava.lang.Object;" actors 0))

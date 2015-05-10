@@ -73,15 +73,9 @@
 
   [x y w h]
 
-  (let [impl (MakeMMap)]
-    (.setf! impl :x x)
-    (.setf! impl :y y)
-    (.setf! impl :vx 0)
-    (.setf! impl :vy 0)
-    (.setf! impl :height h)
-    (.setf! impl :width w)
-    impl
-  ))
+  (MakeMMap {:x x :y y
+             :vx 0 :vy 0
+             :height h :width w}))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -135,19 +129,20 @@
   [^czlabclj.xlib.util.core.Muble
    paddle bbox port?]
 
-  (let [h2 (halve (.getf paddle :height))
+  (let [fx (fn [op kw o1 o2] (op (kw o1) (kw o2)))
+        h2 (halve (.getf paddle :height))
         w2 (halve (.getf paddle :width))
         rc (rect paddle)]
     (if port?
       (do
-        (when (< (:left rc) (:left bbox))
+        (when (fx < :left rc bbox)
           (.setf! paddle :x (+ (:left bbox) w2)))
-        (when (> (:right rc) (:right bbox))
+        (when (fx > :right rc bbox)
           (.setf! paddle :x (- (:right bbox) w2))))
       (do
-        (when (< (:bottom rc) (:bottom bbox))
+        (when (fx < :bottom rc bbox)
           (.setf! paddle :y (+ (:bottom bbox) h2)))
-        (when (> (:top rc) (:top bbox))
+        (when (fx > :top rc bbox)
           (.setf! paddle :y (- (:top bbox) h2)))))
   ))
 

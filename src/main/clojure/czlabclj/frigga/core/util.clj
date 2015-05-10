@@ -28,7 +28,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn MapPlayers ""
+(defn MapPlayers "Map ids to player sessions."
 
   ;; outputs map {id -> player-session}
   [players]
@@ -40,7 +40,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn MapPlayersEx ""
+(defn MapPlayersEx "Map ids to player [number + id]."
 
   ;; outputs map {id -> [player-number, player-id]}
   [players]

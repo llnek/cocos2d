@@ -16,7 +16,8 @@
 
   (:gen-class)
 
-  (:require [clojure.tools.logging :as log])
+  (:require [clojure.tools.logging :as log]
+            [clojure.java.io :as io])
 
   (:use [czlabclj.xlib.util.core :only [test-cond]]
         [czlabclj.xlib.util.str :only [MakeString]]
@@ -37,7 +38,7 @@
 
   ;; for security, don't just eval stuff
   ;;(alter-var-root #'*read-eval* (constantly false))
-  (let [appDir (File. ^String (first args))
+  (let [appDir (io/file (first args))
         apps ((comp (fn [_] (GetGamesAsList))
                     ScanGameManifests)
               appDir) ]

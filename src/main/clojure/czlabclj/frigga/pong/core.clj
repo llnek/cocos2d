@@ -150,6 +150,8 @@
     (require 'czlabclj.frigga.pong.core)
     (reifyEngine stateAtom stateRef)))
 
+(ns-unmap *ns* '->Pong)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (def ^:private core-eof nil)

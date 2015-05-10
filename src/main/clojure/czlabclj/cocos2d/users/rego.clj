@@ -9,7 +9,6 @@
 ;; this software.
 ;; Copyright (c) 2013-2014, Ken Leung. All rights reserved.
 
-
 (ns  ^{:doc ""
        :author "kenl" }
 
@@ -119,11 +118,13 @@
             [rdata ct] (.loadTemplate co tpl
                                       (interpolateFunc evt csrf))
             ^HTTPResult res (.getResultObj evt) ]
-        (.setHeader res "content-type" ct)
-        (.setContent res rdata)
-        (.setStatus res 200)
-        (.setNew! mvs true est)
-        (.setXref mvs csrf)
+        (doto res
+          (.setHeader "content-type" ct)
+          (.setContent rdata)
+          (.setStatus 200))
+        (doto mvs
+          (.setNew! true est)
+          (.setXref csrf))
         (.replyResult evt)))
   ))
 
@@ -135,6 +136,8 @@
     (require 'czlabclj.cocos2d.users.rego)
     (doShowPage interpolateRegisterPage)))
 
+(ns-unmap *ns* '->RegisterPage)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (deftype LoginPage [] WorkFlow
@@ -143,6 +146,8 @@
     (require 'czlabclj.cocos2d.users.rego)
     (doShowPage interpolateLoginPage)))
 
+(ns-unmap *ns* '->LoginPage)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (deftype ForgotPage [] WorkFlow
@@ -150,6 +155,8 @@
   (startWith [_]
     (require 'czlabclj.cocos2d.users.rego)
     (doShowPage interpolateForgotPage)))
+
+(ns-unmap *ns* '->ForgotPage)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

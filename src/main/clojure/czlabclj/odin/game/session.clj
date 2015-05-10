@@ -47,9 +47,8 @@
 
   (let [created (System/currentTimeMillis)
         sid (GenerateUID (class Session))
-        impl (MakeMMap) ]
-    (.setf! impl :status Events/S_NOT_CONNECTED)
-    (.setf! impl :shutting-down false)
+        impl (MakeMMap {:status Events/S_NOT_CONNECTED
+                        :shutting-down false}) ]
     (reify PlayerSession
 
       (number [_] pnumber)
