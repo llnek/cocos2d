@@ -10045,7 +10045,7 @@ e;d++)if(d%4){var g=f.indexOf(b.charAt(d-1))<<2*(d%4),h=f.indexOf(b.charAt(d))>>
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013-2015 Ken Leung. All rights reserved.
 
 define("cherimoia/skarojs", ['global/window',
                              'console/dbg',
@@ -10076,8 +10076,8 @@ define("cherimoia/skarojs", ['global/window',
       name,
       parent = {};
       for ( name in prop ) {
-        if ( typeof(proto[name]) == "function" &&
-             typeof(prop[name]) == "function" &&
+        if ( typeof(proto[name]) === "function" &&
+             typeof(prop[name]) === "function" &&
              fnTest.test(prop[name])) {
           parent[name] = proto[name]; // save original function
           proto[name] = (function(name, fn){
@@ -10147,11 +10147,25 @@ define("cherimoia/skarojs", ['global/window',
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     var skarojs = {
+/*
+      strPadRight: function(str,len, pad){
+        return (str+new Array(len+1).join(pad)).slice(0,len);
+      },
 
-      padstr: function(str, len, s) {
+      strPadLeft: function(str,len,pad){
+        return (new Array(len+1).join(pad)+str).slice(-len);
+      },
+*/
+      strPadRight: function(str, len, s) {
         return (len -= str.length) > 0
-              ? (s = new Array(Math.ceil(len / s.length) + 1).join(s)).substr(0, s.length) + str + s.substr(0, len - s.length)
-              : str;
+        ? str + new Array(Math.ceil(len/s.length) + 1).join(s).substr(0, len)
+        : str;
+      },
+
+      strPadLeft: function(str, len, s) {
+        return (len -= str.length) > 0
+        ? new Array(Math.ceil(len/s.length) + 1).join(s).substr(0, len) + str
+        : str;
       },
 
       safeSplit: function(s, ch) {
@@ -10171,7 +10185,7 @@ define("cherimoia/skarojs", ['global/window',
       //xmod: function(m, n) { return ((m % n) + n) % n; },
       xmod: function(x, N) {
         if (x < 0) {
-         return x - (-1 * (Math.floor(-x / N) * N + N));
+          return x - (-1 * (Math.floor(-x / N) * N + N));
         } else {
           return x % N;
         }
@@ -10189,13 +10203,14 @@ define("cherimoia/skarojs", ['global/window',
       echt: _echt,
 
       prettyNumber: function (num, digits) {
-        var len= Number(num).toString().length;
+        var nums= Number(num).toString(),
+        len= nums.length;
         if (digits > 32) { throw new Error("Too many digits to prettify."); }
         var s= ZEROS.substring(0,digits);
         if (len < digits) {
-          return s.substring(0, digits - len)  + num;
+          return s.substring(0, digits - len)  + nums;
         } else {
-          return "" + num;
+          return nums;
         }
       },
 
@@ -10418,7 +10433,7 @@ define("cherimoia/skarojs", ['global/window',
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013-2015 Ken Leung. All rights reserved.
 
 define("cherimoia/caesar", ['cherimoia/skarojs'],
 

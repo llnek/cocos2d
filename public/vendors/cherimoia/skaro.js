@@ -17,16 +17,27 @@ define("cherimoia/skarojs", ['global/window',
 
     var undef, fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
     var ZEROS= "00000000000000000000000000000000";  //32
+    var CjsBase64;
+    var CjsUtf8;
 
     if (typeof HTMLElement === 'undefined') {
       // fake a type.
       global.HTMLElement= function HTMLElement() {};
     }
 
+    if (typeof CryptoJS !== 'undefined') {
+      global.CryptoJS= CryptoJS;
+    }
+
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     //
     function _echt (obj) {
       return typeof obj !== 'undefined' && obj !== null;
+    }
+
+    if (_echt( global.CryptoJS))  {
+      CjsBase64= global.CryptoJS.enc.Base64;
+      CjsUtf8= global.CryptoJS.enc.Utf8;
     }
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -147,7 +158,7 @@ define("cherimoia/skarojs", ['global/window',
       //xmod: function(m, n) { return ((m % n) + n) % n; },
       xmod: function(x, N) {
         if (x < 0) {
-         return x - (-1 * (Math.floor(-x / N) * N + N));
+          return x - (-1 * (Math.floor(-x / N) * N + N));
         } else {
           return x % N;
         }
@@ -165,13 +176,14 @@ define("cherimoia/skarojs", ['global/window',
       echt: _echt,
 
       prettyNumber: function (num, digits) {
-        var len= Number(num).toString().length;
+        var nums= Number(num).toString(),
+        len= nums.length;
         if (digits > 32) { throw new Error("Too many digits to prettify."); }
         var s= ZEROS.substring(0,digits);
         if (len < digits) {
-          return s.substring(0, digits - len)  + num;
+          return s.substring(0, digits - len)  + nums;
         } else {
-          return "" + num;
+          return nums;
         }
       },
 
@@ -262,15 +274,15 @@ define("cherimoia/skarojs", ['global/window',
       },
 
       toUtf8: function(s) {
-        return CryptoJS.enc.Utf8.stringify( CryptoJS.enc.Utf8.parse(s));
+        return CjsUtf8.stringify( CjsUtf8.parse(s));
       },
 
       base64_encode: function(s) {
-        return CryptoJS.enc.Base64.stringify( CryptoJS.enc.Utf8.parse(s));
+        return CjsBase64.stringify( CjsUtf8.parse(s));
       },
 
       base64_decode: function(s) {
-        return CryptoJS.enc.Utf8.stringify( CryptoJS.enc.Base64.parse(s));
+        return CjsUtf8.stringify( CjsBase64.parse(s));
       },
 
       mergeEx:function(original,extended) {
