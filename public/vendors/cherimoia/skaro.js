@@ -9,10 +9,6 @@
 // this software.
 // Copyright (c) 2013-2015 Ken Leung. All rights reserved.
 
-/**
- * @requires global/window,console/dbg,ramda,cryptojs
- * @module cherimoia/skarojs
- */
 define("cherimoia/skarojs", ['global/window',
                              'console/dbg',
                              'ramda'],
@@ -124,8 +120,12 @@ define("cherimoia/skarojs", ['global/window',
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     /**
-     * @class skarojs
-     * @static
+     * @requires module:global/window
+     * @requires module:console/dbg
+     * @requires module:ramda
+     * @requires module:CryptoJS
+     *
+     * @exports cherimoia/skarojs
      */
     var skarojs = {
 /*
@@ -173,7 +173,7 @@ define("cherimoia/skarojs", ['global/window',
        * @method safeSplit
        * @param {String} s
        * @param {String} sep
-       * @return array of strings.
+       * @return {Array.String}
        */
       safeSplit: function(s, sep) {
         return !!s ? R.reject(function(z) { return z.length===0; }, s.trim().split(sep)) : [];
@@ -183,7 +183,7 @@ define("cherimoia/skarojs", ['global/window',
        * Get the current time.
        *
        * @method now
-       * @return {Number} time in milliseconds.
+       * @return {Number} - time in milliseconds.
        */
       now: Date.now || function() { return new Date().getTime(); },
 
@@ -192,7 +192,7 @@ define("cherimoia/skarojs", ['global/window',
        *
        * @method capitalize
        * @param {String} str
-       * @return string with the first letter capitalized.
+       * @return {String} - with the first letter capitalized.
        */
       capitalize: function(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
@@ -216,7 +216,7 @@ define("cherimoia/skarojs", ['global/window',
        * @method xmod
        * @param {Number} x
        * @param {Number} N
-       * @return {Number} x modulo N
+       * @return {Number} - x modulo N
        */
       xmod: function(x, N) {
         if (x < 0) {
@@ -291,7 +291,7 @@ define("cherimoia/skarojs", ['global/window',
        * Get the websocket transport protocol.
        *
        * @method getWebSockProtocol
-       * @return {String} the transport protocol for websocket.
+       * @return {String} - the transport protocol for websocket
        */
       getWebSockProtocol: function() {
         return this.isSSL() ? "wss://" : "ws://";
@@ -301,7 +301,7 @@ define("cherimoia/skarojs", ['global/window',
        * Get the current time in milliseconds.
        *
        * @method nowMillis
-       * @return {Number} current time (millisecs).
+       * @return {Number} - current time (millisecs)
        */
       nowMillis: function() {
         return this.now();
@@ -324,7 +324,7 @@ define("cherimoia/skarojs", ['global/window',
        * @method dropArgs
        * @param {String} args
        * @param {Number} num
-       * @return {Array} remaining arguments.
+       * @return {Array} - remaining arguments
        */
       dropArgs: function(args,num) {
         return args.length > num ? Array.prototype.slice(args,num) : [];
@@ -457,7 +457,7 @@ define("cherimoia/skarojs", ['global/window',
        * @method toBasicAuthHeader
        * @param {String} user
        * @param {String} pwd
-       * @return {Array[2]} [header, data]
+       * @return {Array.String} - [header, data]
        */
       toBasicAuthHeader: function(user,pwd) {
         var str='Basic ' + this.base64_encode(""+user+":"+pwd);
@@ -503,7 +503,7 @@ define("cherimoia/skarojs", ['global/window',
        * @method mergeEx
        * @param {Object} original
        * @param {Object} extended
-       * @return {Object} a new object.
+       * @return {Object} - a new object
        */
       mergeEx:function(original,extended) {
         return this.merge(this.merge({},original), extended);
@@ -515,7 +515,7 @@ define("cherimoia/skarojs", ['global/window',
        * @method mergeEx
        * @param {Object} original
        * @param {Object} extended
-       * @return {Object} the modified original object.
+       * @return {Object} - the modified original object
        */
       merge: function(original, extended) {
         for( var key in extended ) {
@@ -680,7 +680,7 @@ define("cherimoia/skarojs", ['global/window',
        * @param {Function} f
        * @param {Object} memo
        * @param {Object} obj
-       * @return {Object} memo
+       * @return {Object}  - memo
        */
       reduceObj: function(f, memo, obj) {
         return R.reduce(function(sum, pair) {
@@ -696,7 +696,7 @@ define("cherimoia/skarojs", ['global/window',
        * @method eachObj
        * @param {Function} f
        * @param {Object} obj
-       * @return {Object} original obj
+       * @return {Object} - Original object
        */
       eachObj: function(f, obj) {
         R.forEach(function(pair) {
@@ -707,32 +707,27 @@ define("cherimoia/skarojs", ['global/window',
       },
 
       /**
-       * @property logger
+       * @property logger - Short cut to logger
        */
       logger: DBG,
 
       /**
-       * @property loggr
+       * @property loggr - Short cut to logger
        */
       loggr: DBG,
 
       /**
-       * Short cut to Ramda.
-       *
-       * @property ramda
+       * @property ramda - Short cut to Ramda
        */
       ramda: R,
 
       /**
-       * Short cut to Ramda.
-       * @property R
+       * @property R - Short cut to Ramda
        */
       R: R,
 
       /**
-       * Class object for inheritance operations.
-       *
-       * @property Class
+       * @property Class - Class based inheritance
        */
       Class : klass
     };

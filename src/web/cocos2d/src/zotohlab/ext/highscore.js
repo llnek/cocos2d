@@ -159,6 +159,7 @@ define("zotohlab/asx/highscores",
 
       /**
        * @constructor
+       * @private
        * @param {String} key
        * @param {Number} size
        * @param {Number} duration

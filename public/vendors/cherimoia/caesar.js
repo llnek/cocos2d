@@ -9,10 +9,6 @@
 // this software.
 // Copyright (c) 2013-2015 Ken Leung. All rights reserved.
 
-/**
- * @requires cherimoia/skarojs
- * @module cherimoia/caesar
- */
 define("cherimoia/caesar", ['cherimoia/skarojs'],
 
   function (sjs) { "use strict";
@@ -113,17 +109,18 @@ define("cherimoia/caesar", ['cherimoia/skarojs'],
     }
 
     /**
-     * @class caesar
-     * @static
+     * @requires module:cherimoia/skarojs
+     *
+     * @exports cherimoia/caesar
      */
-    return {
+    var caesar= {
       /**
        * Decrypt the cipher.
        *
        * @method decrypt
        * @param {String} cipherText
        * @param {Number} shiftpos
-       * @return {String} clear text.
+       * @return {String} - Clear text.
        */
       decrypt: caesarDecrypt,
 
@@ -133,11 +130,12 @@ define("cherimoia/caesar", ['cherimoia/skarojs'],
        * @method encrypt
        * @param {String} clearText
        * @param {Number} shiftpos
-       * @return {String} cipher text.
+       * @return {String} - Cipher text.
        */
       encrypt: caesarEncrypt
     };
 
+    return caesar;
 });
 
 //////////////////////////////////////////////////////////////////////////////

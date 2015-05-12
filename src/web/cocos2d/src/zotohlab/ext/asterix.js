@@ -9,10 +9,6 @@
 // this software.
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-/**
- *@requires cherimoia/skarojs,mustache,eligrey/l10njs,ash-js
- *@module zotohlab/asterix
- */
 define("zotohlab/asterix",
 
        ['cherimoia/skarojs',
@@ -110,15 +106,17 @@ define("zotohlab/asterix",
     })),
     undef,
     /**
-     * @class asterix
-     * @static
+     *@requires module:cherimoia/skarojs
+     *@requires module:mustache
+     *@requires module:eligrey/l10njs
+     *@requires module:ash-js
+
+     *@exports zotohlab/asterix
      */
     asterix = {
 
       /**
-       * Stuff to do with ash-js components.
-       *
-       * @property Ashley
+       * @property {Object} Ashley - ops for ash-js framework
        */
       Ashley: {
         /**

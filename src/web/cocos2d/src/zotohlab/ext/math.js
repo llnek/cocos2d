@@ -107,6 +107,7 @@ define("zotohlab/asx/math", ['cherimoia/skarojs'],
 
       /**
        * @constructor
+       * @private
        * @param {Number} x1
        * @param {Number} y1
        * @param {Number} x2

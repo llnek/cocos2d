@@ -9,10 +9,6 @@
 // this software.
 // Copyright (c) 2013-2015 Ken Leung. All rights reserved.
 
-/**
- * @requires cherimoia/skarojs
- * @module cherimoia/ebus
- */
 define("cherimoia/ebus", ['cherimoia/skarojs'],
 
   function (sjs) { "use strict";
@@ -57,10 +53,10 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
        * topics => "/hello/*  /goodbye/*"
        *
        * @method once
-       * @param {String} topics, space separated if more than one.
+       * @param {String} topics - space separated if more than one.
        * @param {Function} selector
        * @param {Object} target
-       * @return {Array} of subscription ids.
+       * @return {Array.String} - subscription ids
        */
       once: function(topics, selector, target /*, more args */) {
         var rc= this.pkListen(false,
@@ -76,10 +72,10 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
        * topics => "/hello/*  /goodbye/*"
        *
        * @method on
-       * @param {String} topics, space separated if more than one.
+       * @param {String} topics - space separated if more than one.
        * @param {Function} selector
        * @param {Object} target
-       * @return {Array} of subscription ids.
+       * @return {Array.String} - subscription ids.
        */
       on: function(topics, selector, target /*, more args */) {
         var rc= this.pkListen(true,
@@ -110,7 +106,7 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
        * Resume actions on this handle.
        *
        * @method resume
-       * @param {Object} handler id.
+       * @param {Object} - handler id
        */
       resume: function(handle) {
         var sub= this.allSubs[handle];
@@ -123,7 +119,7 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
        * Pause actions on this handle.
        *
        * @method pause
-       * @param {Object} handler id.
+       * @param {Object} - handler id
        */
       pause: function(handle) {
         var sub= this.allSubs[handle];
@@ -138,7 +134,7 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
        * Unsubscribe.
        *
        * @method off
-       * @param {Object} handler id.
+       * @param {Object} - handler id
        */
       off: function(handle) {
         var sub= this.allSubs[handle];
@@ -289,6 +285,7 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
 
       /**
        * @constructor
+       * @private
        */
       ctor: function() {
         this.rootNode = mkTreeNode();
@@ -297,11 +294,24 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
 
     });
 
-    return {
+    /**
+     * @requires module:cherimoia/skarojs
+     *
+     * @exports cherimoia/ebus
+     */
+    var bus= {
+      /**
+       * @return {EventBus}
+       */
       reify: function() { return new EventBus(); },
+
+      /**
+       * @property EventBus - EventBus class
+       */
       EventBus: EventBus
     };
 
+    return bus;
 });
 
 //////////////////////////////////////////////////////////////////////////////
