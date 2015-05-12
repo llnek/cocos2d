@@ -7,9 +7,14 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires cherimoia/skarojs
+ * @module zotohlab/asx/negamax
+ */
 define("zotohlab/asx/negamax", ['cherimoia/skarojs'],
+
   function (sjs) { "use strict";
 
     var PINF = 1000000,
@@ -58,10 +63,33 @@ define("zotohlab/asx/negamax", ['cherimoia/skarojs'],
 
     return {
 
+      /**
+       * The negamax algorithm implementation.
+       *
+       * @class Algo
+       */
       Algo: sjs.Class.xtends({
 
+        /**
+         * Get the game board.
+         *
+         * @method getGameBoard
+         * @return {Object}
+         */
         getGameBoard: function() { return this.board; },
+
+        /**
+         * @constructor
+         * @param {Object} board
+         */
         ctor: function(board) { this.board= board; },
+
+        /**
+         * Run the algo for one iteration.
+         *
+         * @method eval
+         * @return {Number} last best move.
+         */
         eval: function() {
           var snapshot= this.board.takeSnapshot();
           negamax(this.board, snapshot, 10, 10, -PINF, PINF);
@@ -70,8 +98,17 @@ define("zotohlab/asx/negamax", ['cherimoia/skarojs'],
 
       }),
 
+      /**
+       * Simple data structure keeping track of the state of the
+       * game board.
+       *
+       * @class Snapshot
+       */
       Snapshot: sjs.Class.xtends({
 
+        /**
+         * @constructor
+         */
         ctor: function() {
           this.lastBestMove= null;
           this.other= null;

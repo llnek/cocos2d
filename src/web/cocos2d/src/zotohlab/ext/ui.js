@@ -9,14 +9,30 @@
 // this software.
 // Copyright (c) 2013-2014, Ken Leung. All rights reserved.
 
+/**
+ * @requires cherimoia/skarojs
+ * @module zotohlab/asx/ui
+ */
 define("zotohlab/asx/ui", ['cherimoia/skarojs'],
+
   function (sjs) { "use strict";
+
     var undef;
 
     //////////////////////////////////////////////////////////////////////
     //
+    /**
+     * @class Circle
+     */
     var Circle = sjs.Class.xtends({
 
+      /**
+       * Draw this circle.
+       *
+       * @method draw
+       * @param {Context} ctx
+       * @param {Object} styleObj
+       */
       draw: function(ctx, styleObj) {
         ctx.beginPath();
         ctx.strokeStyle = styleObj.stroke.style;
@@ -25,6 +41,12 @@ define("zotohlab/asx/ui", ['cherimoia/skarojs'],
         ctx.stroke();
       },
 
+      /**
+       * @constructor
+       * @param {Number} x
+       * @param {Number} y
+       * @param {Number} radius
+       */
       ctor: function(x, y, radius) {
         this.x = x;
         this.y = y;
@@ -33,8 +55,18 @@ define("zotohlab/asx/ui", ['cherimoia/skarojs'],
 
     });
 
+    /**
+     * @class Line
+     */
     var Line = sjs.Class.xtends({
 
+      /**
+       * Draw this line.
+       *
+       * @method draw
+       * @param {Context} ctx
+       * @param {Object} styleObj
+       */
       draw: function(ctx, styleObj) {
         ctx.beginPath();
         ctx.moveTo(this.x1, this.y1);
@@ -47,6 +79,13 @@ define("zotohlab/asx/ui", ['cherimoia/skarojs'],
         ctx.stroke();
       },
 
+      /**
+       * @constructor
+       * @param {Number} x1
+       * @param {Number} y1
+       * @param {Number} x2
+       * @param {Number} y2
+       */
       ctor: function(x1, y1, x2, y2) {
         this.x1 = x1;
         this.y1 = y1;
@@ -56,23 +95,49 @@ define("zotohlab/asx/ui", ['cherimoia/skarojs'],
 
     });
 
+    /**
+     * @class Point
+     */
     var Point = sjs.Class.xtends({
+
+      /**
+       * @constructor
+       * @param {Number} x
+       * @param {Number} y
+       */
       ctor: function(x,y) {
         this.y=y;
         this.x=x;
       }
     });
 
+    /**
+     * @class Area
+     */
     var Area = sjs.Class.xtends({
-      ctor: function(x,y,w,h) {
+
+      /**
+       * @constructor
+       * @param {Number} x
+       * @param {Number} y
+       * @param {Number} width
+       * @param {Number} height
+       */
+      ctor: function(x,y,width,height) {
         this.pos= new Point(x,y);
-        this.height=h;
-        this.width=w;
+        this.height=height;
+        this.width=width;
       }
     });
 
+    /**
+     * @class TextStyle
+     */
     var TextStyle = sjs.Class.xtends({
 
+      /**
+       * @constructor
+       */
       ctor: function() {
         this.font = "14px 'Architects Daughter'";
         this.fill = "#dddddd";

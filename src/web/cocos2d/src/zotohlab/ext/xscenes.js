@@ -73,7 +73,7 @@ define("zotohlab/asx/xscenes", ['cherimoia/skarojs',
         this._super();
         this.lays= ls || [];
         this.layers= {};
-        this.ebus= new EventBus();
+        this.ebus= EventBus.reify();
       }
 
     });

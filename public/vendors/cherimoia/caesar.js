@@ -9,6 +9,10 @@
 // this software.
 // Copyright (c) 2013-2015 Ken Leung. All rights reserved.
 
+/**
+ * @requires cherimoia/skarojs
+ * @module cherimoia/caesar
+ */
 define("cherimoia/caesar", ['cherimoia/skarojs'],
 
   function (sjs) { "use strict";
@@ -19,7 +23,7 @@ define("cherimoia/caesar", ['cherimoia/skarojs'],
 
     /////////////////////////////////////////////////////////////////////////////
     //
-    function identifyChar( pos) { return VISCHS.charAt(pos); }
+    function identifyChar(pos) { return VISCHS.charAt(pos); }
     function locateChar(ch) {
       var n;
       for (n= 0; n < VISCHS_LEN; ++n) {
@@ -30,8 +34,7 @@ define("cherimoia/caesar", ['cherimoia/skarojs'],
       return -1;
     }
     function slideForward(delta, cpos) {
-      var ptr= cpos + delta;
-      var np;
+      var np, ptr= cpos + delta;
       if (ptr >= VISCHS_LEN) {
         np = ptr - VISCHS_LEN;
       } else {
@@ -40,8 +43,7 @@ define("cherimoia/caesar", ['cherimoia/skarojs'],
       return identifyChar(np);
     }
     function slideBack(delta, cpos) {
-      var ptr= cpos - delta;
-      var np;
+      var np, ptr= cpos - delta;
       if (ptr < 0) {
         np= VISCHS_LEN + ptr;
       } else {
@@ -66,12 +68,12 @@ define("cherimoia/caesar", ['cherimoia/skarojs'],
 
     /////////////////////////////////////////////////////////////////////////////
     //
-    /* string */ function caesarEncrypt (str,shiftpos) {
+    function caesarEncrypt (str,shiftpos) {
 
       if (sjs.isString(str) && str.length > 0 && shiftpos !== 0) {} else {
         return "";
       }
-      var delta =  sjs.xmod(Math.abs(shiftpos), VISCHS_LEN);
+      var delta = sjs.xmod(Math.abs(shiftpos), VISCHS_LEN);
       var p, ch, n, len= str.length;
       var out=[];
       for (n=0; n < len; ++n) {
@@ -89,7 +91,7 @@ define("cherimoia/caesar", ['cherimoia/skarojs'],
 
     /////////////////////////////////////////////////////////////////////////////
     //
-    /* string */ function caesarDecrypt(cipherText,shiftpos) {
+    function caesarDecrypt(cipherText,shiftpos) {
 
       if (sjs.isString(cipherText) && cipherText.length > 0 && shiftpos !== 0) {} else {
         return "";
@@ -110,8 +112,29 @@ define("cherimoia/caesar", ['cherimoia/skarojs'],
       return out.join('');
     }
 
+    /**
+     * @class caesar
+     * @static
+     */
     return {
+      /**
+       * Decrypt the cipher.
+       *
+       * @method decrypt
+       * @param {String} cipherText
+       * @param {Number} shiftpos
+       * @return {String} clear text.
+       */
       decrypt: caesarDecrypt,
+
+      /**
+       * Encrypt the text.
+       *
+       * @method encrypt
+       * @param {String} clearText
+       * @param {Number} shiftpos
+       * @return {String} cipher text.
+       */
       encrypt: caesarEncrypt
     };
 

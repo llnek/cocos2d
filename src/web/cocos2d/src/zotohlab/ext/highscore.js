@@ -7,11 +7,18 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/asx/highscores", ['cherimoia/skarojs',
-                                  'zotohlab/asterix',
-                                  'Cookies'],
+/**
+ * @requires cherimoia/skarojs, zotohlab/asterix, Cookies
+ * @module zotohlab/asx/highscores
+ */
+define("zotohlab/asx/highscores",
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'Cookies'],
+
   function (sjs, sh, Cookies) { "use strict";
     var R = sjs.ramda,
     undef;
@@ -27,8 +34,16 @@ define("zotohlab/asx/highscores", ['cherimoia/skarojs',
 
     ////////////////////////////////////////////////////////////////////
     //
+    /**
+     * @class HighScores
+     */
     var HighScores= sjs.Class.xtends({
 
+      /**
+       * Read the scores from the cookie.
+       *
+       * @method read
+       */
       read: function() {
         var s = Cookies.get(this.KEY) || '',
         a,
@@ -43,10 +58,20 @@ define("zotohlab/asx/highscores", ['cherimoia/skarojs',
         }.bind(this), [], ts);
       },
 
+      /**
+       * Reset the scores tp none.
+       *
+       * @method reset
+       */
       reset: function() {
         this.scores=[];
       },
 
+      /**
+       * Write the scores back to the cookie.
+       *
+       * @method write
+       */
       write: function() {
         var rc= R.map(function(z) {
           return z.name + ':' + n.value;
@@ -54,10 +79,23 @@ define("zotohlab/asx/highscores", ['cherimoia/skarojs',
         Cookies.set(this.KEY, rc.join('|'), this.duration);
       },
 
+      /**
+       * Test if there is more room to store a new high score.
+       *
+       * @method hasSlots
+       * @return {Boolean}
+       */
       hasSlots: function() {
         return this.scores.length < this.size;
       },
 
+      /**
+       * Test if we can add this score to the list of highscores.
+       *
+       * @method canAdd
+       * @param {Object} score
+       * @return {Boolean}
+       */
       canAdd: function(score) {
         if (this.hasSlots()) {
           return true;
@@ -68,8 +106,15 @@ define("zotohlab/asx/highscores", ['cherimoia/skarojs',
         }
       },
 
+      /**
+       * Maybe force to insert this new score.
+       *
+       * @method insert
+       * @param {String} name
+       * @param {Number} score
+       */
       insert: function(name, score) {
-        var s= mkScore(name || '', score),
+        var s= mkScore(name || '???', score),
         i,
         len= this.scores.length;
 
@@ -88,35 +133,36 @@ define("zotohlab/asx/highscores", ['cherimoia/skarojs',
         }
       },
 
+      /**
+       * Get the high scores.
+       *
+       * @method getScores
+       * @return {Array} high scores.
+       */
       getScores: function() {
         return this.scores;
       },
 
+      /**
+       * @private
+       */
       sort: function() {
-        var len = this.scores.length,
-        tmp = this.scores,
-        i,
-        last,
-        ptr;
-
-        this.reset();
-
-        while (tmp.length > 0) {
-          last= undef;
-          ptr= -1;
-          for (i=0; i < tmp.length; ++i) {
-            if (!last || (tmp[i].value > last.value)) {
-              last = tmp[i];
-              ptr = i;
-            }
+        Array.prototype.sort(this.scores, function(a,b) {
+          if (a.value < b.value) { return -1; }
+          else
+          if (a.value > b.value) { return 1; }
+          else {
+            return 0;
           }
-          if (ptr !== -1) {
-            tmp.splice(ptr,1);
-            this.scores.push(last);
-          }
-        }
+        });
       },
 
+      /**
+       * @constructor
+       * @param {String} key
+       * @param {Number} size
+       * @param {Number} duration
+       */
       ctor: function(key, size, duration) {
         this.duration= duration || 60*60*24*1000;
         this.size = size || 10;
@@ -125,7 +171,6 @@ define("zotohlab/asx/highscores", ['cherimoia/skarojs',
       }
 
     });
-
 
     return HighScores;
 });

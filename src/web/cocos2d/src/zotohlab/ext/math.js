@@ -7,9 +7,14 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires cherimoia/skarojs
+ * @module zotohlab/asx/math
+ */
 define("zotohlab/asx/math", ['cherimoia/skarojs'],
+
   function (sjs) { "use strict";
 
     var undef;
@@ -26,52 +31,93 @@ define("zotohlab/asx/math", ['cherimoia/skarojs'],
 
     //////////////////////////////////////////////////////////////////////////////
     //
+    /**
+     * @class Vector2
+     */
     var Vector2 = sjs.Class.xtends({
 
+      /**
+       * Scalar multiplication.
+       *
+       * @method mult
+       * @param {Number} n
+       * @return {Vector2} result.
+       */
       mult: function (n) {
-        var rc = new Vector2(0,0,this.x,this.y);
-        rc.x *= n;
-        rc.y *= n;
-        return rc;
+        return new Vector2(0,0,this.x * n,this.y * n);
       },
 
+      /**
+       * @method rotate
+       * @return {Vector2} rotate.
+       */
       rotate: function(cx, cy, deg) {
-        var rad = degToRad(deg);
-        var a= [cx + (Math.cos(rad) * (this.x - cx) - Math.sin(rad) * (this.y - y0)),
-                cy + (Math.sin(rad) * (this.x - cx) + Math.cos(rad) * (this.y - y0)) ];
+        var rad = degToRad(deg),
+        a= [cx + (Math.cos(rad) * (this.x - cx) - Math.sin(rad) * (this.y - y0)),
+            cy + (Math.sin(rad) * (this.x - cx) + Math.cos(rad) * (this.y - y0)) ];
         this.x= a[0];
         this.y= a[1];
       },
 
+      /**
+       * Calculate the length of this vector.
+       *
+       * @method length
+       * @return {Number}
+       */
       length: function () {
         return Math.sqrt(this.x*this.x + this.y*this.y);
       },
 
+      /**
+       * Self identification.
+       *
+       * @method toString
+       * @return {String}
+       */
       toString: function () {
         return [ "[" , this.x , "," , this.y , "]" ].join('');
       },
 
+      /**
+       * Add 2 vectors together.
+       *
+       * @method plus
+       * @param {Vector2} v2
+       * @return {Vector2} result.
+       */
       plus: function (v2) {
-        var rc = new Vector2(0,0,0,0);
-        rc.x = this.x + v2.x;
-        rc.y = this.y + v2.y;
-        return rc;
+        return new Vector2(0,0,
+        this.x + v2.x,
+        this.y + v2.y);
       },
 
+      /**
+       * Subtract another vector.
+       *
+       * @method minus
+       * @param {Vector2} v2
+       * @return {Vector2} result
+       */
       minus: function (v2) {
-        var rc = new Vector2(0,0,0,0);
-        rc.x = this.x - v2.x;
-        rc.y = this.y - v2.y;
-        return rc;
+        return new Vector2(0,0,
+        this.x - v2.x,
+        this.y - v2.y);
       },
 
+      /**
+       * @constructor
+       * @param {Number} x1
+       * @param {Number} y1
+       * @param {Number} x2
+       * @param {Number} y2
+       */
       ctor: function (x1, y1, x2, y2) {
         this.x = x2 - x1;
         this.y = y2 - y1;
       }
 
     });
-
 
 
     return {

@@ -9,6 +9,10 @@
 // this software.
 // Copyright (c) 2013-2015 Ken Leung. All rights reserved.
 
+/**
+ * @requires cherimoia/skarojs
+ * @module cherimoia/ebus
+ */
 define("cherimoia/ebus", ['cherimoia/skarojs'],
 
   function (sjs) { "use strict";
@@ -42,10 +46,22 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
 
     //////////////////////////////////////////////////////////////////////////////
     //
+    /**
+     * @extends skarojs.Class
+     * @class EventBus
+     */
     var EventBus = sjs.Class.xtends({
 
-      // subscribe to 1+ topics, returning a list of subscriber handles.
-      // topics => "/hello/*  /goodbye/*"
+      /**
+       * Subscribe to 1+ topics, returning a list of subscriber handles.
+       * topics => "/hello/*  /goodbye/*"
+       *
+       * @method once
+       * @param {String} topics, space separated if more than one.
+       * @param {Function} selector
+       * @param {Object} target
+       * @return {Array} of subscription ids.
+       */
       once: function(topics, selector, target /*, more args */) {
         var rc= this.pkListen(false,
                               topics,
@@ -55,8 +71,16 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
         return sjs.echt(rc) ? rc : [];
       },
 
-      // subscribe to 1+ topics, returning a list of subscriber handles.
-      // topics => "/hello/*  /goodbye/*"
+      /**
+       * subscribe to 1+ topics, returning a list of subscriber handles.
+       * topics => "/hello/*  /goodbye/*"
+       *
+       * @method on
+       * @param {String} topics, space separated if more than one.
+       * @param {Function} selector
+       * @param {Object} target
+       * @return {Array} of subscription ids.
+       */
       on: function(topics, selector, target /*, more args */) {
         var rc= this.pkListen(true,
                               topics,
@@ -66,14 +90,28 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
         return sjs.echt(rc) ? rc : [];
       },
 
-      // trigger event on this topic.
+      /**
+       * Trigger event on this topic.
+       *
+       * @method fire
+       * @param {String} topic
+       * @param {Object} msg
+       * @return {Boolean}
+       */
       fire: function(topic, msg) {
         var tokens= sjs.safeSplit(topic,'/');
         if (tokens.length > 0 ) {
           return this.pkDoPub(topic, this.rootNode, tokens, 0, msg || {} );
         }
+        return false;
       },
 
+      /**
+       * Resume actions on this handle.
+       *
+       * @method resume
+       * @param {Object} handler id.
+       */
       resume: function(handle) {
         var sub= this.allSubs[handle];
         if (sub) {
@@ -81,6 +119,12 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
         }
       },
 
+      /**
+       * Pause actions on this handle.
+       *
+       * @method pause
+       * @param {Object} handler id.
+       */
       pause: function(handle) {
         var sub= this.allSubs[handle];
         if (sub) {
@@ -88,6 +132,14 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
         }
       },
 
+
+      /**
+       * Stop actions on this handle.
+       * Unsubscribe.
+       *
+       * @method off
+       * @param {Object} handler id.
+       */
       off: function(handle) {
         var sub= this.allSubs[handle];
         if (sub) {
@@ -95,15 +147,26 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
         }
       },
 
+      /**
+       * Remove all subscribers.
+       *
+       * @method removeAll
+       */
       removeAll: function() {
         this.rootNode = mkTreeNode();
         this.allSubs = {};
       },
 
+      /**
+       * @private
+       */
       pkGetSubcr: function(id) {
         return this.allSubs[id];
       },
 
+      /**
+       * @private
+       */
       pkListen: function(repeat, topics, selector, target, more) {
         var ts= topics.trim().split(/\s+/);
         // for each topic, subscribe to it.
@@ -113,8 +176,12 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
         return R.reject(function(z) { return z.length===0; }, rc);
       },
 
-      // register a subscriber to the topic leaf node, creating the path
-      // when necessary.
+      /**
+       * Register a subscriber to the topic leaf node, creating the path
+       * when necessary.
+       *
+       * @private
+       */
       pkAddSub: function(repeat, topic, selector, target, more) {
         var tkns= sjs.safeSplit(topic,'/');
         if (tkns.length > 0) {
@@ -130,7 +197,11 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
         }
       },
 
-      // remove the subscriber and trim if it is a dangling leaf node.
+      /**
+       * Remove the subscriber and trim if it is a dangling leaf node.
+       *
+       * @private
+       */
       pkUnSub: function(node, tokens, pos, sub) {
         if (! sjs.echt(node)) { return; }
         if (pos < tokens.length) {
@@ -155,6 +226,9 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
         }
       },
 
+      /**
+       * @private
+       */
       pkDoPub: function(topic, node, tokens, pos, msg) {
         if (! sjs.echt(node)) { return false; }
         var rc=false;
@@ -167,8 +241,12 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
         return rc;
       },
 
-      // invoke subscribers, and for non repeating ones, remove them from
-      // the list.
+      /**
+       * Invoke subscribers, and for non repeating ones, remove them from
+       * the list.
+       *
+       * @private
+       */
       pkRun: function(topic, node, msg) {
         var cs= !!node ? node.subs : [],
         rc=false,
@@ -197,7 +275,11 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
         return rc;
       },
 
-      // find or create a new child node.
+      /**
+       * Find or create a new child node.
+       *
+       * @private
+       */
       pkDoSub: function(node,token) {
         if ( ! sjs.hasKey(node.tree, token)) {
           node.tree[token] = mkTreeNode();
@@ -205,6 +287,9 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
         return node.tree[token];
       },
 
+      /**
+       * @constructor
+       */
       ctor: function() {
         this.rootNode = mkTreeNode();
         this.allSubs = {};
@@ -212,7 +297,10 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
 
     });
 
-    return EventBus;
+    return {
+      reify: function() { return new EventBus(); },
+      EventBus: EventBus
+    };
 
 });
 
