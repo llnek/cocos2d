@@ -9,11 +9,17 @@
 // this software.
 // Copyright (c) 2013-2015 Ken Leung. All rights reserved.
 
+/**
+ * @requires module:cherimoia/skarojs
+ * @module cherimoia/ebus
+ */
 define("cherimoia/ebus", ['cherimoia/skarojs'],
 
   function (sjs) { "use strict";
 
-    var R = sjs.ramda,
+    /** @alias module:cherimoia/ebus */
+    var exports={},
+    R = sjs.ramda,
     undef,
     _SEED=0;
 
@@ -43,7 +49,6 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
     //////////////////////////////////////////////////////////////////////////////
     //
     /**
-     * @extends skarojs.Class
      * @class EventBus
      */
     var EventBus = sjs.Class.xtends({
@@ -52,6 +57,7 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
        * Subscribe to 1+ topics, returning a list of subscriber handles.
        * topics => "/hello/*  /goodbye/*"
        *
+       * @memberof module:cherimoia/ebus~EventBus
        * @method once
        * @param {String} topics - space separated if more than one.
        * @param {Function} selector
@@ -71,6 +77,7 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
        * subscribe to 1+ topics, returning a list of subscriber handles.
        * topics => "/hello/*  /goodbye/*"
        *
+       * @memberof module:cherimoia/ebus~EventBus
        * @method on
        * @param {String} topics - space separated if more than one.
        * @param {Function} selector
@@ -89,6 +96,7 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
       /**
        * Trigger event on this topic.
        *
+       * @memberof module:cherimoia/ebus~EventBus
        * @method fire
        * @param {String} topic
        * @param {Object} msg
@@ -105,6 +113,7 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
       /**
        * Resume actions on this handle.
        *
+       * @memberof module:cherimoia/ebus~EventBus
        * @method resume
        * @param {Object} - handler id
        */
@@ -118,6 +127,7 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
       /**
        * Pause actions on this handle.
        *
+       * @memberof module:cherimoia/ebus~EventBus
        * @method pause
        * @param {Object} - handler id
        */
@@ -133,6 +143,7 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
        * Stop actions on this handle.
        * Unsubscribe.
        *
+       * @memberof module:cherimoia/ebus~EventBus
        * @method off
        * @param {Object} - handler id
        */
@@ -146,6 +157,7 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
       /**
        * Remove all subscribers.
        *
+       * @memberof module:cherimoia/ebus~EventBus
        * @method removeAll
        */
       removeAll: function() {
@@ -284,7 +296,6 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
       },
 
       /**
-       * @constructor
        * @private
        */
       ctor: function() {
@@ -295,23 +306,17 @@ define("cherimoia/ebus", ['cherimoia/skarojs'],
     });
 
     /**
-     * @requires module:cherimoia/skarojs
-     *
-     * @exports cherimoia/ebus
+     * @method
+     * @return {EventBus}
      */
-    var bus= {
-      /**
-       * @return {EventBus}
-       */
-      reify: function() { return new EventBus(); },
+    exports.reify= function() { return new EventBus(); },
 
-      /**
-       * @property EventBus - EventBus class
-       */
-      EventBus: EventBus
-    };
+    /**
+     * @property {EventBus} EventBus
+     */
+    exports.EventBus= EventBus;
 
-    return bus;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

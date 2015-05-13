@@ -10,8 +10,10 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs, zotohlab/asterix, Cookies
- * @module zotohlab/asx/highscores
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires Cookies
+ * @module  zotohlab/asx/highscores
  */
 define("zotohlab/asx/highscores",
 
@@ -20,7 +22,10 @@ define("zotohlab/asx/highscores",
         'Cookies'],
 
   function (sjs, sh, Cookies) { "use strict";
-    var R = sjs.ramda,
+
+    /** @alias module:zotohlab/asx/highscores */
+    var exports= {},
+    R = sjs.ramda,
     undef;
 
     ////////////////////////////////////////////////////////////////////
@@ -37,11 +42,12 @@ define("zotohlab/asx/highscores",
     /**
      * @class HighScores
      */
-    var HighScores= sjs.Class.xtends({
+    exports.HighScores= sjs.Class.xtends({
 
       /**
        * Read the scores from the cookie.
        *
+       * @memberof module:zotohlab/asx/highscores~HighScores
        * @method read
        */
       read: function() {
@@ -61,6 +67,7 @@ define("zotohlab/asx/highscores",
       /**
        * Reset the scores tp none.
        *
+       * @memberof module:zotohlab/asx/highscores~HighScores
        * @method reset
        */
       reset: function() {
@@ -70,6 +77,7 @@ define("zotohlab/asx/highscores",
       /**
        * Write the scores back to the cookie.
        *
+       * @memberof module:zotohlab/asx/highscores~HighScores
        * @method write
        */
       write: function() {
@@ -82,6 +90,7 @@ define("zotohlab/asx/highscores",
       /**
        * Test if there is more room to store a new high score.
        *
+       * @memberof module:zotohlab/asx/highscores~HighScores
        * @method hasSlots
        * @return {Boolean}
        */
@@ -92,6 +101,7 @@ define("zotohlab/asx/highscores",
       /**
        * Test if we can add this score to the list of highscores.
        *
+       * @memberof module:zotohlab/asx/highscores~HighScores
        * @method canAdd
        * @param {Object} score
        * @return {Boolean}
@@ -109,6 +119,7 @@ define("zotohlab/asx/highscores",
       /**
        * Maybe force to insert this new score.
        *
+       * @memberof module:zotohlab/asx/highscores~HighScores
        * @method insert
        * @param {String} name
        * @param {Number} score
@@ -136,6 +147,7 @@ define("zotohlab/asx/highscores",
       /**
        * Get the high scores.
        *
+       * @memberof module:zotohlab/asx/highscores~HighScores
        * @method getScores
        * @return {Array} high scores.
        */
@@ -158,7 +170,7 @@ define("zotohlab/asx/highscores",
       },
 
       /**
-       * @constructor
+       * @method ctor
        * @private
        * @param {String} key
        * @param {Number} size
@@ -173,7 +185,20 @@ define("zotohlab/asx/highscores",
 
     });
 
-    return HighScores;
+    /**
+     * Create a new HighScores object.
+     *
+     * @method reify
+     * @param {String} key
+     * @param {Number} size
+     * @param {Number} duration
+     * @return {HighScores}
+     */
+    exports.reify = function(key,size,duration) {
+      return new HighScores();
+    }
+
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

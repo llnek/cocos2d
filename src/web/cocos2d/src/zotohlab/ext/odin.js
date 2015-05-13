@@ -10,7 +10,9 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs, cherimoia/ebus, zotohlab/asterix
+ * @requires cherimoia/skarojs
+ * @requires cherimoia/ebus
+ * @requires zotohlab/asterix
  * @module zotohlab/asx/odin
  */
 define("zotohlab/asx/odin",
@@ -22,237 +24,60 @@ define("zotohlab/asx/odin",
 
   function (sjs, EventBus, sh) { "use strict";
 
-    /**
-     * @class Events
-     * @static
-     */
-    var Events = {
-
-    // Msg types
+    /** @alias module:zotohlab/asx/odin */
+    var exports={};
+    var undef;
 
     /**
-     * @property MSG_NETWORK
-     * @final
-     * @type Number
+     * @enum {Number}
+     * @readonly
      */
-    MSG_NETWORK           : 1,
+    exports.Events = {
 
-    /**
-     * @property MSG_SESSION
-     * @type Number
-     * @final
-     */
-    MSG_SESSION           : 2,
+      // Msg types
 
-    /**
-     * @property PLAYGAME_REQ
-     * @final
-     * @type Number
-     */
-    PLAYGAME_REQ          : 3,
+      MSG_NETWORK           : 1,
+      MSG_SESSION           : 2,
 
-    /**
-     * @property JOINGAME_REQ
-     * @final
-     * @type Number
-     */
-    JOINGAME_REQ          : 4,
+      PLAYGAME_REQ          : 3,
+      JOINGAME_REQ          : 4,
 
-    // Event code
+      PLAYREQ_NOK         : 10,
+      JOINREQ_NOK         : 11,
+      USER_NOK            : 12,
+      GAME_NOK            : 13,
+      ROOM_NOK            : 14,
+      ROOM_FILLED         : 15,
+      ROOMS_FULL          : 16,
 
-    /**
-     * @property PLAYREQ_NOK
-     * @final
-     * @type Number
-     */
-    PLAYREQ_NOK         : 10,
+      PLAYREQ_OK          : 30,
+      JOINREQ_OK          : 31,
 
-    /**
-     * @property JOINREQ_NOK
-     * @final
-     * @type Number
-     */
-    JOINREQ_NOK         : 11,
+      AWAIT_START         : 40,
+      SYNC_ARENA          : 45,
+      POKE_RUMBLE         : 46,
 
-    /**
-     * @property USER_NOK
-     * @type Number
-     * @final
-     */
-    USER_NOK            : 12,
+      RESTART             : 50,
+      START               : 51,
+      STOP                : 52,
+      POKE_MOVE           : 53,
+      POKE_WAIT           : 54,
+      PLAY_MOVE           : 55,
+      REPLAY              : 56,
 
+      QUIT_GAME           : 60,
 
-    /**
-     * @property GAME_NOK
-     * @final
-     * @type Number
-     */
-    GAME_NOK            : 13,
+      PLAYER_JOINED       : 90,
+      STARTED             : 95,
+      CONNECTED           : 98,
+      ERROR               : 99,
+      CLOSED              : 100,
 
-    /**
-     * @property ROOM_NOK
-     * @type Number
-     * @final
-     */
-    ROOM_NOK            : 14,
+      S_NOT_CONNECTED       : 0,
+      S_CONNECTED           : 1
 
-    /**
-     * @property ROOM_FILLED
-     * @final
-     * @type Number
-     */
-    ROOM_FILLED         : 15,
+    };
 
-    /**
-     * @property ROOMS_FULL
-     * @final
-     * @type Number
-     */
-    ROOMS_FULL          : 16,
-
-    /**
-     * @property PLAYREQ_OK
-     * @type Number
-     * @final
-     */
-    PLAYREQ_OK          : 30,
-
-    /**
-     * @property JOINREQ_OK
-     * @final
-     * @type Number
-     */
-    JOINREQ_OK          : 31,
-
-    /**
-     * @property AWAIT_START
-     * @final
-     * @type Number
-     */
-    AWAIT_START         : 40,
-
-    /**
-     * @property SYNC_ARENA
-     * @type Number
-     * @final
-     */
-    SYNC_ARENA          : 45,
-
-    /**
-     * @property POKE_RUMBLE
-     * @final
-     * @type Number
-     */
-    POKE_RUMBLE         : 46,
-
-    /**
-     * @property RESTART
-     * @type Number
-     * @final
-     */
-    RESTART             : 50,
-
-    /**
-     * @property START
-     * @type Number
-     * @final
-     */
-    START               : 51,
-
-    /**
-     * @property STOP
-     * @final
-     * @type Number
-     */
-    STOP                : 52,
-
-    /**
-     * @property POKE_MOVE
-     * @type Number
-     * @final
-     */
-    POKE_MOVE           : 53,
-
-    /**
-     * @property POKE_WAIT
-     * @final
-     * @type Number
-     */
-    POKE_WAIT           : 54,
-
-    /**
-     * @property PLAY_MOVE
-     * @final
-     * @type Number
-     */
-    PLAY_MOVE           : 55,
-
-    /**
-     * @property REPLAY
-     * @type Number
-     * @final
-     */
-    REPLAY              : 56,
-
-    /**
-     * @property QUIT_GAME
-     * @final
-     * @type Number
-     */
-    QUIT_GAME           : 60,
-
-    /**
-     * @property PLAYER_JOINED
-     * @final
-     * @type Number
-     */
-    PLAYER_JOINED       : 90,
-
-    /**
-     * @property STARTED
-     * @final
-     * @type Number
-     */
-    STARTED             : 95,
-
-    /**
-     * @property CONNECTED
-     * @final
-     * @type Number
-     */
-    CONNECTED           : 98,
-
-    /**
-     * @property ERROR
-     * @type Number
-     * @final
-     */
-    ERROR               : 99,
-
-    /**
-     * @property CLOSED
-     * @final
-     * @type Number
-     */
-    CLOSED              : 100,
-
-    /**
-     * @property S_NOT_CONNECTED
-     * @type Number
-     * @final
-     */
-    S_NOT_CONNECTED       : 0,
-
-    /**
-     * @property S_CONNECTED
-     * @final
-     * @type Number
-     */
-    S_CONNECTED           : 1
-
-    },
-
-    undef;
 
     //////////////////////////////////////////////////////////////////////////////
     //
@@ -321,6 +146,7 @@ define("zotohlab/asx/odin",
       /**
        * Connect to this url and request a websocket upgrade.
        *
+       * @memberof module:zotohlab/asx/odin~Session
        * @method connect
        * @param {String} url
        */
@@ -329,7 +155,10 @@ define("zotohlab/asx/odin",
       },
 
       /**
-       * @constructor
+       * Constructor.
+       *
+       * @memberof module:zotohlab/asx/odin~Session
+       * @method ctor
        * @param {Object} config
        */
       ctor: function(config) {
@@ -343,6 +172,7 @@ define("zotohlab/asx/odin",
       /**
        * Send this event through the socket.
        *
+       * @memberof module:zotohlab/asx/odin~Session
        * @method send
        * @param {Object} evt
        */
@@ -356,6 +186,7 @@ define("zotohlab/asx/odin",
       /**
        * Subscribe to this message-type and event.
        *
+       * @memberof module:zotohlab/asx/odin~Session
        * @method subscribe
        * @param {Number} messageType
        * @param {Number} event
@@ -379,6 +210,7 @@ define("zotohlab/asx/odin",
       /**
        * Subscribe to all message events.
        *
+       * @memberof module:zotohlab/asx/odin~Session
        * @method subscribeAll
        * @param {Function} callback
        * @param {Object} target
@@ -392,6 +224,7 @@ define("zotohlab/asx/odin",
       /**
        * Cancel and remove all subscribers.
        *
+       * @memberof module:zotohlab/asx/odin~Session
        * @method unsubscribeAll
        */
       unsubscribeAll: function() {
@@ -402,6 +235,7 @@ define("zotohlab/asx/odin",
       /**
        * Cancel this subscriber.
        *
+       * @memberof module:zotohlab/asx/odin~Session
        * @method unsubscribe
        * @param {String} subid
        */
@@ -413,6 +247,7 @@ define("zotohlab/asx/odin",
       /**
        * Reset and clear everything.
        *
+       * @memberof module:zotohlab/asx/odin~Session
        * @method reset
        */
       reset: function () {
@@ -426,6 +261,7 @@ define("zotohlab/asx/odin",
       /**
        * Close the connection to the socket.
        *
+       * @memberof module:zotohlab/asx/odin~Session
        * @method close
        */
       close: function () {
@@ -443,6 +279,7 @@ define("zotohlab/asx/odin",
       /**
        * Disconnect from the socket.
        *
+       * @memberof module:zotohlab/asx/odin~Session
        * @method disconnect
        */
       disconnect: function () {
@@ -519,11 +356,14 @@ define("zotohlab/asx/odin",
 
     });
 
-    return {
-      newSession: function(cfg) { return new Session(cfg); },
-      Events: Events
-    };
+    /**
+     * @method reifySession
+     * @param {Object} cfg
+     * @return {Session}
+     */
+    exports.reifySession= function(cfg) { return new Session(cfg); };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

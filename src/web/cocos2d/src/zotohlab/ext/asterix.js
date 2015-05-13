@@ -9,6 +9,13 @@
 // this software.
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ *@requires module:cherimoia/skarojs
+ *@requires module:mustache
+ *@requires module:eligrey/l10njs
+ *@requires module:ash-js
+ *@module zotohlab/asterix
+ */
 define("zotohlab/asterix",
 
        ['cherimoia/skarojs',
@@ -18,12 +25,32 @@ define("zotohlab/asterix",
 
   function (sjs, Mustache, LZString, Ash) { "use strict";
 
-    var SEED=0, ComObj = {
+    var SEED=0,
+    /**
+     * @class ComObj
+     * @static
+     */
+    ComObj = {
 
+      /**
+       * Take damage, reduce health.
+       *
+       * @memberof module:zotohlab/asterix~ComObj
+       * @method hurt
+       * @param {Number} damage
+       * @param {Object} from
+       */
       hurt: function(damage, from) {
-        this.HP -= sjs.echt(damage) ? damage : 1;
+        this.HP -= sjs.isNumber(damage) ? damage : 1;
       },
 
+      /**
+       * Reborn from the dead - take from the pool.
+       *
+       * @memberof module:zotohlab/asterix~ComObj
+       * @method inflate
+       * @param {Object} options
+       */
       inflate: function(options) {
         options= options || {};
         if (!!this.sprite) {
@@ -44,6 +71,12 @@ define("zotohlab/asterix",
         this.status=true;
       },
 
+      /**
+       * Die and ready to be recycled.
+       *
+       * @memberof module:zotohlab/asterix~ComObj
+       * @method deflate
+       */
       deflate: function() {
         if (!!this.sprite) {
           this.sprite.unscheduleAllCallbacks();
@@ -53,116 +86,211 @@ define("zotohlab/asterix",
         this.status=false;
       },
 
+      /**
+       * Get Sprite's height.
+       *
+       * @memberof module:zotohlab/asterix~ComObj
+       * @method height
+       * @return {Number}
+       */
       height: function() {
         if (!!this.sprite) {
           return this.sprite.getContentSize().height;
         }
       },
 
+      /**
+       * Get Sprite's width.
+       *
+       * @memberof module:zotohlab/asterix~ComObj
+       * @method width
+       * @return {Number}
+       */
       width: function() {
         if (!!this.sprite) {
           return this.sprite.getContentSize().width;
         }
       },
 
+      /**
+       * Set Sprite's position.
+       *
+       * @memberof module:zotohlab/asterix~ComObj
+       * @method setPos
+       * @param {Number} x
+       * @param {Number} y
+       */
       setPos: function(x,y) {
         if (!!this.sprite) {
           this.sprite.setPosition(x,y);
         }
       },
 
+      /**
+       * Get the Sprite's position.
+       *
+       * @memberof module:zotohlab/asterix~ComObj
+       * @method pos
+       * @return {cc.Point}
+       */
       pos: function() {
         if (!!this.sprite) {
           return this.sprite.getPosition();
         }
       },
 
+      /**
+       * Get the Sprite's size.
+       *
+       * @memberof module:zotohlab/asterix~ComObj
+       * @method size
+       * @return {cc.Size}
+       */
       size: function() {
         if (!!this.sprite) {
           return this.sprite.getContentSize();
         }
       },
 
+      /**
+       * Get the tag value.
+       *
+       * @memberof module:zotohlab/asterix~ComObj
+       * @method rtti
+       * @return {Number}
+       */
       rtti: function() { return this._tag; },
-      rego: function(s) { this._tag = s; },
 
+      /**
+       * Set tag value.
+       *
+       * @memberof module:zotohlab/asterix~ComObj
+       * @method rego
+       * @param {Number} n
+       */
+      rego: function(n) { this._tag = n; },
+
+      /**
+       * Get the Sprite's tag value.
+       *
+       * @memberof module:zotohlab/asterix~ComObj
+       * @method pid
+       * @return {Number}
+       */
       pid: function() {
         if (!!this.sprite) { return this.sprite.getTag(); }
       },
 
+      /**
+       * @private
+       */
       ctor: function(sprite, health, score) {
-        this.sprite = sprite;
         this.origHP = health || 1;
+        this.sprite = sprite;
         this.HP = this.origHP;
         this.value = score || 0;
         this._tag= ["component" , ++SEED].join(':');
         this.status=false;
       }
     },
+    /**
+     * @extends module:zotohlab/asterix~ComObj
+     * @class SimpleComp
+     */
     SimpleComp = Ash.Class.extend(sjs.mergeEx(ComObj, {
+
+      /**
+       * @memberof module:zotohlab/asterix~SimpleComp
+       * @method constructor
+       * @param {cc.Sprite}
+       */
       constructor: function(sprite) {
         this.ctor(sprite);
       }
     })),
-    undef,
-    /**
-     *@requires module:cherimoia/skarojs
-     *@requires module:mustache
-     *@requires module:eligrey/l10njs
-     *@requires module:ash-js
 
-     *@exports zotohlab/asterix
+    undef,
+
+    /**
+     * @class Ashley
+     * @static
      */
-    asterix = {
+    Ashley= {
+      /**
+       * Define a Component.
+       *
+       * @memberof module:zotohlab/asterix~Ashley
+       * @method compDef
+       * @param {Object} proto
+       * @return {Ash.Class}
+       */
+      compDef : function(proto) {
+        return Ash.Class.extend(sjs.mergeEx(ComObj, proto));
+      },
+      /**
+       * Define a Node.
+       *
+       * @memberof module:zotohlab/asterix~Ashley
+       * @method nodeDef
+       * @param {Object} proto
+       * @return {Ash.Node}
+       */
+      nodeDef: function(proto) {
+        return Ash.Node.create(proto);
+      },
+      /**
+       * Define a System.
+       *
+       * @memberof module:zotohlab/asterix~Ashley
+       * @method sysDef
+       * @param {Object} proto
+       * @return {Ash.System}
+       */
+      sysDef: function(proto) {
+        return Ash.System.extend(proto);
+      },
+      /**
+       * Enhance this object.
+       *
+       * @memberof module:zotohlab/asterix~Ashley
+       * @method casDef
+       * @param {Object} proto
+       * @return {Ash.Class}
+       */
+      casDef: function(proto) {
+        return Ash.Class.extend(proto);
+      },
+      /**
+       * Create a new Entity object.
+       *
+       * @memberof module:zotohlab/asterix~Ashley
+       * @method newEntity
+       * @return {Ash.Entity}
+       */
+      newEntity: function() {
+        return new Ash.Entity();
+      },
+      /**
+       * Create a basic Component.
+       *
+       * @memberof module:zotohlab/asterix~Ashley
+       * @method newObject
+       * @param {cc.Sprite}
+       * @return {SimpleComp}
+       */
+      newObject: function(sprite) {
+        return new SimpleComp(sprite);
+      }
+    };
+
+    /** @alias module:zotohlab/asterix */
+    var asterix = {
 
       /**
-       * @property {Object} Ashley - ops for ash-js framework
+       * @property Ashley - for ash-js framework
+       * @type Object
        */
-      Ashley: {
-        /**
-         * Define a Component.
-         * @method compDef
-         */
-        compDef : function(proto) {
-          return Ash.Class.extend(sjs.mergeEx(ComObj, proto));
-        },
-        /**
-         * Define a Node.
-         * @method nodeDef
-         */
-        nodeDef: function(proto) {
-          return Ash.Node.create(proto);
-        },
-        /**
-         * Define a System.
-         * @method sysDef
-         */
-        sysDef: function(proto) {
-          return Ash.System.extend(proto);
-        },
-        /**
-         * Enhance this object.
-         * @extends Ash.Class
-         * @method casDef
-         */
-        casDef: function(proto) {
-          return Ash.Class.extend(proto);
-        },
-        /**
-         * Create a new Entity object.
-         * @method newEntity
-         */
-        newEntity: function() {
-          return new Ash.Entity();
-        },
-        /**
-         * Create a basic Component.
-         * @method newObject
-         */
-        newObject: function(sprite) {
-          return new SimpleComp(sprite);
-        }
-      },
+      Ashley: Ashley,
 
       /**
        * Initialize the l10n module with the string table.
@@ -183,7 +311,7 @@ define("zotohlab/asterix",
        * @method l10n
        * @param {String} s
        * @param {Object} pms
-       * @return {String} rendered string.
+       * @return {String} - rendered string.
        */
       l10n: function(s,pms) {
         var t= s.toLocaleString();
@@ -213,25 +341,14 @@ define("zotohlab/asterix",
       pools: {},
 
       /**
-       * @property ONLINE_GAME
-       * @type Number
-       * @final
+       * @enum {Number}
+       * @readonly
        */
-      ONLINE_GAME: 3,
-
-      /**
-       * @property P2_GAME
-       * @type Number
-       * @final
-       */
-      P2_GAME: 2,
-
-      /**
-       * @property P1_GAME
-       * @type Number
-       * @final
-       */
-      P1_GAME: 1,
+      gtypes: {
+        ONLINE_GAME: 3,
+        P2_GAME: 2,
+        P1_GAME: 1
+      },
 
       /**
        * Game application config.
@@ -253,6 +370,7 @@ define("zotohlab/asterix",
        * Entity factory.
        *
        * @property factory
+       * @type Object
        */
       factory: undef,
 

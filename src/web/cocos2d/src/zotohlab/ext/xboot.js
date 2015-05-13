@@ -7,22 +7,32 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/boot", ['cherimoia/skarojs',
-                           'zotohlab/asterix',
-                           'zotohlab/asx/xcfg',
-                           'zotohlab/asx/xloader',
-                           'zotohlab/p/config',
-                           'zotohlab/p/l10n',
-                           'zotohlab/p/protodefs'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/xcfg
+ * @requires zotohlab/asx/xloader
+ * @module zotohlab/p/boot
+ */
+define("zotohlab/p/boot",
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/xcfg',
+        'zotohlab/asx/xloader'],
 
   function (sjs, sh, xcfg, loader) { "use strict";
 
-    var ss1= 'StartScreen',
+    var ss1= xcfg.game.start || 'StartScreen',
+    /** @alias module:zotohlab/p/boot */
+    exports={},
     R = sjs.ramda,
     undef;
 
+    //////////////////////////////////////////////////////////////////////////
+    // Set device resolution, policy and orientation.
     function setdr(landscape, w, h, pcy) {
       if (landscape) {
         cc.view.setDesignResolutionSize(w, h, pcy);
@@ -32,6 +42,10 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
     }
 
     //////////////////////////////////////////////////////////////////////////
+    /**
+     * Sort out what resolution to use for this device.
+     * @return {Array} - search paths
+     */
     function handleMultiDevices() {
       var searchPaths = jsb.fileUtils.getSearchPaths(),
       landscape = xcfg.game.landscape,
@@ -39,10 +53,12 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
       fsz= cc.view.getFrameSize(),
       ps;
 
+      // device window size or canvas size.
       sjs.loggr.info("view.frameSize = [" +
                      fsz.width + ", " +
                      fsz.height  + "]");
 
+      // if handler provided, call it and go.
       if (sjs.isFunction(xcfg.handleDevices)) {
         return xcfg.handleDevices();
       }
@@ -88,16 +104,26 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
     }
 
     //////////////////////////////////////////////////////////////////////////////
-    function pvLoadSound(sh, xcfg, k,v) { return sh.sanitizeUrl( v + '.' + xcfg.game.sfx ); }
-    function pvLoadSprite(sh, xcfg, k, v) { return sh.sanitizeUrl(v[0]); }
-    function pvLoadImage(sh, xcfg, k,v) { return sh.sanitizeUrl(v); }
-    function pvLoadTile(sh, xcfg, k,v) { return sh.sanitizeUrl(v); }
+    //
+    function pvLoadSound(sh, xcfg, k,v) {
+      return sh.sanitizeUrl( v + '.' + xcfg.game.sfx );
+    }
+    function pvLoadSprite(sh, xcfg, k, v) {
+      return sh.sanitizeUrl(v[0]);
+    }
+    function pvLoadImage(sh, xcfg, k,v) {
+      return sh.sanitizeUrl(v);
+    }
+    function pvLoadTile(sh, xcfg, k,v) {
+      return sh.sanitizeUrl(v);
+    }
     function pvLoadAtlas(sh, xcfg, k,v) {
       return [sh.sanitizeUrl( v + '.plist'),
               sh.sanitizeUrl( v + '.png') ];
     }
 
     //////////////////////////////////////////////////////////////////////////////
+    //
     function pvLoadLevels(sjs, sh, xcfg) {
       var rc = [],
       f1= function(k) {
@@ -129,6 +155,7 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
     }
 
     /////////////////////////////////////////////////////////////////////////////
+    //
     function pvGatherPreloads(sjs, sh, xcfg) {
       var assets= xcfg.assets,
       p,
@@ -171,6 +198,7 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
     }
 
     /////////////////////////////////////////////////////////////////////////////
+    //
     var MyLoaderScene = cc.Scene.extend({
 
       init: function() { return true; },
@@ -207,6 +235,7 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
+    //
     function preLaunchApp(sjs, sh, xcfg, ldr,  ss1) {
       var fz= cc.view.getFrameSize(),
       paths,
@@ -272,6 +301,7 @@ define("zotohlab/p/boot", ['cherimoia/skarojs',
     sjs.loggr.info("Registered game start state - " + ss1);
     sjs.loggr.info("Loaded and running. OK");
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

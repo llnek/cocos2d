@@ -9,6 +9,10 @@
 // this software.
 // Copyright (c) 2013-2015 Ken Leung. All rights reserved.
 
+/**
+ * @requires module:cherimoia/skarojs
+ * @module cherimoia/caesar
+ */
 define("cherimoia/caesar", ['cherimoia/skarojs'],
 
   function (sjs) { "use strict";
@@ -16,6 +20,9 @@ define("cherimoia/caesar", ['cherimoia/skarojs'],
     var VISCHS= " @N/\\Ri2}aP`(xeT4F3mt;8~%r0v:L5$+Z{'V)\"CKIc>z.*" +
                 "fJEwSU7juYg<klO&1?[h9=n,yoQGsW]BMHpXb6A|D#q^_d!-",
     VISCHS_LEN=  VISCHS.length;
+
+    /** @alias module:cherimoia/caesar */
+    var exports = {};
 
     /////////////////////////////////////////////////////////////////////////////
     //
@@ -64,7 +71,15 @@ define("cherimoia/caesar", ['cherimoia/skarojs'],
 
     /////////////////////////////////////////////////////////////////////////////
     //
-    function caesarEncrypt (str,shiftpos) {
+    /**
+     * Encrypt the text.
+     *
+     * @method
+     * @param {String} clearText
+     * @param {Number} shiftpos
+     * @return {String} - Cipher text.
+     */
+    exports.encrypt= function caesarEncrypt (str,shiftpos) {
 
       if (sjs.isString(str) && str.length > 0 && shiftpos !== 0) {} else {
         return "";
@@ -87,7 +102,15 @@ define("cherimoia/caesar", ['cherimoia/skarojs'],
 
     /////////////////////////////////////////////////////////////////////////////
     //
-    function caesarDecrypt(cipherText,shiftpos) {
+    /**
+     * Decrypt the cipher.
+     *
+     * @method
+     * @param {String} cipherText
+     * @param {Number} shiftpos
+     * @return {String} - Clear text.
+     */
+    exports.decrypt= function caesarDecrypt(cipherText,shiftpos) {
 
       if (sjs.isString(cipherText) && cipherText.length > 0 && shiftpos !== 0) {} else {
         return "";
@@ -108,34 +131,7 @@ define("cherimoia/caesar", ['cherimoia/skarojs'],
       return out.join('');
     }
 
-    /**
-     * @requires module:cherimoia/skarojs
-     *
-     * @exports cherimoia/caesar
-     */
-    var caesar= {
-      /**
-       * Decrypt the cipher.
-       *
-       * @method decrypt
-       * @param {String} cipherText
-       * @param {Number} shiftpos
-       * @return {String} - Clear text.
-       */
-      decrypt: caesarDecrypt,
-
-      /**
-       * Encrypt the text.
-       *
-       * @method encrypt
-       * @param {String} clearText
-       * @param {Number} shiftpos
-       * @return {String} - Cipher text.
-       */
-      encrypt: caesarEncrypt
-    };
-
-    return caesar;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

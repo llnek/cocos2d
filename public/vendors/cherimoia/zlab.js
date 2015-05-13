@@ -9,20 +9,18 @@
 // this software.
 // Copyright (c) 2013-2015 Ken Leung. All rights reserved.
 
+/**
+ * @requires module:cherimoia/skarojs
+ * @module zotohlab
+ */
 define("zotohlab", ['cherimoia/skarojs'],
 
   function (sjs) { "use strict";
 
-    /**
-     * @requires module:cherimoia/skarojs
-     *
-     * @exports zotohlab
-     */
-    var rc= {
+    /** @alias module:zotohlab */
+    var exports = {};
 
-    };
-
-    return rc;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

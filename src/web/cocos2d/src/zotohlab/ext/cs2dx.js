@@ -10,7 +10,8 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs, zotohlab/asterix
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
  * @module zotohlab/asx/ccsx
  */
 define("zotohlab/asx/ccsx",
@@ -49,11 +50,8 @@ define("zotohlab/asx/ccsx",
 ***/
     //////////////////////////////////////////////////////////////////////////////
     //
-    /**
-     * @class ccsx
-     * @static
-     */
-    var ccsx = {
+    /** @alias module:zotohlab/asx/ccsx */
+    var exports = {
 
       /**
        * Test if this point is inside this rectangle.
@@ -814,8 +812,7 @@ define("zotohlab/asx/ccsx",
 
     };
 
-    return ccsx;
-
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

@@ -9,6 +9,13 @@
 // this software.
 // Copyright (c) 2013-2015 Ken Leung. All rights reserved.
 
+/**
+ * @requires module:global/window
+ * @requires module:console/dbg
+ * @requires module:ramda
+ * @requires module:CryptoJS
+ * @module cherimoia/skarojs
+ */
 define("cherimoia/skarojs", ['global/window',
                              'console/dbg',
                              'ramda'],
@@ -119,15 +126,8 @@ define("cherimoia/skarojs", ['global/window',
     };
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    /**
-     * @requires module:global/window
-     * @requires module:console/dbg
-     * @requires module:ramda
-     * @requires module:CryptoJS
-     *
-     * @exports cherimoia/skarojs
-     */
-    var skarojs = {
+    /** @alias module:cherimoia/skarojs */
+    var exports = {
 /*
       strPadRight: function(str,len, pad){
         return (str+new Array(len+1).join(pad)).slice(0,len);
@@ -707,33 +707,32 @@ define("cherimoia/skarojs", ['global/window',
       },
 
       /**
-       * @property logger - Short cut to logger
+       * @property {Logger} logger - Short cut to logger
        */
       logger: DBG,
 
       /**
-       * @property loggr - Short cut to logger
+       * @property {Logger} loggr - Short cut to logger
        */
       loggr: DBG,
 
       /**
-       * @property ramda - Short cut to Ramda
+       * @property {Ramda} ramda - Short cut to Ramda
        */
       ramda: R,
 
       /**
-       * @property R - Short cut to Ramda
+       * @property {Ramda} R - Short cut to Ramda
        */
       R: R,
 
       /**
-       * @property Class - Class based inheritance
+       * @property {Function} Class - Class based inheritance
        */
       Class : klass
     };
 
-    return skarojs;
-
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

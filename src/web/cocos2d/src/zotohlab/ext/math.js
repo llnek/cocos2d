@@ -17,7 +17,9 @@ define("zotohlab/asx/math", ['cherimoia/skarojs'],
 
   function (sjs) { "use strict";
 
-    var undef;
+    /** @alias module:zotohlab/asx/math */
+    var exports = {},
+    undef;
 
     //////////////////////////////////////////////////////////////////////////////
     //
@@ -39,6 +41,7 @@ define("zotohlab/asx/math", ['cherimoia/skarojs'],
       /**
        * Scalar multiplication.
        *
+       * @memberof module:zotohlab/asx/math~Vector2
        * @method mult
        * @param {Number} n
        * @return {Vector2} result.
@@ -48,6 +51,9 @@ define("zotohlab/asx/math", ['cherimoia/skarojs'],
       },
 
       /**
+       * Transpose and rotate.
+       *
+       * @memberof module:zotohlab/asx/math~Vector2
        * @method rotate
        * @return {Vector2} rotate.
        */
@@ -62,6 +68,7 @@ define("zotohlab/asx/math", ['cherimoia/skarojs'],
       /**
        * Calculate the length of this vector.
        *
+       * @memberof module:zotohlab/asx/math~Vector2
        * @method length
        * @return {Number}
        */
@@ -72,6 +79,7 @@ define("zotohlab/asx/math", ['cherimoia/skarojs'],
       /**
        * Self identification.
        *
+       * @memberof module:zotohlab/asx/math~Vector2
        * @method toString
        * @return {String}
        */
@@ -82,6 +90,7 @@ define("zotohlab/asx/math", ['cherimoia/skarojs'],
       /**
        * Add 2 vectors together.
        *
+       * @memberof module:zotohlab/asx/math~Vector2
        * @method plus
        * @param {Vector2} v2
        * @return {Vector2} result.
@@ -95,6 +104,7 @@ define("zotohlab/asx/math", ['cherimoia/skarojs'],
       /**
        * Subtract another vector.
        *
+       * @memberof module:zotohlab/asx/math~Vector2
        * @method minus
        * @param {Vector2} v2
        * @return {Vector2} result
@@ -106,7 +116,7 @@ define("zotohlab/asx/math", ['cherimoia/skarojs'],
       },
 
       /**
-       * @constructor
+       * @method ctor
        * @private
        * @param {Number} x1
        * @param {Number} y1
@@ -120,11 +130,22 @@ define("zotohlab/asx/math", ['cherimoia/skarojs'],
 
     });
 
-
-    return {
-      Vector2: Vector2
+    /**
+     * Create a Vector2 object.
+     *
+     * @method reifyVect2
+     *
+     * @param {Number} x1
+     * @param {Number} y1
+     * @param {Number} x2
+     * @param {Number} y2
+     * @return {Vector2}
+     */
+    exports.reifyVect2 = function(x1,y1,x2,y2) {
+      return new Vector2(x1,y1,x2,y2);
     };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

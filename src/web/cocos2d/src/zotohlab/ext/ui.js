@@ -17,7 +17,9 @@ define("zotohlab/asx/ui", ['cherimoia/skarojs'],
 
   function (sjs) { "use strict";
 
-    var undef;
+    /** @alias module:zotohlab/asx/ui */
+    var exports = {},
+    undef;
 
     //////////////////////////////////////////////////////////////////////
     //
@@ -29,6 +31,7 @@ define("zotohlab/asx/ui", ['cherimoia/skarojs'],
       /**
        * Draw this circle.
        *
+       * @memberof module:zotohlab/asx/ui~Circle
        * @method draw
        * @param {Context} ctx
        * @param {Object} styleObj
@@ -42,7 +45,10 @@ define("zotohlab/asx/ui", ['cherimoia/skarojs'],
       },
 
       /**
-       * @constructor
+       * Constructor.
+       *
+       * @memberof module:zotohlab/asx/ui~Circle
+       * @method ctor
        * @param {Number} x
        * @param {Number} y
        * @param {Number} radius
@@ -63,6 +69,7 @@ define("zotohlab/asx/ui", ['cherimoia/skarojs'],
       /**
        * Draw this line.
        *
+       * @memberof module:zotohlab/asx/ui~Line
        * @method draw
        * @param {Context} ctx
        * @param {Object} styleObj
@@ -80,7 +87,10 @@ define("zotohlab/asx/ui", ['cherimoia/skarojs'],
       },
 
       /**
-       * @constructor
+       * Constructor.
+       *
+       * @memberof module:zotohlab/asx/ui~Line
+       * @method ctor
        * @param {Number} x1
        * @param {Number} y1
        * @param {Number} x2
@@ -101,7 +111,10 @@ define("zotohlab/asx/ui", ['cherimoia/skarojs'],
     var Point = sjs.Class.xtends({
 
       /**
-       * @constructor
+       * Constructor.
+       *
+       * @memberof module:zotohlab/asx/ui~Point
+       * @method ctor
        * @param {Number} x
        * @param {Number} y
        */
@@ -117,7 +130,10 @@ define("zotohlab/asx/ui", ['cherimoia/skarojs'],
     var Area = sjs.Class.xtends({
 
       /**
-       * @constructor
+       * Constructor.
+       *
+       * @memberof module:zotohlab/asx/ui~Area
+       * @method ctor
        * @param {Number} x
        * @param {Number} y
        * @param {Number} width
@@ -136,7 +152,10 @@ define("zotohlab/asx/ui", ['cherimoia/skarojs'],
     var TextStyle = sjs.Class.xtends({
 
       /**
-       * @constructor
+       * Constructor.
+       *
+       * @memberof module:zotohlab/asx/ui~TextStyle
+       * @method ctor
        */
       ctor: function() {
         this.font = "14px 'Architects Daughter'";
@@ -147,16 +166,33 @@ define("zotohlab/asx/ui", ['cherimoia/skarojs'],
 
     });
 
-    return {
+    /**
+     * @property TextStyle
+     * @type TextStyle.Class
+     */
+    exports.TextStyle= TextStyle;
+    /**
+     * @property Circle
+     * @type Circle.Class
+     */
+    exports.Circle= Circle;
+    /**
+     * @property Line
+     * @type Line.Class
+     */
+    exports.Line= Line;
+    /**
+     * @property Point
+     * @type Point.Class
+     */
+    exports.Point= Point;
+    /**
+     * @property Area
+     * @type Area.Class
+     */
+    exports.Area= Area;
 
-      TextStyle: TextStyle,
-      Circle: Circle,
-      Line: Line,
-      Point: Point,
-      Area: Area
-
-    };
-
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

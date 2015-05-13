@@ -9,46 +9,87 @@
 // this software.
 // Copyright (c) 2013-2014, Ken Leung. All rights reserved.
 
-define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
-                            'zotohlab/asterix'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @module zotohlab/asx/xcfg
+ */
+define("zotohlab/asx/xcfg",
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix'],
+
   function (sjs, sh) { "use strict";
 
-    var R= sjs.ramda,
-    undef,
-    config = {
+    /** @alias module:zotohlab/asx/xcfg */
+    var exports= {},
+    R= sjs.ramda,
+    undef;
 
+    var Config = {
+
+      /**
+       * @memberof module:zotohlab/asx/xcfg
+       * @property {String} urlPreix
+       */
       urlPrefix: '/public/ig/',
+
+      /**
+       * @memberof module:zotohlab/asx/xcfg
+       * @property {String} appid
+       */
       appid: '',
+
+      /**
+       * @memberof module:zotohlab/asx/xcfg
+       * @property {String} color
+       */
       color: '',
 
+      /**
+       * @memberof module:zotohlab/asx/xcfg
+       * @property {Object} resolution
+       */
       resolution: {
         web: cc.ResolutionPolicy.SHOW_ALL,
         resDir: 'sd'
       },
 
+      /**
+       * @memberof module:zotohlab/asx/xcfg
+       * @property {Object} levels
+       */
       levels: {
       },
 
+      /**
+       * @memberof module:zotohlab/asx/xcfg
+       * @property {Object} assets
+       */
       assets: {
+
         sprites: {
           //'gui.audio' : [ 'res/cocos2d/btns/{{color}}/audio_onoff.png', 48,48, -1 ]
         },
+
         atlases : {
         },
+
         tiles: {
           //'gui.blank' : 'game/{{appid}}/levels/blankscreen.tmx',
           //'gui.mmenu' : 'game/{{appid}}/levels/mainmenu.tmx'
         },
+
         images: {
           //'gui.mmenu.border16': 'res/cocos2d/pics/cbox-borders_x16.png',
           //'gui.mmenu.border8': 'res/cocos2d/pics/cbox-borders_x8.png',
-
           //'gui.mmenu.border': 'game/{{appid}}/levels/{{border-tiles}}',
-
         },
+
         sounds: {
           'start_game' : 'res/cocos2d/sfx/PowerUp'
         },
+
         fonts: {
           'font.TinyBoxBB' : [ 'res/cocos2d/fon/{{lang}}', 'TinyBoxBlackBitA8.png', 'TinyBoxBlackBitA8.fnt' ],
           'font.OogieBoogie' : [ 'res/cocos2d/fon/{{lang}}', 'OogieBoogie.png', 'OogieBoogie.fnt' ],
@@ -59,9 +100,14 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
         }
       },
 
+      /**
+       * @memberof module:zotohlab/asx/xcfg
+       * @property {Object} game
+       */
       game: {
         borderTiles: 'cbox-borders_x8.png',
         preloadLevels: true,
+        start: 'StartScene',
         scale: 1,
         sfx: 'mp3',
         landscape: false,
@@ -70,8 +116,16 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
         trackingID: ""
       },
 
+      /**
+       * @memberof module:zotohlab/asx/xcfg
+       * @property {StateMachine} smac
+       */
       smac: null,
 
+      /**
+       * @memberof module:zotohlab/asx/xcfg
+       * @property {Object} l10nTable
+       */
       l10nTable: {
         "en" : {
           '%mobileStart' : 'Press Anywhere To Start!',
@@ -106,9 +160,10 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
         }
       },
 
-        // 1 = single player
-        // 2 = 2 players
-        // 3 = network, multi players
+      /**
+       * @memberof module:zotohlab/asx/xcfg
+       * @property {Object} csts
+       */
       csts: {
         CV_X: 'X'.charCodeAt(0),
         CV_O: 'O'.charCodeAt(0),
@@ -116,16 +171,20 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
         P2_COLOR: 'O',
         P1_COLOR: 'X',
 
-        HUMAN:  1,
-        BOT:    2,
-        NETP:   3,
+        NETP:   sh.gtypes.ONLINE_GAME,
+        HUMAN:  sh.gtypes.P1_GAME,
+        BOT:    sh.gtypes.P2_GAME,
 
-        GAME_MODE: sh.P1_GAME,
+        GAME_MODE: sh.gtypes.P1_GAME,
         TILE: 8,
         S_OFF: 4,
         GAME_ID: ''
       },
 
+      /**
+       * @memberof module:zotohlab/asx/xcfg
+       * @property {Object} sound
+       */
       sound: {
         volume: 0.5,
         open: false,
@@ -135,13 +194,22 @@ define("zotohlab/asx/xcfg", ['cherimoia/skarojs',
         }
       },
 
+      /**
+       * @memberof module:zotohlab/asx/xcfg
+       * @method handleResolution
+       * @param {cc.Size} rs
+       */
       handleResolution: function(rs) {},
+
+      /**
+       * @memberof module:zotohlab/asx/xcfg
+       * @method runOnce
+       */
       runOnce: function() {}
 
     };
 
-
-    return sh.xcfg=config;
+    return exports= sh.xcfg = Config;
 });
 
 //////////////////////////////////////////////////////////////////////////////

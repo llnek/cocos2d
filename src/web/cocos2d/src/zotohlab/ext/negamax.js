@@ -17,8 +17,10 @@ define("zotohlab/asx/negamax", ['cherimoia/skarojs'],
 
   function (sjs) { "use strict";
 
-    var PINF = 1000000,
-    undef;
+    /** @alias module:zotohlab/asx/negamax */
+    var exports = {},
+    undef,
+    PINF = 1000000;
 
     //////////////////////////////////////////////////////////////////////////////
     //
@@ -59,69 +61,86 @@ define("zotohlab/asx/negamax", ['cherimoia/skarojs'],
       };
 
       return bestValue;
-    };
+    }
 
-    return {
-
-      /**
-       * The negamax algorithm implementation.
-       *
-       * @class Algo
-       */
-      Algo: sjs.Class.xtends({
-
-        /**
-         * Get the game board.
-         *
-         * @method getGameBoard
-         * @return {Object}
-         */
-        getGameBoard: function() { return this.board; },
-
-        /**
-         * @constructor
-         * @param {Object} board
-         */
-        ctor: function(board) { this.board= board; },
-
-        /**
-         * Run the algo for one iteration.
-         *
-         * @method eval
-         * @return {Number} last best move.
-         */
-        eval: function() {
-          var snapshot= this.board.takeSnapshot();
-          negamax(this.board, snapshot, 10, 10, -PINF, PINF);
-          return snapshot.lastBestMove;
-        }
-
-      }),
+    /**
+     * The negamax algorithm implementation.
+     *
+     * @class NegaMax
+     */
+    var NegaMax= sjs.Class.xtends({
 
       /**
-       * Simple data structure keeping track of the state of the
-       * game board.
+       * Get the game board.
        *
-       * @class Snapshot
+       * @memberof module:zotohlab/asx/negamax~NegaMax
+       * @method getGameBoard
+       * @return {Object}
        */
-      Snapshot: sjs.Class.xtends({
+      getGameBoard: function() { return this.board; },
 
-        /**
-         * @constructor
-         */
-        ctor: function() {
-          this.lastBestMove= null;
-          this.other= null;
-          this.cur= null;
-          this.state= null;
-        }
+      /**
+       * Constructor.
+       *
+       * @memberof module:zotohlab/asx/negamax~NegaMax
+       * @method ctor
+       * @param {Object} board
+       */
+      ctor: function(board) { this.board= board; },
 
-      }),
+      /**
+       * Run the algo for one iteration.
+       *
+       * @memberof module:zotohlab/asx/negamax~NegaMax
+       * @method eval
+       * @return {Number} last best move.
+       */
+      eval: function() {
+        var snapshot= this.board.takeSnapshot();
+        negamax(this.board, snapshot, 10, 10, -PINF, PINF);
+        return snapshot.lastBestMove;
+      }
 
-      INF: PINF
+    });
 
-    };
+    /**
+     * Simple data structure keeping track of the state of the
+     * game board.
+     *
+     * @class Snapshot
+     */
+    var Snapshot= sjs.Class.xtends({
 
+      /**
+       * @method ctor
+       * @private
+       */
+      ctor: function() {
+        this.lastBestMove= null;
+        this.other= null;
+        this.cur= null;
+        this.state= null;
+      }
+
+    });
+
+    /**
+     * @property Snapshot
+     * @type Snapshot.Class
+     */
+    exports.Snapshot= Snapshot;
+    /**
+     * @property INF
+     * @type Number
+     */
+    exports.INF= PINF;
+    /**
+     * @property NegaMax
+     * @type NegaMax.Class
+     */
+    exports.NegaMax= NegaMax;
+
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////
