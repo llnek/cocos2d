@@ -13,7 +13,7 @@ document.ccConfig = {
   debugMode: 1,
 
   engineDir: ['/public/extlibs/cocos2d-html5'],
-  modules: [ 'cocos2d', 'ccui', 'ccpool' ],
+  modules: [ 'cocos2d', 'ccui' ],
 
   jsList: [
 

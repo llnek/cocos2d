@@ -7,18 +7,26 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/gnodes", ['zotohlab/p/components',
-                            'zotohlab/asterix'],
+/**
+ * @requires zotohlab/tictactoe/components
+ * @requires zotohlab/asterix
+ * @module zotohlab/tictactoe/gnodes
+ */
+define("zotohlab/p/gnodes",
+
+       ['zotohlab/p/components',
+        'zotohlab/asterix'],
 
   function (cobjs, sh) { "use strict";
 
-    var lib= {},
+    /** @alias module:zotohlab/tictactoe/gnodes */
+    var exports= {},
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    lib.BoardNode = sh.Ashley.nodeDef({
+    exports.BoardNode = sh.Ashley.nodeDef({
       selection: cobjs.UISelection,
       board: cobjs.Board,
       robot: cobjs.SmartAlgo,
@@ -27,18 +35,18 @@ define("zotohlab/p/gnodes", ['zotohlab/p/components',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    lib.GUINode = sh.Ashley.nodeDef({
+    exports.GUINode = sh.Ashley.nodeDef({
       selection: cobjs.UISelection,
       view: cobjs.GridView
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    lib.NetPlayNode = sh.Ashley.nodeDef({
+    exports.NetPlayNode = sh.Ashley.nodeDef({
       playcmd: cobjs.NetPlay,
       grid: cobjs.Grid
     });
 
-    return lib;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

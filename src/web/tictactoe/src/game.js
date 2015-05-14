@@ -7,21 +7,40 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/arena", ['cherimoia/skarojs',
-                           'zotohlab/asterix',
-                           'zotohlab/asx/ccsx',
-                           'zotohlab/asx/xlayers',
-                           'zotohlab/asx/xscenes',
-                           'zotohlab/asx/xmmenus',
-                           'zotohlab/asx/odin',
-                           'zotohlab/p/hud',
-                           'zotohlab/p/components',
-                           'zotohlab/p/sysobjs'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xlayers
+ * @requires zotohlab/asx/xscenes
+ * @requires zotohlab/asx/xmmenus
+ * @requires zotohlab/asx/odin
+ * @requires zotohlab/tictactoe/hud
+ * @requires zotohlab/tictactoe/components
+ * @requires zotohlab/tictactoe/sysobjs
+ * @module zotohlab/tictactoe/arena
+ */
+define("zotohlab/p/arena",
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/xlayers',
+        'zotohlab/asx/xscenes',
+        'zotohlab/asx/xmmenus',
+        'zotohlab/asx/odin',
+        'zotohlab/p/hud',
+        'zotohlab/p/components',
+        'zotohlab/p/sysobjs'],
 
   function (sjs, sh, ccsx, layers, scenes,
             mmenus, odin, huds, cobjs, sobjs) { "use strict";
+
+    /** @alias module:zotohlab/tictactoe/arena */
+    var exports = {};
+
 
     var prrs= sobjs.Priorities,
     evts= odin.Events,
@@ -217,48 +236,54 @@ define("zotohlab/p/arena", ['cherimoia/skarojs',
 
     });
 
-    return {
+    /**
+     * @property {String} rtti
+     * @final
+     */
+    exports.rtti = sh.ptypes.game;
 
-      'GameArena' : {
+    /**
+     * @method ctor
+     * @static
+     * @param {Object} options
+     * @return {cc.Scene}
+     */
+    exports.ctor = function(options) {
+      var scene = new scenes.XSceneFactory([
+        huds.HUDBackLayer,
+        GameLayer,
+        huds.HUDLayer
+      ]).create(options);
 
-        create: function(options) {
-          var scene = new scenes.XSceneFactory([
-            huds.BackLayer,
-            GameLayer,
-            huds.HUDLayer
-          ]).create(options);
+      scene.ebus.on('/hud/showmenu',function(t,msg) {
+        mmenus.XMenuLayer.onShowMenu();
+      });
+      scene.ebus.on('/hud/replay',function(t,msg) {
+        sh.main.replay();
+      });
+      scene.ebus.on('/hud/timer/show',function(t,msg) {
+        sh.main.getHUD().showTimer();
+      });
+      scene.ebus.on('/hud/timer/hide',function(t,msg) {
+        sh.main.getHUD().killTimer();
+      });
+      scene.ebus.on('/hud/score/update',function(t,msg) {
+        sh.main.getHUD().updateScore(msg.color, msg.score);
+      });
+      scene.ebus.on('/hud/end',function(t,msg) {
+        sh.main.getHUD().endGame(msg.winner);
+      });
+      scene.ebus.on('/hud/update',function(t,msg) {
+        sh.main.getHUD().update(msg.running, msg.pnum);
+      });
+      scene.ebus.on('/player/timer/expired',function(t,msg) {
+        sh.main.playTimeExpired(msg);
+      });
 
-          scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
-            mmenus.XMenuLayer.onShowMenu();
-          });
-          scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
-            sh.main.replay();
-          });
-          scene.ebus.on('/game/hud/timer/show',function(t,msg) {
-            sh.main.getHUD().showTimer();
-          });
-          scene.ebus.on('/game/hud/timer/hide',function(t,msg) {
-            sh.main.getHUD().killTimer();
-          });
-          scene.ebus.on('/game/hud/score/update',function(t,msg) {
-            sh.main.getHUD().updateScore(msg.color, msg.score);
-          });
-          scene.ebus.on('/game/hud/end',function(t,msg) {
-            sh.main.getHUD().endGame(msg.winner);
-          });
-          scene.ebus.on('/game/hud/update',function(t,msg) {
-            sh.main.getHUD().update(msg.running, msg.pnum);
-          });
-          scene.ebus.on('/game/player/timer/expired',function(t,msg) {
-            sh.main.playTimeExpired(msg);
-          });
-
-          return scene;
-        }
-      }
-
+      return scene;
     };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

@@ -50,7 +50,7 @@ define("zotohlab/asx/xmmenus",
 
       setTitle: function() {
         var title = new cc.LabelBMFont(sh.l10n('%mmenu'),
-                                       sh.getFontPath('font.JellyBelly')),
+                                       sh.getFontPath('font.JellyBelly'));
         title.setPosition(cw.x, wb.top - csts.TILE * 8 / 2);
         title.setOpacity(0.9*255);
         title.setScale(0.2);

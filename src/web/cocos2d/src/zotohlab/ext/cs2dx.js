@@ -559,59 +559,20 @@ define("zotohlab/asx/ccsx",
       },
 
       /**
-       * @property AnchorCenter
+       * @property {Object} acs Anchor Points
        * @final
-       * @type cc.Point
        */
-      AnchorCenter: cc.p(0.5, 0.5),
-      /**
-       * @property AnchorTop
-       * @final
-       * @type cc.Point
-       */
-      AnchorTop: cc.p(0.5, 1),
-      /**
-       * @property AnchorTopRight
-       * @final
-       * @type cc.Point
-       */
-      AnchorTopRight: cc.p(1, 1),
-      /**
-       * @property AnchorRight
-       * @final
-       * @type cc.Point
-       */
-      AnchorRight: cc.p(1, 0.5),
-      /**
-       * @property AnchorBottomRight
-       * @final
-       * @type cc.Point
-       */
-      AnchorBottomRight: cc.p(1, 0),
-      /**
-       * @property AnchorBottom
-       * @final
-       * @type cc.Point
-       */
-      AnchorBottom: cc.p(0.5, 0),
-      /**
-       * @property AnchorBottomLeft
-       * @final
-       * @type cc.Point
-       */
-      AnchorBottomLeft: cc.p(0, 0),
-      /**
-       * @property AnchorLeft
-       * @final
-       * @type cc.Point
-       */
-      AnchorLeft: cc.p(0, 0.5),
-      /**
-       * @property AnchorTopLeft
-       * @final
-       * @type cc.Point
-       */
-      AnchorTopLeft: cc.p(0, 1),
+      acs : {
+        Center: cc.p(0.5, 0.5),
+        Top: cc.p(0.5, 1),
+        TopRight: cc.p(1, 1),
+        Right: cc.p(1, 0.5),
+        BottomRight: cc.p(1, 0),
+        Bottom: cc.p(0.5, 0),
+        BottomLeft: cc.p(0, 0),
+        Left: cc.p(0, 0.5),
+        TopLeft: cc.p(0, 1)
+      },
 
       /**
        * not used for now.

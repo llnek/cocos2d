@@ -53,32 +53,6 @@ define("zotohlab/p/hud",
      */
     HUDLayer = layers.XGameHUDLayer.extend({
 
-      initCtrlBtns: function(scale, where) {
-        var menu;
-
-        where = where || ccsx.AnchorBottom;
-        scale = scale || 1;
-
-        menu= ccsx.pmenu1({
-          color: cc.color(94,49,120),
-          imgPath: '#icon_menu.png',
-          scale: scale,
-          selector: function() {
-            sh.fireEvent('/game/hud/controls/showmenu'); }
-        });
-        this.addMenuIcon(menu, where);
-
-        menu = ccsx.pmenu1({
-          imgPath: '#icon_replay.png',
-          color: cc.color(94,49,120),
-          scale : scale,
-          visible: false,
-          selector: function() {
-            sh.fireEvent('/game/hud/controls/replay'); }
-        });
-        this.addReplayIcon(menu, where);
-      },
-
       ctor: function(options) {
         this._super(options);
         this.mode= 0;
@@ -86,6 +60,24 @@ define("zotohlab/p/hud",
         this.p1Long= '';
         this.p2ID= '';
         this.p1ID= '';
+        var color= cc.color(94,49,120),
+        scale= 1;
+        this.options.i_menu= {
+          cb: function() { sh.fire('/hud/showmenu'); },
+          imgPath: '#icon_menu.png',
+          where: ccsx.acs.Bottom,
+          color: color,
+          scale: scale,
+        };
+        this.options.i_replay = {
+          cb: function() { sh.fireEvent('/hud/replay'); },
+          where: ccsx.acs.Bottom,
+          imgPath: '#icon_replay.png',
+          color: color,
+          scale : scale,
+          visible: false
+        };
+        this.color= color;
       },
 
       initScores: function() {
@@ -95,22 +87,20 @@ define("zotohlab/p/hud",
       },
 
       setGameMode: function(mode) {
-        this.initScores();
         this.mode= mode;
+        this.initScores();
       },
-
-      initAtlases: sjs.NILFUNC,
-      initIcons: sjs.NILFUNC,
 
       initLabels: function() {
         var cw= ccsx.center(),
+        c= this.color,
         wb= ccsx.vbox();
 
         this.title = ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.JellyBelly'),
           text: '',
-          color: cc.color(94,49,120),
-          anchor: ccsx.AnchorTop,
+          color: c,
+          anchor: ccsx.acs.Top,
           scale: xcfg.game.scale * 0.6,
           pos: cc.p(cw.x, wb.top - 2*csts.TILE)
         });
@@ -123,7 +113,7 @@ define("zotohlab/p/hud",
           color: cc.color(225,225,225),
           pos: cc.p(csts.TILE + csts.S_OFF + 2,
                     wb.top - csts.TILE - csts.S_OFF),
-          anchor: ccsx.AnchorTopLeft
+          anchor: ccsx.acs.TopLeft
         });
         this.addItem(this.score1);
 
@@ -134,7 +124,7 @@ define("zotohlab/p/hud",
           color: cc.color(255,255,255),
           pos: cc.p(wb.right - csts.TILE - csts.S_OFF,
                     wb.top - csts.TILE - csts.S_OFF),
-          anchor: ccsx.AnchorTopRight
+          anchor: ccsx.acsTopRight
         });
         this.addItem(this.score2);
 
@@ -175,7 +165,7 @@ define("zotohlab/p/hud",
             color: cc.color(255,255,255),
             pos: cc.p(cw.x,
                       wb.top - 10*csts.TILE),
-            anchor: ccsx.AnchorCenter
+            anchor: ccsx.acs.Center
           });
           this.addItem(this.countDown);
         }
@@ -195,7 +185,7 @@ define("zotohlab/p/hud",
 
         if (this.countDownValue < 0) {
           this.killTimer();
-          sh.fireEvent('/game/player/timer/expired');
+          sh.fireEvent('/player/timer/expired');
         }
         else {
           this.showCountDown();

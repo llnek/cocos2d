@@ -398,11 +398,11 @@ define("zotohlab/asterix",
       /**
        * Trigger an event on this topic.
        *
-       * @method fireEvent
+       * @method fire
        * @param {String} topic
        * @param {Object} msg
        */
-      fireEvent: function(topic, msg) {
+      fire: function(topic, msg) {
         var r= cc.director.getRunningScene();
         if (r) {
           r.ebus.fire(topic, msg || {});

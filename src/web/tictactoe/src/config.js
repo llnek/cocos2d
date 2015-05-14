@@ -7,13 +7,24 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/config", ['cherimoia/skarojs',
-                            'zotohlab/asterix',
-                            'zotohlab/asx/xcfg'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/xcfg
+ * @module zotohlab/tictactoe/config
+ */
+define("zotohlab/p/config",
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/xcfg'],
 
   function (sjs, sh, xcfg) { "use strict";
+
+    /** @alias module:zotohlab/tictactoe/config */
+    var exports= {};
 
     //////////////////////////////////////////////////////////////////////////////
     //merge stuff in-place.
@@ -30,14 +41,6 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
       },
 
       csts: {
-        //GRID_W: 40,
-        //GRID_H: 60,
-        //C_GAP: 1,
-        //R_GAP: 1,
-        //LEFT: 4,
-        //HOLE: 10,
-        //GAP: 10,
-
         PLAYER_THINK_TIME: 7,
         GRID_SIZE: 3,
         CELLS: 9,
@@ -98,8 +101,7 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
 
     });
 
-    return xcfg;
-
+    return exports = xcfg;
 });
 
 //////////////////////////////////////////////////////////////////////////////

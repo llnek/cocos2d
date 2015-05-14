@@ -7,16 +7,27 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/s/factory", ['zotohlab/p/components',
-                               'zotohlab/p/gnodes',
-                               'cherimoia/skarojs',
-                               'zotohlab/asterix'],
+/**
+ * @requires zotohlab/tictactoe/components
+ * @requires zotohlab/tictactoe/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @module zotohlab/tictactoe/factory
+ */
+define("zotohlab/p/s/factory",
+
+       ['zotohlab/p/components',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix'],
 
   function (cobjs, gnodes, sjs, sh) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/tictactoe/factory */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef;
 

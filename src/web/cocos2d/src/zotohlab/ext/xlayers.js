@@ -228,9 +228,10 @@ define("zotohlab/asx/xlayers",
       /**
        * @memberof module:zotohlab/asx/xlayers~XLayer
        * @method pkInit
+       * @param {Object} options
        * @protected
        */
-      pkInit: function() { this.pkInput(); },
+      pkInit: function(options) { this.pkInput(); },
 
       /**
        * @memberof module:zotohlab/asx/xlayers~XLayer
@@ -553,7 +554,7 @@ define("zotohlab/asx/xlayers",
        * @param {Object} icon
        */
       removeIcon: function(icon) {
-        this.removeAtlasItem(this.hudAtlas, icon);
+        this.removeAtlasItem(this.hudAtlas(), icon);
       },
 
       /**
@@ -566,25 +567,46 @@ define("zotohlab/asx/xlayers",
        * @param {Number} idx
        */
       addIcon: function(icon, z, idx) {
-        this.addAtlasItem(this.hudAtlas, icon, z, idx);
+        this.addAtlasItem(this.hudAtlas(), icon, z, idx);
+      },
+
+      hudAtlas: function() {
+        return this.options.atlasId || 'game-pics';
       },
 
       /**
        * @private
        */
-      pkInit: function() {
+      pkInit: function(options) {
+        this._super(options);
+
         this.scoreLabel = null;
         this.lives= null;
         this.score= 0;
         this.replayBtn = null;
 
-        this.hudAtlas= 'game-pics';
-        this._super();
-
         this.initAtlases();
         this.initIcons();
         this.initLabels();
         this.initCtrlBtns();
+      },
+
+      initAtlases: sjs.NILFUNC,
+      initIcons: sjs.NILFUNC,
+      initLabels: sjs.NILFUNC,
+
+      initCtrlBtns: function() {
+        var opts;
+
+        opts= this.options.i_replay;
+        if (opts) {
+          this.addReplayIcon(ccsx.pmenu1(opts), opts.where);
+        }
+
+        opts= this.options.i_menu;
+        if (opts) {
+          this.addMenuIcon(ccsx.pmenu1(opts), opts.where);
+        }
       },
 
       /**
