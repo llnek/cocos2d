@@ -9,18 +9,38 @@
 // this software.
 // Copyright (c) 2013-2014, Ken Leung. All rights reserved.
 
-define("zotohlab/asx/xsplash", ['cherimoia/skarojs',
-                               'zotohlab/asterix',
-                               'zotohlab/asx/ccsx',
-                               'zotohlab/asx/xlayers'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xlayers
+ * @module zotohlab/asx/xsplash
+ */
+define("zotohlab/asx/xsplash",
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/xlayers'],
+
   function (sjs, sh, ccsx, layers) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/asx/xsplash */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
+    /**
+     * @class XSplashLayer
+     */
     XSplashLayer = layers.XLayer.extend({
 
+      /**
+       * @memberof module:zotohlab/asx/xsplash~XSplashLayer
+       * @method pkInit
+       * @protected
+       */
       pkInit: function() {
 
         var wb = ccsx.vbox(),
@@ -41,13 +61,22 @@ define("zotohlab/asx/xsplash", ['cherimoia/skarojs',
 
       },
 
+      /**
+       * @memberof module:zotohlab/asx/xsplash~XSplashLayer
+       * @method rtti
+       * @return {String}
+       */
       rtti: function() { return "SplashLayer"; }
 
     });
 
+    /**
+     * @property {XSplashLayer.Class} XSplashLayer
+     * @final
+     */
+    exports.XSplashLayer = XSplashLayer;
 
-    return XSplashLayer;
-
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

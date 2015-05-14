@@ -375,6 +375,27 @@ define("zotohlab/asterix",
       factory: undef,
 
       /**
+       * Websocket Url for online play.
+       *
+       * @property {String} wsurl
+       * @final
+       */
+      wsUrl: '/network/odin/websocket',
+
+      /**
+       * @property {Object} ptypes
+       * @final
+       */
+      ptypes: {
+        start: 'StartScreen',
+        mmenu: 'MainMenu',
+        online: 'OnlinePlay',
+        game: 'GameArena',
+        hud: 'HUD',
+        yn: 'YesNo'
+      },
+
+      /**
        * Trigger an event on this topic.
        *
        * @method fireEvent

@@ -115,7 +115,7 @@ define("zotohlab/asx/xlayers",
       },
 
       /**
-       * Reset the hud.
+       * Reset and refresh the hud.
        *
        * @memberof module:zotohlab/asx/xlayers~XHUDLives
        * @method resurrect
@@ -226,12 +226,16 @@ define("zotohlab/asx/xlayers",
       },
 
       /**
-       * @private
+       * @memberof module:zotohlab/asx/xlayers~XLayer
+       * @method pkInit
+       * @protected
        */
       pkInit: function() { this.pkInput(); },
 
       /**
-       * @private
+       * @memberof module:zotohlab/asx/xlayers~XLayer
+       * @method pkInput
+       * @protected
        */
       pkInput: function() {},
 
@@ -290,7 +294,7 @@ define("zotohlab/asx/xlayers",
       /**
        * @memberof module:zotohlab/asx/xlayers~XLayer
        * @method onQuit
-       * @private
+       * @protected
        */
       onQuit: function() {
         var ss= sh.protos[xcfg.game.start],
@@ -327,7 +331,6 @@ define("zotohlab/asx/xlayers",
           this.addItem(bg);
         }
       },
-
 
       /**
        * Center an image.
@@ -708,7 +711,9 @@ define("zotohlab/asx/xlayers",
     var XGameLayer = XLayer.extend({
 
       /**
-       * @private
+       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @method pkInput
+       * @protected
        */
       pkInput: function() {
 
@@ -736,7 +741,9 @@ define("zotohlab/asx/xlayers",
       },
 
       /**
-       * @private
+       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @method cfgTouch
+       * @protected
        */
       cfgTouch: function() {
         this.cfgInputTouchOne();
@@ -744,7 +751,9 @@ define("zotohlab/asx/xlayers",
       },
 
       /**
-       * @private
+       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @method cfgInputKeyPad
+       * @protected
        */
       cfgInputKeyPad: function() {
         cc.eventManager.addListener({
@@ -759,7 +768,9 @@ define("zotohlab/asx/xlayers",
       },
 
       /**
-       * @private
+       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @method cfgInputMouse
+       * @protected
        */
       cfgInputMouse: function() {
         cc.eventManager.addListener({
@@ -786,6 +797,7 @@ define("zotohlab/asx/xlayers",
       /**
        * @memberof module:zotohlab/asx/xlayers~XGameLayer
        * @method cfgInputTouchAll
+       * @protected
        */
       cfgInputTouchesAll: function() {
         cc.eventManager.addListener({
@@ -803,6 +815,7 @@ define("zotohlab/asx/xlayers",
       /**
        * @memberof module:zotohlab/asx/xlayers~XGameLayer
        * @method cfgInputTouchOne
+       * @protected
        */
       cfgInputTouchOne: function() {
         cc.eventManager.addListener({
@@ -817,6 +830,7 @@ define("zotohlab/asx/xlayers",
       /**
        * @memberof module:zotohlab/asx/xlayers~XGameLayer
        * @method onTouchMoved
+       * @protected
        */
       onTouchMoved: function(touch,event) {
       },
@@ -824,6 +838,7 @@ define("zotohlab/asx/xlayers",
       /**
        * @memberof module:zotohlab/asx/xlayers~XGameLayer
        * @method onTouchBegan
+       * @protected
        */
       onTouchBegan: function(touch,event) {
         return true;
@@ -832,6 +847,7 @@ define("zotohlab/asx/xlayers",
       /**
        * @memberof module:zotohlab/asx/xlayers~XGameLayer
        * @method onTouchEnded
+       * @protected
        */
       onTouchEnded: function(touch,event) {
         var pt= touch.getLocation();
@@ -843,6 +859,7 @@ define("zotohlab/asx/xlayers",
       /**
        * @memberof module:zotohlab/asx/xlayers~XGameLayer
        * @method onKeyDown
+       * @protected
        * @param {Event} e
        */
       onKeyDown:function (e) {
@@ -853,6 +870,7 @@ define("zotohlab/asx/xlayers",
       /**
        * @memberof module:zotohlab/asx/xlayers~XGameLayer
        * @method onKeyUp
+       * @protected
        * @param {Event} e
        */
       onKeyUp:function (e) {
@@ -863,6 +881,7 @@ define("zotohlab/asx/xlayers",
       /**
        * @memberof module:zotohlab/asx/xlayers~XGameLayer
        * @method onMouseUp
+       * @protected
        * @param {Event} evt
        */
       onMouseUp: function(evt) {
@@ -874,6 +893,7 @@ define("zotohlab/asx/xlayers",
       /**
        * @memberof module:zotohlab/asx/xlayers~XGameLayer
        * @method onTouchesEnded
+       * @protected
        */
       onTouchesEnded: function (touches, event) {
         sjs.loggr.debug("touch event = " + event);
@@ -883,6 +903,7 @@ define("zotohlab/asx/xlayers",
       /**
        * @memberof module:zotohlab/asx/xlayers~XGameLayer
        * @method keyPoll
+       * @protected
        * @param {Number} key
        */
       keyPoll: function(key){
@@ -892,6 +913,7 @@ define("zotohlab/asx/xlayers",
       /**
        * @memberof module:zotohlab/asx/xlayers~XGameLayer
        * @method onclicked
+       * @protected
        * @param {Number} x
        * @param {Number} y
        */
@@ -901,6 +923,7 @@ define("zotohlab/asx/xlayers",
       /**
        * @memberof module:zotohlab/asx/xlayers~XGameLayer
        * @method getEnclosureBox
+       * @return {Object} - rect box.
        */
       getEnclosureBox: function() {
         return ccsx.vbox();
@@ -950,6 +973,7 @@ define("zotohlab/asx/xlayers",
       /**
        * @memberof module:zotohlab/asx/xlayers~XGameLayer
        * @method pkInit
+       * @protected
        */
       pkInit: function() {
         var m= this.options.mode;
@@ -1053,6 +1077,11 @@ define("zotohlab/asx/xlayers",
      * @final
      */
     exports.XLayer= XLayer;
+    /**
+     * @property {XLive.Class} XLive
+     * @final
+     */
+    exports.XLive= XLive;
     /**
      * @property {XHUDLives.Class} XHUDLives
      * @final

@@ -9,20 +9,34 @@
 // this software.
 // Copyright (c) 2013-2014, Ken Leung. All rights reserved.
 
-define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
-                                  'zotohlab/asterix',
-                                  'zotohlab/asx/ccsx',
-                                  'zotohlab/asx/xlayers',
-                                  'zotohlab/asx/xscenes',
-                                  'zotohlab/asx/odin'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xlayers
+ * @requires zotohlab/asx/xscenes
+ * @requires zotohlab/asx/odin
+ * @module zotohlab/asx/onlineplay
+ */
+define("zotohlab/asx/onlineplay",
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/xlayers',
+        'zotohlab/asx/xscenes',
+        'zotohlab/asx/odin'],
+
   function (sjs, sh, ccsx, layers, scenes, odin) { "use strict";
 
-    var events= odin.Events,
+    /** @alias module:zotohlab/asx/onlineplay */
+    var exports = { },
+    EVS= odin.Events,
     xcfg= sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
-    unde,
-
+    undef,
+    //////////////////////////////////////////////////////////////////////////
     BGLayer = layers.XLayer.extend({
 
       rtti: function() { return "BGLayer"; },
@@ -38,20 +52,19 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
       pkInit: function() {}
 
     }),
-
+    //////////////////////////////////////////////////////////////////////////
     UILayer =  layers.XLayer.extend({
 
       onOnlineReq: function(uid,pwd) {
-        var wsurl = sjs.fmtUrl(sjs.getWebSockProtocol(), "/network/odin/websocket"),
-        //gid = $('body').attr('data-gameid') || '',
-        wsurl,
+        var wsurl = sjs.fmtUrl(sjs.getWebSockProtocol(), sh.wsUrl),
         user = (uid || '').trim(),
         pswd = (pwd || '').trim();
 
         if (user.length === 0 ||
             pswd.length === 0) { return; }
 
-        this.wss= odin.newSession({ game: xcfg.appKey, user: user, passwd: pswd });
+        this.wss= odin.reifySession({game: xcfg.appKey,
+                                     user: user, passwd: pswd });
         this.wss.subscribeAll(this.onOdinEvent, this);
         this.wss.connect(wsurl);
       },
@@ -59,18 +72,18 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
       onOdinEvent: function(topic,evt) {
         //sjs.loggr.debug(evt);
         switch (evt.type) {
-          case events.MSG_NETWORK: this.onNetworkEvent(evt); break;
-          case events.MSG_SESSION: this.onSessionEvent(evt); break;
+          case EVS.MSG_NETWORK: this.onNetworkEvent(evt); break;
+          case EVS.MSG_SESSION: this.onSessionEvent(evt); break;
         }
       },
 
       onNetworkEvent: function(evt) {
         switch (evt.code) {
-          case events.PLAYER_JOINED:
+          case EVS.PLAYER_JOINED:
             //TODO
             sjs.loggr.debug("another player joined room. " + evt.source.puid);
           break;
-          case events.START:
+          case EVS.START:
             sjs.loggr.info("play room is ready, game can start.");
             this.wss.unsubscribeAll();
             // flip to game scene
@@ -81,7 +94,7 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
 
       onSessionEvent: function(evt) {
         switch (evt.code) {
-          case events.PLAYREQ_OK:
+          case EVS.PLAYREQ_OK:
             sjs.loggr.debug("player " +
                             evt.source.pnum +
                             ": request to play game was successful.");
@@ -145,6 +158,7 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
         var dummy = new cc.Sprite('#ok.png'),
         bxz= dummy.getContentSize();
 
+        // editbox for user
         uid = new ccui.TextField();
         uid.setMaxLengthEnabled(true);
         uid.setMaxLength(16);
@@ -155,6 +169,7 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
         uid.setPosition(cw.x, cw.y + bxz.height * 0.5 + 2);
         this.addItem(uid);
 
+        // editbox for password
         pwd = new ccui.TextField();
         pwd.setPasswordEnabled(true);
         pwd.setPasswordStyleText("*");
@@ -185,16 +200,19 @@ define("zotohlab/asx/onlineplay", ['cherimoia/skarojs',
 
     });
 
-    return {
-
-      'OnlinePlay' : {
-        create: function(options) {
-          return new scenes.XSceneFactory([ BGLayer, UILayer ]).create(options);
-        }
-      }
-
+    /**
+     * Create the online-request play screen.
+     *
+     * @method reify
+     * @static
+     * @param {Object} options
+     * @return {cc.Scene}
+     */
+    exports.reify= function(options) {
+      return new scenes.XSceneFactory([ BGLayer, UILayer ]).create(options);
     };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

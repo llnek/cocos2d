@@ -106,8 +106,8 @@ define("zotohlab/asx/xcfg",
        */
       game: {
         borderTiles: 'cbox-borders_x8.png',
+        start: sh.ptypes.start,
         preloadLevels: true,
-        start: 'StartScene',
         scale: 1,
         sfx: 'mp3',
         landscape: false,

@@ -7,22 +7,37 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/hud", ['cherimoia/skarojs',
-                         'zotohlab/asterix',
-                         'zotohlab/asx/ccsx',
-                         'zotohlab/asx/xlayers',
-                         'zotohlab/asx/xscenes'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xlayers
+ * @requires zotohlab/asx/xscenes
+ * @module zotohlab/tictactoe/hud
+ */
+define("zotohlab/p/hud",
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/xlayers',
+        'zotohlab/asx/xscenes'],
 
   function (sjs, sh, ccsx, layers, scenes) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/tictactoe/hud */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
     //////////////////////////////////////////////////////////////////////////
-    BackLayer = layers.XLayer.extend({
+    /**
+     * @class HUDBackLayer
+     */
+    HUDBackLayer = layers.XLayer.extend({
 
       pkInit: function() {
         this.centerImage(sh.getImagePath('game.bg'));
@@ -33,11 +48,13 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
     }),
 
     //////////////////////////////////////////////////////////////////////////
+    /**
+     * @class HUDLayer
+     */
     HUDLayer = layers.XGameHUDLayer.extend({
 
       initCtrlBtns: function(scale, where) {
-        var csts = xcfg.csts,
-        menu;
+        var menu;
 
         where = where || ccsx.AnchorBottom;
         scale = scale || 1;
@@ -278,14 +295,12 @@ define("zotohlab/p/hud", ['cherimoia/skarojs',
         this.status.setVisible(true);
       }
 
-
     });
 
-    return {
-      BackLayer: BackLayer,
-      HUDLayer: HUDLayer
-    };
+    exports.HUDBackLayer= HUDBackLayer;
+    exports.HUDLayer= HUDLayer;
 
+    return exports;
 });
 
 

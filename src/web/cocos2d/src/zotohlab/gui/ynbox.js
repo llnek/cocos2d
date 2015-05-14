@@ -7,20 +7,33 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/asx/ynbox", ['cherimoia/skarojs',
-                             'zotohlab/asterix',
-                             'zotohlab/asx/ccsx',
-                             'zotohlab/asx/xlayers',
-                             'zotohlab/asx/xscenes'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xlayers
+ * @requires zotohlab/asx/xscenes
+ * @module zotohlab/asx/ynbox
+ */
+define("zotohlab/asx/ynbox",
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/xlayers',
+        'zotohlab/asx/xscenes'],
+
   function (sjs, sh, ccsx, layers, scenes) { "use strict";
 
-    var xcfg= sh.xcfg,
+    /** @alias module:zotohlab/asx/ynbox */
+    var exports = {},
+    xcfg= sh.xcfg,
     csts= xcfg.csts,
     R= sjs.ramda,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     BGLayer = layers.XLayer.extend({
 
       rtti: function() { return "BGLayer"; },
@@ -36,7 +49,7 @@ define("zotohlab/asx/ynbox", ['cherimoia/skarojs',
       pkInit: function() {}
 
     }),
-
+    //////////////////////////////////////////////////////////////////////////
     UILayer =  layers.XLayer.extend({
 
       pkInit: function() {
@@ -74,16 +87,19 @@ define("zotohlab/asx/ynbox", ['cherimoia/skarojs',
 
     });
 
-    return {
-
-      'YesNo' : {
-        create: function(options) {
-          return new scenes.XSceneFactory( [ BGLayer, UILayer ]).create(options);
-        }
-      }
-
+    /**
+     * Create a YesNo message screen.
+     *
+     * @method create
+     * @static
+     * @param {Object} options
+     * @return {cc.Scene}
+     */
+    exports.create= function(options) {
+      return new scenes.XSceneFactory( [ BGLayer, UILayer ]).create(options);
     };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

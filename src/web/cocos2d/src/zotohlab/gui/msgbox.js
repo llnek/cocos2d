@@ -9,19 +9,33 @@
 // this software.
 // Copyright (c) 2013-2014, Ken Leung. All rights reserved.
 
-define("zotohlab/asx/msgbox", ['cherimoia/skarojs',
-                              'zotohlab/asterix',
-                              'zotohlab/asx/ccsx',
-                              'zotohlab/asx/xlayers',
-                              'zotohlab/asx/xscenes'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xlayers
+ * @requires zotohlab/asx/xscenes
+ * @module zotohlab/asx/msgbox
+ */
+define("zotohlab/asx/msgbox",
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/xlayers',
+        'zotohlab/asx/xscenes'],
+
   function (sjs, sh, ccsx, layers, scenes) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/asx/msgbox */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     BGLayer = layers.XLayer.extend({
+
       rtti: function() { return "BGLayer"; },
 
       ctor: function() {
@@ -35,8 +49,8 @@ define("zotohlab/asx/msgbox", ['cherimoia/skarojs',
       pkInit: function() {}
 
     }),
-
-    UILayer =  layers.XLayer.extend({
+    //////////////////////////////////////////////////////////////////////////
+    UILayer = layers.XLayer.extend({
 
       pkInit: function() {
         var qn= new cc.LabelBMFont(sh.l10n(this.options.msg),
@@ -68,17 +82,19 @@ define("zotohlab/asx/msgbox", ['cherimoia/skarojs',
 
     });
 
+    /**
+     * Create a scene to display the message.
+     *
+     * @method reify
+     * @param {Object} options
+     * @return {cc.Scene}
+     * @static
+     */
+    exports.create = function(options) {
+      return new scenes.XSceneFactory([ BGLayer, UILayer ]).create(options);
+    }
 
-    return {
-
-      'MsgBox' : {
-        create: function(options) {
-          return new scenes.XSceneFactory([ BGLayer, UILayer ]).create(options);
-        }
-      }
-
-    };
-
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

@@ -9,13 +9,24 @@
 // this software.
 // Copyright (c) 2013-2014, Ken Leung. All rights reserved.
 
-define("zotohlab/asx/xpool", ['cherimoia/skarojs',
-                              'zotohlab/asterix'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @module zotohlab/asx/xpool
+ */
+define("zotohlab/asx/xpool",
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix'],
+
   function (sjs, sh) { "use strict";
 
     //////////////////////////////////////////////////////////////////////////////
-    var R= sjs.ramda,
+    /** @alias module:zotohlab/asx/xpool */
+    var exports = {},
+    R= sjs.ramda,
     undef,
+
     XEntityPool = sjs.Class.xtends({
 
       checkEntity: function(ent) {
@@ -63,11 +74,22 @@ define("zotohlab/asx/xpool", ['cherimoia/skarojs',
       }
 
     }),
+
+    /**
+     * @class XPool
+     */
     XPool = sjs.Class.xtends({
 
+      /**
+       * Pre-populate a bunch of objects in the pool.
+       *
+       * @memberof module:zotohlab/asx/xpool~XPool
+       * @method preSet
+       * @param {Function} ctor - object constructor
+       * @param {Number} count
+       */
       preSet: function(ctor, count) {
-        var olen = this.pool.length,
-        sz = count || 48,
+        var sz = count || 48,
         n, rc;
 
         for (n=0; n < sz; ++n) {
@@ -78,6 +100,14 @@ define("zotohlab/asx/xpool", ['cherimoia/skarojs',
         }
       },
 
+      /**
+       * Find an object by applying this filter.
+       *
+       * @memberof module:zotohlab/asx/xpool~XPool
+       * @method select
+       * @param {Function} filter
+       * @return {Object} - the selected one
+       */
       select: function(filter) {
         var rc, n;
         for (n=0; n < this.pool.length; ++n) {
@@ -88,6 +118,13 @@ define("zotohlab/asx/xpool", ['cherimoia/skarojs',
         }
       },
 
+      /**
+       * Get an object from the pool and set it's status to true.
+       *
+       * @memberof module:zotohlab/asx/xpool~XPool
+       * @method getAndSet
+       * @return {Object}
+       */
       getAndSet: function() {
         var rc= this.get();
         if (!!rc) {
@@ -96,6 +133,13 @@ define("zotohlab/asx/xpool", ['cherimoia/skarojs',
         return rc;
       },
 
+      /**
+       * Get an object from the pool.  More like a peek.
+       *
+       * @memberof module:zotohlab/asx/xpool~XPool
+       * @method get
+       * @return {Object}
+       */
       get: function() {
         for (var n=0; n < this.pool.length; ++n) {
           if (!this.pool[n].status) {
@@ -105,6 +149,13 @@ define("zotohlab/asx/xpool", ['cherimoia/skarojs',
         return null;
       },
 
+      /**
+       * Get the count of active objects.
+       *
+       * @memberof module:zotohlab/asx/xpool~XPool
+       * @method actives
+       * @return {Number}
+       */
       actives: function() {
         var c=0;
         for (var n=0; n < this.pool.length; ++n) {
@@ -115,8 +166,23 @@ define("zotohlab/asx/xpool", ['cherimoia/skarojs',
         return c;
       },
 
+      /**
+       * Get the size of the pool.
+       *
+       * @memberof module:zotohlab/asx/xpool~XPool
+       * @method size
+       * @return {Number}
+       */
       size: function() { return this.pool.length; },
 
+      /**
+       * Like map, but with no output.
+       *
+       * @memberof module:zotohlab/asx/xpool~XPool
+       * @method iter
+       * @param {Function} func
+       * @param {Object} target - if null, use the pool
+       */
       iter: function(func, target) {
         target = target || this;
         for (var n=0; n < this.pool.length; ++n) {
@@ -124,19 +190,38 @@ define("zotohlab/asx/xpool", ['cherimoia/skarojs',
         }
       },
 
+      /**
+       * Hibernate (status off) all objects in the pool.
+       *
+       * @memberof module:zotohlab/asx/xpool~XPool
+       * @method deflate
+       */
       reset: function() {
         R.forEach(function(z) {
           z.deflate();
         }, this.pool);
       },
 
+
+      /**
+       * Constructor.
+       *
+       * @memberof module:zotohlab/asx/xpool~XPool
+       * @method ctor
+       */
       ctor: function() {
         this.pool = [];
       }
 
     });
 
-    return XPool;
+    /**
+     * @property {XPool.Class} XPool
+     * @final
+     */
+    exports.XPool = XPool;
+
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

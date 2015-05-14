@@ -7,134 +7,110 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/asx/xmmenus", ['cherimoia/skarojs',
-                               'zotohlab/asterix',
-                               'zotohlab/asx/ccsx',
-                               'zotohlab/asx/xlayers'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xlayers
+ * @module zotohlab/asx/xmmenus
+ */
+define("zotohlab/asx/xmmenus",
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/xlayers'],
+
   function (sjs, sh, ccsx, layers) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/asx/xmmenus */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
 
+    //////////////////////////////////////////////////////////////////////////
+    /**
+     * @class XMenuBackLayer
+     */
     XMenuBackLayer = layers.XLayer.extend({
 
+      /**
+       * @memberof module:zotohlab/asx/xmmenus~XMenuBackLayer
+       * @method pkInit
+       * @protected
+       */
       pkInit: function() {
+        this.setBg();
+        this.setTitle();
+      },
 
-        var imgUrl= sh.getImagePath('gui.mmenu.menu.bg'),
-        cw = ccsx.center(),
-        wz = ccsx.vrect(),
-        wb = ccsx.vbox(),
-        s,
-        title;
-
-        this._super();
-
-        if (!!imgUrl) {
-          s= new cc.Sprite(imgUrl);
-          s.setPosition(cw);
-          this.addItem(s);
-        }
-
-        title = new cc.LabelBMFont(sh.l10n('%mmenu'),
-                                   sh.getFontPath('font.JellyBelly')),
+      setTitle: function() {
+        var title = new cc.LabelBMFont(sh.l10n('%mmenu'),
+                                       sh.getFontPath('font.JellyBelly')),
         title.setPosition(cw.x, wb.top - csts.TILE * 8 / 2);
         title.setOpacity(0.9*255);
         title.setScale(0.2);
-
         this.addItem(title);
       },
 
+      setBg : function() {
+        this.centerImage(sh.getImagePath('gui.mmenu.menu.bg'));
+      },
+
+      /**
+       * @memberof module:zotohlab/asx/xmmenus~XMenuBackLayer
+       * @method rtti
+       * @return {String} - id
+       */
       rtti: function() { return 'XMenuBackLayer'; }
 
     }),
 
+    /**
+     * @class XMenuLayer
+     */
     XMenuLayer= layers.XLayer.extend({
 
-      doCtrlBtns: function() {
-        var audio = xcfg.assets.sprites['gui.audio'],
-        wz = ccsx.vrect(),
-        wb = ccsx.vbox(),
-        cw = ccsx.center(),
-        s1 = [null, null, null],
-        s2 = [null, null, null],
-        menu, t2,t1,
-        w= audio[1],
-        h= audio[2],
-        p= sh.sanitizeUrl(audio[0]);
+      /**
+       *
+       * @memberof module:zotohlab/asx/xmmenus~XMenuLayer
+       * @method rtti
+       * @return {String} - id
+       */
+      rtti: function() { return 'XMenuLayer'; },
 
-        for (var n=0; n < 3; ++n) {
-          s1[n]= new cc.Sprite(p, cc.rect(w,0,w,h));
-          s2[n]= new cc.Sprite(p, cc.rect(0,0,w,h));
-        }
+      mkBackQuit: function(vert, btns, posfn) {
+        var sz, menu;
 
-        audio= new cc.MenuItemToggle(new cc.MenuItemSprite(s1[0], s1[1], s1[2],
-                                                           sjs.NILFUNC, this),
-                                     new cc.MenuItemSprite(s2[0], s2[1], s2[2],
-                                                           sjs.NILFUNC, this),
-               function(sender) {
-                if (sender.getSelectedIndex() === 0) {
-                  sh.toggleSfx(true);
-                } else {
-                  sh.toggleSfx(false);
-                }
-               });
-        audio.setAnchorPoint(cc.p(0,0));
-        if (xcfg.sound.open) {
-          audio.setSelectedIndex(0);
+        if (vert) {
+          menu = ccsx.vmemu(btns);
         } else {
-          audio.setSelectedIndex(1);
+          menu= ccsx.hmenu(btns);
         }
 
-        menu= new cc.Menu(audio);
-        menu.setPosition(csts.TILE + csts.S_OFF,
-                         csts.TILE + csts.S_OFF);
-        this.addItem(menu);
-
-        //all these to make 2 buttons
-        R.mapIndexed(function(z, pos, lst) {
-          lst[pos]= new cc.Sprite( sh.getImagePath('gui.mmenu.back'));
-        }, s2);
-        R.mapIndexed(function(z, pos, lst) {
-          lst[pos]= new cc.Sprite( sh.getImagePath('gui.mmenu.quit'));
-        }, s1);
-        t2 = new cc.MenuItemSprite(s2[0], s2[1], s2[2], function() {
-          this.options.onBack();
-        },this);
-        t1 = new cc.MenuItemSprite(s1[0], s1[1], s1[2], function() {
-          this.pkQuit();
-        }, this);
-        menu= new cc.Menu(t1,t2);
-        menu.alignItemsHorizontallyWithPadding(10);
-        menu.setPosition(wb.right - csts.TILE - csts.S_OFF - (s2[0].getContentSize().width + s1[0].getContentSize().width + 10) * 0.5,
-          wb.bottom + csts.TILE + csts.S_OFF + s2[0].getContentSize().height * 0.5);
+        sz= menu.getChildren()[0].getContentSize();
+        if (posfn) {
+          posfn(menu, sz);
+        }
         this.addItem(menu);
       },
 
-      rtti: function() { return 'XMenuLayer'; },
-
-      pkQuit: function() {
-        var ss= sh.protos['StartScreen'],
-        yn= sh.protos['YesNo'],
-        dir = cc.director;
-
-        dir.pushScene( yn.create({
-          onBack: function() { dir.popScene(); },
-          yes: function() {
-            sh.sfxPlay('game_quit');
-            dir.popToRootScene();
-            dir.runScene(ss.create());
-            //dir.replaceRootScene( ss.create() );
-          }
-        }));
+      mkAudio: function(options) {
+        this.addAudioIcon(options);
       }
 
     });
 
 
+    /**
+     * @memberof module:zotohlab/asx/xmmenus~XMenuLayer
+     * @method onShowMenu
+     * @static
+     */
     XMenuLayer.onShowMenu = function() {
       var dir= cc.director;
       dir.pushScene( sh.protos['MainMenu'].create({
@@ -144,10 +120,19 @@ define("zotohlab/asx/xmmenus", ['cherimoia/skarojs',
       }));
     };
 
-    return {
-      XMenuBackLayer: XMenuBackLayer,
-      XMenuLayer: XMenuLayer
-    };
+    /**
+     * @property {XMenuBackLayer.Class} XMenuBackLayer
+     * @final
+     */
+    exports.XMenuBackLayer= XMenuBackLayer;
+
+    /**
+     * @property {XMenuLayer.Class} XMenuLayer
+     * @final
+     */
+    exports.XMenuLayer= XMenuLayer;
+
+    return exports;
 
 });
 

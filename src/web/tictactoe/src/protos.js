@@ -9,14 +9,27 @@
 // this software.
 // Copyright (c) 2013-2014, Ken Leung. All rights reserved.
 
-define("zotohlab/p/protodefs", ['cherimoia/skarojs',
-                               'zotohlab/asterix',
-                               'zotohlab/asx/onlineplay',
-                               'zotohlab/asx/msgbox',
-                               'zotohlab/asx/ynbox',
-                               'zotohlab/p/splash',
-                               'zotohlab/p/mmenu',
-                               'zotohlab/p/arena'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/onlineplay
+ * @requires zotohlab/asx/msgbox
+ * @requires zotohlab/asx/ynbox
+ * @requires zotohlab/tictactoe/splash
+ * @requires zotohlab/tictactoe/mmenu
+ * @requires zotohlab/tictactoe/arena
+ * @module zotohlab/tictactoe/protodefs
+ */
+define("zotohlab/p/protodefs",
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/onlineplay',
+        'zotohlab/asx/msgbox',
+        'zotohlab/asx/ynbox',
+        'zotohlab/p/splash',
+        'zotohlab/p/mmenu',
+        'zotohlab/p/arena'],
 
   function (sjs, sh, online,
             msgbox, ynbox, splash, mmenu, arena) { "use strict";
@@ -27,16 +40,21 @@ define("zotohlab/p/protodefs", ['cherimoia/skarojs',
     undef,
     protos= sh.protos;
 
+    /** @alias module:zotohlab/tictactoe/protodefs */
+    var exports = {};
+
+
     R.forEach(function(obj) {
-
-      sjs.eachObj(function(v,k) {
-            protos[k] = v;
-      }, obj);
-
+      protos[obj.rtti] = obj.ctor;
     }, ps);
 
-    return protos;
+    /**
+     * @property {Object} pdefs
+     * @final
+     */
+    exports.pdefs = protos;
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

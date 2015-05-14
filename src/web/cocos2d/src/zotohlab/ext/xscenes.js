@@ -9,33 +9,56 @@
 // this software.
 // Copyright (c) 2013-2014, Ken Leung. All rights reserved.
 
-define("zotohlab/asx/xscenes", ['cherimoia/skarojs',
-                               'cherimoia/ebus',
-                               'zotohlab/asterix',
-                               'zotohlab/asx/xlayers'],
-  function (sjs, EventBus, sh, xlayers) { "use strict";
+/**
+ * @requires cherimoia/skarojs
+ * @requires cherimoia/ebus
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/xlayers
+ * @module zotohlab/asx/xscenes
+ */
+define("zotohlab/asx/xscenes",
 
-    var R = sjs.ramda,
+       ['cherimoia/skarojs',
+        'cherimoia/ebus',
+        'zotohlab/asterix',
+        'zotohlab/asx/xlayers'],
+
+  function (sjs, ebus, sh, xlayers) { "use strict";
+
+    /** @alias module:zotohlab/asx/xscenes */
+    var exports = {},
+    R = sjs.ramda,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
+    /**
+     * @class XScene
+     */
     var XScene = cc.Scene.extend({
 
-      //ebus: global.ZotohLab.MakeEventBus(),
-      //layers: {},
-      //lays: [],
-      //options : {},
-
+      /**
+       * @memberof module:zotohlab/asx/xscenes~XScene
+       * @method getLayers
+       * @return {Array}
+       */
       getLayers: function() {
         return this.layers;
       },
 
+      /**
+       * @memberof module:zotohlab/asx/xscenes~XScene
+       * @method init
+       */
       init: function() {
         this._super();
         this.createLayers();
         return true;
       },
 
+      /**
+       * @memberof module:zotohlab/asx/xscenes~XScene
+       * @method createLayers
+       */
       createLayers: function() {
         var a = this.lays || [],
         glptr = undef,
@@ -68,19 +91,36 @@ define("zotohlab/asx/xscenes", ['cherimoia/skarojs',
         }
       },
 
+      /**
+       * Constructor.
+       *
+       * @memberof module:zotohlab/asx/xscenes~XScene
+       * @method ctor
+       * @param {Array} ls - list of layers
+       * @param {Object} options
+       */
       ctor: function(ls, options) {
         this.options = options || {};
         this._super();
         this.lays= ls || [];
         this.layers= {};
-        this.ebus= EventBus.reify();
+        this.ebus= ebus.reify();
       }
 
     });
 
     //////////////////////////////////////////////////////////////////////////////
+    /**
+     * @class XSceneFactory
+     */
     var XSceneFactory = sjs.Class.xtends({
 
+      /**
+       * @memberof module:zotohlab/asx/xscenes~XSceneFactory
+       * @method create
+       * @param {Object} options
+       * @return {cc.Scene}
+       */
       create: function(options) {
         var itemKey= 'layers',
         arr= this.layers,
@@ -97,17 +137,32 @@ define("zotohlab/asx/xscenes", ['cherimoia/skarojs',
         return scene;
       },
 
+      /**
+       * Constructor.
+       *
+       * @memberof module:zotohlab/asx/xscenes~XSceneFactory
+       * @method ctor
+       * @param {Array} - list of layers
+       */
       ctor: function(ls) {
         this.layers= ls || [];
       }
 
     });
 
-    return {
-      XSceneFactory: XSceneFactory,
-      XScene: XScene
-    };
+    /**
+     * @property {XSceneFactory.Class} XSceneFactory
+     * @final
+     */
+    exports.XSceneFactory= XSceneFactory;
 
+    /**
+     * @property {XScene.Class} XScene
+     * @final
+     */
+    exports.XScene= XScene;
+
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

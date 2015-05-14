@@ -7,28 +7,55 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/asx/xloader", ['cherimoia/skarojs',
-                               'zotohlab/asterix',
-                               'zotohlab/asx/ccsx'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/asx/xloader
+ */
+define("zotohlab/asx/xloader",
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
+
   function (sjs, sh, ccsx) { "use strict";
 
-    var _instance= null,
+    /** @alias module:zotohlab/asx/xloader */
+    var exports = {},
+    _instance= null,
     CHUNK=36,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
+    /**
+     * @class XLoader
+     */
     var XLoader = cc.Scene.extend({
 
+      /**
+       * Constructor.
+       *
+       * @memberof module:zotohlab/asx/xloader~XLoader
+       * @method ctor
+       */
       ctor: function () {
         this._super();
-
+        // black back-ground
         this.bgLayer = new cc.LayerColor(cc.color(0,0,0, 255));
         this.bgLayer.setPosition(0, 0);
         this.addChild(this.bgLayer);
       },
 
+      /**
+       * Sets up the loader, runs once.
+       *
+       * @memberof module:zotohlab/asx/xloader~XLoader
+       * @method pkLoad
+       * @private
+       */
       pkLoad: function () {
         var cw = ccsx.center(),
         pfx='/public/ig/res/',
@@ -82,6 +109,8 @@ define("zotohlab/asx/xloader", ['cherimoia/skarojs',
                                           cc.CallFunc.create(this.selector, this.target)));
       },
 
+      // we have to load chunk by chunk because the array of resources
+      // can't be too big, else jsb complains
       loadChunk: function() {
         var res = this.resources,
         me=this,
@@ -98,10 +127,13 @@ define("zotohlab/asx/xloader", ['cherimoia/skarojs',
         });
       },
 
+      // loading. step1
       pkStartLoading: function () {
         var res = this.resources,
         me=this;
 
+        // [head, tail, state] snapshot info used by
+        // each iteration as we chunk up the unput
         this._pres= [0, Math.min(CHUNK, res.length), false];
         this._count=0;
 
@@ -118,6 +150,7 @@ define("zotohlab/asx/xloader", ['cherimoia/skarojs',
 
         this.progress.setPercentage(perc);
         if (cnt >= len) {
+          // done
           this.unscheduleUpdate();
           this.niceFadeOut();
         }
@@ -132,11 +165,19 @@ define("zotohlab/asx/xloader", ['cherimoia/skarojs',
         }
       }
 
-
     });
 
 
     //////////////////////////////////////////////////////////////////////////////
+    /**
+     * @memberof module:zotohlab/asx/xloader~XLoader
+     * @method preload
+     * @static
+     * @param {Array} resources
+     * @param {Function} selector
+     * @param {Object} target
+     * @return {XLoader} - the XLoader singleton.
+     */
     XLoader.preload = function (resources, selector, target) {
       var director = cc.director;
 
@@ -148,7 +189,13 @@ define("zotohlab/asx/xloader", ['cherimoia/skarojs',
       return _instance;
     };
 
-    return XLoader;
+    /**
+     * @property {XLoader.Class} XLoader
+     * @final
+     */
+    exports.XLoader = XLoader;
+
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////
