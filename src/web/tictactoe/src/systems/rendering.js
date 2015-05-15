@@ -7,8 +7,17 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/tictactoe/priorities
+ * @requires zotohlab/tictactoe/utils
+ * @requires zotohlab/tictactoe/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/tictactoe/rendering
+ */
 define("zotohlab/p/s/rendering",
 
        ['zotohlab/p/s/priorities',
@@ -20,26 +29,53 @@ define("zotohlab/p/s/rendering",
 
   function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var R = sjs.ramda,
+    /** @alias module:zotohlab/tictactoe/rendering */
+    var exports= {},
+    R = sjs.ramda,
     xcfg= sh.xcfg,
     csts= xcfg.csts,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
+    /**
+     * @class RenderSystem
+     */
     var RenderSystem = sh.Ashley.sysDef({
 
+      /**
+       * Constructor.
+       *
+       * @memberof module:zotohlab/tictactoe/rendering~RenderSystem
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state= options;
       },
 
+      /**
+       * @memberof module:zotohlab/tictactoe/rendering~RenderSystem
+       * @method removeFromEngine
+       * @param {Engine} engine
+       */
       removeFromEngine: function(engine) {
-        this.board=null;
+        this.board={};
       },
 
+      /**
+       * @memberof module:zotohlab/tictactoe/rendering~RenderSystem
+       * @method addToEngine
+       * @param {Engine} engine
+       */
       addToEngine: function(engine) {
         this.board = engine.getNodeList(gnodes.BoardNode);
       },
 
+      /**
+       * @memberof module:zotohlab/tictactoe/rendering~RenderSystem
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         var node = this.board.head;
         if (this.state.running &&
@@ -48,6 +84,9 @@ define("zotohlab/p/s/rendering",
         }
       },
 
+      /**
+       * @private
+       */
       process: function(node) {
         var values= node.grid.values,
         view= node.view,
@@ -72,10 +111,11 @@ define("zotohlab/p/s/rendering",
 
       },
 
+      /**
+       * Given a cell, find the screen co-ordinates for that cell.
+       * @private
+       */
       xrefCell: function(pos, map) {
-        // given a cell, find the screen co-ordinates for that cell.
-        //var img2= sh.main.cache.getImage('gamelevel1.sprites.markers');
-        //var delta= 0;//72;//img2.height;
         var gg, x, y,
         delta=0;
 
@@ -90,11 +130,20 @@ define("zotohlab/p/s/rendering",
         }
       }
 
-
     });
 
+    /**
+     * @property {Number} Priority
+     * @final
+     */
     RenderSystem.Priority = pss.Render;
-    return RenderSystem;
+
+    /**
+     * @property {RenderSystem.Class} RenderSystem
+     * @final
+     */
+    exports.RenderSystem = RenderSystem;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

@@ -32,6 +32,7 @@ define("zotohlab/p/s/factory",
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
+    // returns array of winning combinations.
     function mapGoalSpace(size) {
       var ROWSPACE = [],
       COLSPACE = [],
@@ -56,12 +57,27 @@ define("zotohlab/p/s/factory",
     }
 
     //////////////////////////////////////////////////////////////////////////////
+    /**
+     * @class EntityFactory
+     */
     var EntityFactory = sh.Ashley.casDef({
 
+      /**
+       * Constructor.
+       *
+       * @memberof module:zotohlab/tictactoe/factory~EntityFactory
+       * * @method constructor
+       * @param {Object} engine
+       */
       constructor: function(engine) {
         this.engine=engine;
       },
 
+      /**
+       * @memberof module:zotohlab/tictactoe/factory~EntityFactory
+       * @method createBoard
+       * @return {Entity}
+       */
       createBoard: function(layer, options) {
         var goals= mapGoalSpace(options.size),
         bd= new cobjs.GameBoard(options.size,
@@ -83,7 +99,12 @@ define("zotohlab/p/s/factory",
 
     });
 
-    return EntityFactory;
+    /**
+     * @property {EntityFactory.Class} Entityfactory
+     * @final
+     */
+    exports.EntityFactory = EntityFactory;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

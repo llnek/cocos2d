@@ -7,13 +7,22 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires cherimoia/skarojs
+ * @module zotohlab/tictactoe/priorities
+ */
 define("zotohlab/p/s/priorities", ['cherimoia/skarojs'],
 
   function (sjs) { "use strict";
 
-    return {
+    /**
+     * @alias module:zotohlab/tictactoe/priorities
+     * @enum {Number}
+     * @readonly
+     */
+    var exports= {
 
       PreUpdate: 1,
       Movement: 2,
@@ -23,6 +32,7 @@ define("zotohlab/p/s/priorities", ['cherimoia/skarojs'],
 
     };
 
+    return exports;
 });
 
 

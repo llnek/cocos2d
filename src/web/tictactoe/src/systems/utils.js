@@ -7,11 +7,19 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/s/utils", ['cherimoia/skarojs',
-                             'zotohlab/asterix',
-                             'zotohlab/asx/ccsx'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/tictactoe/utils
+ */
+define("zotohlab/p/s/utils",
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (sjs, sh, ccsx) { "use strict";
 
@@ -20,8 +28,18 @@ define("zotohlab/p/s/utils", ['cherimoia/skarojs',
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    return {
+    /** @alias module:zotohlab/tictactoe/utils */
+    var exports= {
 
+      /**
+       * Calculate position of each individual cells in the grid,
+       * so that we can detect when a user clicks on the cell.
+       *
+       * @method mapGridPos
+       * @param {Number} gsz
+       * @param {Number} scale
+       * @return {Array}
+       */
       mapGridPos: function (gsz, scale) {
         gsz = gsz || csts.GRID_SIZE;
         scale = scale || 1;
@@ -49,7 +67,8 @@ define("zotohlab/p/s/utils", ['cherimoia/skarojs',
           for (var c= 0; c < gsz; ++c) {
             y2 = y1 - csz.height;
             x2 = x1 + csz.width;
-            gridMap[r * gsz + c] = { left: x1, top: y1, right: x2, bottom: y2};
+            gridMap[r * gsz + c] = { left: x1, top: y1,
+                                     right: x2, bottom: y2};
             x1 = x2 + gw;
           }
           y1 = y2 - gh;
@@ -58,6 +77,9 @@ define("zotohlab/p/s/utils", ['cherimoia/skarojs',
         return gridMap;
       },
 
+      /**
+       * @private
+       */
       pkFlip: function(img,flip) {
         if (flip) {
           return img + ".i.png";
@@ -66,6 +88,9 @@ define("zotohlab/p/s/utils", ['cherimoia/skarojs',
         }
       },
 
+      /**
+       * @private
+       */
       xrefImg: function(value) {
         switch (value) {
           case csts.CV_X: return 'x';
@@ -75,10 +100,19 @@ define("zotohlab/p/s/utils", ['cherimoia/skarojs',
       },
 
       //pass in gridview
+      /**
+       * @method drawSymbol
+       * @param {Object} view
+       * @param {Number} x
+       * @param {Number} y
+       * @param {Number} value
+       * @param {Boolean} flip
+       * @return {cc.Sprite}
+       */
       drawSymbol: function(view, x,y,value,flip) {
         var frame = this.pkFlip(this.xrefImg(value),flip),
         s1= ccsx.createSpriteFrame(frame);
-        s1.setAnchorPoint(ccsx.AnchorCenter);
+        s1.setAnchorPoint(ccsx.acs.Center);
         s1.setPosition(x,y);
         view.layer.addAtlasItem('game-pics', s1);
         return s1;
@@ -86,6 +120,7 @@ define("zotohlab/p/s/utils", ['cherimoia/skarojs',
 
     };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

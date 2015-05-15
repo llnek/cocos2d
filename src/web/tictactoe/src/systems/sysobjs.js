@@ -7,19 +7,35 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/sysobjs", ['zotohlab/p/components',
-                             'zotohlab/p/gnodes',
-                             'zotohlab/p/s/utils',
-                             'zotohlab/p/s/priorities',
-                             'zotohlab/p/s/factory',
-                             'zotohlab/p/s/network',
-                             'zotohlab/p/s/rendering',
-                             'zotohlab/p/s/resolution',
-                             'zotohlab/p/s/supervisor',
-                             'zotohlab/p/s/turnbase',
-                             'zotohlab/p/s/uiselect'],
+/**
+ * @requires zotohlab/p/components
+ * @requires zotohlab/p/gnodes
+ * @requires zotohlab/p/s/utils
+ * @requires zotohlab/p/s/priorities
+ * @requires zotohlab/p/s/factory
+ * @requires zotohlab/p/s/network
+ * @requires zotohlab/p/s/rendering
+ * @requires zotohlab/p/s/resolution
+ * @requires zotohlab/p/s/supervisor
+ * @requires zotohlab/p/s/turnbase
+ * @requires zotohlab/p/s/uiselect
+ * @module zotohlab/tictactoe/sysobjs
+ */
+define("zotohlab/p/sysobjs",
+
+       ['zotohlab/p/components',
+        'zotohlab/p/gnodes',
+        'zotohlab/p/s/utils',
+        'zotohlab/p/s/priorities',
+        'zotohlab/p/s/factory',
+        'zotohlab/p/s/network',
+        'zotohlab/p/s/rendering',
+        'zotohlab/p/s/resolution',
+        'zotohlab/p/s/supervisor',
+        'zotohlab/p/s/turnbase',
+        'zotohlab/p/s/uiselect'],
 
   function (cobjs, gnodes, utils,
             Priorities,
@@ -31,21 +47,58 @@ define("zotohlab/p/sysobjs", ['zotohlab/p/components',
             TurnBaseSystem,
             SelectionSystem) { "use strict";
 
-    return {
+    /** @alias module:zotohlab/tictactoe/sysobjs */
+    var exports= {
 
+      /**
+       * @property {Priorities} Priorities
+       * @final
+       */
       Priorities: Priorities,
+      /**
+       * @property {Factory} Factory
+       * @final
+       */
       Factory: EntityFactory,
+      /**
+       * @property {GameSupervisor} GameSupervisor
+       * @final
+       */
       GameSupervisor: Supervisor,
+      /**
+       * @property {NetworkSystem} NetworkSystem
+       * @final
+       */
       NetworkSystem: NetworkSystem,
+      /**
+       * @property {SelectionSystem} SelectionSystem
+       * @final
+       */
       SelectionSystem: SelectionSystem,
+      /**
+       * @property {TurnBaseSystem} TurnBaseSystem
+       * @final
+       */
       TurnBaseSystem: TurnBaseSystem,
+      /**
+       * @property {ResolutionSystem} ResolutionSystem
+       * @final
+       */
       ResolutionSystem: ResolutionSystem,
+      /**
+       * @property {RenderSystem} RenderSystem
+       * @final
+       */
       RenderSystem: RenderSystem,
+      /**
+       * @property {SystemUtils} SystemUtils
+       * @final
+       */
       SystemUtils: utils
 
     };
 
-
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

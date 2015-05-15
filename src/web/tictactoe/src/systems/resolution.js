@@ -7,8 +7,17 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/tictactoe/priorities
+ * @requires zotohlab/tictactoe/utils
+ * @requires zotohlab/tictactoe/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/tictactoe/resolution
+ */
 define("zotohlab/p/s/resolution",
 
        ['zotohlab/p/s/priorities',
@@ -20,26 +29,51 @@ define("zotohlab/p/s/resolution",
 
   function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/tictactoe/resolution */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
+    /**
+     * @class ResolutionSystem
+     */
     var ResolutionSystem = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/tictactoe/resolution~ResolutionSystem
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state= options;
       },
 
+      /**
+       * @memberof module:zotohlab/tictactoe/resolution~ResolutionSystem
+       * @method removeFromEngine
+       * @param {Engine} engine
+       */
       removeFromEngine: function(engine) {
         this.board=null;
       },
 
+      /**
+       * @memberof module:zotohlab/tictactoe/resolution~ResolutionSystem
+       * @method addToEngine
+       * @param {Engine} engine
+       */
       addToEngine: function(engine) {
         this.board = engine.getNodeList(gnodes.BoardNode);
       },
 
+      /**
+       * @memberof module:zotohlab/tictactoe/resolution~ResolutionSystem
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         var node= this.board.head;
         if (this.state.running &&
@@ -48,6 +82,9 @@ define("zotohlab/p/s/resolution",
         }
       },
 
+      /**
+       * @private
+       */
       process: function(node, dt) {
         var values= node.grid.values,
         msg,
@@ -78,17 +115,26 @@ define("zotohlab/p/s/resolution",
         }
       },
 
+      /**
+       * @private
+       */
       doWin: function(node, winner, combo) {
-        sh.fireEvent('/game/hud/score/update',
-                     {color: winner.color,
-                      score: 1});
+        sh.fire('/hud/score/update',
+                {color: winner.color,
+                 score: 1});
         this.doDone(node, winner, combo);
       },
 
+      /**
+       * @private
+       */
       doDraw: function(node) {
         this.doDone(node, null, []);
       },
 
+      /**
+       * @private
+       */
       doForfeit: function(node) {
         var other = this.state.actor===1 ? 2 : this.state.actor===2 ? 1 : 0;
         var tv = this.state.players[this.state.actor];
@@ -101,9 +147,9 @@ define("zotohlab/p/s/resolution",
           v2 = tv.value;
         }
 
-        sh.fireEvent('/game/hud/score/update',
-                     {color: win.color,
-                      score: 1});
+        sh.fire('/hud/score/update',
+                {color: win.color,
+                 score: 1});
 
         //gray out the losing icons
         R.forEachIndexed(function(z, n) {
@@ -116,7 +162,10 @@ define("zotohlab/p/s/resolution",
         this.doDone(node, win, null);
       },
 
-      // flip all other icons except for the winning ones.
+      /**
+       * Flip all other icons except for the winning ones.
+       * @private
+       */
       showWinningIcons: function(view, combo) {
         var layer= view.layer,
         cs = view.cells;
@@ -124,32 +173,41 @@ define("zotohlab/p/s/resolution",
         if (combo===null) { return; }
 
         R.forEachIndexed(function(z, n) {
-          if (! R.contains(n, combo)) { if (z && z[3] !== csts.CV_Z) {
+          if (! R.contains(n, combo)) { if (!!z && z[3] !== csts.CV_Z) {
             layer.removeAtlasItem('markers', z[0]);
             z[0] = utils.drawSymbol(view, z[1], z[2], z[3], true);
           } }
         }.bind(this), cs);
       },
 
+      /**
+       * @private
+       */
       doDone: function(node, pobj, combo) {
 
         var pnum = !!pobj ? pobj.pnum : 0;
 
         this.showWinningIcons(node.view, combo);
-        sh.fireEvent('/game/hud/timer/hide');
+        sh.fire('/hud/timer/hide');
         sh.sfxPlay('game_end');
-        sh.fireEvent('/game/hud/end', { winner: pnum });
+        sh.fire('/hud/end', { winner: pnum });
 
         this.state.lastWinner = pnum;
         this.state.running=false;
       },
 
+      /**
+       * @private
+       */
       checkDraw: function(values) {
         return ! (csts.CV_Z === R.find(function(v) {
           return (v === csts.CV_Z);
         }, values));
       },
 
+      /**
+       * @private
+       */
       checkWin: function(actor, game) {
         //sjs.loggr.debug('checking win for ' + actor.color);
         var combo, rc= R.any(function(r) {
@@ -166,8 +224,19 @@ define("zotohlab/p/s/resolution",
 
     });
 
+    /**
+     * @memberof module:zotohlab/tictactoe/resolution~ResolutionSystem
+     * @property {Number} Priority
+     * @final
+     */
     ResolutionSystem.Priority= pss.Resolve;
-    return ResolutionSystem;
+
+    /**
+     * @property {ResolutionSystem.Class} ResolutionSystem
+     * @final
+     */
+    exports.ResolutionSystem = ResolutionSystem;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

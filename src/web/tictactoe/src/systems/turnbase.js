@@ -7,8 +7,17 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/tictactoe/priorities
+ * @requires zotohlab/tictactoe/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/odin
+ * @module zotohlab/tictactoe/turnbase
+ */
 define("zotohlab/p/s/turnbase",
 
        ['zotohlab/p/s/priorities',
@@ -20,27 +29,52 @@ define("zotohlab/p/s/turnbase",
 
   function (pss, gnodes, sjs, sh, ccsx, odin) { "use strict";
 
-    var evts= odin.Events,
+    /** @alias module:zotohlab/tictactoe/turnbase */
+    var exports = {          }
+    evts= odin.Events,
     xcfg= sh.xcfg,
     csts= xcfg.csts,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
+    /**
+     * @class TurnBaseSystem
+     */
     var TurnBaseSystem = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/tictactoe/turnbase~TurnBaseSystem
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state= options;
         this.botTimer=null;
       },
 
+      /**
+       * @memberof module:zotohlab/tictactoe/turnbase~TurnBaseSystem
+       * @method removeFromEngine
+       * @param {Engine} engine
+       */
       removeFromEngine: function(engine) {
         this.board=null;
       },
 
+      /**
+       * @memberof module:zotohlab/tictactoe/turnbase~TurnBaseSystem
+       * @method addToEngine
+       * @param {Engine} engine
+       */
       addToEngine: function(engine) {
         this.board = engine.getNodeList(gnodes.BoardNode);
       },
 
+      /**
+       * @memberof module:zotohlab/tictactoe/turnbase~TurnBaseSystem
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         var node= this.board.head;
         if (this.state.running &&
@@ -49,6 +83,9 @@ define("zotohlab/p/s/turnbase",
         }
       },
 
+      /**
+       * @private
+       */
       process: function(node, evt) {
         var ps= this.state.players,
         cp= ps[this.state.actor],
@@ -60,13 +97,13 @@ define("zotohlab/p/s/turnbase",
         //handle online play
         if (this.state.wsock) {
           //if the mouse click is from the valid user, handle it
-          if (cp && (this.state.pnum === cp.pnum)) {
+          if (!!cp && (this.state.pnum === cp.pnum)) {
             this.enqueue(sel.cell,cp.value,grid);
           }
         }
         else
         if (cp.category === csts.BOT) {
-          //create some small delay...
+          // for the bot, create some small delay...
           if (!!this.botTimer) {
             if (ccsx.timerDone(this.botTimer)) {
               var bd= bot.algo.getGameBoard(),
@@ -90,6 +127,9 @@ define("zotohlab/p/s/turnbase",
         sel.cell= -1;
       },
 
+      /**
+       * @private
+       */
       enqueue: function(pos, value, grid) {
 
         if ((pos >= 0 && pos < grid.values.length) &&
@@ -97,12 +137,12 @@ define("zotohlab/p/s/turnbase",
 
           var snd, pnum;
 
-          sh.fireEvent('/game/hud/timer/hide');
+          sh.fire('/hud/timer/hide');
 
           if (this.state.wsock) {
             this.onEnqueue(grid,this.state.actor,pos);
           } else {
-            if (this.state.actor ===1) {
+            if (this.state.actor === 1) {
               snd= 'x_pick';
               pnum = 2;
             } else {
@@ -113,13 +153,16 @@ define("zotohlab/p/s/turnbase",
             this.state.actor = pnum;
             sh.sfxPlay(snd);
             if (this.state.players[pnum].category === csts.HUMAN) {
-              sh.fireEvent('/game/hud/timer/show');
+              sh.fire('/hud/timer/show');
             }
           }
 
         }
       },
 
+      /**
+       * @private
+       */
       onEnqueue: function(grid,pnum,cell) {
         var src= {
           color: this.state.players[pnum].color,
@@ -141,9 +184,20 @@ define("zotohlab/p/s/turnbase",
 
     });
 
+    /**
+     * @memberof module:zotohlab/tictactoe/turnbase~TurnBaseSystem
+     * @property {Number} Priority
+     * @static
+     * @final
+     */
     TurnBaseSystem.Priority = pss.TurnBase;
-    return TurnBaseSystem;
 
+    /**
+     * @property {TurnBaseSystem.Class} TurnBaseSystem
+     * @final
+     */
+    exports.TurnBaseSystem = TurnBaseSystem;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

@@ -7,8 +7,18 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/tictactoe/priorities
+ * @requires zotohlab/tictactoe/utils
+ * @requires zotohlab/tictactoe/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/odin
+ * @module zotohlab/tictactoe/supervisor
+ */
 define("zotohlab/p/s/supervisor",
 
        ['zotohlab/p/s/priorities',
@@ -21,30 +31,57 @@ define("zotohlab/p/s/supervisor",
 
   function (pss, utils, gnodes, sjs, sh, ccsx, odin) { "use strict";
 
-    var evts= odin.Events,
+    /** @alias module:zotohlab/tictactoe/supervisor */
+    var exports = {       },
+    evts= odin.Events,
     xcfg=sh.xcfg,
     csts= xcfg.csts,
     R=sjs.ramda,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
+    /**
+     * @class GameSupervisor
+     */
     var GameSupervisor = sh.Ashley.sysDef({
 
+      /**
+       * Constructor.
+       *
+       * @memberof module:zotohlab/tictactoe/supervisor~GameSupervisor
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state= options;
         this.inited=false;
       },
 
+      /**
+       * @memberof module:zotohlab/tictactoe/supervisor~GameSupervisor
+       * @method removeFromEngine
+       * @param {Engine} engine
+       */
       removeFromEngine: function(engine) {
         this.board=null;
       },
 
+      /**
+       * @memberof module:zotohlab/tictactoe/supervisor~GameSupervisor
+       * @method addToEngine
+       * @param {Engine} engine
+       */
       addToEngine: function(engine) {
         engine.addEntity(sh.factory.createBoard(sh.main,
                                                 this.state));
         this.board= engine.getNodeList(gnodes.BoardNode);
       },
 
+      /**
+       * @memberof module:zotohlab/tictactoe/supervisor~GameSupervisor
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         var node= this.board.head;
         if (this.state.running &&
@@ -58,6 +95,9 @@ define("zotohlab/p/s/supervisor",
         }
       },
 
+      /**
+       * @private
+       */
       showGrid: function(node) {
         var mgs = utils.mapGridPos(),
         cs=node.view.cells,
@@ -72,6 +112,9 @@ define("zotohlab/p/s/supervisor",
         }, mgs);
       },
 
+      /**
+       * @private
+       */
       onceOnly: function(node,dt) {
 
         this.showGrid(node);
@@ -89,7 +132,7 @@ define("zotohlab/p/s/supervisor",
           var pnum = sjs.randSign() > 0 ? 1 : 2;
           this.state.actor=pnum;
           if (this.state.players[pnum].category === csts.HUMAN) {
-            sh.fireEvent('/game/hud/timer/show');
+            sh.fire('/hud/timer/show');
           }
           else
           if (this.state.players[pnum].category === csts.BOT) {
@@ -97,6 +140,9 @@ define("zotohlab/p/s/supervisor",
         }
       },
 
+      /**
+       * @private
+       */
       process: function(node,dt) {
 
         var active = this.state.running,
@@ -106,7 +152,7 @@ define("zotohlab/p/s/supervisor",
           actor= this.state.lastWinner;
         }
 
-        sh.fireEvent('/game/hud/update', {
+        sh.fire('/hud/update', {
           running: active,
           pnum: actor
         });
@@ -114,8 +160,19 @@ define("zotohlab/p/s/supervisor",
 
     });
 
+    /**
+     * @memberof module:zotohlab/tictactoe/supervisor~GameSupervisor
+     * @property {Number} Priority
+     * @final
+     */
     GameSupervisor.Priority= pss.PreUpdate;
-    return GameSupervisor;
+
+    /**
+     * @property {GameSupervisor.Class} GameSupervisor
+     * @final
+     */
+    exports.GameSupervisor = GameSupervisor;
+    return exports;
 });
 
 

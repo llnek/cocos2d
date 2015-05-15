@@ -7,8 +7,16 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/tictactoe/priorities
+ * @requires zotohlab/tictactoe/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/tictactoe/uiselect
+ */
 define("zotohlab/p/s/uiselect",
 
        ['zotohlab/p/s/priorities',
@@ -19,37 +27,68 @@ define("zotohlab/p/s/uiselect",
 
   function (pss, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var xcfg= sh.xcfg,
+    /** @alias module:zotohlab/tictactoe/uiselect */
+    var exports = {},
+    xcfg= sh.xcfg,
     csts = xcfg.csts,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
+    /**
+     * @class SelectionSystem
+     */
     var SelectionSystem = sh.Ashley.sysDef({
 
+      /**
+       * Constructor.
+       *
+       * @memberof module:zotohlab/tictactoe/uiselect~SelectionSystem
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.events= options.selQ;
         this.state= options;
       },
 
+      /**
+       * @memberof module:zotohlab/tictactoe/uiselect~SelectionSystem
+       * @method removefromEngine
+       * @param {Engine} engine
+       */
       removeFromEngine: function(engine) {
         this.gui=null;
       },
 
+      /**
+       * @memberof module:zotohlab/tictactoe/uiselect~SelectionSystem
+       * @method addToEngine
+       * @param {Engine} engine
+       */
       addToEngine: function(engine) {
         this.gui = engine.getNodeList(gnodes.GUINode);
       },
 
+      /**
+       * @memberof module:zotohlab/tictactoe/uiselect~SelectionSystem
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         if (this.events.length > 0) {
           var evt = this.events.shift(),
           node= this.gui.head;
-          if (!!node) {
+          if (this.state.running &&
+              !!node) {
             this.process(node, evt);
           }
           this.events.length=0;
         }
       },
 
+      /**
+       * @private
+       */
       process: function(node, evt) {
         var sel = node.selection,
         map = node.view.gridMap,
@@ -79,9 +118,20 @@ define("zotohlab/p/s/uiselect",
 
     });
 
+    /**
+     * @memberof module:zotohlab/tictactoe/uiselect~SelectionSystem
+     * @static
+     * @property {Number} Priority
+     * @final
+     */
     SelectionSystem.Priority= pss.Movement;
-    return SelectionSystem;
 
+    /**
+     * @property {SelectionSystem.Class} SelectionSystem
+     * @final
+     */
+    exports.SelectionSystem = SelectionSystem;
+    return exports;
 });
 
 
