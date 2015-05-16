@@ -22,11 +22,10 @@ define("zotohlab/asx/ui", ['cherimoia/skarojs'],
     undef;
 
     //////////////////////////////////////////////////////////////////////
-    //
     /**
      * @class Circle
      */
-    var Circle = sjs.Class.xtends({
+    var Circle = sjs.mixes({
 
       /**
        * Draw this circle.
@@ -64,7 +63,7 @@ define("zotohlab/asx/ui", ['cherimoia/skarojs'],
     /**
      * @class Line
      */
-    var Line = sjs.Class.xtends({
+    var Line = sjs.mixes({
 
       /**
        * Draw this line.
@@ -108,7 +107,7 @@ define("zotohlab/asx/ui", ['cherimoia/skarojs'],
     /**
      * @class Point
      */
-    var Point = sjs.Class.xtends({
+    var Point = sjs.mixes({
 
       /**
        * Constructor.
@@ -127,7 +126,7 @@ define("zotohlab/asx/ui", ['cherimoia/skarojs'],
     /**
      * @class Area
      */
-    var Area = sjs.Class.xtends({
+    var Area = sjs.mixes({
 
       /**
        * Constructor.
@@ -149,7 +148,7 @@ define("zotohlab/asx/ui", ['cherimoia/skarojs'],
     /**
      * @class TextStyle
      */
-    var TextStyle = sjs.Class.xtends({
+    var TextStyle = sjs.mixes({
 
       /**
        * Constructor.
@@ -167,28 +166,33 @@ define("zotohlab/asx/ui", ['cherimoia/skarojs'],
     });
 
     /**
-     * @property TextStyle
-     * @type TextStyle.Class
+     * @property {TextStyle.Class} TextStyle
+     * @static
+     * @final
      */
     exports.TextStyle= TextStyle;
     /**
-     * @property Circle
-     * @type Circle.Class
+     * @property {Circle.Class} Circle
+     * @static
+     * @final
      */
     exports.Circle= Circle;
     /**
-     * @property Line
-     * @type Line.Class
+     * @property {Line.Class} Line
+     * @static
+     * @final
      */
     exports.Line= Line;
     /**
-     * @property Point
-     * @type Point.Class
+     * @property {Point.Class} Point
+     * @static
+     * @final
      */
     exports.Point= Point;
     /**
-     * @property Area
-     * @type Area.Class
+     * @property {Area.Class} Area
+     * @static
+     * @final
      */
     exports.Area= Area;
 

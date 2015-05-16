@@ -17,10 +17,8 @@ define("zotohlab/asx/negamax", ['cherimoia/skarojs'],
 
   function (sjs) { "use strict";
 
-    /** @alias module:zotohlab/asx/negamax */
-    var exports = {},
-    undef,
-    PINF = 1000000;
+    var PINF = 1000000,
+    undef;
 
     //////////////////////////////////////////////////////////////////////////////
     //
@@ -64,11 +62,64 @@ define("zotohlab/asx/negamax", ['cherimoia/skarojs'],
     }
 
     /**
+     * @interface GameBoard
+     * @class
+     */
+    var GameBoard = {
+      /**
+       * @memberof module:zotohlab/asx/negamax~GameBoard
+       * @method isOver
+       * @param {Object} game
+       * @return {Boolean}
+       */
+      isOver: function(game) { return false; },
+      /**
+       * @memberof module:zotohlab/asx/negamax~GameBoard
+       * @method evalScore
+       * @param {Object} game
+       * @return {Number} score
+       */
+      evalScore: function(game) { return 0; },
+      /**
+       * @memberof module:zotohlab/asx/negamax~GameBoard
+       * @method getNextMoves
+       * @param {Object} game
+       * @return {Array}
+       */
+      getNextMoves: function(game) { return []; },
+      /**
+       * @memberof module:zotohlab/asx/negamax~GameBoard
+       * @method makeMoves
+       * @param {Object} game
+       * @param {Number} move
+       */
+      makeMove: function(game,move) {},
+      /**
+       * @memberof module:zotohlab/asx/negamax~GameBoard
+       * @method switchPlayer
+       * @param {Object} game
+       */
+      switchPlayer: function(game) {},
+      /**
+       * @memberof module:zotohlab/asx/negamax~GameBoard
+       * @method unmakeMove
+       * @param {Object} game
+       * @param {Number} move
+       */
+      unmakeMove: function(game,move) {},
+      /**
+       * @memberof module:zotohlab/asx/negamax~GameBoard
+       * @method takeSnapshot
+       * @return {SnapShot}
+       */
+      takeSnapshot: function() { return null; }
+    },
+    /**
      * The negamax algorithm implementation.
      *
      * @class NegaMax
      */
-    var NegaMax= sjs.Class.xtends({
+    NegaMax= sjs.mixes({
 
       /**
        * Get the game board.
@@ -93,7 +144,7 @@ define("zotohlab/asx/negamax", ['cherimoia/skarojs'],
        *
        * @memberof module:zotohlab/asx/negamax~NegaMax
        * @method eval
-       * @return {Number} last best move.
+       * @return {Number} last best move
        */
       eval: function() {
         var snapshot= this.board.takeSnapshot();
@@ -101,15 +152,14 @@ define("zotohlab/asx/negamax", ['cherimoia/skarojs'],
         return snapshot.lastBestMove;
       }
 
-    });
-
+    }),
     /**
      * Simple data structure keeping track of the state of the
      * game board.
      *
      * @class Snapshot
      */
-    var Snapshot= sjs.Class.xtends({
+    Snapshot= sjs.mixes({
 
       /**
        * @method ctor
@@ -124,21 +174,33 @@ define("zotohlab/asx/negamax", ['cherimoia/skarojs'],
 
     });
 
-    /**
-     * @property Snapshot
-     * @type Snapshot.Class
-     */
-    exports.Snapshot= Snapshot;
-    /**
-     * @property INF
-     * @type Number
-     */
-    exports.INF= PINF;
-    /**
-     * @property NegaMax
-     * @type NegaMax.Class
-     */
-    exports.NegaMax= NegaMax;
+    /** @alias module:zotohlab/asx/negamax */
+    var exports = {
+      /**
+       * @property {SnapShot.Class} Snapshot
+       * @static
+       * @final
+       */
+      Snapshot: Snapshot,
+      /**
+       * @property {Number} INF
+       * @static
+       * @final
+       */
+      INF: PINF,
+      /**
+       * @property {NegaMax.Class} NegaMax
+       * @static
+       * @final
+       */
+      NegaMax: NegaMax,
+      /**
+       * @property {GameBoard.Class} GameBoard
+       * @static
+       * @final
+       */
+      GameBoard: GameBoard
+    };
 
     return exports;
 });

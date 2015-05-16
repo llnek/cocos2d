@@ -191,6 +191,7 @@ define("zotohlab/asx/xloader",
 
     /**
      * @property {XLoader.Class} XLoader
+     * @static
      * @final
      */
     exports.XLoader = XLoader;

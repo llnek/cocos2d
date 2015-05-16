@@ -10,10 +10,10 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- *@requires module:cherimoia/skarojs
- *@requires module:mustache
- *@requires module:eligrey/l10njs
- *@requires module:ash-js
+ *@requires cherimoia/skarojs
+ *@requires mustache
+ *@requires eligrey/l10njs
+ *@requires ash-js
  *@module zotohlab/asterix
  */
 define("zotohlab/asterix",
@@ -28,6 +28,7 @@ define("zotohlab/asterix",
     var SEED=0,
     /**
      * @class ComObj
+     * @mixin
      * @static
      */
     ComObj = {
@@ -189,7 +190,7 @@ define("zotohlab/asterix",
         this.sprite = sprite;
         this.HP = this.origHP;
         this.value = score || 0;
-        this._tag= ["component" , ++SEED].join(':');
+        this._tag= ["comp" , ++SEED].join(':');
         this.status=false;
       }
     },
@@ -214,6 +215,7 @@ define("zotohlab/asterix",
     /**
      * @class Ashley
      * @static
+     * @mixin
      */
     Ashley= {
       /**
@@ -288,6 +290,7 @@ define("zotohlab/asterix",
 
       /**
        * @property Ashley - for ash-js framework
+       * @static
        * @type Object
        */
       Ashley: Ashley,
@@ -296,6 +299,7 @@ define("zotohlab/asterix",
        * Initialize the l10n module with the string table.
        *
        * @method l10nInit
+       * @static
        * @param {Object} table
        */
       l10nInit: function(table) {
@@ -309,9 +313,10 @@ define("zotohlab/asterix",
        * Localize the string.
        *
        * @method l10n
+       * @static
        * @param {String} s
        * @param {Object} pms
-       * @return {String} - rendered string.
+       * @return {String} rendered string.
        */
       l10n: function(s,pms) {
         var t= s.toLocaleString();
@@ -319,24 +324,20 @@ define("zotohlab/asterix",
       },
 
       /**
-       * @property lang
-       * @type String
+       * @property {String} lang
+       * @static
        */
       lang: cc.sys.language || 'en',
 
       /**
-       * Map of main classes.
-       *
-       * @property protos
-       * @type Object
+       * @property {Object} protos scene classes
+       * @static
        */
       protos: {},
 
       /**
-       * Object pools
-       *
-       * @property pools
-       * @type Object
+       * @property {Object} pools object pools
+       * @static
        */
       pools: {},
 
@@ -351,39 +352,33 @@ define("zotohlab/asterix",
       },
 
       /**
-       * Game application config.
-       *
-       * @property xcfg
-       * @type Object
+       * @property {Object} xcfg application config
+       * @static
        */
       xcfg: undef,
 
       /**
-       * Main game scene.
-       *
-       * @property main
-       * @type String
+       * @property {Object} main main game
+       * @static
        */
       main: undef,
 
       /**
-       * Entity factory.
-       *
-       * @property factory
-       * @type Object
+       * @property {Object} factory entity factory
+       * @static
        */
       factory: undef,
 
       /**
-       * Websocket Url for online play.
-       *
-       * @property {String} wsurl
+       * @property {String} wsUri uri for network games
+       * @static
        * @final
        */
-      wsUrl: '/network/odin/websocket',
+      wsUri: '/network/odin/websocket',
 
       /**
        * @property {Object} ptypes
+       * @static
        * @final
        */
       ptypes: {
@@ -399,6 +394,7 @@ define("zotohlab/asterix",
        * Trigger an event on this topic.
        *
        * @method fire
+       * @static
        * @param {String} topic
        * @param {Object} msg
        */
@@ -413,8 +409,9 @@ define("zotohlab/asterix",
        * Get the config for this level.
        *
        * @method getLevelCfg
+       * @static
        * @param {Number} level
-       * @return {Object} the config.
+       * @return {Object} the config
        */
       getLevelCfg: function(level) {
         return this.xcfg.levels['gamelevel' + level]['cfg'];
@@ -424,6 +421,7 @@ define("zotohlab/asterix",
        * Test if 2 rectangles intersect.
        *
        * @method isIntersect
+       * @static
        * @param {Object} a1
        * @param {Object} a2
        * @return {Boolean}
@@ -440,8 +438,10 @@ define("zotohlab/asterix",
        * the enclosing world rectangle.
        *
        * @method outOfBound
+       * @static
        * @param {Object} a
        * @param {Object} B
+       * @return {Boolean}
        */
       outOfBound: function(a,B) {
         if (a && B) {
@@ -459,9 +459,10 @@ define("zotohlab/asterix",
        * provided angle and length of the hypotenuse.
        *
        * @method calcXY
+       * @static
        * @param {Number} angle
        * @param {Number} hypot
-       * @param {Array} [x, y, quadrant]
+       * @return {Array} [x, y, quadrant]
        */
       calcXY: function(angle,hypot) {
       // quadrants =  4 | 1
@@ -505,6 +506,7 @@ define("zotohlab/asterix",
        * Normalize the degree - modulo 360.
        *
        * @method normalizeDeg
+       * @static
        * @param {Number} deg
        * @return {Number}
        */
@@ -516,6 +518,7 @@ define("zotohlab/asterix",
        * Divide the height of the rectangle by half.
        *
        * @method hh
+       * @static
        * @param {Object} r
        * @return {Number}
        */
@@ -527,6 +530,7 @@ define("zotohlab/asterix",
        * Divide the width of the rectangle by half.
        *
        * @method hw
+       * @static
        * @param {Object} r
        * @return {Number}
        */
@@ -538,6 +542,7 @@ define("zotohlab/asterix",
        * Convert from radian to degree.
        *
        * @method radToDeg
+       * @static
        * @param {Number} rad
        * @return {Number}
        */
@@ -549,6 +554,7 @@ define("zotohlab/asterix",
        * Convert from degree to radian.
        *
        * @method degToRad
+       * @static
        * @param {Number} deg
        * @return {Number}
        */
@@ -560,8 +566,9 @@ define("zotohlab/asterix",
        * Get the image path mapped to this key.
        *
        * @method getImagePath
+       * @static
        * @param {String} key
-       * @return {String}
+       * @return {String} path
        */
       getImagePath: function(key) {
         //cc.log('getSpritePath for key : ' + key);
@@ -572,8 +579,9 @@ define("zotohlab/asterix",
        * Get the *atlas* plist mapped to this key.
        *
        * @method getPListPath
+       * @static
        * @param {String} key
-       * @return {String}
+       * @return {String} path
        */
       getPListPath: function(key) {
         return this.fixUrl(this.xcfg.assets.atlases[key]) + '.plist';
@@ -583,8 +591,9 @@ define("zotohlab/asterix",
        * Get the *atlas* image path mapped to this key.
        *
        * @method getAtlasPath
+       * @static
        * @param {String} key
-       * @return {String}
+       * @return {String} path
        */
       getAtlasPath: function(key) {
         return this.fixUrl(this.xcfg.assets.atlases[key]) + '.png';
@@ -594,7 +603,9 @@ define("zotohlab/asterix",
        * Get the sound file path mapped to this key.
        *
        * @method getSfxPath
+       * @static
        * @param {String} key
+       * @return {String} path
        */
       getSfxPath: function(key) {
         return [this.fixUrl(this.xcfg.assets.sounds[key]),
@@ -606,7 +617,9 @@ define("zotohlab/asterix",
        * Get the *sprite* image path mapped to this key.
        *
        * @method getSpritePath
+       * @static
        * @param {String} key
+       * @return {String} path
        */
       getSpritePath: function(key) {
         //cc.log('getSpritePath for key : ' + key);
@@ -617,8 +630,9 @@ define("zotohlab/asterix",
        * Get the *tile* file path mapped to this key.
        *
        * @method getTilesPath
+       * @static
        * @param {String} key
-       * @return {String}
+       * @return {String} path
        */
       getTilesPath: function(key) {
         return this.fixUrl(this.xcfg.assets.tiles[key]);
@@ -628,8 +642,9 @@ define("zotohlab/asterix",
        * Get the *font* file path mapped to this key.
        *
        * @method getFontPath
+       * @static
        * @param {String} key
-       * @return {String}
+       * @return {String} path
        */
       getFontPath: function(key) {
         var obj= this.xcfg.assets.fonts[key];
@@ -640,6 +655,7 @@ define("zotohlab/asterix",
        * Toggle sound on or off.  Override by forcing a value.
        *
        * @method toggleSfx
+       * @static
        * @param {Boolean} override
        */
       toggleSfx: function(override) {
@@ -650,6 +666,7 @@ define("zotohlab/asterix",
        * Play music mapped to this key, repeat if necessary.
        *
        * @method sfxPlayMusic
+       * @static
        * @param {String} key
        * @param {Boolean} repeat
        */
@@ -664,6 +681,7 @@ define("zotohlab/asterix",
        * Play sound effect mapped to this key, repeat if necessary.
        *
        * @method sfxPlay
+       * @static
        * @param {String} key
        * @param {Boolean} repeat
        */
@@ -678,6 +696,8 @@ define("zotohlab/asterix",
        * Initialize the sound system.
        *
        * @method sfxInit
+       * @static
+       * @static
        */
       sfxInit: function() {
         cc.audioEngine.setMusicVolume(this.xcfg.sound.volume);
@@ -691,9 +711,11 @@ define("zotohlab/asterix",
 
       /**
        * Sanitize this url differently for web and for devices.
+       *
        * @method sanitizeUrl
+       * @static
        * @param {String} url
-       * @return {String}
+       * @return {String} path
        */
       sanitizeUrl: function(url) {
         sjs.loggr.debug('About to sanitize url: ' + url);
@@ -711,8 +733,9 @@ define("zotohlab/asterix",
        * Sanitize this url for devices.
        *
        * @method sanitizeUrlForDevice
+       * @static
        * @param {String} url
-       * @return {String}
+       * @return {String} path
        */
       sanitizeUrlForDevice: function(url) {
         if (url.match(/^res\//)) {
@@ -741,6 +764,7 @@ define("zotohlab/asterix",
        * Sanitize this url for web.
        *
        * @method sanitizeUrlForWeb
+       * @static
        * @param {String} url
        * @return {String}
        */
@@ -768,6 +792,7 @@ define("zotohlab/asterix",
        * (from underscore.js)
        *
        * @method throttle
+       * @static
        * @param {Function} func
        * @param {Number} wait
        * @param {Object} options

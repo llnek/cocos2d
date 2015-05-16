@@ -7,7 +7,7 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
  * @requires cherimoia/skarojs
@@ -27,9 +27,7 @@ define("zotohlab/asx/msgbox",
 
   function (sjs, sh, ccsx, layers, scenes) { "use strict";
 
-    /** @alias module:zotohlab/asx/msgbox */
-    var exports = {},
-    xcfg = sh.xcfg,
+    var xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
@@ -82,17 +80,21 @@ define("zotohlab/asx/msgbox",
 
     });
 
-    /**
-     * Create a scene to display the message.
-     *
-     * @method reify
-     * @param {Object} options
-     * @return {cc.Scene}
-     * @static
-     */
-    exports.create = function(options) {
-      return new scenes.XSceneFactory([ BGLayer, UILayer ]).create(options);
-    }
+    /** @alias module:zotohlab/asx/msgbox */
+    var exports = {
+      /**
+       * Create a scene to display the message.
+       *
+       * @method reify
+       * @param {Object} options
+       * @return {cc.Scene}
+       * @static
+       */
+      reify: function(options) {
+        return new scenes.XSceneFactory([ BGLayer, UILayer ]).create(options);
+      }
+
+    };
 
     return exports;
 });

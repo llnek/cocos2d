@@ -7,7 +7,7 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
  * @requires cherimoia/skarojs
@@ -113,7 +113,7 @@ define("zotohlab/asx/xscenes",
     /**
      * @class XSceneFactory
      */
-    var XSceneFactory = sjs.Class.xtends({
+    var XSceneFactory = sjs.mixes({
 
       /**
        * @memberof module:zotohlab/asx/xscenes~XSceneFactory
@@ -142,7 +142,7 @@ define("zotohlab/asx/xscenes",
        *
        * @memberof module:zotohlab/asx/xscenes~XSceneFactory
        * @method ctor
-       * @param {Array} - list of layers
+       * @param {Array} list of layers
        */
       ctor: function(ls) {
         this.layers= ls || [];
@@ -152,12 +152,14 @@ define("zotohlab/asx/xscenes",
 
     /**
      * @property {XSceneFactory.Class} XSceneFactory
+     * @static
      * @final
      */
     exports.XSceneFactory= XSceneFactory;
 
     /**
      * @property {XScene.Class} XScene
+     * @static
      * @final
      */
     exports.XScene= XScene;

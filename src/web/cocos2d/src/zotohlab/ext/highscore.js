@@ -42,7 +42,7 @@ define("zotohlab/asx/highscores",
     /**
      * @class HighScores
      */
-    exports.HighScores= sjs.Class.xtends({
+    var HighScores= sjs.mixes({
 
       /**
        * Read the scores from the cookie.
@@ -149,7 +149,7 @@ define("zotohlab/asx/highscores",
        *
        * @memberof module:zotohlab/asx/highscores~HighScores
        * @method getScores
-       * @return {Array} high scores.
+       * @return {Array} high scores
        */
       getScores: function() {
         return this.scores;
@@ -189,6 +189,7 @@ define("zotohlab/asx/highscores",
      * Create a new HighScores object.
      *
      * @method reify
+     * @static
      * @param {String} key
      * @param {Number} size
      * @param {Number} duration

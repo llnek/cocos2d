@@ -7,7 +7,7 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
  * @requires cherimoia/skarojs
@@ -15,10 +15,11 @@
  * @requires zotohlab/asx/onlineplay
  * @requires zotohlab/asx/msgbox
  * @requires zotohlab/asx/ynbox
- * @requires zotohlab/tictactoe/splash
- * @requires zotohlab/tictactoe/mmenu
- * @requires zotohlab/tictactoe/arena
- * @module zotohlab/tictactoe/protodefs
+ * @requires zotohlab/p/splash
+ * @requires zotohlab/p/mmenu
+ * @requires zotohlab/p/arena
+ *
+ * @module zotohlab/p/protodefs
  */
 define("zotohlab/p/protodefs",
 
@@ -35,26 +36,18 @@ define("zotohlab/p/protodefs",
             msgbox, ynbox, splash, mmenu, arena) { "use strict";
 
     var ps= [online, splash, mmenu, msgbox, ynbox, arena],
+    protos= sh.protos,
+    /** @alias module:zotohlab/p/protodefs */
+    exports = {},
     xcfg = sh.xcfg,
     R = sjs.ramda,
-    undef,
-    protos= sh.protos;
-
-    /** @alias module:zotohlab/tictactoe/protodefs */
-    var exports = {};
-
+    undef;
 
     R.forEach(function(obj) {
       protos[obj.rtti] = obj.ctor;
     }, ps);
 
-    /**
-     * @property {Object} pdefs
-     * @final
-     */
-    exports.pdefs = protos;
-
-    return exports;
+    return exports= protos;
 });
 
 //////////////////////////////////////////////////////////////////////////////

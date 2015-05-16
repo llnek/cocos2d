@@ -36,7 +36,7 @@ define("zotohlab/asx/math", ['cherimoia/skarojs'],
     /**
      * @class Vector2
      */
-    var Vector2 = sjs.Class.xtends({
+    var Vector2 = sjs.mixes({
 
       /**
        * Scalar multiplication.
@@ -134,7 +134,7 @@ define("zotohlab/asx/math", ['cherimoia/skarojs'],
      * Create a Vector2 object.
      *
      * @method reifyVect2
-     *
+     * @static
      * @param {Number} x1
      * @param {Number} y1
      * @param {Number} x2

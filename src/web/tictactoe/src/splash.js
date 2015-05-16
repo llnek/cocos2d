@@ -16,7 +16,8 @@
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xscenes
- * @module zotohlab/tictactoe/splash
+ *
+ * @module zotohlab/p/splash
  */
 define("zotohlab/p/splash",
 
@@ -29,9 +30,7 @@ define("zotohlab/p/splash",
 
   function (utils, sjs, sh, ccsx, layers, scenes) { "use strict";
 
-    /** @alias module:zotohlab/tictactoe/splash */
-    var exports = {},
-    xcfg = sh.xcfg,
+    var xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
@@ -57,7 +56,7 @@ define("zotohlab/p/splash",
           { imgPath: '#play.png',
             cb: function() {
               this.removeAll();
-              sh.fireEvent('/splash/controls/playgame');
+              sh.fire('/splash/playgame');
             },
             target: this }
         ]);
@@ -92,34 +91,39 @@ define("zotohlab/p/splash",
     });
 
 
-    /**
-     * @property {String} rtti
-     * @final
-     */
-    exports.rtti = sh.ptypes.start;
+    /** @alias module:zotohlab/p/splash */
+    var exports = {
 
-    /**
-     * Create the splash screen.
-     *
-     * @method ctor
-     * @static
-     * @param {Object} options
-     * @return {cc.Scene}
-     */
-    exports.ctor= function(options) {
-      var scene = new scenes.XSceneFactory([
-        SplashLayer
-      ]).create(options);
-      scene.ebus.on('/splash/controls/playgame',
-                    function() {
-                      var ss= sh.protos[sh.ptypes.start],
-                      mm= sh.protos[sh.ptypes.mmenu],
-                      dir= cc.director;
-                      dir.runScene( mm.reify({
-                        onBack: function() { dir.runScene( ss.create() ); }
-                      }));
-      });
-      return scene;
+      /**
+       * @property {String} rtti
+       * @static
+       * @final
+       */
+      rtti: sh.ptypes.start,
+
+      /**
+       * Create the splash screen.
+       *
+       * @method ctor
+       * @static
+       * @param {Object} options
+       * @return {cc.Scene}
+       */
+      ctor: function(options) {
+        var scene = new scenes.XSceneFactory([
+          SplashLayer
+        ]).create(options);
+        scene.ebus.on('/splash/playgame',
+                      function() {
+                        var ss= sh.protos[sh.ptypes.start],
+                        mm= sh.protos[sh.ptypes.mmenu],
+                        dir= cc.director;
+                        dir.runScene( mm.reify({
+                          onBack: function() { dir.runScene( ss.reify()); }
+                        }));
+        });
+        return scene;
+      }
     };
 
     return exports;

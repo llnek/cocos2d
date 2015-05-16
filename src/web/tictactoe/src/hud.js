@@ -15,7 +15,8 @@
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xscenes
- * @module zotohlab/tictactoe/hud
+ *
+ * @module zotohlab/p/hud
  */
 define("zotohlab/p/hud",
 
@@ -27,9 +28,7 @@ define("zotohlab/p/hud",
 
   function (sjs, sh, ccsx, layers, scenes) { "use strict";
 
-    /** @alias module:zotohlab/tictactoe/hud */
-    var exports = {},
-    xcfg = sh.xcfg,
+    var xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
@@ -54,14 +53,16 @@ define("zotohlab/p/hud",
     HUDLayer = layers.XGameHUDLayer.extend({
 
       ctor: function(options) {
+        var color= cc.color(94,49,120),
+        scale= 1;
+
         this._super(options);
         this.mode= 0;
         this.p2Long= '';
         this.p1Long= '';
         this.p2ID= '';
         this.p1ID= '';
-        var color= cc.color(94,49,120),
-        scale= 1;
+
         this.options.i_menu= {
           cb: function() { sh.fire('/hud/showmenu'); },
           imgPath: '#icon_menu.png',
@@ -70,7 +71,7 @@ define("zotohlab/p/hud",
           scale: scale,
         };
         this.options.i_replay = {
-          cb: function() { sh.fireEvent('/hud/replay'); },
+          cb: function() { sh.fire('/hud/replay'); },
           where: ccsx.acs.Bottom,
           imgPath: '#icon_replay.png',
           color: color,
@@ -124,7 +125,7 @@ define("zotohlab/p/hud",
           color: cc.color(255,255,255),
           pos: cc.p(wb.right - csts.TILE - csts.S_OFF,
                     wb.top - csts.TILE - csts.S_OFF),
-          anchor: ccsx.acsTopRight
+          anchor: ccsx.acs.TopRight
         });
         this.addItem(this.score2);
 
@@ -185,7 +186,7 @@ define("zotohlab/p/hud",
 
         if (this.countDownValue < 0) {
           this.killTimer();
-          sh.fireEvent('/player/timer/expired');
+          sh.fire('/player/timer/expired');
         }
         else {
           this.showCountDown();
@@ -287,8 +288,23 @@ define("zotohlab/p/hud",
 
     });
 
-    exports.HUDBackLayer= HUDBackLayer;
-    exports.HUDLayer= HUDLayer;
+    /** @alias module:zotohlab/p/hud */
+    var exports = {
+
+      /**
+       * @property {HUDBackLayer.Class} HUDBackLayer
+       * @static
+       * @final
+       */
+      HUDBackLayer: HUDBackLayer,
+
+      /**
+       * @property {HUDLayer.Class} HUDLayer
+       * @static
+       * @final
+       */
+      HUDLayer: HUDLayer
+    };
 
     return exports;
 });

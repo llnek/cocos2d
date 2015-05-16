@@ -7,7 +7,7 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
  * @requires cherimoia/skarojs
@@ -25,9 +25,7 @@ define("zotohlab/asx/xsplash",
 
   function (sjs, sh, ccsx, layers) { "use strict";
 
-    /** @alias module:zotohlab/asx/xsplash */
-    var exports = {},
-    xcfg = sh.xcfg,
+    var xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
     //////////////////////////////////////////////////////////////////////////
@@ -52,7 +50,7 @@ define("zotohlab/asx/xsplash",
           fontPath: sh.getFontPath('font.Hiruko'),
           text: sh.l10n('%play'),
           selector: function() {
-            sh.fireEvent('/splash/controls/playgame');
+            sh.fire('/splash/playgame');
           },
           target: this,
           scale: 1,
@@ -70,11 +68,15 @@ define("zotohlab/asx/xsplash",
 
     });
 
-    /**
-     * @property {XSplashLayer.Class} XSplashLayer
-     * @final
-     */
-    exports.XSplashLayer = XSplashLayer;
+    /** @alias module:zotohlab/asx/xsplash */
+    var exports = {
+      /**
+       * @property {XSplashLayer.Class} XSplashLayer
+       * @static
+       * @final
+       */
+      XSplashLayer: XSplashLayer
+    };
 
     return exports;
 });

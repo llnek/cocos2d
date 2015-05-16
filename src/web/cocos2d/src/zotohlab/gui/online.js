@@ -7,7 +7,7 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
  * @requires cherimoia/skarojs
@@ -29,9 +29,7 @@ define("zotohlab/asx/onlineplay",
 
   function (sjs, sh, ccsx, layers, scenes, odin) { "use strict";
 
-    /** @alias module:zotohlab/asx/onlineplay */
-    var exports = { },
-    EVS= odin.Events,
+    var evts= odin.Events,
     xcfg= sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -56,7 +54,7 @@ define("zotohlab/asx/onlineplay",
     UILayer =  layers.XLayer.extend({
 
       onOnlineReq: function(uid,pwd) {
-        var wsurl = sjs.fmtUrl(sjs.getWebSockProtocol(), sh.wsUrl),
+        var wsurl = sjs.fmtUrl(sjs.getWebSockProtocol(), sh.wsUri),
         user = (uid || '').trim(),
         pswd = (pwd || '').trim();
 
@@ -72,18 +70,18 @@ define("zotohlab/asx/onlineplay",
       onOdinEvent: function(topic,evt) {
         //sjs.loggr.debug(evt);
         switch (evt.type) {
-          case EVS.MSG_NETWORK: this.onNetworkEvent(evt); break;
-          case EVS.MSG_SESSION: this.onSessionEvent(evt); break;
+          case evts.MSG_NETWORK: this.onNetworkEvent(evt); break;
+          case evts.MSG_SESSION: this.onSessionEvent(evt); break;
         }
       },
 
       onNetworkEvent: function(evt) {
         switch (evt.code) {
-          case EVS.PLAYER_JOINED:
+          case evts.PLAYER_JOINED:
             //TODO
             sjs.loggr.debug("another player joined room. " + evt.source.puid);
           break;
-          case EVS.START:
+          case evts.START:
             sjs.loggr.info("play room is ready, game can start.");
             this.wss.unsubscribeAll();
             // flip to game scene
@@ -94,7 +92,7 @@ define("zotohlab/asx/onlineplay",
 
       onSessionEvent: function(evt) {
         switch (evt.code) {
-          case EVS.PLAYREQ_OK:
+          case evts.PLAYREQ_OK:
             sjs.loggr.debug("player " +
                             evt.source.pnum +
                             ": request to play game was successful.");
@@ -200,16 +198,20 @@ define("zotohlab/asx/onlineplay",
 
     });
 
-    /**
-     * Create the online-request play screen.
-     *
-     * @method reify
-     * @static
-     * @param {Object} options
-     * @return {cc.Scene}
-     */
-    exports.reify= function(options) {
-      return new scenes.XSceneFactory([ BGLayer, UILayer ]).create(options);
+    /** @alias module:zotohlab/asx/onlineplay */
+    var exports = {
+      /**
+       * Create the online-request play screen.
+       *
+       * @method reify
+       * @static
+       * @param {Object} options
+       * @return {cc.Scene}
+       */
+      reify: function(options) {
+        return new scenes.XSceneFactory([ BGLayer, UILayer ]).create(options);
+      }
+
     };
 
     return exports;

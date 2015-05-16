@@ -63,7 +63,7 @@ define("zotohlab/asx/xlayers",
     /**
      * @class XHUDLives
      */
-    var XHUDLives = sjs.Class.xtends({
+    var XHUDLives = sjs.mixes({
 
       /**
        * Reduce life by x amount.
@@ -692,10 +692,10 @@ define("zotohlab/asx/xlayers",
         wz= ccsx.vbox(),
         x,y;
 
-        if (where === ccsx.AnchorTop) {
-          y = wz.top - csts.TILE - hh;
-        } else {
+        if (where === ccsx.acs.Bottom) {
           y = wz.bottom + csts.TILE  + hh;
+        } else {
+          y = wz.top - csts.TILE - hh;
         }
         menu.setPosition(wz.right - csts.TILE - hw, y);
         this.addItem(menu);
@@ -714,10 +714,10 @@ define("zotohlab/asx/xlayers",
         wz= ccsx.vbox(),
         x, y;
 
-        if (where === ccsx.AnchorTop) {
-          y = wz.top - csts.TILE  - ccsx.getScaledHeight(c) * 0.5;
-        } else {
+        if (where === ccsx.acs.Bottom) {
           y = wz.bottom + csts.TILE  + ccsx.getScaledHeight(c) * 0.5;
+        } else {
+          y = wz.top - csts.TILE  - ccsx.getScaledHeight(c) * 0.5;
         }
         menu.setPosition(wz.left + csts.TILE + ccsx.getScaledWidth(c) * 0.5, y);
         this.replayBtn=menu;
@@ -805,7 +805,7 @@ define("zotohlab/asx/xlayers",
 
       //TODO: handle touch drag and move
       processEvent:function (event) {
-        sjs.loggr.debug('event === ' + JSON.stringify(event));
+        sjs.loggr.debug('event === ' + sjs.jsonDecode(event));
         /*
         var delta = event.getDelta();
         var curPos = cc.p(this._ship.x, this._ship.y);
@@ -1001,9 +1001,9 @@ define("zotohlab/asx/xlayers",
         var m= this.options.mode;
         this._super();
 
-        if (m === sh.ONLINE_GAME ||
-            m === sh.P2_GAME ||
-            m === sh.P1_GAME) {
+        if (m === sh.gtypes.ONLINE_GAME ||
+            m === sh.gtypes.P2_GAME ||
+            m === sh.gtypes.P1_GAME) {
           this.newGame(m);
         }
       },
@@ -1085,27 +1085,33 @@ define("zotohlab/asx/xlayers",
 
 
     /**
+     *
      * @property {XGameHUDLayer.Class} XGameHUDLayer
+     * @static
      * @final
      */
     exports.XGameHUDLayer= XGameHUDLayer;
     /**
      * @property {XGameLayer} XGameLayer
+     * @static
      * @final
      */
     exports.XGameLayer= XGameLayer;
     /**
      * @property {XLayer.Class} XLayer
+     * @static
      * @final
      */
     exports.XLayer= XLayer;
     /**
      * @property {XLive.Class} XLive
+     * @static
      * @final
      */
     exports.XLive= XLive;
     /**
      * @property {XHUDLives.Class} XHUDLives
+     * @static
      * @final
      */
     exports.XHUDLives= XHUDLives;

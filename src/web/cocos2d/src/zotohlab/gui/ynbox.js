@@ -27,9 +27,7 @@ define("zotohlab/asx/ynbox",
 
   function (sjs, sh, ccsx, layers, scenes) { "use strict";
 
-    /** @alias module:zotohlab/asx/ynbox */
-    var exports = {},
-    xcfg= sh.xcfg,
+    var xcfg= sh.xcfg,
     csts= xcfg.csts,
     R= sjs.ramda,
     undef,
@@ -87,16 +85,19 @@ define("zotohlab/asx/ynbox",
 
     });
 
-    /**
-     * Create a YesNo message screen.
-     *
-     * @method create
-     * @static
-     * @param {Object} options
-     * @return {cc.Scene}
-     */
-    exports.create= function(options) {
-      return new scenes.XSceneFactory( [ BGLayer, UILayer ]).create(options);
+    /** @alias module:zotohlab/asx/ynbox */
+    var exports = {
+      /**
+       * Create a YesNo message screen.
+       *
+       * @method reify
+       * @static
+       * @param {Object} options
+       * @return {cc.Scene}
+       */
+      reify: function(options) {
+        return new scenes.XSceneFactory( [ BGLayer, UILayer ]).create(options);
+      }
     };
 
     return exports;

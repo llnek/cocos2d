@@ -21,12 +21,12 @@ define("zotohlab/asx/odin",
         'cherimoia/ebus',
         'zotohlab/asterix'],
 
-
-  function (sjs, EventBus, sh) { "use strict";
+  function (sjs, ebus, sh) { "use strict";
 
     /** @alias module:zotohlab/asx/odin */
-    var exports={};
-    var undef;
+    var exports={},
+    evts,
+    undef;
 
     /**
      * @enum {Number}
@@ -78,6 +78,8 @@ define("zotohlab/asx/odin",
 
     };
 
+    // make a local reference
+    evts= exports.Events;
 
     //////////////////////////////////////////////////////////////////////////////
     //
@@ -92,56 +94,47 @@ define("zotohlab/asx/odin",
 
     //////////////////////////////////////////////////////////////////////////////
     //
-    function noop() {
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
     function mkPlayRequest(game,user,pwd) {
-      return mkEvent(Events.PLAYGAME_REQ, -1, [game, user, pwd]);
+      return mkEvent(evts.PLAYGAME_REQ, -1, [game, user, pwd]);
     }
 
     //////////////////////////////////////////////////////////////////////////////
     //
     function mkJoinRequest(room,user,pwd) {
-      return mkEvent(Events.JOINGAME_REQ, -1, [room, user, pwd]);
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    //
-    function json_encode(e) {
-      return JSON.stringify(e);
+      return mkEvent(evts.JOINGAME_REQ, -1, [room, user, pwd]);
     }
 
     //////////////////////////////////////////////////////////////////////////////
     //
     function json_decode(e) {
-      var src, evt = {};
+      var evt = {},
+      src;
+
       try {
-        evt= JSON.parse(e.data);
+        evt= sjs.jsonDecode(e.data);
       } catch (e) {
-        evt= {};
       }
+
       if (! sjs.hasKey(evt, 'type')) {
         evt.type= -1;
       }
       if (! sjs.hasKey(evt, 'code')) {
         evt.code= -1;
       }
+
       if (sjs.hasKey(evt, 'source') &&
           sjs.isString(evt.source)) {
-        // assume json for now
-        evt.source = JSON.parse(evt.source);
+        evt.source = sjs.jsonDecode(evt.source);
       }
+
       return evt;
     }
 
     //////////////////////////////////////////////////////////////////////////////
-    //
     /**
      * @class Session
      */
-    var Session= sjs.Class.xtends({
+    var Session= sjs.mixes({
 
       /**
        * Connect to this url and request a websocket upgrade.
@@ -162,8 +155,8 @@ define("zotohlab/asx/odin",
        * @param {Object} config
        */
       ctor: function(config) {
-        this.state= Events.S_NOT_CONNECTED;
-        this.ebus= EventBus.reify();
+        this.state= evts.S_NOT_CONNECTED;
+        this.ebus= ebus.reify();
         this.options=config || {};
         this.handlers= [];
         this.ws = null;
@@ -177,9 +170,9 @@ define("zotohlab/asx/odin",
        * @param {Object} evt
        */
       send: function(evt) {
-        if (this.state === Events.S_CONNECTED &&
+        if (this.state === evts.S_CONNECTED &&
             sjs.echt(this.ws)) {
-          this.ws.send( json_encode(evt));
+          this.ws.send( sjs.jsonEncode(evt));
         }
       },
 
@@ -192,7 +185,7 @@ define("zotohlab/asx/odin",
        * @param {Number} event
        * @param {Function} callback
        * @param {Object} target
-       * @return {String} handler id.
+       * @return {String} handler id
        */
       subscribe: function(messageType, event, callback, target) {
         var h= this.ebus.on(["/", messageType, "/", event].join(''),
@@ -217,8 +210,8 @@ define("zotohlab/asx/odin",
        * @return {Array} [id1, id2]
        */
       subscribeAll: function(callback,target) {
-        return [ this.subscribe(Events.MSG_NETWORK, '*', callback, target),
-                 this.subscribe(Events.MSG_SESSION, '*', callback, target) ];
+        return [ this.subscribe(evts.MSG_NETWORK, '*', callback, target),
+                 this.subscribe(evts.MSG_SESSION, '*', callback, target) ];
       },
 
       /**
@@ -251,9 +244,9 @@ define("zotohlab/asx/odin",
        * @method reset
        */
       reset: function () {
-        this.onmessage= noop;
-        this.onerror= noop;
-        this.onclose= noop;
+        this.onmessage= sjs.NILFUNC;
+        this.onerror= sjs.NILFUNC;
+        this.onclose= sjs.NILFUNC;
         this.handlers= [];
         this.ebus.removeAll();
       },
@@ -265,7 +258,7 @@ define("zotohlab/asx/odin",
        * @method close
        */
       close: function () {
-        this.state= Events.S_NOT_CONNECTED;
+        this.state= evts.S_NOT_CONNECTED;
         this.reset();
         if (!!this.ws) {
           try {
@@ -308,15 +301,15 @@ define("zotohlab/asx/odin",
         // connection success
         // send the play game request
         ws.onopen= function() {
-          me.state= Events.S_CONNECTED;
+          me.state= evts.S_CONNECTED;
           ws.send(me.getPlayRequest());
         };
 
         ws.onmessage= function (e) {
           var evt= json_decode(e);
           switch (evt.type) {
-            case Events.MSG_NETWORK:
-            case Events.MSG_SESSION:
+            case evts.MSG_NETWORK:
+            case evts.MSG_SESSION:
               me.onevent(evt);
             break;
             default:
@@ -342,7 +335,7 @@ define("zotohlab/asx/odin",
        * @private
        */
       getPlayRequest: function() {
-        return json_encode( mkPlayRequest(this.options.game,
+        return sjs.jsonEncode( mkPlayRequest(this.options.game,
                                           this.options.user,
                                           this.options.passwd));
       },

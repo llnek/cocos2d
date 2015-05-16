@@ -57,6 +57,7 @@ define("zotohlab/asx/ccsx",
        * Test if this point is inside this rectangle.
        *
        * @method pointInBox
+       * @static
        * @param {Object} box
        * @param {Object | Number} x
        * @param {Number} y
@@ -80,6 +81,7 @@ define("zotohlab/asx/ccsx",
        * wraps a sprite object.
        *
        * @method collide
+       * @static
        * @param {Object} a
        * @param {Object} b
        * @return {Boolean}
@@ -93,6 +95,7 @@ define("zotohlab/asx/ccsx",
        * Test collision of 2 sprites.
        *
        * @method collide
+       * @static
        * @param {Object} spriteA
        * @param {Object} spriteB
        * @return {Boolean}
@@ -106,6 +109,7 @@ define("zotohlab/asx/ccsx",
        * Test if the screen is oriented vertically.
        *
        * @method isPortrait
+       * @static
        * @return {Boolean}
        */
       isPortrait: function() {
@@ -116,6 +120,7 @@ define("zotohlab/asx/ccsx",
        * Test if this entity is out of bound.
        *
        * @method outOfBound
+       * @static
        * @param {Object} ent
        * @param {Object} B
        * @return {Boolean}
@@ -130,6 +135,7 @@ define("zotohlab/asx/ccsx",
        * Maybe release this timer.
        *
        * @method releaseTimer
+       * @static
        * @param {Object} par
        * @param {Object} tm
        * @return null
@@ -145,9 +151,10 @@ define("zotohlab/asx/ccsx",
        * Create a timer action.
        *
        * @method createTimer
+       * @static
        * @param {Object} par
        * @param {Object} tm
-       * @return {Object} timer action.
+       * @return {Object} timer action
        */
       createTimer: function(par, tm) {
         var rc= par.runAction(new cc.DelayTime(tm));
@@ -161,6 +168,7 @@ define("zotohlab/asx/ccsx",
        * Test if this timer is done.
        *
        * @method timerDone
+       * @static
        * @param {Object} t
        * @return {Boolean}
        */
@@ -172,6 +180,7 @@ define("zotohlab/asx/ccsx",
        * Create a sprite from its frame name.
        *
        * @method createSpriteFrame
+       * @static
        * @param {String} name
        * @return {cc.Sprite}
        */
@@ -185,6 +194,7 @@ define("zotohlab/asx/ccsx",
        * Create a 4 point rectangle from this sprite.
        *
        * @method bbox4
+       * @static
        * @param {cc.Sprite} sprite
        * @return {Object} rect
        */
@@ -201,6 +211,7 @@ define("zotohlab/asx/ccsx",
        * Calculate halves of width and height of this sprite.
        *
        * @method halfHW
+       * @static
        * @param {cc.Sprite} sprite
        * @return {Array} [x, y]
        */
@@ -213,6 +224,7 @@ define("zotohlab/asx/ccsx",
        * Create a rectangle from this sprite.
        *
        * @method bbox
+       * @static
        * @param {cc.Sprite} sprite
        * @return {cc.rect} rect
        */
@@ -227,6 +239,7 @@ define("zotohlab/asx/ccsx",
        * Create a rect from the last frame.
        *
        * @method bbox4b4
+       * @static
        * @param {Object} ent
        * @return {Object} box
        */
@@ -243,6 +256,7 @@ define("zotohlab/asx/ccsx",
        * Get the scaled height.
        *
        * @method getScaledHeight
+       * @static
        * @param {cc.Sprite} sprite
        * @return {Number}
        */
@@ -254,6 +268,7 @@ define("zotohlab/asx/ccsx",
        * Get the height.
        *
        * @method getHeight
+       * @static
        * @param {cc.Sprite} sprite
        * @return {Number}
        */
@@ -265,6 +280,7 @@ define("zotohlab/asx/ccsx",
        * Get the scaled width.
        *
        * @method getScaledWidth
+       * @static
        * @param {cc.Sprite} sprite
        * @return {Number}
        */
@@ -276,6 +292,7 @@ define("zotohlab/asx/ccsx",
        * Get the width.
        *
        * @method getWidth
+       * @static
        * @param {cc.Sprite} sprite
        * @return {Number}
        */
@@ -287,6 +304,7 @@ define("zotohlab/asx/ccsx",
        * Get the left pos.
        *
        * @method getLeft
+       * @static
        * @param {cc.Sprite} sprite
        * @return {Number}
        */
@@ -298,6 +316,7 @@ define("zotohlab/asx/ccsx",
        * Get the right pos.
        *
        * @method getRight
+       * @static
        * @param {cc.Sprite} sprite
        * @return {Number}
        */
@@ -309,6 +328,7 @@ define("zotohlab/asx/ccsx",
        * Get the top pos.
        *
        * @method getTop
+       * @static
        * @param {cc.Sprite} sprite
        * @return {Number}
        */
@@ -320,6 +340,7 @@ define("zotohlab/asx/ccsx",
        * Get the bottom pos.
        *
        * @method getBottom
+       * @static
        * @param {cc.Sprite} sprite
        * @return {Number}
        */
@@ -331,6 +352,7 @@ define("zotohlab/asx/ccsx",
        * Maybe get the previous left pos.
        *
        * @method getLastLeft
+       * @static
        * @param {Object} ent
        * @return {Number}
        */
@@ -343,6 +365,7 @@ define("zotohlab/asx/ccsx",
        * Maybe get the previous right pos.
        *
        * @method getLastRight
+       * @static
        * @param {Object} ent
        * @return {Number}
        */
@@ -355,6 +378,7 @@ define("zotohlab/asx/ccsx",
        * Maybe get the previous top pos.
        *
        * @method getLastTop
+       * @static
        * @param {Object} ent
        * @return {Number}
        */
@@ -367,6 +391,7 @@ define("zotohlab/asx/ccsx",
        * Maybe get the previous bottom pos.
        *
        * @method getLastBottom
+       * @static
        * @param {Object} ent
        * @return {Number}
        */
@@ -379,6 +404,7 @@ define("zotohlab/asx/ccsx",
        * Get the x pos of the center of the visible screen.
        *
        * @method centerX
+       * @static
        * @return {Number}
        */
       centerX: function() { return this.center().x; },
@@ -387,6 +413,7 @@ define("zotohlab/asx/ccsx",
        * Get the y pos of the center of the visible screen.
        *
        * @method centerY
+       * @static
        * @return {Number}
        */
       centerY: function() { return this.center().y; },
@@ -395,6 +422,7 @@ define("zotohlab/asx/ccsx",
        * Get the center of the visible screen.
        *
        * @method center
+       * @static
        * @return {cc.Point}
        */
       center: function() {
@@ -406,6 +434,7 @@ define("zotohlab/asx/ccsx",
        * Get the screen height.
        *
        * @method screenHeight
+       * @static
        * @return {Number}
        */
       screenHeight: function() { return this.screen().height; },
@@ -414,6 +443,7 @@ define("zotohlab/asx/ccsx",
        * Get the screen width.
        *
        * @method screenWidth
+       * @static
        * @return {Number}
        */
       screenWidth: function() { return this.screen().width; },
@@ -422,6 +452,7 @@ define("zotohlab/asx/ccsx",
        * Get the visible screen rectangle.
        *
        * @method vrect
+       * @static
        * @return {Object} cc.rect
        */
       vrect: function() {
@@ -434,6 +465,7 @@ define("zotohlab/asx/ccsx",
        * Get the visible screen box.
        *
        * @method vbox
+       * @static
        * @return {Object} rectangle box.
        */
       vbox: function() {
@@ -451,6 +483,7 @@ define("zotohlab/asx/ccsx",
        * Get the actual window/frame size.
        *
        * @method screen
+       * @static
        * @return {cc.Size}
        */
       screen: function() {
@@ -463,6 +496,7 @@ define("zotohlab/asx/ccsx",
        * Get the actual screen center.
        *
        * @method scenter
+       * @static
        * @return {cc.Point}
        */
       scenter: function() {
@@ -474,6 +508,7 @@ define("zotohlab/asx/ccsx",
        * Get the center of this box.
        *
        * @method vboxMID
+       * @static
        * @param {Object} box
        * @return {cc.Point}
        */
@@ -490,6 +525,7 @@ define("zotohlab/asx/ccsx",
        * are returned.
        *
        * @method traceEnclosure
+       * @static
        * @param {Number} dt  delta time
        * @param {Object} bbox
        * @param {Oject} rect
@@ -551,6 +587,7 @@ define("zotohlab/asx/ccsx",
        * its id (e.g. #ship).
        *
        * @method getSpriteFrame
+       * @static
        * @param {String} frameid
        * @return {cc.Sprite}
        */
@@ -560,6 +597,7 @@ define("zotohlab/asx/ccsx",
 
       /**
        * @property {Object} acs Anchor Points
+       * @static
        * @final
        */
       acs : {
@@ -632,6 +670,7 @@ define("zotohlab/asx/ccsx",
        * :target}
        *
        * @method tmenu
+       * @static
        * @param {Array} items
        * @param {Number} scale
        * @return {cc.Menu}
@@ -661,6 +700,7 @@ define("zotohlab/asx/ccsx",
        * Make a text label menu containing one single button.
        *
        * @method tmenu1
+       * @static
        * @param {Object} options
        * @return {cc.Menu}
        */
@@ -677,6 +717,7 @@ define("zotohlab/asx/ccsx",
        * Create a vertically aligned menu with graphic buttons.
        *
        * @method vmenu
+       * @static
        * @param {Array} items
        * @param {Number} scale
        * @param {Number} padding
@@ -690,6 +731,7 @@ define("zotohlab/asx/ccsx",
        * Create a horizontally aligned menu with graphic buttons.
        *
        * @method hmenu
+       * @static
        * @param {Array} items
        * @param {Number} scale
        * @param {Number} padding
@@ -703,6 +745,7 @@ define("zotohlab/asx/ccsx",
        * Create a menu with graphic buttons.
        *
        * @method pmenu
+       * @static
        * @param {Boolean} vertical
        * @param {Array} items
        * @param {Number} scale
@@ -742,6 +785,7 @@ define("zotohlab/asx/ccsx",
        * Create a single button menu.
        *
        * @method pmenu1
+       * @static
        * @param {Object} options
        * @return {cc.Menu}
        */
@@ -757,6 +801,7 @@ define("zotohlab/asx/ccsx",
        * Create a Label.
        *
        * @method bmfLabel
+       * @static
        * @param {Object} options
        * @return {cc.LabelBMFont}
        */

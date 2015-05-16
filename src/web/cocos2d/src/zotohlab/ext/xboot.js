@@ -297,7 +297,7 @@ define("zotohlab/p/boot",
     sh.sfxInit();
 
     //sjs.merge(me.xcfg.game, global.document.ccConfig);
-    sjs.loggr.debug(JSON.stringify(xcfg.game));
+    sjs.loggr.debug(sjs.jsonDecode(xcfg.game));
     sjs.loggr.info("Registered game start state - " + ss1);
     sjs.loggr.info("Loaded and running. OK");
 

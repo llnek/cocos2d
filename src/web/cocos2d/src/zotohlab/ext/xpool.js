@@ -7,7 +7,7 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
  * @requires cherimoia/skarojs
@@ -27,7 +27,7 @@ define("zotohlab/asx/xpool",
     R= sjs.ramda,
     undef,
 
-    XEntityPool = sjs.Class.xtends({
+    XEntityPool = sjs.mixes({
 
       checkEntity: function(ent) {
         if (ent instanceof this.entType) {
@@ -63,7 +63,6 @@ define("zotohlab/asx/xpool",
         }
       },
 
-
       ctor: function(options) {
         this.options = options || {};
         this.maxSize = this.options.maxSize || 1000;
@@ -78,14 +77,14 @@ define("zotohlab/asx/xpool",
     /**
      * @class XPool
      */
-    XPool = sjs.Class.xtends({
+    XPool = sjs.mixes({
 
       /**
        * Pre-populate a bunch of objects in the pool.
        *
        * @memberof module:zotohlab/asx/xpool~XPool
        * @method preSet
-       * @param {Function} ctor - object constructor
+       * @param {Function} ctor object constructor
        * @param {Number} count
        */
       preSet: function(ctor, count) {
@@ -106,7 +105,7 @@ define("zotohlab/asx/xpool",
        * @memberof module:zotohlab/asx/xpool~XPool
        * @method select
        * @param {Function} filter
-       * @return {Object} - the selected one
+       * @return {Object} the selected one
        */
       select: function(filter) {
         var rc, n;
@@ -181,7 +180,7 @@ define("zotohlab/asx/xpool",
        * @memberof module:zotohlab/asx/xpool~XPool
        * @method iter
        * @param {Function} func
-       * @param {Object} target - if null, use the pool
+       * @param {Object} target if null, use the pool
        */
       iter: function(func, target) {
         target = target || this;
@@ -217,6 +216,7 @@ define("zotohlab/asx/xpool",
 
     /**
      * @property {XPool.Class} XPool
+     * @static
      * @final
      */
     exports.XPool = XPool;

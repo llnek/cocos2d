@@ -7,7 +7,7 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
  * @requires cherimoia/skarojs
@@ -16,7 +16,8 @@
  * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xmmenus
  * @requires zotohlab/asx/xscenes
- * @module zotohlab/tictactoe/mmenu
+ *
+ * @module zotohlab/p/mmenu
  */
 define("zotohlab/p/mmenu",
 
@@ -29,9 +30,7 @@ define("zotohlab/p/mmenu",
 
   function (sjs, sh, ccsx, layers, mmenus, scenes) { "use strict";
 
-    /** @alias module:zotohlab/tictactoe/mmenu */
-    var exports= {},
-    xcfg = sh.xcfg,
+    var xcfg = sh.xcfg,
     csts= xcfg.csts,
     R=sjs.ramda,
     undef,
@@ -68,7 +67,8 @@ define("zotohlab/p/mmenu",
 
       pkInit: function() {
 
-        var cw = ccsx.center(),
+        var color= cc.color(94,49,120),
+        cw = ccsx.center(),
         wb= ccsx.vbox(),
         sz, menu;
 
@@ -76,29 +76,29 @@ define("zotohlab/p/mmenu",
         menu= ccsx.vmenu([
           { imgPath: '#online.png',
             cb: function() {
-              sh.fireEvent('/mmenu/controls/online',
-                           sjs.mergeEx(SEED,
-                                       { mode: sh.gtypes.ONLINE_GAME }));
+              sh.fire('/mmenu/online',
+                      sjs.mergeEx(SEED,
+                                  { mode: sh.gtypes.ONLINE_GAME }));
             }},
           { imgPath: '#player2.png',
             cb: function() {
               var p={};
               p[ sh.l10n('%p1') ] = [ 1, sh.l10n('%player1') ];
               p[ sh.l10n('%p2') ] = [ 2, sh.l10n('%player2') ];
-              sh.fireEvent('/mmenu/controls/newgame',
-                           sjs.mergeEx(SEED,
-                                       {ppids: p,
-                                        mode: sh.gtypes.P2_GAME }));
+              sh.fire('/mmenu/newgame',
+                      sjs.mergeEx(SEED,
+                                  {ppids: p,
+                                   mode: sh.gtypes.P2_GAME }));
             }},
           { imgPath: '#player1.png',
             cb: function() {
               var p={};
               p[ sh.l10n('%cpu') ] = [ 2, sh.l10n('%computer') ];
               p[ sh.l10n('%p1') ] = [ 1,  sh.l10n('%player1') ];
-              sh.fireEvent('/mmenu/controls/newgame',
-                           sjs.mergeEx(SEED,
-                                       {ppids: p,
-                                        mode: sh.gtypes.P1_GAME }));
+              sh.fire('/mmenu/newgame',
+                      sjs.mergeEx(SEED,
+                                  {ppids: p,
+                                   mode: sh.gtypes.P1_GAME }));
             }}
         ]);
         menu.setPosition(cw);
@@ -106,16 +106,16 @@ define("zotohlab/p/mmenu",
 
         // show back & quit
         this.mkBackQuit([
-            { color: cc.color(94,49,120),
-              imgPath: '#icon_back.png',
+            { imgPath: '#icon_back.png',
+              color: color,
               cb: function() {
                 if (!!this.options.onBack) {
                   this.options.onBack(); }
               },
               target: this },
 
-            { color: cc.color(94,49,120),
-              imgPath: '#icon_quit.png',
+            { imgPath: '#icon_quit.png',
+              color: color,
               cb: function() { this.onQuit(); },
               target: this }
           ],
@@ -128,7 +128,7 @@ define("zotohlab/p/mmenu",
         this.mkAudio({
           pos: cc.p(wb.right - csts.TILE,
                     wb.bottom + csts.TILE),
-          color: cc.color(94,49,120),
+          color: color,
           anchor: cc.p(1,0)
         });
 
@@ -136,52 +136,57 @@ define("zotohlab/p/mmenu",
 
     });
 
-    /**
-     * @property {String} rtti
-     * @final
-     */
-    exports.rtti = sh.ptypes.mmenu;
+    /** @alias module:zotohlab/p/mmenu */
+    var exports= {
 
-    /**
-     * Create the Main Menu screen.
-     *
-     * @method ctor
-     * @static
-     * @param {Object} options
-     * @return {cc.Scene}
-     */
-    exports.ctor= function (options) {
-      var gl = sh.protos[sh.ptypes.game],
-      mm= sh.protos[sh.ptypes.mmenu],
-      ol= sh.protos[sh.ptypes.online],
-      dir= cc.director,
+      /**
+       * @property {String} rtti
+       * @static
+       * @final
+       */
+      rtti: sh.ptypes.mmenu,
 
-      scene = new scenes.XSceneFactory([
-        BackLayer,
-        MainMenuLayer
-      ]).create(options);
+      /**
+       * Create the Main Menu screen.
+       *
+       * @method ctor
+       * @static
+       * @param {Object} options
+       * @return {cc.Scene}
+       */
+      ctor: function (options) {
+        var gl = sh.protos[sh.ptypes.game],
+        mm= sh.protos[sh.ptypes.mmenu],
+        ol= sh.protos[sh.ptypes.online],
+        dir= cc.director,
 
-      scene.ebus.on('/mmenu/controls/newgame',
-                    function(topic, msg) {
-                      dir.runScene( gl.create(msg));
-                    });
+        scene = new scenes.XSceneFactory([
+          BackLayer,
+          MainMenuLayer
+        ]).create(options);
 
-      scene.ebus.on('/mmenu/controls/online',
-                    function(topic, msg) {
-                      msg.yes=function(wss,pnum,startmsg) {
-                        var m= sjs.mergeEx( R.omit(['yes', 'onBack'], msg), {
-                          wsock: wss,
-                          pnum: pnum
-                        });
-                        sjs.merge(m, startmsg);
-                        dir.runScene( gl.create(m));
-                      }
-                      msg.onBack=function() {
-                        dir.runScene( mm.create());
-                      };
-                      dir.runScene( ol.create(msg));
-                    });
-      return scene;
+        scene.ebus.on('/mmenu/newgame',
+                      function(topic, msg) {
+                        dir.runScene( gl.create(msg));
+                      });
+
+        scene.ebus.on('/mmenu/online',
+                      function(topic, msg) {
+                        msg.yes=function(wss,pnum,startmsg) {
+                          var m= sjs.mergeEx( R.omit(['yes', 'onBack'], msg), {
+                            wsock: wss,
+                            pnum: pnum
+                          });
+                          sjs.merge(m, startmsg);
+                          dir.runScene( gl.reify(m));
+                        }
+                        msg.onBack=function() {
+                          dir.runScene( mm.reify());
+                        };
+                        dir.runScene( ol.reify(msg));
+                      });
+        return scene;
+      }
     };
 
     return exports;
