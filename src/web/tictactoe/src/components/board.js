@@ -7,8 +7,13 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires cherimoia/skarojs
+ *
+ * @module zotohlab/p/board
+ */
 define("zotohlab/p/c/board", ['cherimoia/skarojs'],
 
   function (sjs) { "use strict";
@@ -18,8 +23,10 @@ define("zotohlab/p/c/board", ['cherimoia/skarojs'],
 
     //////////////////////////////////////////////////////////////////////////////
     // A Tic Tac Toe board.
-    //////////////////////////////////////////////////////////////////////////////
-    var GameBoard = sjs.Class.xtends({
+    /**
+     * @class GameBoard
+     */
+    var GameBoard = sjs.mixes({
 
       isNil: function(cellv) { return cellv === this.CV_Z; },
 
@@ -42,7 +49,7 @@ define("zotohlab/p/c/board", ['cherimoia/skarojs'],
         }
       },
 
-      syncState: function(seed,actor) {
+      syncState: function(seed, actor) {
         this.grid=seed.slice(0);
         this.actors[0] = actor;
       },

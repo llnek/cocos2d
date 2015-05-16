@@ -13,7 +13,8 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/xcfg
- * @module zotohlab/tictactoe/config
+ *
+ * @module zotohlab/p/config
  */
 define("zotohlab/p/config",
 
@@ -23,7 +24,7 @@ define("zotohlab/p/config",
 
   function (sjs, sh, xcfg) { "use strict";
 
-    /** @alias module:zotohlab/tictactoe/config */
+    /** @alias module:zotohlab/p/config */
     var exports= {};
 
     //////////////////////////////////////////////////////////////////////////////

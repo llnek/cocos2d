@@ -17,10 +17,11 @@
  * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asx/xmmenus
  * @requires zotohlab/asx/odin
- * @requires zotohlab/tictactoe/hud
- * @requires zotohlab/tictactoe/components
- * @requires zotohlab/tictactoe/sysobjs
- * @module zotohlab/tictactoe/arena
+ * @requires zotohlab/p/hud
+ * @requires zotohlab/p/components
+ * @requires zotohlab/p/sysobjs
+ *
+ * @module zotohlab/p/arena
  */
 define("zotohlab/p/arena",
 
@@ -37,10 +38,6 @@ define("zotohlab/p/arena",
 
   function (sjs, sh, ccsx, layers, scenes,
             mmenus, odin, huds, cobjs, sobjs) { "use strict";
-
-    /** @alias module:zotohlab/tictactoe/arena */
-    var exports = {};
-
 
     var prrs= sobjs.Priorities,
     evts= odin.Events,
@@ -164,15 +161,15 @@ define("zotohlab/p/arena",
         p2, p1;
 
         switch (this.options.mode) {
-          case sh.ONLINE_GAME:
+          case sh.gtypes.ONLINE_GAME:
             p2cat = csts.NETP;
             p1cat = csts.NETP;
           break;
-          case sh.P1_GAME:
+          case sh.gtypes.P1_GAME:
             p1cat= csts.HUMAN;
             p2cat= csts.BOT;
           break;
-          case sh.P2_GAME:
+          case sh.gtypes.P2_GAME:
             p2cat= csts.HUMAN;
             p1cat= csts.HUMAN;
           break;
@@ -236,51 +233,56 @@ define("zotohlab/p/arena",
 
     });
 
-    /**
-     * @property {String} rtti
-     * @final
-     */
-    exports.rtti = sh.ptypes.game;
+    /** @alias module:zotohlab/p/arena */
+    var exports = {
 
-    /**
-     * @method ctor
-     * @static
-     * @param {Object} options
-     * @return {cc.Scene}
-     */
-    exports.ctor = function(options) {
-      var scene = new scenes.XSceneFactory([
-        huds.HUDBackLayer,
-        GameLayer,
-        huds.HUDLayer
-      ]).create(options);
+      /**
+       * @property {String} rtti
+       * @static
+       * @final
+       */
+      rtti: sh.ptypes.game,
 
-      scene.ebus.on('/hud/showmenu',function(t,msg) {
-        mmenus.XMenuLayer.onShowMenu();
-      });
-      scene.ebus.on('/hud/replay',function(t,msg) {
-        sh.main.replay();
-      });
-      scene.ebus.on('/hud/timer/show',function(t,msg) {
-        sh.main.getHUD().showTimer();
-      });
-      scene.ebus.on('/hud/timer/hide',function(t,msg) {
-        sh.main.getHUD().killTimer();
-      });
-      scene.ebus.on('/hud/score/update',function(t,msg) {
-        sh.main.getHUD().updateScore(msg.color, msg.score);
-      });
-      scene.ebus.on('/hud/end',function(t,msg) {
-        sh.main.getHUD().endGame(msg.winner);
-      });
-      scene.ebus.on('/hud/update',function(t,msg) {
-        sh.main.getHUD().update(msg.running, msg.pnum);
-      });
-      scene.ebus.on('/player/timer/expired',function(t,msg) {
-        sh.main.playTimeExpired(msg);
-      });
+      /**
+       * @method ctor
+       * @static
+       * @param {Object} options
+       * @return {cc.Scene}
+       */
+      ctor:  function(options) {
+        var scene = new scenes.XSceneFactory([
+          huds.HUDBackLayer,
+          GameLayer,
+          huds.HUDLayer
+        ]).reify(options);
 
-      return scene;
+        scene.ebus.on('/hud/showmenu',function(t,msg) {
+          mmenus.XMenuLayer.onShowMenu();
+        });
+        scene.ebus.on('/hud/replay',function(t,msg) {
+          sh.main.replay();
+        });
+        scene.ebus.on('/hud/timer/show',function(t,msg) {
+          sh.main.getHUD().showTimer();
+        });
+        scene.ebus.on('/hud/timer/hide',function(t,msg) {
+          sh.main.getHUD().killTimer();
+        });
+        scene.ebus.on('/hud/score/update',function(t,msg) {
+          sh.main.getHUD().updateScore(msg.color, msg.score);
+        });
+        scene.ebus.on('/hud/end',function(t,msg) {
+          sh.main.getHUD().endGame(msg.winner);
+        });
+        scene.ebus.on('/hud/update',function(t,msg) {
+          sh.main.getHUD().update(msg.running, msg.pnum);
+        });
+        scene.ebus.on('/player/timer/expired',function(t,msg) {
+          sh.main.playTimeExpired(msg);
+        });
+
+        return scene;
+      }
     };
 
     return exports;
