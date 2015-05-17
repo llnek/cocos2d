@@ -43,7 +43,7 @@ define("zotohlab/p/protodefs",
     undef;
 
     R.forEach(function(obj) {
-      protos[obj.rtti] = obj.ctor;
+      protos[obj.rtti] = obj;
     }, ps);
 
     exports= protos;

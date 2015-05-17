@@ -13,7 +13,10 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/xcfg
- * @requires zotohlab/asx/xloader
+ * @requires zotohlab/asx/xldr
+ * @requires zotohlab/p/config
+ * @requires zotohlab/p/l10n
+ * @requires zotohlab/p/protodefs
  * @module zotohlab/p/boot
  */
 define("zotohlab/p/boot",
@@ -21,9 +24,12 @@ define("zotohlab/p/boot",
        ['cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/xcfg',
-        'zotohlab/asx/xloader'],
+        'zotohlab/asx/xldr',
+        'zotohlab/p/config',
+        'zotohlab/p/l10n',
+        'zotohlab/p/protodefs'],
 
-  function (sjs, sh, xcfg, loader) { "use strict";
+  function (sjs, sh, xcfg, loader, cfg, l10n, protos) { "use strict";
 
     var ss1= xcfg.game.start || 'StartScreen',
     /** @alias module:zotohlab/p/boot */
@@ -297,7 +303,7 @@ define("zotohlab/p/boot",
     sh.sfxInit();
 
     //sjs.merge(me.xcfg.game, global.document.ccConfig);
-    sjs.loggr.debug(sjs.jsonDecode(xcfg.game));
+    sjs.loggr.debug(sjs.jsonfy(xcfg.game));
     sjs.loggr.info("Registered game start state - " + ss1);
     sjs.loggr.info("Loaded and running. OK");
 

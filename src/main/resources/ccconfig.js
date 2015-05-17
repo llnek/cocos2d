@@ -39,7 +39,7 @@ document.ccConfig = {
     "/public/ig/lib/zotohlab/ext/xlayers.js",
     "/public/ig/lib/zotohlab/ext/xscenes.js",
     "/public/ig/lib/zotohlab/ext/xpool.js",
-    "/public/ig/lib/zotohlab/ext/xloader.js",
+    "/public/ig/lib/zotohlab/ext/xldr.js",
 
     "/public/ig/lib/zotohlab/gui/startscreen.js",
     "/public/ig/lib/zotohlab/gui/msgbox.js",

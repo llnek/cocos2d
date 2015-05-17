@@ -17,7 +17,8 @@
   (:require [clojure.tools.logging :as log]
             [clojure.java.io :as io])
 
-  (:use [czlabclj.xlib.util.format :only [ReadJson ReadEdn]]
+  (:use [czlabclj.xlib.util.format :only [ReadJsonKW ReadJson
+                                          ReadEdn WriteJson]]
         [czlabclj.xlib.util.str :only [nsb hgl? strim] ]
         [czlabclj.xlib.util.dates :only [ParseDate] ]
         [czlabclj.xlib.util.files :only [ReadOneFile] ]
@@ -59,12 +60,12 @@
                                  :gamedir (.getName fd))
                           (-> (io/file fd "game.json")
                               (ReadOneFile)
-                              (ReadJson)))
+                              (ReadJsonKW)))
               {:keys [network uuid uri]} info
               online (true? (:enabled network))]
           ;; create a UI friendly version for freemarker
           (var-set tmp (transient{}))
-          (doseq [[k v] info]
+          (doseq [[k v] (seq info)]
             (var-set tmp (assoc! @tmp (name k) v)))
           (var-set tmp (assoc! @tmp "network" online))
           (var-set gc (conj! @gc (persistent! @tmp)))
@@ -80,15 +81,16 @@
                                             (.getTime ^Date (%2 "pubdate")))
                                   (persistent! @gc))))
     ;;set true for debugging
-    (when false
+    (when true
       (log/debug "############ game manifests ##########################")
       (log/debug @GAMES-MNFS)
       (log/debug "############ game UriHash ##########################")
-      (log/debug @GAMES-HASH)
+      (log/debug (keys @GAMES-HASH))
       (log/debug "############ game UUID ##########################")
-      (log/debug @GAMES-UUID)
-      (log/debug "############ game SimpleList ##########################")
-      (log/debug @GAMES-LIST))
+      (log/debug (keys @GAMES-UUID))
+      ;;(log/debug "############ game SimpleList ##########################")
+      ;;(log/debug @GAMES-LIST)
+      (log/debug ""))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

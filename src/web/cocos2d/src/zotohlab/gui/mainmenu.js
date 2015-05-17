@@ -88,7 +88,7 @@ define("zotohlab/asx/xmmenus",
         var sz, menu;
 
         if (vert) {
-          menu = ccsx.vmemu(btns);
+          menu = ccsx.vmenu(btns);
         } else {
           menu= ccsx.hmenu(btns);
         }

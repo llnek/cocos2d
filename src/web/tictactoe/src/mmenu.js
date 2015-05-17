@@ -51,6 +51,8 @@ define("zotohlab/p/mmenu",
     BackLayer = mmenus.XMenuBackLayer.extend({
 
       setTitle: function() {
+        var wb=ccsx.vbox(),
+        cw= ccsx.center(),
         tt=ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.JellyBelly'),
           text: sh.l10n('%mmenu'),
@@ -106,7 +108,7 @@ define("zotohlab/p/mmenu",
         this.addItem(menu);
 
         // show back & quit
-        this.mkBackQuit([
+        this.mkBackQuit(false, [
             { imgPath: '#icon_back.png',
               color: color,
               cb: function() {
@@ -147,12 +149,12 @@ define("zotohlab/p/mmenu",
       /**
        * Create the Main Menu screen.
        *
-       * @method ctor
+       * @method reify
        * @static
        * @param {Object} options
        * @return {cc.Scene}
        */
-      ctor: function (options) {
+      reify: function (options) {
         var gl = sh.protos[sh.ptypes.game],
         mm= sh.protos[sh.ptypes.mmenu],
         ol= sh.protos[sh.ptypes.online],

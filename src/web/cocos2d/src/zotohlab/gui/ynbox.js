@@ -88,6 +88,13 @@ define("zotohlab/asx/ynbox",
     });
 
     exports = {
+
+      /**
+       * @property {String} rtti
+       * @static
+       */
+      rtti: sh.ptypes.yn,
+
       /**
        * Create a YesNo message screen.
        *

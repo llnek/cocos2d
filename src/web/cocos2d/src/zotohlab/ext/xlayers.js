@@ -805,7 +805,7 @@ define("zotohlab/asx/xlayers",
 
       //TODO: handle touch drag and move
       processEvent:function (event) {
-        sjs.loggr.debug('event === ' + sjs.jsonDecode(event));
+        sjs.loggr.debug('event === ' + sjs.jsonfy(event));
         /*
         var delta = event.getDelta();
         var curPos = cc.p(this._ship.x, this._ship.y);

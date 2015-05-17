@@ -243,12 +243,12 @@ define("zotohlab/p/arena",
       rtti: sh.ptypes.game,
 
       /**
-       * @method ctor
+       * @method reify
        * @static
        * @param {Object} options
        * @return {cc.Scene}
        */
-      ctor:  function(options) {
+      reify:  function(options) {
         var scene = new scenes.XSceneFactory([
           huds.HUDBackLayer,
           GameLayer,

@@ -101,12 +101,12 @@ define("zotohlab/p/splash",
       /**
        * Create the splash screen.
        *
-       * @method ctor
+       * @method reify
        * @static
        * @param {Object} options
        * @return {cc.Scene}
        */
-      ctor: function(options) {
+      reify: function(options) {
         var scene = new scenes.XSceneFactory([
           SplashLayer
         ]).reify(options);

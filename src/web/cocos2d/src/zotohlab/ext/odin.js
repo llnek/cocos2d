@@ -111,7 +111,7 @@ define("zotohlab/asx/odin",
       src;
 
       try {
-        evt= sjs.jsonDecode(e.data);
+        evt= sjs.objectfy(e.data);
       } catch (e) {
       }
 
@@ -124,7 +124,7 @@ define("zotohlab/asx/odin",
 
       if (sjs.hasKey(evt, 'source') &&
           sjs.isString(evt.source)) {
-        evt.source = sjs.jsonDecode(evt.source);
+        evt.source = sjs.objectfy(evt.source);
       }
 
       return evt;
@@ -172,7 +172,7 @@ define("zotohlab/asx/odin",
       send: function(evt) {
         if (this.state === evts.S_CONNECTED &&
             sjs.echt(this.ws)) {
-          this.ws.send( sjs.jsonEncode(evt));
+          this.ws.send( sjs.jsonfy(evt));
         }
       },
 
@@ -335,7 +335,7 @@ define("zotohlab/asx/odin",
        * @private
        */
       getPlayRequest: function() {
-        return sjs.jsonEncode( mkPlayRequest(this.options.game,
+        return sjs.jsonfy( mkPlayRequest(this.options.game,
                                           this.options.user,
                                           this.options.passwd));
       },

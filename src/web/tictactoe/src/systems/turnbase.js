@@ -30,7 +30,7 @@ define("zotohlab/p/s/turnbase",
   function (pss, gnodes, sjs, sh, ccsx, odin) { "use strict";
 
     /** @alias module:zotohlab/p/s/turnbase */
-    var exports = {          }
+    var exports = {          },
     evts= odin.Events,
     xcfg= sh.xcfg,
     csts= xcfg.csts,
@@ -172,7 +172,7 @@ define("zotohlab/p/s/turnbase",
         },
         snd = pnum===1 ? 'x_pick' : 'o_pick',
         evt= {
-          source: sjs.jsonDecode(src),
+          source: sjs.jsonfy(src),
           type: evts.MSG_SESSION,
           code: evts.PLAY_MOVE
         };

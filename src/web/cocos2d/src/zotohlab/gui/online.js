@@ -201,6 +201,13 @@ define("zotohlab/asx/onlineplay",
     });
 
     exports = {
+
+      /**
+       * @property {String} rtti
+       * @static
+       */
+      rtti : sh.ptypes.online,
+
       /**
        * Create the online-request play screen.
        *

@@ -13,9 +13,9 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @module zotohlab/asx/xloader
+ * @module zotohlab/asx/xldr
  */
-define("zotohlab/asx/xloader",
+define("zotohlab/asx/xldr",
 
        ['cherimoia/skarojs',
         'zotohlab/asterix',
@@ -23,7 +23,7 @@ define("zotohlab/asx/xloader",
 
   function (sjs, sh, ccsx) { "use strict";
 
-    /** @alias module:zotohlab/asx/xloader */
+    /** @alias module:zotohlab/asx/xldr */
     var exports = {},
     _instance= null,
     CHUNK=36,
@@ -188,14 +188,7 @@ define("zotohlab/asx/xloader",
       return _instance;
     };
 
-    exports = {
-      /**
-       * @property {XLoader.Class} XLoader
-       * @static
-       */
-      XLoader : XLoader
-    };
-
+    exports = XLoader;
     return exports;
 });
 
