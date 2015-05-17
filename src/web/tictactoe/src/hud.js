@@ -15,7 +15,6 @@
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xscenes
- *
  * @module zotohlab/p/hud
  */
 define("zotohlab/p/hud",
@@ -28,7 +27,9 @@ define("zotohlab/p/hud",
 
   function (sjs, sh, ccsx, layers, scenes) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/hud */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
@@ -288,20 +289,16 @@ define("zotohlab/p/hud",
 
     });
 
-    /** @alias module:zotohlab/p/hud */
-    var exports = {
-
+    exports = {
       /**
        * @property {HUDBackLayer.Class} HUDBackLayer
        * @static
-       * @final
        */
       HUDBackLayer: HUDBackLayer,
 
       /**
        * @property {HUDLayer.Class} HUDLayer
        * @static
-       * @final
        */
       HUDLayer: HUDLayer
     };

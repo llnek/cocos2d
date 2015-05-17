@@ -15,7 +15,6 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/odin
- *
  * @module zotohlab/p/s/network
  */
 define("zotohlab/p/s/network",
@@ -54,7 +53,7 @@ define("zotohlab/p/s/network",
       /**
        * @memberof module:zotohlab/p/s/network~NetworkSystem
        * @method removeFromEngine
-       * @param {Object} engine
+       * @param {Ash.Engine} engine
        */
       removeFromEngine: function(engine) {
         this.netplay=null;
@@ -63,7 +62,7 @@ define("zotohlab/p/s/network",
       /**
        * @memberof module:zotohlab/p/s/network~NetworkSystem
        * @method addToEngine
-       * @param {Object} engine
+       * @param {Ash.Engine} engine
        */
       addToEngine: function(engine) {
         this.netplay = engine.getNodeList(gnodes.NetPlayNode);
@@ -87,10 +86,7 @@ define("zotohlab/p/s/network",
       },
 
       /**
-       * @memberof module:zotohlab/p/s/network~NetworkSystem
-       * @method process
-       * @param {Node} node
-       * @param {Event} evt
+       * @private
        */
       process: function(node, evt) {
         var pnum= sjs.isNumber(evt.source.pnum) ? evt.source.pnum : -1;

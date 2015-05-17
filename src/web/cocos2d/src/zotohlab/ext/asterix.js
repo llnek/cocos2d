@@ -14,7 +14,6 @@
  * @requires mustache
  * @requires eligrey/l10njs
  * @requires ash-js
- *
  * @module zotohlab/asterix
  */
 define("zotohlab/asterix",

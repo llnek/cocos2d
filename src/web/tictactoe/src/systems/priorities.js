@@ -11,7 +11,6 @@
 
 /**
  * @requires cherimoia/skarojs
- *
  * @module zotohlab/p/s/priorities
  */
 define("zotohlab/p/s/priorities",

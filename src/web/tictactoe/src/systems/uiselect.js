@@ -15,7 +15,6 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- *
  * @module zotohlab/p/s/uiselect
  */
 define("zotohlab/p/s/uiselect",

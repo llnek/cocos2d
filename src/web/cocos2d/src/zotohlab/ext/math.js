@@ -11,7 +11,6 @@
 
 /**
  * @requires cherimoia/skarojs
- *
  * @module zotohlab/asx/math
  */
 define("zotohlab/asx/math",

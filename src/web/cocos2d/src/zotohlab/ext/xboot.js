@@ -284,7 +284,7 @@ define("zotohlab/p/boot",
       function() {
         ldr.preload(pvGatherPreloads(sjs, sh, xcfg), function () {
           xcfg.runOnce();
-          cc.director.runScene( sh.protos[ss1].create() );
+          cc.director.runScene( sh.protos[ss1].reify() );
         });
       });
       cc.director.runScene(cc.loaderScene);

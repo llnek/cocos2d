@@ -29,7 +29,9 @@ define("zotohlab/asx/onlineplay",
 
   function (sjs, sh, ccsx, layers, scenes, odin) { "use strict";
 
-    var evts= odin.Events,
+    /** @alias module:zotohlab/asx/onlineplay */
+    var exports = {        },
+    evts= odin.Events,
     xcfg= sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -198,8 +200,7 @@ define("zotohlab/asx/onlineplay",
 
     });
 
-    /** @alias module:zotohlab/asx/onlineplay */
-    var exports = {
+    exports = {
       /**
        * Create the online-request play screen.
        *
@@ -209,7 +210,7 @@ define("zotohlab/asx/onlineplay",
        * @return {cc.Scene}
        */
       reify: function(options) {
-        return new scenes.XSceneFactory([ BGLayer, UILayer ]).create(options);
+        return new scenes.XSceneFactory([ BGLayer, UILayer ]).reify(options);
       }
 
     };

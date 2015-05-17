@@ -25,11 +25,14 @@ define("zotohlab/asx/xsplash",
 
   function (sjs, sh, ccsx, layers) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/asx/xsplash */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
     //////////////////////////////////////////////////////////////////////////
     /**
+     * @extends XLayer
      * @class XSplashLayer
      */
     XSplashLayer = layers.XLayer.extend({
@@ -68,12 +71,10 @@ define("zotohlab/asx/xsplash",
 
     });
 
-    /** @alias module:zotohlab/asx/xsplash */
-    var exports = {
+    exports = {
       /**
        * @property {XSplashLayer.Class} XSplashLayer
        * @static
-       * @final
        */
       XSplashLayer: XSplashLayer
     };

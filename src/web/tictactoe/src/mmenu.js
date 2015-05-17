@@ -16,7 +16,6 @@
  * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xmmenus
  * @requires zotohlab/asx/xscenes
- *
  * @module zotohlab/p/mmenu
  */
 define("zotohlab/p/mmenu",
@@ -30,7 +29,9 @@ define("zotohlab/p/mmenu",
 
   function (sjs, sh, ccsx, layers, mmenus, scenes) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/mmenu */
+    var exports= {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R=sjs.ramda,
     undef,
@@ -136,13 +137,10 @@ define("zotohlab/p/mmenu",
 
     });
 
-    /** @alias module:zotohlab/p/mmenu */
-    var exports= {
-
+    exports= {
       /**
        * @property {String} rtti
        * @static
-       * @final
        */
       rtti: sh.ptypes.mmenu,
 
@@ -163,11 +161,11 @@ define("zotohlab/p/mmenu",
         scene = new scenes.XSceneFactory([
           BackLayer,
           MainMenuLayer
-        ]).create(options);
+        ]).reify(options);
 
         scene.ebus.on('/mmenu/newgame',
                       function(topic, msg) {
-                        dir.runScene( gl.create(msg));
+                        dir.runScene( gl.reify(msg));
                       });
 
         scene.ebus.on('/mmenu/online',

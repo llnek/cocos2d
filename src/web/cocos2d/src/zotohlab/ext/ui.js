@@ -7,13 +7,15 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
  * @requires cherimoia/skarojs
  * @module zotohlab/asx/ui
  */
-define("zotohlab/asx/ui", ['cherimoia/skarojs'],
+define("zotohlab/asx/ui",
+
+  ['cherimoia/skarojs'],
 
   function (sjs) { "use strict";
 
@@ -165,36 +167,33 @@ define("zotohlab/asx/ui", ['cherimoia/skarojs'],
 
     });
 
-    /**
-     * @property {TextStyle.Class} TextStyle
-     * @static
-     * @final
-     */
-    exports.TextStyle= TextStyle;
-    /**
-     * @property {Circle.Class} Circle
-     * @static
-     * @final
-     */
-    exports.Circle= Circle;
-    /**
-     * @property {Line.Class} Line
-     * @static
-     * @final
-     */
-    exports.Line= Line;
-    /**
-     * @property {Point.Class} Point
-     * @static
-     * @final
-     */
-    exports.Point= Point;
-    /**
-     * @property {Area.Class} Area
-     * @static
-     * @final
-     */
-    exports.Area= Area;
+    exports= {
+      /**
+       * @property {TextStyle.Class} TextStyle
+       * @static
+       */
+      TextStyle: TextStyle,
+      /**
+       * @property {Circle.Class} Circle
+       * @static
+       */
+      Circle: Circle,
+      /**
+       * @property {Line.Class} Line
+       * @static
+       */
+      Line: Line,
+      /**
+       * @property {Point.Class} Point
+       * @static
+       */
+      Point: Point,
+      /**
+       * @property {Area.Class} Area
+       * @static
+       */
+      Area: Area
+    };
 
     return exports;
 });

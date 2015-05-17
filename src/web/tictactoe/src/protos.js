@@ -18,7 +18,6 @@
  * @requires zotohlab/p/splash
  * @requires zotohlab/p/mmenu
  * @requires zotohlab/p/arena
- *
  * @module zotohlab/p/protodefs
  */
 define("zotohlab/p/protodefs",
@@ -36,9 +35,9 @@ define("zotohlab/p/protodefs",
             msgbox, ynbox, splash, mmenu, arena) { "use strict";
 
     var ps= [online, splash, mmenu, msgbox, ynbox, arena],
-    protos= sh.protos,
     /** @alias module:zotohlab/p/protodefs */
     exports = {},
+    protos= sh.protos,
     xcfg = sh.xcfg,
     R = sjs.ramda,
     undef;
@@ -47,7 +46,8 @@ define("zotohlab/p/protodefs",
       protos[obj.rtti] = obj.ctor;
     }, ps);
 
-    return exports= protos;
+    exports= protos;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

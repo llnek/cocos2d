@@ -32,6 +32,7 @@ define("zotohlab/asx/xscenes",
 
     //////////////////////////////////////////////////////////////////////////////
     /**
+     * @extends cc.Scene
      * @class XScene
      */
     var XScene = cc.Scene.extend({
@@ -117,11 +118,11 @@ define("zotohlab/asx/xscenes",
 
       /**
        * @memberof module:zotohlab/asx/xscenes~XSceneFactory
-       * @method create
+       * @method reify
        * @param {Object} options
        * @return {cc.Scene}
        */
-      create: function(options) {
+      reify: function(options) {
         var itemKey= 'layers',
         arr= this.layers,
         cfg;
@@ -138,8 +139,6 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * Constructor.
-       *
        * @memberof module:zotohlab/asx/xscenes~XSceneFactory
        * @method ctor
        * @param {Array} list of layers
@@ -150,19 +149,18 @@ define("zotohlab/asx/xscenes",
 
     });
 
-    /**
-     * @property {XSceneFactory.Class} XSceneFactory
-     * @static
-     * @final
-     */
-    exports.XSceneFactory= XSceneFactory;
-
-    /**
-     * @property {XScene.Class} XScene
-     * @static
-     * @final
-     */
-    exports.XScene= XScene;
+    exports = {
+      /**
+       * @property {XSceneFactory.Class} XSceneFactory
+       * @static
+       */
+      XSceneFactory: XSceneFactory,
+      /**
+       * @property {XScene.Class} XScene
+       * @static
+       */
+      XScene: XScene
+    };
 
     return exports;
 });

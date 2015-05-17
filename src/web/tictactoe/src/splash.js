@@ -16,7 +16,6 @@
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xscenes
- *
  * @module zotohlab/p/splash
  */
 define("zotohlab/p/splash",
@@ -30,7 +29,9 @@ define("zotohlab/p/splash",
 
   function (utils, sjs, sh, ccsx, layers, scenes) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/splash */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
@@ -90,14 +91,10 @@ define("zotohlab/p/splash",
 
     });
 
-
-    /** @alias module:zotohlab/p/splash */
-    var exports = {
-
+    exports = {
       /**
        * @property {String} rtti
        * @static
-       * @final
        */
       rtti: sh.ptypes.start,
 
@@ -112,7 +109,7 @@ define("zotohlab/p/splash",
       ctor: function(options) {
         var scene = new scenes.XSceneFactory([
           SplashLayer
-        ]).create(options);
+        ]).reify(options);
         scene.ebus.on('/splash/playgame',
                       function() {
                         var ss= sh.protos[sh.ptypes.start],

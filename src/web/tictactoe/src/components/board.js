@@ -11,10 +11,11 @@
 
 /**
  * @requires cherimoia/skarojs
- *
  * @module zotohlab/p/c/board
  */
-define("zotohlab/p/c/board", ['cherimoia/skarojs'],
+define("zotohlab/p/c/board",
+
+       ['cherimoia/skarojs'],
 
   function (sjs) { "use strict";
 

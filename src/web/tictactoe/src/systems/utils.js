@@ -13,7 +13,6 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- *
  * @module zotohlab/p/s/utils
  */
 define("zotohlab/p/s/utils",

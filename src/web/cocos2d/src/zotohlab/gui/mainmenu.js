@@ -25,13 +25,16 @@ define("zotohlab/asx/xmmenus",
 
   function (sjs, sh, ccsx, layers) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/asx/xmmenus */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
 
     //////////////////////////////////////////////////////////////////////////
     /**
+     * @extends XLayer
      * @class XMenuBackLayer
      */
     XMenuBackLayer = layers.XLayer.extend({
@@ -69,12 +72,12 @@ define("zotohlab/asx/xmmenus",
     }),
 
     /**
+     * @extends XLayer
      * @class XMenuLayer
      */
     XMenuLayer= layers.XLayer.extend({
 
       /**
-       *
        * @memberof module:zotohlab/asx/xmmenus~XMenuLayer
        * @method rtti
        * @return {String} id
@@ -111,24 +114,23 @@ define("zotohlab/asx/xmmenus",
      */
     XMenuLayer.onShowMenu = function() {
       var dir= cc.director;
-      dir.pushScene( sh.protos[sh.ptypes.mmenu].create({
+      dir.pushScene( sh.protos[sh.ptypes.mmenu].reify({
         onBack: function() {
           dir.popScene();
         }
       }));
     };
 
-    /** @alias module:zotohlab/asx/xmmenus */
-    var exports = {
+    exports = {
       /**
        * @property {XMenuBackLayer.Class} XMenuBackLayer
-       * @final
+       * @static
        */
       XMenuBackLayer: XMenuBackLayer,
 
       /**
        * @property {XMenuLayer.Class} XMenuLayer
-       * @final
+       * @static
        */
       XMenuLayer: XMenuLayer
     };

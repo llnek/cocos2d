@@ -10,22 +10,25 @@
 // Copyright (c) 2013-2015 Ken Leung. All rights reserved.
 
 /**
- * @requires module:global/window
- * @requires module:console/dbg
- * @requires module:ramda
- * @requires module:CryptoJS
+ * @requires global/window
+ * @requires console/dbg
+ * @requires ramda
+ * @requires CryptoJS
  * @module cherimoia/skarojs
  */
-define("cherimoia/skarojs", ['global/window',
-                             'console/dbg',
-                             'ramda'],
+define("cherimoia/skarojs",
+
+       ['global/window',
+        'console/dbg',
+        'ramda'],
 
   function (global,DBG,R) { "use strict";
 
-    var undef, fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
-    var ZEROS= "00000000000000000000000000000000";  //32
-    var CjsBase64;
-    var CjsUtf8;
+    var fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /[\D|\d]*/,
+    ZEROS= "00000000000000000000000000000000",  //32
+    CjsBase64,
+    CjsUtf8,
+    undef;
 
     if (typeof HTMLElement === 'undefined') {
       // fake a type.
@@ -50,67 +53,55 @@ define("cherimoia/skarojs", ['global/window',
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     // js inheritance - lifted from impact.js
     //----------------------------------------------------------------------------
-    //
-    var monkeyPatch = function(prop) {
-      var proto = this.prototype,
-      name,
-      parent = {};
-      for ( name in prop ) {
-        if ( typeof(proto[name]) === "function" &&
-             typeof(prop[name]) === "function" &&
-             fnTest.test(prop[name])) {
-          parent[name] = proto[name]; // save original function
+    /**
+     * @private
+     */
+    function patchProto(zuper, proto, other) {
+      var par={},
+      name;
+
+      for (name in other) {
+        if (typeof(zuper[name]) === "function" &&
+            typeof(other[name]) === "function" &&
+            fnTest.test(other[name])) {
+          par[name] = zuper[name]; // save original function
           proto[name] = (function(name, fn){
             return function() {
               var tmp = this._super;
-              this._super = parent[name];
+              this._super = par[name];
               var ret = fn.apply(this, arguments);
               this._super = tmp;
               return ret;
             };
-          })( name, prop[name] );
-
-        } else {
-          proto[name] = prop[name];
-        }
-      }
-    };
-
-    var klass= function() {};
-    var initing = false;
-    klass.xtends = function (other) {
-      var name, parent = this.prototype;
-      initing = true;
-      var proto = new this();
-      initing = false;
-      for (name in other ) {
-        if ( typeof(parent[name]) === "function" &&
-             typeof(other[name]) === "function" &&
-             fnTest.test(other[name])) {
-          proto[name] = (function(name, fn){
-            return function() {
-              var tmp = this._super;
-              this._super = parent[name];
-              var ret = fn.apply(this, arguments);
-              this._super = tmp;
-              return ret;
-            };
-          })( name, other[name] );
-
+          })(name, other[name]);
         } else {
           proto[name] = other[name];
         }
       }
+    }
+
+    var monkeyPatch = function(other) {
+      patchProto(this.prototype,
+                 this.prototype, other);
+    },
+    klass= function() {},
+    initing = false;
+
+    // inheritance method
+    klass.mixes = function (other) {
+      var proto;
+
+      initing = true; proto = new this(); initing = false;
+      patchProto(this.prototype, proto, other);
+
       function Claxx() {
         if ( !initing ) {
-          // If this class has a staticInstantiate method, invoke it
-          // and check if we got something back. If not, the normal
-          // constructor (ctor) is called.
-          if (_echt(this.staticInstantiate)) {
-            var obj = this.staticInstantiate.apply(this, arguments);
-            if (_echt(obj)) { return obj; }
+          // static constructor?
+          if (!!this.staticCtor) {
+            var obj = this.staticCtor.apply(this, arguments);
+            if (!!obj) { return obj; }
           }
-          if (_echt(this.ctor)) {
+          if (!!this.ctor) {
             this.ctor.apply(this, arguments);
           }
         }
@@ -119,7 +110,7 @@ define("cherimoia/skarojs", ['global/window',
 
       Claxx.prototype = proto;
       Claxx.prototype.constructor = Claxx;
-      Claxx.xtends = klass.xtends;
+      Claxx.mixes = klass.mixes;
       Claxx.inject = monkeyPatch;
 
       return Claxx;
@@ -141,6 +132,7 @@ define("cherimoia/skarojs", ['global/window',
        * Maybe pad a string (right side.)
        *
        * @method strPadRight
+       * @static
        * @param {String} str
        * @param {Number} len
        * @param {String} s
@@ -156,6 +148,7 @@ define("cherimoia/skarojs", ['global/window',
        * Maybe pad a string (left side.)
        *
        * @method strPadLeft
+       * @static
        * @param {String} str
        * @param {Number} len
        * @param {String} s
@@ -171,6 +164,7 @@ define("cherimoia/skarojs", ['global/window',
        * Safely split a string, null and empty strings are removed.
        *
        * @method safeSplit
+       * @static
        * @param {String} s
        * @param {String} sep
        * @return {Array.String}
@@ -183,7 +177,8 @@ define("cherimoia/skarojs", ['global/window',
        * Get the current time.
        *
        * @method now
-       * @return {Number} - time in milliseconds.
+       * @static
+       * @return {Number} time in milliseconds.
        */
       now: Date.now || function() { return new Date().getTime(); },
 
@@ -191,8 +186,9 @@ define("cherimoia/skarojs", ['global/window',
        * Capitalize the first char of the string.
        *
        * @method capitalize
+       * @static
        * @param {String} str
-       * @return {String} - with the first letter capitalized.
+       * @return {String} with the first letter capitalized.
        */
       capitalize: function(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
@@ -202,6 +198,7 @@ define("cherimoia/skarojs", ['global/window',
        * Pick a random number between these 2 limits.
        *
        * @method randomRange
+       * @static
        * @param {Number} from
        * @param {Number} to
        * @return {Number}
@@ -211,12 +208,13 @@ define("cherimoia/skarojs", ['global/window',
       },
 
       /**
-       * Return the proper mathematical modulo.
+       * Return the proper mathematical modulo of x mod N.
        *
        * @method xmod
+       * @static
        * @param {Number} x
        * @param {Number} N
-       * @return {Number} - x modulo N
+       * @return {Number}
        */
       xmod: function(x, N) {
         if (x < 0) {
@@ -230,6 +228,7 @@ define("cherimoia/skarojs", ['global/window',
        * Create an array of len, seeding it with value.
        *
        * @method makeArray
+       * @static
        * @param {Number} len
        * @param {Object} value
        * @return {Array}
@@ -244,6 +243,7 @@ define("cherimoia/skarojs", ['global/window',
        * Throw an error exception.
        *
        * @method tne
+       * @static
        * @param {String} msg
        */
       tne: function(msg) { throw new Error(msg); },
@@ -252,6 +252,7 @@ define("cherimoia/skarojs", ['global/window',
        * A no-op function.
        *
        * @method NILFUNC
+       * @static
        */
       NILFUNC: function() {},
 
@@ -259,6 +260,7 @@ define("cherimoia/skarojs", ['global/window',
        * Test if object is valid and not null.
        *
        * @method echt
+       * @static
        * @param {Object} obj
        * @return {Boolean}
        */
@@ -268,6 +270,7 @@ define("cherimoia/skarojs", ['global/window',
        * Maybe pad the number with zeroes.
        *
        * @method prettyNumber
+       * @static
        * @param {Number} num
        * @param {Number} digits
        * @return {String}
@@ -291,7 +294,8 @@ define("cherimoia/skarojs", ['global/window',
        * Get the websocket transport protocol.
        *
        * @method getWebSockProtocol
-       * @return {String} - the transport protocol for websocket
+       * @static
+       * @return {String} the transport protocol for websocket
        */
       getWebSockProtocol: function() {
         return this.isSSL() ? "wss://" : "ws://";
@@ -301,7 +305,8 @@ define("cherimoia/skarojs", ['global/window',
        * Get the current time in milliseconds.
        *
        * @method nowMillis
-       * @return {Number} - current time (millisecs)
+       * @static
+       * @return {Number} current time (millisecs)
        */
       nowMillis: function() {
         return this.now();
@@ -311,6 +316,7 @@ define("cherimoia/skarojs", ['global/window',
        * Cast the value to boolean.
        *
        * @method boolify
+       * @static
        * @param {Object} obj
        * @return {Boolean}
        */
@@ -322,9 +328,10 @@ define("cherimoia/skarojs", ['global/window',
        * Remove some arguments from the front.
        *
        * @method dropArgs
-       * @param {String} args
+       * @static
+       * @param {Javascript.arguments} args
        * @param {Number} num
-       * @return {Array} - remaining arguments
+       * @return {Array} remaining arguments
        */
       dropArgs: function(args,num) {
         return args.length > num ? Array.prototype.slice(args,num) : [];
@@ -334,13 +341,14 @@ define("cherimoia/skarojs", ['global/window',
        * Returns true if the web address is ssl.
        *
        * @method isSSL
+       * @static
        * @return {Boolean}
        */
       isSSL: function() {
-        if (window && window.location) {
+        if (!!window && window.location) {
           return window.location.protocol.indexOf('https') >= 0;
         } else {
-          return undef;
+          return false;
         }
       },
 
@@ -348,12 +356,13 @@ define("cherimoia/skarojs", ['global/window',
        * Format a URL based on the current web address host.
        *
        * @method fmtUrl
+       * @static
        * @param {String} scheme
        * @param {String} uri
        * @return {String}
        */
       fmtUrl: function (scheme, uri) {
-        if (window && window.location) {
+        if (!!window && window.location) {
           return scheme + window.location.host + uri;
         } else {
           return "";
@@ -361,14 +370,35 @@ define("cherimoia/skarojs", ['global/window',
       },
 
       /**
+       * @method jsonDecode
+       * @static
+       * @param {String} s
+       * @return {Object}
+       */
+      jsonDecode: function(s) {
+        return !!s ? JSON.parse(s) : null;
+      },
+
+      /**
+       * @method jsonEncode
+       * @static
+       * @param {Object} obj
+       * @return {String}
+       */
+      jsonEncode: function(obj) {
+        return !!obj ? JSON.stringify(obj) : null;
+      },
+
+      /**
        * Test if the client is a mobile device.
        *
        * @method isMobile
+       * @static
        * @param {String} navigator
        * @return {Boolean}
        */
       isMobile: function (navigator) {
-        if (navigator) {
+        if (!!navigator) {
           return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         } else {
           return false;
@@ -379,11 +409,12 @@ define("cherimoia/skarojs", ['global/window',
        * Test if the client is Safari browser.
        *
        * @method isSafari
+       * @static
        * @param {String} navigator
        * @return {Boolean}
        */
       isSafari: function(navigator) {
-        if (navigator) {
+        if (!!navigator) {
           return /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
         } else {
           return false;
@@ -394,10 +425,11 @@ define("cherimoia/skarojs", ['global/window',
        * Prevent default propagation of this event.
        *
        * @method pde
+       * @static
        * @param {Event} e
        */
       pde: function (e) {
-        if (e.preventDefault) {
+        if (!!e.preventDefault) {
           e.preventDefault();
         } else {
           e.returnValue = false;
@@ -408,6 +440,7 @@ define("cherimoia/skarojs", ['global/window',
        * Randomly pick positive or negative.
        *
        * @method randSign
+       * @static
        * @return {Number}
        */
       randSign: function() {
@@ -422,6 +455,7 @@ define("cherimoia/skarojs", ['global/window',
        * Randomly choose an item from this array.
        *
        * @method randArrayItem
+       * @static
        * @param {Array} arr
        * @return {Object}
        */
@@ -433,6 +467,7 @@ define("cherimoia/skarojs", ['global/window',
        * Randomly choose a percentage in step of 10.
        *
        * @method randPercent
+       * @static
        * @return {Number}
        */
       randPercent: function() {
@@ -444,6 +479,7 @@ define("cherimoia/skarojs", ['global/window',
        * Pick a random number.
        *
        * @method rand
+       * @static
        * @param {Number} limit
        * @return {Number}
        */
@@ -455,6 +491,7 @@ define("cherimoia/skarojs", ['global/window',
        * Format input into HTTP Basic Authentication.
        *
        * @method toBasicAuthHeader
+       * @static
        * @param {String} user
        * @param {String} pwd
        * @return {Array.String} - [header, data]
@@ -468,6 +505,7 @@ define("cherimoia/skarojs", ['global/window',
        * Convert string to utf-8 string.
        *
        * @method toUtf8
+       * @static
        * @param {String} s
        * @return {String}
        */
@@ -479,6 +517,7 @@ define("cherimoia/skarojs", ['global/window',
        * Base64 encode the string.
        *
        * @method base64_encode
+       * @static
        * @param {String} s
        * @return {String}
        */
@@ -490,6 +529,7 @@ define("cherimoia/skarojs", ['global/window',
        * Base64 decode the string.
        *
        * @method base64_decode
+       * @static
        * @param {String} s
        * @return {String}
        */
@@ -501,9 +541,10 @@ define("cherimoia/skarojs", ['global/window',
        * Merge 2 objects together.
        *
        * @method mergeEx
+       * @static
        * @param {Object} original
        * @param {Object} extended
-       * @return {Object} - a new object
+       * @return {Object} a new object
        */
       mergeEx:function(original,extended) {
         return this.merge(this.merge({},original), extended);
@@ -512,14 +553,16 @@ define("cherimoia/skarojs", ['global/window',
       /**
        * Merge 2 objects in place.
        *
-       * @method mergeEx
+       * @method merge
+       * @static
        * @param {Object} original
        * @param {Object} extended
-       * @return {Object} - the modified original object
+       * @return {Object} the modified original object
        */
       merge: function(original, extended) {
-        for( var key in extended ) {
-          var ext = extended[key];
+        var key, ext;
+        for(key in extended) {
+          ext = extended[key];
           if ( typeof(ext) !== 'object' ||
                ext instanceof klass ||
                ext instanceof HTMLElement ||
@@ -539,6 +582,7 @@ define("cherimoia/skarojs", ['global/window',
        * Maybe remove this item from this array.
        *
        * @method removeFromArray
+       * @static
        * @return {Array}
        */
       removeFromArray: function(arr, item) {
@@ -556,8 +600,10 @@ define("cherimoia/skarojs", ['global/window',
        * Test if the input is *undefined*.
        *
        * @method isUndef
+       * @static
        * @param {Object} obj
        * @return {Boolean}
+       */
       isUndef: function(obj) {
         return obj === void 0;
       },
@@ -566,6 +612,7 @@ define("cherimoia/skarojs", ['global/window',
        * Test if input is null.
        *
        * @method isNull
+       * @static
        * @param {Object} obj
        * @return {Boolean}
        */
@@ -577,6 +624,7 @@ define("cherimoia/skarojs", ['global/window',
        * Test if input is a Number.
        *
        * @method isNumber
+       * @static
        * @param {Object} obj
        * @return {Boolean}
        */
@@ -588,6 +636,7 @@ define("cherimoia/skarojs", ['global/window',
        * Test if input is a Date.
        *
        * @method isDate
+       * @static
        * @param {Object} obj
        * @return {Boolean}
        */
@@ -599,6 +648,7 @@ define("cherimoia/skarojs", ['global/window',
        * Test if input is a Function.
        *
        * @method isFunction
+       * @static
        * @param {Object} obj
        * @return {Boolean}
        */
@@ -610,6 +660,7 @@ define("cherimoia/skarojs", ['global/window',
        * Test if input is a String.
        *
        * @method isString
+       * @static
        * @param {Object} obj
        * @return {Boolean}
        */
@@ -621,6 +672,7 @@ define("cherimoia/skarojs", ['global/window',
        * Test if input is an Array.
        *
        * @method isArray
+       * @static
        * @param {Object} obj
        * @return {Boolean}
        */
@@ -632,6 +684,7 @@ define("cherimoia/skarojs", ['global/window',
        * Test if input is an Object.
        *
        * @method isObject
+       * @static
        * @param {Object} obj
        * @return {Boolean}
        */
@@ -645,6 +698,7 @@ define("cherimoia/skarojs", ['global/window',
        * empty.
        *
        * @method isEmpty
+       * @static
        * @param {Object} obj
        * @return {Boolean}
        */
@@ -664,6 +718,7 @@ define("cherimoia/skarojs", ['global/window',
        * Test if this object has this key.
        *
        * @method hasKey
+       * @static
        * @param {Object} obj
        * @param {Object} key
        * @return {Boolean}
@@ -677,10 +732,11 @@ define("cherimoia/skarojs", ['global/window',
        * Perform reduce on this object.
        *
        * @method reduceObj
+       * @static
        * @param {Function} f
        * @param {Object} memo
        * @param {Object} obj
-       * @return {Object}  - memo
+       * @return {Object}  memo
        */
       reduceObj: function(f, memo, obj) {
         return R.reduce(function(sum, pair) {
@@ -694,9 +750,10 @@ define("cherimoia/skarojs", ['global/window',
        * Iterate over this object [k,v] pairs and call f(v,k).
        *
        * @method eachObj
+       * @static
        * @param {Function} f
        * @param {Object} obj
-       * @return {Object} - Original object
+       * @return {Object} original object
        */
       eachObj: function(f, obj) {
         R.forEach(function(pair) {
@@ -707,29 +764,40 @@ define("cherimoia/skarojs", ['global/window',
       },
 
       /**
-       * @property {Logger} logger - Short cut to logger
+       * Mixin this object.
+       *
+       * @method mixes
+       * @param {Object} object
+       * @return {Claxx}
+       */
+      mixes: function(obj) {
+        return klass.mixes(obj);
+      },
+
+      /**
+       * @property {Logger} logger Short cut to logger
+       * @static
        */
       logger: DBG,
 
       /**
-       * @property {Logger} loggr - Short cut to logger
+       * @property {Logger} loggr Short cut to logger
+       * @static
        */
       loggr: DBG,
 
       /**
-       * @property {Ramda} ramda - Short cut to Ramda
+       * @property {Ramda} ramda Short cut to Ramda
+       * @static
        */
       ramda: R,
 
       /**
-       * @property {Ramda} R - Short cut to Ramda
+       * @property {Ramda} R Short cut to Ramda
+       * @static
        */
-      R: R,
+      R: R
 
-      /**
-       * @property {Function} Class - Class based inheritance
-       */
-      Class : klass
     };
 
     return exports;

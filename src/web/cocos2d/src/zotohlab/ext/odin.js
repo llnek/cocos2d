@@ -13,7 +13,6 @@
  * @requires cherimoia/skarojs
  * @requires cherimoia/ebus
  * @requires zotohlab/asterix
- *
  * @module zotohlab/asx/odin
  */
 define("zotohlab/asx/odin",
@@ -314,7 +313,7 @@ define("zotohlab/asx/odin",
               me.onevent(evt);
             break;
             default:
-              sjs.loggr.warn("unhandled event from server: " +
+              sjs.loggr.warn("unhandled server event: " +
                              evt.type +
                              ", code = " +
                              evt.code);
@@ -326,7 +325,7 @@ define("zotohlab/asx/odin",
         };
 
         ws.onerror= function (e) {
-          sjs.loggr.debug("websocket encountered an error.\n" + e);
+          sjs.loggr.debug("websocket error.\n" + e);
         };
 
         return this.ws=ws;
@@ -352,6 +351,7 @@ define("zotohlab/asx/odin",
 
     /**
      * @method reifySession
+     * @static
      * @param {Object} cfg
      * @return {Session}
      */

@@ -11,7 +11,6 @@
 
 /**
  * @requires cherimoia/skarojs
- *
  * @module zotohlab/asx/negamax
  */
 define("zotohlab/asx/negamax",
@@ -20,7 +19,9 @@ define("zotohlab/asx/negamax",
 
   function (sjs) { "use strict";
 
-    var PINF = 1000000,
+    /** @alias module:zotohlab/asx/negamax */
+    var exports = {},
+    PINF = 1000000,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -177,8 +178,7 @@ define("zotohlab/asx/negamax",
 
     });
 
-    /** @alias module:zotohlab/asx/negamax */
-    var exports = {
+    exports = {
       /**
        * @property {SnapShot.Class} Snapshot
        * @static

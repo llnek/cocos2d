@@ -12,7 +12,6 @@
 /**
  * @requires zotohlab/p/components
  * @requires zotohlab/asterix
- *
  * @module zotohlab/p/gnodes
  */
 define("zotohlab/p/gnodes",

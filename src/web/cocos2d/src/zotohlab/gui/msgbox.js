@@ -27,7 +27,9 @@ define("zotohlab/asx/msgbox",
 
   function (sjs, sh, ccsx, layers, scenes) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/asx/msgbox */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
@@ -80,8 +82,7 @@ define("zotohlab/asx/msgbox",
 
     });
 
-    /** @alias module:zotohlab/asx/msgbox */
-    var exports = {
+    exports = {
       /**
        * Create a scene to display the message.
        *
@@ -91,7 +92,7 @@ define("zotohlab/asx/msgbox",
        * @static
        */
       reify: function(options) {
-        return new scenes.XSceneFactory([ BGLayer, UILayer ]).create(options);
+        return new scenes.XSceneFactory([ BGLayer, UILayer ]).reify(options);
       }
 
     };

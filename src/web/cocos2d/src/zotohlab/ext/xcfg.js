@@ -219,7 +219,9 @@ define("zotohlab/asx/xcfg",
 
     };
 
-    return sh.xcfg = exports;
+    sh.xcfg = exports;
+
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

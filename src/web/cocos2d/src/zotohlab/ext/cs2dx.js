@@ -12,7 +12,6 @@
 /**
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
- *
  * @module zotohlab/asx/ccsx
  */
 define("zotohlab/asx/ccsx",

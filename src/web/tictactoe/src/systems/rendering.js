@@ -16,7 +16,6 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- *
  * @module zotohlab/p/s/rendering
  */
 define("zotohlab/p/s/rendering",
@@ -55,7 +54,7 @@ define("zotohlab/p/s/rendering",
       /**
        * @memberof module:zotohlab/p/s/rendering~RenderSystem
        * @method removeFromEngine
-       * @param {Engine} engine
+       * @param {Ash.Engine} engine
        */
       removeFromEngine: function(engine) {
         this.board={};
@@ -64,7 +63,7 @@ define("zotohlab/p/s/rendering",
       /**
        * @memberof module:zotohlab/p/s/rendering~RenderSystem
        * @method addToEngine
-       * @param {Engine} engine
+       * @param {Ash.Engine} engine
        */
       addToEngine: function(engine) {
         this.board = engine.getNodeList(gnodes.BoardNode);

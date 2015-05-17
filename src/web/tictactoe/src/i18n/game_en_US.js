@@ -12,7 +12,6 @@
 /**
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
- *
  * @module zotohlab/p/l10n
  */
 define("zotohlab/p/l10n",
@@ -22,11 +21,12 @@ define("zotohlab/p/l10n",
 
   function (sjs, sh) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/l10n */
+    var exports = {},
+    xcfg = sh.xcfg,
     undef;
 
-    /** @alias module:zotohlab/p/l10n */
-    var exports = sjs.merge(xcfg.l10nTable, {
+    exports = sjs.merge(xcfg.l10nTable, {
 
       "en" : {
 
@@ -43,7 +43,6 @@ define("zotohlab/p/l10n",
 
     return exports;
 });
-
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

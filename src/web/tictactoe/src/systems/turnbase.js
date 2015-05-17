@@ -16,7 +16,6 @@
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/odin
- *
  * @module zotohlab/p/s/turnbase
  */
 define("zotohlab/p/s/turnbase",

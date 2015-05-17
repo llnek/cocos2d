@@ -13,7 +13,6 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires Cookies
- *
  * @module  zotohlab/asx/highscores
  */
 define("zotohlab/asx/highscores",

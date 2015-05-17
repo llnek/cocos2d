@@ -20,7 +20,6 @@
  * @requires zotohlab/p/hud
  * @requires zotohlab/p/components
  * @requires zotohlab/p/sysobjs
- *
  * @module zotohlab/p/arena
  */
 define("zotohlab/p/arena",
@@ -39,7 +38,9 @@ define("zotohlab/p/arena",
   function (sjs, sh, ccsx, layers, scenes,
             mmenus, odin, huds, cobjs, sobjs) { "use strict";
 
-    var prrs= sobjs.Priorities,
+    /** @alias module:zotohlab/p/arena */
+    var exports = {},
+    prrs= sobjs.Priorities,
     evts= odin.Events,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
@@ -233,13 +234,11 @@ define("zotohlab/p/arena",
 
     });
 
-    /** @alias module:zotohlab/p/arena */
-    var exports = {
+    exports = {
 
       /**
        * @property {String} rtti
        * @static
-       * @final
        */
       rtti: sh.ptypes.game,
 

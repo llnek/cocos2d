@@ -41,8 +41,6 @@ define("zotohlab/asx/xlayers",
     var XLive = cc.Sprite.extend({
 
       /**
-       * Constructor.
-       *
        * @memberof module:zotohlab/asx/xlayers~XLive
        * @method ctor
        * @param {Number} x
@@ -153,9 +151,9 @@ define("zotohlab/asx/xlayers",
        * Create and show the lives.
        *
        * @memberof module:zotohlab/asx/xlayers~XHUDLives
-       * @method create
+       * @method reify
        */
-      create: function() {
+      reify: function() {
         var dummy = new XLive(0,0,this.options);
         this.lifeSize = { width: ccsx.getScaledWidth(dummy),
                           height: ccsx.getScaledHeight(dummy) } ;
@@ -188,6 +186,7 @@ define("zotohlab/asx/xlayers",
 
     //////////////////////////////////////////////////////////////////////////////
     /**
+     * @extends cc.Layer
      * @class XLayer
      */
     var XLayer = cc.Layer.extend({
@@ -197,6 +196,7 @@ define("zotohlab/asx/xlayers",
        *
        * @memberof module:zotohlab/asx/xlayers~XLayer
        * @method rtti
+       * @return {String}
        */
       rtti: function() { return "layer-" + Number(SEED++); },
 
@@ -299,17 +299,17 @@ define("zotohlab/asx/xlayers",
        */
       onQuit: function() {
         var ss= sh.protos[xcfg.game.start],
-        yn= sh.protos['YesNo'],
+        yn= sh.protos[sh.ptypes.yn],
         dir = cc.director;
 
-        dir.pushScene( yn.create({
+        dir.pushScene( yn.reify({
           onBack: function() {
             dir.popScene();
           },
           yes: function() {
             sh.sfxPlay('game_quit');
             dir.popToRootScene();
-            dir.runScene(ss.create());
+            dir.runScene(ss.reify());
           }
         }));
       },
@@ -515,8 +515,6 @@ define("zotohlab/asx/xlayers",
       },
 
       /**
-       * Constructor.
-       *
        * @memberof module:zotohlab/asx/xlayers~XLayer
        * @method ctor
        * @param {Object} options
@@ -533,6 +531,7 @@ define("zotohlab/asx/xlayers",
 
     //////////////////////////////////////////////////////////////////////////////
     /**
+     * @extends XLayer
      * @class XGameHUDLayer
      */
     var XGameHUDLayer = XLayer.extend({
@@ -599,12 +598,12 @@ define("zotohlab/asx/xlayers",
         var opts;
 
         opts= this.options.i_replay;
-        if (opts) {
+        if (!!opts) {
           this.addReplayIcon(ccsx.pmenu1(opts), opts.where);
         }
 
         opts= this.options.i_menu;
-        if (opts) {
+        if (!!opts) {
           this.addMenuIcon(ccsx.pmenu1(opts), opts.where);
         }
       },
@@ -728,6 +727,7 @@ define("zotohlab/asx/xlayers",
 
     //////////////////////////////////////////////////////////////////////////////
     /**
+     * @extends XLayer
      * @class XGameLayer
      */
     var XGameLayer = XLayer.extend({
@@ -1028,7 +1028,7 @@ define("zotohlab/asx/xlayers",
       /**
        * @memberof module:zotohlab/asx/xlayers~XGameLayer
        * @method getHUD
-       * @return {cc.Layer} - the HUD layer
+       * @return {cc.Layer}  the HUD layer
        */
       getHUD: function() {
         var rc= this.ptScene.getLayers();
@@ -1045,18 +1045,17 @@ define("zotohlab/asx/xlayers",
         }
       },
 
-
       /**
        * @memberof module:zotohlab/asx/xlayers~XGameLayer
        * @method keys
-       * @return {Array} - keys
+       * @return {Array}  keys
        */
       keys: function() { return this.keyboard; },
 
       /**
        * @memberof module:zotohlab/asx/xlayers~XGameLayer
        * @method rtti
-       * @return {String} - id
+       * @return {String}  id
        */
       rtti: function() { return 'GameLayer'; },
 
@@ -1083,38 +1082,33 @@ define("zotohlab/asx/xlayers",
 
     });
 
-
-    /**
-     *
-     * @property {XGameHUDLayer.Class} XGameHUDLayer
-     * @static
-     * @final
-     */
-    exports.XGameHUDLayer= XGameHUDLayer;
-    /**
-     * @property {XGameLayer} XGameLayer
-     * @static
-     * @final
-     */
-    exports.XGameLayer= XGameLayer;
-    /**
-     * @property {XLayer.Class} XLayer
-     * @static
-     * @final
-     */
-    exports.XLayer= XLayer;
-    /**
-     * @property {XLive.Class} XLive
-     * @static
-     * @final
-     */
-    exports.XLive= XLive;
-    /**
-     * @property {XHUDLives.Class} XHUDLives
-     * @static
-     * @final
-     */
-    exports.XHUDLives= XHUDLives;
+    exports= {
+      /**
+       * @property {XGameHUDLayer.Class} XGameHUDLayer
+       * @static
+       */
+      XGameHUDLayer: XGameHUDLayer,
+      /**
+       * @property {XGameLayer} XGameLayer
+       * @static
+       */
+      XGameLayer: XGameLayer,
+      /**
+       * @property {XLayer.Class} XLayer
+       * @static
+       */
+      XLayer: XLayer,
+      /**
+       * @property {XLive.Class} XLive
+       * @static
+       */
+      XLive: XLive,
+      /**
+       * @property {XHUDLives.Class} XHUDLives
+       * @static
+       */
+      XHUDLives: XHUDLives
+    };
 
     return exports;
 });

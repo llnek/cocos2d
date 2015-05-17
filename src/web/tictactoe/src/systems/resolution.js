@@ -16,7 +16,6 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- *
  * @module zotohlab/p/s/resolution
  */
 define("zotohlab/p/s/resolution",
@@ -55,7 +54,7 @@ define("zotohlab/p/s/resolution",
       /**
        * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
        * @method removeFromEngine
-       * @param {Engine} engine
+       * @param {Ash.Engine} engine
        */
       removeFromEngine: function(engine) {
         this.board=null;
@@ -64,7 +63,7 @@ define("zotohlab/p/s/resolution",
       /**
        * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
        * @method addToEngine
-       * @param {Engine} engine
+       * @param {Ash.Engine} engine
        */
       addToEngine: function(engine) {
         this.board = engine.getNodeList(gnodes.BoardNode);

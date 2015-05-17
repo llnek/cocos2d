@@ -44,7 +44,7 @@ define("zotohlab/p/components",
       /**
        * @memberof module:zotohlab/p/components~SmartAlgo
        * @method constructor
-       * @param {module:zotohlab/p/c/board~GameBoard} board
+       * @param {GameBoard} board
        */
       constructor: function(board) {
         this.algo= new negax.NegaMax(board);

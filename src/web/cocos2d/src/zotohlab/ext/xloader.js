@@ -31,13 +31,12 @@ define("zotohlab/asx/xloader",
 
     //////////////////////////////////////////////////////////////////////////////
     /**
+     * @extends cc.Scene
      * @class XLoader
      */
     var XLoader = cc.Scene.extend({
 
       /**
-       * Constructor.
-       *
        * @memberof module:zotohlab/asx/xloader~XLoader
        * @method ctor
        */
@@ -176,7 +175,7 @@ define("zotohlab/asx/xloader",
      * @param {Array} resources
      * @param {Function} selector
      * @param {Object} target
-     * @return {XLoader} - the XLoader singleton.
+     * @return {XLoader}  the XLoader singleton.
      */
     XLoader.preload = function (resources, selector, target) {
       var director = cc.director;
@@ -189,12 +188,13 @@ define("zotohlab/asx/xloader",
       return _instance;
     };
 
-    /**
-     * @property {XLoader.Class} XLoader
-     * @static
-     * @final
-     */
-    exports.XLoader = XLoader;
+    exports = {
+      /**
+       * @property {XLoader.Class} XLoader
+       * @static
+       */
+      XLoader : XLoader
+    };
 
     return exports;
 });

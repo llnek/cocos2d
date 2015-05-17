@@ -21,7 +21,6 @@
  * @requires zotohlab/p/s/supervisor
  * @requires zotohlab/p/s/turnbase
  * @requires zotohlab/p/s/uiselect
- *
  * @module zotohlab/p/sysobjs
  */
 define("zotohlab/p/sysobjs",

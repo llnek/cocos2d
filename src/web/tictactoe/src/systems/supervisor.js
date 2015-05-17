@@ -17,7 +17,6 @@
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/odin
- *
  * @module zotohlab/p/s/supervisor
  */
 define("zotohlab/p/s/supervisor",
@@ -59,7 +58,7 @@ define("zotohlab/p/s/supervisor",
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method removeFromEngine
-       * @param {Engine} engine
+       * @param {Ash.Engine} engine
        */
       removeFromEngine: function(engine) {
         this.board=null;
@@ -68,10 +67,10 @@ define("zotohlab/p/s/supervisor",
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method addToEngine
-       * @param {Engine} engine
+       * @param {Ash.Engine} engine
        */
       addToEngine: function(engine) {
-        engine.addEntity(sh.factory.createBoard(sh.main,
+        engine.addEntity(sh.factory.reifyBoard(sh.main,
                                                 this.state));
         this.board= engine.getNodeList(gnodes.BoardNode);
       },

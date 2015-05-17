@@ -13,7 +13,6 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/xcfg
- *
  * @module zotohlab/p/config
  */
 define("zotohlab/p/config",
@@ -29,7 +28,7 @@ define("zotohlab/p/config",
 
     //////////////////////////////////////////////////////////////////////////////
     //merge stuff in-place.
-    sjs.merge( xcfg, {
+    exports= sjs.merge( xcfg, {
 
       appKey : "bd5f79bb-eb41-4ed5-bb44-2529dc27ed3c",
 
@@ -102,7 +101,7 @@ define("zotohlab/p/config",
 
     });
 
-    return exports = xcfg;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////
