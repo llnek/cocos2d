@@ -11,9 +11,12 @@
 
 /**
  * @requires cherimoia/skarojs
+ *
  * @module zotohlab/asx/negamax
  */
-define("zotohlab/asx/negamax", ['cherimoia/skarojs'],
+define("zotohlab/asx/negamax",
+
+  ['cherimoia/skarojs'],
 
   function (sjs) { "use strict";
 
@@ -126,7 +129,7 @@ define("zotohlab/asx/negamax", ['cherimoia/skarojs'],
        *
        * @memberof module:zotohlab/asx/negamax~NegaMax
        * @method getGameBoard
-       * @return {Object}
+       * @return {GameBoard}
        */
       getGameBoard: function() { return this.board; },
 
@@ -135,7 +138,7 @@ define("zotohlab/asx/negamax", ['cherimoia/skarojs'],
        *
        * @memberof module:zotohlab/asx/negamax~NegaMax
        * @method ctor
-       * @param {Object} board
+       * @param {GameBoard} board
        */
       ctor: function(board) { this.board= board; },
 
@@ -179,25 +182,21 @@ define("zotohlab/asx/negamax", ['cherimoia/skarojs'],
       /**
        * @property {SnapShot.Class} Snapshot
        * @static
-       * @final
        */
       Snapshot: Snapshot,
       /**
        * @property {Number} INF
        * @static
-       * @final
        */
       INF: PINF,
       /**
        * @property {NegaMax.Class} NegaMax
        * @static
-       * @final
        */
       NegaMax: NegaMax,
       /**
        * @property {GameBoard.Class} GameBoard
        * @static
-       * @final
        */
       GameBoard: GameBoard
     };

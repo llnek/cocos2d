@@ -10,13 +10,14 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/tictactoe/priorities
- * @requires zotohlab/tictactoe/gnodes
+ * @requires zotohlab/p/s/priorities
+ * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/odin
- * @module zotohlab/tictactoe/turnbase
+ *
+ * @module zotohlab/p/s/turnbase
  */
 define("zotohlab/p/s/turnbase",
 
@@ -29,7 +30,7 @@ define("zotohlab/p/s/turnbase",
 
   function (pss, gnodes, sjs, sh, ccsx, odin) { "use strict";
 
-    /** @alias module:zotohlab/tictactoe/turnbase */
+    /** @alias module:zotohlab/p/s/turnbase */
     var exports = {          }
     evts= odin.Events,
     xcfg= sh.xcfg,
@@ -43,7 +44,7 @@ define("zotohlab/p/s/turnbase",
     var TurnBaseSystem = sh.Ashley.sysDef({
 
       /**
-       * @memberof module:zotohlab/tictactoe/turnbase~TurnBaseSystem
+       * @memberof module:zotohlab/p/s/turnbase~TurnBaseSystem
        * @method constructor
        * @param {Object} options
        */
@@ -53,25 +54,25 @@ define("zotohlab/p/s/turnbase",
       },
 
       /**
-       * @memberof module:zotohlab/tictactoe/turnbase~TurnBaseSystem
+       * @memberof module:zotohlab/p/s/turnbase~TurnBaseSystem
        * @method removeFromEngine
-       * @param {Engine} engine
+       * @param {Ash.Engine} engine
        */
       removeFromEngine: function(engine) {
         this.board=null;
       },
 
       /**
-       * @memberof module:zotohlab/tictactoe/turnbase~TurnBaseSystem
+       * @memberof module:zotohlab/p/s/turnbase~TurnBaseSystem
        * @method addToEngine
-       * @param {Engine} engine
+       * @param {Ash.Engine} engine
        */
       addToEngine: function(engine) {
         this.board = engine.getNodeList(gnodes.BoardNode);
       },
 
       /**
-       * @memberof module:zotohlab/tictactoe/turnbase~TurnBaseSystem
+       * @memberof module:zotohlab/p/s/turnbase~TurnBaseSystem
        * @method update
        * @param {Number} dt
        */
@@ -172,7 +173,7 @@ define("zotohlab/p/s/turnbase",
         },
         snd = pnum===1 ? 'x_pick' : 'o_pick',
         evt= {
-          source: JSON.stringify(src),
+          source: sjs.jsonDecode(src),
           type: evts.MSG_SESSION,
           code: evts.PLAY_MOVE
         };
@@ -185,18 +186,13 @@ define("zotohlab/p/s/turnbase",
     });
 
     /**
-     * @memberof module:zotohlab/tictactoe/turnbase~TurnBaseSystem
+     * @memberof module:zotohlab/p/s/turnbase~TurnBaseSystem
      * @property {Number} Priority
      * @static
-     * @final
      */
     TurnBaseSystem.Priority = pss.TurnBase;
 
-    /**
-     * @property {TurnBaseSystem.Class} TurnBaseSystem
-     * @final
-     */
-    exports.TurnBaseSystem = TurnBaseSystem;
+    exports= TurnBaseSystem;
     return exports;
 });
 

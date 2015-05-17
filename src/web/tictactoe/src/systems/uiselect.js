@@ -10,12 +10,13 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/tictactoe/priorities
- * @requires zotohlab/tictactoe/gnodes
+ * @requires zotohlab/p/s/priorities
+ * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @module zotohlab/tictactoe/uiselect
+ *
+ * @module zotohlab/p/s/uiselect
  */
 define("zotohlab/p/s/uiselect",
 
@@ -27,7 +28,7 @@ define("zotohlab/p/s/uiselect",
 
   function (pss, gnodes, sjs, sh, ccsx) { "use strict";
 
-    /** @alias module:zotohlab/tictactoe/uiselect */
+    /** @alias module:zotohlab/p/s/uiselect */
     var exports = {},
     xcfg= sh.xcfg,
     csts = xcfg.csts,
@@ -40,9 +41,7 @@ define("zotohlab/p/s/uiselect",
     var SelectionSystem = sh.Ashley.sysDef({
 
       /**
-       * Constructor.
-       *
-       * @memberof module:zotohlab/tictactoe/uiselect~SelectionSystem
+       * @memberof module:zotohlab/p/s/uiselect~SelectionSystem
        * @method constructor
        * @param {Object} options
        */
@@ -52,25 +51,25 @@ define("zotohlab/p/s/uiselect",
       },
 
       /**
-       * @memberof module:zotohlab/tictactoe/uiselect~SelectionSystem
+       * @memberof module:zotohlab/p/s/uiselect~SelectionSystem
        * @method removefromEngine
-       * @param {Engine} engine
+       * @param {Ash.Engine} engine
        */
       removeFromEngine: function(engine) {
         this.gui=null;
       },
 
       /**
-       * @memberof module:zotohlab/tictactoe/uiselect~SelectionSystem
+       * @memberof module:zotohlab/p/s/uiselect~SelectionSystem
        * @method addToEngine
-       * @param {Engine} engine
+       * @param {Ash.Engine} engine
        */
       addToEngine: function(engine) {
         this.gui = engine.getNodeList(gnodes.GUINode);
       },
 
       /**
-       * @memberof module:zotohlab/tictactoe/uiselect~SelectionSystem
+       * @memberof module:zotohlab/p/s/uiselect~SelectionSystem
        * @method update
        * @param {Number} dt
        */
@@ -119,18 +118,14 @@ define("zotohlab/p/s/uiselect",
     });
 
     /**
-     * @memberof module:zotohlab/tictactoe/uiselect~SelectionSystem
+     * @memberof module:zotohlab/p/s/uiselect~SelectionSystem
      * @static
      * @property {Number} Priority
      * @final
      */
     SelectionSystem.Priority= pss.Movement;
 
-    /**
-     * @property {SelectionSystem.Class} SelectionSystem
-     * @final
-     */
-    exports.SelectionSystem = SelectionSystem;
+    exports= SelectionSystem;
     return exports;
 });
 

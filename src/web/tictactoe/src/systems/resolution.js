@@ -10,13 +10,14 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/tictactoe/priorities
- * @requires zotohlab/tictactoe/utils
- * @requires zotohlab/tictactoe/gnodes
+ * @requires zotohlab/p/s/priorities
+ * @requires zotohlab/p/s/utils
+ * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @module zotohlab/tictactoe/resolution
+ *
+ * @module zotohlab/p/s/resolution
  */
 define("zotohlab/p/s/resolution",
 
@@ -29,7 +30,7 @@ define("zotohlab/p/s/resolution",
 
   function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
-    /** @alias module:zotohlab/tictactoe/resolution */
+    /** @alias module:zotohlab/p/s/resolution */
     var exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
@@ -43,7 +44,7 @@ define("zotohlab/p/s/resolution",
     var ResolutionSystem = sh.Ashley.sysDef({
 
       /**
-       * @memberof module:zotohlab/tictactoe/resolution~ResolutionSystem
+       * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
        * @method constructor
        * @param {Object} options
        */
@@ -52,7 +53,7 @@ define("zotohlab/p/s/resolution",
       },
 
       /**
-       * @memberof module:zotohlab/tictactoe/resolution~ResolutionSystem
+       * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
        * @method removeFromEngine
        * @param {Engine} engine
        */
@@ -61,7 +62,7 @@ define("zotohlab/p/s/resolution",
       },
 
       /**
-       * @memberof module:zotohlab/tictactoe/resolution~ResolutionSystem
+       * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
        * @method addToEngine
        * @param {Engine} engine
        */
@@ -70,7 +71,7 @@ define("zotohlab/p/s/resolution",
       },
 
       /**
-       * @memberof module:zotohlab/tictactoe/resolution~ResolutionSystem
+       * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
        * @method update
        * @param {Number} dt
        */
@@ -225,17 +226,13 @@ define("zotohlab/p/s/resolution",
     });
 
     /**
-     * @memberof module:zotohlab/tictactoe/resolution~ResolutionSystem
+     * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
      * @property {Number} Priority
-     * @final
+     * @static
      */
     ResolutionSystem.Priority= pss.Resolve;
 
-    /**
-     * @property {ResolutionSystem.Class} ResolutionSystem
-     * @final
-     */
-    exports.ResolutionSystem = ResolutionSystem;
+    exports= ResolutionSystem;
     return exports;
 });
 

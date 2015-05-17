@@ -12,13 +12,15 @@
 /**
  * @requires cherimoia/skarojs
  *
- * @module zotohlab/p/board
+ * @module zotohlab/p/c/board
  */
 define("zotohlab/p/c/board", ['cherimoia/skarojs'],
 
   function (sjs) { "use strict";
 
-    var R = sjs.ramda,
+    /** @alias module:zotohlab/p/c/board */
+    var exports= {},
+    R = sjs.ramda,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -28,8 +30,23 @@ define("zotohlab/p/c/board", ['cherimoia/skarojs'],
      */
     var GameBoard = sjs.mixes({
 
+      /**
+       * @memberof module:zotohlab/p/c/board~GameBoard
+       * @method isNil
+       * @param {Number} cellv
+       * @return {Boolean}
+       */
       isNil: function(cellv) { return cellv === this.CV_Z; },
 
+      /**
+       * @memberof module:zotohlab/p/c/board~GameBoard
+       * @method ctor
+       * @param {Number} size
+       * @param {Number} nilValue
+       * @param {Number} p1v
+       * @param {Number} p2v
+       * @param {Array} goals
+       */
       ctor: function(size, nilValue, p1v, p2v, goals) {
         this.actors= [nilValue, p1v, p2v];
         this.CV_Z= nilValue;
@@ -38,6 +55,11 @@ define("zotohlab/p/c/board", ['cherimoia/skarojs'],
         this.GOALSPACE=goals;
       },
 
+      /**
+       * @memberof module:zotohlab/p/c/board~GameBoard
+       * @method getFirstMove
+       * @return {Number}
+       */
       getFirstMove: function() {
         var rc= R.find(function(v) {
           return v !== this.CV_Z;
@@ -49,13 +71,25 @@ define("zotohlab/p/c/board", ['cherimoia/skarojs'],
         }
       },
 
+      /**
+       * @memberof module:zotohlab/p/c/board~GameBoard
+       * @method syncState
+       * @param {Array} seed
+       * @param {Number} actor
+       */
       syncState: function(seed, actor) {
         this.grid=seed.slice(0);
         this.actors[0] = actor;
       },
 
-      getNextMoves: function(snapshot) {
-        var g = snapshot.state,
+      /**
+       * @memberof module:zotohlab/p/c/board~GameBoard
+       * @method getNextMoves
+       * @param {SnapShot} snap
+       * @return {Array}
+       */
+      getNextMoves: function(snap) {
+        var g = snap.state,
         n,
         rc = [];
         for (n=0; n < g.length; ++n) {
@@ -66,24 +100,47 @@ define("zotohlab/p/c/board", ['cherimoia/skarojs'],
         return rc;
       },
 
-      unmakeMove: function(snapshot,move) {
-        snapshot.state[move] = this.CV_Z;
+      /**
+       * @memberof module:zotohlab/p/c/board~GameBoard
+       * @method unmakeMove
+       * @param {SnapShot} snap
+       * @param {Number} move
+       */
+      unmakeMove: function(snap,move) {
+        snap.state[move] = this.CV_Z;
       },
 
-      makeMove: function(snapshot,move) {
-        if (this.isNil( snapshot.state[move])) {
-          snapshot.state[move] = snapshot.cur;
+      /**
+       * @memberof module:zotohlab/p/c/board~GameBoard
+       * @method makeMove
+       * @param {SnapShot} snap
+       * @param {Number} move
+       */
+      makeMove: function(snap,move) {
+        if (this.isNil( snap.state[move])) {
+          snap.state[move] = snap.cur;
         } else {
           sjs.tne("Fatal Error: cell [" + move + "] is not free.");
         }
       },
 
-      switchPlayer: function (snapshot) {
-        var t = snapshot.cur;
-        snapshot.cur= snapshot.other;
-        snapshot.other=t;
+      /**
+       * @memberof module:zotohlab/p/c/board~GameBoard
+       * @method switchPlayer
+       * @param {SnapShot} snap
+       */
+      switchPlayer: function (snap) {
+        var t = snap.cur;
+        snap.cur= snap.other;
+        snap.other=t;
       },
 
+      /**
+       * @memberof module:zotohlab/p/c/board~GameBoard
+       * @method getOtherPlayer
+       * @param {Number} pv
+       * @return {Number}
+       */
       getOtherPlayer: function(pv) {
         if (pv === this.actors[1]) {
           return this.actors[2];
@@ -97,6 +154,11 @@ define("zotohlab/p/c/board", ['cherimoia/skarojs'],
         }
       },
 
+      /**
+       * @memberof module:zotohlab/p/c/board~GameBoard
+       * @method takeSnapshot
+       * @return {SnapShot}
+       */
       takeSnapshot: function() {
         return {
           other: this.getOtherPlayer(this.actors[0]),
@@ -106,17 +168,36 @@ define("zotohlab/p/c/board", ['cherimoia/skarojs'],
         };
       },
 
-      evalScore: function(snapshot) {
+      /**
+       * @memberof module:zotohlab/p/c/board~GameBoard
+       * @method evalScore
+       * @param {SnapShot} snap
+       * @return {Number}
+       */
+      evalScore: function(snap) {
         // if we lose, return a nega value
-        return sjs.isNumber(this.isWinner(snapshot.other, snapshot.state )[0]) ? -100 : 0;
+        return sjs.isNumber(this.isWinner(snap.other,
+                                          snap.state )[0]) ? -100 : 0;
       },
 
-      isOver: function(snapshot) {
-        return sjs.isNumber(this.isWinner(snapshot.cur,snapshot.state)[0]) ||
-               sjs.isNumber(this.isWinner(snapshot.other, snapshot.state)[0]) ||
-               this.isStalemate(snapshot.state);
+      /**
+       * @memberof module:zotohlab/p/c/board~GameBoard
+       * @method isOver
+       * @param {SnapShot} snap
+       * @return {Boolean}
+       */
+      isOver: function(snap) {
+        return sjs.isNumber(this.isWinner(snap.cur, snap.state)[0]) ||
+               sjs.isNumber(this.isWinner(snap.other, snap.state)[0]) ||
+               this.isStalemate(snap.state);
       },
 
+      /**
+       * @memberof module:zotohlab/p/c/board~GameBoard
+       * @method isStalemate
+       * @param {Object} game
+       * @return {Boolean}
+       */
       isStalemate: function(game) {
         return ! R.any(function(n) {
           return n === this.CV_Z;
@@ -124,22 +205,28 @@ define("zotohlab/p/c/board", ['cherimoia/skarojs'],
         game || this.grid);
       },
 
+      /**
+       * @memberof module:zotohlab/p/c/board~GameBoard
+       * @method isWinner
+       * @param {Number} actor
+       * @param {Array} gameVals
+       * @return {Array} [actor, winning-combo]
+       */
       isWinner: function(actor, gameVals) {
         var game= gameVals || this.grid,
         combo,
         rc= R.any(function(r) {
           combo=r;
-          return R.all(function (n) { return n === actor; }, R.map(function(i) {
-            return game[i];
-          }, r) );
+          return R.all(function (n) { return n === actor; },
+                       R.map(function(i) { return game[i]; }, r) );
         }, this.GOALSPACE);
         return rc ? [actor, combo] : [null, null];
       }
 
     });
 
-
-    return GameBoard;
+    exports= GameBoard;
+    return exports;
 });
 
 

@@ -13,7 +13,8 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @module zotohlab/tictactoe/utils
+ *
+ * @module zotohlab/p/s/utils
  */
 define("zotohlab/p/s/utils",
 
@@ -28,7 +29,7 @@ define("zotohlab/p/s/utils",
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    /** @alias module:zotohlab/tictactoe/utils */
+    /** @alias module:zotohlab/p/s/utils */
     var exports= {
 
       /**
@@ -102,7 +103,7 @@ define("zotohlab/p/s/utils",
       //pass in gridview
       /**
        * @method drawSymbol
-       * @param {Object} view
+       * @param {Ash.Node} view
        * @param {Number} x
        * @param {Number} y
        * @param {Number} value
@@ -125,8 +126,5 @@ define("zotohlab/p/s/utils",
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-
-
-
 
 

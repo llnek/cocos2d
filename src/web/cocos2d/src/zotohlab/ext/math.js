@@ -11,9 +11,12 @@
 
 /**
  * @requires cherimoia/skarojs
+ *
  * @module zotohlab/asx/math
  */
-define("zotohlab/asx/math", ['cherimoia/skarojs'],
+define("zotohlab/asx/math",
+
+  ['cherimoia/skarojs'],
 
   function (sjs) { "use strict";
 

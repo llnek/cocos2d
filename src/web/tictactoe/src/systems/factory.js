@@ -10,22 +10,25 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/tictactoe/components
- * @requires zotohlab/tictactoe/gnodes
+ * @requires zotohlab/p/components
+ * @requires zotohlab/p/c/board
+ * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
- * @module zotohlab/tictactoe/factory
+ *
+ * @module zotohlab/p/s/factory
  */
 define("zotohlab/p/s/factory",
 
        ['zotohlab/p/components',
+        'zotohlab/p/c/board',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix'],
 
-  function (cobjs, gnodes, sjs, sh) { "use strict";
+  function (cobjs, GameBoard, gnodes, sjs, sh) { "use strict";
 
-    /** @alias module:zotohlab/tictactoe/factory */
+    /** @alias module:zotohlab/p/s/factory */
     var exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
@@ -52,8 +55,8 @@ define("zotohlab/p/s/factory",
         dx.push(r * size + r);
         dy.push((size - r - 1) * size + r);
       }
-      var DAGSPACE = [dx, dy];
-      return DAGSPACE.concat(ROWSPACE, COLSPACE);
+      //var DAGSPACE = [dx, dy];
+      return [dx, dy].concat(ROWSPACE, COLSPACE);
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -61,29 +64,28 @@ define("zotohlab/p/s/factory",
      * @class EntityFactory
      */
     var EntityFactory = sh.Ashley.casDef({
-
       /**
-       * Constructor.
-       *
-       * @memberof module:zotohlab/tictactoe/factory~EntityFactory
-       * * @method constructor
-       * @param {Object} engine
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method constructor
+       * @param {Ash.Engine} engine
        */
       constructor: function(engine) {
         this.engine=engine;
       },
 
       /**
-       * @memberof module:zotohlab/tictactoe/factory~EntityFactory
-       * @method createBoard
-       * @return {Entity}
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method reifyBoard
+       * @param {cc.Layer} layer
+       * @param {Object} options
+       * @return {Ash.Entity}
        */
-      createBoard: function(layer, options) {
+      reifyBoard: function(layer, options) {
         var goals= mapGoalSpace(options.size),
-        bd= new cobjs.GameBoard(options.size,
-                                csts.CV_Z,
-                                csts.CV_X,
-                                csts.CV_O, goals),
+        bd= new GameBoard(options.size,
+                          csts.CV_Z,
+                          csts.CV_X,
+                          csts.CV_O, goals),
         ent = sh.Ashley.newEntity();
 
         ent.add(new cobjs.Grid(options.size, options.seed));
@@ -99,11 +101,7 @@ define("zotohlab/p/s/factory",
 
     });
 
-    /**
-     * @property {EntityFactory.Class} Entityfactory
-     * @final
-     */
-    exports.EntityFactory = EntityFactory;
+    exports= EntityFactory;
     return exports;
 });
 

@@ -10,13 +10,14 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/tictactoe/priorities
- * @requires zotohlab/tictactoe/utils
- * @requires zotohlab/tictactoe/gnodes
+ * @requires zotohlab/p/s/priorities
+ * @requires zotohlab/p/s/utils
+ * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @module zotohlab/tictactoe/rendering
+ *
+ * @module zotohlab/p/s/rendering
  */
 define("zotohlab/p/s/rendering",
 
@@ -29,7 +30,7 @@ define("zotohlab/p/s/rendering",
 
   function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
-    /** @alias module:zotohlab/tictactoe/rendering */
+    /** @alias module:zotohlab/p/s/rendering */
     var exports= {},
     R = sjs.ramda,
     xcfg= sh.xcfg,
@@ -43,9 +44,7 @@ define("zotohlab/p/s/rendering",
     var RenderSystem = sh.Ashley.sysDef({
 
       /**
-       * Constructor.
-       *
-       * @memberof module:zotohlab/tictactoe/rendering~RenderSystem
+       * @memberof module:zotohlab/p/s/rendering~RenderSystem
        * @method constructor
        * @param {Object} options
        */
@@ -54,7 +53,7 @@ define("zotohlab/p/s/rendering",
       },
 
       /**
-       * @memberof module:zotohlab/tictactoe/rendering~RenderSystem
+       * @memberof module:zotohlab/p/s/rendering~RenderSystem
        * @method removeFromEngine
        * @param {Engine} engine
        */
@@ -63,7 +62,7 @@ define("zotohlab/p/s/rendering",
       },
 
       /**
-       * @memberof module:zotohlab/tictactoe/rendering~RenderSystem
+       * @memberof module:zotohlab/p/s/rendering~RenderSystem
        * @method addToEngine
        * @param {Engine} engine
        */
@@ -72,7 +71,7 @@ define("zotohlab/p/s/rendering",
       },
 
       /**
-       * @memberof module:zotohlab/tictactoe/rendering~RenderSystem
+       * @memberof module:zotohlab/p/s/rendering~RenderSystem
        * @method update
        * @param {Number} dt
        */
@@ -133,16 +132,13 @@ define("zotohlab/p/s/rendering",
     });
 
     /**
+     * @memberof module:zotohlab/p/s/rendering~RenderSystem
      * @property {Number} Priority
-     * @final
+     * @static
      */
     RenderSystem.Priority = pss.Render;
 
-    /**
-     * @property {RenderSystem.Class} RenderSystem
-     * @final
-     */
-    exports.RenderSystem = RenderSystem;
+    exports= RenderSystem;
     return exports;
 });
 

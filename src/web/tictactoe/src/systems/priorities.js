@@ -11,14 +11,17 @@
 
 /**
  * @requires cherimoia/skarojs
- * @module zotohlab/tictactoe/priorities
+ *
+ * @module zotohlab/p/s/priorities
  */
-define("zotohlab/p/s/priorities", ['cherimoia/skarojs'],
+define("zotohlab/p/s/priorities",
+
+  ['cherimoia/skarojs'],
 
   function (sjs) { "use strict";
 
     /**
-     * @alias module:zotohlab/tictactoe/priorities
+     * @alias module:zotohlab/p/s/priorities
      * @enum {Number}
      * @readonly
      */

@@ -21,7 +21,8 @@
  * @requires zotohlab/p/s/supervisor
  * @requires zotohlab/p/s/turnbase
  * @requires zotohlab/p/s/uiselect
- * @module zotohlab/tictactoe/sysobjs
+ *
+ * @module zotohlab/p/sysobjs
  */
 define("zotohlab/p/sysobjs",
 
@@ -47,52 +48,52 @@ define("zotohlab/p/sysobjs",
             TurnBaseSystem,
             SelectionSystem) { "use strict";
 
-    /** @alias module:zotohlab/tictactoe/sysobjs */
+    /** @alias module:zotohlab/p/sysobjs */
     var exports= {
 
       /**
        * @property {Priorities} Priorities
-       * @final
+       * @static
        */
       Priorities: Priorities,
       /**
        * @property {Factory} Factory
-       * @final
+       * @static
        */
       Factory: EntityFactory,
       /**
        * @property {GameSupervisor} GameSupervisor
-       * @final
+       * @static
        */
       GameSupervisor: Supervisor,
       /**
        * @property {NetworkSystem} NetworkSystem
-       * @final
+       * @static
        */
       NetworkSystem: NetworkSystem,
       /**
        * @property {SelectionSystem} SelectionSystem
-       * @final
+       * @static
        */
       SelectionSystem: SelectionSystem,
       /**
        * @property {TurnBaseSystem} TurnBaseSystem
-       * @final
+       * @static
        */
       TurnBaseSystem: TurnBaseSystem,
       /**
        * @property {ResolutionSystem} ResolutionSystem
-       * @final
+       * @static
        */
       ResolutionSystem: ResolutionSystem,
       /**
        * @property {RenderSystem} RenderSystem
-       * @final
+       * @static
        */
       RenderSystem: RenderSystem,
       /**
        * @property {SystemUtils} SystemUtils
-       * @final
+       * @static
        */
       SystemUtils: utils
 

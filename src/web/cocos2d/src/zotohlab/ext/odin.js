@@ -13,6 +13,7 @@
  * @requires cherimoia/skarojs
  * @requires cherimoia/ebus
  * @requires zotohlab/asterix
+ *
  * @module zotohlab/asx/odin
  */
 define("zotohlab/asx/odin",

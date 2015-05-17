@@ -15,7 +15,8 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/odin
- * @module zotohlab/tictactoe/network
+ *
+ * @module zotohlab/p/s/network
  */
 define("zotohlab/p/s/network",
 
@@ -27,7 +28,7 @@ define("zotohlab/p/s/network",
 
   function (pss, gnodes, sjs, sh, odin) { "use strict";
 
-    /** @alias module:zotohlab/tictactoe/network */
+    /** @alias module:zotohlab/p/s/network */
     var exports = {  /* empty */ },
     evts= odin.Events,
     xcfg= sh.xcfg,
@@ -41,9 +42,7 @@ define("zotohlab/p/s/network",
     var NetworkSystem = sh.Ashley.sysDef({
 
       /**
-       * Constructor.
-       *
-       * @memberof module:zotohlab/tictactoe/network~NetworkSystem
+       * @memberof module:zotohlab/p/s/network~NetworkSystem
        * @method constructor
        * @param {Object} options
        */
@@ -53,7 +52,7 @@ define("zotohlab/p/s/network",
       },
 
       /**
-       * @memberof module:zotohlab/tictactoe/network~NetworkSystem
+       * @memberof module:zotohlab/p/s/network~NetworkSystem
        * @method removeFromEngine
        * @param {Object} engine
        */
@@ -62,7 +61,7 @@ define("zotohlab/p/s/network",
       },
 
       /**
-       * @memberof module:zotohlab/tictactoe/network~NetworkSystem
+       * @memberof module:zotohlab/p/s/network~NetworkSystem
        * @method addToEngine
        * @param {Object} engine
        */
@@ -71,7 +70,7 @@ define("zotohlab/p/s/network",
       },
 
       /**
-       * @memberof module:zotohlab/tictactoe/network~NetworkSystem
+       * @memberof module:zotohlab/p/s/network~NetworkSystem
        * @method update
        * @param {Number} dt
        */
@@ -88,7 +87,7 @@ define("zotohlab/p/s/network",
       },
 
       /**
-       * @memberof module:zotohlab/tictactoe/network~NetworkSystem
+       * @memberof module:zotohlab/p/s/network~NetworkSystem
        * @method process
        * @param {Node} node
        * @param {Event} evt
@@ -140,17 +139,13 @@ define("zotohlab/p/s/network",
     });
 
     /**
+     * @memberof module:zotohlab/p/s/network~NetworkSystem
      * @property {Number} Priority
-     * @final
+     * @static
      */
     NetworkSystem.Priority= pss.Movement;
 
-    /**
-     * @property {NetworkSystem.Class} NetworkSystem
-     * @final
-     */
-    exports.NetworkSystem = NetworkSystem;
-
+    exports= NetworkSystem;
     return exports;
 });
 

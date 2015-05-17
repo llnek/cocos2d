@@ -10,18 +10,19 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- *@requires cherimoia/skarojs
- *@requires mustache
- *@requires eligrey/l10njs
- *@requires ash-js
- *@module zotohlab/asterix
+ * @requires cherimoia/skarojs
+ * @requires mustache
+ * @requires eligrey/l10njs
+ * @requires ash-js
+ *
+ * @module zotohlab/asterix
  */
 define("zotohlab/asterix",
 
        ['cherimoia/skarojs',
-       'mustache',
-       'eligrey/l10njs',
-       'ash-js'],
+        'mustache',
+        'eligrey/l10njs',
+        'ash-js'],
 
   function (sjs, Mustache, LZString, Ash) { "use strict";
 
@@ -29,10 +30,8 @@ define("zotohlab/asterix",
     /**
      * @class ComObj
      * @mixin
-     * @static
      */
     ComObj = {
-
       /**
        * Take damage, reduce health.
        *
@@ -158,18 +157,18 @@ define("zotohlab/asterix",
        *
        * @memberof module:zotohlab/asterix~ComObj
        * @method rtti
-       * @return {Number}
+       * @return {String}
        */
-      rtti: function() { return this._tag; },
+      rtti: function() { return this._name; },
 
       /**
        * Set tag value.
        *
        * @memberof module:zotohlab/asterix~ComObj
        * @method rego
-       * @param {Number} n
+       * @param {String} n
        */
-      rego: function(n) { this._tag = n; },
+      rego: function(n) { this._name = n; },
 
       /**
        * Get the Sprite's tag value.
@@ -186,14 +185,15 @@ define("zotohlab/asterix",
        * @private
        */
       ctor: function(sprite, health, score) {
+        this._name= ["comp" , ++SEED].join(':');
         this.origHP = health || 1;
         this.sprite = sprite;
         this.HP = this.origHP;
         this.value = score || 0;
-        this._tag= ["comp" , ++SEED].join(':');
         this.status=false;
       }
     },
+
     /**
      * @extends module:zotohlab/asterix~ComObj
      * @class SimpleComp
@@ -289,9 +289,8 @@ define("zotohlab/asterix",
     var asterix = {
 
       /**
-       * @property Ashley - for ash-js framework
+       * @property {Object} Ashley ash-js framework
        * @static
-       * @type Object
        */
       Ashley: Ashley,
 
@@ -316,7 +315,7 @@ define("zotohlab/asterix",
        * @static
        * @param {String} s
        * @param {Object} pms
-       * @return {String} rendered string.
+       * @return {String} rendered string
        */
       l10n: function(s,pms) {
         var t= s.toLocaleString();
@@ -379,7 +378,6 @@ define("zotohlab/asterix",
       /**
        * @property {Object} ptypes
        * @static
-       * @final
        */
       ptypes: {
         start: 'StartScreen',

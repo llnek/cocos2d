@@ -10,14 +10,15 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/tictactoe/priorities
- * @requires zotohlab/tictactoe/utils
- * @requires zotohlab/tictactoe/gnodes
+ * @requires zotohlab/p/s/priorities
+ * @requires zotohlab/p/s/utils
+ * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/odin
- * @module zotohlab/tictactoe/supervisor
+ *
+ * @module zotohlab/p/s/supervisor
  */
 define("zotohlab/p/s/supervisor",
 
@@ -31,7 +32,7 @@ define("zotohlab/p/s/supervisor",
 
   function (pss, utils, gnodes, sjs, sh, ccsx, odin) { "use strict";
 
-    /** @alias module:zotohlab/tictactoe/supervisor */
+    /** @alias module:zotohlab/p/s/supervisor */
     var exports = {       },
     evts= odin.Events,
     xcfg=sh.xcfg,
@@ -46,9 +47,7 @@ define("zotohlab/p/s/supervisor",
     var GameSupervisor = sh.Ashley.sysDef({
 
       /**
-       * Constructor.
-       *
-       * @memberof module:zotohlab/tictactoe/supervisor~GameSupervisor
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method constructor
        * @param {Object} options
        */
@@ -58,7 +57,7 @@ define("zotohlab/p/s/supervisor",
       },
 
       /**
-       * @memberof module:zotohlab/tictactoe/supervisor~GameSupervisor
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method removeFromEngine
        * @param {Engine} engine
        */
@@ -67,7 +66,7 @@ define("zotohlab/p/s/supervisor",
       },
 
       /**
-       * @memberof module:zotohlab/tictactoe/supervisor~GameSupervisor
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method addToEngine
        * @param {Engine} engine
        */
@@ -78,7 +77,7 @@ define("zotohlab/p/s/supervisor",
       },
 
       /**
-       * @memberof module:zotohlab/tictactoe/supervisor~GameSupervisor
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method update
        * @param {Number} dt
        */
@@ -161,17 +160,13 @@ define("zotohlab/p/s/supervisor",
     });
 
     /**
-     * @memberof module:zotohlab/tictactoe/supervisor~GameSupervisor
+     * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
      * @property {Number} Priority
-     * @final
+     * @static
      */
     GameSupervisor.Priority= pss.PreUpdate;
 
-    /**
-     * @property {GameSupervisor.Class} GameSupervisor
-     * @final
-     */
-    exports.GameSupervisor = GameSupervisor;
+    exports= GameSupervisor;
     return exports;
 });
 
