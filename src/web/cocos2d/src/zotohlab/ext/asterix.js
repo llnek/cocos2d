@@ -384,6 +384,7 @@ define("zotohlab/asterix",
         online: 'OnlinePlay',
         game: 'GameArena',
         hud: 'HUD',
+        mbox: 'MsgBox',
         yn: 'YesNo'
       },
 

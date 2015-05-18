@@ -83,6 +83,13 @@ define("zotohlab/asx/msgbox",
     });
 
     exports = {
+
+      /**
+       * @property {String} rtti
+       * @static
+       */
+      rtti: sh.ptypes.mbox,
+
       /**
        * Create a scene to display the message.
        *
