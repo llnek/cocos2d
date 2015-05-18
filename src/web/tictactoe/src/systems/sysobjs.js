@@ -10,7 +10,7 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/components
+ * @requires zotohlab/p/elements
  * @requires zotohlab/p/gnodes
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/s/priorities
@@ -25,7 +25,7 @@
  */
 define("zotohlab/p/sysobjs",
 
-       ['zotohlab/p/components',
+       ['zotohlab/p/elements',
         'zotohlab/p/gnodes',
         'zotohlab/p/s/utils',
         'zotohlab/p/s/priorities',

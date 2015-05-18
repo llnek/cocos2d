@@ -9,7 +9,7 @@
 // this software.
 // Copyright (c) 2013-2014, Ken Leung. All rights reserved.
 
-define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
+define("zotohlab/p/s/supervisor", ['zotohlab/p/elements',
                                   'zotohlab/p/s/utils',
                                   'cherimoia/skarojs',
                                   'zotohlab/asterix',

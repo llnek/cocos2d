@@ -17,9 +17,9 @@
  * @requires zotohlab/asx/negamax
  * @requires zotohlab/p/c/board
  *
- * @module zotohlab/p/components
+ * @module zotohlab/p/elements
  */
-define("zotohlab/p/components",
+define("zotohlab/p/elements",
 
        ['zotohlab/p/s/utils',
         'cherimoia/skarojs',
@@ -30,7 +30,7 @@ define("zotohlab/p/components",
 
   function (utils, sjs, sh, ccsx, negax, GameBoard) { "use strict";
 
-    /** @alias module:zotohlab/p/components */
+    /** @alias module:zotohlab/p/elements */
     var exports= {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
@@ -42,7 +42,7 @@ define("zotohlab/p/components",
      */
     var SmartAlgo = sh.Ashley.casDef({
       /**
-       * @memberof module:zotohlab/p/components~SmartAlgo
+       * @memberof module:zotohlab/p/elements~SmartAlgo
        * @method constructor
        * @param {GameBoard} board
        */
@@ -62,7 +62,7 @@ define("zotohlab/p/components",
      */
     var Board = sh.Ashley.casDef({
       /**
-       * @memberof module:zotohlab/p/components~Board
+       * @memberof module:zotohlab/p/elements~Board
        * @method constructor
        * @param {Number} size
        * @param {Array} goals
@@ -84,7 +84,7 @@ define("zotohlab/p/components",
      */
     var Grid = sh.Ashley.casDef({
       /**
-       * @memberof module:zotohlab/p/components~Grid
+       * @memberof module:zotohlab/p/elements~Grid
        * @method constructor
        * @param {Number} size
        * @param {Array} seed
@@ -106,7 +106,7 @@ define("zotohlab/p/components",
      */
     var GridView = sh.Ashley.casDef({
       /**
-       * @memberof module:zotohlab/p/components~GridView
+       * @memberof module:zotohlab/p/elements~GridView
        * @method constructor
        * @param {Number} size
        * @param {cc.Layer} layer
@@ -134,7 +134,7 @@ define("zotohlab/p/components",
      */
     var NetPlay = sh.Ashley.casDef({
       /**
-       * @memberof module:zotohlab/p/components~NetPlay
+       * @memberof module:zotohlab/p/elements~NetPlay
        * @method constructor
        */
       constructor: function() {
@@ -153,7 +153,7 @@ define("zotohlab/p/components",
      */
     var Player = sh.Ashley.casDef({
       /**
-       * @memberof module:zotohlab/p/components~Player
+       * @memberof module:zotohlab/p/elements~Player
        * @method constructor
        * @param {Number} category
        * @param {Number} value
@@ -180,7 +180,7 @@ define("zotohlab/p/components",
      */
     var UISelection = sh.Ashley.casDef({
       /**
-       * @memberof module:zotohlab/p/components~UISelection
+       * @memberof module:zotohlab/p/elements~UISelection
        * @method constructor
        */
       constructor: function() {

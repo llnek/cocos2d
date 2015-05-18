@@ -9,7 +9,7 @@
 // this software.
 // Copyright (c) 2013-2014, Ken Leung. All rights reserved.
 
-define('zotohlab/p/s/resolution', ['zotohlab/p/components',
+define('zotohlab/p/s/resolution', ['zotohlab/p/elements',
                                   'zotohlab/p/gnodes',
                                   'cherimoia/skarojs',
                                   'zotohlab/asterix',

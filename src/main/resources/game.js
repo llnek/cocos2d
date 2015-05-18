@@ -9,7 +9,7 @@
 // this software.
 // Copyright (c) 2013, Ken Leung. All rights reserved.
 
-define('zotohlab/p/arena', ['zotohlab/p/components',
+define('zotohlab/p/arena', ['zotohlab/p/elements',
                            'zotohlab/p/sysobjs',
                            'cherimoia/skarojs',
                            'zotohlab/asterix',

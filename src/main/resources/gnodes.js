@@ -9,7 +9,7 @@
 // this software.
 // Copyright (c) 2013-2014, Ken Leung. All rights reserved.
 
-define("zotohlab/p/gnodes", ['zotohlab/p/components',
+define("zotohlab/p/gnodes", ['zotohlab/p/elements',
                             'cherimoia/skarojs',
                             'zotohlab/asterix'],
 

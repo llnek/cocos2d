@@ -6,8 +6,8 @@
     "src/tictactoe/config.js",
     "src/tictactoe/i18n/game_en_US.js",
 
-    "src/tictactoe/components/board.js",
-    "src/tictactoe/components/cobjs.js",
+    "src/tictactoe/elements/board.js",
+    "src/tictactoe/elements/cobjs.js",
 
     "src/tictactoe/nodes/gnodes.js",
 
