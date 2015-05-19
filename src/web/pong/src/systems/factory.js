@@ -10,7 +10,7 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/components
+ * @requires zotohlab/p/elements
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
@@ -18,7 +18,7 @@
  */
 define("zotohlab/p/s/factory",
 
-       ['zotohlab/p/components',
+       ['zotohlab/p/elements',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],

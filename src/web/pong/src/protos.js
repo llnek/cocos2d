@@ -7,35 +7,45 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/protodefs", ['cherimoia/skarojs',
-                               'zotohlab/asterix',
-                               'zotohlab/asx/onlineplay',
-                               'zotohlab/asx/msgbox',
-                               'zotohlab/asx/ynbox',
-                               'zotohlab/p/splash',
-                               'zotohlab/p/mmenu',
-                               'zotohlab/p/arena'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/onlineplay
+ * @requires zotohlab/asx/msgbox
+ * @requires zotohlab/asx/ynbox
+ * @requires zotohlab/p/splash
+ * @requires zotohlab/p/mmenu
+ * @requires zotohlab/p/arena
+ * @module zotohlab/p/protodefs
+ */
+define("zotohlab/p/protodefs",
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/onlineplay',
+        'zotohlab/asx/msgbox',
+        'zotohlab/asx/ynbox',
+        'zotohlab/p/splash',
+        'zotohlab/p/mmenu',
+        'zotohlab/p/arena'],
 
   function (sjs, sh, online,
             msgbox, ynbox, splash, mmenu, arena) { "use strict";
 
     var ps= [online, splash, mmenu, msgbox, ynbox, arena],
+    protos= sh.protos,
+    /** @alias module:zotohlab/p/protodefs */
+    exports=protos,
     R = sjs.ramda,
-    undef,
-    protos= sh.protos;
+    undef;
 
     R.forEach(function(obj) {
-
-      sjs.eachObj(function(v,k) {
-            protos[k] = v;
-      }, obj);
-
+      protos[obj.rtti] = obj;
     }, ps);
 
-    return protos;
-
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

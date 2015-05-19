@@ -132,7 +132,7 @@ define("zotohlab/p/mmenu",
           pos: cc.p(wb.right - csts.TILE,
                     wb.bottom + csts.TILE),
           color: color,
-          anchor: cc.p(1,0)
+          anchor: ccsx.acs.BottomLeft
         });
 
       }

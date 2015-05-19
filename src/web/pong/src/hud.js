@@ -153,7 +153,8 @@ define("zotohlab/p/hud",
       /**
        */
       initLabels: function() {
-        var cw= ccsx.center(),
+        var color= cc.color('#ffffff'),
+        cw= ccsx.center(),
         wb= ccsx.vbox();
 
         this.title= ccsx.bmfLabel({
@@ -168,7 +169,7 @@ define("zotohlab/p/hud",
           fontPath: sh.getFontPath('font.OCR'),
           text: '8',
           scale: xcfg.game.scale * 0.25,
-          color: cc.color('#ffffff')
+          color: color
         });
         this.addItem(this.score1);
 
@@ -176,7 +177,7 @@ define("zotohlab/p/hud",
           fontPath: sh.getFontPath('font.OCR'),
           text: '8',
           scale: xcfg.game.scale * 0.25,
-          color: cc.color('#ffffff')
+          color: color
         });
         this.addItem(this.score2);
 
@@ -188,8 +189,6 @@ define("zotohlab/p/hud",
           scale: xcfg.game.scale * 0.15
         });
         this.addItem(this.resultMsg);
-
-        this.initCtrlBtns(1, cc.ALIGN_TOP);
       },
 
       /**

@@ -7,38 +7,42 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xlayers
+ * @requires zotohlab/asx/xmmenus
+ * @requires zotohlab/asx/xscenes
+ * @module zotohlab/p/mmenu
+ */
 define("zotohlab/p/mmenu",
 
        ['cherimoia/skarojs',
        'zotohlab/asterix',
        'zotohlab/asx/ccsx',
        'zotohlab/asx/xlayers',
+       'zotohlab/asx/xmmenus',
        'zotohlab/asx/xscenes'],
 
-  function (sjs, sh, ccsx, layers, scenes) { "use strict";
+  function (sjs, sh, ccsx, layers, mmenus, scenes) { "use strict";
 
     var SEED= { ppids: { }, pnum: 1, mode: 0 },
+    /** @alias zotohlab/p/mmenu */
+    exports = {},
     xcfg = sh.xcfg,
     R=sjs.ramda,
     csts= xcfg.csts,
     undef,
 
-    MainMenuLayer = layers.XLayer.extend({
+    //////////////////////////////////////////////////////////////////////////////
+    BackLayer = mmenus.XMenuBackLayer.extend({
 
-      rtti: function() { return 'MainMenuLayer'; },
-
-      pkInit: function() {
-        var dir= cc.director,
+      setTitle: function() {
+        var wb=ccsx.vbox(),
         cw= ccsx.center(),
-        wb= ccsx.vbox(),
-        sz, tt, menu;
-
-        // show background image
-        this.centerImage(sh.getImagePath('game.bg'));
-
-        // show the title
         tt=ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.JellyBelly'),
           text: sh.l10n('%mmenu'),
@@ -47,13 +51,24 @@ define("zotohlab/p/mmenu",
           scale: xcfg.game.scale
         });
         this.addItem(tt);
+      }
+
+    }),
+
+    MainMenuLayer = mmenus.XMenuLayer.extend({
+
+      pkInit: function() {
+        var color= cc.color('#32baf4'),
+        cw= ccsx.center(),
+        wb= ccsx.vbox(),
+        menu;
 
         menu = ccsx.vmenu([
           { imgPath: '#online.png',
             cb: function() {
-              sh.fireEvent('/mmenu/controls/online',
-                           sjs.mergeEx(SEED,
-                                       { mode: sh.ONLINE_GAME }));
+              sh.fire('/mmenu/online',
+                      sjs.mergeEx(SEED,
+                                  { mode: sh.gtypes.ONLINE_GAME }));
             }
           },
           { imgPath: '#player2.png',
@@ -61,10 +76,10 @@ define("zotohlab/p/mmenu",
               var pobj2={};
               pobj2[ sh.l10n('%p1') ] = [ 1, sh.l10n('%player1') ];
               pobj2[ sh.l10n('%p2') ] = [ 2, sh.l10n('%player2') ];
-              sh.fireEvent('/mmenu/controls/newgame',
-                           sjs.mergeEx(SEED, {
+              sh.fire('/mmenu/newgame',
+                      sjs.mergeEx(SEED, {
                              ppids: pobj2,
-                             mode: sh.P2_GAME }));
+                             mode: sh.gtypes.P2_GAME }));
             }
           },
           {
@@ -73,85 +88,93 @@ define("zotohlab/p/mmenu",
               var pobj1={};
               pobj1[ sh.l10n('%cpu') ] = [ 2, sh.l10n('%computer') ];
               pobj1[ sh.l10n('%p1') ] = [ 1,  sh.l10n('%player1') ];
-              sh.fireEvent('/mmenu/controls/newgame',
-                           sjs.mergeEx(SEED, {
+              sh.fire('/mmenu/newgame',
+                      sjs.mergeEx(SEED, {
                              ppids: pobj1,
-                             mode: sh.P1_GAME }));
+                             mode: sh.gtypes.P1_GAME }));
             }
           }
         ]);
         menu.setPosition(cw);
         this.addItem(menu);
 
-        // show the control buttons
-        this.addAudioIcon({
+        this.mkAudio({
           pos: cc.p(wb.right - csts.TILE,
                     wb.bottom + csts.TILE),
-          color: cc.color('#32baf4'),
-          anchor: cc.p(1,0)
+          color: color,
+          anchor: ccsx.acs.BottomLeft
         });
 
-        // show back & quit
-        menu= ccsx.hmenu([
-          { color: cc.color('#32baf4'),
-            imgPath: '#icon_back.png',
+        this.mkBackQuit(false, [
+          { imgPath: '#icon_back.png',
+            color: color,
             cb: function() {
               if (!!this.options.onBack) {
                 this.options.onBack();
               }
             },
             target: this },
-          { color: cc.color('#32baf4'),
-            imgPath: '#icon_quit.png',
+          { imgPath: '#icon_quit.png',
+            color: color,
             cb: function() { this.onQuit(); },
             target: this }
-        ]);
-        sz= menu.getChildren()[0].getContentSize();
-        menu.setPosition(wb.left + csts.TILE + sz.width * 1.1,
-                         wb.bottom + csts.TILE + sz.height * 0.45);
-        this.addItem(menu);
-
+        ],
+        function (m,z) {
+          m.setPosition(wb.left + csts.TILE + z.width * 1.1,
+                        wb.bottom + csts.TILE + z.height * 0.45);
+        });
       }
 
     });
 
-    return {
+    exports= {
 
-      'MainMenu' : {
+      /**
+       * @property {String} rtti
+       * @static
+       */
+      rtti : sh.ptypes.mmenu,
 
-        create: function(options) {
+      /**
+       * @method reify
+       * @static
+       * @param {Object} options
+       * @return {cc.Scene}
+       */
+      reify: function(options) {
 
-          var scene = new scenes.XSceneFactory([
-            MainMenuLayer
-          ]).create(options),
-          fac = sh.protos['GameArena'],
-          dir=cc.director;
+        var scene = new scenes.XSceneFactory([
+          BackLayer,
+          MainMenuLayer
+        ]).reify(options),
+        dir=cc.director,
+        net = sh.protos[sh.ptypes.online],
+        game = sh.protos[sh.ptypes.game],
+        mm = sh.protos[sh.ptypes.mmenu];
 
-          scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
-            dir.runScene( fac.create(msg));
-          });
+        scene.onmsg('/mmenu/newgame', function(topic, msg) {
+          dir.runScene( game.reify(msg));
+        }).
+        onmsg('/mmenu/online', function(topic, msg) {
+          msg.onBack=function() {
+            dir.runScene( mm.reify());
+          };
+          msg.yes=function(wss,pnum,startmsg) {
+            var m= sjs.mergeEx( R.omit(['yes', 'onBack'], msg), {
+              wsock: wss,
+              pnum: pnum
+            });
+            m.ppids = startmsg.ppids;
+            dir.runScene( game.reify(m));
+          }
+          dir.runScene( net.reify(msg));
+        });
 
-          scene.ebus.on('/mmenu/controls/online', function(topic, msg) {
-            msg.onBack=function() {
-              dir.runScene( sh.protos['MainMenu'].create());
-            };
-            msg.yes=function(wss,pnum,startmsg) {
-              var m= sjs.mergeEx( R.omit(['yes', 'onBack'], msg), {
-                wsock: wss,
-                pnum: pnum
-              });
-              m.ppids = startmsg.ppids;
-              dir.runScene( fac.create(m));
-            }
-            dir.runScene( sh.protos['OnlinePlay'].create(msg));
-          });
-
-          return scene;
-        }
+        return scene;
       }
-
     };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

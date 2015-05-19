@@ -7,40 +7,61 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xsplash
+ * @requires zotohlab/asx/xlayers
+ * @requires zotohlab/asx/xscenes
+ * @module zotohlab/p/splash
+ */
 define("zotohlab/p/splash",
 
        ['cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
+        'zotohlab/asx/xsplash',
         'zotohlab/asx/xlayers',
         'zotohlab/asx/xscenes'],
 
-  function (sjs, sh, ccsx, layers, scenes) { "use strict";
+  function (sjs, sh, ccsx, splash, layers, scenes) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/splash */
+    var exports= {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
-    SplashLayer = layers.XLayer.extend({
+    /**
+     * @class SplashLayer
+     */
+    SplashLayer = splash.XSplashLayer.extend({
 
-      rtti: function() { return 'SplashLayer'; },
+      /**
+       * @protected
+       */
+      setTitle: function() {
+        var cw = ccsx.center(),
+        wb = ccsx.vbox();
+        this.addFrame('#title.png',
+                      cc.p(cw.x, wb.top * 0.9));
+      },
 
-      pkInit: function() {
+      /**
+       * @protected
+       */
+      setPlay: function() {
         var cw = ccsx.center(),
         wb = ccsx.vbox(),
         menu;
 
-        this.centerImage(sh.getImagePath('game.bg'));
-
-        this.addFrame('#title.png',
-                      cc.p(cw.x, wb.top * 0.9));
-
         menu = ccsx.pmenu1({
           imgPath: '#play.png',
           cb: function() {
-            sh.fireEvent('/splash/controls/playgame');
+            sh.fire('/splash/playgame');
           }
         });
         menu.setPosition(cw.x, wb.top * 0.2);
@@ -49,29 +70,35 @@ define("zotohlab/p/splash",
 
     });
 
-    return {
+    exports= {
 
-      'StartScreen' : {
-        create: function(options) {
-          var scene = new scenes.XSceneFactory([
-            SplashLayer
-          ]).create(options);
+      /**
+       * @property {String} rtti
+       * @static
+       */
+      rtti : sh.ptypes.start,
 
-          scene.ebus.on('/splash/controls/playgame', function() {
-              var ss= sh.protos['StartScreen'],
-              mm= sh.protos['MainMenu'],
-              dir= cc.director;
-              dir.runScene( mm.create({
-                onBack: function() { dir.runScene( ss.create() ); }
-              }));
-          });
-
-          return scene;
-        }
+      /**
+       * @method reify
+       * @param {Object} options
+       * @return {cc.Scene}
+       */
+      reify: function(options) {
+        return new scenes.XSceneFactory([
+          SplashLayer
+        ]).reify(options).onmsg('/splash/playgame', function() {
+            var ss= sh.protos[sh.ptypes.start],
+            mm= sh.protos[sh.ptypes.mmenu],
+            dir= cc.director;
+            dir.runScene( mm.reify({
+              onBack: function() { dir.runScene( ss.reify() ); }
+            }));
+        });
       }
 
     };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

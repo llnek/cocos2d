@@ -65,31 +65,38 @@ define("zotohlab/p/sysobjs",
       /**
        * @property {Collisions} Collisions
        * @static
-       */Collisions        : Collisions,
+       */
+      Collisions        : Collisions,
       /**
        * @property {Networking} Networking
        * @static
-       */Networking        : Networking,
+       */
+      Networking        : Networking,
       /**
        * @property {Rendering} Rendering
        * @static
-       */Rendering         : Rendering,
+       */
+      Rendering         : Rendering,
       /**
        * @property {Resolution} Resolution
        * @static
-       */Resolution        : Resolution,
+       */
+      Resolution        : Resolution,
       /**
        * @property {Supervisor} Supervisor
        * @static
-       */Supervisor        : Supervisor,
+       */
+      Supervisor        : Supervisor,
       /**
        * @property {Motions} Motions
        * @static
-       */Motions           : Motions,
+       */
+      Motions           : Motions,
       /**
        * @property {Movements} Movements
        * @static
-       */Movements         : Movements
+       */
+      Movements         : Movements
 
     };
 

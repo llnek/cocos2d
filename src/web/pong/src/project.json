@@ -4,7 +4,7 @@
      "src/pong/config.js",
       "src/pong/i18n/game_en_US.js",
 
-      "src/pong/components/cobjs.js",
+      "src/pong/elements/cobjs.js",
       "src/pong/nodes/gnodes.js",
 
       "src/pong/systems/priorities.js",

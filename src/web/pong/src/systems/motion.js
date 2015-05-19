@@ -10,7 +10,7 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/sysobjs
+ * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -18,12 +18,12 @@
  */
 define("zotohlab/p/s/motion",
 
-       ['zotohlab/p/sysobjs',
+       ['zotohlab/p/s/priorities',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix'],
 
-  function (sobjs, gnodes, sjs,  sh) { "use strict";
+  function (pss, gnodes, sjs,  sh) { "use strict";
 
     /** @alias module:zotohlab/p/s/motion */
     var exports = {},
@@ -115,7 +115,7 @@ define("zotohlab/p/s/motion",
      * @property {Number} Priority
      * @static
      */
-    MotionCtrlSystem.Priority = sobjs.Motion;
+    MotionCtrlSystem.Priority = pss.Motion;
 
     exports= MotionCtrlSystem;
     return exports;

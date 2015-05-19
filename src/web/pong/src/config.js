@@ -56,6 +56,7 @@ define("zotohlab/p/config",
         tiles: {
         },
         images: {
+          'gui.mmenu.menu.bg' : 'res/{{appid}}/pics/bg.png',
           'game.bg' : 'res/{{appid}}/pics/bg.png'
         },
         sounds: {
