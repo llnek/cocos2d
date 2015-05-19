@@ -7,12 +7,21 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/p/s/priorities
+ * @requires zotohlab/p/s/utils
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/resolution
+ */
 define("zotohlab/p/s/resolution",
 
        ['zotohlab/p/s/priorities',
-         "zotohlab/p/s/utils",
+        "zotohlab/p/s/utils",
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
@@ -20,24 +29,49 @@ define("zotohlab/p/s/resolution",
 
   function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/resolution */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @class ResolutionSystem
+     */
     ResolutionSystem = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state = options;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
         this.arena=null;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function(engine) {
         this.arena = engine.getNodeList(gnodes.ArenaNode);
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         var node= this.arena.head;
         if (this.state.running &&
@@ -73,6 +107,9 @@ define("zotohlab/p/s/resolution",
         }
       },
 
+      /**
+       * @private
+       */
       fastDrop: function(layer, node) {
         var dp= node.dropper;
         dp.timer=null;
@@ -81,8 +118,14 @@ define("zotohlab/p/s/resolution",
 
     });
 
+    /**
+     * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
+     * @property {Number} Priority
+     */
     ResolutionSystem.Priority= pss.Resolve;
-    return ResolutionSystem;
+
+    exports= ResolutionSystem;
+    return exports;
 });
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -7,43 +7,82 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/p/s/priorities
+ * @requires zotohlab/p/s/utils
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @module zotohlab/p/s/rendering
+ */
 define("zotohlab/p/s/rendering",
 
        ['zotohlab/p/s/priorities',
-         "zotohlab/p/s/utils",
-         'zotohlab/p/gnodes',
-         'cherimoia/skarojs',
-         'zotohlab/asterix'],
+        "zotohlab/p/s/utils",
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix'],
 
   function (pss, utils, gnodes, sjs, sh) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/rendering */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @class RenderSystem
+     */
     RenderSystem = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/rendering~RenderSystem
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state = options;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/rendering~RenderSystem
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
         this.arena=null;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/rendering~RenderSystem
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function(engine) {
         this.arena= engine.getNodeList(gnodes.ArenaNode);
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/rendering~RenderSystem
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
       }
 
     });
 
+    /**
+     * @memberof module:zotohlab/p/s/rendering~RenderSystem
+     * @property {Number} Priority
+     */
     RenderSystem.Priority= pss.Render;
-    return RenderSystem;
+
+    exports= RenderSystem;
+    return exports;
 });
 
 ///////////////////////////////////////////////////////////////////////////////
