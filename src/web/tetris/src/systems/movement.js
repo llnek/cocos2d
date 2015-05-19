@@ -11,7 +11,7 @@
 
 /**
  * @requires zotohlab/p/s/priorities
- * @requires zotohlab/p/components
+ * @requires zotohlab/p/elements
  * @requires zotohlab/p/gnodes
  * @requires zotohlab/p/s/utils
  * @requires cherimoia/skarojs
@@ -22,7 +22,7 @@
 define("zotohlab/p/s/movement",
 
        ['zotohlab/p/s/priorities',
-        'zotohlab/p/components',
+        'zotohlab/p/elements',
         'zotohlab/p/gnodes',
         'zotohlab/p/s/utils',
         'cherimoia/skarojs',

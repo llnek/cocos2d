@@ -7,22 +7,44 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/s/utils", ["zotohlab/p/components",
-                             'cherimoia/skarojs',
-                             'zotohlab/asterix',
-                             'zotohlab/asx/ccsx'],
+/**
+ * @requires zotohlab/p/elements
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/utils
+ */
+define("zotohlab/p/s/utils",
+
+       ["zotohlab/p/elements",
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (cobjs, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/utils */
+    var exports= {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
 
+    /**
+     * @class SystemUtils
+     */
     SystemUtils = {
 
+      /**
+       * @memberof module:zotohlab/p/s/utils~SystemUtils
+       * @method reifyShape
+       * @param {cc.Layer} layer
+       * @param {Object} cmap
+       * @param {Object} shape
+       * @return {Object}
+       */
       reifyShape: function(layer, cmap, shape) {
         var bbox= this.findBBox(cmap, shape.model,
                                 shape.x, shape.y, shape.rot),
@@ -38,12 +60,25 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
         return shape;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/utils~SystemUtils
+       * @method topLine
+       * @param {Node} node
+       * @return {Number}
+       */
       topLine: function(node) {
         var gbox= node.gbox,
         bx= gbox.box;
         return Math.floor((bx.top - bx.bottom) / csts.TILE);
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/utils~SystemUtils
+       * @method previewShape
+       * @param {cc.Layer} layer
+       * @param {Object} shape
+       * @return {Object}
+       */
       previewShape: function(layer, shape) {
         var bbox= this.findBBox([],shape.model,
                                 shape.x,shape.y,shape.rot,true),
@@ -57,6 +92,11 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
         return shape;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/utils~SystemUtils
+       * @method disposeShape
+       * @param {Object} shape
+       */
       disposeShape: function(shape) {
         if (!!shape) {
           this.clearOldBricks(shape.bricks);
@@ -65,12 +105,27 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
         return null;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/utils~SystemUtils
+       * @method clearOldBricks
+       * @param {Array} bs
+       */
       clearOldBricks: function(bs) {
         R.forEach(function(z) {
           z.dispose();
         }, bs);
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/utils~SystemUtils
+       * @method reifyBricks
+       * @param {cc.Layer} layer
+       * @param {String} png
+       * @param {Number} x
+       * @param {Number} y
+       * @param {Array} bs
+       * @return {Array}
+       */
       reifyBricks: function(layer, png, x,y, bs) {
         var pt, i,
         obj,
@@ -86,6 +141,17 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
         return bricks;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/utils~SystemUtils
+       * @method findBBox
+       * @param {Object} cmap
+       * @param {Object} model
+       * @param {Number} left
+       * @param {Number} top
+       * @param {String} rID
+       * @param {Boolean} skipCollide
+       * @return {Array}
+       */
       findBBox: function(cmap, model, left, top, rID, skipCollide) {
         var skipCollide = skipCollide || false,
         form= model.layout[rID],
@@ -111,6 +177,9 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
         return bs;
       },
 
+      /**
+       * @private
+       */
       maybeCollide: function(cmap, tl_x, tl_y, br_x, br_y) {
         var tile= this.xrefTile(tl_x , tl_y),
         r,
@@ -127,6 +196,9 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
         }
       },
 
+      /**
+       * @private
+       */
       xrefTile: function (x,y) {
         var co = csts.TILE * 0.5;
 
@@ -141,16 +213,25 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
                  col: Math.floor(x / csts.TILE) };
       },
 
+      /**
+       * @private
+       */
       initDropper: function(par, dp) {
         dp.timer = ccsx.createTimer(par, dp.dropRate / dp.dropSpeed);
       },
 
+      /**
+       * @private
+       */
       setDropper: function(par, dp, r, s) {
         dp.timer = ccsx.createTimer(par, r/s);
         dp.dropSpeed=s;
         dp.dropRate=r;
       },
 
+      /**
+       * @private
+       */
       lockBricks: function(cmap, emap, z) {
         var zs = z.sprite.getPosition(),
         t= this.xrefTile(zs.x, zs.y);
@@ -159,6 +240,9 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
         emap[t.row][t.col] = z;
       },
 
+      /**
+       * @private
+       */
       lock: function(node, shape) {
         var cmap= node.collision.tiles,
         emap= node.blocks.grid;
@@ -170,6 +254,9 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
         this.postLock(node, cmap, emap);
       },
 
+      /**
+       * @private
+       */
       postLock: function(node, cmap, emap) {
 
         // search bottom up until top.
@@ -191,6 +278,9 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
         }
       },
 
+      /**
+       * @private
+       */
       testFilledRow: function(cmap, r) {
         var row= cmap[r],
         c;
@@ -204,6 +294,9 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
         return true;
       },
 
+      /**
+       * @private
+       */
       flashFilled: function(emap, flines, lines) {
         var c, row;
 
@@ -219,6 +312,9 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
         flines.lines=lines;
       },
 
+      /**
+       * @private
+       */
       pauseForClearance: function(node, b, delay) {
         var pu= node.pauser;
 
@@ -232,6 +328,9 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
         }
       },
 
+      /**
+       * @private
+       */
       moveDown: function(layer, cmap, shape) {
         var new_y = shape.y - csts.TILE,
         x = shape.x,
@@ -249,6 +348,9 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
         }
       },
 
+      /**
+       * @private
+       */
       shiftRight: function(layer, cmap, shape) {
         var new_x= shape.x + csts.TILE,
         y= shape.y,
@@ -266,6 +368,9 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
         }
       },
 
+      /**
+       * @private
+       */
       shiftLeft: function(layer, cmap, shape) {
         var new_x= shape.x - csts.TILE,
         y= shape.y,
@@ -283,6 +388,9 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
         }
       },
 
+      /**
+       * @private
+       */
       rotateRight: function(layer,cmap,shape) {
         var nF = sjs.xmod(shape.rot+1, shape.model.layout.length),
         bricks,
@@ -304,6 +412,9 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
         }
       },
 
+      /**
+       * @private
+       */
       rotateLeft: function(layer,cmap,shape) {
         var nF = sjs.xmod(shape.rot-1, shape.model.layout.length),
         bricks,
@@ -327,7 +438,8 @@ define("zotohlab/p/s/utils", ["zotohlab/p/components",
 
     };
 
-    return SystemUtils;
+    exports= SystemUtils;
+    return exports;
 });
 
 ///////////////////////////////////////////////////////////////////////////////

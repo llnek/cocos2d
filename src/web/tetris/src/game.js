@@ -17,7 +17,7 @@
  * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asx/xmmenus
  * @requires zotohlab/p/hud
- * @requires zotohlab/p/components
+ * @requires zotohlab/p/elements
  * @requires zotohlab/p/sysobjs
  * @module zotohlab/p/arena
  */
@@ -30,7 +30,7 @@ define("zotohlab/p/arena",
        'zotohlab/asx/xscenes',
        'zotohlab/asx/xmmenus',
        'zotohlab/p/hud',
-       'zotohlab/p/components',
+       'zotohlab/p/elements',
        'zotohlab/p/sysobjs'],
 
   function(sjs, sh, ccsx, layers, scenes,

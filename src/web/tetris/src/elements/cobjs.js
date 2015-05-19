@@ -244,7 +244,7 @@ define("zotohlab/p/elements",
     /**
      * @class ElShape
      */
-    bks.ElShape = {
+    exports.ElShape = {
 
       /**
        * @memberof module:zotohlab/p/elements~ElShape
@@ -279,7 +279,7 @@ define("zotohlab/p/elements",
     /**
      * @class ElxShape
      */
-    bks.ElxShape = {
+    exports.ElxShape = {
 
       /**
        * @memberof module:zotohlab/p/elements~ElxShape
@@ -314,7 +314,7 @@ define("zotohlab/p/elements",
     /**
      * @class FilledLines
      */
-    bks.FilledLines= sh.Ashley.casDef({
+    exports.FilledLines= sh.Ashley.casDef({
       /**
        * @memberof module:zotohlab/p/elements~FilledLines
        * @method constructor
@@ -328,7 +328,7 @@ define("zotohlab/p/elements",
     /**
      * @class LineShape
      */
-    bks.LineShape = {
+    exports.LineShape = {
 
       /**
        * @memberof module:zotohlab/p/elements~LineShape
@@ -385,7 +385,7 @@ define("zotohlab/p/elements",
     /**
      * @class NubShape
      */
-    bks.NubShape = {
+    exports.NubShape = {
 
       /**
        * @memberof module:zotohlab/p/elements~NubShape
@@ -437,7 +437,7 @@ define("zotohlab/p/elements",
     /**
      * @class StShape
      */
-    bks.StShape = {
+    exports.StShape = {
 
       /**
        * @memberof module:zotohlab/p/elements~StShape
@@ -472,7 +472,7 @@ define("zotohlab/p/elements",
     /**
      * @class StxShape
      */
-    bks.StxShape = {
+    exports.StxShape = {
 
       /**
        * @memberof module:zotohlab/p/elements~StxShape

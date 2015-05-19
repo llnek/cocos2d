@@ -85,6 +85,9 @@ define("zotohlab/p/s/supervisor",
         }
       },
 
+      /**
+       * @private
+       */
       onceOnly: function(node) {
         var cw = ccsx.center(),
         wb= ccsx.vbox(),
@@ -95,6 +98,7 @@ define("zotohlab/p/s/supervisor",
         hfzh= fz.height * 0.5,
         hfzw= fz.width * 0.5;
 
+        // attempt to draw the walls
         this.xh(fz, lf_boundary, cw.x, wb.bottom + hfzh);
         this.xv(fz, lf_boundary);
         this.xv(fz, cw.x);
@@ -110,6 +114,9 @@ define("zotohlab/p/s/supervisor",
         this.doCtrl(node);
       },
 
+      /**
+       * @private
+       */
       doCtrl: function(node) {
         var hsps= node.cpad.hotspots,
         cw = ccsx.center(),
@@ -157,6 +164,11 @@ define("zotohlab/p/s/supervisor",
               bottom: cbx.top - 2 * ch3 };
       },
 
+      /**
+       * Draw horizontal wall.
+       *
+       * @private
+       */
       xh: function(fz, lf_bdy, rt_bdy, ypos) {
         var cw = ccsx.center(),
         wb= ccsx.vbox(),
@@ -174,6 +186,11 @@ define("zotohlab/p/s/supervisor",
         }
       },
 
+      /**
+       * Draw vertical wall.
+       *
+       * @private
+       */
       xv: function(fz, x) {
         var cw = ccsx.center(),
         wb= ccsx.vbox(),
@@ -190,6 +207,9 @@ define("zotohlab/p/s/supervisor",
         }
       },
 
+      /**
+       * @private
+       */
       onceOnly_2: function (node, fz, bz, box) {
         var tiles= this.fakeTileMap(bz, box);
 
@@ -205,6 +225,9 @@ define("zotohlab/p/s/supervisor",
         sjs.loggr.info("tile size = " + csts.TILE);
       },
 
+      /**
+       * @private
+       */
       initBlockMap: function(tiles) {
         var grid=[],
         rc,
@@ -218,7 +241,10 @@ define("zotohlab/p/s/supervisor",
         return grid;
       },
 
-      //create our own collision map using cells
+      /**
+       * Create our own collision map using cells.
+       * @private
+       */
       fakeTileMap: function(bz, box) {
 
         var hlen = Math.floor( (box.top - box.bottom) / bz.height),
@@ -242,8 +268,13 @@ define("zotohlab/p/s/supervisor",
 
     });
 
+    /**
+     * @property {Number} Priority
+     */
     GameSupervisor.Priority= pss.PreUpdate;
-    return GameSupervisor;
+
+    exports= GameSupervisor;
+    return exports;
 });
 
 ///////////////////////////////////////////////////////////////////////////////

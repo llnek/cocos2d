@@ -47,7 +47,7 @@ define("zotohlab/p/splash",
           { imgPath: '#play.png',
             cb: function() {
               this.removeAll();
-              sh.fireEvent('/splash/playgame');
+              sh.fire('/splash/playgame');
             },
             target: this }
         ]);
@@ -81,7 +81,7 @@ define("zotohlab/p/splash",
           var ss= sh.protos[sh.ptypes.start],
           mm= sh.protos[sh.ptypes.mmenu],
           dir= cc.director;
-          dir.runScene( mm.create({
+          dir.runScene( mm.reify({
             onBack: function() { dir.runScene( ss.reify() ); }
           }));
         });

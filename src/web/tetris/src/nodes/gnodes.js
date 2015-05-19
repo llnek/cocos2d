@@ -10,7 +10,7 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/components
+ * @requires zotohlab/p/elements
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @module zotohlab/p/gnodes
