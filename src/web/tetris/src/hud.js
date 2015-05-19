@@ -7,11 +7,20 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/p/elements
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xlayers
+ * @requires zotohlab/asx/xscenes
+ * @module zotohlab/p/hud
+ */
 define("zotohlab/p/hud",
 
-       ['zotohlab/p/components',
+       ['zotohlab/p/elements',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
@@ -20,12 +29,17 @@ define("zotohlab/p/hud",
 
   function(cobjs, sjs, sh, ccsx, layers, scenes) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/hud */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
 
     //////////////////////////////////////////////////////////////////////////
+    /**
+     * @class BackLayer
+     */
     BackLayer = layers.XLayer.extend({
 
       rtti: function() { return 'BackLayer'; },
@@ -36,6 +50,9 @@ define("zotohlab/p/hud",
     }),
 
     //////////////////////////////////////////////////////////////////////////
+    /**
+     * @class HUDLayer
+     */
     HUDLayer = layers.XGameHUDLayer.extend({
 
       initAtlases: function() {
@@ -50,7 +67,7 @@ define("zotohlab/p/hud",
         this.scoreLabel = ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.SmallTypeWriting'),
           text: '0',
-          anchor: ccsx.AnchorTopRight,
+          anchor: ccsx.acs.TopRight,
           scale: xcfg.game.scale// * 2
         });
         this.scoreLabel.setPosition(wb.right - (csts.TILE * wz.width/480),
@@ -99,40 +116,47 @@ define("zotohlab/p/hud",
         this.scoreLabel.setString('' + this.score);
       },
 
-      initCtrlBtns: function(scale, where) {
-        var csts = xcfg.csts,
-        menu;
+      ctor: function(options) {
+        var color= cc.color(255,255,255),
+        scale=1;
 
-        where = where || ccsx.AnchorBottom;
-        scale = scale || 1;
+        this._super(options);
 
-        menu= ccsx.pmenu1({
-          color: cc.color(255,255,255),
-          imgPath: '#icon_menu.png',
-          scale: scale,
-          selector: function() {
-            sh.fireEvent('/game/hud/controls/showmenu'); }
-        });
-        this.addMenuIcon(menu, where);
-
-        menu = ccsx.pmenu1({
+        this.options.i_replay= {
           imgPath: '#icon_replay.png',
-          color: cc.color(255,255,255),
+          color: color,
           scale : scale,
           visible: false,
-          selector: function() {
-            sh.fireEvent('/game/hud/controls/replay'); }
-        });
-        this.addReplayIcon(menu, where);
+          cb: function() {
+            sh.fire('/hud/replay'); }
+        };
+
+        this.options.i_menu= {
+          imgPath: '#icon_menu.png',
+          color: color,
+          scale: scale,
+          cb: function() {
+            sh.fire('/hud/showmenu'); }
+        };
       }
 
     });
 
-    return {
+    exports = {
+      /**
+       * @property {BackLayer.Class} BackLayer
+       * @static
+       */
       BackLayer: BackLayer,
+
+      /**
+       * @property {HUDLayer.Class} HUDLayer
+       * @static
+       */
       HUDLayer: HUDLayer
     };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

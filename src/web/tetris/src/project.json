@@ -4,7 +4,7 @@
       "src/tetris/config.js",
       "src/tetris/i18n/game_en_US.js",
 
-      "src/tetris/components/cobjs.js",
+      "src/tetris/elements/cobjs.js",
       "src/tetris/nodes/gnodes.js",
 
       "src/tetris/systems/priorities.js",

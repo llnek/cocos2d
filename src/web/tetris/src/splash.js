@@ -7,77 +7,90 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xplash
+ * @requires zotohlab/asx/xlayers
+ * @requires zotohlab/asx/xscenes
+ * @module zotohlab/p/splash
+ */
 define("zotohlab/p/splash",
 
        ['cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
+        'zotohlab/asx/xsplash',
         'zotohlab/asx/xlayers',
         'zotohlab/asx/xscenes'],
 
-  function (sjs, sh, ccsx, layers, scenes) { "use strict";
+  function (sjs, sh, ccsx, splash, layers, scenes) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/splash */
+    var exports= {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R= sjs.ramda,
     undef,
 
     //////////////////////////////////////////////////////////////////////////////
-    SplashLayer = layers.XLayer.extend({
+    SplashLayer = splash.XSplashLayer.extend({
 
-      rtti: function() { return "SplashLayer" ; },
-
-      pkInit: function() {
+      setPlay: function() {
         var cw = ccsx.center(),
         wb= ccsx.vbox(),
         menu;
-
-        this.centerImage(sh.getImagePath('game.bg'));
-        this.addFrame('#title.png', cc.p(cw.x, wb.top * 0.9));
-
         menu= ccsx.vmenu([
           { imgPath: '#play.png',
             cb: function() {
               this.removeAll();
-              sh.fireEvent('/splash/controls/playgame');
+              sh.fireEvent('/splash/playgame');
             },
             target: this }
         ]);
 
         menu.setPosition(cw.x, wb.top * 0.10);
         this.addItem(menu);
-
       }
 
     });
 
-    return {
+    exports = {
 
-      'StartScreen' : {
+      /**
+       * @property {String} rtti
+       * @static
+       */
+      rtti: sh.ptypes.start,
 
-        create: function(options) {
-          var scene = new scenes.XSceneFactory([
-            SplashLayer
-          ]).create(options);
+      /**
+       * @method reify
+       * @static
+       * @param {Object} options
+       * @return {cc.Scene}
+       */
+      reify: function(options) {
+        var scene = new scenes.XSceneFactory([
+          SplashLayer
+        ]).reify(options);
 
-          scene.ebus.on('/splash/controls/playgame', function() {
-            var ss= sh.protos['StartScreen'],
-            mm= sh.protos['MainMenu'],
-            dir= cc.director;
-            dir.runScene( mm.create({
-              onBack: function() { dir.runScene( ss.create() ); }
-            }));
-          });
+        scene.onmsg('/splash/playgame', function() {
+          var ss= sh.protos[sh.ptypes.start],
+          mm= sh.protos[sh.ptypes.mmenu],
+          dir= cc.director;
+          dir.runScene( mm.create({
+            onBack: function() { dir.runScene( ss.reify() ); }
+          }));
+        });
 
-          return scene;
-        }
-
+        return scene;
       }
-
     };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

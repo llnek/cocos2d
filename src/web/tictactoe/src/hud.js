@@ -35,9 +35,9 @@ define("zotohlab/p/hud",
 
     //////////////////////////////////////////////////////////////////////////
     /**
-     * @class HUDBackLayer
+     * @class BackLayer
      */
-    HUDBackLayer = layers.XLayer.extend({
+    BackLayer = layers.XLayer.extend({
 
       pkInit: function() {
         this.centerImage(sh.getImagePath('game.bg'));
@@ -291,10 +291,10 @@ define("zotohlab/p/hud",
 
     exports = {
       /**
-       * @property {HUDBackLayer.Class} HUDBackLayer
+       * @property {BackLayer.Class} BackLayer
        * @static
        */
-      HUDBackLayer: HUDBackLayer,
+      BackLayer: BackLayer,
 
       /**
        * @property {HUDLayer.Class} HUDLayer

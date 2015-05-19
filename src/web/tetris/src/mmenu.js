@@ -7,37 +7,41 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xlayers
+ * @requires zotohlab/asx/xmmenus
+ * @requires zotohlab/asx/xscenes
+ * @module zotohlab/p/mmenu
+ */
 define("zotohlab/p/mmenu",
 
        ['cherimoia/skarojs',
        'zotohlab/asterix',
        'zotohlab/asx/ccsx',
        'zotohlab/asx/xlayers',
+       'zotohlab/asx/xmmenus',
        'zotohlab/asx/xscenes'],
 
-  function (sjs, sh, ccsx, layers, scenes) { "use strict";
+  function (sjs, sh, ccsx, layers, mmenus, scenes) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/mmenu */
+    var exports= {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R= sjs.ramda,
     undef,
 
-    //////////////////////////////////////////////////////////////////////////
-    MainMenuLayer = layers.XLayer.extend({
+    //////////////////////////////////////////////////////////////////////////////
+    BackLayer = mmenus.XMenuBackLayer.extend({
 
-      rtti: function() { return "MainMenuLayer"; },
-
-      pkInit: function() {
-        var dir= cc.director,
-        cw = ccsx.center(),
-        wb = ccsx.vbox(),
-        sz, tt, menu;
-
-        this.centerImage(sh.getImagePath('game.bg'));
-
-        // show the title
+      setTitle: function() {
+        var cw= ccsx.center(),
+        wb=ccsx.vbox(),
         tt=ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.JellyBelly'),
           text: sh.l10n('%mmenu'),
@@ -46,27 +50,37 @@ define("zotohlab/p/mmenu",
           scale: xcfg.game.scale
         });
         this.addItem(tt);
+      }
+
+    }),
+
+    //////////////////////////////////////////////////////////////////////////
+    MainMenuLayer = mmenus.XMenuLayer.extend({
+
+      pkInit: function() {
+        var cw = ccsx.center(),
+        wb = ccsx.vbox(),
+        menu;
 
         // show the menu
         menu= ccsx.vmenu([
           { imgPath: '#player1.png',
             cb: function() {
-              sh.fireEvent('/mmenu/controls/newgame', { mode: sh.P1_GAME});
+              sh.fire('/mmenu/newgame', { mode: sh.gtypes.P1_GAME});
             }}
         ]);
         menu.setPosition(cw);
         this.addItem(menu);
 
-        // show the control buttons
-        this.addAudioIcon({
+        // show audio
+        this.mkAudio({
           pos: cc.p(wb.right - csts.TILE,
                     wb.bottom + csts.TILE),
-          anchor: cc.p(1,0)
+          anchor: ccsx.acs.BottomRight
         });
 
         // show back & quit
-        menu= ccsx.hmenu([
-          {
+        this.mkBackQuit(false, [{
             imgPath: '#icon_back.png',
             cb: function() {
               if (!!this.options.onBack) {
@@ -78,35 +92,41 @@ define("zotohlab/p/mmenu",
             imgPath: '#icon_quit.png',
             cb: function() { this.onQuit(); },
             target: this }
-        ]);
-        sz= menu.getChildren()[0].getContentSize();
-        menu.setPosition(wb.left + csts.TILE + sz.width * 1.1,
-                         wb.bottom + csts.TILE + sz.height * 0.45);
-        this.addItem(menu);
+        ],
+        function (m,z) {
+          m.setPosition(wb.left + csts.TILE + z.width * 1.1,
+                         wb.bottom + csts.TILE + z.height * 0.45);
+        });
 
       }
+
     });
 
-    return {
+    exports = {
 
-      'MainMenu' : {
+      /**
+       * @property {String} rtti
+       * @static
+       */
+      rtti : sh.ptypes.mmenu,
 
-        create: function(options) {
-          var scene = new scenes.XSceneFactory([
-            MainMenuLayer
-          ]).create(options);
-
-          scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
-            cc.director.runScene( sh.protos['GameArena'].create(msg));
-          });
-
-          return scene;
-        }
-
+      /**
+       * @method reify
+       * @param {Object} options
+       * @return {cc.Scene}
+       */
+      reify: function(options) {
+        return new scenes.XSceneFactory([
+          BackLayer,
+          MainMenuLayer
+        ]).reify(options).onmsg('/mmenu/newgame', function(topic, msg) {
+            cc.director.runScene( sh.protos[sh.ptypes.game].reify(msg));
+        });
       }
 
     };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

@@ -14,6 +14,7 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xsplash
  * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xscenes
  * @module zotohlab/p/splash
@@ -24,10 +25,11 @@ define("zotohlab/p/splash",
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
+        'zotohlab/asx/xsplash',
         'zotohlab/asx/xlayers',
         'zotohlab/asx/xscenes'],
 
-  function (utils, sjs, sh, ccsx, layers, scenes) { "use strict";
+  function (utils, sjs, sh, ccsx, splash, layers, scenes) { "use strict";
 
     /** @alias module:zotohlab/p/splash */
     var exports = {},
@@ -37,21 +39,19 @@ define("zotohlab/p/splash",
     undef,
 
     //////////////////////////////////////////////////////////////////////////
-    SplashLayer = layers.XLayer.extend({
-
-      rtti: function() { return "SplashLayer"; },
+    SplashLayer = splash.XSplashLayer.extend({
 
       pkInit: function() {
+        this._super();
+        // show the demo icons
+        this.showGrid();
+      },
+
+      setPlay: function() {
 
         var cw = ccsx.center(),
         wb = ccsx.vbox(),
         menu;
-
-        // show the background and title
-        this.centerImage(sh.getImagePath('game.bg'));
-        this.addFrame('#title.png',
-                      cc.p(cw.x, wb.top * 0.9));
-
         // show the play button at the bottom
         menu= ccsx.vmenu([
           { imgPath: '#play.png',
@@ -63,9 +63,6 @@ define("zotohlab/p/splash",
         ]);
         menu.setPosition(cw.x, wb.top * 0.10);
         this.addItem(menu);
-
-        // show the demo icons
-        this.showGrid();
       },
 
       showGrid: function() {
@@ -110,14 +107,14 @@ define("zotohlab/p/splash",
         var scene = new scenes.XSceneFactory([
           SplashLayer
         ]).reify(options);
-        scene.ebus.on('/splash/playgame',
-                      function() {
-                        var ss= sh.protos[sh.ptypes.start],
-                        mm= sh.protos[sh.ptypes.mmenu],
-                        dir= cc.director;
-                        dir.runScene( mm.reify({
-                          onBack: function() { dir.runScene( ss.reify()); }
-                        }));
+        scene.onmsg('/splash/playgame',
+                    function() {
+                      var ss= sh.protos[sh.ptypes.start],
+                      mm= sh.protos[sh.ptypes.mmenu],
+                      dir= cc.director;
+                      dir.runScene( mm.reify({
+                        onBack: function() { dir.runScene( ss.reify()); }
+                      }));
         });
         return scene;
       }

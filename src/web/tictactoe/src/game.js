@@ -250,33 +250,33 @@ define("zotohlab/p/arena",
        */
       reify:  function(options) {
         var scene = new scenes.XSceneFactory([
-          huds.HUDBackLayer,
+          huds.BackLayer,
           GameLayer,
           huds.HUDLayer
         ]).reify(options);
 
-        scene.ebus.on('/hud/showmenu',function(t,msg) {
-          mmenus.XMenuLayer.onShowMenu();
-        });
-        scene.ebus.on('/hud/replay',function(t,msg) {
+        scene.onmsg('/hud/showmenu',function(t,msg) {
+          mmenus.showMenu();
+        }).
+        onmsg('/hud/replay',function(t,msg) {
           sh.main.replay();
-        });
-        scene.ebus.on('/hud/timer/show',function(t,msg) {
+        }).
+        onmsg('/hud/timer/show',function(t,msg) {
           sh.main.getHUD().showTimer();
-        });
-        scene.ebus.on('/hud/timer/hide',function(t,msg) {
+        }).
+        onmsg('/hud/timer/hide',function(t,msg) {
           sh.main.getHUD().killTimer();
-        });
-        scene.ebus.on('/hud/score/update',function(t,msg) {
+        }).
+        onmsg('/hud/score/update',function(t,msg) {
           sh.main.getHUD().updateScore(msg.color, msg.score);
-        });
-        scene.ebus.on('/hud/end',function(t,msg) {
+        }).
+        onmsg('/hud/end',function(t,msg) {
           sh.main.getHUD().endGame(msg.winner);
-        });
-        scene.ebus.on('/hud/update',function(t,msg) {
+        }).
+        onmsg('/hud/update',function(t,msg) {
           sh.main.getHUD().update(msg.running, msg.pnum);
-        });
-        scene.ebus.on('/player/timer/expired',function(t,msg) {
+        }).
+        onmsg('/player/timer/expired',function(t,msg) {
           sh.main.playTimeExpired(msg);
         });
 

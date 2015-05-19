@@ -7,34 +7,89 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/gnodes", ['zotohlab/p/components',
-                            'cherimoia/skarojs',
-                            'zotohlab/asterix'],
+/**
+ * @requires zotohlab/p/components
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @module zotohlab/p/gnodes
+ */
+define("zotohlab/p/gnodes",
+
+       ['zotohlab/p/elements',
+        'cherimoia/skarojs',
+        'zotohlab/asterix'],
 
   function (cobjs, sjs, sh) { "use strict";
 
-    var bks= {},
+    /** @alias module:zotohlab/p/gnodes */
+    var exports= {},
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    bks.ArenaNode = sh.Ashley.nodeDef({
+    /**
+     * @class ArenaNode
+     */
+    exports.ArenaNode = sh.Ashley.nodeDef({
 
+      /**
+       * @memberof module:zotohlab/p/gnodes~ArenaNode
+       * @property {TileGrid} collision
+       * @static
+       */
       collision   : cobjs.TileGrid,
+      /**
+       * @memberof module:zotohlab/p/gnodes~ArenaNode
+       * @property {GridBox} gbox
+       * @static
+       */
       gbox        : cobjs.GridBox,
+      /**
+       * @memberof module:zotohlab/p/gnodes~ArenaNode
+       * @property {BlockGrid} blocks
+       * @static
+       */
       blocks      : cobjs.BlockGrid,
+      /**
+       * @memberof module:zotohlab/p/gnodes~ArenaNode
+       * @property {Motion} motion
+       * @static
+       */
       motion      : cobjs.Motion,
+      /**
+       * @memberof module:zotohlab/p/gnodes~ArenaNode
+       * @property {Pauser} pauser
+       * @static
+       */
       pauser      : cobjs.Pauser,
+      /**
+       * @memberof module:zotohlab/p/gnodes~ArenaNode
+       * @property {Dropper} dropper
+       * @static
+       */
       dropper     : cobjs.Dropper,
+      /**
+       * @memberof module:zotohlab/p/gnodes~ArenaNode
+       * @property {ShapeShell} shell
+       * @static
+       */
       shell       : cobjs.ShapeShell,
+      /**
+       * @memberof module:zotohlab/p/gnodes~ArenaNode
+       * @property {FilledLines} flines
+       * @static
+       */
       flines      : cobjs.FilledLines,
+      /**
+       * @memberof module:zotohlab/p/gnodes~ArenaNode
+       * @property {CtrlPad} cpad
+       * @static
+       */
       cpad        : cobjs.CtrlPad
-
     });
 
-    return bks;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

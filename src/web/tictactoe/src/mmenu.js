@@ -165,26 +165,26 @@ define("zotohlab/p/mmenu",
           MainMenuLayer
         ]).reify(options);
 
-        scene.ebus.on('/mmenu/newgame',
-                      function(topic, msg) {
-                        dir.runScene( gl.reify(msg));
-                      });
+        scene.onmsg('/mmenu/newgame',
+                    function(topic, msg) {
+                      dir.runScene( gl.reify(msg));
+                    });
 
-        scene.ebus.on('/mmenu/online',
-                      function(topic, msg) {
-                        msg.yes=function(wss,pnum,startmsg) {
-                          var m= sjs.mergeEx( R.omit(['yes', 'onBack'], msg), {
-                            wsock: wss,
-                            pnum: pnum
-                          });
-                          sjs.merge(m, startmsg);
-                          dir.runScene( gl.reify(m));
-                        }
-                        msg.onBack=function() {
-                          dir.runScene( mm.reify());
-                        };
-                        dir.runScene( ol.reify(msg));
-                      });
+        scene.onmsg('/mmenu/online',
+                    function(topic, msg) {
+                      msg.yes=function(wss,pnum,startmsg) {
+                        var m= sjs.mergeEx( R.omit(['yes', 'onBack'], msg), {
+                          wsock: wss,
+                          pnum: pnum
+                        });
+                        sjs.merge(m, startmsg);
+                        dir.runScene( gl.reify(m));
+                      }
+                      msg.onBack=function() {
+                        dir.runScene( mm.reify());
+                      };
+                      dir.runScene( ol.reify(msg));
+                    });
         return scene;
       }
     };

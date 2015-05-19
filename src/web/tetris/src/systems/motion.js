@@ -7,41 +7,74 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/p/s/priorities
+ * @requires zotohlab/p/components
+ * @requires zotohlab/p/gnodes
+ * @requires zotohlab/p/s/utils
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/motioncontrol
+ */
 define("zotohlab/p/s/motioncontrol",
 
        ['zotohlab/p/s/priorities',
-         'zotohlab/p/components',
-       'zotohlab/p/gnodes',
-       'zotohlab/p/s/utils',
-       'cherimoia/skarojs',
-       'zotohlab/asterix',
-       'zotohlab/asx/ccsx'],
+        'zotohlab/p/components',
+        'zotohlab/p/gnodes',
+        'zotohlab/p/s/utils',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (pss, cobjs, gnodes, utils, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/motioncontrol */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @class MotionCtrlSystem
+     */
     MotionCtrlSystem = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/motioncontrol
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.throttleWait= csts.THROTTLEWAIT;
         this.state = options;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/motioncontrol
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
         this.arena=null;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/motioncontrol
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function(engine) {
         this.arena= engine.getNodeList(gnodes.ArenaNode);
         this.ops={};
         this.initKeyOps();
       },
 
+      /**
+       * @private
+       */
       onXXXEvent: function(node,dt) {
         if (this.state.selQ.length > 0) {
           var evt= this.state.selQ.shift();
@@ -50,6 +83,9 @@ define("zotohlab/p/s/motioncontrol",
         }
       },
 
+      /**
+       * @private
+       */
       checkInput: function(node, dt) {
         if (cc.sys.capabilities['touches']) {
           this.onXXXEvent(node, dt);
@@ -64,6 +100,11 @@ define("zotohlab/p/s/motioncontrol",
         }
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/motioncontrol
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         var node= this.arena.head;
         if (this.state.running &&
@@ -72,6 +113,9 @@ define("zotohlab/p/s/motioncontrol",
         }
       },
 
+      /**
+       * @private
+       */
       processMouse: function(node, evt,dt) {
         var hsps= node.cpad.hotspots,
         px= evt.x,
@@ -98,6 +142,9 @@ define("zotohlab/p/s/motioncontrol",
         }
       },
 
+      /**
+       * @private
+       */
       processKeys: function(node, dt) {
 
         if (this.keyPoll(cc.KEY.right)) {
@@ -118,36 +165,60 @@ define("zotohlab/p/s/motioncontrol",
 
       },
 
+      /**
+       * @private
+       */
       keyPoll: function(kp) {
         return sh.main.keyPoll(kp);
       },
 
+      /**
+       * @private
+       */
       shiftRight: function(node, dt) {
         node.motion.right=true;
       },
 
+      /**
+       * @private
+       */
       shiftLeft: function(node, dt) {
         node.motion.left=true;
       },
 
+      /**
+      * @private
+      */
       shiftDown: function(node, dt) {
         node.motion.down=true;
       },
 
+      /**
+      * @private
+      */
       rotateRight: function(node, dt) {
         node.motion.rotr=true;
       },
 
+      /**
+      * @private
+      */
       rotateLeft: function(node, dt) {
         node.motion.rotl=true;
       },
 
+      /**
+      * @private
+      */
       bindKey: function(func, fid) {
         this.ops[fid] = sh.throttle(func,
                                     this.throttleWait,
                                     { trailing:false });
       },
 
+      /**
+      * @private
+      */
       initKeyOps: function() {
         sjs.eachObj(function(v, k) {
           this.bindKey(v,k);
@@ -161,8 +232,15 @@ define("zotohlab/p/s/motioncontrol",
 
     });
 
+    /**
+     * @memberof module:zotohlab/p/s/motioncontrol~MotionCtrlSystem
+     * @property {Number} Priority
+     */
     MotionCtrlSystem.Priority= pss.Motion;
-    return MotionCtrlSystem;
+
+    exports= MotionCtrlSystem;
+
+    return exports;
 });
 
 ///////////////////////////////////////////////////////////////////////////////

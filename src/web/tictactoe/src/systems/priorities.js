@@ -10,14 +10,13 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
  * @module zotohlab/p/s/priorities
  */
 define("zotohlab/p/s/priorities",
 
-  ['cherimoia/skarojs'],
+  [],
 
-  function (sjs) { "use strict";
+  function () { "use strict";
 
     /**
      * @alias module:zotohlab/p/s/priorities

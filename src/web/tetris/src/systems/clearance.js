@@ -7,43 +7,75 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/p/s/priorities
+ * @requires zotohlab/p/s/utils
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/clearance
+ */
 define("zotohlab/p/s/clearance",
 
        ['zotohlab/p/s/priorities',
-         'zotohlab/p/s/utils',
-         'zotohlab/p/gnodes',
-       'cherimoia/skarojs',
-       'zotohlab/asterix',
-       'zotohlab/asx/ccsx'],
+        'zotohlab/p/s/utils',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/clearance */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
 
+    /**
+     * @class RowClearance
+     */
     RowClearance = sh.Ashley.sysDef({
-
+      /**
+       * @memberof module:zotohlab/p/s/clearance~RowClearance
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state = options;
       },
-
+      /**
+       * @memberof module:zotohlab/p/s/clearance~RowClearance
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
         this.arena=null;
       },
-
+      /**
+       * @memberof module:zotohlab/p/s/clearance~RowClearance
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function(engine) {
         this.arena= engine.getNodeList(gnodes.ArenaNode);
       },
-
+      /**
+       * @memberof module:zotohlab/p/s/clearance~RowClearance
+       * @method update
+       * @return {Number}
+       */
       update: function(dt) {
-        var node = this.arena.head;
+        var node = this.arena.head,
+        ps;
+
         if (this.state.running &&
            !!node) {
-          var ps= node.pauser;
+          ps= node.pauser;
           if (ps.pauseToClear) {
             if (ccsx.timerDone(ps.timer)) {
               this.clearFilled(node);
@@ -55,7 +87,9 @@ define("zotohlab/p/s/clearance",
           }
         }
       },
-
+      /**
+       * @private
+       */
       clearFilled: function(node) {
         var score= node.flines.lines.length;
 
@@ -66,10 +100,13 @@ define("zotohlab/p/s/clearance",
         node.flines.lines);
 
         this.shiftDownLines(node);
-        sh.fireEvent('/game/hud/score/update', { score: score * 50 });
+        sh.fire('/hud/score/update', { score: score * 50 });
       },
 
-      //dispose and get rid of blocks which are marked to be cleared
+      /**
+       * Dispose and get rid of blocks which are marked to be cleared
+       * @private
+       */
       clearOneRow: function(node, r) {
         var row= node.blocks.grid[r],
         c;
@@ -81,7 +118,10 @@ define("zotohlab/p/s/clearance",
         }
       },
 
-      //clear collision mark
+      /**
+       * Clear collision mark
+       * @private
+       */
       resetOneRow: function(node, r) {
         var row= node.collision.tiles[r],
         c;
@@ -92,6 +132,9 @@ define("zotohlab/p/s/clearance",
         row[row.length-1]=1;
       },
 
+      /**
+       * @private
+       */
       shiftDownLines: function(node) {
         var top= utils.topLine(node),
         r,
@@ -111,6 +154,9 @@ define("zotohlab/p/s/clearance",
         }
       },
 
+      /**
+       * @private
+       */
       findFirstDirty: function(node) {
         var t = utils.topLine(node),// - 1,
         r;
@@ -122,6 +168,9 @@ define("zotohlab/p/s/clearance",
         return 0;
       },
 
+      /**
+       * @private
+       */
       findLastEmpty: function(node) {
         var t = utils.topLine(node),
         r;
@@ -133,6 +182,9 @@ define("zotohlab/p/s/clearance",
         return 0;
       },
 
+      /**
+       * @private
+       */
       isEmptyRow: function(node, r) {
         var row= node.collision.tiles[r],
         len= row.length-1,
@@ -146,6 +198,9 @@ define("zotohlab/p/s/clearance",
         return true;
       },
 
+      /**
+       * @private
+       */
       copyLine: function(node, from, to) {
         var line_f = node.collision.tiles[from],
         line_t = node.collision.tiles[to],
@@ -174,8 +229,14 @@ define("zotohlab/p/s/clearance",
 
     });
 
+    /**
+     * @memberof module:zotohlab/p/s/clearance~RowClearance
+     * @property {Number} Priority
+     */
     RowClearance.Priority= pss.Clear;
-    return RowClearance;
+
+    exports= RowClearance;
+    return exports;
 });
 
 ///////////////////////////////////////////////////////////////////////////////

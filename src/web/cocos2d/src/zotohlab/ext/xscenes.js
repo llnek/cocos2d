@@ -93,8 +93,19 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * Constructor.
-       *
+       * @memberof module:zotohlab/asx/xscenes~XScene
+       * @method onmsg
+       * @chainable
+       * @param {String} topic
+       * @param {Function} cb
+       * @return {cc.Scene}
+       */
+      onmsg: function(topic, cb) {
+        this.ebus.on(topic, cb);
+        return this;
+      },
+
+      /**
        * @memberof module:zotohlab/asx/xscenes~XScene
        * @method ctor
        * @param {Array} ls - list of layers

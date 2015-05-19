@@ -43,11 +43,15 @@ define("zotohlab/asx/xsplash",
        * @protected
        */
       pkInit: function() {
+        this._super();
+        this.setBg();
+        this.setTitle();
+        this.setPlay();
+      },
 
+      setPlay: function() {
         var wb = ccsx.vbox(),
         cw = ccsx.center();
-
-        this._super();
 
         this.addItem(ccsx.tmenu1({
           fontPath: sh.getFontPath('font.Hiruko'),
@@ -59,7 +63,17 @@ define("zotohlab/asx/xsplash",
           scale: 1,
           pos: cc.p(cw.x, wb.top *0.25)
         }));
+      },
 
+      setBg: function() {
+        this.centerImage(sh.getImagePath('game.bg'));
+      },
+
+      setTitle: function() {
+        var wb = ccsx.vbox(),
+        cw = ccsx.center();
+        this.addFrame('#title.png',
+                      cc.p(cw.x, wb.top * 0.9));
       },
 
       /**

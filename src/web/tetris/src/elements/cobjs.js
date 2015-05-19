@@ -7,31 +7,54 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/components", ['cherimoia/skarojs',
-                                'zotohlab/asterix',
-                                'zotohlab/asx/ccsx'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/elements
+ */
+define("zotohlab/p/elements",
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/elements */
+    var exports= {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
-    undef,
-    bks= {};
+    undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    bks.ShapeShell= sh.Ashley.casDef({
-
+    /**
+     * @class ShapeShell
+     */
+    exports.ShapeShell= sh.Ashley.casDef({
+      /**
+       * @memberof module:zotohlab/p/elements~ShapeShell
+       * @method constructor
+       */
       constructor: function() {
         this.shape=null;
       }
-
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    bks.Shape= sh.Ashley.casDef({
-
+    /**
+     * @class Shape
+     */
+    exports.Shape= sh.Ashley.casDef({
+      /**
+       * @memberof module:zotohlab/p/elements~Shape
+       * @method constructor
+       * @param {Number} x
+       * @param {Number} y
+       * @param {Object} options
+       */
       constructor: function(x,y,options) {
         this.model= options.model;
         this.rot= options.rot;
@@ -40,40 +63,61 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
         this.y = y;
         this.bricks=[];
       }
-
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    bks.CtrlPad = sh.Ashley.casDef({
-
+    /**
+     * @class CtrlPad
+     */
+    exports.CtrlPad = sh.Ashley.casDef({
+      /**
+       * @memberof module:zotohlab/p/elements~CtrlPad
+       * @method constructor
+       */
       constructor: function() {
         this.hotspots= {};
       }
-
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    bks.GridBox = sh.Ashley.casDef({
-
+    /**
+     * @class GridBox
+     */
+    exports.GridBox = sh.Ashley.casDef({
+      /**
+       * @memberof module:zotohlab/p/elements~GridBox
+       * @method constructor
+       */
       constructor: function() {
         this.box= {};
       }
-
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    bks.BlockGrid= sh.Ashley.casDef({
-
+    /**
+     * @class BlockGrid
+     */
+    exports.BlockGrid= sh.Ashley.casDef({
+      /**
+       * @memberof module:zotohlab/p/elements~BlockGrid
+       * @method constructor
+       */
       constructor: function() {
         this.grid=[];
       }
-
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    bks.BoxShape = {
+    /**
+     * @class BoxShape
+     */
+    exports.BoxShape = {
 
+      /**
+       * @memberof module:zotohlab/p/elements~BoxShape
+       * @property {Array} layout
+       * @static
+       */
       layout: [
         [ [1,1],
           [1,1] ],
@@ -85,21 +129,44 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
           [1,1] ]
       ],
 
+      /**
+       * @memberof module:zotohlab/p/elements~BoxShape
+       * @property {Number} dim
+       * @static
+       */
       dim: 2
 
     };
 
     //////////////////////////////////////////////////////////////////////////////
-    //
+    /**
+     * @extends cc.Sprite
+     * @class Block
+     */
     var Block = cc.Sprite.extend({
+      /**
+       * @memberof module:zotohlab/p/elements~Block
+       * @method blink
+       */
       blink: function() {
-        this.setAnchorPoint(ccsx.AnchorTopLeft);
+        this.setAnchorPoint(ccsx.acs.TopLeft);
         this.setSpriteFrame(this.frame1);
       },
+      /**
+       * @memberof module:zotohlab/p/elements~Block
+       * @method show
+       */
       show: function() {
-        this.setAnchorPoint(ccsx.AnchorTopLeft);
+        this.setAnchorPoint(ccsx.acs.TopLeft);
         this.setSpriteFrame(this.frame0);
       },
+      /**
+       * @memberof module:zotohlab/p/elements~Block
+       * @method ctor
+       * @param {Number} x
+       * @param {Number} y
+       * @param {Object} options
+       */
       ctor: function(x, y, options) {
         this.options = options;
         this.frame0 = ccsx.getSpriteFrame(options.frames[0]);
@@ -110,23 +177,45 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
       }
     });
 
-    bks.Brick= sjs.Class.xtends({
+    /**
+     * @class Brick
+     */
+    exports.Brick= sjs.mixes({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Brick
+       * @method blink
+       */
       blink: function() {
         if ( !!this.sprite) { this.sprite.blink(); }
       },
 
+      /**
+       * @memberof module:zotohlab/p/elements~Brick
+       * @method dispose
+       */
       dispose: function() {
         if (!!this.sprite) {
-          this.sprite.getParent().removeChild(this.sprite, true);
+          this.sprite.removeFromParent();
           this.sprite=null;
         }
       },
 
+      /**
+       * @memberof module:zotohlab/p/elements~Brick
+       * @method create
+       */
       create: function() {
         return this.sprite = new Block(this.startPos.x, this.startPos.y, this.options);
       },
 
+      /**
+       * @memberof module:zotohlab/p/elements~Brick
+       * @method ctor
+       * @param {Number} x
+       * @param {Number} y
+       * @param {Object} options
+       */
       ctor: function(x, y, options) {
         this.options = options || {};
         this.startPos = cc.p(x,y);
@@ -136,20 +225,32 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    bks.Dropper= sh.Ashley.casDef({
-
+    /**
+     * @class Dropper
+     */
+    exports.Dropper= sh.Ashley.casDef({
+      /**
+       * @memberof module:zotohlab/p/elements~Dropper
+       * @method constructor
+       */
       constructor: function() {
         this.dropSpeed = csts.DROPSPEED;
         this.dropRate= 80 + 700/1 ;
         this.timer=null;
       }
-
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
+    /**
+     * @class ElShape
+     */
     bks.ElShape = {
 
+      /**
+       * @memberof module:zotohlab/p/elements~ElShape
+       * @property {Array} layout
+       * @static
+       */
       layout: [
         [ [0,1,0],
           [0,1,0],
@@ -165,14 +266,26 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
           [0,0,0] ]
       ],
 
+      /**
+       * @memberof module:zotohlab/p/elements~ElShape
+       * @property {Number} dim
+       * @static
+       */
       dim: 3
 
     };
 
     //////////////////////////////////////////////////////////////////////////////
-    //
+    /**
+     * @class ElxShape
+     */
     bks.ElxShape = {
 
+      /**
+       * @memberof module:zotohlab/p/elements~ElxShape
+       * @property {Array} layout
+       * @static
+       */
       layout: [
         [ [0,1,0],
           [0,1,0],
@@ -188,24 +301,40 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
           [0,0,1] ]
       ],
 
+      /**
+       * @memberof module:zotohlab/p/elements~ElxShape
+       * @property {Number} dim
+       * @static
+       */
       dim: 3
 
     };
 
     //////////////////////////////////////////////////////////////////////////////
-    //
+    /**
+     * @class FilledLines
+     */
     bks.FilledLines= sh.Ashley.casDef({
-
+      /**
+       * @memberof module:zotohlab/p/elements~FilledLines
+       * @method constructor
+       */
       constructor: function() {
         this.lines=[];
       }
-
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
+    /**
+     * @class LineShape
+     */
     bks.LineShape = {
 
+      /**
+       * @memberof module:zotohlab/p/elements~LineShape
+       * @property {Array} layout
+       * @static
+       */
       layout: [
         [ [0,0,0,0],
           [1,1,1,1],
@@ -225,13 +354,24 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
           [0,1,0,0] ]
       ],
 
+      /**
+       * @memberof module:zotohlab/p/elements~LineShape
+       * @property {Number} dim
+       * @static
+       */
       dim: 4
 
     };
 
     //////////////////////////////////////////////////////////////////////////////
-    bks.Motion= sh.Ashley.casDef({
-
+    /**
+     * @class Motion
+     */
+    exports.Motion= sh.Ashley.casDef({
+      /**
+       * @memberof module:zotohlab/p/elements~Motion
+       * @method constructor
+       */
       constructor: function() {
         this.right=false;
         this.left=false;
@@ -239,13 +379,19 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
         this.rotl= false;
         this.down=false;
       }
-
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
+    /**
+     * @class NubShape
+     */
     bks.NubShape = {
 
+      /**
+       * @memberof module:zotohlab/p/elements~NubShape
+       * @property {Array} layout
+       * @static
+       */
       layout: [
         [ [0,0,0],
           [0,1,0],
@@ -261,13 +407,25 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
           [0,0,1] ]
       ],
 
+      /**
+       * @memberof module:zotohlab/p/elements~NubShape
+       * @property {Number} dim
+       * @static
+       */
       dim: 3
 
     };
 
     //////////////////////////////////////////////////////////////////////////////
-    bks.Pauser= sh.Ashley.casDef({
+    /**
+     * @class Pauser
+     */
+    exports.Pauser= sh.Ashley.casDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Pauser
+       * @method constructor
+       */
       constructor: function() {
         this.pauseToClear=false;
         this.timer=null;
@@ -276,9 +434,16 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
+    /**
+     * @class StShape
+     */
     bks.StShape = {
 
+      /**
+       * @memberof module:zotohlab/p/elements~StShape
+       * @property {Array} layout
+       * @static
+       */
       layout: [
         [ [0,1,0],
           [0,1,1],
@@ -294,14 +459,26 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
           [0,0,0] ]
       ],
 
+      /**
+       * @memberof module:zotohlab/p/elements~StShape
+       * @property {Number} dim
+       * @static
+       */
       dim: 3
 
     };
 
     //////////////////////////////////////////////////////////////////////////////
-    //
+    /**
+     * @class StxShape
+     */
     bks.StxShape = {
 
+      /**
+       * @memberof module:zotohlab/p/elements~StxShape
+       * @property {Array} layout
+       * @static
+       */
       layout: [
         [ [0,1,0],
           [1,1,0],
@@ -317,30 +494,43 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
           [0,1,1] ]
       ],
 
+      /**
+       * @memberof module:zotohlab/p/elements~StxShape
+       * @property {Number} dim
+       * @static
+       */
       dim: 3
 
     };
 
     //////////////////////////////////////////////////////////////////////////////
-    bks.TileGrid= sh.Ashley.casDef({
-
+    /**
+     * @class TileGrid
+     */
+    exports.TileGrid= sh.Ashley.casDef({
+      /**
+       * @memberof module:zotohlab/p/elements~TileGrid
+       * @method constructor
+       */
       constructor: function() {
         this.tiles=[];
       }
-
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    bks.Shapes = [bks.LineShape,
-                     bks.BoxShape,
-                     bks.StShape,
-                     bks.ElShape,
-                     bks.NubShape,
-                     bks.StxShape,
-                     bks.ElxShape ];
+    /**
+     * @property {Array} Shapes
+     * @static
+     */
+    exports.Shapes = [exports.LineShape,
+                      exports.BoxShape,
+                      exports.StShape,
+                      exports.ElShape,
+                      exports.NubShape,
+                      exports.StxShape,
+                      exports.ElxShape ];
 
-
-    return bks;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

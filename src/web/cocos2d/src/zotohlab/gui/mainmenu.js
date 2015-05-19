@@ -106,21 +106,6 @@ define("zotohlab/asx/xmmenus",
 
     });
 
-
-    /**
-     * @memberof module:zotohlab/asx/xmmenus~XMenuLayer
-     * @method onShowMenu
-     * @static
-     */
-    XMenuLayer.onShowMenu = function() {
-      var dir= cc.director;
-      dir.pushScene( sh.protos[sh.ptypes.mmenu].reify({
-        onBack: function() {
-          dir.popScene();
-        }
-      }));
-    };
-
     exports = {
       /**
        * @property {XMenuBackLayer.Class} XMenuBackLayer
@@ -132,7 +117,21 @@ define("zotohlab/asx/xmmenus",
        * @property {XMenuLayer.Class} XMenuLayer
        * @static
        */
-      XMenuLayer: XMenuLayer
+      XMenuLayer: XMenuLayer,
+
+      /**
+       * @method showMenu
+       * @static
+       */
+      showMenu: function() {
+        var dir= cc.director;
+        dir.pushScene( sh.protos[sh.ptypes.mmenu].reify({
+          onBack: function() {
+            dir.popScene();
+          }
+        }));
+      }
+
     };
 
     return exports;

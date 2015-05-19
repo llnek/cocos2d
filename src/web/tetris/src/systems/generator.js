@@ -7,41 +7,76 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/p/s/priorities
+ * @requires zotohlab/p/elements
+ * @requires zotohlab/p/gnodes
+ * @requires zotohlab/p/s/utils
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/generator
+ */
 define("zotohlab/p/s/generator",
 
        ['zotohlab/p/s/priorities',
-         'zotohlab/p/components',
-       'zotohlab/p/gnodes',
-       "zotohlab/p/s/utils",
-       'cherimoia/skarojs',
-       'zotohlab/asterix',
-       'zotohlab/asx/ccsx'],
+        'zotohlab/p/elements',
+        'zotohlab/p/gnodes',
+        'zotohlab/p/s/utils',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (pss, cobjs, gnodes, utils, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/generator */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R= sjs.ramda,
     undef,
 
+    /**
+     * @class ShapeGenerator
+     */
     ShapeGenerator = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/generator~ShapeGenerator
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state = options;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/generator~ShapeGenerator
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
         this.arena=null;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/generator~ShapeGenerator
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function(engine) {
         this.arena= engine.getNodeList(gnodes.ArenaNode);
         this.nextShapeInfo= this.randNext();
         this.nextShape=null;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/generator~ShapeGenerator
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         var node = this.arena.head,
         dp, sl;
@@ -66,6 +101,9 @@ define("zotohlab/p/s/generator",
         }
       },
 
+      /**
+       * @private
+       */
       reifyNextShape: function(node, layer) {
         var gbox= node.gbox,
         wz= ccsx.vrect(),
@@ -87,12 +125,15 @@ define("zotohlab/p/s/generator",
           node.blocks.grid);
           */
           sjs.loggr.debug("game over.  you lose.");
-          sh.fireEvent('/game/hud/end');
+          sh.fire('/hud/end');
         }
 
         return shape;
       },
 
+      /**
+       * @private
+       */
       previewNextShape: function(node, layer) {
         var info = this.randNext(),
         gbox= node.gbox,
@@ -115,6 +156,9 @@ define("zotohlab/p/s/generator",
         this.nextShape= utils.previewShape(layer, shape);
       },
 
+      /**
+       * @private
+       */
       randNext: function() {
         var n= sjs.rand( cobjs.Shapes.length),
         proto= cobjs.Shapes[n];
@@ -128,8 +172,14 @@ define("zotohlab/p/s/generator",
 
     });
 
+    /**
+     * @memberof module:zotohlab/p/s/generator~ShapeGenerator
+     * @property {Number} Priority
+     */
     ShapeGenerator.Priority= pss.Generate;
-    return ShapeGenerator;
+
+    exports= ShapeGenerator;
+    return exports;
 });
 
 ///////////////////////////////////////////////////////////////////////////////
