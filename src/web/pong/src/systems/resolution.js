@@ -7,31 +7,62 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/s/resolution", ['zotohlab/p/gnodes',
-                                  'cherimoia/skarojs',
-                                  'zotohlab/asterix',
-                                  'zotohlab/asx/ccsx'],
+/**
+ * @requires zotohlab/p/sysobjs
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/resolution
+ */
+define("zotohlab/p/s/resolution",
 
-  function (gnodes, sjs, sh, ccsx) { "use strict";
+       ['zotohlab/p/sysobjs',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
-    var xcfg = sh.xcfg,
+  function (sobjs, gnodes, sjs, sh, ccsx) { "use strict";
+
+    /** @alias module:zotohlab/p/s/resolution */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @class Resolution
+     */
     Resolution = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/resolution~Resolution
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state = options;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/resolution~Resolution
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
         this.nodeList=null;
         this.fauxs=null;
         this.balls=null;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/resolution~Resolution
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function(engine) {
         this.fauxs= engine.getNodeList(gnodes.FauxPaddleNode);
         this.nodeList= engine.getNodeList(gnodes.PaddleNode);
@@ -39,11 +70,16 @@ define("zotohlab/p/s/resolution", ['zotohlab/p/gnodes',
         this.engine=engine;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/resolution~Resolution
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         var bnode = this.balls.head,
         rc;
 
-        if (this.state.mode === sh.ONLINE_GAME) {
+        if (this.state.mode === sh.gtypes.ONLINE_GAME) {
           return;
         }
 
@@ -59,6 +95,9 @@ define("zotohlab/p/s/resolution", ['zotohlab/p/gnodes',
         return rc;
       },
 
+      /**
+       * @private
+       */
       checkNodes: function(nl, bnode) {
         for (var node=nl.head; node; node=node.next) {
           var winner =this.check(node,bnode);
@@ -69,6 +108,9 @@ define("zotohlab/p/s/resolution", ['zotohlab/p/gnodes',
         }
       },
 
+      /**
+       * @private
+       */
       onWin: function(winner) {
         var bnode= this.balls.head;
         //sjs.loggr.debug("winner ====== " + winner);
@@ -77,10 +119,13 @@ define("zotohlab/p/s/resolution", ['zotohlab/p/gnodes',
           this.state.ball.y);
         bnode.velocity.vel.x = this.state.ball.speed * sjs.randSign();
         bnode.velocity.vel.y = this.state.ball.speed * sjs.randSign();
-        sh.fireEvent('/game/hud/score/update', { score: 1, color: winner });
+        sh.fire('/hud/score/update', { score: 1, color: winner });
       },
 
       //check win
+      /**
+       * @private
+       */
       check: function(node,bnode) {
         var b= bnode.ball,
         pd= node.paddle,
@@ -113,7 +158,15 @@ define("zotohlab/p/s/resolution", ['zotohlab/p/gnodes',
 
     });
 
-    return Resolution;
+    /**
+     * @memberof module:zotohlab/p/s/resolution~Resolution
+     * @property {Number} Priority
+     * @static
+     */
+    Resolution.Priority = sobjs.Resolve;
+
+    exports= Resolution;
+    return exports;
 });
 
 ///////////////////////////////////////////////////////////////////////////////

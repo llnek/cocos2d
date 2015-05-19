@@ -7,8 +7,15 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xlayers
+ * @module zotohlab/p/hud
+ */
 define("zotohlab/p/hud",
 
        ['cherimoia/skarojs',
@@ -18,10 +25,15 @@ define("zotohlab/p/hud",
 
   function(sjs, sh, ccsx, layers) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/hud */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @class BackLayer
+     */
     BackLayer = layers.XLayer.extend({
 
       rtti: function() { return 'BackLayer'; },
@@ -32,9 +44,20 @@ define("zotohlab/p/hud",
 
     }),
 
+    /**
+     * @class HUDLayer
+     */
     HUDLayer = layers.XGameHUDLayer.extend({
 
+      /**
+       * @memberof module:zotohlab/p/hud~HUDLayer
+       * @method ctor
+       * @param {Object} options
+       */
       ctor: function(options) {
+        var color= cc.color('#32baf4'),
+        scale;
+
         this._super(options);
         this.scores=  {};
         this.mode= 0;
@@ -42,8 +65,31 @@ define("zotohlab/p/hud",
         this.p1Long= '';
         this.p2ID= '';
         this.p1ID= '';
+
+        this.options.i_replay= {
+          imgPath: '#icon_replay.png',
+          where: ccsx.acs.Top,
+          color:color,
+          scale : scale,
+          visible: false,
+          cb: function() {
+            sh.fire('/hud/replay');
+          }
+        };
+
+        this.options.i_menu= {
+          imgPath: '#icon_menu.png',
+          where: ccsx.acs.Top,
+          color: color,
+          scale: scale,
+          cb: function() {
+            sh.fire('/hud/showmenu');
+          }
+        };
       },
 
+      /**
+       */
       setGameMode: function(mode) {
         this.mode=mode;
       },
@@ -51,6 +97,14 @@ define("zotohlab/p/hud",
       initAtlases: sjs.NILFUNC,
       initIcons: sjs.NILFUNC,
 
+      /**
+       * @memberof module:zotohlab/p/hud~HUDLayer
+       * @method regoPlayer
+       * @param {Object} p1
+       * @param {Array} p1ids
+       * @param {Object} p2
+       * @param {Array} p2ids
+       */
       regoPlayers: function(p1,p1ids,p2,p2ids) {
         var cw= ccsx.center(),
         wb= ccsx.vbox();
@@ -71,10 +125,14 @@ define("zotohlab/p/hud",
                                  wb.top - csts.TILE * 6 /2 - 2);
       },
 
+      /**
+       */
       resetAsNew: function() {
         this.reset();
       },
 
+      /**
+       */
       reset: function() {
         this.scores=  {};
         this.scores[csts.P2_COLOR] = 0;
@@ -85,11 +143,15 @@ define("zotohlab/p/hud",
         this.drawScores();
       },
 
+      /**
+       */
       endGame: function() {
         this.replayBtn.setVisible(true);
         this.resultMsg.setVisible(true);
       },
 
+      /**
+       */
       initLabels: function() {
         var cw= ccsx.center(),
         wb= ccsx.vbox();
@@ -130,33 +192,8 @@ define("zotohlab/p/hud",
         this.initCtrlBtns(1, cc.ALIGN_TOP);
       },
 
-      initCtrlBtns: function(scale, where) {
-        var csts = xcfg.csts,
-        menu;
-
-        where = where || ccsx.AnchorBottom;
-        scale = scale || 1;
-
-        menu= ccsx.pmenu1({
-          color: cc.color('#32baf4'),
-          imgPath: '#icon_menu.png',
-          scale: scale,
-          selector: function() {
-            sh.fireEvent('/game/hud/controls/showmenu'); }
-        });
-        this.addMenuIcon(menu, where);
-
-        menu = ccsx.pmenu1({
-          imgPath: '#icon_replay.png',
-          color: cc.color('#32baf4'),
-          scale : scale,
-          visible: false,
-          selector: function() {
-            sh.fireEvent('/game/hud/controls/replay'); }
-        });
-        this.addReplayIcon(menu, where);
-      },
-
+      /**
+       */
       isDone: function() {
         var s2= this.scores[this.play2],
         s1= this.scores[this.play1],
@@ -167,17 +204,23 @@ define("zotohlab/p/hud",
         return rc;
       },
 
+      /**
+       */
       updateScores: function(scores) {
         this.scores[this.play2] = scores[this.play2];
         this.scores[this.play1] = scores[this.play1];
         this.drawScores();
       },
 
+      /**
+       */
       updateScore: function(color,value) {
         this.scores[color] = this.scores[color] + value;
         this.drawScores();
       },
 
+      /**
+       */
       drawScores: function() {
         var s2 = this.play2 ? this.scores[this.play2] : 0,
         s1 = this.play1 ? this.scores[this.play1] : 0,
@@ -187,6 +230,8 @@ define("zotohlab/p/hud",
         this.score2.setString(n2);
       },
 
+      /**
+       */
       drawResult: function(winner) {
         var msg="";
         if (winner === csts.P2_COLOR) {
@@ -199,11 +244,21 @@ define("zotohlab/p/hud",
 
     });
 
-    return {
+    exports= {
+      /**
+       * @property {BackLayer} BackLayer
+       * @static
+       */
       BackLayer: BackLayer,
+
+      /**
+       * @property {HUDLayer} HUDLayer
+       * @static
+       */
       HUDLayer: HUDLayer
     };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

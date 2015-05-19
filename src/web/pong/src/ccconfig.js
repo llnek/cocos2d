@@ -12,7 +12,7 @@ document.ccConfig = {
   id: 'gameArea',
 
   engineDir: ['/public/extlibs/cocos2d-html5'],
-  modules: [ 'cocos2d', 'ccui', 'ccpool' ],
+  modules: [ 'cocos2d', 'ccui' ],
 
   jsList: [
     "/public/vendors/ramda/ramda.js",
@@ -36,7 +36,7 @@ document.ccConfig = {
     "/public/ig/lib/zotohlab/ext/xlayers.js",
     "/public/ig/lib/zotohlab/ext/xscenes.js",
     "/public/ig/lib/zotohlab/ext/xpool.js",
-    "/public/ig/lib/zotohlab/ext/xloader.js",
+    "/public/ig/lib/zotohlab/ext/xldr.js",
 
     "/public/ig/lib/zotohlab/gui/startscreen.js",
     "/public/ig/lib/zotohlab/gui/msgbox.js",
@@ -47,7 +47,7 @@ document.ccConfig = {
       '/public/ig/lib/game/pong/config.js',
       '/public/ig/lib/game/pong/i18n/game_en_US.js',
 
-      '/public/ig/lib/game/pong/components/cobjs.js',
+      '/public/ig/lib/game/pong/elements/cobjs.js',
       '/public/ig/lib/game/pong/nodes/gnodes.js',
 
       '/public/ig/lib/game/pong/systems/priorities.js',
@@ -59,14 +59,16 @@ document.ccConfig = {
       '/public/ig/lib/game/pong/systems/collision.js',
       '/public/ig/lib/game/pong/systems/resolution.js',
       '/public/ig/lib/game/pong/systems/rendering.js',
-'/public/ig/lib/game/pong/systems/sysobjs.js',
+
+      '/public/ig/lib/game/pong/systems/sysobjs.js',
 
       '/public/ig/lib/game/pong/hud.js',
       '/public/ig/lib/game/pong/game.js',
       '/public/ig/lib/game/pong/mmenu.js',
       '/public/ig/lib/game/pong/splash.js',
-'/public/ig/lib/game/pong/protos.js',
-'/public/ig/lib/zotohlab/ext/xboot.js'
+
+      '/public/ig/lib/game/pong/protos.js',
+      '/public/ig/lib/zotohlab/ext/xboot.js'
   ]
 
 };

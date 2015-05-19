@@ -7,39 +7,76 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/s/movements", ['zotohlab/p/gnodes',
-                                 'cherimoia/skarojs',
-                                 'zotohlab/asterix',
-                                 'zotohlab/asx/ccsx',
-                                 'zotohlab/asx/odin'],
+/**
+ * @requires zotohlab/p/sysobjs
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/odin
+ * @module zotohlab/p/s/movements
+ */
+define("zotohlab/p/s/movements",
 
-  function (gnodes, sjs, sh, ccsx, odin) { "use strict";
+       ['zotohlab/p/sysobjs',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/odin'],
 
-    var evts= odin.Events,
+  function (sobjs, gnodes, sjs, sh, ccsx, odin) { "use strict";
+
+    /** @alias module:zotohlab/p/s/movements */
+    var exports= {     },
+    evts= odin.Events,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @class MovementSystem
+     */
     MovementSystem = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/movements~MovementSystem
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state = options;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/movements~MovementSystem
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
         this.fauxpads= null;
         this.paddles=null;
         this.balls= null;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/movements~MovementSystem
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function(engine) {
         this.fauxs= engine.getNodeList(gnodes.FauxPaddleNode);
         this.paddles= engine.getNodeList(gnodes.PaddleNode);
         this.balls= engine.getNodeList(gnodes.BallNode);
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/movements~MovementSystem
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         var bnode= this.balls.head,
         node;
@@ -65,6 +102,9 @@ define("zotohlab/p/s/movements", ['zotohlab/p/gnodes',
         }
       },
 
+      /**
+       * @private
+       */
       simuMove: function(node, bnode, dt) {
         var hw2 = ccsx.halfHW(node.paddle.sprite),
         pos = node.paddle.sprite.getPosition(),
@@ -101,6 +141,9 @@ define("zotohlab/p/s/movements", ['zotohlab/p/gnodes',
       },
 
       //TODO: better AI please
+      /**
+       * @private
+       */
       moveRobot: function(node, bnode, dt) {
         var bp= bnode.ball.sprite.getPosition(),
         pos = node.paddle.sprite.getPosition(),
@@ -146,6 +189,9 @@ define("zotohlab/p/s/movements", ['zotohlab/p/gnodes',
         }
       },
 
+      /**
+       * @private
+       */
       processBall: function(node, dt) {
         var v = node.velocity,
         b= node.ball,
@@ -167,6 +213,9 @@ define("zotohlab/p/s/movements", ['zotohlab/p/gnodes',
         b.sprite.setPosition(rc.x, rc.y);
       },
 
+      /**
+       * @private
+       */
       process: function(node, dt) {
         var p= node.paddle,
         s= p.speed * dt,
@@ -228,7 +277,10 @@ define("zotohlab/p/s/movements", ['zotohlab/p/gnodes',
         }
       },
 
-      // inform the server that paddle has changed direction: up , down or stopped.
+      /**
+       * Inform the server that paddle has changed direction: up , down or stopped.
+       * @private
+       */
       notifyServer: function(node, direction) {
         var vv = direction * this.state.paddle.speed,
         pos = node.paddle.sprite.getPosition(),
@@ -246,12 +298,15 @@ define("zotohlab/p/s/movements", ['zotohlab/p/gnodes',
           src = { p1: cmd };
         }
         this.state.wsock.send({
-          source: JSON.stringify(src),
+          source: sjs.jsonfy(src),
           type: evts.MSG_SESSION,
           code: evts.PLAY_MOVE
         });
       },
 
+      /**
+       * @private
+       */
       clamp: function(sprite) {
         var pos= sprite.getPosition(),
         world= this.state.world,
@@ -287,7 +342,15 @@ define("zotohlab/p/s/movements", ['zotohlab/p/gnodes',
 
     });
 
-    return MovementSystem;
+    /**
+     * @memberof module:zotohlab/p/s/movements~MovementSystem
+     * @property {Number} Priority
+     * @static
+     */
+    MovementSystem.Priority = sobjs.Move;
+
+    exports= MovementSystem;
+    return exports;
 });
 
 ///////////////////////////////////////////////////////////////////////////////

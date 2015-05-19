@@ -7,37 +7,73 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/s/collision", ['zotohlab/p/gnodes',
-                                 'cherimoia/skarojs',
-                                 'zotohlab/asterix',
-                                 'zotohlab/asx/ccsx'],
+/**
+ * @requires zotohlab/p/sysobjs
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/collision
+ */
+define("zotohlab/p/s/collision",
+
+       ['zotohlab/p/sysobjs',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (gnodes, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/collision */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @class CollisionSystem
+     */
     CollisionSystem = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/collision~CollisionSystem
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state = options;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/collision~CollisionSystem
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
         this.nodeList=null;
         this.fauxs=null;
         this.balls=null;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/collision~CollisionSystem
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function(engine) {
         this.fauxs= engine.getNodeList(gnodes.FauxPaddleNode);
         this.nodeList= engine.getNodeList(gnodes.PaddleNode);
         this.balls= engine.getNodeList(gnodes.BallNode);
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/collision~CollisionSystem
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         var bnode = this.balls.head;
 
@@ -48,6 +84,9 @@ define("zotohlab/p/s/collision", ['zotohlab/p/gnodes',
         }
       },
 
+      /**
+       * @private
+       */
       checkNodes: function(nl, bnode) {
         for (var node=nl.head; node; node=node.next) {
           if (ccsx.collide0(node.paddle.sprite,
@@ -57,7 +96,10 @@ define("zotohlab/p/s/collision", ['zotohlab/p/gnodes',
         }
       },
 
-      //ball hits paddle
+      /**
+       * Ball hits paddle.
+       * @private
+       */
       check: function(node, bnode) {
         var pos = bnode.ball.sprite.getPosition(),
         bb4 = ccsx.bbox4(node.paddle.sprite),
@@ -92,7 +134,15 @@ define("zotohlab/p/s/collision", ['zotohlab/p/gnodes',
 
     });
 
-    return CollisionSystem;
+    /**
+     * @memberof module:zotohlab/p/s/collision~CollisionSystem
+     * @property {Number} Priority
+     * @static
+     */
+    CollisionSystem.Priority = sobjs.Collision;
+
+    exports= CollisionSystem;
+    return exports;
 });
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -7,36 +7,70 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/p/sysobjs
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/odin
+ * @module zotohlab/p/s/supervisor
+ */
 define("zotohlab/p/s/supervisor",
 
-       ['cherimoia/skarojs',
+       ['zotohlab/p/sysobjs',
+        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
         'zotohlab/asx/odin'],
 
-  function (sjs, sh, ccsx, odin) { "use strict";
+  function (sobjs, sjs, sh, ccsx, odin) { "use strict";
 
-    var evts= odin.Events,
+    /** @alias module:zotohlab/p/s/supervisor */
+    var exports= {},
+    evts= odin.Events,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
 
+    /**
+     * @class GameSupervisor
+     */
     GameSupervisor = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state= options;
         this.inited=false;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function(engine) {
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         if (! this.inited) {
           this.onceOnly();
@@ -46,6 +80,9 @@ define("zotohlab/p/s/supervisor",
         return this.state.wsock ? this.state.poked : true;
       },
 
+      /**
+       * @private
+       */
       onceOnly: function() {
         var world = this.state.world,
         cw= ccsx.center(),
@@ -94,7 +131,7 @@ define("zotohlab/p/s/supervisor",
                           'p2',
                           'numpts'], this.state);
           this.state.wsock.send({
-            source: JSON.stringify(src),
+            source: sjs.jsonfy(src),
             type: evts.MSG_SESSION,
             code: evts.STARTED
           });
@@ -102,14 +139,22 @@ define("zotohlab/p/s/supervisor",
 
       },
 
+      /**
+       * @private
+       */
       initPaddleSize: function() {
-        var dummy, id = '#red_paddle.png';
+        var id = '#red_paddle.png',
+        dummy;
+
         if (ccsx.isPortrait()) {
         } else {
         }
         return new cc.Sprite(id).getContentSize();
       },
 
+      /**
+       * @private
+       */
       initBallSize: function() {
         var dummy= new cc.Sprite('#pongball.png');
         return dummy.getContentSize();
@@ -117,7 +162,15 @@ define("zotohlab/p/s/supervisor",
 
     });
 
-    return GameSupervisor;
+    /**
+     * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+     * @property {Number} Priority
+     * @static
+     */
+    GameSupervisor.Priority = sobjs.PreUpdate;
+
+    exports= GameSupervisor;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

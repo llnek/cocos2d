@@ -7,55 +7,97 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/s/networking", ['zotohlab/p/gnodes',
-                                  'cherimoia/skarojs',
-                                  'zotohlab/asterix',
-                                  'zotohlab/asx/ccsx'],
+/**
+ * @requires zotohlab/p/sysobjs
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/networking
+ */
+define("zotohlab/p/s/networking",
 
-  function (gnodes, sjs, sh, ccsx) { "use strict";
+       ['zotohlab/p/sysobjs',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
-    var xcfg = sh.xcfg,
+  function (sobjs, gnodes, sjs, sh, ccsx) { "use strict";
+
+    /** @alias module:zotohlab/p/s/networking */
+    var exports= {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @class NetworkSystem
+     */
     NetworkSystem = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/networking~NetworkSystem
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.netQ= options.netQ;
         this.state = options;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/networking~NetworkSystem
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
         this.paddles= null;
         this.balls= null;
         this.fauxs= null;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/networking~NetworkSystem
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function(engine) {
         this.paddles= engine.getNodeList(gnodes.PaddleNode);
         this.balls= engine.getNodeList(gnodes.BallNode);
         this.fauxs= engine.getNodeList(gnodes.FauxPaddleNode);
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/networking~NetworkSystem
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         if (this.netQ.length > 0) {
           return this.onEvent(this.netQ.shift());
         }
       },
 
+      /**
+       * @private
+       */
       syncScores: function(scores) {
         var actors= this.state.players,
         rc= {};
         rc[actors[2].color] = scores.p2;
         rc[actors[1].color] = scores.p1;
-        sh.fireEvent('/game/hud/score/sync', { points: rc});
+        sh.fire('/hud/score/sync', { points: rc});
       },
 
+      /**
+       * @private
+       */
       onEvent: function(evt) {
 
-        sjs.loggr.debug("onEvent: => " + JSON.stringify(evt.source));
+        sjs.loggr.debug("onEvent: => " + sjs.jsonfy(evt.source));
 
         var actors= this.state.players,
         win,
@@ -66,7 +108,7 @@ define("zotohlab/p/s/networking", ['zotohlab/p/gnodes',
           win= actors[evt.source.winner.pnum];
           sjs.loggr.debug("server sent us new winner ==> " + win.color);
           this.syncScores(evt.source.winner.scores);
-          sh.fireEvent('/game/hud/end', { winner: win.color });
+          sh.fire('/hud/end', { winner: win.color });
         }
 
         if (sjs.isObject(evt.source.scores)) {
@@ -97,7 +139,10 @@ define("zotohlab/p/s/networking", ['zotohlab/p/gnodes',
         return ok;
       },
 
-      // reset back to default position, no movements
+      /**
+       * Reset back to default position, no movements
+       * @private
+       */
       reposPaddles: function(nl) {
         for (var node=nl.head; node; node=node.next) {
           if (node.player.pnum ===2) {
@@ -117,6 +162,9 @@ define("zotohlab/p/s/networking", ['zotohlab/p/gnodes',
         }
       },
 
+      /**
+       * @private
+       */
       reposEntities: function() {
         var node=this.balls.head;
 
@@ -133,6 +181,9 @@ define("zotohlab/p/s/networking", ['zotohlab/p/gnodes',
         }
       },
 
+      /**
+       * @private
+       */
       syncPaddles: function(nl, evt) {
 
         for (var node = nl.head; node; node=node.next) {
@@ -151,6 +202,9 @@ define("zotohlab/p/s/networking", ['zotohlab/p/gnodes',
         }
       },
 
+      /**
+       * @private
+       */
       syncOnePaddle: function(node, c) {
         var dir=0;
         node.paddle.sprite.setPosition(c.x, c.y);
@@ -161,7 +215,15 @@ define("zotohlab/p/s/networking", ['zotohlab/p/gnodes',
 
     });
 
-    return NetworkSystem;
+    /**
+     * @memberof module:zotohlab/p/s/networking~NetworkSystem
+     * @property {Number} Priority
+     * @static
+     */
+    NetworkSystem.Priority = sobjs.Net;
+
+    exports= NetworkSystem;
+    return exports;
 });
 
 ///////////////////////////////////////////////////////////////////////////////

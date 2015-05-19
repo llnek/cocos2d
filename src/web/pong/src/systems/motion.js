@@ -7,32 +7,65 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/s/motion", ['zotohlab/p/gnodes',
-                              'cherimoia/skarojs',
-                              'zotohlab/asterix'],
+/**
+ * @requires zotohlab/p/sysobjs
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @module zotohlab/p/s/motion
+ */
+define("zotohlab/p/s/motion",
 
-  function (gnodes, sjs,  sh) { "use strict";
+       ['zotohlab/p/sysobjs',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix'],
 
-    var xcfg = sh.xcfg,
+  function (sobjs, gnodes, sjs,  sh) { "use strict";
+
+    /** @alias module:zotohlab/p/s/motion */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @class MotionCtrlSystem
+     */
     MotionCtrlSystem = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/motion~MotionCtrlSystem
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state = options;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/motion~MotionCtrlSystem
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
         this.nodeList=null;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/motion~MotionCtrlSystem
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function(engine) {
         this.nodeList= engine.getNodeList(gnodes.PaddleNode);
       },
 
+      /**
+       * @private
+       */
       scanInput: function(node, dt) {
         if (cc.sys.capabilities['keyboard'] &&
             !cc.sys.isNative) {
@@ -46,12 +79,20 @@ define("zotohlab/p/s/motion", ['zotohlab/p/gnodes',
         }
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/motion~MotionCtrlSystem
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         for (var node= this.nodeList.head; node; node=node.next) {
           this.scanInput(node, dt);
         }
       },
 
+      /**
+       * @private
+       */
       processKeys: function(node, dt) {
         var p= node.paddle,
         m= node.motion,
@@ -69,7 +110,15 @@ define("zotohlab/p/s/motion", ['zotohlab/p/gnodes',
 
     });
 
-    return MotionCtrlSystem;
+    /**
+     * @memberof module:zotohlab/p/s/motion~MotionCtrlSystem
+     * @property {Number} Priority
+     * @static
+     */
+    MotionCtrlSystem.Priority = sobjs.Motion;
+
+    exports= MotionCtrlSystem;
+    return exports;
 });
 
 ///////////////////////////////////////////////////////////////////////////////

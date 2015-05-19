@@ -7,25 +7,50 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/s/factory", ['zotohlab/p/components',
-                               'cherimoia/skarojs',
-                               'zotohlab/asterix',
-                               'zotohlab/asx/ccsx'],
+/**
+ * @requires zotohlab/p/components
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/factory
+ */
+define("zotohlab/p/s/factory",
+
+       ['zotohlab/p/components',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (cobjs, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/factory */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @class EntityFactory
+     */
     EntityFactory = sh.Ashley.casDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method constructor
+       * @param {Ash.Engine} engine
+       */
       constructor: function(engine) {
         this.engine=engine;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createPaddles
+       * @param {cc.Layer} layer
+       * @param {Object} options
+       */
       createPaddles: function(layer, options) {
 
         this.createOnePaddle(layer, options.players[1],
@@ -39,6 +64,12 @@ define("zotohlab/p/s/factory", ['zotohlab/p/components',
                              options);
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createBall
+       * @param {cc.Layer} layer
+       * @param {Object} options
+       */
       createBall: function(layer, options) {
         var ent = sh.Ashley.newEntity(),
         info = options.ball,
@@ -46,7 +77,7 @@ define("zotohlab/p/s/factory", ['zotohlab/p/components',
         vx = info.speed * sjs.randSign(),
         sp;
 
-        if (options.mode === sh.ONLINE_GAME) {
+        if (options.mode === sh.gtypes.ONLINE_GAME) {
           vx = vy = 0;
         }
 
@@ -59,6 +90,14 @@ define("zotohlab/p/s/factory", ['zotohlab/p/components',
         this.engine.addEntity(ent);
       },
 
+      /**
+       * @method createOnePaddle
+       * @param {cc.Layer} layer
+       * @param {Object} p
+       * @param {Object} info
+       * @param {Number} speed
+       * @param {Object} options
+       */
       createOnePaddle: function(layer, p, info, speed, options) {
         var res1 = '#red_paddle.png',
         res2= '#green_paddle.png',
@@ -98,7 +137,8 @@ define("zotohlab/p/s/factory", ['zotohlab/p/components',
 
     });
 
-    return EntityFactory;
+    exports= EntityFactory;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

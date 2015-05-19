@@ -7,56 +7,103 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/components", ['cherimoia/skarojs',
-                                'zotohlab/asterix',
-                                'zotohlab/asx/ccsx'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/elements
+ */
+define("zotohlab/p/elements",
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/elements */
+    var exports= {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
-    undef,
-    png= {};
+    undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    png.Ball = sh.Ashley.compDef({
-
+    /**
+     * @class Ball
+     */
+    exports.Ball = sh.Ashley.compDef({
+      /**
+       * @memberof module:zotohlab/p/elements~Ball
+       * @constructor
+       * @param {cc.Sprite} sprite
+       * @param {Number} speed
+       */
       constructor: function(sprite, speed) {
         this.ctor(sprite);
         this.speed= speed;
       }
-
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    png.Motion = sh.Ashley.casDef({
+    /**
+     * @class Motion
+     */
+    exports.Motion = sh.Ashley.casDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Motion
+       * @method constructor
+       */
       constructor: function() {
         this.right = false;
         this.left= false;
       }
-
     });
 
-
     //////////////////////////////////////////////////////////////////////////////
-    png.Paddle = sh.Ashley.compDef({
+    /**
+     * @class Paddle
+     */
+    exports.Paddle = sh.Ashley.compDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Paddle
+       * @method p1Keys
+       * @return {Array}
+       */
       p1Keys: function() {
         return  ccsx.isPortrait() ? [cc.KEY.left, cc.KEY.right] : [cc.KEY.down, cc.KEY.up];
       },
 
+      /**
+       * @memberof module:zotohlab/p/elements~Paddle
+       * @method p2Keys
+       * @return {Array}
+       */
       p2Keys: function() {
         return ccsx.isPortrait() ? [cc.KEY.a, cc.KEY.d] : [cc.KEY.s, cc.KEY.w];
       },
 
+      /**
+       * @memberof module:zotohlab/p/elements~Paddle
+       * @method onColor
+       * @param {Array} keycodes
+       * @param {String} snd
+       */
       onColor: function(keycodes, snd) {
         this.kcodes = keycodes;
         this.snd= snd;
       },
 
+      /**
+       * @memberof module:zotohlab/p/elements~Paddle
+       * @method constructor
+       * @param {cc.Sprite} sprite
+       * @param {Number} color
+       * @param {Number} speed
+       */
       constructor: function(sprite, color, speed) {
 
         this.ctor(sprite);
@@ -73,9 +120,20 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    png.Player = sh.Ashley.casDef({
+    /**
+     * @class Player
+     */
+    exports.Player = sh.Ashley.casDef({
 
-      constructor: function(category,value,id,color,labels) {
+      /**
+       * @memberof module:zotohlab/p/elements~Player
+       * @method constructor
+       * @param {Number} category
+       * @param {Number} value
+       * @param {Number} id
+       * @param {Number} color
+       */
+      constructor: function(category,value,id,color) {
         this.color= color;
         this.pnum=id;
         this.category= category;
@@ -85,16 +143,31 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    png.Faux= sh.Ashley.casDef({
+    /**
+     * @class Faux
+     */
+    exports.Faux= sh.Ashley.casDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Faux
+       * @method constructor
+       */
       constructor: function() {
       }
 
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    png.Position = sh.Ashley.casDef({
+    /**
+     * @class Position
+     */
+    exports.Position = sh.Ashley.casDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Position
+       * @method constructor
+       * @param {cc.Point} lp
+       */
       constructor: function(lp) {
         this.lastDir= 0;
         this.lastP= lp;
@@ -103,8 +176,17 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    png.Velocity = sh.Ashley.casDef({
+    /**
+     * @class Velocity
+     */
+    exports.Velocity = sh.Ashley.casDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Velocity
+       * @method constructor
+       * @param {Number} vx
+       * @param {Number} vy
+       */
       constructor: function(vx,vy) {
         this.vel = {
           x: vx,
@@ -114,7 +196,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
 
     });
 
-    return png;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

@@ -7,11 +7,24 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/p/elements
+ * @requires zotohlab/p/sysobjs
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/odin
+ * @requires zotohlab/asx/xlayers
+ * @requires zotohlab/asx/xscenes
+ * @requires zotohlab/asx/xmmenus
+ * @requires zotohlab/p/hud
+ * @module zotohlab/p/arena
+ */
 define("zotohlab/p/arena",
 
-       ['zotohlab/p/components',
+       ['zotohlab/p/elements',
        'zotohlab/p/sysobjs',
        'cherimoia/skarojs',
        'zotohlab/asterix',
@@ -25,15 +38,23 @@ define("zotohlab/p/arena",
   function(cobjs, sobjs, sjs, sh, ccsx,
            odin, layers, scenes, mmenus, huds) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/arena */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     evts= odin.Events,
     R= sjs.ramda,
     undef,
 
+    /**
+     * @class GameLayer
+     */
     GameLayer = layers.XGameLayer.extend({
 
-      // get an odin event, first level callback
+      /**
+       * Get an odin event, first level callback
+       * @private
+       */
       onevent: function(topic, evt) {
 
         sjs.loggr.debug(evt);
@@ -48,9 +69,15 @@ define("zotohlab/p/arena",
         }
       },
 
+      /**
+       * @private
+       */
       onStop: function(evt) {
       },
 
+      /**
+       * @private
+       */
       onNetworkEvent: function(evt) {
         switch (evt.code) {
           case evts.RESTART:
@@ -68,6 +95,9 @@ define("zotohlab/p/arena",
         }
       },
 
+      /**
+       * @private
+       */
       onSessionEvent: function(evt) {
         if (!sjs.isObject(evt.source)) { return; }
         switch (evt.code) {
@@ -88,6 +118,8 @@ define("zotohlab/p/arena",
         }
       },
 
+      /**
+       */
       replay: function() {
         sjs.loggr.debug('replay game called');
         if (sjs.isObject(this.options.wsock)) {
@@ -102,6 +134,8 @@ define("zotohlab/p/arena",
         }
       },
 
+      /**
+       */
       play: function(newFlag) {
         var pss = sobjs.Priorities,
         p1ids,
@@ -138,23 +172,28 @@ define("zotohlab/p/arena",
         }
 
         R.forEach(function(z) {
-          this.engine.addSystem(new (z[0])(this.options), z[1]);
+          this.engine.addSystem(new (z)(this.options), z.Priority);
         }.bind(this),
-        [ [sobjs.Supervisor, pss.PreUpdate],
-          [sobjs.Networking, pss.Net],
-          [sobjs.Motions, pss.Motion],
-          [sobjs.Movements, pss.Move],
-          [sobjs.Resolution, pss.Resolve],
-          [sobjs.Collisions, pss.Collision],
-          [sobjs.Rendering, pss.Render] ] );
+        [ sobjs.Supervisor,
+          sobjs.Networking,
+          sobjs.Motions,
+          sobjs.Movements,
+          sobjs.Resolution,
+          sobjs.Collisions,
+          sobjs.Rendering] );
       },
 
+      /**
+       * @protected
+       */
       onNewGame: function(mode) {
         //sh.xcfg.sfxPlay('start_game');
         this.setGameMode(mode);
         this.play(true);
       },
 
+      /**
+       */
       reset: function(newFlag) {
         if (!sjs.isEmpty(this.atlases)) {
           sjs.eachObj(function(v){ v.removeAllChildren(); }, this.atlases);
@@ -173,24 +212,30 @@ define("zotohlab/p/arena",
         this.players.length=0;
       },
 
+      /**
+       * @protected
+       */
       operational: function() {
         return this.options.running;
       },
 
+      /**
+       * @private
+       */
       initPlayers: function() {
         var p2cat,p1cat,
         p2,p1;
 
         switch (this.options.mode) {
-          case sh.ONLINE_GAME:
+          case sh.gtypes.ONLINE_GAME:
             p2cat = csts.NETP;
             p1cat = csts.NETP;
           break;
-          case sh.P1_GAME:
+          case sh.gtypes.P1_GAME:
             p1cat= csts.HUMAN;
             p2cat= csts.BOT;
           break;
-          case sh.P2_GAME:
+          case sh.gtypes.P2_GAME:
             p2cat= csts.HUMAN;
             p1cat= csts.HUMAN;
           break;
@@ -203,11 +248,17 @@ define("zotohlab/p/arena",
         this.options.colors[csts.P2_COLOR] = p2;
       },
 
-      // scores is a map {'o': 0, 'x': 0}
+      /**
+       * Scores is a map {'o': 0, 'x': 0}
+       * @private
+       */
       updatePoints: function(scores) {
         this.getHUD().updateScores(scores);
       },
 
+      /**
+       * @private
+       */
       onWinner: function(p,score) {
         this.getHUD().updateScore(p,score || 1);
         var rc= this.getHUD().isDone();
@@ -217,6 +268,9 @@ define("zotohlab/p/arena",
         }
       },
 
+      /**
+       * @private
+       */
       doDone: function(p) {
         this.getHUD().drawResult(p);
         this.getHUD().endGame();
@@ -226,54 +280,64 @@ define("zotohlab/p/arena",
         this.options.running=false;
       },
 
+      /**
+       */
       setGameMode: function(mode) {
         this._super(mode);
         this.getHUD().setGameMode(mode);
       },
 
+      /**
+       * @private
+       */
       getEnclosureBox: function() {
         return ccsx.vbox();
       }
 
     });
 
-    return {
+    exports= {
 
-      'GameArena' : {
+      /**
+       * @property {String} rtti
+       * @static
+       */
+      rtti: sh.ptypes.game,
 
-        create: function(options) {
+      /**
+       * @method reify
+       * @param {Object} options
+       * @return {cc.Scene}
+       */
+      reify: function(options) {
 
-          var scene = new scenes.XSceneFactory([
-            huds.BackLayer,
-            GameLayer,
-            huds.HUDLayer
-          ]).create(options);
+        var scene = new scenes.XSceneFactory([
+          huds.BackLayer,
+          GameLayer,
+          huds.HUDLayer
+        ]).reify(options);
 
-          scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
-            mmenus.XMenuLayer.onShowMenu();
-          });
-          scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
-            sh.main.replay();
-          });
+        scene.onmsg('/hud/showmenu',function(t,msg) {
+          mmenus.showMenu();
+        }).
+        onmsg('/hud/replay',function(t,msg) {
+          sh.main.replay();
+        }).
+        onmsg('/hud/score/update',function(t,msg) {
+          sh.main.onWinner(msg.color, msg.score);
+        }).
+        onmsg('/hud/score/sync',function(t,msg) {
+          sh.main.updatePoints(msg.points);
+        }).
+        onmsg('/hud/end',function(t,msg) {
+          sh.main.doDone(msg.winner);
+        });
 
-          scene.ebus.on('/game/hud/score/update',function(t,msg) {
-            sh.main.onWinner(msg.color, msg.score);
-          });
-
-          scene.ebus.on('/game/hud/score/sync',function(t,msg) {
-            sh.main.updatePoints(msg.points);
-          });
-
-          scene.ebus.on('/game/hud/end',function(t,msg) {
-            sh.main.doDone(msg.winner);
-          });
-
-          return scene;
-        }
-
+        return scene;
       }
     };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////
