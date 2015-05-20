@@ -7,12 +7,22 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/p/s/priorities
+ * @requires zotohlab/p/elements
+ * @requires zotohlab/p/s/utils
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xpool
+ * @module zotohlab/p/s/supervisor
+ */
 define("zotohlab/p/s/supervisor",
 
        ['zotohlab/p/s/priorities',
-        'zotohlab/p/components',
+        'zotohlab/p/elements',
         'zotohlab/p/s/utils',
         'cherimoia/skarojs',
         'zotohlab/asterix',
@@ -21,32 +31,65 @@ define("zotohlab/p/s/supervisor",
 
   function (pss, cobjs, utils, sjs, sh, ccsx, XPool) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/supervisor */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @class GameSupervisor
+     */
     GameSupervisor = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state= options;
         this.inited=false;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function(engine) {
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method initAlienSize
+       */
       initAlienSize: function() {
         //pick purple since it is the largest
         this.state.alienSize= ccsx.createSpriteFrame('purple_bug_0.png').getContentSize();
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method initShipSize
+       */
       initShipSize: function() {
         this.state.shipSize= ccsx.createSpriteFrame( 'ship_0.png').getContentSize();
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         if (! this.inited) {
           this.onceOnly();
@@ -54,6 +97,9 @@ define("zotohlab/p/s/supervisor",
         }
       },
 
+      /**
+       * @private
+       */
       onceOnly: function() {
         sh.pools.Missiles = new XPool();
         sh.pools.Bombs = new XPool();
@@ -72,8 +118,14 @@ define("zotohlab/p/s/supervisor",
 
     });
 
+    /**
+     * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+     * @property {Number} Priority
+     */
     GameSupervisor.Priority= pss.PreUpdate;
-    return GameSupervisor;
+
+    exports= GameSupervisor;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

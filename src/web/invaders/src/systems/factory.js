@@ -7,29 +7,53 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/p/elements
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xpool
+ * @module zotohlab/p/s/factory
+ */
 define('zotohlab/p/s/factory',
 
-       ['zotohlab/p/components',
-       'cherimoia/skarojs',
-       'zotohlab/asterix',
-       'zotohlab/asx/ccsx',
-       'zotohlab/asx/xpool'],
+       ['zotohlab/p/elements',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/xpool'],
 
   function (cobjs, sjs, sh, ccsx, XPool) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/factory */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @class EntityFactory
+     */
     EntityFactory = sh.Ashley.casDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method constructor
+       * @param {Ash.Engine} engine
+       * @param {Object} options
+       */
       constructor: function(engine, options) {
         this.engine=engine;
         this.state= options;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createMissiles
+       * @param {Number} count
+       */
       createMissiles: function(count) {
         sh.pools.Missiles.preSet(function() {
           var sp = ccsx.createSpriteFrame('missile.png');
@@ -39,6 +63,11 @@ define('zotohlab/p/s/factory',
         }, count || 36);
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createExplosions
+       * @param {Number} count
+       */
       createExplosions: function(count) {
         sh.pools.Explosions.preSet(function() {
           var sp = ccsx.createSpriteFrame('boom_0.png');
@@ -48,6 +77,11 @@ define('zotohlab/p/s/factory',
         }, count || 24);
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createBombs
+       * @param {Number} count
+       */
       createBombs: function(count) {
         sh.pools.Bombs.preSet(function() {
           var sp = ccsx.createSpriteFrame('bomb.png');
@@ -57,10 +91,20 @@ define('zotohlab/p/s/factory',
         }, count || 24);
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method calcImgSize
+       * @param {String} img
+       */
       calcImgSize: function(img) {
         return ccsx.createSpriteFrame(img).getContentSize();
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method getRankInfo
+       * @param {Number} rank
+       */
       getRankInfo: function(rank) {
         if (rank < 3) {
           return [100, [ 'blue_bug_0.png', 'blue_bug_1.png' ] ,
@@ -77,6 +121,11 @@ define('zotohlab/p/s/factory',
         }
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method fillSquad
+       * @param {XPool} pool
+       */
       fillSquad: function(pool) {
         var az= this.state.alienSize,
         wz= ccsx.vrect(),
@@ -111,11 +160,15 @@ define('zotohlab/p/s/factory',
         }
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createAliens
+       */
       createAliens: function() {
         var stepx= this.state.alienSize.width /3,
+        ent= sh.Ashley.newEntity(),
         aliens= new XPool(),
-        me=this,
-        ent= sh.Ashley.newEntity();
+        me=this;
 
         aliens.preSet(function(pool) {
           me.fillSquad(pool);
@@ -127,20 +180,30 @@ define('zotohlab/p/s/factory',
         this.engine.addEntity(ent);
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method bornShip
+       */
       bornShip: function() {
         if (!!this.state.ship) {
           this.state.ship.inflate();
         }
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createShip
+       */
       createShip: function() {
-        var wz= ccsx.vrect(),
+        var s= ccsx.createSpriteFrame('ship_1.png'),
+        ent= new sh.Ashley.newEntity(),
+        wz= ccsx.vrect(),
         wb= ccsx.vbox(),
-        y = this.state.shipSize.height + wb.bottom + (5/60 * wz.height),
+        y = this.state.shipSize.height +
+            wb.bottom +
+            (5/60 * wz.height),
         x = wb.left + wz.width * 0.5,
-        ship,
-        s= ccsx.createSpriteFrame('ship_1.png'),
-        ent= new sh.Ashley.newEntity();
+        ship;
 
         sh.main.addAtlasItem('game-pics', s);
 
@@ -159,7 +222,8 @@ define('zotohlab/p/s/factory',
 
     });
 
-    return EntityFactory;
+    exports = EntityFactory;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

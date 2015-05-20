@@ -7,8 +7,20 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/p/s/utils
+ * @requires zotohlab/p/sysobjs
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xlayers
+ * @requires zotohlab/asx/xscenes
+ * @requires zotohlab/asx/xmmenus
+ * @requires zotohlab/p/hud
+ * @module zotohlab/p/arena
+ */
 define('zotohlab/p/arena',
 
        ['zotohlab/p/s/utils',
@@ -24,13 +36,21 @@ define('zotohlab/p/arena',
   function (utils, sobjs, sjs, sh, ccsx,
             layers, scenes, mmenus, huds) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/arena */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
 
+    /**
+     * @class GameLayer
+     */
     GameLayer = layers.XGameLayer.extend({
 
+      /**
+       * @protected
+       */
       reset: function(newFlag) {
         if (!sjs.isEmpty(this.atlases)) {
           sjs.eachObj(function(v){ v.removeAllChildren(); }, this.atlases);
@@ -41,14 +61,20 @@ define('zotohlab/p/arena',
         this.getHUD().reset();
       },
 
+      /**
+       */
       operational: function() {
         return this.options.running;
       },
 
+      /**
+       */
       replay: function() {
         this.play(false);
       },
 
+      /**
+       */
       play: function(newFlag) {
 
         var pss = sobjs.Priorities;
@@ -75,10 +101,14 @@ define('zotohlab/p/arena',
 
       },
 
+      /**
+       */
       spawnPlayer: function() {
         sh.factory.bornShip();
       },
 
+      /**
+       */
       onPlayerKilled: function(msg) {
         sh.sfxPlay('xxx-explode');
         if ( this.getHUD().reduceLives(1)) {
@@ -88,16 +118,22 @@ define('zotohlab/p/arena',
         }
       },
 
+      /**
+       */
       onNewGame: function(mode) {
         //sh.sfxPlay('start_game');
         this.setGameMode(mode);
         this.play(true);
       },
 
+      /**
+       */
       onEarnScore: function(msg) {
         this.getHUD().updateScore( msg.score);
       },
 
+      /**
+       */
       onDone: function() {
         this.options.running=false;
         this.reset();
@@ -106,34 +142,43 @@ define('zotohlab/p/arena',
 
     });
 
-    return {
+    exports= {
 
-      'GameArena' : {
+      /**
+       * @property {String} rtti
+       * @static
+       */
+      rtti : sh.ptypes.game,
 
-        create: function(options) {
-          var scene = new scenes.XSceneFactory([
-            huds.BackLayer,
-            GameLayer,
-            huds.HUDLayer ]).create(options);
+      /**
+       * @method reify
+       * @param {Object} options
+       * @return {cc.Scene}
+       */
+      reify: function(options) {
+        var scene = new scenes.XSceneFactory([
+          huds.BackLayer,
+          GameLayer,
+          huds.HUDLayer ]).reify(options);
 
-          scene.ebus.on('/game/objects/players/earnscore', function(topic, msg) {
-            sh.main.onEarnScore(msg);
-          });
-          scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
-            mmenus.XMenuLayer.onShowMenu();
-          });
-          scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
-            sh.main.replay();
-          });
-          scene.ebus.on('/game/objects/players/killed', function(topic, msg) {
-            sh.main.onPlayerKilled(msg);
-          });
+        scene.onmsg('/game/players/earnscore', function(topic, msg) {
+          sh.main.onEarnScore(msg);
+        }).
+        onmsg('/hud/showmenu',function(t,msg) {
+          mmenus.showMenu();
+        }).
+        onmsg('/hud/replay',function(t,msg) {
+          sh.main.replay();
+        }).
+        onmsg('/game/players/killed', function(topic, msg) {
+          sh.main.onPlayerKilled(msg);
+        });
 
-          return scene;
-        }
+        return scene;
       }
     };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

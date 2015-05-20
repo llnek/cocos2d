@@ -7,36 +7,70 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/p/s/priorities
+ * @requires zotohlab/p/s/utils
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/movebombs
+ */
 define('zotohlab/p/s/movebombs',
 
        ['zotohlab/p/s/priorities',
-         'zotohlab/p/s/utils',
-       'zotohlab/p/gnodes',
-       'cherimoia/skarojs',
-       'zotohlab/asterix',
-       'zotohlab/asx/ccsx'],
+        'zotohlab/p/s/utils',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/movebombs */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
 
+    /**
+     * @class MovementBombs
+     */
     MovementBombs = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/movebombs~MovementBombs
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state= options;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/movebombs~MovementBombs
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/movebombs~MovementBombs
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function(engine) {
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/movebombs~MovementBombs
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         var bbs= sh.pools.Bombs,
         pos,
@@ -53,8 +87,14 @@ define('zotohlab/p/s/movebombs',
 
     });
 
+    /**
+     * @memberof module:zotohlab/p/s/movebombs~MovementBombs
+     * @property {Number} Priority
+     */
     MovementBombs.Priority= pss.Movement;
-    return MovementBombs;
+
+    exports= MovementBombs;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

@@ -7,7 +7,7 @@
     "src/invaders/config.js",
     "src/invaders/i18n/game_en_US.js",
 
-    "src/invaders/components/cobjs.js",
+    "src/invaders/elements/cobjs.js",
     "src/invaders/nodes/gnodes.js",
 
     "src/invaders/systems/priorities.js",

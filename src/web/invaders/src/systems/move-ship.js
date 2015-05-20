@@ -7,8 +7,16 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/p/s/priorities
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/moveship
+ */
 define('zotohlab/p/s/moveship',
 
        ['zotohlab/p/s/priorities',
@@ -19,24 +27,49 @@ define('zotohlab/p/s/moveship',
 
   function (pss, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/moveship */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @class MovementShip
+     */
     MovementShip = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/moveship~MovementShip
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state= options;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/moveship~MovementShip
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
         this.shipMotions=null;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/moveship~MovementShip
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function(engine) {
         this.shipMotions = engine.getNodeList(gnodes.ShipMotionNode)
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/moveship~MovementShip
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         var node = this.shipMotions.head;
         if (this.state.running &&
@@ -45,6 +78,9 @@ define('zotohlab/p/s/moveship',
         }
       },
 
+      /**
+       * @private
+       */
       processShipMotions: function(node,dt) {
         var motion = node.motion,
         sv = node.velocity,
@@ -68,6 +104,9 @@ define('zotohlab/p/s/moveship',
         motion.left=false;
       },
 
+      /**
+       * @private
+       */
       clamp: function(ship) {
         var sz= ship.sprite.getContentSize(),
         pos= ship.pos(),
@@ -83,8 +122,14 @@ define('zotohlab/p/s/moveship',
 
     });
 
+    /**
+     * @memberof module:zotohlab/p/s/moveship~MovementShip
+     * @property {Number} Priority
+     */
     MovementShip.Priority= pss.Movement;
-    return MovementShip;
+
+    exports= MovementShip;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

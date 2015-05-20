@@ -214,15 +214,7 @@ define("zotohlab/asx/xpool",
 
     });
 
-    exports = {
-      /**
-       * @property {XPool.Class} XPool
-       * @static
-       */
-      XPool : XPool
-    };
-
-    return exports;
+    return exports = XPool;
 });
 
 //////////////////////////////////////////////////////////////////////////////

@@ -7,8 +7,17 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/p/s/priorities
+ * @requires zotohlab/p/s/utils
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/movealiens
+ */
 define('zotohlab/p/s/movealiens',
 
        ['zotohlab/p/s/priorities',
@@ -20,25 +29,50 @@ define('zotohlab/p/s/movealiens',
 
   function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/movealiens */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
 
+    /**
+     * @class MovementAiens
+     */
     MovementAliens = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/movealiens~MovementAliens
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state= options;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/movealiens~MovementAliens
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
         this.alienMotions= undef;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/movealiens~MovementAliens
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function(engine) {
         this.alienMotions = engine.getNodeList(gnodes.AlienMotionNode);
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/movealiens~MovementAliens
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         var node=this.alienMotions.head;
 
@@ -49,6 +83,9 @@ define('zotohlab/p/s/movealiens',
         }
       },
 
+      /**
+       * @private
+       */
       processMovement: function(node,dt) {
         var lpr = node.looper,
         sqad= node.aliens;
@@ -59,6 +96,9 @@ define('zotohlab/p/s/movealiens',
         }
       },
 
+      /**
+       * @private
+       */
       processBombs: function(node,dt) {
         var lpr = node.looper,
         sqad= node.aliens;
@@ -69,6 +109,9 @@ define('zotohlab/p/s/movealiens',
         }
       },
 
+      /**
+       * @private
+       */
       checkBomb: function(sqad) {
         var rc = [],
         pos,
@@ -85,6 +128,9 @@ define('zotohlab/p/s/movealiens',
         }
       },
 
+      /**
+       * @private
+       */
       dropBomb: function(x,y) {
         var bbs = sh.pools.Bombs,
         ent = bbs.get();
@@ -98,6 +144,9 @@ define('zotohlab/p/s/movealiens',
         ent.inflate({ x: x, y: y});
       },
 
+      /**
+       * @private
+       */
       maybeShuffleAliens: function(sqad) {
         var b = sqad.stepx > 0 ? this.findMaxX(sqad) : this.findMinX(sqad),
         ok;
@@ -110,6 +159,9 @@ define('zotohlab/p/s/movealiens',
         }
       },
 
+      /**
+       * @private
+       */
       testDirX: function(b, stepx) {
         var wz= ccsx.vrect(),
         wb= ccsx.vbox(),
@@ -121,11 +173,17 @@ define('zotohlab/p/s/movealiens',
         }
       },
 
+      /**
+       * @private
+       */
       shuffleOneAlien: function(a,stepx) {
         var pos= a.sprite.getPosition();
         a.sprite.setPosition(pos.x + stepx, pos.y);
       },
 
+      /**
+       * @private
+       */
       forwardOneAlien: function(a, delta) {
         var pos= a.sprite.getPosition(),
         wz= ccsx.vrect(),
@@ -134,6 +192,9 @@ define('zotohlab/p/s/movealiens',
                              //pos.y - ccsx.getHeight(a.sprite) - (2/480 * wz.height));
       },
 
+      /**
+       * @private
+       */
       doShuffle: function(sqad) {
         var rc = R.filter(function(a) {
           return a.status;
@@ -144,6 +205,9 @@ define('zotohlab/p/s/movealiens',
         return rc.length > 0;
       },
 
+      /**
+       * @private
+       */
       doForward: function(sqad) {
         var rc = R.filter(function(a) {
           return a.status;
@@ -156,8 +220,11 @@ define('zotohlab/p/s/movealiens',
         return rc.length > 0;
       },
 
+      /**
+       * @private
+       */
       findMinX: function(sqad) {
-        return R.minWith(function(a) {
+        return R.minBy(function(a) {
           if (a.status) {
             return ccsx.getLeft(a.sprite);
           } else {
@@ -166,8 +233,11 @@ define('zotohlab/p/s/movealiens',
         }, sqad.aliens.pool);
       },
 
+      /**
+       * @private
+       */
       findMaxX: function(sqad) {
-        return R.maxWith(function(a) {
+        return R.maxBy(function(a) {
           if (a.status) {
             return ccsx.getRight(a.sprite);
           } else {
@@ -178,8 +248,14 @@ define('zotohlab/p/s/movealiens',
 
     });
 
+    /**
+     * @memberof module:zotohlab/p/s/movealiens~MovementAliens
+     * @property {Number} Priority
+     */
     MovementAliens.Priority= pss.Movement;
-    return MovementAliens;
+
+    exports= MovementAliens;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

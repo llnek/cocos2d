@@ -7,12 +7,21 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/p/s/priorities
+ * @requires zotohlab/p/s/utils
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/movemissiles
+ */
 define('zotohlab/p/s/movemissiles',
 
        ['zotohlab/p/s/priorities',
-         'zotohlab/p/s/utils',
+        'zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
@@ -20,23 +29,48 @@ define('zotohlab/p/s/movemissiles',
 
   function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/movemissiles */
+    var exports= {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
 
+    /**
+     * @class MovementMissiles
+     */
     MovementMissiles = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/movemissiles~MovementMissiles
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state= options;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/movemissiles~MovementMissiles
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/movemissiles~MovementMissiles
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function(engine) {
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/movemissiles~MovementMissiles
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         var mss= sh.pools.Missiles,
         pos,
@@ -51,9 +85,14 @@ define('zotohlab/p/s/movemissiles',
 
     });
 
+    /**
+     * @memberof module:zotohlab/p/s/movemissiles~MovementMissiles
+     * @property {Number} Priority
+     */
     MovementMissiles.Priority= pss.Movement;
-    return MovementMissiles;
 
+    exports= MovementMissiles;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

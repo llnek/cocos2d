@@ -102,7 +102,7 @@ define("zotohlab/p/mmenu",
           pos: cc.p(wb.right - csts.TILE,
                     wb.bottom + csts.TILE),
           color: color,
-          anchor: ccsx.acs.BottomLeft
+          anchor: ccsx.acs.BottomRight
         });
 
         this.mkBackQuit(false, [

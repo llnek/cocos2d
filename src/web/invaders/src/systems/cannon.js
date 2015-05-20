@@ -7,7 +7,7 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 define('zotohlab/p/s/cannon',
 
@@ -20,24 +20,49 @@ define('zotohlab/p/s/cannon',
 
   function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/cannon */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @class CannonControl
+     */
     CannonControl = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/cannon~CannonControl
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function (options) {
         this.state = options;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/cannon~CannonControl
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function (engine) {
         this.nodeList = engine.getNodeList(gnodes.CannonCtrlNode);
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/cannon~CannonControl
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function (engine) {
         this.nodeList = null;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/cannon~CannonControl
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         var node = this.nodeList.head;
         if (this.state.running &&
@@ -46,10 +71,13 @@ define('zotohlab/p/s/cannon',
         }
       },
 
+      /**
+       * @private
+       */
       process: function(node,dt) {
         var gun = node.cannon,
-        ship=node.ship,
         lpr= node.looper,
+        ship=node.ship,
         t= lpr.timers[0];
 
         if (! gun.hasAmmo) {
@@ -63,6 +91,9 @@ define('zotohlab/p/s/cannon',
         }
       },
 
+      /**
+       * @private
+       */
       checkInput: function() {
         var hit=false;
         if (cc.sys.capabilities['keyboard'] &&
@@ -78,6 +109,9 @@ define('zotohlab/p/s/cannon',
         return hit;
       },
 
+      /**
+       * @private
+       */
       scanInput: function (node, dt) {
         var hit= this.checkInput();
         if (hit) {
@@ -85,6 +119,9 @@ define('zotohlab/p/s/cannon',
         }
       },
 
+      /**
+       * @private
+       */
       fireMissile: function(node,dt) {
         var top= ccsx.getTop(node.ship.sprite),
         p= sh.pools.Missiles,
@@ -109,8 +146,14 @@ define('zotohlab/p/s/cannon',
 
     });
 
+    /**
+     * @memberof module:zotohlab/p/s/cannon~CannonControl
+     * @property {Number} Priority
+     */
     CannonControl.Priority= pss.Motion;
-    return CannonControl;
+    exports = CannonControl;
+
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

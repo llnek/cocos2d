@@ -7,12 +7,21 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/p/s/priorities
+ * @requires zotohlab/p/elements
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/resolution
+ */
 define('zotohlab/p/s/resolution',
 
        ['zotohlab/p/s/priorities',
-         'zotohlab/p/components',
+        'zotohlab/p/elements',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
@@ -20,29 +29,54 @@ define('zotohlab/p/s/resolution',
 
   function (pss, cobjs, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/resolution */
+    var exports= {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
 
+    /**
+     * @class Resolution
+     */
     Resolution = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/resolution~Resolution
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state= options;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/resolution~Resolution
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
         this.aliens= undef;
         this.ships= undef;
         this.engine=undef;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/resolution~Resolution
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function(engine) {
         this.aliens= engine.getNodeList(gnodes.AlienMotionNode);
         this.ships= engine.getNodeList(gnodes.ShipMotionNode);
         this.engine=engine;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/resolution~Resolution
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         var aliens= this.aliens.head,
         ship = this.ships.head;
@@ -53,6 +87,9 @@ define('zotohlab/p/s/resolution',
         this.checkShip(ship);
       },
 
+      /**
+       * @private
+       */
       checkMissiles: function() {
         var mss = sh.pools.Missiles,
         ht = ccsx.screenHeight(),
@@ -68,6 +105,9 @@ define('zotohlab/p/s/resolution',
         });
       },
 
+      /**
+       * @private
+       */
       checkBombs: function() {
         var bbs = sh.pools.Bombs,
         bt = 0,
@@ -83,6 +123,9 @@ define('zotohlab/p/s/resolution',
         });
       },
 
+      /**
+       * @private
+       */
       checkAliens: function(node) {
         var sqad= node.aliens,
         me=this;
@@ -90,7 +133,7 @@ define('zotohlab/p/s/resolution',
         R.forEach(function(en) {
           if (en.status) {
             if (en.HP <= 0) {
-              sh.fireEvent('/game/objects/players/earnscore', {
+              sh.fire('/game/players/earnscore', {
                 score: en.value });
               en.deflate();
             }
@@ -98,20 +141,29 @@ define('zotohlab/p/s/resolution',
         }, sqad.aliens.pool);
       },
 
+      /**
+       * @private
+       */
       checkShip: function(node) {
         var ship = node.ship;
 
         if (ship.status &&
             ship.HP <= 0) {
           ship.deflate();
-          sh.fireEvent('/game/objects/players/killed');
+          sh.fire('/game/players/killed');
         }
       }
 
     });
 
+    /**
+     * @memberof module:zotohlab/p/s/resolution~Resolution
+     * @property {Number} Priority
+     */
     Resolution.Priority= pss.Resolve;
-    return Resolution;
+
+    exports= Resolution;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

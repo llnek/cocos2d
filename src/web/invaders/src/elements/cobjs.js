@@ -7,9 +7,15 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/components",
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/elements
+ */
+define("zotohlab/p/elements",
 
        ['cherimoia/skarojs',
         'zotohlab/asterix',
@@ -17,34 +23,60 @@ define("zotohlab/p/components",
 
   function (sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/elements */
+    var exports= {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
-    undef,
-    ivs={};
+    undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    ivs.AlienSquad = sh.Ashley.casDef({
+    /**
+     * @class AlienSquad
+     */
+    exports.AlienSquad = sh.Ashley.casDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~AlienSquad
+       * @method constructor
+       * @param {Array} aliens
+       * @param {Number} step
+       */
       constructor: function(aliens,step) {
         this.aliens=aliens;
         this.stepx=step;
       }
-
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    ivs.Alien = sh.Ashley.compDef({
+    /**
+     * @class Alien
+     */
+    exports.Alien = sh.Ashley.compDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Alien
+       * @method constructor
+       * @param {cc.Sprite} sprite
+       * @param {Number} value
+       * @param {Number} rank
+       */
       constructor: function(sprite,value,rank) {
         this.ctor(sprite, 1, value);
         this.rank=rank;
       }
-
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    ivs.Bomb = sh.Ashley.compDef({
+    /**
+     * @class Bomb
+     */
+    exports.Bomb = sh.Ashley.compDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Bomb
+       * @method constructor
+       * @param {cc.Sprite}
+       */
       constructor: function(sprite) {
         var wz= ccsx.vrect();
         this.ctor(sprite);
@@ -56,23 +88,41 @@ define("zotohlab/p/components",
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    ivs.Cannon = sh.Ashley.casDef({
+    /**
+     * @class Cannon
+     */
+    exports.Cannon = sh.Ashley.casDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Cannon
+       * @method constructor
+       * @param {Number} coolDownWindow
+       */
       constructor: function(coolDownWindow) {
         this.coolDownWindow= coolDownWindow || 0.8;
         this.hasAmmo = true;
       }
-
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    ivs.Explosion = sh.Ashley.compDef({
+    /**
+     * @class Explosion
+     */
+    exports.Explosion = sh.Ashley.compDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Explosion
+       * @method constructor
+       * @param {cc.Sprite}
+       */
       constructor: function(sprite) {
         this.ctor(sprite);
         this.frameTime= 0.1;
       },
 
+      /**
+       * @protected
+       */
       inflate: function(options) {
         var frames = [ccsx.getSpriteFrame('boom_0.png'),
                       ccsx.getSpriteFrame('boom_1.png'),
@@ -92,17 +142,32 @@ define("zotohlab/p/components",
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    ivs.Looper = sh.Ashley.casDef({
+    /**
+     * @class Looper
+     */
+    exports.Looper = sh.Ashley.casDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Looper
+       * @method constructor
+       * @param {Number} count
+       */
       constructor: function(count) {
         this.timers=sjs.makeArray(count,null);
       }
-
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    ivs.Missile = sh.Ashley.compDef({
+    /**
+     * @class Missile
+     */
+    exports.Missile = sh.Ashley.compDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Missile
+       * @method constructor
+       * @param {cc.Sprite} sprite
+       */
       constructor: function(sprite) {
         var wz= ccsx.vrect();
         this.ctor(sprite);
@@ -115,38 +180,60 @@ define("zotohlab/p/components",
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    ivs.Motion = sh.Ashley.casDef({
+    /**
+     * @class Motion
+     */
+    exports.Motion = sh.Ashley.casDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Motion
+       * @method constructor
+       */
       constructor: function() {
         this.right = false;
         this.left = false;
       }
-
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    ivs.Ship = sh.Ashley.compDef({
+    /**
+     * @class Ship
+     */
+    exports.Ship = sh.Ashley.compDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Ship
+       * @method constructor
+       * @param {cc.Sprite} sprite
+       * @param {Array} frames
+       */
       constructor: function(sprite,frames) {
         this.ctor(sprite);
         this.frames=frames;
       }
-
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    ivs.Velocity = sh.Ashley.casDef({
+    /**
+     * @class Velocity
+     */
+    exports.Velocity = sh.Ashley.casDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Velocity
+       * @method constructor
+       * @param {Number} vx
+       * @param {Number} vy
+       */
       constructor: function(vx,vy) {
         this.vel = {
           x: vx || 0,
           y: vy || 0
         };
       }
-
     });
 
-    return ivs;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

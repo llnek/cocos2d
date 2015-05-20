@@ -13,7 +13,7 @@ document.ccConfig = {
 
   engineDir: ['/public/extlibs/cocos2d-html5'],
 
-  modules: [ 'cocos2d', 'ccui', 'ccpool' ],
+  modules: [ 'cocos2d', 'ccui' ],
   jsList: [
 
     "/public/vendors/ramda/ramda.js",
@@ -36,7 +36,7 @@ document.ccConfig = {
     "/public/ig/lib/zotohlab/ext/xlayers.js",
     "/public/ig/lib/zotohlab/ext/xscenes.js",
     "/public/ig/lib/zotohlab/ext/xpool.js",
-    "/public/ig/lib/zotohlab/ext/xloader.js",
+    "/public/ig/lib/zotohlab/ext/xldr.js",
 
     "/public/ig/lib/zotohlab/gui/startscreen.js",
     "/public/ig/lib/zotohlab/gui/msgbox.js",
@@ -47,7 +47,7 @@ document.ccConfig = {
     '/public/ig/lib/game/invaders/config.js',
     '/public/ig/lib/game/invaders/i18n/game_en_US.js',
 
-    '/public/ig/lib/game/invaders/components/cobjs.js',
+    '/public/ig/lib/game/invaders/elements/cobjs.js',
     '/public/ig/lib/game/invaders/nodes/gnodes.js',
 
     '/public/ig/lib/game/invaders/systems/priorities.js',

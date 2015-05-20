@@ -7,8 +7,15 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xlayers
+ * @module zotohlab/p/hud
+ */
 define('zotohlab/p/hud',
 
        ['cherimoia/skarojs',
@@ -18,10 +25,15 @@ define('zotohlab/p/hud',
 
   function(sjs, sh, ccsx, layers) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/hud */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @class BackLayer
+     */
     BackLayer = layers.XLayer.extend({
 
       rtti: function() { return 'BackLayer'; },
@@ -32,6 +44,9 @@ define('zotohlab/p/hud',
 
     }),
 
+    /**
+     * @class HUDLayer
+     */
     HUDLayer = layers.XGameHUDLayer.extend({
 
       initAtlases: function() {
@@ -44,7 +59,7 @@ define('zotohlab/p/hud',
         this.scoreLabel = ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.SmallTypeWriting'),
           text: '0',
-          anchor: ccsx.AnchorBottomRight,
+          anchor: ccsx.acs.BottomRight,
           scale: xcfg.game.scale// * 2
         });
         this.scoreLabel.setPosition(wb.right - csts.TILE - csts.S_OFF,
@@ -62,42 +77,55 @@ define('zotohlab/p/hud',
           totalLives: 3
         });
 
-        this.lives.create();
+        this.lives.reify();
       },
 
-      initCtrlBtns: function(scale, where) {
-        var csts = xcfg.csts,
-        menu;
+      ctor: function(options) {
+        var color= cc.color(255,255,255),
+        scale=1;
 
-        where = where || ccsx.AnchorBottom;
-        scale = scale || 1;
+        this._super(options);
 
-        menu= ccsx.pmenu1({
-          color: cc.color(255,255,255),
-          imgPath: '#icon_menu.png',
-          scale: scale,
-          selector: function() {
-            sh.fireEvent('/game/hud/controls/showmenu'); }
-        });
-        this.addMenuIcon(menu, where);
-
-        menu = ccsx.pmenu1({
+        this.options.i_replay= {
           imgPath: '#icon_replay.png',
-          color: cc.color(255,255,255),
+          where: ccsx.acs.Bottom,
+          color: color,
           scale : scale,
           visible: false,
-          selector: function() {
-            sh.fireEvent('/game/hud/controls/replay'); }
-        });
-        this.addReplayIcon(menu, where);
+          cb: function() {
+            sh.fire('/hud/replay');
+          }
+        };
+
+        this.options.i_menu= {
+          imgPath: '#icon_menu.png',
+          where: ccsx.acs.Bottom,
+          color: color,
+          scale: scale,
+          cb: function() {
+            sh.fire('/hud/showmenu');
+          }
+        };
+
       }
 
     });
 
-    return {
+    exports= {
+      /**
+       * @property {BackLayer.Class} BackLayer
+       * @static
+       */
       BackLayer : BackLayer,
+
+      /**
+       * @property {HUDLayer.Class} HUDLayer
+       * @static
+       */
       HUDLayer : HUDLayer
     };
+
+    return exports;
 
 });
 
