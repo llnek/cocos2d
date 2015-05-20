@@ -7,22 +7,41 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/gnodes', ['zotohlab/p/components',
-                            'cherimoia/skarojs',
-                            'zotohlab/asterix',
-                            'zotohlab/asx/ccsx'],
+/**
+ * @requires zotohlab/p/components
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/gnodes
+ */
+define('zotohlab/p/gnodes',
+
+       ['zotohlab/p/components',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (cobjs, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/gnodes */
+    var exports={},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
     ast= {};
 
     //////////////////////////////////////////////////////////////////////////////
-    ast.CannonCtrlNode = sh.Ashley.nodeDef({
+    /**
+     * @class CannonCtrlNode
+     */
+    exports.CannonCtrlNode = sh.Ashley.nodeDef({
+      /**
+       * @memberof module:zotohlab/p/gnodes~CannonCtrlNode
+       * @property {Looper} looper
+       * @static
+       */
       looper    : cobjs.Looper,
       cannon    : cobjs.Cannon,
       ship      : cobjs.Ship

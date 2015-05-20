@@ -7,64 +7,132 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/mmenu', ['cherimoia/skarojs',
-                           'zotohlab/asterix',
-                           'zotohlab/asx/ccsx',
-                           'zotohlab/asx/xlayers',
-                           'zotohlab/asx/xscenes',
-                           'zotohlab/asx/xmmenus'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xlayers
+ * @requires zotohlab/asx/xscenes
+ * @requires zotohlab/asx/xmmenus
+ * @module zotohlab/p/mmenu
+ */
+define('zotohlab/p/mmenu',
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/xlayers',
+        'zotohlab/asx/xscenes',
+        'zotohlab/asx/xmmenus'],
 
   function (sjs, sh, ccsx, layers, scenes, mmenus) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/mmenu */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
+
+    //////////////////////////////////////////////////////////////////////////////
+    /**
+     * @class BackLayer
+     */
+    BackLayer = mmenus.XMenuBackLayer.extend({
+
+      setTitle: function() {
+        var wb=ccsx.vbox(),
+        cw= ccsx.center(),
+        tt=ccsx.bmfLabel({
+          fontPath: sh.getFontPath('font.JellyBelly'),
+          text: sh.l10n('%mmenu'),
+          pos: cc.p(cw.x, wb.top * 0.9),
+          color: cc.color(246,177,127),
+          scale: xcfg.game.scale
+        });
+        this.addItem(tt);
+      }
+
+    }),
+
+    /**
+     * @class MainMenuLayer
+     */
     MainMenuLayer = mmenus.XMenuLayer.extend({
 
       pkInit: function() {
         var cw = ccsx.center(),
-        wz = ccsx.screen();
+        wz = ccsx.screen(),
+        menu;
 
-        this._super();
-
-        this.addItem(ccsx.tmenu1({
-          fontPath: sh.getFontPath('font.OogieBoogie'),
-          text: sh.l10n('%1player'),
-          scale: 0.5,
-          selector: function() {
-            sh.fireEvent('/mmenu/controls/newgame', { mode: 1});
+        menu= ccsx.pmenu1({
+          imgPath: '#play.png',
+          cb: function() {
+            sh.fire('/mmenu/newgame', { mode: sh.gtypes.P1_GAME});
           },
-          target: this,
-          pos: cc.p(cw.x, csts.TILE * 19)
-        }));
+          target: this
+        });
+        menu.setPosition(cw);
+        this.addItem(menu);
 
-        this.doCtrlBtns();
+        // show the control buttons
+        this.mkAudio({
+          pos: cc.p(wb.right - csts.TILE,
+                    wb.bottom + csts.TILE),
+          color: cc.color(255,255,255),
+          anchor: ccsx.acs.BottomRight
+        });
+
+        // show back & quit
+        this.mkBackQuit(false, [
+          { imgPath: '#icon_back.png',
+            color: color,
+            cb: function() {
+              if (!!this.options.onBack) {
+                this.options.onBack();
+              }
+            },
+            target: this },
+          { imgPath: '#icon_quit.png',
+            color: color,
+            cb: function() { this.onQuit(); },
+            target: this }
+        ],
+        function (m,z) {
+          m.setPosition(wb.left + csts.TILE + z.width * 1.1,
+                        wb.bottom + csts.TILE + z.height * 0.45);
+        });
+
       }
 
     });
 
-    return {
+    exports= {
 
-      'MainMenu' : {
+      /**
+       * @property {String} rtti
+       * @static
+       */
+      rtti : sh.ptypes.mmenu,
 
-        create: function(options) {
-          var scene = new scenes.XSceneFactory([
-            mmenus.XMenuBackLayer,
-            MainMenuLayer
-          ]).create(options);
-
-          scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
-            cc.director.runScene( sh.protos['GameArena'].create(msg));
-          });
-
-          return scene;
-        }
-
+      /**
+       * @method reify
+       * @param {Object} options
+       * @return {cc.Scene}
+       */
+      reify: function(options) {
+        return new scenes.XSceneFactory([
+          BackLayer,
+          MainMenuLayer
+        ]).reify(options).onmsg('/mmenu/newgame', function(topic, msg) {
+          cc.director.runScene( sh.protos[sh.ptypes.game].reify(msg));
+        });
       }
+
     };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

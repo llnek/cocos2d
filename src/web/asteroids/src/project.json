@@ -5,7 +5,7 @@
     "src/asteroids/config.js",
     "src/asteroids/i18n/game_en_US.js",
 
-"src/asteroids/components/cobjs.js",
+"src/asteroids/elements/cobjs.js",
 "src/asteroids/nodes/gnodes.js",
 
 "src/asteroids/systems/priorities.js",

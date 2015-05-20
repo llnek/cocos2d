@@ -42,17 +42,16 @@ define('zotohlab/p/splash',
 
       setPlay: function() {
         var cw = ccsx.center(),
-        wz = ccsx.screen();
-
-        this.addItem( ccsx.pmenu1({
-          imgPath: sh.getImagePath('splash.play-btn'),
-          pos: cc.p(cw.x, wz.height * 0.20),
+        wz = ccsx.screen(),
+        menu= ccsx.vmenu({
+          imgPath: '#splash.play-btn',
           cb: function() {
             sh.fire('/splash/playgame');
           },
           target: this
-        }));
-
+        });
+        menu.setPosition(cw.x, wz.height * 0.20);
+        this.addItem(menu);
       }
 
     });

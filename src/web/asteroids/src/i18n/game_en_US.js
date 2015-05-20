@@ -7,17 +7,26 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/l10n', ['cherimoia/skarojs',
-                          'zotohlab/asterix'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @module zotohlab/p/l10n
+ */
+define('zotohlab/p/l10n',
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix'],
 
   function(sjs, sh) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/l10n */
+    var exports = {},
+    xcfg = sh.xcfg,
     undef;
 
-    sjs.merge(xcfg.l10nTable, {
+    exports = sjs.merge(xcfg.l10nTable, {
 
       "en" : {
 
@@ -48,7 +57,7 @@ define('zotohlab/p/l10n', ['cherimoia/skarojs',
 
     });
 
-    return xcfg.l10nTable;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

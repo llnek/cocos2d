@@ -12,7 +12,7 @@ document.ccConfig = {
   id: 'gameArea',
 
   engineDir: ['/public/extlibs/cocos2d-html5'],
-  modules: [ 'cocos2d', 'editbox' ],
+  modules: [ 'cocos2d', 'ccui' ],
 
   jsList: [
 
@@ -37,7 +37,7 @@ document.ccConfig = {
     "/public/ig/lib/zotohlab/ext/xlayers.js",
     "/public/ig/lib/zotohlab/ext/xscenes.js",
     "/public/ig/lib/zotohlab/ext/xpool.js",
-    "/public/ig/lib/zotohlab/ext/xloader.js",
+    "/public/ig/lib/zotohlab/ext/xldr.js",
 
     "/public/ig/lib/zotohlab/gui/startscreen.js",
     "/public/ig/lib/zotohlab/gui/msgbox.js",
@@ -48,7 +48,7 @@ document.ccConfig = {
     '/public/ig/lib/game/asteroids/config.js',
     '/public/ig/lib/game/asteroids/i18n/game_en_US.js',
 
-'/public/ig/lib/game/asteroids/components/cobjs.js',
+'/public/ig/lib/game/asteroids/elements/cobjs.js',
 '/public/ig/lib/game/asteroids/nodes/gnodes.js',
 
 '/public/ig/lib/game/asteroids/systems/priorities.js',

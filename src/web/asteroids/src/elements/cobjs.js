@@ -7,22 +7,42 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/components', ['cherimoia/skarojs',
-                                'zotohlab/asterix',
-                                'zotohlab/asx/ccsx'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/elements
+ */
+define('zotohlab/p/elements',
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/elements */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
     ast= {};
 
     //////////////////////////////////////////////////////////////////////////////
-    ast.Asteroid = sh.Ashley.compDef({
+    exports.Asteroid = sh.Ashley.compDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Asteroid
+       * @method constructor
+       * @param {cc.Sprite}
+       * @param {Number} value
+       * @param {Number} rank
+       * @param {Number} degA
+       * @param {Number} vx
+       * @param {Number} vy
+       */
       constructor: function(sprite,value,rank, deg, vx, vy) {
         this.ctor(sprite, 1, value);
         this.rotation= deg;
@@ -36,8 +56,16 @@ define('zotohlab/p/components', ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    ast.Cannon = sh.Ashley.casDef({
+    /**
+     * @Cannon
+     */
+    exports.Cannon = sh.Ashley.casDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Cannon
+       * @method constructor
+       * @param {Number} coolDownWindow
+       */
       constructor: function(coolDownWindow) {
         this.coolDownWindow= coolDownWindow || 0.8;
         this.hasAmmo = true;
@@ -46,8 +74,16 @@ define('zotohlab/p/components', ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    ast.Looper = sh.Ashley.casDef({
+    /**
+     * @class Looper
+     */
+    exports.Looper = sh.Ashley.casDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Looper
+       * @method constructor
+       * @param {Number} count
+       */
       constructor: function(count) {
         this.timers=sjs.makeArray(count,null);
       }
@@ -55,8 +91,17 @@ define('zotohlab/p/components', ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    ast.Missile = sh.Ashley.compDef({
+    /**
+     * @class Missile
+     */
+    exports.Missile = sh.Ashley.compDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Missile
+       * @method constructor
+       * @param {cc.Sprite} sprite
+       * @param {Number} speed
+       */
       constructor: function(sprite,speed) {
         this.speed=speed || 20;
         this.ctor(sprite);
@@ -69,8 +114,15 @@ define('zotohlab/p/components', ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    ast.Motion = sh.Ashley.casDef({
+    /**
+     * @class Motion
+     */
+    exports.Motion = sh.Ashley.casDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Motion
+       * @method constructor
+       */
       constructor: function() {
         this.right = false;
         this.left = false;
@@ -81,8 +133,17 @@ define('zotohlab/p/components', ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    ast.Ship = sh.Ashley.compDef({
+    /**
+     * @class Ship
+     */
+    exports.Ship = sh.Ashley.compDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Ship
+       * @method constructor
+       * @param {cc.Sprite} sprite
+       * @param {Array} frames
+       */
       constructor: function(sprite,frames) {
         this.ctor(sprite);
         this.frames=frames;
@@ -91,8 +152,19 @@ define('zotohlab/p/components', ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    ast.Velocity = sh.Ashley.casDef({
+    /**
+     * @class Velocity
+     */
+    exports.Velocity = sh.Ashley.casDef({
 
+      /**
+       * @memberof module:zotohlab/p/elments~Velocity
+       * @method constructor
+       * @param {Number} vx
+       * @param {Number} vy
+       * @param {Number} mx
+       * @param {Number} my
+       */
       constructor: function(vx,vy,mx,my) {
         this.vel = {
           x: vx || 0,
@@ -111,8 +183,15 @@ define('zotohlab/p/components', ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    ast.Rotation = sh.Ashley.casDef({
+    /**
+     * @class Rotation
+     */
+    exports.Rotation = sh.Ashley.casDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Rotation
+       * @param {Number} deg
+       */
       constructor: function(deg) {
         this.angle = deg;
       }
@@ -120,15 +199,22 @@ define('zotohlab/p/components', ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    ast.Thrust = sh.Ashley.casDef({
+    /**
+     * @class Thrust
+     */
+    exports.Thrust = sh.Ashley.casDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Thrust
+       * @method constructor
+       */
       constructor: function(t) {
         this.power = t;
       }
 
     });
 
-    return ast;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////
