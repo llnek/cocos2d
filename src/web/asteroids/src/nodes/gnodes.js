@@ -10,7 +10,7 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/components
+ * @requires zotohlab/p/elements
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
@@ -18,7 +18,7 @@
  */
 define('zotohlab/p/gnodes',
 
-       ['zotohlab/p/components',
+       ['zotohlab/p/elements',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
@@ -43,21 +43,58 @@ define('zotohlab/p/gnodes',
        * @static
        */
       looper    : cobjs.Looper,
+      /**
+       * @memberof module:zotohlab/p/gnodes~CannonCtrlNode
+       * @property {Cannon} cannon
+       * @static
+       */
       cannon    : cobjs.Cannon,
+      /**
+       * @memberof module:zotohlab/p/gnodes~CannonCtrlNode
+       * @property {Ship} ship
+       * @static
+       */
       ship      : cobjs.Ship
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    ast.ShipMotionNode = sh.Ashley.nodeDef({
+    /**
+     * @class ShipMotionNode
+     */
+    exports.ShipMotionNode = sh.Ashley.nodeDef({
+      /**
+       * @memberof module:zotohlab/p/gnodes~ShipMotionNode
+       * @property {Velocity} velocity
+       * @static
+       */
       velocity    : cobjs.Velocity,
+      /**
+      * @memberof module:zotohlab/p/gnodes~ShipMotionNode
+      * @property {Rotation} rotation
+      * @static
+      */
       rotation    : cobjs.Rotation,
+      /**
+      * @memberof module:zotohlab/p/gnodes~ShipMotionNode
+      * @property {Thrust} thrust
+      * @static
+      */
       thrust      : cobjs.Thrust,
+      /**
+      * @memberof module:zotohlab/p/gnodes~ShipMotionNode
+      * @property {Motion} motion
+      * @static
+      */
       motion      : cobjs.Motion,
+      /**
+      * @memberof module:zotohlab/p/gnodes~ShipMotionNode
+      * @property {Ship} ship
+      * @static
+      */
       ship        : cobjs.Ship
     });
 
-    return ast;
-
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

@@ -7,34 +7,69 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/s/missilecontrol', ['zotohlab/p/s/utils',
-                                      'zotohlab/p/gnodes',
-                                      'cherimoia/skarojs',
-                                      'zotohlab/asterix',
-                                      'zotohlab/asx/ccsx'],
+/**
+ * @requires zotohlab/p/s/utils
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/missilecontrol
+ */
+define('zotohlab/p/s/missilecontrol',
+
+       ['zotohlab/p/s/utils',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (utils,  gnodes, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/missilecontrol */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @class MissileControl
+     */
     MissileControl = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/missilecontrol~MissileControl
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function (options) {
         this.state=options;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/missilecontrol~MissileControl
+       * @method addToEngine
+       * @param {Object} options
+       */
       addToEngine: function (engine) {
         this.nodeList = engine.getNodeList(gnodes.CannonCtrlNode);
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/missilecontrol~MissileControl
+       * @method removeFromEngine
+       * @param {Object} options
+       */
       removeFromEngine: function (engine) {
         this.nodeList = null;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/missilecontrol~MissileControl
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         var node = this.nodeList.head;
 
@@ -44,6 +79,9 @@ define('zotohlab/p/s/missilecontrol', ['zotohlab/p/s/utils',
         }
       },
 
+      /**
+       * @private
+       */
       process: function(node,dt) {
         var gun = node.cannon,
         ship=node.ship,
@@ -61,6 +99,9 @@ define('zotohlab/p/s/missilecontrol', ['zotohlab/p/s/utils',
         }
       },
 
+      /**
+       * @private
+       */
       scanInput: function (node, dt) {
         var hit=false;
 
@@ -82,6 +123,9 @@ define('zotohlab/p/s/missilecontrol', ['zotohlab/p/s/utils',
         this.fireMissile(node,dt);
       },
 
+      /**
+       * @private
+       */
       fireMissile: function(node,dt) {
         var p= sh.pools.Missiles,
         lpr= node.looper,
@@ -112,7 +156,8 @@ define('zotohlab/p/s/missilecontrol', ['zotohlab/p/s/utils',
 
     });
 
-    return MissileControl;
+    exports= MissileControl;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

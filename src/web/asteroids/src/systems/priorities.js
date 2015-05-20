@@ -7,13 +7,21 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @module zotohlab/p/s/priorities
+ */
 define('zotohlab/p/s/priorities', [],
 
   function () { "use strict";
 
-    return {
+    /**
+     * @alias module:zotohlab/p/s/priorities
+     * @enum {Number}
+     * @readonly
+     */
+    var exports= {
 
       PreUpdate: 1,
       Motion: 2,
@@ -24,6 +32,7 @@ define('zotohlab/p/s/priorities', [],
 
     };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

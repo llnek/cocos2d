@@ -12,7 +12,6 @@
 /**
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
- * @requires zotohlab/asx/onlineplay
  * @requires zotohlab/asx/msgbox
  * @requires zotohlab/asx/ynbox
  * @requires zotohlab/p/splash
@@ -24,20 +23,19 @@ define("zotohlab/p/protodefs",
 
        ['cherimoia/skarojs',
         'zotohlab/asterix',
-        'zotohlab/asx/onlineplay',
         'zotohlab/asx/msgbox',
         'zotohlab/asx/ynbox',
         'zotohlab/p/splash',
         'zotohlab/p/mmenu',
         'zotohlab/p/arena'],
 
-  function (sjs, sh, online, msgbox, ynbox,
+  function (sjs, sh, msgbox, ynbox,
             splash, mmenu, arena) { "use strict";
 
-    var ps= [online, splash, mmenu, msgbox, ynbox, arena],
+    var ps= [splash, mmenu, msgbox, ynbox, arena],
     protos= sh.protos,
     /** @alias module:zotohlab/p/protodefs */
-    exports= {},
+    exports= protos,
     R = sjs.ramda,
     undef;
 

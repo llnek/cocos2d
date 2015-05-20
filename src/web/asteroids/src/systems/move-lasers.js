@@ -7,31 +7,65 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/s/movelasers', ['zotohlab/p/s/utils',
-                                  'cherimoia/skarojs',
-                                  'zotohlab/asterix',
-                                  'zotohlab/asx/ccsx'],
+/**
+ * @requires zotohlab/p/s/utils
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/movelasers
+ */
+define('zotohlab/p/s/movelasers',
+
+       ['zotohlab/p/s/utils',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (utils, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/movelasers */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @class MovementBombs
+     */
     MovementBombs = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/movelasers~MovementBombs
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state= options;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/movelasers~MovementBombs
+       * @method removeFromEngine
+       * @param {Object} options
+       */
       removeFromEngine: function(engine) {
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/movelasers~MovementBombs
+       * @method addToEngine
+       * @param {Object} options
+       */
       addToEngine: function(engine) {
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/movelasers~MovementBombs
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         var pos,
         x, y;
@@ -48,7 +82,8 @@ define('zotohlab/p/s/movelasers', ['zotohlab/p/s/utils',
 
     });
 
-    return MovementBombs;
+    exports= MovementBombs;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

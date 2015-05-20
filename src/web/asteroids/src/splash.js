@@ -82,7 +82,9 @@ define('zotohlab/p/splash',
         });
       }
 
-    }
+    };
+
+    return exports;
 
 });
 

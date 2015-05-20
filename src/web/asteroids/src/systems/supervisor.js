@@ -9,31 +9,66 @@
 // this software.
 // Copyright (c) 2013-2014, Ken Leung. All rights reserved.
 
-define('zotohlab/p/s/supervisor', ['zotohlab/p/components',
-                                  'cherimoia/skarojs',
-                                  'zotohlab/asterix',
-                                  'zotohlab/asx/ccsx',
-                                  'zotohlab/asx/xpool'],
+/**
+ * @requires zotohlab/p/elements
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xpool
+ * @module zotohlab/p/s/supervisor
+ */
+define('zotohlab/p/s/supervisor',
+
+       ['zotohlab/p/elements',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/xpool'],
 
   function (cobjs, sjs, sh, ccsx, XPool) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/supervisor */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @class GameSupervisor
+     */
     GameSupervisor = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state= options;
         this.inited=false;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function(engine) {
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         if (! this.inited) {
           this.onceOnly();
@@ -42,6 +77,9 @@ define('zotohlab/p/s/supervisor', ['zotohlab/p/components',
         }
       },
 
+      /**
+       * @private
+       */
       onceOnly: function() {
 
         sh.pools.Missiles = new XPool();
@@ -59,23 +97,33 @@ define('zotohlab/p/s/supervisor', ['zotohlab/p/components',
         sh.factory.createShip();
       },
 
+      /**
+       * @private
+       */
       initAsteroidSizes: function() {
         this.state.astro3 = ccsx.createSpriteFrame('rock_small.png').getContentSize();
         this.state.astro2 = ccsx.createSpriteFrame('rock_med.png').getContentSize();
         this.state.astro1 = ccsx.createSpriteFrame('rock_large.png').getContentSize();
       },
 
+      /**
+       * @private
+       */
       initPlayerSize: function() {
         this.state.playerSize = ccsx.createSpriteFrame('rship_0.png').getContentSize();
       },
 
+      /**
+       * @private
+       */
       initUfoSize: function() {
         this.state.ufoSize = ccsx.createSpriteFrame('ufo.png').getContentSize();
       }
 
     });
 
-    return GameSupervisor;
+    exports= GameSupervisor;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

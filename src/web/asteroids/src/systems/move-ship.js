@@ -7,34 +7,68 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/s/moveship', ['zotohlab/p/gnodes',
-                                'cherimoia/skarojs',
-                                'zotohlab/asterix',
-                                'zotohlab/asx/ccsx'],
+/**
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/moveship
+ */
+define('zotohlab/p/s/moveship',
+
+       ['zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (gnodes, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/moveship */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
     R = sjs.ramda,
 
+    /**
+     * @class MovementShip
+     */
     MovementShip = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/moveship~MovementShip
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state= options;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/moveship~MovementShip
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
         this.shipMotions = undef;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/moveship~MovementShip
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function(engine) {
         this.shipMotions = engine.getNodeList(gnodes.ShipMotionNode)
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/moveship~MovementShip
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         var node=this.shipMotions.head;
 
@@ -44,6 +78,9 @@ define('zotohlab/p/s/moveship', ['zotohlab/p/gnodes',
         }
       },
 
+      /**
+       * @private
+       */
       rotateShip: function(cur,deg) {
         cur += deg;
         if (cur >= 360) {
@@ -55,6 +92,9 @@ define('zotohlab/p/s/moveship', ['zotohlab/p/gnodes',
         return cur;
       },
 
+      /**
+       * @private
+       */
       thrust: function(ship, angle,power) {
         var rc= sh.calcXY(angle, power),
         accel = {
@@ -64,6 +104,9 @@ define('zotohlab/p/s/moveship', ['zotohlab/p/gnodes',
         return accel;
       },
 
+      /**
+       * @private
+       */
       processShipMotions: function(node,dt) {
         var motion = node.motion,
         velo = node.velocity,
@@ -102,10 +145,15 @@ define('zotohlab/p/s/moveship', ['zotohlab/p/gnodes',
         motion.down=false;
       },
 
+      /**
+       * @private
+       */
       clampVelocity: function() {
-
       },
 
+      /**
+       * @private
+       */
       moveShip: function(snode, dt) {
         var velo = snode.velocity,
         B = this.state.world,
@@ -168,7 +216,8 @@ define('zotohlab/p/s/moveship', ['zotohlab/p/gnodes',
 
     });
 
-    return MovementShip;
+    exports= MovementShip;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

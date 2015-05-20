@@ -7,28 +7,53 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/s/factory', ['zotohlab/p/components',
-                               'zotohlab/p/gnodes',
-                               'cherimoia/skarojs',
-                               'zotohlab/asterix',
-                               'zotohlab/asx/ccsx'],
+/**
+ * @requires zotohlab/p/elements
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/factory
+ */
+define('zotohlab/p/s/factory',
+
+       ['zotohlab/p/elements',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (cobjs, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/factory */
+    var exports= {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
 
+    /**
+     * @class EntityFactory
+     */
     EntityFactory = sh.Ashley.casDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(engine, options) {
         this.state = options;
         this.engine=engine;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createMissiles
+       * @param {Number} count
+       */
       createMissiles: function(count) {
         sh.pools.Missiles.preSet(function() {
           var sp = ccsx.createSpriteFrame('laserGreen.png');
@@ -38,6 +63,11 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         }, count || 36);
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createLasers
+       * @param {Number} count
+       */
       createLasers: function(count) {
         sh.pools.Lasers.preSet(function() {
           var sp = ccsx.createSpriteFrame('laserRed.png');
@@ -47,6 +77,10 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         }, count || 36);
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createShip
+       */
       createShip: function() {
         var ent= sh.Ashley.newEntity(),
         deg = 90,//sjs.randPercent() * 360;
@@ -68,9 +102,12 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         ent.add(new cobjs.Thrust(25));
         ent.add(new cobjs.Rotation(deg));
         this.engine.addEntity(ent);
-
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method bornShip
+       */
       bornShip: function() {
         var h = this.state.playerSize.height,
         w = this.state.playerSize.width,
@@ -96,6 +133,11 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         this.state.ship.inflate({ x: x, y: y });
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createAsteroids
+       * @param {Number} rank
+       */
       createAsteroids: function(rank) {
         var cfg = sh.getLevelCfg(this.state.level),
         B= this.state.world,
@@ -145,6 +187,9 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         sjs.loggr.debug('CREATED more asteroids - ' + rank);
       },
 
+      /**
+       * @private
+       */
       maybeOverlap: function (ship) {
         var rc= R.any(function(z) {
           return z.status ? sh.isIntersect(ship, ccsx.bbox4(z.sprite)) : false;
@@ -166,7 +211,8 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
 
     });
 
-    return EntityFactory;
+    exports= EntityFactory;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

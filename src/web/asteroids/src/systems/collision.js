@@ -7,37 +7,72 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/s/collisions', ['zotohlab/p/s/utils',
-                                  'zotohlab/p/gnodes',
-                                  'cherimoia/skarojs',
-                                  'zotohlab/asterix',
-                                  'zotohlab/asx/ccsx'],
+/**
+ * @requires zotohlab/p/s/utils
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/collisions
+ */
+define('zotohlab/p/s/collisions',
+
+       ['zotohlab/p/s/utils',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (utils, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/collisions */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
 
+    /**
+     * @class CollisionSystem
+     */
     CollisionSystem = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/collisions~CollisionSystem
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state= options;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/collisions~CollisionSystem
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
         this.ships= undef;
         this.engine=undef;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/collisions~CollisionSystem
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function(engine) {
         this.ships= engine.getNodeList(gnodes.ShipMotionNode);
         this.engine=engine;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/collisions~CollisionSystem
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         var ship = this.ships.head;
 
@@ -53,10 +88,16 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/s/utils',
 
       },
 
+      /**
+       * @private
+       */
       collide: function(a,b) {
         return ccsx.collide0(a.sprite, b.sprite);
       },
 
+      /**
+       * @private
+       */
       checkMissilesRocks: function() {
         var me=this;
         sh.pools.Missiles.iter(function(m) {
@@ -87,6 +128,9 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/s/utils',
         });
       },
 
+      /**
+       * @private
+       */
       checkShipBombs: function(node) {
         var ship = node.ship,
         me=this;
@@ -100,6 +144,9 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/s/utils',
         });
       },
 
+      /**
+       * @private
+       */
       checkShipRocks: function(node) {
         var ship = node.ship,
         me=this;
@@ -132,7 +179,8 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/s/utils',
 
     });
 
-    return CollisionSystem;
+    exports= CollisionSystem;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////
