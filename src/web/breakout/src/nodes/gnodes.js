@@ -7,38 +7,82 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/gnodes', ['zotohlab/p/components',
-                            'cherimoia/skarojs',
-                            'zotohlab/asterix'],
+/**
+ * @requires zotohlab/p/elements
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @module zotohlab/p/gnodes
+ */
+define('zotohlab/p/gnodes',
+
+       ['zotohlab/p/elements',
+        'cherimoia/skarojs',
+        'zotohlab/asterix'],
 
   function (cobjs, sjs, sh) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/gnodes */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
-    undef,
-    bko= {};
+    undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    bko.BricksNode = sh.Ashley.nodeDef({
+    /**
+     * @class BricksNode
+     */
+    exports.BricksNode = sh.Ashley.nodeDef({
+      /**
+       * @memberof module:zotohlab/p/gnodes~BricksNode
+       * @property {BrickFence} fence
+       */
       fence   : cobjs.BrickFence
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    bko.PaddleMotionNode = sh.Ashley.nodeDef({
+    /**
+     * @class PaddleMotionNode
+     */
+    exports.PaddleMotionNode = sh.Ashley.nodeDef({
+      /**
+       * @memberof module:zotohlab/p/gnodes~PaddleMotionNode
+       * @property {Velocity} velocity
+       * @static
+       */
       velocity    : cobjs.Velocity,
+      /**
+       * @memberof module:zotohlab/p/gnodes~PaddleMotionNode
+       * @property {Motion} motion
+       * @static
+       */
       motion      : cobjs.Motion,
+      /**
+       * @memberof module:zotohlab/p/gnodes~PaddleMotionNode
+       * @property {Paddle} paddle
+       * @static
+       */
       paddle      : cobjs.Paddle
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    bko.BallMotionNode = sh.Ashley.nodeDef({
+    exports.BallMotionNode = sh.Ashley.nodeDef({
+      /**
+       * @memberof module:zotohlab/p/gnodes~BallMotionNode
+       * @property {Velocity} velocity
+       * @static
+       */
       velocity    : cobjs.Velocity,
+      /**
+       * @memberof module:zotohlab/p/gnodes~BallMotionNode
+       * @property {Ball} ball
+       * @static
+       */
       ball        : cobjs.Ball
     });
 
-    return bko;
+    return exports;
 
 });
 

@@ -6,7 +6,7 @@
   "src/breakout/config.js",
   "src/breakout/i18n/game_en_US.js",
 
-"src/breakout/components/cobjs.js",
+"src/breakout/elements/cobjs.js",
 "src/breakout/nodes/gnodes.js",
 
 "src/breakout/systems/priorities.js",

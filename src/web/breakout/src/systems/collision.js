@@ -7,31 +7,60 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/s/collisions', ['zotohlab/p/gnodes',
-                                  'cherimoia/skarojs',
-                                  'zotohlab/asterix',
-                                  'zotohlab/asx/ccsx'],
+/**
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/collisions
+ */
+define('zotohlab/p/s/collisions',
+
+       ['zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (gnodes, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/collisions */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.xcsts,
     undef,
 
+    /**
+     * @class CollisionSystem
+     */
     CollisionSystem = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/collisions~CollisionSystem
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state = options;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/collisions~CollisionSystem
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
         this.paddles=null;
         this.balls=null;
         this.fences= undef;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/collisions~CollisionSystem
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function(engine) {
         this.paddles= engine.getNodeList(gnodes.PaddleMotionNode);
         this.balls= engine.getNodeList(gnodes.BallMotionNode);
@@ -39,6 +68,11 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/gnodes',
         this.engine=engine;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/collisions~CollisionSystem
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         var bnode = this.balls.head,
         pnode= this.paddles.head,
@@ -56,17 +90,23 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/gnodes',
         }
       },
 
+      /**
+       * @private
+       */
       onPlayerKilled: function(pnode, bnode) {
         var pos= bnode.ball.sprite.getPosition();
 
         if (pos.y < ccsx.getBottom(pnode.paddle.sprite)) {
-          sh.fireEvent('/game/objects/players/killed');
+          sh.fire('/game/players/killed');
           return true;
         } else {
           return false;
         }
       },
 
+      /**
+       * @private
+       */
       checkNodes: function(pnode,bnode) {
         if (ccsx.collide0(pnode.paddle.sprite,
                           bnode.ball.sprite)) {
@@ -75,6 +115,9 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/gnodes',
       },
 
       //ball hits paddle
+      /**
+       * @private
+       */
       check: function(pnode,bnode) {
         var ball= bnode.ball,
         pad= pnode.paddle,
@@ -87,6 +130,9 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/gnodes',
         bv.vel.y = - bv.vel.y;
       },
 
+      /**
+       * @private
+       */
       checkBricks: function(fence,bnode,dt) {
         var bss = fence.fence.bricks,
         n,
@@ -101,6 +147,9 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/gnodes',
         }
       },
 
+      /**
+       * @private
+       */
       onBrick: function(bnode, brick) {
         var bz = bnode.ball.sprite.getContentSize(),
         kz= brick.sprite.getContentSize(),
@@ -135,7 +184,7 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/gnodes',
           sjs.loggr.error("Failed to determine the collision of ball and brick.");
           return;
         }
-        sh.fireEvent('/game/objects/players/earnscore', {
+        sh.fire('/game/players/earnscore', {
           value: brick.value
         });
         brick.sprite.setVisible(false);
@@ -144,7 +193,8 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/gnodes',
 
     });
 
-    return CollisionSystem;
+    exports= CollisionSystem;
+    return exports;
 });
 
 ///////////////////////////////////////////////////////////////////////////////

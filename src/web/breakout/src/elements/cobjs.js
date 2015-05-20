@@ -7,40 +7,72 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/components', ['cherimoia/skarojs',
-                                'zotohlab/asterix',
-                                'zotohlab/asx/ccsx'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/elements
+ */
+define('zotohlab/p/elements',
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/elements */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
-    undef,
-    bko= {};
+    undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    bko.Ball = sh.Ashley.compDef({
+    /**
+     * @class Ball
+     */
+    exports.Ball = sh.Ashley.compDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Ball
+       * @method constructor
+       * @param {cc.Sprite}
+       */
       constructor: function(sprite) {
         this.ctor(sprite);
       }
-
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    bko.BrickFence = sh.Ashley.casDef({
+    /**
+     * @class BrickFence
+     */
+    exports.BrickFence = sh.Ashley.casDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~BrickFence
+       * @method constructor
+       * @param {Array} bricks
+       */
       constructor: function(bricks) {
         this.bricks=bricks;
       }
-
     });
 
-    //
-    bko.Brick = sh.Ashley.compDef({
+    /**
+     * @class Brick
+     */
+    exports.Brick = sh.Ashley.compDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Brick
+       * @method constructor
+       * @param {cc.Sprite} sprite
+       * @param {Number} value
+       * @param {Number} color
+       */
       constructor: function(sprite,value,color) {
         this.ctor(sprite, 1, value);
         this.color=color;
@@ -49,27 +81,49 @@ define('zotohlab/p/components', ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    bko.Motion = sh.Ashley.casDef({
+    /**
+     * @class Motion
+     */
+    exports.Motion = sh.Ashley.casDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Motion
+       * @method constructor
+       */
       constructor: function() {
         this.right = false;
         this.left = false;
       }
-
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    bko.Paddle = sh.Ashley.compDef({
+    /**
+     * @class Paddle
+     */
+    exports.Paddle = sh.Ashley.compDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Paddle
+       * @method constructor
+       * @param {cc.Sprite}
+       */
       constructor: function(sprite) {
         this.ctor(sprite);
       }
-
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    bko.Velocity = sh.Ashley.casDef({
+    /**
+     * @class Velocity
+     */
+    exports.Velocity = sh.Ashley.casDef({
 
+      /**
+       * @memberof module:zotohlab/p/elements~Velocity
+       * @method constructor
+       * @param {Number} vx
+       * @param {Number} vy
+       */
       constructor: function(vx,vy) {
         this.vel = {
           x: vx || 0,
@@ -79,8 +133,7 @@ define('zotohlab/p/components', ['cherimoia/skarojs',
 
     });
 
-    return bko;
-
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

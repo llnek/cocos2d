@@ -7,31 +7,64 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/s/supervisor', ['cherimoia/skarojs',
-                                  'zotohlab/asterix',
-                                  'zotohlab/asx/ccsx'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/supervisor
+ */
+define('zotohlab/p/s/supervisor',
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/supervisor */
+    var exports= {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @class GameSupervisor
+     */
     GameSupervisor = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state= options;
         this.inited=false;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function(engine) {
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         if (! this.inited) {
           this.onceOnly();
@@ -39,14 +72,25 @@ define('zotohlab/p/s/supervisor', ['cherimoia/skarojs',
         }
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method initBrickSize
+       */
       initBrickSize: function() {
         this.state.candySize= ccsx.createSpriteFrame('red_candy.png').getContentSize();
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method initBallSize
+       */
       initBallSize: function() {
         this.state.ballSize= ccsx.createSpriteFrame('ball.png').getContentSize();
       },
 
+      /**
+       * @private
+       */
       onceOnly: function() {
         this.initBrickSize();
         this.initBallSize();
@@ -57,7 +101,8 @@ define('zotohlab/p/s/supervisor', ['cherimoia/skarojs',
 
     });
 
-    return GameSupervisor;
+    exports= GameSupervisor;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

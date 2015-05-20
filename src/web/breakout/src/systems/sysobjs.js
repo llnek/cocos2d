@@ -7,31 +7,73 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/sysobjs', ['zotohlab/p/s/collisions',
-                             'zotohlab/p/s/factory',
-                             'zotohlab/p/s/motions',
-                             'zotohlab/p/s/moveball',
-                             'zotohlab/p/s/movepaddle',
-                             'zotohlab/p/s/priorities',
-                             'zotohlab/p/s/supervisor'],
+/**
+ * @requires zotohlab/p/s/collisions
+ * @requires zotohlab/p/s/factory
+ * @requires zotohlab/p/s/motions
+ * @requires zotohlab/p/s/moveball
+ * @requires zotohlab/p/s/movepaddle
+ * @requires zotohlab/p/s/priorities
+ * @requires zotohlab/p/s/supervisor
+ * @module zotohlab/p/sysobjs
+ */
+define('zotohlab/p/sysobjs',
+
+       ['zotohlab/p/s/collisions',
+        'zotohlab/p/s/factory',
+        'zotohlab/p/s/motions',
+        'zotohlab/p/s/moveball',
+        'zotohlab/p/s/movepaddle',
+        'zotohlab/p/s/priorities',
+        'zotohlab/p/s/supervisor'],
 
   function(Collisions, EntityFactory, Motions, MovementBall,
            MovementPaddle, Priorities, Supervisor) { "use strict";
 
-    return {
+    /** @alias module:zotohlab/p/sysobjs */
+    var exports= {
 
+      /**
+       * @property {Collisions} Collisions
+       * @static
+       */
       Collisions        : Collisions,
+      /**
+       * @property {EntityFactory} Factory
+       * @static
+       */
       Factory     : EntityFactory,
+      /**
+       * @property {Motions} Motions
+       * @static
+       */
       Motions           : Motions,
+      /**
+       * @property {MovementBall} MovementBall
+       * @static
+       */
       MovementBall      : MovementBall,
+      /**
+       * @property {MovementPaddle} MovementPaddle
+       * @static
+       */
       MovementPaddle    : MovementPaddle,
+      /**
+       * @property {Priorities} Priorities
+       * @static
+       */
       Priorities        : Priorities,
+      /**
+       * @property {Supervisor} Supervisor
+       * @static
+       */
       Supervisor        : Supervisor
 
     };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

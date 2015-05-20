@@ -7,20 +7,36 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/config', ['cherimoia/skarojs',
-                            'zotohlab/asterix',
-                            'zotohlab/asx/xcfg'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/xcfg
+ * @module zotohlab/p/config
+ */
+define('zotohlab/p/config',
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/xcfg'],
 
   function (sjs, sh, xcfg) { "use strict";
 
-    sjs.merge( xcfg, {
+    /** @alias module:zotohlab/p/config */
+    var exports= {};
+
+    exports = sjs.merge( xcfg, {
 
       appKey :  "7d943e06-0849-4bf4-a16d-64a401f72a3e",
 
       appid: 'breakout',
       color: 'yellow',
+
+      resolution: {
+        policy: cc.ResolutionPolicy.FIXED_HEIGHT,
+        resSize: [0,0]
+      },
 
       csts: {
         GRID_W: 40,
@@ -50,7 +66,9 @@ define('zotohlab/p/config', ['cherimoia/skarojs',
         tiles: {
         },
         images: {
-          'splash.play-btn' : 'res/cocos2d/btns/play_gray_x64.png'
+          'splash.play-btn' : 'res/cocos2d/btns/play_gray_x64.png',
+          'game.bg' : 'res/{{appid}}/pics/bg.png',
+          'gui.mmenu.menu.bg' : 'res/{{appid}}/pics/bg.png'
         },
         sounds: {
           'game_end' : 'res/cocos2d/sfx/MineExplosion',
@@ -63,7 +81,7 @@ define('zotohlab/p/config', ['cherimoia/skarojs',
       },
 
       game: {
-        size: {width:320, height:480, scale:1}
+        sd: {width:320, height:480}
       },
 
       levels: {
@@ -79,13 +97,18 @@ define('zotohlab/p/config', ['cherimoia/skarojs',
         }
       },
 
+      handleResolution: function(rs) {
+        //for default font, we use 48pt
+        this.game.scale = 52/256 * rs.width /320;
+      },
+
       runOnce: function() {
         cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
       }
 
     });
 
-    return xcfg;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

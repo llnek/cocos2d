@@ -7,27 +7,52 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/s/factory', ['zotohlab/p/components',
-                               'zotohlab/p/gnodes',
-                               'cherimoia/skarojs',
-                               'zotohlab/asterix',
-                               'zotohlab/asx/ccsx'],
+/**
+ * @requires zotohlab/p/elements
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/factory
+ */
+define('zotohlab/p/s/factory',
+
+       ['zotohlab/p/elements',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (cobjs, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/factory */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @class EntityFactory
+     */
     EntityFactory = sh.Ashley.casDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method constructor
+       * @param {Ash.Engine} engine
+       * @param {Object} options
+       */
       constructor: function(engine, options) {
         this.engine=engine;
         this.state= options;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createBricks
+       */
       createBricks: function() {
         var wz = ccsx.screen(),
         cw= ccsx.center(),
@@ -56,6 +81,10 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         this.engine.addEntity(ent);
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method bornPaddle
+       */
       bornPaddle: function() {
         var p= this.engine.getNodeList(gnodes.PaddleMotionNode).head,
         cw= ccsx.center(),
@@ -68,6 +97,10 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         b.velocity.vel.vx = 200 * sjs.randSign();
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createPaddle
+       */
       createPaddle: function() {
         var cw= ccsx.center(),
         ent,
@@ -84,6 +117,10 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         this.engine.addEntity(ent);
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createBall
+       */
       createBall: function() {
         var vy = 200 * sjs.randSign(),
         vx = 200 * sjs.randSign(),
@@ -105,7 +142,8 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
 
     });
 
-    return EntityFactory;
+    exports= EntityFactory;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

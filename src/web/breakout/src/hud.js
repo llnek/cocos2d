@@ -7,59 +7,90 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/hud', ['cherimoia/skarojs',
-                         'zotohlab/asterix',
-                         'zotohlab/asx/ccsx',
-                         'zotohlab/asx/xlayers'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xlayers
+ * @module zotohlab/p/hud
+ */
+define('zotohlab/p/hud',
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/xlayers'],
 
   function(sjs, sh, ccsx, layers) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/hud */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @class BackLayer
+     */
     BackLayer = layers.XLayer.extend({
 
       rtti: function() { return 'BackLayer'; },
       pkInit: function() {
-        this._super();
         this.addItem(new cc.TMXTiledMap(
           sh.getTilesPath('gamelevel1.tiles.arena')));
       }
 
     }),
 
+    /**
+     * @class HUDLayer
+     */
     HUDLayer = layers.XGameHUDLayer.extend({
 
+      /**
+       * @protected
+       */
       initAtlases: function() {
         this.regoAtlas('game-pics');
-        this.hudAtlas= 'game-pics';
+        //this.hudAtlas= 'game-pics';
       },
 
+      /**
+       * @private
+       */
       updateScore: function(n) {
         this.score += n;
         this.drawScore();
       },
 
+      /**
+       * @private
+       */
       resetAsNew: function() {
         this.reset();
       },
 
+      /**
+       * @private
+       */
       reset: function() {
         this.replayBtn.setVisible(false);
         this.lives.resurrect();
         this.score=0;
       },
 
+      /**
+       * @protected
+       */
       initLabels: function() {
         var wz = ccsx.screen();
 
         this.scoreLabel = ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.TinyBoxBB'),
           text: '0',
-          anchor: ccsx.AnchorBottomRight,
+          anchor: ccsx.acs.BottomRight,
           scale: 12/72
         });
         this.scoreLabel.setPosition( wz.width - csts.TILE - csts.S_OFF,
@@ -68,6 +99,9 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
         this.addChild(this.scoreLabel, this.lastZix, ++this.lastTag);
       },
 
+      /**
+       * @protected
+       */
       initIcons: function() {
         var wz = ccsx.screen();
 
@@ -81,20 +115,34 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
         this.lives.create();
       },
 
+      /**
+       * @private
+       */
       drawScore: function() {
         this.scoreLabel.setString(Number(this.score).toString());
       },
 
-      initCtrlBtns: function(s) {
-        this._super(32/48);
+      XXinitCtrlBtns: function(s) {
+        //this._super(32/48);
       }
 
     });
 
-    return {
+    exports= {
+      /**
+       * @property {BackLayer} BackLayer
+       * @static
+       */
       BackLayer: BackLayer,
+
+      /**
+       * @property {HUDLayer} HUDLayer
+       * @static
+       */
       HUDLayer: HUDLayer
     };
+
+    return exports;
 
 });
 

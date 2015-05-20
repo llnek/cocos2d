@@ -7,34 +7,48 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/splash', ['cherimoia/skarojs',
-                            'zotohlab/asterix',
-                            'zotohlab/asx/ccsx',
-                            'zotohlab/asx/xlayers',
-                            'zotohlab/asx/xscenes',
-                            'zotohlab/asx/xsplash'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xlayers
+ * @requires zotohlab/asx/xscenes
+ * @requires zotohlab/asx/xsplash
+ * @module zotohlab/p/splash
+ */
+define('zotohlab/p/splash',
 
-  function (sjs, sh, ccsx, layers, scenes, XSplashLayer) { "use strict";
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/xlayers',
+        'zotohlab/asx/xscenes',
+        'zotohlab/asx/xsplash'],
 
-    var xcfg = sh.xcfg,
+  function (sjs, sh, ccsx, layers, scenes, splash) { "use strict";
+
+    /** @alias module:zotohlab/p/splash */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
-    UILayer = layers.XLayer.extend({
+    /**
+     * @class SplashLayer
+     */
+    SplashLayer = splash.XSplashLayer.extend({
 
-      pkInit: function() {
+      setPlay: function() {
         var cw = ccsx.center(),
         wz = ccsx.screen();
-
-        this._super();
 
         this.addItem( ccsx.pmenu1({
           imgPath: sh.getImagePath('splash.play-btn'),
           pos: cc.p(cw.x, wz.height * 0.20),
-          selector: function() {
-            sh.fireEvent('/splash/controls/playgame');
+          cb: function() {
+            sh.fire('/splash/playgame');
           },
           target: this
         }));
@@ -43,31 +57,35 @@ define('zotohlab/p/splash', ['cherimoia/skarojs',
 
     });
 
-    return {
+    exports= {
 
-      'StartScreen' : {
+      /**
+       * @property {String} rtti
+       * @static
+       */
+      rtti : sh.ptypes.start,
 
-        create: function(options) {
-          var scene = new scenes.XSceneFactory([
-            XSplashLayer,
-            UILayer
-          ]).create(options);
-
-          scene.ebus.on('/splash/controls/playgame', function() {
-              var ss= sh.protos['StartScreen'],
-              mm= sh.protos['MainMenu'],
-              dir = cc.director;
-              dir.runScene( mm.create({
-                onBack: function() { dir.runScene( ss.create() ); }
-              }));
-          });
-
-          return scene;
-        }
+      /**
+       * @method reify
+       * @param {Object} options
+       * @return {cc.Scene}
+       */
+      reify: function(options) {
+        return new scenes.XSceneFactory([
+          SplashLayer
+        ]).reify(options).onmsg('/splash/playgame', function() {
+            var ss= sh.protos[sh.ptypes.start],
+            mm= sh.protos[sh.ptypes.mmenu],
+            dir = cc.director;
+            dir.runScene( mm.reify({
+              onBack: function() { dir.runScene( ss.reify() ); }
+            }));
+        });
       }
 
     };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

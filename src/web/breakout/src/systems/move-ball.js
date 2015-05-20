@@ -7,33 +7,67 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/s/moveball', ['zotohlab/p/gnodes',
-                                'cherimoia/skarojs',
-                                'zotohlab/asterix',
-                                'zotohlab/asx/ccsx'],
+/**
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/moveball
+ */
+define('zotohlab/p/s/moveball',
+
+       ['zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (gnodes, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/moveball */
+    var exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @class MovementBall
+     */
     MovementBall = sh.Ashley.sysDef({
 
+      /**
+       * @memberof module:zotohlab/p/s/moveball~MovementBall
+       * @method constructor
+       * @param {Object} options
+       */
       constructor: function(options) {
         this.state= options;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/moveball~MovementBall
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
         this.ballMotions = undef;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/moveball~MovementBall
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
       addToEngine: function(engine) {
         this.ballMotions = engine.getNodeList( gnodes.BallMotionNode)
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/moveball~MovementBall
+       * @method update
+       * @param {Number} dt
+       */
       update: function (dt) {
         var node=this.ballMotions.head;
 
@@ -43,6 +77,9 @@ define('zotohlab/p/s/moveball', ['zotohlab/p/gnodes',
         }
       },
 
+      /**
+       * @private
+       */
       processBallMotions: function(node, dt) {
         var v = node.velocity,
         b= node.ball,
@@ -66,7 +103,8 @@ define('zotohlab/p/s/moveball', ['zotohlab/p/gnodes',
 
     });
 
-    return MovementBall;
+    exports= MovementBall;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

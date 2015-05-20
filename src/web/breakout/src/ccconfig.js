@@ -12,7 +12,7 @@ document.ccConfig = {
   debugMode: 1,
 
   engineDir: ['/public/extlibs/cocos2d-html5'],
-  modules: [ 'cocos2d', 'editbox', 'ccpool' ],
+  modules: [ 'cocos2d', 'ccui' ],
 
   jsList: [
 
@@ -37,7 +37,7 @@ document.ccConfig = {
     "/public/ig/lib/zotohlab/ext/xlayers.js",
     "/public/ig/lib/zotohlab/ext/xscenes.js",
     "/public/ig/lib/zotohlab/ext/xpool.js",
-    "/public/ig/lib/zotohlab/ext/xloader.js",
+    "/public/ig/lib/zotohlab/ext/xldr.js",
 
     "/public/ig/lib/zotohlab/gui/startscreen.js",
     "/public/ig/lib/zotohlab/gui/msgbox.js",
@@ -48,7 +48,7 @@ document.ccConfig = {
   '/public/ig/lib/game/breakout/config.js',
   '/public/ig/lib/game/breakout/i18n/game_en_US.js',
 
-'/public/ig/lib/game/breakout/components/cobjs.js',
+'/public/ig/lib/game/breakout/elements/cobjs.js',
 '/public/ig/lib/game/breakout/nodes/gnodes.js',
 
 '/public/ig/lib/game/breakout/systems/priorities.js',
