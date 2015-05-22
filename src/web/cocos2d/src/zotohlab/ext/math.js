@@ -20,132 +20,113 @@ define("zotohlab/asx/math",
   function (sjs) { "use strict";
 
     /** @alias module:zotohlab/asx/math */
-    var exports = {},
+    let exports = {},
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    function radToDeg(rad) {
-      return 180 * rad / Math.PI;
-    }
-
-    function degToRad(deg) {
-      return deg * Math.PI / 180;
-    }
+    let radToDeg = (rad) => 180 * rad / Math.PI;
+    let degToRad = (deg) => deg * Math.PI / 180;
 
     //////////////////////////////////////////////////////////////////////////////
-    //
     /**
      * @class Vector2
      */
-    var Vector2 = sjs.mixes({
+    class Vector2 {
 
       /**
        * Scalar multiplication.
-       *
        * @memberof module:zotohlab/asx/math~Vector2
        * @method mult
        * @param {Number} n
        * @return {Vector2} result.
        */
-      mult: function (n) {
+      mult(n) {
         return new Vector2(0,0,this.x * n,this.y * n);
-      },
+      }
 
       /**
        * Transpose and rotate.
-       *
        * @memberof module:zotohlab/asx/math~Vector2
        * @method rotate
        * @return {Vector2} rotate.
        */
-      rotate: function(cx, cy, deg) {
-        var rad = degToRad(deg),
+      rotate(cx, cy, deg) {
+        let rad = degToRad(deg),
         a= [cx + (Math.cos(rad) * (this.x - cx) - Math.sin(rad) * (this.y - y0)),
             cy + (Math.sin(rad) * (this.x - cx) + Math.cos(rad) * (this.y - y0)) ];
         this.x= a[0];
         this.y= a[1];
-      },
+      }
 
       /**
        * Calculate the length of this vector.
-       *
        * @memberof module:zotohlab/asx/math~Vector2
        * @method length
        * @return {Number}
        */
-      length: function () {
+      length() {
         return Math.sqrt(this.x*this.x + this.y*this.y);
-      },
+      }
 
       /**
        * Self identification.
-       *
        * @memberof module:zotohlab/asx/math~Vector2
        * @method toString
        * @return {String}
        */
-      toString: function () {
+      toString() {
         return [ "[" , this.x , "," , this.y , "]" ].join('');
-      },
+      }
 
       /**
        * Add 2 vectors together.
-       *
        * @memberof module:zotohlab/asx/math~Vector2
        * @method plus
        * @param {Vector2} v2
        * @return {Vector2} result.
        */
-      plus: function (v2) {
-        return new Vector2(0,0,
-        this.x + v2.x,
-        this.y + v2.y);
-      },
+      plus(v2) {
+        return new Vector2(0,0, this.x + v2.x, this.y + v2.y);
+      }
 
       /**
        * Subtract another vector.
-       *
        * @memberof module:zotohlab/asx/math~Vector2
        * @method minus
        * @param {Vector2} v2
        * @return {Vector2} result
        */
-      minus: function (v2) {
-        return new Vector2(0,0,
-        this.x - v2.x,
-        this.y - v2.y);
-      },
+      minus(v2) {
+        return new Vector2(0,0, this.x - v2.x, this.y - v2.y);
+      }
 
       /**
-       * @method ctor
+       * @method constructor
        * @private
        * @param {Number} x1
        * @param {Number} y1
        * @param {Number} x2
        * @param {Number} y2
        */
-      ctor: function (x1, y1, x2, y2) {
+      constructor(x1, y1, x2, y2) {
         this.x = x2 - x1;
         this.y = y2 - y1;
       }
 
-    });
+    }
 
     /**
      * Create a Vector2 object.
-     *
      * @method reifyVect2
-     * @static
      * @param {Number} x1
      * @param {Number} y1
      * @param {Number} x2
      * @param {Number} y2
      * @return {Vector2}
      */
-    exports.reifyVect2 = function(x1,y1,x2,y2) {
+    exports.reifyVect2 = (x1,y1,x2,y2) => {
       return new Vector2(x1,y1,x2,y2);
-    };
+    }
 
     return exports;
 });

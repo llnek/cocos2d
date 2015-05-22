@@ -25,7 +25,8 @@ define("zotohlab/asterix",
 
   function (sjs, Mustache, LZString, Ash) { "use strict";
 
-    var SEED=0,
+    let SEED=0,
+
     /**
      * @class ComObj
      * @mixin
@@ -33,24 +34,22 @@ define("zotohlab/asterix",
     ComObj = {
       /**
        * Take damage, reduce health.
-       *
        * @memberof module:zotohlab/asterix~ComObj
        * @method hurt
        * @param {Number} damage
        * @param {Object} from
        */
-      hurt: function(damage, from) {
+      hurt(damage, from) {
         this.HP -= sjs.isNumber(damage) ? damage : 1;
       },
 
       /**
        * Reborn from the dead - take from the pool.
-       *
        * @memberof module:zotohlab/asterix~ComObj
        * @method inflate
        * @param {Object} options
        */
-      inflate: function(options) {
+      inflate(options) {
         options= options || {};
         if (!!this.sprite) {
           if (sjs.hasKey(options, 'x') &&
@@ -72,11 +71,10 @@ define("zotohlab/asterix",
 
       /**
        * Die and ready to be recycled.
-       *
        * @memberof module:zotohlab/asterix~ComObj
        * @method deflate
        */
-      deflate: function() {
+      deflate() {
         if (!!this.sprite) {
           this.sprite.unscheduleAllCallbacks();
           this.sprite.stopAllActions();
@@ -87,12 +85,11 @@ define("zotohlab/asterix",
 
       /**
        * Get Sprite's height.
-       *
        * @memberof module:zotohlab/asterix~ComObj
        * @method height
        * @return {Number}
        */
-      height: function() {
+      height() {
         if (!!this.sprite) {
           return this.sprite.getContentSize().height;
         }
@@ -100,12 +97,11 @@ define("zotohlab/asterix",
 
       /**
        * Get Sprite's width.
-       *
        * @memberof module:zotohlab/asterix~ComObj
        * @method width
        * @return {Number}
        */
-      width: function() {
+      width() {
         if (!!this.sprite) {
           return this.sprite.getContentSize().width;
         }
@@ -113,13 +109,12 @@ define("zotohlab/asterix",
 
       /**
        * Set Sprite's position.
-       *
        * @memberof module:zotohlab/asterix~ComObj
        * @method setPos
        * @param {Number} x
        * @param {Number} y
        */
-      setPos: function(x,y) {
+      setPos(x,y) {
         if (!!this.sprite) {
           this.sprite.setPosition(x,y);
         }
@@ -127,12 +122,11 @@ define("zotohlab/asterix",
 
       /**
        * Get the Sprite's position.
-       *
        * @memberof module:zotohlab/asterix~ComObj
        * @method pos
        * @return {cc.Point}
        */
-      pos: function() {
+      pos() {
         if (!!this.sprite) {
           return this.sprite.getPosition();
         }
@@ -140,12 +134,11 @@ define("zotohlab/asterix",
 
       /**
        * Get the Sprite's size.
-       *
        * @memberof module:zotohlab/asterix~ComObj
        * @method size
        * @return {cc.Size}
        */
-      size: function() {
+      size() {
         if (!!this.sprite) {
           return this.sprite.getContentSize();
         }
@@ -153,37 +146,34 @@ define("zotohlab/asterix",
 
       /**
        * Get the tag value.
-       *
        * @memberof module:zotohlab/asterix~ComObj
        * @method rtti
        * @return {String}
        */
-      rtti: function() { return this._name; },
+      rtti() { return this._name; },
 
       /**
        * Set tag value.
-       *
        * @memberof module:zotohlab/asterix~ComObj
        * @method rego
        * @param {String} n
        */
-      rego: function(n) { this._name = n; },
+      rego(n) { this._name = n; },
 
       /**
        * Get the Sprite's tag value.
-       *
        * @memberof module:zotohlab/asterix~ComObj
        * @method pid
        * @return {Number}
        */
-      pid: function() {
+      pid() {
         if (!!this.sprite) { return this.sprite.getTag(); }
       },
 
       /**
        * @private
        */
-      ctor: function(sprite, health, score) {
+      ctor(sprite, health, score) {
         this._name= ["comp" , ++SEED].join(':');
         this.origHP = health || 1;
         this.sprite = sprite;
@@ -219,88 +209,79 @@ define("zotohlab/asterix",
     Ashley= {
       /**
        * Define a Component.
-       *
        * @memberof module:zotohlab/asterix~Ashley
        * @method compDef
        * @param {Object} proto
        * @return {Ash.Class}
        */
-      compDef : function(proto) {
+      compDef(proto) {
         return Ash.Class.extend(sjs.mergeEx(ComObj, proto));
       },
       /**
        * Define a Node.
-       *
        * @memberof module:zotohlab/asterix~Ashley
        * @method nodeDef
        * @param {Object} proto
        * @return {Ash.Node}
        */
-      nodeDef: function(proto) {
+      nodeDef(proto) {
         return Ash.Node.create(proto);
       },
       /**
        * Define a System.
-       *
        * @memberof module:zotohlab/asterix~Ashley
        * @method sysDef
        * @param {Object} proto
        * @return {Ash.System}
        */
-      sysDef: function(proto) {
+      sysDef(proto) {
         return Ash.System.extend(proto);
       },
       /**
        * Enhance this object.
-       *
        * @memberof module:zotohlab/asterix~Ashley
        * @method casDef
        * @param {Object} proto
        * @return {Ash.Class}
        */
-      casDef: function(proto) {
+      casDef(proto) {
         return Ash.Class.extend(proto);
       },
       /**
        * Create a new Entity object.
-       *
        * @memberof module:zotohlab/asterix~Ashley
        * @method newEntity
        * @return {Ash.Entity}
        */
-      newEntity: function() {
+      newEntity() {
         return new Ash.Entity();
       },
       /**
        * Create a basic Component.
-       *
        * @memberof module:zotohlab/asterix~Ashley
        * @method newObject
        * @param {cc.Sprite}
        * @return {SimpleComp}
        */
-      newObject: function(sprite) {
+      newObject(sprite) {
         return new SimpleComp(sprite);
       }
     };
 
     /** @alias module:zotohlab/asterix */
-    var asterix = {
+    let exports = /** @lends exports# */ {
 
       /**
        * @property {Object} Ashley ash-js framework
-       * @static
        */
       Ashley: Ashley,
 
       /**
        * Initialize the l10n module with the string table.
-       *
-       * @method l10nInit
-       * @static
+       * @method
        * @param {Object} table
        */
-      l10nInit: function(table) {
+      l10nInit(table) {
         LZString.toLocaleString(table || this.xcfg.l10nTable);
         LZString.locale = cc.sys.language ;
         LZString.defaultLocale= "en";
@@ -309,33 +290,28 @@ define("zotohlab/asterix",
 
       /**
        * Localize the string.
-       *
-       * @method l10n
-       * @static
+       * @method
        * @param {String} s
        * @param {Object} pms
        * @return {String} rendered string
        */
-      l10n: function(s,pms) {
-        var t= s.toLocaleString();
+      l10n(s,pms) {
+        const t= s.toLocaleString();
         return sjs.isObject(pms) ? Mustache.render(t,pms) : t;
       },
 
       /**
        * @property {String} lang
-       * @static
        */
       lang: cc.sys.language || 'en',
 
       /**
        * @property {Object} protos scene classes
-       * @static
        */
       protos: {},
 
       /**
        * @property {Object} pools object pools
-       * @static
        */
       pools: {},
 
@@ -351,32 +327,26 @@ define("zotohlab/asterix",
 
       /**
        * @property {Object} xcfg application config
-       * @static
        */
       xcfg: undef,
 
       /**
        * @property {Object} main main game
-       * @static
        */
       main: undef,
 
       /**
        * @property {Object} factory entity factory
-       * @static
        */
       factory: undef,
 
       /**
        * @property {String} wsUri uri for network games
-       * @static
-       * @final
        */
       wsUri: '/network/odin/websocket',
 
       /**
        * @property {Object} ptypes
-       * @static
        */
       ptypes: {
         start: 'StartScreen',
@@ -390,41 +360,35 @@ define("zotohlab/asterix",
 
       /**
        * Trigger an event on this topic.
-       *
-       * @method fire
-       * @static
+       * @method
        * @param {String} topic
        * @param {Object} msg
        */
-      fire: function(topic, msg) {
-        var r= cc.director.getRunningScene();
-        if (r) {
+      fire(topic, msg) {
+        const r= cc.director.getRunningScene();
+        if (!!r) {
           r.ebus.fire(topic, msg || {});
         }
       },
 
       /**
        * Get the config for this level.
-       *
-       * @method getLevelCfg
-       * @static
+       * @method
        * @param {Number} level
        * @return {Object} the config
        */
-      getLevelCfg: function(level) {
+      getLevelCfg(level) {
         return this.xcfg.levels['gamelevel' + level]['cfg'];
       },
 
       /**
        * Test if 2 rectangles intersect.
-       *
-       * @method isIntersect
-       * @static
+       * @method
        * @param {Object} a1
        * @param {Object} a2
        * @return {Boolean}
        */
-      isIntersect: function(a1,a2) {
+      isIntersect(a1,a2) {
         return ! (a1.left > a2.right ||
                   a2.left > a1.right ||
                   a1.top < a2.bottom ||
@@ -434,14 +398,12 @@ define("zotohlab/asterix",
       /**
        * Test if the rectangle is out of bound.  B is
        * the enclosing world rectangle.
-       *
-       * @method outOfBound
-       * @static
+       * @method
        * @param {Object} a
        * @param {Object} B
        * @return {Boolean}
        */
-      outOfBound: function(a,B) {
+      outOfBound(a,B) {
         if (a && B) {
           return a.left > B.right    ||
                  a.top < B.bottom  ||
@@ -455,18 +417,16 @@ define("zotohlab/asterix",
       /**
        * Find the corresponding x, y lengths based on the
        * provided angle and length of the hypotenuse.
-       *
-       * @method calcXY
-       * @static
+       * @method
        * @param {Number} angle
        * @param {Number} hypot
        * @return {Array} [x, y, quadrant]
        */
-      calcXY: function(angle,hypot) {
+      calcXY(angle,hypot) {
       // quadrants =  4 | 1
       //             --------
       //              3 | 2
-        var theta, q, x, y;
+        let theta, q, x, y;
         if (angle >= 0 && angle <= 90) {
           theta = this.degToRad(90 - angle);
           x = Math.cos(theta);
@@ -502,110 +462,92 @@ define("zotohlab/asterix",
 
       /**
        * Normalize the degree - modulo 360.
-       *
-       * @method normalizeDeg
-       * @static
+       * @method
        * @param {Number} deg
        * @return {Number}
        */
-      normalizeDeg: function(deg) {
+      normalizeDeg(deg) {
         return (deg > 360) ? deg % 360 : (deg < 0) ? 360 + deg % 360 : deg;
       },
 
       /**
        * Divide the height of the rectangle by half.
-       *
-       * @method hh
-       * @static
+       * @method
        * @param {Object} r
        * @return {Number}
        */
-      hh: function(r) {
+      hh(r) {
         return r.height * 0.5;
       },
 
       /**
        * Divide the width of the rectangle by half.
-       *
-       * @method hw
-       * @static
+       * @method
        * @param {Object} r
        * @return {Number}
        */
-      hw: function(r) {
+      hw(r) {
         return r.width * 0.5;
       },
 
       /**
        * Convert from radian to degree.
-       *
-       * @method radToDeg
-       * @static
+       * @method
        * @param {Number} rad
        * @return {Number}
        */
-      radToDeg: function(rad) {
+      radToDeg(rad) {
         return 180 * rad / Math.PI;
       },
 
       /**
        * Convert from degree to radian.
-       *
-       * @method degToRad
-       * @static
+       * @method
        * @param {Number} deg
        * @return {Number}
        */
-      degToRad: function(deg) {
+      degToRad(deg) {
         return deg * Math.PI / 180;
       },
 
       /**
        * Get the image path mapped to this key.
-       *
-       * @method getImagePath
-       * @static
+       * @method
        * @param {String} key
        * @return {String} path
        */
-      getImagePath: function(key) {
+      getImagePath(key) {
         //cc.log('getSpritePath for key : ' + key);
         return this.fixUrl(this.xcfg.assets.images[key]);
       },
 
       /**
        * Get the *atlas* plist mapped to this key.
-       *
-       * @method getPListPath
-       * @static
+       * @method
        * @param {String} key
        * @return {String} path
        */
-      getPListPath: function(key) {
+      getPListPath(key) {
         return this.fixUrl(this.xcfg.assets.atlases[key]) + '.plist';
       },
 
       /**
        * Get the *atlas* image path mapped to this key.
-       *
-       * @method getAtlasPath
-       * @static
+       * @method
        * @param {String} key
        * @return {String} path
        */
-      getAtlasPath: function(key) {
+      getAtlasPath(key) {
         return this.fixUrl(this.xcfg.assets.atlases[key]) + '.png';
       },
 
       /**
        * Get the sound file path mapped to this key.
-       *
-       * @method getSfxPath
-       * @static
+       * @method
        * @param {String} key
        * @return {String} path
        */
-      getSfxPath: function(key) {
+      getSfxPath(key) {
         return [this.fixUrl(this.xcfg.assets.sounds[key]),
                 '.',
                 this.xcfg.game.sfx].join('');
@@ -613,62 +555,52 @@ define("zotohlab/asterix",
 
       /**
        * Get the *sprite* image path mapped to this key.
-       *
-       * @method getSpritePath
-       * @static
+       * @method
        * @param {String} key
        * @return {String} path
        */
-      getSpritePath: function(key) {
+      getSpritePath(key) {
         //cc.log('getSpritePath for key : ' + key);
         return this.fixUrl(this.xcfg.assets.sprites[key](0));
       },
 
       /**
        * Get the *tile* file path mapped to this key.
-       *
-       * @method getTilesPath
-       * @static
+       * @method
        * @param {String} key
        * @return {String} path
        */
-      getTilesPath: function(key) {
+      getTilesPath(key) {
         return this.fixUrl(this.xcfg.assets.tiles[key]);
       },
 
       /**
        * Get the *font* file path mapped to this key.
-       *
-       * @method getFontPath
-       * @static
+       * @method
        * @param {String} key
        * @return {String} path
        */
-      getFontPath: function(key) {
+      getFontPath(key) {
         var obj= this.xcfg.assets.fonts[key];
         return [this.fixUrl(obj[0]), '/' , obj[2]].join('');
       },
 
       /**
        * Toggle sound on or off.  Override by forcing a value.
-       *
-       * @method toggleSfx
-       * @static
+       * @method
        * @param {Boolean} override
        */
-      toggleSfx: function(override) {
+      toggleSfx(override) {
         this.xcfg.sound.open = sjs.echt(override) ? override : !this.xcfg.sound.open;
       },
 
       /**
        * Play music mapped to this key, repeat if necessary.
-       *
-       * @method sfxPlayMusic
-       * @static
+       * @method
        * @param {String} key
        * @param {Boolean} repeat
        */
-      sfxPlayMusic: function(key,repeat) {
+      sfxPlayMusic(key,repeat) {
         if (this.xcfg.sound.open) {
           cc.audioEngine.playMusic(this.getSfxPath(key),
                                    repeat===true);
@@ -677,13 +609,11 @@ define("zotohlab/asterix",
 
       /**
        * Play sound effect mapped to this key, repeat if necessary.
-       *
-       * @method sfxPlay
-       * @static
+       * @method
        * @param {String} key
        * @param {Boolean} repeat
        */
-      sfxPlay: function(key,repeat) {
+      sfxPlay(key,repeat) {
         if (this.xcfg.sound.open) {
           cc.audioEngine.playEffect(this.getSfxPath(key),
                                     repeat===true);
@@ -692,12 +622,9 @@ define("zotohlab/asterix",
 
       /**
        * Initialize the sound system.
-       *
-       * @method sfxInit
-       * @static
-       * @static
+       * @method
        */
-      sfxInit: function() {
+      sfxInit() {
         cc.audioEngine.setMusicVolume(this.xcfg.sound.volume);
         this.xcfg.sound.open= true;
       },
@@ -705,19 +632,17 @@ define("zotohlab/asterix",
       /**
        * @private
        */
-      fixUrl: function(url) { return this.sanitizeUrl(url); },
+      fixUrl(url) { return this.sanitizeUrl(url); },
 
       /**
        * Sanitize this url differently for web and for devices.
-       *
-       * @method sanitizeUrl
-       * @static
+       * @method
        * @param {String} url
        * @return {String} path
        */
-      sanitizeUrl: function(url) {
+      sanitizeUrl(url) {
         sjs.loggr.debug('About to sanitize url: ' + url);
-        var rc;
+        let rc;
         if (cc.sys.isNative) {
           rc= this.sanitizeUrlForDevice(url);
         } else {
@@ -729,16 +654,15 @@ define("zotohlab/asterix",
 
       /**
        * Sanitize this url for devices.
-       *
-       * @method sanitizeUrlForDevice
-       * @static
+       * @method
        * @param {String} url
        * @return {String} path
        */
-      sanitizeUrlForDevice: function(url) {
+      sanitizeUrlForDevice(url) {
         if (url.match(/^res\//)) {
           if (url.indexOf('/sfx/') > 0) {
-            var ss= url.split("/"), t = ss[1];
+            const ss= url.split("/"),
+            t = ss[1];
             ss[1]='sfx';
             ss[2]=t;
             url = ss.join("/");
@@ -760,13 +684,11 @@ define("zotohlab/asterix",
 
       /**
        * Sanitize this url for web.
-       *
-       * @method sanitizeUrlForWeb
-       * @static
+       * @method
        * @param {String} url
        * @return {String}
        */
-      sanitizeUrlForWeb: function(url) {
+      sanitizeUrlForWeb(url) {
         //ensure we tell mustache not to escape html
         if (url.match(/^game/)) {
           url = '{{{gamesource-ref}}}/' + url;
@@ -788,29 +710,27 @@ define("zotohlab/asterix",
       /**
        * Throttle this function, with some delay.
        * (from underscore.js)
-       *
-       * @method throttle
-       * @static
+       * @method
        * @param {Function} func
        * @param {Number} wait
        * @param {Object} options
        * @return {Function} wrapped function.
        */
-      throttle: function(func, wait, options) {
-        var context, args, result;
-        var timeout = null;
-        var previous = 0;
-        if (!options) options = {};
-        var later = function() {
+      throttle(func, wait, options) {
+        let context, args, result,
+        timeout = null,
+        previous = 0;
+        options = options || {};
+        const later = () => {
           previous = options.leading === false ? 0 : sjs.now();
           timeout = null;
           result = func.apply(context, args);
-          if (!timeout) context = args = null;
+          if (!timeout) { context = args = null; }
         };
         return function() {
-          var now = sjs.now();
-          if (!previous && options.leading === false) previous = now;
-          var remaining = wait - (now - previous);
+          const now = sjs.now();
+          if (!previous && options.leading === false) { previous = now; }
+          let remaining = wait - (now - previous);
           context = this;
           args = arguments;
           if (remaining <= 0 || remaining > wait) {
@@ -818,8 +738,10 @@ define("zotohlab/asterix",
             timeout = null;
             previous = now;
             result = func.apply(context, args);
-            if (!timeout) context = args = null;
-          } else if (!timeout && options.trailing !== false) {
+            if (!timeout) { context = args = null; }
+          }
+          else
+          if (!timeout && options.trailing !== false) {
             timeout = setTimeout(later, remaining);
           }
           return result;
@@ -837,7 +759,7 @@ define("zotohlab/asterix",
       sjs.loggr.info('Monkey patched skarojs#loggr to cc.log');
     }
 
-    return asterix;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

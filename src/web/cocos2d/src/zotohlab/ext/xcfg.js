@@ -21,29 +21,26 @@ define("zotohlab/asx/xcfg",
 
   function (sjs, sh) { "use strict";
 
-    var R= sjs.ramda,
+    let R= sjs.ramda,
     undef;
 
     /** @alias module:zotohlab/asx/xcfg */
-    var exports = {
+    let exports = /** @lends exports# */{
 
       /**
        * @memberof module:zotohlab/asx/xcfg
-       * @static
        * @property {String} urlPreix
        */
       urlPrefix: '/public/ig/',
 
       /**
        * @memberof module:zotohlab/asx/xcfg
-       * @static
        * @property {String} appid
        */
       appid: '',
 
       /**
        * @memberof module:zotohlab/asx/xcfg
-       * @static
        * @property {String} color
        */
       color: '',
@@ -51,7 +48,6 @@ define("zotohlab/asx/xcfg",
       /**
        * @memberof module:zotohlab/asx/xcfg
        * @property {Object} resolution
-       * @static
        */
       resolution: {
         web: cc.ResolutionPolicy.SHOW_ALL,
@@ -61,7 +57,6 @@ define("zotohlab/asx/xcfg",
       /**
        * @memberof module:zotohlab/asx/xcfg
        * @property {Object} levels
-       * @static
        */
       levels: {
       },
@@ -69,7 +64,6 @@ define("zotohlab/asx/xcfg",
       /**
        * @memberof module:zotohlab/asx/xcfg
        * @property {Object} assets
-       * @static
        */
       assets: {
 
@@ -108,7 +102,6 @@ define("zotohlab/asx/xcfg",
       /**
        * @memberof module:zotohlab/asx/xcfg
        * @property {Object} game
-       * @static
        */
       game: {
         borderTiles: 'cbox-borders_x8.png',
@@ -125,14 +118,12 @@ define("zotohlab/asx/xcfg",
       /**
        * @memberof module:zotohlab/asx/xcfg
        * @property {StateMachine} smac
-       * @static
        */
       smac: null,
 
       /**
        * @memberof module:zotohlab/asx/xcfg
        * @property {Object} l10nTable
-       * @static
        */
       l10nTable: {
         "en" : {
@@ -171,7 +162,6 @@ define("zotohlab/asx/xcfg",
       /**
        * @memberof module:zotohlab/asx/xcfg
        * @property {Object} csts
-       * @static
        */
       csts: {
         CV_X: 'X'.charCodeAt(0),
@@ -193,7 +183,6 @@ define("zotohlab/asx/xcfg",
       /**
        * @memberof module:zotohlab/asx/xcfg
        * @property {Object} sound
-       * @static
        */
       sound: {
         volume: 0.5,
@@ -220,7 +209,6 @@ define("zotohlab/asx/xcfg",
     };
 
     sh.xcfg = exports;
-
     return exports;
 });
 

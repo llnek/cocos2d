@@ -26,7 +26,7 @@ define("zotohlab/asx/xsplash",
   function (sjs, sh, ccsx, layers) { "use strict";
 
     /** @alias module:zotohlab/asx/xsplash */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -42,21 +42,21 @@ define("zotohlab/asx/xsplash",
        * @method pkInit
        * @protected
        */
-      pkInit: function() {
+      pkInit() {
         this._super();
         this.setBg();
         this.setTitle();
         this.setPlay();
       },
 
-      setPlay: function() {
-        var wb = ccsx.vbox(),
+      setPlay() {
+        const wb = ccsx.vbox(),
         cw = ccsx.center();
 
         this.addItem(ccsx.tmenu1({
           fontPath: sh.getFontPath('font.Hiruko'),
           text: sh.l10n('%play'),
-          selector: function() {
+          cb() {
             sh.fire('/splash/playgame');
           },
           target: this,
@@ -65,12 +65,12 @@ define("zotohlab/asx/xsplash",
         }));
       },
 
-      setBg: function() {
+      setBg() {
         this.centerImage(sh.getImagePath('game.bg'));
       },
 
-      setTitle: function() {
-        var wb = ccsx.vbox(),
+      setTitle() {
+        const wb = ccsx.vbox(),
         cw = ccsx.center();
         this.addFrame('#title.png',
                       cc.p(cw.x, wb.top * 0.9));
@@ -81,14 +81,13 @@ define("zotohlab/asx/xsplash",
        * @method rtti
        * @return {String}
        */
-      rtti: function() { return "SplashLayer"; }
+      rtti() { return "SplashLayer"; }
 
     });
 
-    exports = {
+    exports = /** @lends exports# */{
       /**
-       * @property {XSplashLayer.Class} XSplashLayer
-       * @static
+       * @property {XSplashLayer} XSplashLayer
        */
       XSplashLayer: XSplashLayer
     };

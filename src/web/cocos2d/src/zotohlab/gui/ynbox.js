@@ -28,32 +28,38 @@ define("zotohlab/asx/ynbox",
   function (sjs, sh, ccsx, layers, scenes) { "use strict";
 
     /** @alias module:zotohlab/asx/ynbox */
-    var exports = {},
+    let exports = {},
     xcfg= sh.xcfg,
     csts= xcfg.csts,
     R= sjs.ramda,
     undef,
     //////////////////////////////////////////////////////////////////////////
+    /**
+     * @class BGLayer
+     */
     BGLayer = layers.XLayer.extend({
 
-      rtti: function() { return "BGLayer"; },
+      rtti() { return "BGLayer"; },
 
-      ctor: function() {
-        var bg= new cc.Sprite(sh.getImagePath('game.bg')),
+      ctor() {
+        const bg= new cc.Sprite(sh.getImagePath('game.bg')),
         cw= ccsx.center();
         this._super();
         bg.setPosition(cw.x, cw.y);
         this.addItem(bg);
       },
 
-      pkInit: function() {}
+      pkInit() {}
 
     }),
     //////////////////////////////////////////////////////////////////////////
+    /**
+     * @class UILayer
+     */
     UILayer =  layers.XLayer.extend({
 
-      pkInit: function() {
-        var qn= new cc.LabelBMFont(sh.l10n('%quit?'),
+      pkInit() {
+        let qn= new cc.LabelBMFont(sh.l10n('%quit?'),
                                    sh.getFontPath('font.OCR')),
         cw= ccsx.center(),
         wz= ccsx.vrect(),
@@ -70,13 +76,13 @@ define("zotohlab/asx/ynbox",
 
         menu= ccsx.vmenu([
           { imgPath: '#continue.png',
-            cb: function() {
+            cb() {
               me.options.yes();
             },
             target: me },
 
           { imgPath: '#cancel.png',
-            cb: function() {
+            cb() {
               me.options.onBack();
             },
             target: me }
@@ -87,23 +93,20 @@ define("zotohlab/asx/ynbox",
 
     });
 
-    exports = {
+    exports = /** @lends exports# */{
 
       /**
        * @property {String} rtti
-       * @static
        */
       rtti: sh.ptypes.yn,
 
       /**
        * Create a YesNo message screen.
-       *
        * @method reify
-       * @static
        * @param {Object} options
        * @return {cc.Scene}
        */
-      reify: function(options) {
+      reify(options) {
         return new scenes.XSceneFactory( [ BGLayer, UILayer ]).reify(options);
       }
     };

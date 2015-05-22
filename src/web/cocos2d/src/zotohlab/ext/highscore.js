@@ -24,13 +24,12 @@ define("zotohlab/asx/highscores",
   function (sjs, sh, Cookies) { "use strict";
 
     /** @alias module:zotohlab/asx/highscores */
-    var exports= {},
+    let exports= {},
     R = sjs.ramda,
     undef;
 
     ////////////////////////////////////////////////////////////////////
-    //
-    function mkScore(n,v) {
+    let mkScore = (n,v) => {
       return {
         value: Number(v.trim()),
         name: n.trim()
@@ -38,99 +37,89 @@ define("zotohlab/asx/highscores",
     }
 
     ////////////////////////////////////////////////////////////////////
-    //
     /**
      * @class HighScores
      */
-    var HighScores= sjs.mixes({
+    class HighScores{
 
       /**
        * Read the scores from the cookie.
-       *
        * @memberof module:zotohlab/asx/highscores~HighScores
        * @method read
        */
-      read: function() {
-        var s = Cookies.get(this.KEY) || '',
-        a,
+      read() {
+        const s = Cookies.get(this.KEY) || '',
         ts = sjs.safeSplit(s, '|');
         //this.reset();
-        this.scores= R.reduce(function(memo,z) {
-          a = sjs.safeSplit(z, ':');
+        this.scores= R.reduce((memo,z) => {
+          const a = sjs.safeSplit(z, ':');
           if (a.length === 2) {
             memo.push(mkScore(a[0], a[1]));
           }
           return memo;
-        }.bind(this), [], ts);
-      },
+        }, [], ts);
+      }
 
       /**
        * Reset the scores tp none.
-       *
        * @memberof module:zotohlab/asx/highscores~HighScores
        * @method reset
        */
-      reset: function() {
+      reset() {
         this.scores=[];
-      },
+      }
 
       /**
        * Write the scores back to the cookie.
-       *
        * @memberof module:zotohlab/asx/highscores~HighScores
        * @method write
        */
-      write: function() {
-        var rc= R.map(function(z) {
+      write() {
+        const rc= R.map((z) => {
           return z.name + ':' + n.value;
-        }, this.scores);
+        },
+        this.scores);
         Cookies.set(this.KEY, rc.join('|'), this.duration);
-      },
+      }
 
       /**
        * Test if there is more room to store a new high score.
-       *
        * @memberof module:zotohlab/asx/highscores~HighScores
        * @method hasSlots
        * @return {Boolean}
        */
-      hasSlots: function() {
+      hasSlots() {
         return this.scores.length < this.size;
-      },
+      }
 
       /**
        * Test if we can add this score to the list of highscores.
-       *
        * @memberof module:zotohlab/asx/highscores~HighScores
        * @method canAdd
        * @param {Object} score
        * @return {Boolean}
        */
-      canAdd: function(score) {
-        if (this.hasSlots()) {
-          return true;
-        } else {
-          return R.any(function(z) {
-            return z.value < score;
-          }, this.scores);
-        }
-      },
+      canAdd(score) {
+        if (this.hasSlots()) { return true; }
+        return R.any((z) => {
+          return z.value < score;
+        },
+        this.scores);
+      }
 
       /**
        * Maybe force to insert this new score.
-       *
        * @memberof module:zotohlab/asx/highscores~HighScores
        * @method insert
        * @param {String} name
        * @param {Number} score
        */
-      insert: function(name, score) {
-        var s= mkScore(name || '???', score),
-        i,
+      insert(name, score) {
+        const s= mkScore(name || '???', score),
         len= this.scores.length;
 
         if (! this.hasSlots()) {
-          for (i = len - 1; i >= 0; --i) {
+          for (let i = len - 1; i >= 0; --i) {
             if (this.scores[i].value < score) {
               this.scores.splice(i,1);
               break;
@@ -142,24 +131,23 @@ define("zotohlab/asx/highscores",
           this.sort();
           this.write();
         }
-      },
+      }
 
       /**
        * Get the high scores.
-       *
        * @memberof module:zotohlab/asx/highscores~HighScores
        * @method getScores
        * @return {Array} high scores
        */
-      getScores: function() {
+      getScores() {
         return this.scores;
-      },
+      }
 
       /**
        * @private
        */
-      sort: function() {
-        Array.prototype.sort(this.scores, function(a,b) {
+      sort() {
+        Array.prototype.sort(this.scores, (a,b) => {
           if (a.value < b.value) { return -1; }
           else
           if (a.value > b.value) { return 1; }
@@ -167,29 +155,27 @@ define("zotohlab/asx/highscores",
             return 0;
           }
         });
-      },
+      }
 
       /**
-       * @method ctor
+       * @method constructor
        * @private
        * @param {String} key
        * @param {Number} size
        * @param {Number} duration
        */
-      ctor: function(key, size, duration) {
+      constructor(key, size, duration) {
         this.duration= duration || 60*60*24*1000;
         this.size = size || 10;
         this.scores = [];
         this.KEY= key;
       }
 
-    });
+    }
 
     /**
      * Create a new HighScores object.
-     *
      * @method reify
-     * @static
      * @param {String} key
      * @param {Number} size
      * @param {Number} duration

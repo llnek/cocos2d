@@ -24,7 +24,7 @@ define("zotohlab/asx/odin",
   function (sjs, ebus, sh) { "use strict";
 
     /** @alias module:zotohlab/asx/odin */
-    var exports={},
+    let exports={},
     evts,
     undef;
 
@@ -82,8 +82,7 @@ define("zotohlab/asx/odin",
     evts= exports.Events;
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    function mkEvent(eventType, code, payload) {
+    let mkEvent = (eventType, code, payload) => {
       return {
         timeStamp: sjs.now(),
         type: eventType,
@@ -93,21 +92,18 @@ define("zotohlab/asx/odin",
     }
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    function mkPlayRequest(game,user,pwd) {
+    let mkPlayRequest = (game,user,pwd) => {
       return mkEvent(evts.PLAYGAME_REQ, -1, [game, user, pwd]);
     }
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    function mkJoinRequest(room,user,pwd) {
+    let mkJoinRequest = (room,user,pwd) => {
       return mkEvent(evts.JOINGAME_REQ, -1, [room, user, pwd]);
     }
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    function json_decode(e) {
-      var evt = {},
+    let json_decode = (e) => {
+      let evt = {},
       src;
 
       try {
@@ -134,51 +130,46 @@ define("zotohlab/asx/odin",
     /**
      * @class Session
      */
-    var Session= sjs.mixes({
+    class Session {
 
       /**
        * Connect to this url and request a websocket upgrade.
-       *
        * @memberof module:zotohlab/asx/odin~Session
        * @method connect
        * @param {String} url
        */
-      connect: function(url) {
+      connect(url) {
         this.wsock(url);
-      },
+      }
 
       /**
-       * Constructor.
-       *
        * @memberof module:zotohlab/asx/odin~Session
-       * @method ctor
+       * @method constructor
        * @param {Object} config
        */
-      ctor: function(config) {
+      constructor(config) {
         this.state= evts.S_NOT_CONNECTED;
         this.ebus= ebus.reify();
         this.options=config || {};
         this.handlers= [];
         this.ws = null;
-      },
+      }
 
       /**
        * Send this event through the socket.
-       *
        * @memberof module:zotohlab/asx/odin~Session
        * @method send
        * @param {Object} evt
        */
-      send: function(evt) {
+      send(evt) {
         if (this.state === evts.S_CONNECTED &&
             sjs.echt(this.ws)) {
           this.ws.send( sjs.jsonfy(evt));
         }
-      },
+      }
 
       /**
        * Subscribe to this message-type and event.
-       *
        * @memberof module:zotohlab/asx/odin~Session
        * @method subscribe
        * @param {Number} messageType
@@ -187,9 +178,9 @@ define("zotohlab/asx/odin",
        * @param {Object} target
        * @return {String} handler id
        */
-      subscribe: function(messageType, event, callback, target) {
-        var h= this.ebus.on(["/", messageType, "/", event].join(''),
-                            callback, target);
+      subscribe(messageType, event, callback, target) {
+        const h= this.ebus.on(["/", messageType, "/", event].join(''),
+                              callback, target);
         if (sjs.isArray(h) && h.length > 0) {
           // store the handle ids for clean up
           //this.handlers=this.handlers.concat(h);
@@ -198,66 +189,61 @@ define("zotohlab/asx/odin",
         } else {
           return null;
         }
-      },
+      }
 
       /**
        * Subscribe to all message events.
-       *
        * @memberof module:zotohlab/asx/odin~Session
        * @method subscribeAll
        * @param {Function} callback
        * @param {Object} target
        * @return {Array} [id1, id2]
        */
-      subscribeAll: function(callback,target) {
+      subscribeAll(callback,target) {
         return [ this.subscribe(evts.MSG_NETWORK, '*', callback, target),
                  this.subscribe(evts.MSG_SESSION, '*', callback, target) ];
-      },
+      }
 
       /**
        * Cancel and remove all subscribers.
-       *
        * @memberof module:zotohlab/asx/odin~Session
        * @method unsubscribeAll
        */
-      unsubscribeAll: function() {
+      unsubscribeAll() {
         this.ebus.removeAll();
         this.handlers= [];
-      },
+      }
 
       /**
        * Cancel this subscriber.
-       *
        * @memberof module:zotohlab/asx/odin~Session
        * @method unsubscribe
        * @param {String} subid
        */
-      unsubscribe: function(subid) {
+      unsubscribe(subid) {
         sjs.removeFromArray(this.handlers, subid);
         this.ebus.off(subid);
-      },
+      }
 
       /**
        * Reset and clear everything.
-       *
        * @memberof module:zotohlab/asx/odin~Session
        * @method reset
        */
-      reset: function () {
+      reset() {
         this.onmessage= sjs.NILFUNC;
         this.onerror= sjs.NILFUNC;
         this.onclose= sjs.NILFUNC;
         this.handlers= [];
         this.ebus.removeAll();
-      },
+      }
 
       /**
        * Close the connection to the socket.
-       *
        * @memberof module:zotohlab/asx/odin~Session
        * @method close
        */
-      close: function () {
+      close() {
         this.state= evts.S_NOT_CONNECTED;
         this.reset();
         if (!!this.ws) {
@@ -267,46 +253,45 @@ define("zotohlab/asx/odin",
           {}
         }
         this.ws= null;
-      },
+      }
 
       /**
        * Disconnect from the socket.
-       *
        * @memberof module:zotohlab/asx/odin~Session
        * @method disconnect
        */
-      disconnect: function () {
+      disconnect() {
         this.close();
-      },
+      }
 
       /**
        * @private
        */
-      onNetworkMsg: function(evt) {
-      },
+      onNetworkMsg(evt) {
+      }
 
       /**
        * @private
        */
-      onSessionMsg: function(evt) {
-      },
+      onSessionMsg(evt) {
+      }
 
       /**
        * @private
        */
-      wsock: function(url) {
-        var ws= new WebSocket(url),
+      wsock(url) {
+        const ws= new WebSocket(url),
         me=this;
 
         // connection success
         // send the play game request
-        ws.onopen= function() {
+        ws.onopen= () => {
           me.state= evts.S_CONNECTED;
           ws.send(me.getPlayRequest());
-        };
+        }
 
-        ws.onmessage= function (e) {
-          var evt= json_decode(e);
+        ws.onmessage= (e) => {
+          const evt= json_decode(e);
           switch (evt.type) {
             case evts.MSG_NETWORK:
             case evts.MSG_SESSION:
@@ -318,44 +303,43 @@ define("zotohlab/asx/odin",
                              ", code = " +
                              evt.code);
           }
-        };
+        }
 
-        ws.onclose= function (e) {
+        ws.onclose= (e) => {
           sjs.loggr.debug("closing websocket.");
-        };
+        }
 
-        ws.onerror= function (e) {
+        ws.onerror= (e) => {
           sjs.loggr.debug("websocket error.\n" + e);
-        };
+        }
 
         return this.ws=ws;
-      },
+      }
 
       /**
        * @private
        */
-      getPlayRequest: function() {
+      getPlayRequest() {
         return sjs.jsonfy( mkPlayRequest(this.options.game,
-                                          this.options.user,
-                                          this.options.passwd));
-      },
+                                         this.options.user,
+                                         this.options.passwd));
+      }
 
       /**
        * @private
        */
-      onevent: function(evt) {
+      onevent(evt) {
         this.ebus.fire(["/",evt.type,"/",evt.code].join(''), evt);
       }
 
-    });
+    }
 
     /**
      * @method reifySession
-     * @static
      * @param {Object} cfg
      * @return {Session}
      */
-    exports.reifySession= function(cfg) { return new Session(cfg); };
+    exports.reifySession= (cfg) => { return new Session(cfg); }
 
     return exports;
 });

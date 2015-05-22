@@ -20,62 +20,56 @@ define("zotohlab/asx/ui",
   function (sjs) { "use strict";
 
     /** @alias module:zotohlab/asx/ui */
-    var exports = {},
+    let exports = {},
     undef;
 
     //////////////////////////////////////////////////////////////////////
     /**
      * @class Circle
      */
-    var Circle = sjs.mixes({
-
+    class Circle {
       /**
        * Draw this circle.
-       *
        * @memberof module:zotohlab/asx/ui~Circle
        * @method draw
        * @param {Context} ctx
        * @param {Object} styleObj
        */
-      draw: function(ctx, styleObj) {
+      draw(ctx, styleObj) {
         ctx.beginPath();
         ctx.strokeStyle = styleObj.stroke.style;
         ctx.lineWidth = styleObj.line.width;
         ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, true);
         ctx.stroke();
-      },
+      }
 
       /**
-       * Constructor.
-       *
        * @memberof module:zotohlab/asx/ui~Circle
-       * @method ctor
+       * @method constructor
        * @param {Number} x
        * @param {Number} y
        * @param {Number} radius
        */
-      ctor: function(x, y, radius) {
+      constructor(x, y, radius) {
         this.x = x;
         this.y = y;
         this.radius = radius;
       }
 
-    });
+    }
 
     /**
      * @class Line
      */
-    var Line = sjs.mixes({
-
+    class Line {
       /**
        * Draw this line.
-       *
        * @memberof module:zotohlab/asx/ui~Line
        * @method draw
        * @param {Context} ctx
        * @param {Object} styleObj
        */
-      draw: function(ctx, styleObj) {
+      draw(ctx, styleObj) {
         ctx.beginPath();
         ctx.moveTo(this.x1, this.y1);
         ctx.lineTo(this.x2, this.y2);
@@ -85,112 +79,95 @@ define("zotohlab/asx/ui",
           ctx.lineCap = styleObj.line.cap;
         }
         ctx.stroke();
-      },
+      }
 
       /**
-       * Constructor.
-       *
        * @memberof module:zotohlab/asx/ui~Line
-       * @method ctor
+       * @method constructor
        * @param {Number} x1
        * @param {Number} y1
        * @param {Number} x2
        * @param {Number} y2
        */
-      ctor: function(x1, y1, x2, y2) {
+      constructor(x1, y1, x2, y2) {
         this.x1 = x1;
         this.y1 = y1;
         this.x2 = x2;
         this.y2 = y2;
       }
-
-    });
+    }
 
     /**
      * @class Point
      */
-    var Point = sjs.mixes({
-
+    class Point {
       /**
-       * Constructor.
-       *
        * @memberof module:zotohlab/asx/ui~Point
-       * @method ctor
+       * @method constructor
        * @param {Number} x
        * @param {Number} y
        */
-      ctor: function(x,y) {
+      constructor(x,y) {
         this.y=y;
         this.x=x;
       }
-    });
+    }
 
     /**
      * @class Area
      */
-    var Area = sjs.mixes({
-
+    class Area {
       /**
-       * Constructor.
-       *
        * @memberof module:zotohlab/asx/ui~Area
-       * @method ctor
+       * @method constructor
        * @param {Number} x
        * @param {Number} y
        * @param {Number} width
        * @param {Number} height
        */
-      ctor: function(x,y,width,height) {
+      constructor(x,y,width,height) {
         this.pos= new Point(x,y);
         this.height=height;
         this.width=width;
       }
-    });
+    }
 
     /**
      * @class TextStyle
      */
-    var TextStyle = sjs.mixes({
-
+    class TextStyle {
       /**
-       * Constructor.
-       *
        * @memberof module:zotohlab/asx/ui~TextStyle
-       * @method ctor
+       * @method constructor
        */
-      ctor: function() {
+      constructor() {
         this.font = "14px 'Architects Daughter'";
         this.fill = "#dddddd";
         this.align = "left";
         this.base = "top";
       }
 
-    });
+    }
 
-    exports= {
+    exports= /** @lends exports# */{
       /**
-       * @property {TextStyle.Class} TextStyle
-       * @static
+       * @property {TextStyle} TextStyle
        */
       TextStyle: TextStyle,
       /**
-       * @property {Circle.Class} Circle
-       * @static
+       * @property {Circle} Circle
        */
       Circle: Circle,
       /**
-       * @property {Line.Class} Line
-       * @static
+       * @property {Line} Line
        */
       Line: Line,
       /**
-       * @property {Point.Class} Point
-       * @static
+       * @property {Point} Point
        */
       Point: Point,
       /**
-       * @property {Area.Class} Area
-       * @static
+       * @property {Area} Area
        */
       Area: Area
     };

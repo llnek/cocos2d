@@ -26,7 +26,7 @@ define("zotohlab/asx/xlayers",
   function (sjs, sh, ccsx, Ash) { "use strict";
 
     /** @alias module:zotohlab/asx/xlayers */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts = xcfg.csts,
     R= sjs.ramda,
@@ -38,7 +38,7 @@ define("zotohlab/asx/xlayers",
      * @extends cc.Sprite
      * @class XLive
      */
-    var XLive = cc.Sprite.extend({
+    const XLive = cc.Sprite.extend({
 
       /**
        * @memberof module:zotohlab/asx/xlayers~XLive
@@ -47,7 +47,7 @@ define("zotohlab/asx/xlayers",
        * @param {Number} y
        * @param {Object} options
        */
-      ctor: function(x, y, options) {
+      ctor(x, y, options) {
         this._super();
         this.initWithSpriteFrameName(options.frames[0]);
         if (!!options.scale) {
@@ -61,7 +61,7 @@ define("zotohlab/asx/xlayers",
     /**
      * @class XHUDLives
      */
-    var XHUDLives = sjs.mixes({
+    class XHUDLives {
 
       /**
        * Reduce life by x amount.
@@ -70,73 +70,62 @@ define("zotohlab/asx/xlayers",
        * @method reduce
        * @param {Number} x
        */
-      reduce: function(x) {
-        var n;
-        for (n=0; n < x; ++n) {
+      reduce(x) {
+        for (let n=0; n < x; ++n) {
           this.hud.removeIcon(this.icons.pop());
         }
         this.curLives -= x;
-      },
+      }
 
       /**
        * Test if no more lives.
-       *
        * @memberof module:zotohlab/asx/xlayers~XHUDLives
        * @method isDead
        * @return {Boolean}
        */
-      isDead: function() { return this.curLives < 0; },
+      isDead() { return this.curLives < 0; }
 
       /**
        * Get the count of remaining lives.
-       *
        * @memberof module:zotohlab/asx/xlayers~XHUDLives
        * @method getLives
        * @return {Number}
        */
-      getLives: function() { return this.curLives; },
+      getLives() { return this.curLives; }
 
       /**
        * Reset the icons.
-       *
        * @memberof module:zotohlab/asx/xlayers~XHUDLives
        * @method reset
        */
-      reset: function() {
-        R.forEach(function(z) {
-          this.hud.removeIcon(z);
-        }.bind(this),
-        this.icons);
-
+      reset() {
+        R.forEach((z) => { this.hud.removeIcon(z); }, this.icons);
         this.curLives = this.options.totalLives;
         this.icons=[];
-      },
+      }
 
       /**
        * Reset and refresh the hud.
-       *
        * @memberof module:zotohlab/asx/xlayers~XHUDLives
        * @method resurrect
        */
-      resurrect: function() {
+      resurrect() {
         this.reset();
         this.drawLives();
-      },
+      }
 
       /**
        * Draw the icons for lives.
-       *
        * @memberof module:zotohlab/asx/xlayers~XHUDLives
        * @method drawLives
        */
-      drawLives: function() {
-        var y= this.topLeft.y - this.lifeSize.height * 0.5,
+      drawLives() {
+        let y= this.topLeft.y - this.lifeSize.height * 0.5,
         x= this.topLeft.x + this.lifeSize.width * 0.5,
-        gap=2,
-        n, v;
+        gap=2;
 
-        for (n = 0; n < this.curLives; ++n) {
-          v= new XLive(x,y,this.options);
+        for (let n = 0; n < this.curLives; ++n) {
+          let v= new XLive(x,y,this.options);
           this.hud.addIcon(v);
           this.icons.push(v);
           if (this.options.dir> 0) {
@@ -145,32 +134,29 @@ define("zotohlab/asx/xlayers",
             x -= this.lifeSize.width - gap;
           }
         }
-      },
+      }
 
       /**
        * Create and show the lives.
-       *
        * @memberof module:zotohlab/asx/xlayers~XHUDLives
        * @method reify
        */
-      reify: function() {
-        var dummy = new XLive(0,0,this.options);
+      reify() {
+        const dummy = new XLive(0,0,this.options);
         this.lifeSize = { width: ccsx.getScaledWidth(dummy),
                           height: ccsx.getScaledHeight(dummy) } ;
         this.drawLives();
-      },
+      }
 
       /**
-       * Constructor.
-       *
        * @memberof module:zotohlab/asx/xlayers~XHUDLives
-       * @method ctor
+       * @method constructor
        * @param {Object} hud
        * @param {Number} x
        * @param {Number} y
        * @param {Object} options
        */
-      ctor: function(hud, x, y, options) {
+      constructor(hud, x, y, options) {
         this.options = options || {};
         this.topLeft= cc.p(x,y);
         this.icons= [];
@@ -182,28 +168,26 @@ define("zotohlab/asx/xlayers",
         }
       }
 
-    });
+    }
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @extends cc.Layer
      * @class XLayer
      */
-    var XLayer = cc.Layer.extend({
+    const XLayer = cc.Layer.extend({
 
       /**
        * The id of this layer.
-       *
        * @memberof module:zotohlab/asx/xlayers~XLayer
        * @method rtti
        * @return {String}
        */
-      rtti: function() { return "layer-" + Number(SEED++); },
+      rtti() { return "layer-" + Number(SEED++); },
 
       /**
        * Register this atlas by creating a sprite-batch-node from it
        * and mapping it to this name.
-       *
        * @memberof module:zotohlab/asx/xlayers~XLayer
        * @method regoAtlas
        * @param {String} name
@@ -211,9 +195,8 @@ define("zotohlab/asx/xlayers",
        * @param {Number} tag
        * @return {cc.SpriteBatchNode}
        */
-      regoAtlas: function(name, z, tag) {
-        var a= new cc.SpriteBatchNode(
-                 cc.textureCache.addImage( sh.getAtlasPath(name)));
+      regoAtlas(name, z, tag) {
+        let a= new cc.SpriteBatchNode( cc.textureCache.addImage( sh.getAtlasPath(name)));
         if (! sjs.echt(tag)) {
           tag = ++this.lastTag;
         }
@@ -231,24 +214,23 @@ define("zotohlab/asx/xlayers",
        * @param {Object} options
        * @protected
        */
-      pkInit: function(options) { this.pkInput(); },
+      pkInit(options) { this.pkInput(); },
 
       /**
        * @memberof module:zotohlab/asx/xlayers~XLayer
        * @method pkInput
        * @protected
        */
-      pkInput: function() {},
+      pkInput() {},
 
       /**
        * Add Audio icon to UI.
-       *
        * @memberof module:zotohlab/asx/xlayers~XLayer
        * @method addAudioIcon
        * @param {Object} options
        */
-      addAudioIcon: function(options) {
-        var off= new cc.MenuItemSprite(new cc.Sprite('#sound_off.png'),
+      addAudioIcon(options) {
+        let off= new cc.MenuItemSprite(new cc.Sprite('#sound_off.png'),
                                        new cc.Sprite('#sound_off.png'),
                                        new cc.Sprite('#sound_off.png'),
                                        sjs.NILFUNC, this),
@@ -297,16 +279,16 @@ define("zotohlab/asx/xlayers",
        * @method onQuit
        * @protected
        */
-      onQuit: function() {
-        var ss= sh.protos[xcfg.game.start],
+      onQuit() {
+        let ss= sh.protos[xcfg.game.start],
         yn= sh.protos[sh.ptypes.yn],
         dir = cc.director;
 
         dir.pushScene( yn.reify({
-          onBack: function() {
+          onBack() {
             dir.popScene();
           },
-          yes: function() {
+          yes() {
             sh.sfxPlay('game_quit');
             dir.popToRootScene();
             dir.runScene(ss.reify());
@@ -316,14 +298,13 @@ define("zotohlab/asx/xlayers",
 
       /**
        * Center an image chosen from this atlas.
-       *
        * @memberof module:zotohlab/asx/xlayers~XLayer
        * @method centerAtlasImage
        * @param {String} frame
        * @param {Object} atlas
        */
-      centerAtlasImage: function(frame,atlas) {
-        var bg= new cc.Sprite(frame),
+      centerAtlasImage(frame,atlas) {
+        let bg= new cc.Sprite(frame),
         cw = ccsx.center();
         bg.setPosition(cw);
         if (!!atlas) {
@@ -335,18 +316,16 @@ define("zotohlab/asx/xlayers",
 
       /**
        * Center an image.
-       *
        * @memberof module:zotohlab/asx/xlayers~XLayer
        * @method centerImage
        * @param {String} frame
        */
-      centerImage: function(frame) {
+      centerImage(frame) {
         this.centerAtlasImage(frame);
       },
 
       /**
        * Add an image chosen from this atlas.
-       *
        * @memberof module:zotohlab/asx/xlayers~XLayer
        * @method addAtlasFrame
        * @param {String} frame
@@ -354,7 +333,7 @@ define("zotohlab/asx/xlayers",
        * @param {String} atlas
        */
       addAtlasFrame: function(frame,pos, atlas) {
-        var tt= new cc.Sprite(frame);
+        let tt= new cc.Sprite(frame);
         tt.setPosition(pos);
         if (!!atlas) {
           this.addAtlasItem(atlas, tt);
@@ -365,81 +344,77 @@ define("zotohlab/asx/xlayers",
 
       /**
        * Add an image.
-       *
        * @memberof module:zotohlab/asx/xlayers~XLayer
        * @method addFrame
        * @param {String} frame
        * @param {cc.Point} pos
        */
-      addFrame: function(frame,pos) {
+      addFrame(frame,pos) {
         this.addAtlasFrame(frame, pos);
       },
 
       /**
        * Get the atlas.
-       *
        * @memberof module:zotohlab/asx/xlayers~XLayer
        * @method getAtlas
        * @param {String} name
        * @return {cc.SpriteBatchNode}
        */
-      getAtlas: function(name) {
+      getAtlas(name) {
         return this.atlases[name || ""];
       },
 
       /**
        * Remove all children from this atlas.
-       *
        * @memberof module:zotohlab/asx/xlayers~XLayer
        * @method removeAtlasAll
        * @param {String} atlas
        * @param {Boolean} c
        */
-      removeAtlasAll: function(atlas, c) {
-        var a=this.getAtlas(atlas);
+      removeAtlasAll(atlas, c) {
+        const a=this.getAtlas(atlas);
         if (!!a) { a.removeAllChildren(c || true); }
       },
 
       /**
        * Remove child from this atlas.
-       *
        * @memberof module:zotohlab/asx/xlayers~XLayer
        * @method removeAtlasItem
        * @param {String} atlas
        * @param {String} n - child
        * @param {Boolean} c
        */
-      removeAtlasItem: function(atlas, n,c) {
-        var a= this.getAtlas(atlas);
-        if (!!a) { a.removeChild(n,c || true); }
+      removeAtlasItem(atlas, n,c) {
+        if (!!n) {
+          n.removeFromParent(c);
+        }
       },
 
       /**
        * Remove all children.
-       *
        * @memberof module:zotohlab/asx/xlayers~XLayer
        * @method removeAll
        * @param {Boolean} c
        */
-      removeAll: function(c) {
+      removeAll(c) {
         this.removeAllChildren(c);
       },
 
       /**
        * Remove a child.
-       *
        * @memberof module:zotohlab/asx/xlayers~XLayer
        * @method removeItem
        * @param {Object} n
        * @param {Boolean} c
        */
-      removeItem: function(n,c) {
-        this.removeChild(n, c);
+      removeItem(n,c) {
+        if (!!n) {
+          n.removeFromParent(c);
+        }
       },
 
       /**
        * Add a child to this atlas.
-       *
        * @memberof module:zotohlab/asx/xlayers~XLayer
        * @method addAtlasItem
        * @param {String} atlas
@@ -447,8 +422,8 @@ define("zotohlab/asx/xlayers",
        * @param {Number} zx
        * @param {Number} tag
        */
-      addAtlasItem: function(atlas, n, zx, tag) {
-        var p= this.getAtlas(atlas),
+      addAtlasItem(atlas, n, zx, tag) {
+        let p= this.getAtlas(atlas),
         pzx = zx,
         ptag = tag;
 
@@ -470,15 +445,14 @@ define("zotohlab/asx/xlayers",
 
       /**
        * Add a child.
-       *
        * @memberof module:zotohlab/asx/xlayers~XLayer
        * @method addChild
        * @param {Object} n - child
        * @param {Number} zx
        * @param {Number} tag
        */
-      addItem: function(n,zx,tag) {
-        var pzx = zx,
+      addItem(n,zx,tag) {
+        let pzx = zx,
         ptag = tag;
 
         if (! sjs.echt(pzx)) {
@@ -494,22 +468,20 @@ define("zotohlab/asx/xlayers",
 
       /**
        * Remember the parent scene object.
-       *
        * @memberof module:zotohlab/asx/xlayers~XLayer
        * @method setParentScene
        * @param {cc.Scene} par
        */
-      setParentScene: function(par) {
+      setParentScene(par) {
         this.ptScene=par;
       },
 
       /**
        * Init.
-       *
        * @memberof module:zotohlab/asx/xlayers~XLayer
        * @method init
        */
-      init: function() {
+      init() {
         this._super();
         this.pkInit();
       },
@@ -519,7 +491,7 @@ define("zotohlab/asx/xlayers",
        * @method ctor
        * @param {Object} options
        */
-      ctor: function(options) {
+      ctor(options) {
         this.options = options || {};
         this._super();
         this.lastTag= 0;
@@ -534,49 +506,46 @@ define("zotohlab/asx/xlayers",
      * @extends XLayer
      * @class XGameHUDLayer
      */
-    var XGameHUDLayer = XLayer.extend({
+    const XGameHUDLayer = XLayer.extend({
 
       /**
        * Get the id.
-       *
        * @memberof module:zotohlab/asx/xlayers~XGameHUDLayer
        * @method rtti
        * @return {String}
        */
-      rtti: function() { return 'HUD'; },
+      rtti() { return 'HUD'; },
 
       /**
        * Remove this icon.
-       *
        * @memberof module:zotohlab/asx/xlayers~XGameHUDLayer
        * @method removeIcon
        * @param {Object} icon
        */
-      removeIcon: function(icon) {
+      removeIcon(icon) {
         this.removeAtlasItem(this.hudAtlas(), icon);
       },
 
       /**
        * Add an icon.
-       *
        * @memberof module:zotohlab/asx/xlayers~XGameHUDLayer
        * @method addIcon
        * @param {Object} icon
        * @param {Number} z
        * @param {Number} idx
        */
-      addIcon: function(icon, z, idx) {
+      addIcon(icon, z, idx) {
         this.addAtlasItem(this.hudAtlas(), icon, z, idx);
       },
 
-      hudAtlas: function() {
+      hudAtlas() {
         return this.options.atlasId || 'game-pics';
       },
 
       /**
-       * @private
+       * @protected
        */
-      pkInit: function(options) {
+      pkInit(options) {
         this._super(options);
 
         this.scoreLabel = null;
@@ -594,10 +563,12 @@ define("zotohlab/asx/xlayers",
       initIcons: sjs.NILFUNC,
       initLabels: sjs.NILFUNC,
 
-      initCtrlBtns: function() {
-        var opts;
+      /**
+       * @protected
+       */
+      initCtrlBtns() {
+        let opts = this.options.i_replay;
 
-        opts= this.options.i_replay;
         if (!!opts) {
           this.addReplayIcon(ccsx.pmenu1(opts), opts.where);
         }
@@ -610,20 +581,18 @@ define("zotohlab/asx/xlayers",
 
       /**
        * Get the score.
-       *
        * @memberof module:zotohlab/asx/xlayers~XGameHUDLayer
        * @method getScore
        * @return {Number}
        */
-      getScore: function() { return this.score; },
+      getScore() { return this.score; },
 
       /**
        * Reset the HUD.
-       *
        * @memberof module:zotohlab/asx/xlayers~XGameHUDLayer
        * @method reset
        */
-      reset: function() {
+      reset() {
         this.disableReplay();
         this.score= 0;
         if (this.lives) {
@@ -633,59 +602,54 @@ define("zotohlab/asx/xlayers",
 
       /**
        * Reduce x amount of lives.
-       *
        * @memberof module:zotohlab/asx/xlayers~XGameHUDLayer
        * @method reduceLives
        * @param {Number} x
        * @return {Boolean} - true if no more lives.
        */
-      reduceLives: function(x) {
+      reduceLives(x) {
         this.lives.reduce(x);
         return this.lives.isDead();
       },
 
       /**
        * Update the score.
-       *
        * @memberof module:zotohlab/asx/xlayers~XGameHUDLayer
        * @method updateScore
        * @param {Number}
        */
-      updateScore: function(num) {
+      updateScore(num) {
         this.score += num;
         this.scoreLabel.setString(Number(this.score).toString());
       },
 
       /**
        * Disable the replay button.
-       *
        * @memberof module:zotohlab/asx/xlayers~XGameHUDLayer
        * @method disableReplay
        */
-      disableReplay: function() {
+      disableReplay() {
         this.replayBtn.setVisible(false);
       },
 
       /**
        * Enable the replay button.
-       *
        * @memberof module:zotohlab/asx/xlayers~XGameHUDLayer
        * @method enableReplay
        */
-      enableReplay: function() {
+      enableReplay() {
         this.replayBtn.setVisible(true);
       },
 
       /**
        * Add the main menu icon.
-       *
        * @memberof module:zotohlab/asx/xlayers~XGameHUDLayer
        * @method addMenuItem
        * @param {cc.Menu} menu
        * @param {Object} where
        */
-      addMenuIcon: function(menu, where) {
-        var c= menu.getChildByTag(1),
+      addMenuIcon(menu, where) {
+        let c= menu.getChildByTag(1),
         hh = ccsx.getScaledHeight(c) * 0.5,
         hw = ccsx.getScaledWidth(c) * 0.5,
         wz= ccsx.vbox(),
@@ -702,14 +666,13 @@ define("zotohlab/asx/xlayers",
 
       /**
        * Add a replay icon.
-       *
        * @memberof module:zotohlab/asx/xlayers~XGameHUDLayer
        * @method addReplayIcon
        * @param {cc.Menu} menu
        * @param {Object} where
        */
-      addReplayIcon: function(menu, where) {
-        var c= menu.getChildByTag(1),
+      addReplayIcon(menu, where) {
+        let c= menu.getChildByTag(1),
         wz= ccsx.vbox(),
         x, y;
 
@@ -730,14 +693,14 @@ define("zotohlab/asx/xlayers",
      * @extends XLayer
      * @class XGameLayer
      */
-    var XGameLayer = XLayer.extend({
+    const XGameLayer = XLayer.extend({
 
       /**
        * @memberof module:zotohlab/asx/xlayers~XGameLayer
        * @method pkInput
        * @protected
        */
-      pkInput: function() {
+      pkInput() {
 
         if (cc.sys.capabilities['keyboard'] &&
             !cc.sys.isNative) {
@@ -767,7 +730,7 @@ define("zotohlab/asx/xlayers",
        * @method cfgTouch
        * @protected
        */
-      cfgTouch: function() {
+      cfgTouch() {
         this.cfgInputTouchOne();
         //this.cfgInputTouchesAll();
       },
@@ -777,12 +740,12 @@ define("zotohlab/asx/xlayers",
        * @method cfgInputKeyPad
        * @protected
        */
-      cfgInputKeyPad: function() {
+      cfgInputKeyPad() {
         cc.eventManager.addListener({
-          onKeyPressed: function (key, event) {
+          onKeyPressed(key, event) {
             event.getCurrentTarget().onKeyDown(key);
           },
-          onKeyReleased:function (key, event) {
+          onKeyReleased(key, event) {
             event.getCurrentTarget().onKeyUp(key);
           },
           event: cc.EventListener.KEYBOARD
@@ -794,9 +757,9 @@ define("zotohlab/asx/xlayers",
        * @method cfgInputMouse
        * @protected
        */
-      cfgInputMouse: function() {
+      cfgInputMouse() {
         cc.eventManager.addListener({
-          onMouseUp: function(event){
+          onMouseUp(event){
             event.getCurrentTarget().onMouseUp(event);
           },
           event: cc.EventListener.MOUSE
@@ -804,7 +767,7 @@ define("zotohlab/asx/xlayers",
       },
 
       //TODO: handle touch drag and move
-      processEvent:function (event) {
+      processEvent (event) {
         sjs.loggr.debug('event === ' + sjs.jsonfy(event));
         /*
         var delta = event.getDelta();
@@ -821,12 +784,12 @@ define("zotohlab/asx/xlayers",
        * @method cfgInputTouchAll
        * @protected
        */
-      cfgInputTouchesAll: function() {
+      cfgInputTouchesAll() {
         cc.eventManager.addListener({
           prevTouchId: -1,
           event: cc.EventListener.TOUCH_ALL_AT_ONCE,
           onTouchesMoved: function (touches, event) {
-            var touch = touches[0];
+            const touch = touches[0];
             if (this.prevTouchId != touch.getId()) {
                 this.prevTouchId = touch.getId();
             } else  { event.getCurrentTarget().processEvent(touches[0]); }
@@ -839,13 +802,13 @@ define("zotohlab/asx/xlayers",
        * @method cfgInputTouchOne
        * @protected
        */
-      cfgInputTouchOne: function() {
+      cfgInputTouchOne() {
         cc.eventManager.addListener({
           event: cc.EventListener.TOUCH_ONE_BY_ONE,
           swallowTouches: true,
-          onTouchBegan: function(t,e) { return e.getCurrentTarget().onTouchBegan(t,e);},
-          onTouchMoved: function(t,e) { return e.getCurrentTarget().onTouchMoved(t,e);},
-          onTouchEnded: function(t,e) { return e.getCurrentTarget().onTouchEnded(t,e);}
+          onTouchBegan(t,e) { return e.getCurrentTarget().onTouchBegan(t,e);},
+          onTouchMoved(t,e) { return e.getCurrentTarget().onTouchMoved(t,e);},
+          onTouchEnded(t,e) { return e.getCurrentTarget().onTouchEnded(t,e);}
         }, this);
       },
 
@@ -854,7 +817,7 @@ define("zotohlab/asx/xlayers",
        * @method onTouchMoved
        * @protected
        */
-      onTouchMoved: function(touch,event) {
+      onTouchMoved(touch,event) {
       },
 
       /**
@@ -862,7 +825,7 @@ define("zotohlab/asx/xlayers",
        * @method onTouchBegan
        * @protected
        */
-      onTouchBegan: function(touch,event) {
+      onTouchBegan(touch,event) {
         return true;
       },
 
@@ -871,8 +834,8 @@ define("zotohlab/asx/xlayers",
        * @method onTouchEnded
        * @protected
        */
-      onTouchEnded: function(touch,event) {
-        var pt= touch.getLocation();
+      onTouchEnded(touch,event) {
+        const pt= touch.getLocation();
         sjs.loggr.debug("touch location [" + pt.x + "," + pt.y + "]");
         this.onclicked(pt.x, pt.y);
         return true;
@@ -884,7 +847,7 @@ define("zotohlab/asx/xlayers",
        * @protected
        * @param {Event} e
        */
-      onKeyDown:function (e) {
+      onKeyDown(e) {
         //loggr.debug('onKeyDown: e = ' + e);
         this.keyboard[e] = true;
       },
@@ -895,7 +858,7 @@ define("zotohlab/asx/xlayers",
        * @protected
        * @param {Event} e
        */
-      onKeyUp:function (e) {
+      onKeyUp(e) {
         //loggr.debug('onKeyUp: e = ' + e);
         this.keyboard[e] = false;
       },
@@ -906,8 +869,8 @@ define("zotohlab/asx/xlayers",
        * @protected
        * @param {Event} evt
        */
-      onMouseUp: function(evt) {
-        var pt= evt.getLocation();
+      onMouseUp(evt) {
+        const pt= evt.getLocation();
         sjs.loggr.debug("mouse location [" + pt.x + "," + pt.y + "]");
         this.onclicked(pt.x, pt.y);
       },
@@ -917,7 +880,7 @@ define("zotohlab/asx/xlayers",
        * @method onTouchesEnded
        * @protected
        */
-      onTouchesEnded: function (touches, event) {
+      onTouchesEnded(touches, event) {
         sjs.loggr.debug("touch event = " + event);
         sjs.loggr.debug("touch = " + touches);
       },
@@ -928,7 +891,7 @@ define("zotohlab/asx/xlayers",
        * @protected
        * @param {Number} key
        */
-      keyPoll: function(key){
+      keyPoll(key){
         return this.keyboard[key];
       },
 
@@ -939,15 +902,15 @@ define("zotohlab/asx/xlayers",
        * @param {Number} x
        * @param {Number} y
        */
-      onclicked: function(x,y) {
+      onclicked(x,y) {
       },
 
       /**
        * @memberof module:zotohlab/asx/xlayers~XGameLayer
        * @method getEnclosureBox
-       * @return {Object} - rect box.
+       * @return {Object} rect box.
        */
-      getEnclosureBox: function() {
+      getEnclosureBox() {
         return ccsx.vbox();
         /*
         var csts = xcfg.csts,
@@ -964,7 +927,7 @@ define("zotohlab/asx/xlayers",
        * @method setGameMode
        * @param {Number} mode
        */
-      setGameMode: function(mode) {
+      setGameMode(mode) {
         xcfg.csts.GAME_MODE=mode;
       },
 
@@ -974,7 +937,7 @@ define("zotohlab/asx/xlayers",
        * @memberof module:zotohlab/asx/xlayers~XGameLayer
        * @method cleanSlate
        */
-      cleanSlate: function() {
+      cleanSlate() {
         this.engine= new Ash.Engine();
       },
 
@@ -983,7 +946,7 @@ define("zotohlab/asx/xlayers",
        * @method newGame
        * @param {Number} mode
        */
-      newGame: function(mode) {
+      newGame(mode) {
         if (xcfg.sound.open) {
           cc.audioEngine.stopAllEffects();
           cc.audioEngine.stopMusic();
@@ -997,8 +960,8 @@ define("zotohlab/asx/xlayers",
        * @method pkInit
        * @protected
        */
-      pkInit: function() {
-        var m= this.options.mode;
+      pkInit() {
+        const m= this.options.mode;
         this._super();
 
         if (m === sh.gtypes.ONLINE_GAME ||
@@ -1013,15 +976,15 @@ define("zotohlab/asx/xlayers",
        * @method operational
        * @return {Boolean}
        */
-      operational: function() { return true; },
+      operational() { return true; },
 
       /**
        * @memberof module:zotohlab/asx/xlayers~XGameLayer
        * @method getBackgd
        * @return {cc.Layer} - background layer
        */
-      getBackgd: function() {
-        var rc= this.ptScene.getLayers();
+      getBackgd() {
+        const rc= this.ptScene.getLayers();
         return rc['BackLayer'];
       },
 
@@ -1030,8 +993,8 @@ define("zotohlab/asx/xlayers",
        * @method getHUD
        * @return {cc.Layer}  the HUD layer
        */
-      getHUD: function() {
-        var rc= this.ptScene.getLayers();
+      getHUD() {
+        const rc= this.ptScene.getLayers();
         return rc['HUD'];
       },
 
@@ -1039,7 +1002,7 @@ define("zotohlab/asx/xlayers",
        * @memberof module:zotohlab/asx/xlayers~XGameLayer
        * @method update
        */
-      update: function(dt) {
+      update(dt) {
         if (this.operational()  && !!this.engine) {
           this.engine.update(dt);
         }
@@ -1050,23 +1013,21 @@ define("zotohlab/asx/xlayers",
        * @method keys
        * @return {Array}  keys
        */
-      keys: function() { return this.keyboard; },
+      keys() { return this.keyboard; },
 
       /**
        * @memberof module:zotohlab/asx/xlayers~XGameLayer
        * @method rtti
        * @return {String}  id
        */
-      rtti: function() { return 'GameLayer'; },
+      rtti() { return 'GameLayer'; },
 
       /**
-       * Constructor.
-       *
        * @memberof module:zotohlab/asx/xlayers~XGameLayer
        * @method ctor
        * @param {Object} options
        */
-      ctor: function(options) {
+      ctor(options) {
         this._super(options);
         this.keyboard= [];
         this.players= [];
@@ -1082,30 +1043,25 @@ define("zotohlab/asx/xlayers",
 
     });
 
-    exports= {
+    exports= /** @lends exports# */{
       /**
-       * @property {XGameHUDLayer.Class} XGameHUDLayer
-       * @static
+       * @property {XGameHUDLayer} XGameHUDLayer
        */
       XGameHUDLayer: XGameHUDLayer,
       /**
        * @property {XGameLayer} XGameLayer
-       * @static
        */
       XGameLayer: XGameLayer,
       /**
-       * @property {XLayer.Class} XLayer
-       * @static
+       * @property {XLayer} XLayer
        */
       XLayer: XLayer,
       /**
-       * @property {XLive.Class} XLive
-       * @static
+       * @property {XLive} XLive
        */
       XLive: XLive,
       /**
-       * @property {XHUDLives.Class} XHUDLives
-       * @static
+       * @property {XHUDLives} XHUDLives
        */
       XHUDLives: XHUDLives
     };

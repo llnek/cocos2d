@@ -24,7 +24,7 @@ define("zotohlab/asx/xldr",
   function (sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/asx/xldr */
-    var exports = {},
+    let exports = {},
     _instance= null,
     CHUNK=36,
     undef;
@@ -34,13 +34,13 @@ define("zotohlab/asx/xldr",
      * @extends cc.Scene
      * @class XLoader
      */
-    var XLoader = cc.Scene.extend({
+    let XLoader = cc.Scene.extend({
 
       /**
        * @memberof module:zotohlab/asx/xloader~XLoader
        * @method ctor
        */
-      ctor: function () {
+      ctor() {
         this._super();
         // black back-ground
         this.bgLayer = new cc.LayerColor(cc.color(0,0,0, 255));
@@ -50,13 +50,12 @@ define("zotohlab/asx/xldr",
 
       /**
        * Sets up the loader, runs once.
-       *
        * @memberof module:zotohlab/asx/xloader~XLoader
        * @method pkLoad
        * @private
        */
-      pkLoad: function () {
-        var cw = ccsx.center(),
+      pkLoad() {
+        let cw = ccsx.center(),
         pfx='/public/ig/res/',
         s1,s2;
 
@@ -86,22 +85,22 @@ define("zotohlab/asx/xldr",
         this.pkStartLoading();
       },
 
-      onEnter: function () {
+      onEnter() {
         cc.Node.prototype.onEnter.call(this);
         this.schedule(this.pkLoad, 0.3);
       },
 
-      onExit: function () {
+      onExit() {
         cc.Node.prototype.onExit.call(this);
       },
 
-      initWithResources: function (resources, selector, target) {
+      initWithResources(resources, selector, target) {
         this.resources = resources;
         this.selector = selector;
         this.target = target;
       },
 
-      niceFadeOut: function() {
+      niceFadeOut() {
         this.unscheduleUpdate();
         this.logoSprite.runAction(cc.Sequence.create(
                                           cc.FadeOut.create(1.2),
@@ -110,25 +109,25 @@ define("zotohlab/asx/xldr",
 
       // we have to load chunk by chunk because the array of resources
       // can't be too big, else jsb complains
-      loadChunk: function() {
-        var res = this.resources,
+      loadChunk() {
+        const res = this.resources,
         me=this,
         s= this._pres[0],
         e= this._pres[1];
 
         //cc.log('start s = ' + s + ', e = ' + e);
 
-        cc.loader.load(res.slice(s, e), function(result, total, cnt) {
+        cc.loader.load(res.slice(s, e), (result, total, cnt) => {
           //cc.log('total = ' + total + ', cnt = ' + cnt);
           me._count += 1;
-        }, function() {
+        }, () => {
           me._pres[2] = true;
         });
       },
 
       // loading. step1
-      pkStartLoading: function () {
-        var res = this.resources,
+      pkStartLoading() {
+        const res = this.resources,
         me=this;
 
         // [head, tail, state] snapshot info used by
@@ -140,8 +139,8 @@ define("zotohlab/asx/xldr",
         this.loadChunk();
       },
 
-      update: function () {
-        var len = this.resources.length,
+      update() {
+        let len = this.resources.length,
         cnt = this._count,
         ratio = cnt / len,
         s,e,
@@ -166,19 +165,17 @@ define("zotohlab/asx/xldr",
 
     });
 
-
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @memberof module:zotohlab/asx/xloader~XLoader
      * @method preload
-     * @static
      * @param {Array} resources
      * @param {Function} selector
      * @param {Object} target
      * @return {XLoader}  the XLoader singleton.
      */
-    XLoader.preload = function (resources, selector, target) {
-      var director = cc.director;
+    XLoader.preload = (resources, selector, target) => {
+      const director = cc.director;
 
       if (!_instance) { _instance = new XLoader(); }
 

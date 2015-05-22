@@ -19,21 +19,19 @@ define("zotohlab/asx/negamax",
 
   function (sjs) { "use strict";
 
+    const PINF = 1000000;
+
     /** @alias module:zotohlab/asx/negamax */
-    var exports = {},
-    PINF = 1000000,
+    let exports = {},
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    function negamax(board, game, maxDepth, depth, alpha, beta) {
-
+    let negamax = (board, game, maxDepth, depth, alpha, beta) => {
       if (depth === 0 || board.isOver(game)) {
         return board.evalScore(game);
       }
-
       //assert(openMoves && openMoves.length > 0);
-      var openMoves = board.getNextMoves(game),
+      let openMoves = board.getNextMoves(game),
       bestValue = -PINF,
       rc,
       n,
@@ -61,7 +59,6 @@ define("zotohlab/asx/negamax",
           if (alpha >= beta) { break; }
         }
       };
-
       return bestValue;
     }
 
@@ -69,79 +66,78 @@ define("zotohlab/asx/negamax",
      * @interface GameBoard
      * @class
      */
-    var GameBoard = {
+    class GameBoard {
       /**
        * @memberof module:zotohlab/asx/negamax~GameBoard
        * @method isOver
        * @param {Object} game
        * @return {Boolean}
        */
-      isOver: function(game) { return false; },
+      isOver(game) { return false; }
       /**
        * @memberof module:zotohlab/asx/negamax~GameBoard
        * @method evalScore
        * @param {Object} game
        * @return {Number} score
        */
-      evalScore: function(game) { return 0; },
+      evalScore(game) { return 0; }
       /**
        * @memberof module:zotohlab/asx/negamax~GameBoard
        * @method getNextMoves
        * @param {Object} game
        * @return {Array}
        */
-      getNextMoves: function(game) { return []; },
+      getNextMoves(game) { return []; }
       /**
        * @memberof module:zotohlab/asx/negamax~GameBoard
        * @method makeMoves
        * @param {Object} game
        * @param {Number} move
        */
-      makeMove: function(game,move) {},
+      makeMove(game,move) {}
       /**
        * @memberof module:zotohlab/asx/negamax~GameBoard
        * @method switchPlayer
        * @param {Object} game
        */
-      switchPlayer: function(game) {},
+      switchPlayer(game) {}
       /**
        * @memberof module:zotohlab/asx/negamax~GameBoard
        * @method unmakeMove
        * @param {Object} game
        * @param {Number} move
        */
-      unmakeMove: function(game,move) {},
+      unmakeMove(game,move) {}
       /**
        * @memberof module:zotohlab/asx/negamax~GameBoard
        * @method takeSnapshot
        * @return {SnapShot}
        */
-      takeSnapshot: function() { return null; }
-    },
+      takeSnapshot() { return null; }
+    }
+
     /**
      * The negamax algorithm implementation.
-     *
      * @class NegaMax
      */
-    NegaMax= sjs.mixes({
+    class NegaMax {
 
       /**
        * Get the game board.
-       *
        * @memberof module:zotohlab/asx/negamax~NegaMax
        * @method getGameBoard
        * @return {GameBoard}
        */
-      getGameBoard: function() { return this.board; },
+      getGameBoard() { return this.board; }
 
       /**
        * Constructor.
        *
        * @memberof module:zotohlab/asx/negamax~NegaMax
-       * @method ctor
+       * @method constructor
        * @param {GameBoard} board
        */
-      ctor: function(board) { this.board= board; },
+      constructor(board) { this.board= board; }
 
       /**
        * Run the algo for one iteration.
@@ -150,53 +146,49 @@ define("zotohlab/asx/negamax",
        * @method eval
        * @return {Number} last best move
        */
-      eval: function() {
-        var snapshot= this.board.takeSnapshot();
+      eval() {
+        const snapshot= this.board.takeSnapshot();
         negamax(this.board, snapshot, 10, 10, -PINF, PINF);
         return snapshot.lastBestMove;
       }
 
-    }),
+    }
+
     /**
      * Simple data structure keeping track of the state of the
      * game board.
-     *
      * @class Snapshot
      */
-    Snapshot= sjs.mixes({
+    class Snapshot {
 
       /**
        * @method ctor
        * @private
        */
-      ctor: function() {
+      constructor() {
         this.lastBestMove= null;
         this.other= null;
         this.cur= null;
         this.state= null;
       }
 
-    });
+    }
 
-    exports = {
+    exports = /** @lends exports# */{
       /**
-       * @property {SnapShot.Class} Snapshot
-       * @static
+       * @property {SnapShot} Snapshot
        */
       Snapshot: Snapshot,
       /**
        * @property {Number} INF
-       * @static
        */
       INF: PINF,
       /**
-       * @property {NegaMax.Class} NegaMax
-       * @static
+       * @property {NegaMax} NegaMax
        */
       NegaMax: NegaMax,
       /**
-       * @property {GameBoard.Class} GameBoard
-       * @static
+       * @property {GameBoard} GameBoard
        */
       GameBoard: GameBoard
     };

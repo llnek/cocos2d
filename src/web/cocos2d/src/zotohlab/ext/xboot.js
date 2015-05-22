@@ -31,7 +31,7 @@ define("zotohlab/p/boot",
 
   function (sjs, sh, xcfg, loader, cfg, l10n, protos) { "use strict";
 
-    var ss1= xcfg.game.start || 'StartScreen',
+    let ss1= xcfg.game.start || 'StartScreen',
     /** @alias module:zotohlab/p/boot */
     exports={},
     R = sjs.ramda,
@@ -39,7 +39,7 @@ define("zotohlab/p/boot",
 
     //////////////////////////////////////////////////////////////////////////
     // Set device resolution, policy and orientation.
-    function setdr(landscape, w, h, pcy) {
+    let setdr= (landscape, w, h, pcy) => {
       if (landscape) {
         cc.view.setDesignResolutionSize(w, h, pcy);
       } else {
@@ -52,8 +52,8 @@ define("zotohlab/p/boot",
      * Sort out what resolution to use for this device.
      * @return {Array} - search paths
      */
-    function handleMultiDevices() {
-      var searchPaths = jsb.fileUtils.getSearchPaths(),
+    let handleMultiDevices = () => {
+      let searchPaths = jsb.fileUtils.getSearchPaths(),
       landscape = xcfg.game.landscape,
       pcy = xcfg.resolution.policy,
       fsz= cc.view.getFrameSize(),
@@ -101,7 +101,7 @@ define("zotohlab/p/boot",
 
       ps= ps.concat(['assets/src', 'src']);
 
-      for (var n=0; n < ps.length; ++n) {
+      for (let n=0; n < ps.length; ++n) {
         searchPaths.push(ps[n]);
       }
 
@@ -110,32 +110,31 @@ define("zotohlab/p/boot",
     }
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    function pvLoadSound(sh, xcfg, k,v) {
+    let pvLoadSound = (sh, xcfg, k,v) => {
       return sh.sanitizeUrl( v + '.' + xcfg.game.sfx );
     }
-    function pvLoadSprite(sh, xcfg, k, v) {
+    let pvLoadSprite = (sh, xcfg, k, v) => {
       return sh.sanitizeUrl(v[0]);
     }
-    function pvLoadImage(sh, xcfg, k,v) {
+    let pvLoadImage = (sh, xcfg, k,v) => {
       return sh.sanitizeUrl(v);
     }
-    function pvLoadTile(sh, xcfg, k,v) {
+    let pvLoadTile = (sh, xcfg, k,v) => {
       return sh.sanitizeUrl(v);
     }
-    function pvLoadAtlas(sh, xcfg, k,v) {
+    let pvLoadAtlas = (sh, xcfg, k,v) => {
       return [sh.sanitizeUrl( v + '.plist'),
               sh.sanitizeUrl( v + '.png') ];
     }
 
     //////////////////////////////////////////////////////////////////////////////
     //
-    function pvLoadLevels(sjs, sh, xcfg) {
-      var rc = [],
-      f1= function(k) {
-        return function(v, n) {
-          var a = sjs.reduceObj( function(memo, item, key) {
-            var z= k + '.' + n + '.' + key;
+    let pvLoadLevels = (sjs, sh, xcfg) => {
+      let rc = [],
+      f1= (k) => {
+        return (v, n) => {
+          const a = sjs.reduceObj( (memo, item, key) => {
+            const z= [k, n, key].join('.');
             switch (n) {
               case 'sprites':
                 memo.push( pvLoadSprite( sh, xcfg, z, item));
@@ -156,47 +155,46 @@ define("zotohlab/p/boot",
         };
       };
 
-      sjs.eachObj(function(v,k) { sjs.eachObj(f1(k), v); }, xcfg.levels);
+      sjs.eachObj((v,k) => { sjs.eachObj(f1(k), v); }, xcfg.levels);
       return rc;
     }
 
     /////////////////////////////////////////////////////////////////////////////
-    //
-    function pvGatherPreloads(sjs, sh, xcfg) {
-      var assets= xcfg.assets,
+    let pvGatherPreloads = (sjs, sh, xcfg) => {
+      let assets= xcfg.assets,
       p,
       rc= [
 
-        R.values(R.mapObjIndexed(function(v,k) {
+        R.values(R.mapObjIndexed((v,k) => {
           return pvLoadSprite(sh,xcfg,k,v);
         }, assets.sprites)),
 
-        R.values(R.mapObjIndexed(function(v,k) {
+        R.values(R.mapObjIndexed((v,k) => {
           return pvLoadImage(sh,xcfg,k,v);
         }, assets.images)),
 
-        R.values(R.mapObjIndexed(function(v,k) {
+        R.values(R.mapObjIndexed((v,k) => {
           return pvLoadSound(sh,xcfg,k,v);
         }, assets.sounds)),
 
-        sjs.reduceObj(function(memo, v,k) {
+        sjs.reduceObj((memo, v,k) => {
           // value is array of [ path, image , xml ]
           p= sh.sanitizeUrl(v[0]);
           return memo.concat([p+'/'+v[1], p+'/'+v[2]]);
         }, [], assets.fonts),
 
-        sjs.reduceObj(function(memo, v,k) {
+        sjs.reduceObj((memo, v,k) => {
           return memo.concat( pvLoadAtlas(sh, xcfg, k,v));
         }, [], assets.atlases),
 
-        R.values(R.mapObjIndexed(function(v,k) {
+        R.values(R.mapObjIndexed((v,k) => {
           return pvLoadTile(sh, xcfg, k,v);
         }, assets.tiles)),
 
         xcfg.game.preloadLevels ? pvLoadLevels(sjs, sh, xcfg) : []
       ];
 
-      return R.reduce(function(memo,v) {
+      return R.reduce((memo,v) => {
         sjs.loggr.info('Loading ' + v);
         memo.push( v );
         return memo;
@@ -204,46 +202,47 @@ define("zotohlab/p/boot",
     }
 
     /////////////////////////////////////////////////////////////////////////////
-    //
-    var MyLoaderScene = cc.Scene.extend({
+    /**
+     * @class MyLoaderScene
+     */
+    const MyLoaderScene = cc.Scene.extend(/** @lends MyLoaderScene# */{
 
-      init: function() { return true; },
+      init() { return true; },
 
-      _startLoading: function () {
-        var res = this.resources,
+      _startLoading() {
+        const res = this.resources,
         self=this;
 
         self.unschedule(self._startLoading);
         cc.loader.load(res,
-                       function (result, count, loadedCount) {},
-                       function () {
+                       (result, count, loadedCount) => {},
+                       () => {
                          if (sjs.isFunction(self.cb)) {
                            self.cb();
                          }
                        });
       },
 
-      initWithResources: function (resources, cb) {
+      initWithResources(resources, cb) {
         this.resources = resources || [];
         this.cb = cb;
       },
 
-      onEnter: function () {
-        var self = this;
+      onEnter() {
+        const self = this;
         cc.Node.prototype.onEnter.call(self);
         self.schedule(self._startLoading, 0.3);
       },
 
-      onExit: function () {
+      onExit() {
         cc.Node.prototype.onExit.call(this);
       }
 
     });
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    function preLaunchApp(sjs, sh, xcfg, ldr,  ss1) {
-      var fz= cc.view.getFrameSize(),
+    let preLaunchApp = (sjs, sh, xcfg, ldr,  ss1) => {
+      let fz= cc.view.getFrameSize(),
       paths,
       sz,
       pfx,
@@ -286,9 +285,8 @@ define("zotohlab/p/boot",
       // hack to suppress the showing of cocos2d's logo
       cc.loaderScene = new MyLoaderScene();
       cc.loaderScene.init();
-      cc.loaderScene.initWithResources(rs,
-      function() {
-        ldr.preload(pvGatherPreloads(sjs, sh, xcfg), function () {
+      cc.loaderScene.initWithResources(rs, () => {
+        ldr.preload(pvGatherPreloads(sjs, sh, xcfg), () => {
           xcfg.runOnce();
           cc.director.runScene( sh.protos[ss1].reify() );
         });

@@ -34,6 +34,7 @@ property( name: "PID", value: "${gantProjectName}")
 loadproperties (srcFile: "${basedir}/build.xs") {}
 property( name: 'websrc', value: "${buildDir}/webscripts")
 property( name: 'webcss', value: "${buildDir}/webstyles")
+property( name: 'docs', value: "${buildDir}/docs")
 property( environment: "env" )
 
 //////////////////////////////////////////////////////////////////////////////
@@ -105,8 +106,8 @@ target (preBuild: '') {
   ant.mkdir (dir: "${basedir}/POD-INF/lib")
   ant.mkdir (dir: "${basedir}/POD-INF/patch")
   ant.mkdir (dir: "${buildDir}")
-  ant.mkdir (dir: "${buildDir}/websrc")
-  ant.mkdir (dir: "${buildDir}/webcss")
+  ant.mkdir (dir: "${buildDir}/webscripts")
+  ant.mkdir (dir: "${buildDir}/webstyles")
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -282,9 +283,6 @@ def doBuildOneWebApp (dir) {
   if ("typescript" == "${jslang}") {
     doCompileTypeScript(wappid)
   }
-  if ("coffee" == "${jslang}") {
-    doCompileCoffeeScript(wappid)
-  }
   doCompileJS(wappid)
   if ("less" == "${csslang}") {
     doCompileLESS(wappid)
@@ -417,12 +415,28 @@ def doCompileCoffeeScript(wappid) {
   }
 }
 
+target (poo: '') {
+  doCompileJS('cocos2d')
+}
+
 //////////////////////////////////////////////////////////////////////////////
 //
 def doCompileJS(wappid) {
-  ant.copy (todir: "${websrc}/${wappid}") {
-    fileset (dir: "${webDir}/${wappid}/src")
+
+  ant.exec (executable: 'babel', dir: "${basedir}") {
+    arg(value: "${webDir}/${wappid}/src")
+    arg(value: '--out-dir')
+    arg(value: "${websrc}/${wappid}")
   }
+
+  ant.exec(executable: "jsdoc", dir: "${basedir}", spawn: true) {
+    arg(value: "${websrc}/${wappid}")
+    arg(value:"-c")
+    arg(value:"${basedir}/src/jsdoc.json")
+    arg(value:"-d")
+    arg(value:"${docs}/${wappid}")
+  }
+
   ant.mkdir (dir: "${basedir}/public/ig/lib/game")
   ant.mkdir (dir: "${basedir}/public/scripts")
   switch (wappid) {
@@ -443,6 +457,9 @@ def doCompileJS(wappid) {
     break
   }
 }
+
+//////////////////////////////////////////////////////////////////////////////
+//
 
 //////////////////////////////////////////////////////////////////////////////
 //

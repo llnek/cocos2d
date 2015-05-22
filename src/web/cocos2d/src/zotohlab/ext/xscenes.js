@@ -26,7 +26,7 @@ define("zotohlab/asx/xscenes",
   function (sjs, ebus, sh, xlayers) { "use strict";
 
     /** @alias module:zotohlab/asx/xscenes */
-    var exports = {},
+    let exports = {},
     R = sjs.ramda,
     undef;
 
@@ -35,14 +35,14 @@ define("zotohlab/asx/xscenes",
      * @extends cc.Scene
      * @class XScene
      */
-    var XScene = cc.Scene.extend({
+    const XScene = cc.Scene.extend({
 
       /**
        * @memberof module:zotohlab/asx/xscenes~XScene
        * @method getLayers
        * @return {Array}
        */
-      getLayers: function() {
+      getLayers() {
         return this.layers;
       },
 
@@ -50,23 +50,26 @@ define("zotohlab/asx/xscenes",
        * @memberof module:zotohlab/asx/xscenes~XScene
        * @method init
        */
-      init: function() {
-        this._super();
-        this.createLayers();
-        return true;
+      init() {
+        if (this._super()) {
+          this.createLayers();
+          return true;
+        } else {
+          return false;
+        }
       },
 
       /**
        * @memberof module:zotohlab/asx/xscenes~XScene
        * @method createLayers
        */
-      createLayers: function() {
-        var a = this.lays || [],
+      createLayers() {
+        let a = this.lays || [],
         glptr = undef,
         rc,
         obj;
         //hold off init'ing game layer, leave that as last
-        rc = R.any(function(proto) {
+        rc = R.any((proto) => {
           obj= new (proto)(this.options);
           if ( obj instanceof xlayers.XGameLayer ) {
             glptr = obj;
@@ -83,7 +86,7 @@ define("zotohlab/asx/xscenes",
           this.layers[ obj.rtti() ] = obj;
           this.addChild(obj);
           return false;
-        }.bind(this), a);
+        }, a);
 
         if (a.length > 0 && rc===false ) {
           if (!!glptr) {
@@ -100,7 +103,7 @@ define("zotohlab/asx/xscenes",
        * @param {Function} cb
        * @return {cc.Scene}
        */
-      onmsg: function(topic, cb) {
+      onmsg(topic, cb) {
         this.ebus.on(topic, cb);
         return this;
       },
@@ -111,7 +114,7 @@ define("zotohlab/asx/xscenes",
        * @param {Array} ls - list of layers
        * @param {Object} options
        */
-      ctor: function(ls, options) {
+      ctor(ls, options) {
         this.options = options || {};
         this._super();
         this.lays= ls || [];
@@ -125,7 +128,7 @@ define("zotohlab/asx/xscenes",
     /**
      * @class XSceneFactory
      */
-    var XSceneFactory = sjs.mixes({
+    class XSceneFactory {
 
       /**
        * @memberof module:zotohlab/asx/xscenes~XSceneFactory
@@ -133,8 +136,8 @@ define("zotohlab/asx/xscenes",
        * @param {Object} options
        * @return {cc.Scene}
        */
-      reify: function(options) {
-        var itemKey= 'layers',
+      reify(options) {
+        let itemKey= 'layers',
         arr= this.layers,
         cfg;
         if (options && sjs.hasKey(options, itemKey ) &&
@@ -144,31 +147,29 @@ define("zotohlab/asx/xscenes",
         } else {
           cfg= options || {};
         }
-        var scene = new XScene(arr, cfg);
+        const scene = new XScene(arr, cfg);
         scene.init()
         return scene;
-      },
+      }
 
       /**
        * @memberof module:zotohlab/asx/xscenes~XSceneFactory
-       * @method ctor
+       * @method constructor
        * @param {Array} list of layers
        */
-      ctor: function(ls) {
+      constructor(ls) {
         this.layers= ls || [];
       }
 
-    });
+    }
 
-    exports = {
+    exports = /** @lends exports# */{
       /**
-       * @property {XSceneFactory.Class} XSceneFactory
-       * @static
+       * @property {XSceneFactory} XSceneFactory
        */
       XSceneFactory: XSceneFactory,
       /**
-       * @property {XScene.Class} XScene
-       * @static
+       * @property {XScene} XScene
        */
       XScene: XScene
     };

@@ -26,7 +26,7 @@ define("zotohlab/asx/xmmenus",
   function (sjs, sh, ccsx, layers) { "use strict";
 
     /** @alias module:zotohlab/asx/xmmenus */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -44,13 +44,13 @@ define("zotohlab/asx/xmmenus",
        * @method pkInit
        * @protected
        */
-      pkInit: function() {
+      pkInit() {
         this.setBg();
         this.setTitle();
       },
 
-      setTitle: function() {
-        var title = new cc.LabelBMFont(sh.l10n('%mmenu'),
+      setTitle() {
+        let title = new cc.LabelBMFont(sh.l10n('%mmenu'),
                                        sh.getFontPath('font.JellyBelly'));
         title.setPosition(cw.x, wb.top - csts.TILE * 8 / 2);
         title.setOpacity(0.9*255);
@@ -58,7 +58,7 @@ define("zotohlab/asx/xmmenus",
         this.addItem(title);
       },
 
-      setBg : function() {
+      setBg() {
         this.centerImage(sh.getImagePath('gui.mmenu.menu.bg'));
       },
 
@@ -67,7 +67,7 @@ define("zotohlab/asx/xmmenus",
        * @method rtti
        * @return {String} id
        */
-      rtti: function() { return 'XMenuBackLayer'; }
+      rtti() { return 'XMenuBackLayer'; }
 
     }),
 
@@ -82,10 +82,10 @@ define("zotohlab/asx/xmmenus",
        * @method rtti
        * @return {String} id
        */
-      rtti: function() { return 'XMenuLayer'; },
+      rtti() { return 'XMenuLayer'; },
 
-      mkBackQuit: function(vert, btns, posfn) {
-        var sz, menu;
+      mkBackQuit(vert, btns, posfn) {
+        let sz, menu;
 
         if (vert) {
           menu = ccsx.vmenu(btns);
@@ -100,33 +100,30 @@ define("zotohlab/asx/xmmenus",
         this.addItem(menu);
       },
 
-      mkAudio: function(options) {
+      mkAudio(options) {
         this.addAudioIcon(options);
       }
 
     });
 
-    exports = {
+    exports = /** @lends exports# */{
       /**
-       * @property {XMenuBackLayer.Class} XMenuBackLayer
-       * @static
+       * @property {XMenuBackLayer} XMenuBackLayer
        */
       XMenuBackLayer: XMenuBackLayer,
 
       /**
-       * @property {XMenuLayer.Class} XMenuLayer
-       * @static
+       * @property {XMenuLayer} XMenuLayer
        */
       XMenuLayer: XMenuLayer,
 
       /**
        * @method showMenu
-       * @static
        */
-      showMenu: function() {
-        var dir= cc.director;
+      showMenu() {
+        const dir= cc.director;
         dir.pushScene( sh.protos[sh.ptypes.mmenu].reify({
-          onBack: function() {
+          onBack() {
             dir.popScene();
           }
         }));

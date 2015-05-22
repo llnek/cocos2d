@@ -30,33 +30,39 @@ define("zotohlab/asx/onlineplay",
   function (sjs, sh, ccsx, layers, scenes, odin) { "use strict";
 
     /** @alias module:zotohlab/asx/onlineplay */
-    var exports = {        },
+    let exports = {        },
     evts= odin.Events,
     xcfg= sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
     //////////////////////////////////////////////////////////////////////////
+    /**
+     * @class BGLayer
+     */
     BGLayer = layers.XLayer.extend({
 
-      rtti: function() { return "BGLayer"; },
+      rtti() { return "BGLayer"; },
 
-      ctor: function() {
-        var bg= new cc.Sprite(sh.getImagePath('game.bg')),
+      ctor() {
+        const bg= new cc.Sprite(sh.getImagePath('game.bg')),
         cw= ccsx.center();
         this._super();
         bg.setPosition(cw.x, cw.y);
         this.addItem(bg);
       },
 
-      pkInit: function() {}
+      pkInit() {}
 
     }),
     //////////////////////////////////////////////////////////////////////////
+    /**
+     * @class UILayer
+     */
     UILayer =  layers.XLayer.extend({
 
-      onOnlineReq: function(uid,pwd) {
-        var wsurl = sjs.fmtUrl(sjs.getWebSockProtocol(), sh.wsUri),
+      onOnlineReq(uid,pwd) {
+        const wsurl = sjs.fmtUrl(sjs.getWebSockProtocol(), sh.wsUri),
         user = (uid || '').trim(),
         pswd = (pwd || '').trim();
 
@@ -69,7 +75,7 @@ define("zotohlab/asx/onlineplay",
         this.wss.connect(wsurl);
       },
 
-      onOdinEvent: function(topic,evt) {
+      onOdinEvent(topic,evt) {
         //sjs.loggr.debug(evt);
         switch (evt.type) {
           case evts.MSG_NETWORK: this.onNetworkEvent(evt); break;
@@ -77,7 +83,7 @@ define("zotohlab/asx/onlineplay",
         }
       },
 
-      onNetworkEvent: function(evt) {
+      onNetworkEvent(evt) {
         switch (evt.code) {
           case evts.PLAYER_JOINED:
             //TODO
@@ -92,7 +98,7 @@ define("zotohlab/asx/onlineplay",
         }
       },
 
-      onSessionEvent: function(evt) {
+      onSessionEvent(evt) {
         switch (evt.code) {
           case evts.PLAYREQ_OK:
             sjs.loggr.debug("player " +
@@ -104,7 +110,7 @@ define("zotohlab/asx/onlineplay",
         }
       },
 
-      onCancelPlay: function() {
+      onCancelPlay() {
         try {
           this.wss.close();
         } catch (e) {}
@@ -112,14 +118,15 @@ define("zotohlab/asx/onlineplay",
         this.options.onBack();
       },
 
-      showWaitOthers: function() {
-        this.removeAll();
-        var qn= new cc.LabelBMFont(sh.l10n('%waitother'),
+      showWaitOthers() {
+        let qn= new cc.LabelBMFont(sh.l10n('%waitother'),
                                    sh.getFontPath('font.OCR')),
         cw= ccsx.center(),
         wz= ccsx.vrect(),
         wb = ccsx.vbox(),
         me=this, menu;
+
+        this.removeAll();
 
         qn.setPosition(cw.x, wb.top * 0.75);
         qn.setScale(xcfg.game.scale * 0.3);
@@ -128,8 +135,8 @@ define("zotohlab/asx/onlineplay",
 
         menu= ccsx.vmenu([
           { imgPath: '#cancel.png',
-            cb: function() {
-              this.onCancelPlay();
+            cb() {
+              me.onCancelPlay();
             },
             target: me
           }
@@ -138,8 +145,8 @@ define("zotohlab/asx/onlineplay",
         this.addItem(menu);
       },
 
-      pkInit: function() {
-        var qn= new cc.LabelBMFont(sh.l10n('%signinplay'),
+      pkInit() {
+        let qn= new cc.LabelBMFont(sh.l10n('%signinplay'),
                                    sh.getFontPath('font.OCR')),
         cw= ccsx.center(),
         wz= ccsx.vrect(),
@@ -155,7 +162,7 @@ define("zotohlab/asx/onlineplay",
         qn.setOpacity(0.9*255);
         this.addItem(qn);
 
-        var dummy = new cc.Sprite('#ok.png'),
+        let dummy = new cc.Sprite('#ok.png'),
         bxz= dummy.getContentSize();
 
         // editbox for user
@@ -183,14 +190,14 @@ define("zotohlab/asx/onlineplay",
 
         menu= ccsx.vmenu([
           { imgPath: '#continue.png',
-            cb: function() {
-              this.onOnlineReq(uid.getString(),pwd.getString());
+            cb() {
+              me.onOnlineReq(uid.getString(),pwd.getString());
             },
             target: me },
 
           { imgPath: '#cancel.png',
-            cb: function() {
-              this.options.onBack();
+            cb() {
+              me.options.onBack();
             },
             target: me }
         ]);
@@ -200,23 +207,20 @@ define("zotohlab/asx/onlineplay",
 
     });
 
-    exports = {
+    exports = /** @lends exports# */{
 
       /**
        * @property {String} rtti
-       * @static
        */
       rtti : sh.ptypes.online,
 
       /**
        * Create the online-request play screen.
-       *
        * @method reify
-       * @static
        * @param {Object} options
        * @return {cc.Scene}
        */
-      reify: function(options) {
+      reify(options) {
         return new scenes.XSceneFactory([ BGLayer, UILayer ]).reify(options);
       }
 

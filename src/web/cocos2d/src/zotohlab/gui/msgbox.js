@@ -28,32 +28,38 @@ define("zotohlab/asx/msgbox",
   function (sjs, sh, ccsx, layers, scenes) { "use strict";
 
     /** @alias module:zotohlab/asx/msgbox */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
     //////////////////////////////////////////////////////////////////////////
+    /**
+     * @class BGLayer
+     */
     BGLayer = layers.XLayer.extend({
 
-      rtti: function() { return "BGLayer"; },
+      rtti() { return "BGLayer"; },
 
-      ctor: function() {
-        var bg= new cc.Sprite(sh.getImagePath('game.bg')),
+      ctor() {
+        const bg= new cc.Sprite(sh.getImagePath('game.bg')),
         cw= ccsx.center();
         this._super();
         bg.setPosition(cw.x, cw.y);
         this.addItem(bg);
       },
 
-      pkInit: function() {}
+      pkInit() {}
 
     }),
     //////////////////////////////////////////////////////////////////////////
+    /**
+     * @class UILayer
+     */
     UILayer = layers.XLayer.extend({
 
-      pkInit: function() {
-        var qn= new cc.LabelBMFont(sh.l10n(this.options.msg),
+      pkInit() {
+        let qn= new cc.LabelBMFont(sh.l10n(this.options.msg),
                                    sh.getFontPath('font.OCR')),
         cw= ccsx.center(),
         wz= ccsx.vrect(),
@@ -70,7 +76,7 @@ define("zotohlab/asx/msgbox",
 
         menu= ccsx.vmenu([
           { imgPath: '#ok.png',
-            cb: function() {
+            cb() {
               me.options.yes();
             },
             target: me
@@ -82,23 +88,20 @@ define("zotohlab/asx/msgbox",
 
     });
 
-    exports = {
+    exports = /** @lends exports# */{
 
       /**
        * @property {String} rtti
-       * @static
        */
       rtti: sh.ptypes.mbox,
 
       /**
        * Create a scene to display the message.
-       *
        * @method reify
        * @param {Object} options
        * @return {cc.Scene}
-       * @static
        */
-      reify: function(options) {
+      reify(options) {
         return new scenes.XSceneFactory([ BGLayer, UILayer ]).reify(options);
       }
 

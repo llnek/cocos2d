@@ -21,13 +21,13 @@ define("zotohlab/asx/ccsx",
 
   function (sjs,sh) { "use strict";
 
-    var R = sjs.ramda,
+    let R = sjs.ramda,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
     // monkey patch stuff that we want to extend
     //////////////////////////////////////////////////////////////////////////////
-/****
+/*
     cc.Director.prototype.getSceneStackLength = function() {
       return this._scenesStack.length;
     };
@@ -47,24 +47,21 @@ define("zotohlab/asx/ccsx",
       this._nextScene = null;
       this.runScene(scene);
     };
-***/
+*/
     //////////////////////////////////////////////////////////////////////////////
-    //
     /** @alias module:zotohlab/asx/ccsx */
-    var exports = {
+    let exports = /** @lends exports# */{
 
       /**
        * Test if this point is inside this rectangle.
-       *
-       * @method pointInBox
-       * @static
+       * @method
        * @param {Object} box
        * @param {Object | Number} x
        * @param {Number} y
        * @return {Boolean}
        */
-      pointInBox: function (box, x, y) {
-        var px, py;
+      pointInBox(box, x, y) {
+        let px, py;
         if (! sjs.echt(y)) {
           px= x.x;
           py= x.y;
@@ -79,53 +76,46 @@ define("zotohlab/asx/ccsx",
       /**
        * Test collision of 2 entities using cc-rects.  Each entity
        * wraps a sprite object.
-       *
-       * @method collide
-       * @static
+       * @method
        * @param {Object} a
        * @param {Object} b
        * @return {Boolean}
        */
-      collide: function(a,b) {
+      collide(a,b) {
         return a && b ? this.collide0(a.sprite, b.sprite) : false;
       },
 
 
       /**
        * Test collision of 2 sprites.
-       *
-       * @method collide
-       * @static
+       * @method
        * @param {Object} spriteA
        * @param {Object} spriteB
        * @return {Boolean}
        */
-      collide0: function(spriteA,spriteB) {
-        return spriteA && spriteB ? cc.rectIntersectsRect(this.bbox(spriteA),
-                                              this.bbox(spriteB)) : false;
+      collide0(spriteA,spriteB) {
+        return spriteA && spriteB ?
+          cc.rectIntersectsRect(this.bbox(spriteA), this.bbox(spriteB)) : false;
       },
 
       /**
        * Test if the screen is oriented vertically.
-       *
-       * @method isPortrait
-       * @static
+       * @method
        * @return {Boolean}
        */
-      isPortrait: function() {
-        var s=this.screen(); return s.height > s.width;
+      isPortrait() {
+        const s=this.screen();
+        return s.height > s.width;
       },
 
       /**
        * Test if this entity is out of bound.
-       *
-       * @method outOfBound
-       * @static
+       * @method
        * @param {Object} ent
        * @param {Object} B
        * @return {Boolean}
        */
-      outOfBound: function(ent,B) {
+      outOfBound(ent,B) {
         return !!ent ? sh.outOfBound(this.bbox4(ent.sprite),
                                      B || this.vbox())
                                      : false;
@@ -133,14 +123,12 @@ define("zotohlab/asx/ccsx",
 
       /**
        * Maybe release this timer.
-       *
-       * @method releaseTimer
-       * @static
+       * @method
        * @param {Object} par
        * @param {Object} tm
        * @return null
        */
-      releaseTimer: function(par, tm) {
+      releaseTimer(par, tm) {
         if (cc.sys.isNative && !!tm) {
           tm.release();
         }
@@ -149,15 +137,13 @@ define("zotohlab/asx/ccsx",
 
       /**
        * Create a timer action.
-       *
-       * @method createTimer
-       * @static
+       * @method
        * @param {Object} par
        * @param {Object} tm
        * @return {Object} timer action
        */
-      createTimer: function(par, tm) {
-        var rc= par.runAction(new cc.DelayTime(tm));
+      createTimer(par, tm) {
+        const rc= par.runAction(new cc.DelayTime(tm));
         if (cc.sys.isNative) {
           rc.retain();
         }
@@ -166,39 +152,33 @@ define("zotohlab/asx/ccsx",
 
       /**
        * Test if this timer is done.
-       *
-       * @method timerDone
-       * @static
+       * @method
        * @param {Object} t
        * @return {Boolean}
        */
-      timerDone: function(t) {
+      timerDone(t) {
         return sjs.echt(t) && t.isDone();
       },
 
       /**
        * Create a sprite from its frame name.
-       *
-       * @method createSpriteFrame
-       * @static
+       * @method
        * @param {String} name
        * @return {cc.Sprite}
        */
-      createSpriteFrame: function(name) {
-        var rc= new cc.Sprite();
+      createSpriteFrame(name) {
+        const rc= new cc.Sprite();
         rc.initWithSpriteFrameName(name);
         return rc;
       },
 
       /**
        * Create a 4 point rectangle from this sprite.
-       *
-       * @method bbox4
-       * @static
+       * @method
        * @param {cc.Sprite} sprite
        * @return {Object} rect
        */
-      bbox4: function(sprite) {
+      bbox4(sprite) {
         return {
           bottom: this.getBottom(sprite),
           top: this.getTop(sprite),
@@ -209,26 +189,22 @@ define("zotohlab/asx/ccsx",
 
       /**
        * Calculate halves of width and height of this sprite.
-       *
-       * @method halfHW
-       * @static
+       * @method
        * @param {cc.Sprite} sprite
        * @return {Array} [x, y]
        */
-      halfHW: function(sprite) {
-        var z= sprite.getContentSize();
+      halfHW(sprite) {
+        const z= sprite.getContentSize();
         return [z.width * 0.5, z.height * 0.5];
       },
 
       /**
        * Create a rectangle from this sprite.
-       *
-       * @method bbox
-       * @static
+       * @method
        * @param {cc.Sprite} sprite
        * @return {cc.rect} rect
        */
-      bbox: function(sprite) {
+      bbox(sprite) {
         return cc.rect(this.getLeft(sprite),
                        this.getBottom(sprite),
                        this.getWidth(sprite),
@@ -237,13 +213,11 @@ define("zotohlab/asx/ccsx",
 
       /**
        * Create a rect from the last frame.
-       *
-       * @method bbox4b4
-       * @static
+       * @method
        * @param {Object} ent
        * @return {Object} box
        */
-      bbox4b4: function(ent) {
+      bbox4b4(ent) {
         return {
           bottom: this.getLastBottom(ent),
           top: this.getLastTop(ent),
@@ -254,222 +228,184 @@ define("zotohlab/asx/ccsx",
 
       /**
        * Get the scaled height.
-       *
-       * @method getScaledHeight
-       * @static
+       * @method
        * @param {cc.Sprite} sprite
        * @return {Number}
        */
-      getScaledHeight: function(sprite) {
+      getScaledHeight(sprite) {
         return sprite.getContentSize().height * sprite.getScaleY();
       },
 
       /**
        * Get the height.
-       *
-       * @method getHeight
-       * @static
+       * @method
        * @param {cc.Sprite} sprite
        * @return {Number}
        */
-      getHeight: function(sprite) {
+      getHeight(sprite) {
         return sprite.getContentSize().height;
       },
 
       /**
        * Get the scaled width.
-       *
-       * @method getScaledWidth
-       * @static
+       * @method
        * @param {cc.Sprite} sprite
        * @return {Number}
        */
-      getScaledWidth: function(sprite) {
+      getScaledWidth(sprite) {
         return sprite.getContentSize().width * sprite.getScaleX();
       },
 
       /**
        * Get the width.
-       *
-       * @method getWidth
-       * @static
+       * @method
        * @param {cc.Sprite} sprite
        * @return {Number}
        */
-      getWidth: function(sprite) {
+      getWidth(sprite) {
         return sprite.getContentSize().width;
       },
 
       /**
        * Get the left pos.
-       *
-       * @method getLeft
-       * @static
+       * @method
        * @param {cc.Sprite} sprite
        * @return {Number}
        */
-      getLeft: function(sprite) {
+      getLeft(sprite) {
         return sprite.getPosition().x - this.getWidth(sprite)/2;
       },
 
       /**
        * Get the right pos.
-       *
-       * @method getRight
-       * @static
+       * @method
        * @param {cc.Sprite} sprite
        * @return {Number}
        */
-      getRight: function(sprite) {
+      getRight(sprite) {
         return sprite.getPosition().x + this.getWidth(sprite)/2;
       },
 
       /**
        * Get the top pos.
-       *
-       * @method getTop
-       * @static
+       * @method
        * @param {cc.Sprite} sprite
        * @return {Number}
        */
-      getTop: function(sprite) {
+      getTop(sprite) {
         return sprite.getPosition().y + this.getHeight(sprite)/2;
       },
 
       /**
        * Get the bottom pos.
-       *
-       * @method getBottom
-       * @static
+       * @method
        * @param {cc.Sprite} sprite
        * @return {Number}
        */
-      getBottom: function(sprite) {
+      getBottom(sprite) {
         return sprite.getPosition().y - this.getHeight(sprite)/2;
       },
 
       /**
        * Maybe get the previous left pos.
-       *
-       * @method getLastLeft
-       * @static
+       * @method
        * @param {Object} ent
        * @return {Number}
        */
-      getLastLeft: function(ent) {
+      getLastLeft(ent) {
         return sjs.echt(ent.lastPos) ? ent.lastPos.x - this.getWidth(ent.sprite)/2
                                      : this.getLeft(ent);
       },
 
       /**
        * Maybe get the previous right pos.
-       *
-       * @method getLastRight
-       * @static
+       * @method
        * @param {Object} ent
        * @return {Number}
        */
-      getLastRight: function(ent) {
+      getLastRight(ent) {
         return sjs.echt(ent.lastPos) ? ent.lastPos.x + this.getWidth(ent.sprite)/2
                                      : this.getRight(ent);
       },
 
       /**
        * Maybe get the previous top pos.
-       *
-       * @method getLastTop
-       * @static
+       * @method
        * @param {Object} ent
        * @return {Number}
        */
-      getLastTop: function(ent) {
+      getLastTop(ent) {
         return sjs.echt(ent.lastPos) ? ent.lastPos.y + this.getHeight(ent.sprite)/2
                                      : this.getTop(ent);
       },
 
       /**
        * Maybe get the previous bottom pos.
-       *
-       * @method getLastBottom
-       * @static
+       * @method
        * @param {Object} ent
        * @return {Number}
        */
-      getLastBottom: function(ent) {
+      getLastBottom(ent) {
         return sjs.echt(ent.lastPos) ? ent.lastPos.y - this.getHeight(ent.sprite)/2
                                      : this.getBottom(ent);
       },
 
       /**
        * Get the x pos of the center of the visible screen.
-       *
-       * @method centerX
-       * @static
+       * @method
        * @return {Number}
        */
-      centerX: function() { return this.center().x; },
+      centerX() { return this.center().x; },
 
       /**
        * Get the y pos of the center of the visible screen.
-       *
-       * @method centerY
-       * @static
+       * @method
        * @return {Number}
        */
-      centerY: function() { return this.center().y; },
+      centerY() { return this.center().y; },
 
       /**
        * Get the center of the visible screen.
-       *
-       * @method center
-       * @static
+       * @method
        * @return {cc.Point}
        */
-      center: function() {
-        var rc = this.vrect();
+      center() {
+        const rc = this.vrect();
         return cc.p( rc.x + rc.width * 0.5, rc.y + rc.height * 0.5);
       },
 
       /**
        * Get the screen height.
-       *
-       * @method screenHeight
-       * @static
+       * @method
        * @return {Number}
        */
-      screenHeight: function() { return this.screen().height; },
+      screenHeight() { return this.screen().height; },
 
       /**
        * Get the screen width.
-       *
-       * @method screenWidth
-       * @static
+       * @method
        * @return {Number}
        */
-      screenWidth: function() { return this.screen().width; },
+      screenWidth() { return this.screen().width; },
 
       /**
        * Get the visible screen rectangle.
-       *
-       * @method vrect
-       * @static
+       * @method
        * @return {Object} cc.rect
        */
-      vrect: function() {
-        var vo = cc.view.getVisibleOrigin(),
+      vrect() {
+        const vo = cc.view.getVisibleOrigin(),
         wz= cc.view.getVisibleSize();
         return cc.rect(vo.x, vo.y, wz.width, wz.height);
       },
 
       /**
        * Get the visible screen box.
-       *
-       * @method vbox
-       * @static
+       * @method
        * @return {Object} rectangle box.
        */
-      vbox: function() {
-        var vo = cc.view.getVisibleOrigin(),
+      vbox() {
+        const vo = cc.view.getVisibleOrigin(),
         wz= cc.view.getVisibleSize();
         return {
           bottom: vo.y,
@@ -481,38 +417,31 @@ define("zotohlab/asx/ccsx",
 
       /**
        * Get the actual window/frame size.
-       *
-       * @method screen
-       * @static
+       * @method
        * @return {cc.Size}
        */
-      screen: function() {
+      screen() {
         return cc.sys.isNative ? cc.view.getFrameSize()
                                : cc.director.getWinSize();
       },
 
-
       /**
        * Get the actual screen center.
-       *
-       * @method scenter
-       * @static
+       * @method
        * @return {cc.Point}
        */
-      scenter: function() {
-        var sz = this.screen();
+      scenter() {
+        const sz = this.screen();
         return cc.p(sz.width * 0.5, sz.height * 0.5);
       },
 
       /**
        * Get the center of this box.
-       *
-       * @method vboxMID
-       * @static
+       * @method
        * @param {Object} box
        * @return {cc.Point}
        */
-      vboxMID: function(box) {
+      vboxMID(box) {
         return cc.p(box.left + (box.right-box.left) * 0.5,
                     box.bottom + (box.top-box.bottom) * 0.5);
       },
@@ -523,17 +452,15 @@ define("zotohlab/asx/ccsx",
        *
        * If hit, the new position and velocities
        * are returned.
-       *
-       * @method traceEnclosure
-       * @static
+       * @method
        * @param {Number} dt  delta time
        * @param {Object} bbox
        * @param {Oject} rect
        * @param {Object} vel velocity for [x,y]
        * @return {Object}
        */
-      traceEnclosure: function(dt,bbox,rect,vel) {
-        var sz= rect.height * 0.5,
+      traceEnclosure(dt,bbox,rect,vel) {
+        let sz= rect.height * 0.5,
         sw= rect.width * 0.5,
         vx= vel.x,
         vy= vel.y,
@@ -585,20 +512,16 @@ define("zotohlab/asx/ccsx",
       /**
        * Get the sprite from the frame cache using
        * its id (e.g. #ship).
-       *
-       * @method getSpriteFrame
-       * @static
+       * @method
        * @param {String} frameid
        * @return {cc.Sprite}
        */
-      getSpriteFrame: function(frameid) {
+      getSpriteFrame(frameid) {
         return cc.spriteFrameCache.getSpriteFrame(frameid);
       },
 
       /**
        * @property {Object} acs Anchor Points
-       * @static
-       * @final
        */
       acs : {
         Center: cc.p(0.5, 0.5),
@@ -616,8 +539,8 @@ define("zotohlab/asx/ccsx",
        * not used for now.
        * @private
        */
-      resolveElastic: function(obj1,obj2) {
-        var pos2 = obj2.sprite.getPosition(),
+      resolveElastic(obj1,obj2) {
+        let pos2 = obj2.sprite.getPosition(),
         pos1= obj1.sprite.getPosition(),
         sz2= obj2.sprite.getContentSize(),
         sz1= obj1.sprite.getContentSize(),
@@ -668,15 +591,13 @@ define("zotohlab/asx/ccsx",
        * :fontPath
        * :cb
        * :target}
-       *
-       * @method tmenu
-       * @static
+       * @method
        * @param {Array} items
        * @param {Number} scale
        * @return {cc.Menu}
        */
-      tmenu: function(items,scale) {
-        var menu= new cc.Menu(),
+      tmenu(items,scale) {
+        let menu= new cc.Menu(),
         mi,
         t=0,
         obj, n;
@@ -698,14 +619,12 @@ define("zotohlab/asx/ccsx",
 
       /**
        * Make a text label menu containing one single button.
-       *
-       * @method tmenu1
-       * @static
+       * @method
        * @param {Object} options
        * @return {cc.Menu}
        */
-      tmenu1: function(options) {
-        var menu = this.tmenu(options);
+      tmenu1(options) {
+        let menu = this.tmenu(options);
         menu.alignItemsVertically();
         if (options.anchor) { menu.setAnchorPoint(options.anchor); }
         if (options.pos) { menu.setPosition(options.pos); }
@@ -715,45 +634,39 @@ define("zotohlab/asx/ccsx",
 
       /**
        * Create a vertically aligned menu with graphic buttons.
-       *
-       * @method vmenu
-       * @static
+       * @method
        * @param {Array} items
        * @param {Number} scale
        * @param {Number} padding
        * @return {cc.Menu}
        */
-      vmenu: function(items, scale, padding) {
+      vmenu(items, scale, padding) {
         return this.pmenu(true, items, scale, padding);
       },
 
       /**
        * Create a horizontally aligned menu with graphic buttons.
-       *
-       * @method hmenu
-       * @static
+       * @method
        * @param {Array} items
        * @param {Number} scale
        * @param {Number} padding
        * @return {cc.Menu}
        */
-      hmenu: function(items, scale, padding) {
+      hmenu(items, scale, padding) {
         return this.pmenu(false, items, scale, padding);
       },
 
       /**
        * Create a menu with graphic buttons.
-       *
-       * @method pmenu
-       * @static
+       * @method
        * @param {Boolean} vertical
        * @param {Array} items
        * @param {Number} scale
        * @param {Number} padding
        * @return {cc.Menu}
        */
-      pmenu: function(vertical, items, scale, padding) {
-        var menu = new cc.Menu(),
+      pmenu(vertical, items, scale, padding) {
+        let menu = new cc.Menu(),
         obj, n,
         mi,
         t=0;
@@ -783,14 +696,12 @@ define("zotohlab/asx/ccsx",
 
       /**
        * Create a single button menu.
-       *
-       * @method pmenu1
-       * @static
+       * @method
        * @param {Object} options
        * @return {cc.Menu}
        */
-      pmenu1: function(options) {
-        var menu = this.pmenu(true, [options]);
+      pmenu1(options) {
+        const menu = this.pmenu(true, [options]);
         if (options.anchor) { menu.setAnchorPoint(options.anchor); }
         if (options.pos) { menu.setPosition(options.pos); }
         if (options.visible === false) { menu.setVisible(false); }
@@ -799,14 +710,12 @@ define("zotohlab/asx/ccsx",
 
       /**
        * Create a Label.
-       *
-       * @method bmfLabel
-       * @static
+       * @method
        * @param {Object} options
        * @return {cc.LabelBMFont}
        */
-      bmfLabel: function(options) {
-        var f= new cc.LabelBMFont(options.text, options.fontPath);
+      bmfLabel(options) {
+        let f= new cc.LabelBMFont(options.text, options.fontPath);
         f.setScale( options.scale || 1);
         if (options.color) { f.setColor(options.color); }
         if (options.pos) { f.setPosition(options.pos); }

@@ -24,9 +24,9 @@ define("cherimoia/skarojs",
 
   function (global,DBG,R) { "use strict";
 
-    var fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /[\D|\d]*/,
-    ZEROS= "00000000000000000000000000000000",  //32
-    CjsBase64,
+    const fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /[\D|\d]*/,
+    ZEROS= "00000000000000000000000000000000";  //32
+    let CjsBase64,
     CjsUtf8,
     undef;
 
@@ -41,7 +41,7 @@ define("cherimoia/skarojs",
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     //
-    function _echt (obj) {
+    let _echt = (obj) => {
       return typeof obj !== 'undefined' && obj !== null;
     }
 
@@ -56,20 +56,20 @@ define("cherimoia/skarojs",
     /**
      * @private
      */
-    function patchProto(zuper, proto, other) {
-      var par={},
+    function _patchProto(zuper, proto, other) {
+      let par={},
       name;
-
       for (name in other) {
         if (typeof(zuper[name]) === "function" &&
             typeof(other[name]) === "function" &&
             fnTest.test(other[name])) {
           par[name] = zuper[name]; // save original function
-          proto[name] = (function(name, fn){
+          proto[name] = ((name, fn) => {
             return function() {
-              var tmp = this._super;
+              let tmp = this._super,
+              ret;
               this._super = par[name];
-              var ret = fn.apply(this, arguments);
+              ret = fn.apply(this, arguments);
               this._super = tmp;
               return ret;
             };
@@ -80,65 +80,53 @@ define("cherimoia/skarojs",
       }
     }
 
-    var monkeyPatch = function(other) {
-      patchProto(this.prototype,
-                 this.prototype, other);
-    },
-    klass= function() {},
-    initing = false;
-
-    // inheritance method
-    klass.mixes = function (other) {
-      var proto;
+    let wrapper= function() {},
+    initing = false,
+    _mixer = function (other) {
+      let proto;
 
       initing = true; proto = new this(); initing = false;
-      patchProto(this.prototype, proto, other);
+      _patchProto(this.prototype, proto, other);
 
-      function Claxx() {
-        if ( !initing ) {
-          // static constructor?
-          if (!!this.staticCtor) {
-            var obj = this.staticCtor.apply(this, arguments);
-            if (!!obj) { return obj; }
-          }
-          if (!!this.ctor) {
-            this.ctor.apply(this, arguments);
-          }
+      function claxx() {
+        if ( !initing && !!this.ctor) {
+          this.ctor.apply(this, arguments);
         }
         return this;
       }
 
-      Claxx.prototype = proto;
-      Claxx.prototype.constructor = Claxx;
-      Claxx.mixes = klass.mixes;
-      Claxx.inject = monkeyPatch;
+      claxx.prototype = proto;
+      claxx.prototype.constructor = Claxx;
+      claxx.mixes = _mixer;
+      claxx.patch = function(other) {
+        _patchProto(this.prototype,
+                   this.prototype, other);
+      };
 
-      return Claxx;
+      return claxx;
     };
 
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    /** @alias module:cherimoia/skarojs */
-    var exports = {
+    /** @alias module:cherimoia/skarojs
+     */
+    let exports = /** @lends exports# */ {
 /*
-      strPadRight: function(str,len, pad){
+      strPadRight(str,len, pad){
         return (str+new Array(len+1).join(pad)).slice(0,len);
       },
-
-      strPadLeft: function(str,len,pad){
+      strPadLeft(str,len,pad){
         return (new Array(len+1).join(pad)+str).slice(-len);
       },
 */
       /**
        * Maybe pad a string (right side.)
-       *
-       * @method strPadRight
-       * @static
+       * @function
        * @param {String} str
        * @param {Number} len
        * @param {String} s
        * @return {String}
        */
-      strPadRight: function(str, len, s) {
+      strPadRight(str, len, s) {
         return (len -= str.length) > 0
         ? str + new Array(Math.ceil(len/s.length) + 1).join(s).substr(0, len)
         : str;
@@ -146,15 +134,14 @@ define("cherimoia/skarojs",
 
       /**
        * Maybe pad a string (left side.)
-       *
-       * @method strPadLeft
+       * @function
        * @static
        * @param {String} str
        * @param {Number} len
        * @param {String} s
        * @return {String}
        */
-      strPadLeft: function(str, len, s) {
+      strPadLeft(str, len, s) {
         return (len -= str.length) > 0
         ? new Array(Math.ceil(len/s.length) + 1).join(s).substr(0, len) + str
         : str;
@@ -162,61 +149,51 @@ define("cherimoia/skarojs",
 
       /**
        * Safely split a string, null and empty strings are removed.
-       *
-       * @method safeSplit
-       * @static
+       * @function
        * @param {String} s
        * @param {String} sep
        * @return {Array.String}
        */
-      safeSplit: function(s, sep) {
+      safeSplit(s, sep) {
         return !!s ? R.reject(function(z) { return z.length===0; }, s.trim().split(sep)) : [];
       },
 
       /**
        * Get the current time.
-       *
-       * @method now
-       * @static
+       * @function
        * @return {Number} time in milliseconds.
        */
       now: Date.now || function() { return new Date().getTime(); },
 
       /**
        * Capitalize the first char of the string.
-       *
-       * @method capitalize
-       * @static
+       * @function
        * @param {String} str
        * @return {String} with the first letter capitalized.
        */
-      capitalize: function(str) {
+      capitalize(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
       },
 
       /**
        * Pick a random number between these 2 limits.
-       *
-       * @method randomRange
-       * @static
+       * @function
        * @param {Number} from
        * @param {Number} to
        * @return {Number}
        */
-      randomRange: function(from, to) {
+      randomRange(from, to) {
         return Math.floor(Math.random() * (to - from + 1) + from);
       },
 
       /**
        * Return the proper mathematical modulo of x mod N.
-       *
-       * @method xmod
-       * @static
+       * @function
        * @param {Number} x
        * @param {Number} N
        * @return {Number}
        */
-      xmod: function(x, N) {
+      xmod(x, N) {
         if (x < 0) {
           return x - (-1 * (Math.floor(-x / N) * N + N));
         } else {
@@ -226,41 +203,33 @@ define("cherimoia/skarojs",
 
       /**
        * Create an array of len, seeding it with value.
-       *
-       * @method makeArray
-       * @static
+       * @function
        * @param {Number} len
        * @param {Object} value
-       * @return {Array}
+       * @return {Array.Any}
        */
-      makeArray: function(len, value) {
-        var n, arr=[];
+      makeArray(len, value) {
+        let n, arr=[];
         for (n=0; n < len; ++n) { arr.push(value); }
         return arr;
       },
 
       /**
        * Throw an error exception.
-       *
-       * @method tne
-       * @static
+       * @function
        * @param {String} msg
        */
-      tne: function(msg) { throw new Error(msg); },
+      tne(msg) { throw new Error(msg); },
 
       /**
        * A no-op function.
-       *
-       * @method NILFUNC
-       * @static
+       * @function
        */
-      NILFUNC: function() {},
+      NILFUNC() {},
 
       /**
        * Test if object is valid and not null.
-       *
-       * @method echt
-       * @static
+       * @function
        * @param {Object} obj
        * @return {Boolean}
        */
@@ -268,14 +237,12 @@ define("cherimoia/skarojs",
 
       /**
        * Maybe pad the number with zeroes.
-       *
-       * @method prettyNumber
-       * @static
+       * @function
        * @param {Number} num
        * @param {Number} digits
        * @return {String}
        */
-      prettyNumber: function (num, digits) {
+      prettyNumber(num, digits) {
         return this.strPadLeft(Number(num).toString(), digits, "0");
         /*
         var nums= Number(num).toString(),
@@ -292,59 +259,49 @@ define("cherimoia/skarojs",
 
       /**
        * Get the websocket transport protocol.
-       *
-       * @method getWebSockProtocol
-       * @static
-       * @return {String} the transport protocol for websocket
+       * @function
+       * @return {String} transport protocol for websocket
        */
-      getWebSockProtocol: function() {
+      getWebSockProtocol() {
         return this.isSSL() ? "wss://" : "ws://";
       },
 
       /**
        * Get the current time in milliseconds.
-       *
-       * @method nowMillis
-       * @static
+       * @function
        * @return {Number} current time (millisecs)
        */
-      nowMillis: function() {
+      nowMillis() {
         return this.now();
       },
 
       /**
        * Cast the value to boolean.
-       *
-       * @method boolify
-       * @static
+       * @function
        * @param {Object} obj
        * @return {Boolean}
        */
-      boolify: function(obj) {
+      boolify(obj) {
         return obj ? true : false;
       },
 
       /**
        * Remove some arguments from the front.
-       *
-       * @method dropArgs
-       * @static
+       * @function
        * @param {Javascript.arguments} args
        * @param {Number} num
        * @return {Array} remaining arguments
        */
-      dropArgs: function(args,num) {
+      dropArgs(args,num) {
         return args.length > num ? Array.prototype.slice(args,num) : [];
       },
 
       /**
        * Returns true if the web address is ssl.
-       *
-       * @method isSSL
-       * @static
+       * @function
        * @return {Boolean}
        */
-      isSSL: function() {
+      isSSL() {
         if (!!window && window.location) {
           return window.location.protocol.indexOf('https') >= 0;
         } else {
@@ -354,14 +311,12 @@ define("cherimoia/skarojs",
 
       /**
        * Format a URL based on the current web address host.
-       *
-       * @method fmtUrl
-       * @static
+       * @function
        * @param {String} scheme
        * @param {String} uri
        * @return {String}
        */
-      fmtUrl: function (scheme, uri) {
+      fmtUrl(scheme, uri) {
         if (!!window && window.location) {
           return scheme + window.location.host + uri;
         } else {
@@ -370,34 +325,30 @@ define("cherimoia/skarojs",
       },
 
       /**
-       * @method objectfy
-       * @static
+       * @function
        * @param {String} s
        * @return {Object}
        */
-      objectfy: function(s) {
+      objectfy(s) {
         return !!s ? JSON.parse(s) : null;
       },
 
       /**
-       * @method jsonfy
-       * @static
+       * @function
        * @param {Object} obj
        * @return {String}
        */
-      jsonfy: function(obj) {
+      jsonfy(obj) {
         return !!obj ? JSON.stringify(obj) : null;
       },
 
       /**
        * Test if the client is a mobile device.
-       *
-       * @method isMobile
-       * @static
+       * @function
        * @param {String} navigator
        * @return {Boolean}
        */
-      isMobile: function (navigator) {
+      isMobile(navigator) {
         if (!!navigator) {
           return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         } else {
@@ -407,13 +358,11 @@ define("cherimoia/skarojs",
 
       /**
        * Test if the client is Safari browser.
-       *
-       * @method isSafari
-       * @static
+       * @function
        * @param {String} navigator
        * @return {Boolean}
        */
-      isSafari: function(navigator) {
+      isSafari(navigator) {
         if (!!navigator) {
           return /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
         } else {
@@ -423,12 +372,10 @@ define("cherimoia/skarojs",
 
       /**
        * Prevent default propagation of this event.
-       *
-       * @method pde
-       * @static
+       * @function
        * @param {Event} e
        */
-      pde: function (e) {
+      pde(e) {
         if (!!e.preventDefault) {
           e.preventDefault();
         } else {
@@ -438,12 +385,10 @@ define("cherimoia/skarojs",
 
       /**
        * Randomly pick positive or negative.
-       *
-       * @method randSign
-       * @static
+       * @function
        * @return {Number}
        */
-      randSign: function() {
+      randSign() {
         if (this.rand(10) % 2 === 0) {
           return -1;
         } else {
@@ -453,71 +398,63 @@ define("cherimoia/skarojs",
 
       /**
        * Randomly choose an item from this array.
-       *
-       * @method randArrayItem
-       * @static
+       * @function
        * @param {Array} arr
        * @return {Object}
        */
-      randArrayItem: function(arr) {
-        return arr.length === 0 ? null : arr.length === 1 ? arr[0] : arr[ Math.floor(Math.random() * arr.length) ];
+      randArrayItem(arr) {
+        return arr.length === 0 ?
+          null :
+          arr.length === 1 ?
+          arr[0] :
+          arr[ Math.floor(Math.random() * arr.length) ];
       },
 
       /**
        * Randomly choose a percentage in step of 10.
-       *
-       * @method randPercent
-       * @static
+       * @function
        * @return {Number}
        */
-      randPercent: function() {
-        var pc = [0.1,0.9,0.3,0.7,0.6,0.5,0.4,0.8,0.2];
+      randPercent() {
+        const pc = [0.1,0.9,0.3,0.7,0.6,0.5,0.4,0.8,0.2];
         return this.randArrayItem(pc);
       },
 
       /**
        * Pick a random number.
-       *
-       * @method rand
-       * @static
+       * @function
        * @param {Number} limit
        * @return {Number}
        */
-      rand: function(limit) {
+      rand(limit) {
         return Math.floor(Math.random() * limit);
       },
 
       /**
        * Format input into HTTP Basic Authentication.
-       *
-       * @method toBasicAuthHeader
-       * @static
+       * @function
        * @param {String} user
        * @param {String} pwd
        * @return {Array.String} - [header, data]
        */
-      toBasicAuthHeader: function(user,pwd) {
-        var str='Basic ' + this.base64_encode(""+user+":"+pwd);
+      toBasicAuthHeader(user,pwd) {
+        const str='Basic ' + this.base64_encode(""+user+":"+pwd);
         return [ 'Authorization', str ];
       },
 
       /**
        * Convert string to utf-8 string.
-       *
-       * @method toUtf8
-       * @static
+       * @function
        * @param {String} s
        * @return {String}
        */
-      toUtf8: function(s) {
+      toUtf8(s) {
         return CjsUtf8.stringify( CjsUtf8.parse(s));
       },
 
       /**
        * Base64 encode the string.
-       *
-       * @method base64_encode
-       * @static
+       * @function
        * @param {String} s
        * @return {String}
        */
@@ -527,44 +464,38 @@ define("cherimoia/skarojs",
 
       /**
        * Base64 decode the string.
-       *
-       * @method base64_decode
-       * @static
+       * @function
        * @param {String} s
        * @return {String}
        */
-      base64_decode: function(s) {
+      base64_decode(s) {
         return CjsUtf8.stringify( CjsBase64.parse(s));
       },
 
       /**
        * Merge 2 objects together.
-       *
-       * @method mergeEx
-       * @static
+       * @function
        * @param {Object} original
        * @param {Object} extended
        * @return {Object} a new object
        */
-      mergeEx:function(original,extended) {
+      mergeEx(original,extended) {
         return this.merge(this.merge({},original), extended);
       },
 
       /**
        * Merge 2 objects in place.
-       *
-       * @method merge
-       * @static
+       * @function
        * @param {Object} original
        * @param {Object} extended
        * @return {Object} the modified original object
        */
-      merge: function(original, extended) {
-        var key, ext;
+      merge(original, extended) {
+        let key, ext;
         for(key in extended) {
           ext = extended[key];
           if ( typeof(ext) !== 'object' ||
-               ext instanceof klass ||
+               //ext instanceof wrapper ||
                ext instanceof HTMLElement ||
                ext === null ) {
             original[key] = ext;
@@ -580,14 +511,12 @@ define("cherimoia/skarojs",
 
       /**
        * Maybe remove this item from this array.
-       *
-       * @method removeFromArray
-       * @static
+       * @function
        * @return {Array}
        */
-      removeFromArray: function(arr, item) {
+      removeFromArray(arr, item) {
         if (arr && arr.indexOf && arr.splice) {
-          var index = arr.indexOf(item);
+          let index = arr.indexOf(item);
           while (index !== -1) {
             arr.splice(index,1);
             index = arr.indexOf(item);
@@ -598,111 +527,93 @@ define("cherimoia/skarojs",
 
       /**
        * Test if the input is *undefined*.
-       *
-       * @method isUndef
-       * @static
+       * @function
        * @param {Object} obj
        * @return {Boolean}
        */
-      isUndef: function(obj) {
+      isUndef(obj) {
         return obj === void 0;
       },
 
       /**
        * Test if input is null.
-       *
-       * @method isNull
-       * @static
+       * @function
        * @param {Object} obj
        * @return {Boolean}
        */
-      isNull: function(obj) {
+      isNull(obj) {
         return obj === null;
       },
 
       /**
        * Test if input is a Number.
-       *
-       * @method isNumber
-       * @static
+       * @function
        * @param {Object} obj
        * @return {Boolean}
        */
-      isNumber: function(obj) {
+      isNumber(obj) {
         return toString.call(obj) === '[object Number]';
       },
 
       /**
        * Test if input is a Date.
-       *
-       * @method isDate
-       * @static
+       * @function
        * @param {Object} obj
        * @return {Boolean}
        */
-      isDate: function(obj) {
+      isDate(obj) {
         return toString.call(obj) === '[object Date]';
       },
 
       /**
        * Test if input is a Function.
-       *
-       * @method isFunction
-       * @static
+       * @function
        * @param {Object} obj
        * @return {Boolean}
        */
-      isFunction: function(obj) {
+      isFunction(obj) {
         return toString.call(obj) === '[object Function]';
       },
 
       /**
        * Test if input is a String.
-       *
-       * @method isString
-       * @static
+       * @function
        * @param {Object} obj
        * @return {Boolean}
        */
-      isString: function(obj) {
+      isString(obj) {
         return toString.call(obj) === '[object String]';
       },
 
       /**
        * Test if input is an Array.
-       *
-       * @method isArray
-       * @static
+       * @function
        * @param {Object} obj
        * @return {Boolean}
        */
-      isArray: function(obj) {
+      isArray(obj) {
         return !!obj && toString.call(obj) === '[object Array]';
       },
 
       /**
        * Test if input is an Object.
-       *
-       * @method isObject
-       * @static
+       * @function
        * @param {Object} obj
        * @return {Boolean}
        */
-      isObject: function(obj) {
-        var type = typeof obj;
+      isObject(obj) {
+        const type = typeof obj;
         return type === 'function' || type === 'object' && !!obj;
       },
 
       /**
        * Test if input has *length* attribute, and if so, is it
        * empty.
-       *
-       * @method isEmpty
-       * @static
+       * @function
        * @param {Object} obj
        * @return {Boolean}
        */
-      isEmpty: function(obj) {
+      isEmpty(obj) {
         if (this.isObject(obj)) {
           return Object.keys(obj).length === 0;
         }
@@ -716,29 +627,25 @@ define("cherimoia/skarojs",
 
       /**
        * Test if this object has this key.
-       *
-       * @method hasKey
-       * @static
+       * @function
        * @param {Object} obj
        * @param {Object} key
        * @return {Boolean}
        */
-      hasKey: function(obj, key) {
+      hasKey(obj, key) {
         return !!obj && Object.prototype.hasOwnProperty.call(obj, key);
       },
 
       //since R doesn't handle object :(
       /**
        * Perform reduce on this object.
-       *
-       * @method reduceObj
-       * @static
+       * @function
        * @param {Function} f
        * @param {Object} memo
        * @param {Object} obj
        * @return {Object}  memo
        */
-      reduceObj: function(f, memo, obj) {
+      reduceObj(f, memo, obj) {
         return R.reduce(function(sum, pair) {
           return f(sum, pair[1], pair[0]);
         },
@@ -748,14 +655,12 @@ define("cherimoia/skarojs",
 
       /**
        * Iterate over this object [k,v] pairs and call f(v,k).
-       *
-       * @method eachObj
-       * @static
+       * @function
        * @param {Function} f
        * @param {Object} obj
        * @return {Object} original object
        */
-      eachObj: function(f, obj) {
+      eachObj(f, obj) {
         R.forEach(function(pair) {
           return f(pair[1], pair[0]);
         },
@@ -765,36 +670,31 @@ define("cherimoia/skarojs",
 
       /**
        * Mixin this object.
-       *
-       * @method mixes
+       * @function
        * @param {Object} object
-       * @return {Claxx}
+       * @return {claxx}
        */
-      mixes: function(obj) {
-        return klass.mixes(obj);
+      mixes(obj) {
+        return _mixer(obj);
       },
 
       /**
        * @property {Logger} logger Short cut to logger
-       * @static
        */
       logger: DBG,
 
       /**
        * @property {Logger} loggr Short cut to logger
-       * @static
        */
       loggr: DBG,
 
       /**
        * @property {Ramda} ramda Short cut to Ramda
-       * @static
        */
       ramda: R,
 
       /**
        * @property {Ramda} R Short cut to Ramda
-       * @static
        */
       R: R
 
