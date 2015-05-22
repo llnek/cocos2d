@@ -22,7 +22,7 @@ define("zotohlab/p/l10n",
   function (sjs, sh) { "use strict";
 
     /** @alias module:zotohlab/p/l10n */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     undef;
 

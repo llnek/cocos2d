@@ -29,24 +29,24 @@ define("zotohlab/p/s/factory",
   function (cobjs, GameBoard, gnodes, sjs, sh) { "use strict";
 
     /** @alias module:zotohlab/p/s/factory */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
     // returns array of winning combinations.
-    function mapGoalSpace(size) {
-      var ROWSPACE = [],
+    let mapGoalSpace = (size) => {
+      let ROWSPACE = [],
       COLSPACE = [],
       dx = [],
       dy = [],
-      c, r, h, v;
+      h, v;
 
-      for (r=0; r < size; ++r) {
+      for (let r=0; r < size; ++r) {
         h = [];
         v = [];
-        for (c=0; c < size; ++c) {
+        for (let c=0; c < size; ++c) {
           h.push(r * size + c);
           v.push(c * size + r);
         }
@@ -63,13 +63,13 @@ define("zotohlab/p/s/factory",
     /**
      * @class EntityFactory
      */
-    var EntityFactory = sh.Ashley.casDef({
+    const EntityFactory = sh.Ashley.casDef({
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method constructor
        * @param {Ash.Engine} engine
        */
-      constructor: function(engine) {
+      constructor(engine) {
         this.engine=engine;
       },
 
@@ -80,8 +80,8 @@ define("zotohlab/p/s/factory",
        * @param {Object} options
        * @return {Ash.Entity}
        */
-      reifyBoard: function(layer, options) {
-        var goals= mapGoalSpace(options.size),
+      reifyBoard(layer, options) {
+        const goals= mapGoalSpace(options.size),
         bd= new GameBoard(options.size,
                           csts.CV_Z,
                           csts.CV_X,

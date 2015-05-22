@@ -28,7 +28,7 @@ define("zotohlab/p/s/network",
   function (pss, gnodes, sjs, sh, odin) { "use strict";
 
     /** @alias module:zotohlab/p/s/network */
-    var exports = {  /* empty */ },
+    let exports = {  /* empty */ },
     evts= odin.Events,
     xcfg= sh.xcfg,
     csts= xcfg.csts,
@@ -38,14 +38,14 @@ define("zotohlab/p/s/network",
     /**
      * @class NetworkSystem
      */
-    var NetworkSystem = sh.Ashley.sysDef({
+    const NetworkSystem = sh.Ashley.sysDef({
 
       /**
        * @memberof module:zotohlab/p/s/network~NetworkSystem
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.events = options.netQ;
         this.state= options;
       },
@@ -55,7 +55,7 @@ define("zotohlab/p/s/network",
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.netplay=null;
       },
 
@@ -64,7 +64,7 @@ define("zotohlab/p/s/network",
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.netplay = engine.getNodeList(gnodes.NetPlayNode);
       },
 
@@ -73,9 +73,9 @@ define("zotohlab/p/s/network",
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
+      update(dt) {
         if (this.events.length > 0) {
-          var evt = this.events.shift(),
+          const evt = this.events.shift(),
           node= this.netplay.head;
           if (this.state.running &&
               !!node) {
@@ -88,8 +88,8 @@ define("zotohlab/p/s/network",
       /**
        * @private
        */
-      process: function(node, evt) {
-        var pnum= sjs.isNumber(evt.source.pnum) ? evt.source.pnum : -1;
+      process(node, evt) {
+        const pnum= sjs.isNumber(evt.source.pnum) ? evt.source.pnum : -1;
         if (pnum === 1 || pnum === 2) {} else { return; }
         switch (evt.code) {
           case evts.POKE_MOVE:
@@ -111,8 +111,8 @@ define("zotohlab/p/s/network",
        * state of the cell in the grid.
        * @private
        */
-      maybeUpdateActions: function(node, evt) {
-        var cmd= evt.source.cmd,
+      maybeUpdateActions(node, evt) {
+        let cmd= evt.source.cmd,
         snd,
         grid=node.grid,
         vs=grid.values;

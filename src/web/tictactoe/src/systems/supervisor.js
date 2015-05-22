@@ -32,7 +32,7 @@ define("zotohlab/p/s/supervisor",
   function (pss, utils, gnodes, sjs, sh, ccsx, odin) { "use strict";
 
     /** @alias module:zotohlab/p/s/supervisor */
-    var exports = {       },
+    let exports = {       },
     evts= odin.Events,
     xcfg=sh.xcfg,
     csts= xcfg.csts,
@@ -43,14 +43,14 @@ define("zotohlab/p/s/supervisor",
     /**
      * @class GameSupervisor
      */
-    var GameSupervisor = sh.Ashley.sysDef({
+    const GameSupervisor = sh.Ashley.sysDef({
 
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state= options;
         this.inited=false;
       },
@@ -60,7 +60,7 @@ define("zotohlab/p/s/supervisor",
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.board=null;
       },
 
@@ -69,9 +69,9 @@ define("zotohlab/p/s/supervisor",
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         engine.addEntity(sh.factory.reifyBoard(sh.main,
-                                                this.state));
+                                               this.state));
         this.board= engine.getNodeList(gnodes.BoardNode);
       },
 
@@ -80,8 +80,8 @@ define("zotohlab/p/s/supervisor",
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var node= this.board.head;
+      update(dt) {
+        const node= this.board.head;
         if (this.state.running &&
             !!node) {
           if (! this.inited) {
@@ -96,13 +96,13 @@ define("zotohlab/p/s/supervisor",
       /**
        * @private
        */
-      showGrid: function(node) {
-        var mgs = utils.mapGridPos(),
+      showGrid(node) {
+        let mgs = utils.mapGridPos(),
         cs=node.view.cells,
         pos=0,
         sp;
 
-        R.forEach(function(mp) {
+        R.forEach((mp) => {
           sp= ccsx.createSpriteFrame('z.png');
           sp.setPosition(ccsx.vboxMID(mp));
           sh.main.addAtlasItem('game-pics',sp);
@@ -113,7 +113,7 @@ define("zotohlab/p/s/supervisor",
       /**
        * @private
        */
-      onceOnly: function(node,dt) {
+      onceOnly(node,dt) {
 
         this.showGrid(node);
 
@@ -127,7 +127,7 @@ define("zotohlab/p/s/supervisor",
           this.state.actor= 0;
         } else {
           //randomly pick a player to start the game.
-          var pnum = sjs.randSign() > 0 ? 1 : 2;
+          let pnum = sjs.randSign() > 0 ? 1 : 2;
           this.state.actor=pnum;
           if (this.state.players[pnum].category === csts.HUMAN) {
             sh.fire('/hud/timer/show');
@@ -141,9 +141,9 @@ define("zotohlab/p/s/supervisor",
       /**
        * @private
        */
-      process: function(node,dt) {
+      process(node,dt) {
 
-        var active = this.state.running,
+        let active = this.state.running,
         actor = this.state.actor;
 
         if (!active) {
@@ -161,7 +161,6 @@ define("zotohlab/p/s/supervisor",
     /**
      * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
      * @property {Number} Priority
-     * @static
      */
     GameSupervisor.Priority= pss.PreUpdate;
 

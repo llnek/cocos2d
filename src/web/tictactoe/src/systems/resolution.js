@@ -30,7 +30,7 @@ define("zotohlab/p/s/resolution",
   function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/resolution */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -40,14 +40,14 @@ define("zotohlab/p/s/resolution",
     /**
      * @class ResolutionSystem
      */
-    var ResolutionSystem = sh.Ashley.sysDef({
+    const ResolutionSystem = sh.Ashley.sysDef({
 
       /**
        * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state= options;
       },
 
@@ -56,7 +56,7 @@ define("zotohlab/p/s/resolution",
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.board=null;
       },
 
@@ -65,7 +65,7 @@ define("zotohlab/p/s/resolution",
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.board = engine.getNodeList(gnodes.BoardNode);
       },
 
@@ -74,8 +74,8 @@ define("zotohlab/p/s/resolution",
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var node= this.board.head;
+      update(dt) {
+        const node= this.board.head;
         if (this.state.running &&
             !!node) {
           this.process(node, dt);
@@ -85,22 +85,21 @@ define("zotohlab/p/s/resolution",
       /**
        * @private
        */
-      process: function(node, dt) {
-        var values= node.grid.values,
+      process(node, dt) {
+        let values= node.grid.values,
         msg,
         rc,
-        result;
+        res;
 
-        if (R.find(function(p) {
-            if (p) {
+        if (R.find((p) => {
+            if (!!p) {
               rc= this.checkWin(p,values);
               if (rc) {
-                return result=[p, rc];
+                return res=[p, rc];
               }
             }
-          }.bind(this), this.state.players)) {
-
-          this.doWin(node, result[0], result[1]);
+          }, this.state.players)) {
+          this.doWin(node, res[0], res[1]);
         }
         else
         if (this.checkDraw(values)) {
@@ -118,7 +117,7 @@ define("zotohlab/p/s/resolution",
       /**
        * @private
        */
-      doWin: function(node, winner, combo) {
+      doWin(node, winner, combo) {
         sh.fire('/hud/score/update',
                 {color: winner.color,
                  score: 1});
@@ -128,22 +127,22 @@ define("zotohlab/p/s/resolution",
       /**
        * @private
        */
-      doDraw: function(node) {
+      doDraw(node) {
         this.doDone(node, null, []);
       },
 
       /**
        * @private
        */
-      doForfeit: function(node) {
-        var other = this.state.actor===1 ? 2 : this.state.actor===2 ? 1 : 0;
-        var tv = this.state.players[this.state.actor];
-        var win= this.state.players[other];
-        var cs = node.view.cells,
+      doForfeit(node) {
+        let other = this.state.actor===1 ? 2 : this.state.actor===2 ? 1 : 0;
+        let tv = this.state.players[this.state.actor];
+        let win= this.state.players[other];
+        let cs = node.view.cells,
         v2= -1,
         layer= node.view.layer;
 
-        if (tv) {
+        if (!!tv) {
           v2 = tv.value;
         }
 
@@ -152,12 +151,12 @@ define("zotohlab/p/s/resolution",
                  score: 1});
 
         //gray out the losing icons
-        R.forEachIndexed(function(z, n) {
+        R.forEachIndexed((z, n) => {
           if (!!z && z[4] === v2) {
             layer.removeItem(z[0]);
             z[0] = utils.drawSymbol(node.view, z[1], z[2], z[3]+2);
           }
-        }.bind(this), cs);
+        }, cs);
 
         this.doDone(node, win, null);
       },
@@ -166,26 +165,26 @@ define("zotohlab/p/s/resolution",
        * Flip all other icons except for the winning ones.
        * @private
        */
-      showWinningIcons: function(view, combo) {
-        var layer= view.layer,
+      showWinningIcons(view, combo) {
+        let layer= view.layer,
         cs = view.cells;
 
         if (combo===null) { return; }
 
-        R.forEachIndexed(function(z, n) {
+        R.forEachIndexed((z, n) => {
           if (! R.contains(n, combo)) { if (!!z && z[3] !== csts.CV_Z) {
             layer.removeAtlasItem('markers', z[0]);
             z[0] = utils.drawSymbol(view, z[1], z[2], z[3], true);
           } }
-        }.bind(this), cs);
+        }, cs);
       },
 
       /**
        * @private
        */
-      doDone: function(node, pobj, combo) {
+      doDone(node, pobj, combo) {
 
-        var pnum = !!pobj ? pobj.pnum : 0;
+        let pnum = !!pobj ? pobj.pnum : 0;
 
         this.showWinningIcons(node.view, combo);
         sh.fire('/hud/timer/hide');
@@ -199,7 +198,7 @@ define("zotohlab/p/s/resolution",
       /**
        * @private
        */
-      checkDraw: function(values) {
+      checkDraw(values) {
         return ! (csts.CV_Z === R.find(function(v) {
           return (v === csts.CV_Z);
         }, values));
@@ -208,14 +207,14 @@ define("zotohlab/p/s/resolution",
       /**
        * @private
        */
-      checkWin: function(actor, game) {
+      checkWin(actor, game) {
         //sjs.loggr.debug('checking win for ' + actor.color);
-        var combo, rc= R.any(function(r) {
+        let combo, rc= R.any(function(r) {
           combo=r;
-          return R.all(function(n) {
+          return R.all((n) => {
             return actor.value === n;
           },
-          R.map(function(i) { return game[i]; }, r));
+          R.map((i) => { return game[i]; }, r));
         },
         this.state.GOALSPACE);
 
@@ -227,7 +226,6 @@ define("zotohlab/p/s/resolution",
     /**
      * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
      * @property {Number} Priority
-     * @static
      */
     ResolutionSystem.Priority= pss.Resolve;
 

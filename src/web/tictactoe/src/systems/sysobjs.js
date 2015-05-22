@@ -48,51 +48,42 @@ define("zotohlab/p/sysobjs",
             SelectionSystem) { "use strict";
 
     /** @alias module:zotohlab/p/sysobjs */
-    var exports= {
+    const exports= {
 
       /**
        * @property {Priorities} Priorities
-       * @static
        */
       Priorities: Priorities,
       /**
        * @property {Factory} Factory
-       * @static
        */
       Factory: EntityFactory,
       /**
        * @property {GameSupervisor} GameSupervisor
-       * @static
        */
       GameSupervisor: Supervisor,
       /**
        * @property {NetworkSystem} NetworkSystem
-       * @static
        */
       NetworkSystem: NetworkSystem,
       /**
        * @property {SelectionSystem} SelectionSystem
-       * @static
        */
       SelectionSystem: SelectionSystem,
       /**
        * @property {TurnBaseSystem} TurnBaseSystem
-       * @static
        */
       TurnBaseSystem: TurnBaseSystem,
       /**
        * @property {ResolutionSystem} ResolutionSystem
-       * @static
        */
       ResolutionSystem: ResolutionSystem,
       /**
        * @property {RenderSystem} RenderSystem
-       * @static
        */
       RenderSystem: RenderSystem,
       /**
        * @property {SystemUtils} SystemUtils
-       * @static
        */
       SystemUtils: utils
 

@@ -30,7 +30,7 @@ define("zotohlab/p/s/rendering",
   function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/rendering */
-    var exports= {},
+    let exports= {},
     R = sjs.ramda,
     xcfg= sh.xcfg,
     csts= xcfg.csts,
@@ -40,14 +40,14 @@ define("zotohlab/p/s/rendering",
     /**
      * @class RenderSystem
      */
-    var RenderSystem = sh.Ashley.sysDef({
+    const RenderSystem = sh.Ashley.sysDef({
 
       /**
        * @memberof module:zotohlab/p/s/rendering~RenderSystem
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state= options;
       },
 
@@ -56,7 +56,7 @@ define("zotohlab/p/s/rendering",
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.board={};
       },
 
@@ -65,7 +65,7 @@ define("zotohlab/p/s/rendering",
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.board = engine.getNodeList(gnodes.BoardNode);
       },
 
@@ -74,8 +74,8 @@ define("zotohlab/p/s/rendering",
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var node = this.board.head;
+      update(dt) {
+        const node = this.board.head;
         if (this.state.running &&
             !!node) {
           this.process(node);
@@ -85,13 +85,13 @@ define("zotohlab/p/s/rendering",
       /**
        * @private
        */
-      process: function(node) {
-        var values= node.grid.values,
+      process(node) {
+        let values= node.grid.values,
         view= node.view,
         cs= view.cells,
         z,c, offset;
 
-        R.forEachIndexed(function(v, pos) {
+        R.forEachIndexed((v, pos) => {
 
           if (v !== csts.CV_Z) {
             c= this.xrefCell(pos, view.gridMap);
@@ -105,7 +105,7 @@ define("zotohlab/p/s/rendering",
             }
           }
 
-        }.bind(this), values);
+        }, values);
 
       },
 
@@ -113,8 +113,8 @@ define("zotohlab/p/s/rendering",
        * Given a cell, find the screen co-ordinates for that cell.
        * @private
        */
-      xrefCell: function(pos, map) {
-        var gg, x, y,
+      xrefCell(pos, map) {
+        let gg, x, y,
         delta=0;
 
         if (pos >= 0 && pos < csts.CELLS) {
@@ -133,7 +133,6 @@ define("zotohlab/p/s/rendering",
     /**
      * @memberof module:zotohlab/p/s/rendering~RenderSystem
      * @property {Number} Priority
-     * @static
      */
     RenderSystem.Priority = pss.Render;
 

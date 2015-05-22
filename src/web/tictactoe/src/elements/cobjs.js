@@ -31,7 +31,7 @@ define("zotohlab/p/elements",
   function (utils, sjs, sh, ccsx, negax, GameBoard) { "use strict";
 
     /** @alias module:zotohlab/p/elements */
-    var exports= {},
+    let exports= {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef;
@@ -40,13 +40,13 @@ define("zotohlab/p/elements",
     /**
      * @class SmartAlgo
      */
-    var SmartAlgo = sh.Ashley.casDef({
+    const SmartAlgo = sh.Ashley.casDef({
       /**
        * @memberof module:zotohlab/p/elements~SmartAlgo
        * @method constructor
        * @param {GameBoard} board
        */
-      constructor: function(board) {
+      constructor(board) {
         this.algo= new negax.NegaMax(board);
       }
     });
@@ -60,14 +60,14 @@ define("zotohlab/p/elements",
     /**
      * @class Board
      */
-    var Board = sh.Ashley.casDef({
+    const Board = sh.Ashley.casDef({
       /**
        * @memberof module:zotohlab/p/elements~Board
        * @method constructor
        * @param {Number} size
        * @param {Array} goals
        */
-      constructor: function(size, goals) {
+      constructor(size, goals) {
         this.GOALSPACE= goals;
         this.size=size;
       }
@@ -82,14 +82,14 @@ define("zotohlab/p/elements",
     /**
      * @class Grid
      */
-    var Grid = sh.Ashley.casDef({
+    const Grid = sh.Ashley.casDef({
       /**
        * @memberof module:zotohlab/p/elements~Grid
        * @method constructor
        * @param {Number} size
        * @param {Array} seed
        */
-      constructor: function(size,seed) {
+      constructor(size,seed) {
         this.values= sjs.makeArray(size * size, csts.CV_Z);
         this.size=size;
       }
@@ -104,15 +104,15 @@ define("zotohlab/p/elements",
     /**
      * @class GridView
      */
-    var GridView = sh.Ashley.casDef({
+    const GridView = sh.Ashley.casDef({
       /**
        * @memberof module:zotohlab/p/elements~GridView
        * @method constructor
        * @param {Number} size
        * @param {cc.Layer} layer
        */
-      constructor: function(size, layer) {
-        var sp = ccsx.createSpriteFrame('z.png'),
+      constructor(size, layer) {
+        const sp = ccsx.createSpriteFrame('z.png'),
         sz= sp.getContentSize();
         this.cells= sjs.makeArray(size * size, null);
         this.layer= layer;
@@ -132,12 +132,12 @@ define("zotohlab/p/elements",
     /**
      * @class NetPlay
      */
-    var NetPlay = sh.Ashley.casDef({
+    const NetPlay = sh.Ashley.casDef({
       /**
        * @memberof module:zotohlab/p/elements~NetPlay
        * @method constructor
        */
-      constructor: function() {
+      constructor() {
         this.event= null;
       }
     });
@@ -151,7 +151,7 @@ define("zotohlab/p/elements",
     /**
      * @class Player
      */
-    var Player = sh.Ashley.casDef({
+    const Player = sh.Ashley.casDef({
       /**
        * @memberof module:zotohlab/p/elements~Player
        * @method constructor
@@ -160,7 +160,7 @@ define("zotohlab/p/elements",
        * @param {Number} id
        * @param {Number} color
        */
-      constructor: function(category,value,id,color) {
+      constructor(category,value,id,color) {
         this.color= color;
         this.pnum=id;
         this.category= category;
@@ -178,12 +178,12 @@ define("zotohlab/p/elements",
     /**
      * @class UISelection
      */
-    var UISelection = sh.Ashley.casDef({
+    const UISelection = sh.Ashley.casDef({
       /**
        * @memberof module:zotohlab/p/elements~UISelection
        * @method constructor
        */
-      constructor: function() {
+      constructor() {
         this.cell = -1;
         this.px = -1;
         this.py = -1;

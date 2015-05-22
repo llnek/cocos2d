@@ -28,7 +28,7 @@ define("zotohlab/p/s/uiselect",
   function (pss, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/uiselect */
-    var exports = {},
+    let exports = {},
     xcfg= sh.xcfg,
     csts = xcfg.csts,
     undef;
@@ -37,14 +37,14 @@ define("zotohlab/p/s/uiselect",
     /**
      * @class SelectionSystem
      */
-    var SelectionSystem = sh.Ashley.sysDef({
+    const SelectionSystem = sh.Ashley.sysDef({
 
       /**
        * @memberof module:zotohlab/p/s/uiselect~SelectionSystem
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.events= options.selQ;
         this.state= options;
       },
@@ -54,7 +54,7 @@ define("zotohlab/p/s/uiselect",
        * @method removefromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.gui=null;
       },
 
@@ -63,7 +63,7 @@ define("zotohlab/p/s/uiselect",
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.gui = engine.getNodeList(gnodes.GUINode);
       },
 
@@ -72,9 +72,9 @@ define("zotohlab/p/s/uiselect",
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
+      update(dt) {
         if (this.events.length > 0) {
-          var evt = this.events.shift(),
+          const evt = this.events.shift(),
           node= this.gui.head;
           if (this.state.running &&
               !!node) {
@@ -87,8 +87,8 @@ define("zotohlab/p/s/uiselect",
       /**
        * @private
        */
-      process: function(node, evt) {
-        var sel = node.selection,
+      process(node, evt) {
+        let sel = node.selection,
         map = node.view.gridMap,
         n,
         rect,
@@ -118,9 +118,7 @@ define("zotohlab/p/s/uiselect",
 
     /**
      * @memberof module:zotohlab/p/s/uiselect~SelectionSystem
-     * @static
      * @property {Number} Priority
-     * @final
      */
     SelectionSystem.Priority= pss.Movement;
 

@@ -30,7 +30,7 @@ define("zotohlab/p/s/turnbase",
   function (pss, gnodes, sjs, sh, ccsx, odin) { "use strict";
 
     /** @alias module:zotohlab/p/s/turnbase */
-    var exports = {          },
+    let exports = {          },
     evts= odin.Events,
     xcfg= sh.xcfg,
     csts= xcfg.csts,
@@ -40,14 +40,14 @@ define("zotohlab/p/s/turnbase",
     /**
      * @class TurnBaseSystem
      */
-    var TurnBaseSystem = sh.Ashley.sysDef({
+    const TurnBaseSystem = sh.Ashley.sysDef({
 
       /**
        * @memberof module:zotohlab/p/s/turnbase~TurnBaseSystem
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state= options;
         this.botTimer=null;
       },
@@ -57,7 +57,7 @@ define("zotohlab/p/s/turnbase",
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.board=null;
       },
 
@@ -66,7 +66,7 @@ define("zotohlab/p/s/turnbase",
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.board = engine.getNodeList(gnodes.BoardNode);
       },
 
@@ -75,8 +75,8 @@ define("zotohlab/p/s/turnbase",
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var node= this.board.head;
+      update(dt) {
+        const node= this.board.head;
         if (this.state.running &&
             !!node) {
           this.process(node, dt);
@@ -86,8 +86,8 @@ define("zotohlab/p/s/turnbase",
       /**
        * @private
        */
-      process: function(node, evt) {
-        var ps= this.state.players,
+      process(node, evt) {
+        let ps= this.state.players,
         cp= ps[this.state.actor],
         board= node.board,
         grid= node.grid,
@@ -106,7 +106,7 @@ define("zotohlab/p/s/turnbase",
           // for the bot, create some small delay...
           if (!!this.botTimer) {
             if (ccsx.timerDone(this.botTimer)) {
-              var bd= bot.algo.getGameBoard(),
+              let bd= bot.algo.getGameBoard(),
               rc;
               bd.syncState(grid.values, this.state.players[this.state.actor].value);
               rc= bd.getFirstMove();
@@ -130,12 +130,12 @@ define("zotohlab/p/s/turnbase",
       /**
        * @private
        */
-      enqueue: function(pos, value, grid) {
+      enqueue(pos, value, grid) {
 
         if ((pos >= 0 && pos < grid.values.length) &&
             csts.CV_Z === grid.values[pos]) {
 
-          var snd, pnum;
+          let snd, pnum;
 
           sh.fire('/hud/timer/hide');
 
@@ -163,8 +163,8 @@ define("zotohlab/p/s/turnbase",
       /**
        * @private
        */
-      onEnqueue: function(grid,pnum,cell) {
-        var src= {
+      onEnqueue(grid,pnum,cell) {
+        let src= {
           color: this.state.players[pnum].color,
           value: this.state.players[pnum].value,
           grid: grid.values,
@@ -187,7 +187,6 @@ define("zotohlab/p/s/turnbase",
     /**
      * @memberof module:zotohlab/p/s/turnbase~TurnBaseSystem
      * @property {Number} Priority
-     * @static
      */
     TurnBaseSystem.Priority = pss.TurnBase;
 

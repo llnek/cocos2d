@@ -12,7 +12,7 @@
 /**
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
- * @requires zotohlab/asx/onlineplay
+ * @requires zotohlab/asx/online
  * @requires zotohlab/asx/msgbox
  * @requires zotohlab/asx/ynbox
  * @requires zotohlab/p/splash
@@ -24,7 +24,7 @@ define("zotohlab/p/protodefs",
 
        ['cherimoia/skarojs',
         'zotohlab/asterix',
-        'zotohlab/asx/onlineplay',
+        'zotohlab/asx/online',
         'zotohlab/asx/msgbox',
         'zotohlab/asx/ynbox',
         'zotohlab/p/splash',
@@ -34,7 +34,7 @@ define("zotohlab/p/protodefs",
   function (sjs, sh, online,
             msgbox, ynbox, splash, mmenu, arena) { "use strict";
 
-    var ps= [online, splash, mmenu, msgbox, ynbox, arena],
+    let ps= [online, splash, mmenu, msgbox, ynbox, arena],
     /** @alias module:zotohlab/p/protodefs */
     exports = {},
     protos= sh.protos,

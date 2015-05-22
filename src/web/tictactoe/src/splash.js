@@ -32,30 +32,31 @@ define("zotohlab/p/splash",
   function (utils, sjs, sh, ccsx, splash, layers, scenes) { "use strict";
 
     /** @alias module:zotohlab/p/splash */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
 
     //////////////////////////////////////////////////////////////////////////
+    /**
+     * @class SplashLayer
+     */
     SplashLayer = splash.XSplashLayer.extend({
 
-      pkInit: function() {
+      pkInit() {
         this._super();
         // show the demo icons
         this.showGrid();
       },
 
-      setPlay: function() {
-
-        var cw = ccsx.center(),
+      setPlay() {
+        const cw = ccsx.center(),
         wb = ccsx.vbox(),
-        menu;
         // show the play button at the bottom
         menu= ccsx.vmenu([
           { imgPath: '#play.png',
-            cb: function() {
+            cb() {
               this.removeAll();
               sh.fire('/splash/playgame');
             },
@@ -65,13 +66,13 @@ define("zotohlab/p/splash",
         this.addItem(menu);
       },
 
-      showGrid: function() {
-        var scale= 0.75, me=this,
+      showGrid() {
+        let scale= 0.75, me=this,
         pos=0,
         fm, sp, bx;
 
         // we scale down the icons to make it look nicer
-        R.forEach(function(mp) {
+        R.forEach((mp) => {
           // set up the grid icons
           if (pos === 1 || pos===5 || pos===6 || pos===7) { fm= '#x.png'; }
           else if (pos===0 || pos===4) { fm= '#z.png'; }
@@ -88,35 +89,32 @@ define("zotohlab/p/splash",
 
     });
 
-    exports = {
+    exports = /** @lends exports# */{
       /**
        * @property {String} rtti
-       * @static
        */
       rtti: sh.ptypes.start,
 
       /**
        * Create the splash screen.
-       *
        * @method reify
-       * @static
        * @param {Object} options
        * @return {cc.Scene}
        */
-      reify: function(options) {
-        var scene = new scenes.XSceneFactory([
+      reify(options) {
+        const ss= sh.protos[sh.ptypes.start],
+        mm= sh.protos[sh.ptypes.mmenu],
+        dir= cc.director;
+        return new scenes.XSceneFactory([
           SplashLayer
-        ]).reify(options);
-        scene.onmsg('/splash/playgame',
-                    function() {
-                      var ss= sh.protos[sh.ptypes.start],
-                      mm= sh.protos[sh.ptypes.mmenu],
-                      dir= cc.director;
-                      dir.runScene( mm.reify({
-                        onBack: function() { dir.runScene( ss.reify()); }
-                      }));
+        ]).
+          reify(options).
+          onmsg('/splash/playgame',
+          () => {
+            dir.runScene( mm.reify({
+              onBack() { dir.runScene( ss.reify()); }
+          }));
         });
-        return scene;
       }
     };
 

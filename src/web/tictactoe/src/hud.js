@@ -28,7 +28,7 @@ define("zotohlab/p/hud",
   function (sjs, sh, ccsx, layers, scenes) { "use strict";
 
     /** @alias module:zotohlab/p/hud */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -39,11 +39,11 @@ define("zotohlab/p/hud",
      */
     BackLayer = layers.XLayer.extend({
 
-      pkInit: function() {
+      pkInit() {
         this.centerImage(sh.getImagePath('game.bg'));
       },
 
-      rtti: function() { return 'BackLayer'; }
+      rtti() { return 'BackLayer'; }
 
     }),
 
@@ -53,8 +53,8 @@ define("zotohlab/p/hud",
      */
     HUDLayer = layers.XGameHUDLayer.extend({
 
-      ctor: function(options) {
-        var color= cc.color(94,49,120),
+      ctor(options) {
+        let color= cc.color(94,49,120),
         scale= 1;
 
         this._super(options);
@@ -65,14 +65,14 @@ define("zotohlab/p/hud",
         this.p1ID= '';
 
         this.options.i_menu= {
-          cb: function() { sh.fire('/hud/showmenu'); },
+          cb() { sh.fire('/hud/showmenu'); },
           imgPath: '#icon_menu.png',
           where: ccsx.acs.Bottom,
           color: color,
           scale: scale,
         };
         this.options.i_replay = {
-          cb: function() { sh.fire('/hud/replay'); },
+          cb() { sh.fire('/hud/replay'); },
           where: ccsx.acs.Bottom,
           imgPath: '#icon_replay.png',
           color: color,
@@ -82,19 +82,19 @@ define("zotohlab/p/hud",
         this.color= color;
       },
 
-      initScores: function() {
+      initScores() {
         this.scores= {};
         this.scores[csts.P2_COLOR] =  0;
         this.scores[csts.P1_COLOR] =  0;
       },
 
-      setGameMode: function(mode) {
+      setGameMode(mode) {
         this.mode= mode;
         this.initScores();
       },
 
-      initLabels: function() {
-        var cw= ccsx.center(),
+      initLabels() {
+        let cw= ccsx.center(),
         c= this.color,
         wb= ccsx.vbox();
 
@@ -150,8 +150,8 @@ define("zotohlab/p/hud",
         this.addItem(this.result);
       },
 
-      showTimer: function() {
-        var cw= ccsx.center(),
+      showTimer() {
+        const cw= ccsx.center(),
         wb= ccsx.vbox();
 
         // timer is already showing, go away
@@ -179,7 +179,7 @@ define("zotohlab/p/hud",
         this.countDownState= true;
       },
 
-      updateTimer: function(dt) {
+      updateTimer(dt) {
 
         if (!this.countDownState) { return; } else {
           this.countDownValue -= 1;
@@ -194,13 +194,13 @@ define("zotohlab/p/hud",
         }
       },
 
-      showCountDown: function(msg) {
+      showCountDown(msg) {
         if (!!this.countDown) {
           this.countDown.setString(msg || '' + this.countDownValue);
         }
       },
 
-      killTimer: function() {
+      killTimer() {
         if (this.countDownState) {
           this.unschedule(this.updateTimer);
           this.showCountDown(' ');
@@ -209,12 +209,12 @@ define("zotohlab/p/hud",
         this.countDownValue=0;
       },
 
-      updateScore: function(pcolor, value) {
+      updateScore(pcolor, value) {
         this.scores[pcolor] += value;
         this.drawScores();
       },
 
-      update: function(running, pnum) {
+      update(running, pnum) {
         if (running) {
           this.drawStatus(pnum);
         } else {
@@ -222,19 +222,19 @@ define("zotohlab/p/hud",
         }
       },
 
-      endGame: function(winner) {
+      endGame(winner) {
         this.replayBtn.setVisible(true);
         this.result.setVisible(true);
         this.status.setVisible(false);
         this.drawResult(winner);
       },
 
-      drawStatusText: function(obj, msg) {
+      drawStatusText(obj, msg) {
         obj.setString(msg || '');
       },
 
-      drawScores: function() {
-        var s2 = this.scores[this.play2],
+      drawScores() {
+        const s2 = this.scores[this.play2],
         s1 = this.scores[this.play1],
         n2 = ''+s2,
         n1 = ''+s1;
@@ -243,8 +243,8 @@ define("zotohlab/p/hud",
         this.score2.setString(n2);
       },
 
-      drawResult: function(pnum) {
-        var msg = sh.l10n('%whodraw');
+      drawResult(pnum) {
+        let msg = sh.l10n('%whodraw');
 
         if (sjs.isNumber(pnum)) {
           switch (pnum) {
@@ -256,9 +256,9 @@ define("zotohlab/p/hud",
         this.drawStatusText(this.result, msg);
       },
 
-      drawStatus: function(pnum) {
+      drawStatus(pnum) {
         if (sjs.isNumber(pnum)) {
-          var pfx = pnum === 1 ? this.p1Long : this.p2Long;
+          const pfx = pnum === 1 ? this.p1Long : this.p2Long;
           this.drawStatusText(this.status,
                               sh.l10n('%whosturn', {
             who: pfx
@@ -266,7 +266,7 @@ define("zotohlab/p/hud",
         }
       },
 
-      regoPlayers: function(color1,p1ids,color2,p2ids) {
+      regoPlayers(color1,p1ids,color2,p2ids) {
         this.play2= color2;
         this.play1= color1;
         this.p2Long= p2ids[1];
@@ -276,12 +276,12 @@ define("zotohlab/p/hud",
         this.title.setString(this.p1ID + " / " + this.p2ID);
       },
 
-      resetAsNew: function() {
+      resetAsNew() {
         this.initScores();
         this.reset();
       },
 
-      reset: function() {
+      reset() {
         this.replayBtn.setVisible(false);
         this.result.setVisible(false);
         this.status.setVisible(true);
@@ -289,16 +289,14 @@ define("zotohlab/p/hud",
 
     });
 
-    exports = {
+    exports = /** @lends exports# */{
       /**
-       * @property {BackLayer.Class} BackLayer
-       * @static
+       * @property {BackLayer} BackLayer
        */
       BackLayer: BackLayer,
 
       /**
-       * @property {HUDLayer.Class} HUDLayer
-       * @static
+       * @property {HUDLayer} HUDLayer
        */
       HUDLayer: HUDLayer
     };

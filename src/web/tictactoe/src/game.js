@@ -39,7 +39,7 @@ define("zotohlab/p/arena",
             mmenus, odin, huds, cobjs, sobjs) { "use strict";
 
     /** @alias module:zotohlab/p/arena */
-    var exports = {},
+    let exports = {},
     prrs= sobjs.Priorities,
     evts= odin.Events,
     xcfg = sh.xcfg,
@@ -48,11 +48,14 @@ define("zotohlab/p/arena",
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    var GameLayer = layers.XGameLayer.extend({
+    /**
+     * @class GameLayer
+     */
+    let GameLayer = layers.XGameLayer.extend({
 
-      onStop: function(evt) { this.options.netQ.push(evt); },
+      onStop(evt) { this.options.netQ.push(evt); },
 
-      replay: function() {
+      replay() {
         if (sjs.isObject(this.options.wsock)) {
           // request server to restart a new game
           this.options.wsock.send({
@@ -64,15 +67,15 @@ define("zotohlab/p/arena",
         }
       },
 
-      play: function(newFlag) {
+      play(newFlag) {
 
-        var p1ids, p2ids;
+        let p1ids, p2ids;
 
         csts.CELLS = this.options.size*this.options.size;
         csts.GRID_SIZE= this.options.size;
 
         // sort out names of players
-        sjs.eachObj(function(v,k) {
+        sjs.eachObj((v,k) => {
           if (v[0] === 1) {
             p1ids= [k, v[1] ];
           } else {
@@ -92,9 +95,9 @@ define("zotohlab/p/arena",
         this.options.netQ = [];
         this.options.msgQ = [];
 
-        R.forEach(function(z) {
+        R.forEach((z) => {
           this.engine.addSystem(new (z)(this.options), z.Priority);
-        }.bind(this),
+        },
         [sobjs.GameSupervisor,
          sobjs.SelectionSystem,
          sobjs.NetworkSystem,
@@ -112,15 +115,15 @@ define("zotohlab/p/arena",
                                   csts.P2_COLOR, p2ids);
       },
 
-      onNewGame: function(mode) {
+      onNewGame(mode) {
         //sh.sfxPlay('start_game');
         this.setGameMode(mode);
         this.play(true);
       },
 
-      reset: function(newFlag) {
+      reset(newFlag) {
         if (!sjs.isEmpty(this.atlases)) {
-          sjs.eachObj(function(v){ v.removeAllChildren(); }, this.atlases);
+          sjs.eachObj((v) => { v.removeAllChildren(); }, this.atlases);
         } else {
           this.regoAtlas('game-pics');
           this.regoAtlas('lang-pics');
@@ -132,7 +135,7 @@ define("zotohlab/p/arena",
         }
       },
 
-      onclicked: function(mx,my) {
+      onclicked(mx,my) {
         if (this.options.running &&
             this.options.selQ.length === 0) {
           //sjs.loggr.debug("selection made at pos = " + mx + "," + my);
@@ -140,7 +143,7 @@ define("zotohlab/p/arena",
         }
       },
 
-      updateHUD: function() {
+      updateHUD() {
         if (this.options.running) {
           this.getHUD().drawStatus(this.actor);
         } else {
@@ -148,17 +151,17 @@ define("zotohlab/p/arena",
         }
       },
 
-      playTimeExpired: function(msg) {
+      playTimeExpired(msg) {
         this.options.msgQ.push("forfeit");
       },
 
-      setGameMode: function(mode) {
+      setGameMode(mode) {
         this._super(mode);
         this.getHUD().setGameMode(mode);
       },
 
-      initPlayers: function() {
-        var p2cat, p1cat,
+      initPlayers() {
+        let p2cat, p1cat,
         p2, p1;
 
         switch (this.options.mode) {
@@ -183,7 +186,7 @@ define("zotohlab/p/arena",
         this.options.colors[csts.P2_COLOR] = p2;
       },
 
-      onevent: function(topic, evt) {
+      onevent(topic, evt) {
         //sjs.loggr.debug(evt);
         switch (evt.type) {
           case evts.MSG_NETWORK:
@@ -195,7 +198,7 @@ define("zotohlab/p/arena",
         }
       },
 
-      onNetworkEvent: function(evt) {
+      onNetworkEvent(evt) {
         switch (evt.code) {
           case evts.RESTART:
             sjs.loggr.debug("restarting a new game...");
@@ -214,7 +217,7 @@ define("zotohlab/p/arena",
         }
       },
 
-      onSessionEvent: function(evt) {
+      onSessionEvent(evt) {
         this.options.netQ.push(evt);
         /*
         if (_.isNumber(evt.source.pnum) &&
@@ -234,49 +237,47 @@ define("zotohlab/p/arena",
 
     });
 
-    exports = {
+    exports = /** @lends exports# */{
 
       /**
        * @property {String} rtti
-       * @static
        */
       rtti: sh.ptypes.game,
 
       /**
        * @method reify
-       * @static
        * @param {Object} options
        * @return {cc.Scene}
        */
-      reify:  function(options) {
-        var scene = new scenes.XSceneFactory([
+      reify(options) {
+        const scene = new scenes.XSceneFactory([
           huds.BackLayer,
           GameLayer,
           huds.HUDLayer
         ]).reify(options);
 
-        scene.onmsg('/hud/showmenu',function(t,msg) {
+        scene.onmsg('/hud/showmenu',(t,msg) => {
           mmenus.showMenu();
         }).
-        onmsg('/hud/replay',function(t,msg) {
+        onmsg('/hud/replay',(t,msg) => {
           sh.main.replay();
         }).
-        onmsg('/hud/timer/show',function(t,msg) {
+        onmsg('/hud/timer/show',(t,msg) => {
           sh.main.getHUD().showTimer();
         }).
-        onmsg('/hud/timer/hide',function(t,msg) {
+        onmsg('/hud/timer/hide', (t,msg) => {
           sh.main.getHUD().killTimer();
         }).
-        onmsg('/hud/score/update',function(t,msg) {
+        onmsg('/hud/score/update', (t,msg) => {
           sh.main.getHUD().updateScore(msg.color, msg.score);
         }).
-        onmsg('/hud/end',function(t,msg) {
+        onmsg('/hud/end', (t,msg) => {
           sh.main.getHUD().endGame(msg.winner);
         }).
-        onmsg('/hud/update',function(t,msg) {
+        onmsg('/hud/update', (t,msg) => {
           sh.main.getHUD().update(msg.running, msg.pnum);
         }).
-        onmsg('/player/timer/expired',function(t,msg) {
+        onmsg('/player/timer/expired', (t,msg) => {
           sh.main.playTimeExpired(msg);
         });
 

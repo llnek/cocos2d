@@ -22,48 +22,42 @@ define("zotohlab/p/gnodes",
   function (cobjs, sh) { "use strict";
 
     /** @alias module:zotohlab/p/gnodes */
-    var exports= {},
+    let exports= {},
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class BoardNode
      */
-    var BoardNode = sh.Ashley.nodeDef({
+    const BoardNode = sh.Ashley.nodeDef({
       /**
        * @memberof module:zotohlab/p/gnodes~BoardNode
        * @property {UISelection} selection
-       * @static
        */
       selection: cobjs.UISelection,
       /**
        * @memberof module:zotohlab/p/gnodes~BoardNode
        * @property {Board} board
-       * @static
        */
       board: cobjs.Board,
       /**
        * @memberof module:zotohlab/p/gnodes~BoardNode
        * @property {SmartAlgo} robot
-       * @static
        */
       robot: cobjs.SmartAlgo,
       /**
        * @memberof module:zotohlab/p/gnodes~BoardNode
        * @property {Grid} grid
-       * @static
        */
       grid: cobjs.Grid,
       /**
        * @memberof module:zotohlab/p/gnodes~BoardNode
        * @property {GridView} view
-       * @static
        */
       view: cobjs.GridView
     });
     /**
      * @property {BoardNode} BoardNode
-     * @static
      */
     exports.BoardNode = BoardNode;
 
@@ -71,23 +65,20 @@ define("zotohlab/p/gnodes",
     /**
      * @class GUINode
      */
-    var GUINode = sh.Ashley.nodeDef({
+    const GUINode = sh.Ashley.nodeDef({
       /**
        * @memberof module:zotohlab/p/gnodes~GUINode
        * @property {UISelection} selection
-       * @static
        */
       selection: cobjs.UISelection,
       /**
        * @memberof module:zotohlab/p/gnodes~GUINode
        * @property {GridView} view
-       * @static
        */
       view: cobjs.GridView
     });
     /**
      * @property {GUINode} GUINode
-     * @static
      */
     exports.GUINode = GUINode;
 
@@ -95,23 +86,20 @@ define("zotohlab/p/gnodes",
     /**
      * @class NetPlayNode
      */
-    var NetPlayNode = sh.Ashley.nodeDef({
+    const NetPlayNode = sh.Ashley.nodeDef({
       /**
        * @memberof module:zotohlab/p/gnodes~NetPlayNode
        * @property {NetPlay} playcmd
-       * @static
        */
       playcmd: cobjs.NetPlay,
       /**
        * @memberof module:zotohlab/p/gnodes~Grid
        * @property {Grid} grid
-       * @static
        */
       grid: cobjs.Grid
     });
     /**
      * @property {NetPlayNode} NetPlayNode
-     * @static
      */
     exports.NetPlayNode = NetPlayNode;
 

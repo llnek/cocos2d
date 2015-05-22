@@ -23,29 +23,28 @@ define("zotohlab/p/s/utils",
 
   function (sjs, sh, ccsx) { "use strict";
 
-    var xcfg= sh.xcfg,
+    let xcfg= sh.xcfg,
     csts= xcfg.csts,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
     /** @alias module:zotohlab/p/s/utils */
-    var exports= {
+    let exports= {
 
       /**
        * Calculate position of each individual cells in the grid,
        * so that we can detect when a user clicks on the cell.
-       *
        * @method mapGridPos
        * @param {Number} gsz
        * @param {Number} scale
        * @return {Array}
        */
-      mapGridPos: function (gsz, scale) {
+      mapGridPos(gsz, scale) {
         gsz = gsz || csts.GRID_SIZE;
         scale = scale || 1;
         // memorize the co-ordinates of each cell on the board, so
         // we know which cell the user has clicked on.
-        var sp = ccsx.createSpriteFrame('z.png'),
+        let sp = ccsx.createSpriteFrame('z.png'),
         csz = cc.size(sp.getContentSize().width * scale,
                       sp.getContentSize().height * scale),
         cells= gsz * gsz,
@@ -62,9 +61,9 @@ define("zotohlab/p/s/utils",
         x1= x0,
         y1=y0;
 
-        for (var n=0; n < cells; ++n) { gridMap.push(null); }
-        for (var r=0; r < gsz; ++r) {
-          for (var c= 0; c < gsz; ++c) {
+        for (let n=0; n < cells; ++n) { gridMap.push(null); }
+        for (let r=0; r < gsz; ++r) {
+          for (let c= 0; c < gsz; ++c) {
             y2 = y1 - csz.height;
             x2 = x1 + csz.width;
             gridMap[r * gsz + c] = { left: x1, top: y1,
@@ -80,7 +79,7 @@ define("zotohlab/p/s/utils",
       /**
        * @private
        */
-      pkFlip: function(img,flip) {
+      pkFlip(img,flip) {
         if (flip) {
           return img + ".i.png";
         } else {
@@ -91,7 +90,7 @@ define("zotohlab/p/s/utils",
       /**
        * @private
        */
-      xrefImg: function(value) {
+      xrefImg(value) {
         switch (value) {
           case csts.CV_X: return 'x';
           case csts.CV_O: return 'o';
@@ -109,8 +108,8 @@ define("zotohlab/p/s/utils",
        * @param {Boolean} flip
        * @return {cc.Sprite}
        */
-      drawSymbol: function(view, x,y,value,flip) {
-        var frame = this.pkFlip(this.xrefImg(value),flip),
+      drawSymbol(view, x,y,value,flip) {
+        let frame = this.pkFlip(this.xrefImg(value),flip),
         s1= ccsx.createSpriteFrame(frame);
         s1.setAnchorPoint(ccsx.acs.Center);
         s1.setPosition(x,y);

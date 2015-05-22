@@ -20,7 +20,7 @@ define("zotohlab/p/c/board",
   function (sjs) { "use strict";
 
     /** @alias module:zotohlab/p/c/board */
-    var exports= {},
+    let exports= {},
     R = sjs.ramda,
     undef;
 
@@ -29,7 +29,7 @@ define("zotohlab/p/c/board",
     /**
      * @class GameBoard
      */
-    var GameBoard = sjs.mixes({
+    class GameBoard {
 
       /**
        * @memberof module:zotohlab/p/c/board~GameBoard
@@ -37,40 +37,40 @@ define("zotohlab/p/c/board",
        * @param {Number} cellv
        * @return {Boolean}
        */
-      isNil: function(cellv) { return cellv === this.CV_Z; },
+      isNil(cellv) { return cellv === this.CV_Z; }
 
       /**
        * @memberof module:zotohlab/p/c/board~GameBoard
-       * @method ctor
+       * @method constructor
        * @param {Number} size
        * @param {Number} nilValue
        * @param {Number} p1v
        * @param {Number} p2v
        * @param {Array} goals
        */
-      ctor: function(size, nilValue, p1v, p2v, goals) {
+      constructor(size, nilValue, p1v, p2v, goals) {
         this.actors= [nilValue, p1v, p2v];
         this.CV_Z= nilValue;
         this.grid= [];
         this.size= size;
         this.GOALSPACE=goals;
-      },
+      }
 
       /**
        * @memberof module:zotohlab/p/c/board~GameBoard
        * @method getFirstMove
        * @return {Number}
        */
-      getFirstMove: function() {
-        var rc= R.find(function(v) {
+      getFirstMove() {
+        const rc= R.find((v) => {
           return v !== this.CV_Z;
-        }.bind(this), this.grid );
+        }, this.grid );
         if (! sjs.echt(rc)) {
           return sjs.rand(this.grid.length);
         } else {
           return undef;
         }
-      },
+      }
 
       /**
        * @memberof module:zotohlab/p/c/board~GameBoard
@@ -78,10 +78,10 @@ define("zotohlab/p/c/board",
        * @param {Array} seed
        * @param {Number} actor
        */
-      syncState: function(seed, actor) {
+      syncState(seed, actor) {
         this.grid=seed.slice(0);
         this.actors[0] = actor;
-      },
+      }
 
       /**
        * @memberof module:zotohlab/p/c/board~GameBoard
@@ -89,17 +89,16 @@ define("zotohlab/p/c/board",
        * @param {SnapShot} snap
        * @return {Array}
        */
-      getNextMoves: function(snap) {
-        var g = snap.state,
-        n,
+      getNextMoves(snap) {
+        const g = snap.state,
         rc = [];
-        for (n=0; n < g.length; ++n) {
+        for (let n=0; n < g.length; ++n) {
           if (this.isNil(g[n])) {
             rc.push(n);
           }
         }
         return rc;
-      },
+      }
 
       /**
        * @memberof module:zotohlab/p/c/board~GameBoard
@@ -107,9 +106,9 @@ define("zotohlab/p/c/board",
        * @param {SnapShot} snap
        * @param {Number} move
        */
-      unmakeMove: function(snap,move) {
+      unmakeMove(snap,move) {
         snap.state[move] = this.CV_Z;
-      },
+      }
 
       /**
        * @memberof module:zotohlab/p/c/board~GameBoard
@@ -117,24 +116,24 @@ define("zotohlab/p/c/board",
        * @param {SnapShot} snap
        * @param {Number} move
        */
-      makeMove: function(snap,move) {
+      makeMove(snap,move) {
         if (this.isNil( snap.state[move])) {
           snap.state[move] = snap.cur;
         } else {
           sjs.tne("Fatal Error: cell [" + move + "] is not free.");
         }
-      },
+      }
 
       /**
        * @memberof module:zotohlab/p/c/board~GameBoard
        * @method switchPlayer
        * @param {SnapShot} snap
        */
-      switchPlayer: function (snap) {
-        var t = snap.cur;
+      switchPlayer(snap) {
+        const t = snap.cur;
         snap.cur= snap.other;
         snap.other=t;
-      },
+      }
 
       /**
        * @memberof module:zotohlab/p/c/board~GameBoard
@@ -142,7 +141,7 @@ define("zotohlab/p/c/board",
        * @param {Number} pv
        * @return {Number}
        */
-      getOtherPlayer: function(pv) {
+      getOtherPlayer(pv) {
         if (pv === this.actors[1]) {
           return this.actors[2];
         }
@@ -153,21 +152,21 @@ define("zotohlab/p/c/board",
         else {
           return this.CV_Z;
         }
-      },
+      }
 
       /**
        * @memberof module:zotohlab/p/c/board~GameBoard
        * @method takeSnapshot
        * @return {SnapShot}
        */
-      takeSnapshot: function() {
+      takeSnapshot() {
         return {
           other: this.getOtherPlayer(this.actors[0]),
           cur: this.actors[0],
           state: this.grid.slice(0),
           lastBestMove: -1
         };
-      },
+      }
 
       /**
        * @memberof module:zotohlab/p/c/board~GameBoard
@@ -175,11 +174,11 @@ define("zotohlab/p/c/board",
        * @param {SnapShot} snap
        * @return {Number}
        */
-      evalScore: function(snap) {
+      evalScore(snap) {
         // if we lose, return a nega value
         return sjs.isNumber(this.isWinner(snap.other,
                                           snap.state )[0]) ? -100 : 0;
-      },
+      }
 
       /**
        * @memberof module:zotohlab/p/c/board~GameBoard
@@ -187,11 +186,11 @@ define("zotohlab/p/c/board",
        * @param {SnapShot} snap
        * @return {Boolean}
        */
-      isOver: function(snap) {
+      isOver(snap) {
         return sjs.isNumber(this.isWinner(snap.cur, snap.state)[0]) ||
                sjs.isNumber(this.isWinner(snap.other, snap.state)[0]) ||
                this.isStalemate(snap.state);
-      },
+      }
 
       /**
        * @memberof module:zotohlab/p/c/board~GameBoard
@@ -199,12 +198,12 @@ define("zotohlab/p/c/board",
        * @param {Object} game
        * @return {Boolean}
        */
-      isStalemate: function(game) {
-        return ! R.any(function(n) {
+      isStalemate(game) {
+        return ! R.any((n) => {
           return n === this.CV_Z;
-        }.bind(this),
+        },
         game || this.grid);
-      },
+      }
 
       /**
        * @memberof module:zotohlab/p/c/board~GameBoard
@@ -213,23 +212,22 @@ define("zotohlab/p/c/board",
        * @param {Array} gameVals
        * @return {Array} [actor, winning-combo]
        */
-      isWinner: function(actor, gameVals) {
-        var game= gameVals || this.grid,
+      isWinner(actor, gameVals) {
+        let game= gameVals || this.grid,
         combo,
-        rc= R.any(function(r) {
+        rc= R.any((r) => {
           combo=r;
-          return R.all(function (n) { return n === actor; },
-                       R.map(function(i) { return game[i]; }, r) );
+          return R.all((n) => { return n === actor; },
+                       R.map((i) => { return game[i]; }, r) );
         }, this.GOALSPACE);
         return rc ? [actor, combo] : [null, null];
       }
 
-    });
+    }
 
     exports= GameBoard;
     return exports;
 });
-
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

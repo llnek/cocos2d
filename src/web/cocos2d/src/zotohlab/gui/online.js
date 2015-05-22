@@ -16,9 +16,9 @@
  * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asx/odin
- * @module zotohlab/asx/onlineplay
+ * @module zotohlab/asx/online
  */
-define("zotohlab/asx/onlineplay",
+define("zotohlab/asx/online",
 
        ['cherimoia/skarojs',
         'zotohlab/asterix',
@@ -29,7 +29,7 @@ define("zotohlab/asx/onlineplay",
 
   function (sjs, sh, ccsx, layers, scenes, odin) { "use strict";
 
-    /** @alias module:zotohlab/asx/onlineplay */
+    /** @alias module:zotohlab/asx/online */
     let exports = {        },
     evts= odin.Events,
     xcfg= sh.xcfg,
