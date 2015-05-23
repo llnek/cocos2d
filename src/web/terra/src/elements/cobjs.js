@@ -7,23 +7,41 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/components", ['cherimoia/skarojs',
-                                'zotohlab/asterix',
-                                'zotohlab/asx/ccsx'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/elements
+*/
+
+define("zotohlab/p/elements",
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (sjs, sh, ccsx) { "use strict";
 
-    var xcfg= sh.xcfg,
+    /** @alias module:zotohlab/p/elements */
+    let exports = {},
+    xcfg= sh.xcfg,
     csts= xcfg.csts,
-    undef,
-    cobjs={};
+    undef;
 
     //////////////////////////////////////////////////////////////////////////
-    cobjs.Missile = sh.Ashley.compDef({
+    /**
+     * @class Missile
+     */
+    exports.Missile = sh.Ashley.compDef({
 
-      constructor: function (sprite, attackMode) {
+      /**
+       * @method constructor
+       * @param {cc.Sprite}
+       * @param {Number} attackMode
+       */
+      constructor(sprite, attackMode) {
         this.attackMode = attackMode || csts.ENEMY_ATTACK.NORMAL;
         this.rego('Missile');
         this.ctor(sprite);
@@ -36,9 +54,18 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////
-    cobjs.Bomb = sh.Ashley.compDef({
+    /**
+     * @class Bomb
+     */
+    exports.Bomb = sh.Ashley.compDef({
 
-      constructor: function (sprite, attackMode) {
+      /**
+       * @memberof module:zotohlab/p/elements~Bomb
+       * @method constructor
+       * @param {cc.Sprite} sprite
+       * @param {Number} attackNode
+       */
+      constructor(sprite, attackMode) {
         this.attackMode = attackMode || csts.ENEMY_ATTACK.NORMAL;
         this.rego('Bomb');
         this.ctor(sprite);
@@ -52,9 +79,18 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
 
 
     //////////////////////////////////////////////////////////////////////////
-    cobjs.Enemy = sh.Ashley.compDef({
+    /**
+     * @class Enemy
+     */
+    exports.Enemy = sh.Ashley.compDef({
 
-      constructor: function(sprite, arg) {
+      /**
+       * memberof module:zotohlab/p/elements~Enemy
+       * @method constructor
+       * @param {cc.Sprite} sprite
+       * @param {Object} arg
+       */
+      constructor(sprite, arg) {
 
         this.ctor(sprite, arg.HP, arg.scoreValue);
         this.delayTime= 1 + 1.2 * Math.random();
@@ -69,10 +105,18 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////
-    //
-    cobjs.Ship = sh.Ashley.compDef({
+    /**
+     * @class Ship
+     */
+    exports.Ship = sh.Ashley.compDef({
 
-      constructor: function(sprite, spriteX) {
+      /**
+       * @memberof module:zotohlab/p/elements~Ship
+       * @method constructor
+       * @param {cc.Sprite} sprite
+       * @param {cc.Sprite} spriteX
+       */
+      constructor(sprite, spriteX) {
         this.bornSprite = spriteX;
         this.canBeAttack = false;
         this.ctor(sprite, 5);
@@ -82,9 +126,16 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////
-    cobjs.Motion = sh.Ashley.casDef({
+    /**
+     * @class Motion
+     */
+    exports.Motion = sh.Ashley.casDef({
 
-      constructor: function() {
+      /**
+       * @memberof module:zotohlab/p/elements~Motion
+       * @method constructor
+       */
+      constructor() {
         this.right=false;
         this.left= false;
         this.down= false;
@@ -94,34 +145,48 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////
-    cobjs.Spark = sh.Ashley.compDef({
+    /**
+     * @class Spark
+     */
+    exports.Spark = sh.Ashley.compDef({
 
-      constructor: function(sp1, sp2) {
+      /**
+       * @memberof module:zotohlab/p/elements~Spark
+       * @method constructor
+       * @param {cc.Sprite} sp1
+       * @param {cc.Sprite} sp2
+       */
+      constructor(sp1, sp2) {
         this.duration = 0.7;
         this.sprite2= sp2;
         this.ctor(sp1);
         this.scale = 1.2;
       },
 
-      inflate: function(options) {
-        var x= options.x,
+      /**
+       * @memberof module:zotohlab/p/elements~Spark
+       * @method inflate
+       * @param {Object} options
+       */
+      inflate(options) {
+        let x= options.x,
         y= options.y;
 
         this.sprite.attr({
-	        x: x,
-	        y: y,
-	        scale: this.scale,
-	        opacity: 255
+          x: x,
+          y: y,
+          scale: this.scale,
+          opacity: 255
         });
         this.sprite2.attr({
-	        x: x,
-	        y: y,
-	        scale: this.scale,
-	        rotation: sjs.rand(360),
-	        opacity: 255
+          x: x,
+          y: y,
+          scale: this.scale,
+          rotation: sjs.rand(360),
+          opacity: 255
         });
 
-        var scaleBy = cc.scaleBy(this.duration, 3, 3),
+        let scaleBy = cc.scaleBy(this.duration, 3, 3),
         right = cc.rotateBy(this.duration, 45),
         seq = cc.sequence(cc.fadeOut(this.duration),
                           cc.callFunc(this.destroy, this));
@@ -138,7 +203,11 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
         this.sprite.setVisible(true);
       },
 
-      deflate: function() {
+      /**
+       * @memberof module:zotohlab/p/elements~Spark
+       * @method deflate
+       */
+      deflate() {
         this.sprite2.setVisible(false);
         this.sprite.setVisible(false);
         this.status=false;
@@ -149,14 +218,27 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////
-    cobjs.Explosion = sh.Ashley.compDef({
+    /**
+     * @class Explosion
+     */
+    exports.Explosion = sh.Ashley.compDef({
 
-      constructor: function(sprite) {
+      /**
+       * @memberof module:zotohlab/p/elements~Explosion
+       * @method constructor
+       * @param {cc.Sprite} sprite
+       */
+      constructor(sprite) {
         this.animation = cc.animationCache.getAnimation("Explosion");
         this.ctor(sprite);
       },
 
-      inflate: function(options) {
+      /**
+       * @memberof module:zotohlab/p/elements~Explosion
+       * @method inflate
+       * @param {Object} options
+       */
+      inflate(options) {
         this.sprite.setPosition(options.x, options.y);
         this.sprite.setVisible(true);
         this.status=true;
@@ -169,14 +251,27 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
     });
 
     //////////////////////////////////////////////////////////////////////////
-    cobjs.HitEffect = sh.Ashley.compDef({
+    /**
+     * @class HitEffect
+     */
+    exports.HitEffect = sh.Ashley.compDef({
 
-      constructor: function(sprite) {
+      /**
+       * @memberof module:zotohlab/p/elements~HitEffect
+       * @method constructor
+       * @param {cc.Sprite} sprite
+       */
+      constructor(sprite) {
         this.scale = 0.75;
         this.ctor(sprite);
       },
 
-      inflate: function(options) {
+      /**
+       * @memberof module:zotohlab/p/elements~HitEffect
+       * @method inflate
+       * @param {Object} options
+       */
+      inflate(options) {
         this.sprite.setPosition(options.x, options.y);
         this.sprite.setScale(this.scale);
         this.sprite.setRotation(sjs.rand(360));
@@ -189,7 +284,7 @@ define("zotohlab/p/components", ['cherimoia/skarojs',
 
     });
 
-    return cobjs;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

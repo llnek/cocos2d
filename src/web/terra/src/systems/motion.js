@@ -7,52 +7,97 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/s/motions', ['zotohlab/p/gnodes',
-                               'cherimoia/skarojs',
-                               'zotohlab/asterix',
-                               'zotohlab/asx/ccsx'],
+/**
+ * @requires zotohlab/p/s/priorities
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/motions
+ */
+define('zotohlab/p/s/motions',
 
-  function (gnodes, sjs, sh, ccsx) { "use strict";
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
-    var xcfg = sh.xcfg,
+  function (pss, gnodes, sjs, sh, ccsx) { "use strict";
+
+    /** @alias module:zotohlab/p/s/motions */
+    let exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
+    /**
+     * @class Motions
+     */
     Motions = sh.Ashley.sysDef({
 
-      constructor: function(options) {
+      /**
+       * @memberof module:zotohlab/p/s/motions~Motions
+       * @method constructor
+       * @param {Object} options
+       */
+      constructor(options) {
         this.state= options;
       },
 
-      removeFromEngine: function(engine) {
+      /**
+       * @memberof module:zotohlab/p/s/motions~Motions
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
+      removeFromEngine(engine) {
         this.ships=null;
       },
 
-      addToEngine: function(engine) {
+      /**
+       * @memberof module:zotohlab/p/s/motions~Motions
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
+      addToEngine(engine) {
         this.ships= engine.getNodeList(gnodes.ShipMotionNode);
       },
 
-      update: function (dt) {
-        var node = this.ships.head;
+      /**
+       * @memberof module:zotohlab/p/s/motions~Motions
+       * @method update
+       * @param {Number} dt
+       */
+      update(dt) {
+        const node = this.ships.head;
         if (this.state.running &&
            !!node) {
           this.processMotions(node,dt);
         }
       },
 
-      processMotions: function(node,dt) {
+      /**
+       * @private
+       */
+      processMotions(node,dt) {
         this.scanInput(node, dt);
       },
 
-      scanInput: function(node, dt) {
+      /**
+       * @private
+       */
+      scanInput(node, dt) {
         if (cc.sys.capabilities['keyboard'] &&
             !cc.sys.isNative) {
           this.processKeys(node,dt);
         }
       },
 
-      processKeys: function(node,dt) {
+      /**
+       * @private
+       */
+      processKeys(node,dt) {
 
         if (sh.main.keyPoll(cc.KEY.right)) {
           node.motion.right = true;
@@ -71,7 +116,14 @@ define('zotohlab/p/s/motions', ['zotohlab/p/gnodes',
 
     });
 
-    return Motions;
+    /**
+       * @memberof module:zotohlab/p/s/motions~Motions
+       * @property {Number} Priority
+       */
+    Motions.Priority = pss.Motion;
+
+    exports = Motions;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

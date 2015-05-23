@@ -37,7 +37,7 @@ define("zotohlab/p/s/utils",
        * @param {Number} dt
        */
       fireMissiles(ship, dt) {
-        const po1= sh.pools.Missiles,
+        let po1= sh.pools.Missiles,
         pos = ship.pos(),
         sz = ship.size(),
         offy= 3 + sz.height * 0.3,

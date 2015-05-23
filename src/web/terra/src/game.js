@@ -135,15 +135,15 @@ define('zotohlab/p/arena',
         R.forEach((z) => {
           this.engine.addSystem(new (z)(this.options), z.Priority);
         },
-        [ [sobjs.Supervisor, pss.PreUpdate],
-          [sobjs.Motions, pss.Motion],
-          [sobjs.LevelManager, pss.Movement],
-          [sobjs.MoveMissiles, pss.Movement],
-          [sobjs.MoveBombs, pss.Movement],
-          [sobjs.MoveShip, pss.Movement],
-          [sobjs.Collisions, pss.Collision],
-          [sobjs.Resolution, pss.Resolve],
-          [sobjs.Rendering, pss.Render] ]);
+        [ sobjs.Supervisor,
+          sobjs.Motions,
+          sobjs.LevelManager,
+          sobjs.MoveMissiles,
+          sobjs.MoveBombs,
+          sobjs.MoveShip,
+          sobjs.Collisions,
+          sobjs.Resolution,
+          sobjs.Rendering ]);
 
         sh.sfxPlayMusic('bgMusic', true);
         this.schedule(this.countSeconds, 1);

@@ -7,48 +7,92 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/s/movemissiles', ['zotohlab/p/components',
-                                    'zotohlab/p/s/utils',
-                                    'zotohlab/p/gnodes',
-                                    'cherimoia/skarojs',
-                                    'zotohlab/asterix',
-                                    'zotohlab/asx/ccsx'],
+/**
+ * @requires zotohlab/p/s/priorities
+ * @requires zotohlab/p/elements
+ * @requires zotohlab/p/s/utils
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/movemissiles
+ */
+define('zotohlab/p/s/movemissiles',
 
-  function (cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/elements',
+        'zotohlab/p/s/utils',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
-    var xcfg = sh.xcfg,
+  function (pss, cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
+
+    /** @alias module:zotohlab/p/s/movemissiles */
+    let exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R= sjs.ramda,
     undef,
+    /**
+     * @class MoveMissiles
+     */
     MoveMissiles = sh.Ashley.sysDef({
 
-      constructor: function(options) {
+      /**
+       * @memberof module:zotohlab/p/s/movemissiles~MoveMissiles
+       * @method constructor
+       * @param {Object} options
+       */
+      constructor(options) {
         this.state= options;
       },
 
-      removeFromEngine: function(engine) {
+      /**
+       * @memberof module:zotohlab/p/s/movemissiles~MoveMissiles
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
+      removeFromEngine(engine) {
       },
 
-      addToEngine: function(engine) {
+      /**
+       * @memberof module:zotohlab/p/s/movemissiles~MoveMissiles
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
+      addToEngine(engine) {
       },
 
-      update: function (dt) {
+      /**
+       * @memberof module:zotohlab/p/s/movemissiles~MoveMissiles
+       * @method update
+       * @param {Number} dt
+       */
+      update(dt) {
         if (this.state.running) {
           this.processMovement(dt);
         }
       },
 
-      moveMissile: function(m, dt) {
-        var pos = m.sprite.getPosition();
+      /**
+       * @private
+       */
+      moveMissile(m, dt) {
+        const pos = m.sprite.getPosition();
         m.sprite.setPosition(pos.x + m.vel.x * dt,
                              pos.y + m.vel.y * dt);
       },
 
-      processMovement: function(dt) {
-        var me=this;
-        sh.pools.Missiles.iter(function(v) {
+      /**
+       * @private
+       */
+      processMovement(dt) {
+        const me=this;
+        sh.pools.Missiles.iter((v) => {
           if (v.status) {
             me.moveMissile(v,dt);
           }
@@ -57,7 +101,14 @@ define('zotohlab/p/s/movemissiles', ['zotohlab/p/components',
 
     });
 
-    return MoveMissiles;
+    /**
+     * @memberof module:zotohlab/p/s/movemissiles~MoveMissiles
+     * @property {Number} Priority
+     */
+    MoveMissiles.Priority = pss.Movement;
+
+    exports= MoveMissiles;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

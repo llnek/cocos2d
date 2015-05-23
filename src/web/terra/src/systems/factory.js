@@ -7,38 +7,62 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/s/factory', ['zotohlab/p/components',
-                               'cherimoia/skarojs',
-                               'zotohlab/asterix',
-                               'zotohlab/asx/ccsx'],
+/**
+ * @requires zotohlab/p/elements
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/factory
+ */
+define('zotohlab/p/s/factory',
+
+       ['zotohlab/p/elements',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (cobjs, sjs, sh, ccsx) { "use strict";
 
-    var BackTileMap= ["lvl1_map1.png", "lvl1_map2.png",
+    const BackTileMap= ["lvl1_map1.png", "lvl1_map2.png",
                       "lvl1_map3.png", "lvl1_map4.png"];
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/factory */
+    let exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R=sjs.ramda,
     undef,
+    /**
+     * @class EntityFactory
+     */
     EntityFactory = sh.Ashley.casDef({
 
-      constructor: function(engine) {
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method constructor
+       * @param {Ash.Engine} engine
+       */
+      constructor(engine) {
         this.engine=engine;
       },
 
-      createShip: function() {
-        var sp= ccsx.createSpriteFrame('ship01.png'),
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createShip
+       * @return {Object} a ship
+       */
+      createShip() {
+        let sp= ccsx.createSpriteFrame('ship01.png'),
         ent= sh.Ashley.newEntity(),
         sz= sp.getContentSize(),
         bs, player,
         cw= ccsx.center(),
-        wz= ccsx.screen();
+        wz= ccsx.vrect();
         sp.setPosition(cw.x, sz.height);
 
         // set frame
-        var fr0 = cc.spriteFrameCache.getSpriteFrame("ship01.png"),
+        let fr0 = cc.spriteFrameCache.getSpriteFrame("ship01.png"),
         fr1 = cc.spriteFrameCache.getSpriteFrame("ship02.png"),
         animFrames = [fr0, fr1],
         animation = new cc.Animation(animFrames, 0.1),
@@ -60,10 +84,15 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         return player;
       },
 
-      createBackSkies: function(layer) {
-        var layer= sh.main.getBackgd();
-        sh.pools.BackSkies.preSet(function() {
-          var bg = ccsx.createSpriteFrame('bg01.png');
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createBackSkies
+       * @param {cc.Layer} layer
+       */
+      createBackSkies(layer) {
+        //let layer= sh.main.getBackgd();
+        sh.pools.BackSkies.preSet(() => {
+          const bg = ccsx.createSpriteFrame('bg01.png');
           bg.setAnchorPoint(0,0);
           bg.setVisible(false);
           layer.addAtlasItem('tr-pics', bg, -10);
@@ -71,9 +100,14 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         }, 2);
       },
 
-      createMissiles: function(count) {
-        sh.pools.Missiles.preSet(function() {
-          var sp= ccsx.createSpriteFrame('W1.png');
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createMissiles
+       * @param {Number} count
+       */
+      createMissiles(count) {
+        sh.pools.Missiles.preSet(() => {
+          const sp= ccsx.createSpriteFrame('W1.png');
           sp.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
           sp.setVisible(false);
           sh.main.addAtlasItem('op-pics', sp, csts.SHIP_ZX);
@@ -81,9 +115,14 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         }, count);
       },
 
-      createBombs: function(count) {
-        sh.pools.Bombs.preSet(function() {
-          var sp= ccsx.createSpriteFrame('W2.png');
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createBombs
+       * @param {Number} count
+       */
+      createBombs(count) {
+        sh.pools.Bombs.preSet(() => {
+          const sp= ccsx.createSpriteFrame('W2.png');
           sp.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
           sp.setVisible(false);
           sh.main.addAtlasItem('op-pics', sp, csts.SHIP_ZX);
@@ -91,9 +130,14 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         }, count);
       },
 
-      createExplosions: function(count) {
-        sh.pools.Explosions.preSet(function() {
-          var sp = ccsx.createSpriteFrame("explosion_01.png");
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createExplosions
+       * @param {Number} count
+       */
+      createExplosions(count) {
+        sh.pools.Explosions.preSet(() => {
+          const sp = ccsx.createSpriteFrame("explosion_01.png");
           sp.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
           sp.setVisible(false);
           sh.main.addAtlasItem('explosions', sp);
@@ -101,9 +145,14 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         }, count || 6);
       },
 
-      createHitEffects: function(count) {
-        sh.pools.HitEffects.preSet(function() {
-          var sp = ccsx.createSpriteFrame("hit.png");
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createHitEffects
+       * @param {Number} count
+       */
+      createHitEffects(count) {
+        sh.pools.HitEffects.preSet(() => {
+          const sp = ccsx.createSpriteFrame("hit.png");
           sp.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
           sp.setVisible(false);
           sh.main.addAtlasItem('op-pics', sp);
@@ -111,11 +160,16 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         }, count || 10);
       },
 
-      createSparks: function(count) {
-        sh.pools.Sparks.preSet(function() {
-          var sp = [ccsx.createSpriteFrame("explode2.png"),
-                    ccsx.createSpriteFrame("explode3.png")];
-          R.forEach(function(s) {
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createSparks
+       * @param {Number} count
+       */
+      createSparks(count) {
+        sh.pools.Sparks.preSet(() => {
+          const sp = [ccsx.createSpriteFrame("explode2.png"),
+                      ccsx.createSpriteFrame("explode3.png")];
+          R.forEach((s) => {
             s.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
             s.setVisible(false);
             sh.main.addAtlasItem('op-pics', s);
@@ -124,27 +178,37 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
         }, count || 6);
       },
 
-      createEnemies: function(count) {
-        var sp, cr= function(arg) {
-          sp= ccsx.createSpriteFrame(arg.textureName);
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createEnemies
+       * @param {Number} count
+       */
+      createEnemies(count) {
+        const cr= (arg) => {
+          const sp= ccsx.createSpriteFrame(arg.textureName);
           sp.setVisible(false);
           sh.main.addAtlasItem('tr-pics', sp,
-                            csts.SHIP_ZX - 1); // why?
+                               csts.SHIP_ZX - 1); // why?
           return new cobjs.Enemy(sp, arg);
         },
         ts = xcfg.EnemyTypes;
 
-        sh.pools.Baddies.preSet(function(pool) {
-          for (var j = 0; j < ts.length; ++j) {
+        sh.pools.Baddies.preSet((pool) => {
+          for (let j = 0; j < ts.length; ++j) {
             pool.push( cr( ts[j]));
           }
         }, count||3);
       },
 
-      createBackTiles: function(count) {
-        var layer= sh.main.getBackgd(),
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createBackTiles
+       * @param {Number} count
+       */
+      createBackTiles(count) {
+        let layer= sh.main.getBackgd(),
         rc, sp,
-        cr=function (name) {
+        cr=(name) => {
           sp = ccsx.createSpriteFrame(name);
           sp.setAnchorPoint(0.5,0);
           sp.setVisible(false);
@@ -152,12 +216,12 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
           return sh.Ashley.newObject(sp);
         };
 
-        var tm= BackTileMap,
+        let tm= BackTileMap,
         tn= tm.length,
         sz= count || 1;
 
-        sh.pools.BackTiles.preSet(function(pool) {
-          for (var n=0; n < tn; ++n) {
+        sh.pools.BackTiles.preSet((pool) => {
+          for (let n=0; n < tn; ++n) {
             pool.push(cr(tm[sjs.rand(tn)]));
           }
         }, sz);
@@ -165,7 +229,8 @@ define('zotohlab/p/s/factory', ['zotohlab/p/components',
 
     });
 
-    return EntityFactory;
+    exports= EntityFactory;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

@@ -7,27 +7,47 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/gnodes", ['zotohlab/p/components',
-                            'cherimoia/skarojs',
-                            'zotohlab/asterix'],
+/**
+ * @requires zotohlab/p/elements
+ * @requires cherimoia/skarojs
+ * @requires otohlab/asterix
+ * @module zotohlab/p/gnodes
+ */
+define("zotohlab/p/gnodes",
+
+       ['zotohlab/p/elements',
+        'cherimoia/skarojs',
+        'zotohlab/asterix'],
 
   function (cobjs, sjs, sh) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/gnodes */
+    let exports = {},
+    xcfg = sh.xcfg,
     csts = xcfg.csts,
-    undef,
-    gns= {};
+    undef;
 
     //////////////////////////////////////////////////////////////////////////////
-    //
-    gns.ShipMotionNode = sh.Ashley.nodeDef({
+    /**
+     * @class ShipMotionNode
+     */
+    exports.ShipMotionNode = sh.Ashley.nodeDef({
+      /**
+       * @memberof module:zotohlab/p/gnodes~ShipMotionNode
+       * @property {Motion} motion
+       */
       motion : cobjs.Motion,
+
+      /**
+       * @memberof module:zotohlab/p/gnodes~ShipMotionNode
+       * @property {Ship} ship
+       */
       ship  : cobjs.Ship
     });
 
-    return gns;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

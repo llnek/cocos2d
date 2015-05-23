@@ -7,63 +7,117 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/levelmgr", ['zotohlab/p/components',
-                              'zotohlab/p/s/utils',
-                              'zotohlab/p/gnodes',
-                              'cherimoia/skarojs',
-                              'zotohlab/asterix',
-                              'zotohlab/asx/ccsx'],
+/**
+ * @requires zotohlab/p/s/priorites
+ * @requires zotohlab/p/elements
+ * @requires zotohlab/p/s/utils
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/levelmgr
+ */
+define("zotohlab/p/levelmgr",
 
-  function (cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
+       ['zotohlab/p/s/priorites',
+        'zotohlab/p/elements',
+        'zotohlab/p/s/utils',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
-    var xcfg = sh.xcfg,
+  function (pss, cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
+
+    /** @alias module:zotohlab/p/levelmgr */
+    let exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
+    /**
+     * @class LevelManager
+     */
     LevelManager = sh.Ashley.sysDef({
 
-      constructor: function(options) {
+      /**
+       * @memberof module:zotohlab/p/levelmgr~LevelManager
+       * @method constructor
+       * @param {Object} options
+       */
+      constructor(options) {
         this.state= options;
         this.setLevel(1);
       },
 
-      setLevel: function(level) {
+      /**
+       * @memberof module:zotohlab/p/levelmgr~LevelManager
+       * @method setLevel
+       * @param {Number} level
+       */
+      setLevel(level) {
         this.curLevel = level;
         this.onceLatch = 1;
       },
 
-      getLCfg: function() {
-        var k= 'gamelevel' + Number(this.curLevel).toString();
+      /**
+       * @memberof module:zotohlab/p/levelmgr~LevelManager
+       * @method getLCfg
+       * @return {Object}
+       */
+      getLCfg() {
+        const k= 'gamelevel' + Number(this.curLevel).toString();
         return xcfg['levels'][k]['cfg'];
       },
 
-      removeFromEngine: function(engine) {
+      /**
+       * @memberof module:zotohlab/p/levelmgr~LevelManager
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
+      removeFromEngine(engine) {
         this.ships=null;
       },
 
-      addToEngine: function(engine) {
+      /**
+       * @memberof module:zotohlab/p/levelmgr~LevelManager
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
+      addToEngine(engine) {
         this.ships = engine.getNodeList(gnodes.ShipMotionNode);
       },
 
-      update: function (dt) {
-        var node = this.ships.head;
+      /**
+       * @memberof module:zotohlab/p/levelmgr~LevelManager
+       * @method update
+       * @param {Number} dt
+       */
+      update(dt) {
+        const node = this.ships.head;
         if (this.state.running &&
            !!node) {
           this.loadLevelResource(node, this.state.secCount);
         }
       },
 
-      loadLevelResource: function(node, dt) {
-        var enemies= sh.pools.Baddies,
+      /**
+       * @memberof module:zotohlab/p/levelmgr~LevelManager
+       * @method loadLevelResource
+       * @param {Object} node
+       * @param {Number} dt
+       */
+      loadLevelResource(node, dt) {
+        let enemies= sh.pools.Baddies,
         cfg= this.getLCfg(),
         fc,
         me=this;
 
         if (enemies.actives() < cfg.enemyMax) {
-          sjs.eachObj(function(v) {
-            fc= function() {
-              for (var t = 0; t < v.types.length; ++t) {
+          sjs.eachObj((v) => {
+            fc= () => {
+              for (let t = 0; t < v.types.length; ++t) {
                 me.addEnemyToGame(node, v.types[t]);
               }
             };
@@ -80,8 +134,13 @@ define("zotohlab/p/levelmgr", ['zotohlab/p/components',
         }
       },
 
-      dropBombs: function(enemy) {
-        var bombs= sh.pools.Bombs,
+      /**
+       * @memberof module:zotohlab/p/levelmgr~LevelManager
+       * @method dropBombs
+       * @param {Object} enemy
+       */
+      dropBombs(enemy) {
+        let bombs= sh.pools.Bombs,
         sp= enemy.sprite,
         sz= sp.getContentSize(),
         pos= sp.getPosition(),
@@ -96,11 +155,16 @@ define("zotohlab/p/levelmgr", ['zotohlab/p/components',
         b.attackMode=enemy.attackMode;
       },
 
-      getB: function(arg) {
-        var enemies = sh.pools.Baddies,
+      /**
+       * @memberof module:zotohlab/p/levelmgr~LevelManager
+       * @method getB
+       * @param {Object} arg
+       */
+      getB(arg) {
+        let enemies = sh.pools.Baddies,
         me=this,
         en,
-        pred= function(e) {
+        pred= (e) => {
           return (e.enemyType === arg.type
                   &&
                   e.status === false);
@@ -113,7 +177,7 @@ define("zotohlab/p/levelmgr", ['zotohlab/p/components',
         }
 
         if (!!en) {
-          en.sprite.schedule(function() {
+          en.sprite.schedule(() => {
             me.dropBombs(en);
           }, en.delayTime);
           en.inflate();
@@ -122,9 +186,15 @@ define("zotohlab/p/levelmgr", ['zotohlab/p/components',
         return en;
       },
 
-      addEnemyToGame: function(node, enemyType) {
-        var arg = xcfg.EnemyTypes[enemyType],
-        wz = ccsx.screen(),
+      /**
+       * @memberof module:zotohlab/p/levelmgr~LevelManager
+       * @method addEnemyToGame
+       * @param {Object} node
+       * @param {Number} enemyType
+       */
+      addEnemyToGame(node, enemyType) {
+        let arg = xcfg.EnemyTypes[enemyType],
+        wz = ccsx.vrect(),
 
         en = this.getB(arg),
         sz= en.size(),
@@ -149,9 +219,9 @@ define("zotohlab/p/levelmgr", ['zotohlab/p/components',
           case csts.ENEMY_MOVE.HORZ:
             a0 = cc.moveBy(0.5, cc.p(0, -100 - sjs.rand(200)));
             a1 = cc.moveBy(1, cc.p(-50 - sjs.rand(100), 0));
-            var onComplete = cc.callFunc(function (p) {
-              var a2 = cc.delayTime(1);
-              var a3 = cc.moveBy(1, cc.p(100 + sjs.rand(100), 0));
+            const onComplete = cc.callFunc((p) => {
+              let a2 = cc.delayTime(1);
+              let a3 = cc.moveBy(1, cc.p(100 + sjs.rand(100), 0));
               p.runAction(cc.sequence(a2, a3,
                                       a2.clone(),
                                       a3.reverse()).repeatForever());
@@ -160,7 +230,7 @@ define("zotohlab/p/levelmgr", ['zotohlab/p/components',
           break;
 
           case csts.ENEMY_MOVE.OLAP:
-            var newX = (pos.x <= wz.width * 0.5) ? wz.width : -wz.width;
+            const newX = (pos.x <= wz.width * 0.5) ? wz.width : -wz.width;
             a0 = cc.moveBy(4, cc.p(newX, -wz.width * 0.75));
             a1 = cc.moveBy(4,cc.p(-newX, -wz.width));
             act = cc.sequence(a0,a1);
@@ -172,5 +242,12 @@ define("zotohlab/p/levelmgr", ['zotohlab/p/components',
 
     });
 
-    return LevelManager;
+    /**
+     * @memberof module:zotohlab/p/levelmgr~LevelManager
+     * @property {Number} Priority
+     */
+    LevelManager.Priority = pss.Movement;
+
+    exports= LevelManager;
+    return exports;
 });

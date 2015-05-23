@@ -7,41 +7,82 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/s/collisions', ['zotohlab/p/components',
-                                  'zotohlab/p/s/utils',
-                                  'zotohlab/p/gnodes',
-                                  'cherimoia/skarojs',
-                                  'zotohlab/asterix',
-                                  'zotohlab/asx/ccsx'],
+/**
+ * @requires zotohlab/p/s/priorities
+ * @requires zotohlab/p/components
+ * @requires zotohlab/p/s/utils
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/collisions
+ */
+define('zotohlab/p/s/collisions',
 
-  function (cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/components',
+        'zotohlab/p/s/utils',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
-    var xcfg = sh.xcfg,
+  function (pss, cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
+
+    /** @alias module:zotohlab/p/s/collisions */
+    let exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R= sjs.ramda,
     undef,
+    /**
+     * @class Collisions
+     */
     Collisions = sh.Ashley.sysDef({
 
-      constructor: function(options) {
+      /**
+       * @memberof module:zotohlab/p/s/collisions~Collisions
+       * @method constructor
+       * @param {Object} options
+       */
+      constructor(options) {
         this.state= options;
       },
 
-      removeFromEngine: function(engine) {
+      /**
+       * @memberof module:zotohlab/p/s/collisions~Collisions
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
+      removeFromEngine(engine) {
         this.ships=null;
       },
 
-      addToEngine: function(engine) {
+      /**
+       * @memberof module:zotohlab/p/s/collisions~Collisions
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
+      addToEngine(engine) {
         this.ships = engine.getNodeList(gnodes.ShipMotionNode);
       },
 
-      collide: function (a, b) {
+      /**
+       * @private
+       */
+      collide(a, b) {
         return ccsx.collide0(a.sprite, b.sprite);
       },
 
-      update: function (dt) {
-        var node = this.ships.head;
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method update
+       * @param {Number} dt
+       */
+      update(dt) {
+        const node = this.ships.head;
 
         if (this.state.running &&
             !!node) {
@@ -54,12 +95,15 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/components',
 
       },
 
-      checkMissilesBombs: function() {
-        var bombs = sh.pools.Bombs,
+      /**
+       * @private
+       */
+      checkMissilesBombs() {
+        const bombs = sh.pools.Bombs,
         mss = sh.pools.Missiles,
         me=this;
-        bombs.iter(function(b) {
-          mss.iter(function(m) {
+        bombs.iter((b) => {
+          mss.iter((m) => {
             if (b.status &&
                 m.status &&
                 me.collide(b, m)) {
@@ -70,12 +114,15 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/components',
         });
       },
 
-      checkMissilesAliens: function() {
-        var enemies= sh.pools.Baddies,
+      /**
+       * @private
+       */
+      checkMissilesAliens() {
+        const enemies= sh.pools.Baddies,
         mss= sh.pools.Missiles,
         me=this;
-        enemies.iter(function(en) {
-          mss.iter(function(b) {
+        enemies.iter((en) => {
+          mss.iter((b) => {
             if (en.status &&
                 b.status &&
                 me.collide(en, b)) {
@@ -86,13 +133,16 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/components',
         });
       },
 
-      checkShipBombs: function(node) {
-        var bombs = sh.pools.Bombs,
+      /**
+       * @private
+       */
+      checkShipBombs(node) {
+        const bombs = sh.pools.Bombs,
         me=this,
         ship= node.ship;
 
         if (!ship.status) { return; }
-        bombs.iter(function(b) {
+        bombs.iter((b) => {
           if (b.status &&
               me.collide(b, ship)) {
             ship.hurt();
@@ -101,13 +151,16 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/components',
         });
       },
 
-      checkShipAliens: function(node) {
-        var enemies= sh.pools.Baddies,
+      /**
+       * @private
+       */
+      checkShipAliens(node) {
+        const enemies= sh.pools.Baddies,
         me=this,
         ship= node.ship;
 
         if (! ship.status) { return; }
-        enemies.iter(function(en) {
+        enemies.iter((en) => {
           if (en.status &&
               me.collide(en, ship)) {
             ship.hurt();
@@ -118,7 +171,14 @@ define('zotohlab/p/s/collisions', ['zotohlab/p/components',
 
     });
 
-    return Collisions;
+    /**
+     * @memberof module:zotohlab/p/s/factory~EntityFactory
+     * @property {Number} Priority
+     */
+    Collisions.Priority = pss.Collision;
+
+    exports= Collisions;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

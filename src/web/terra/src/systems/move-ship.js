@@ -42,20 +42,40 @@ define('zotohlab/p/s/moveship',
      */
     MoveShip = sh.Ashley.sysDef({
 
-      constructor: function(options) {
+      /**
+       * @memberof module:zotohlab/p/s/moveship~MoveShip
+       * @method constructor
+       * @param {Object} options
+       */
+      constructor(options) {
         this.state= options;
       },
 
-      removeFromEngine: function(engine) {
+      /**
+       * @memberof module:zotohlab/p/s/moveship~MoveShip
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
+      removeFromEngine(engine) {
         this.ships=null;
       },
 
-      addToEngine: function(engine) {
+      /**
+       * @memberof module:zotohlab/p/s/moveship~MoveShip
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
+      addToEngine(engine) {
         this.ships = engine.getNodeList(gnodes.ShipMotionNode);
       },
 
-      update: function (dt) {
-        var node= this.ships.head;
+      /**
+       * @memberof module:zotohlab/p/s/moveship~MoveShip
+       * @method update
+       * @param {Number} dt
+       */
+      update(dt) {
+        const node= this.ships.head;
 
         if (this.state.running &&
            !!node) {
@@ -63,9 +83,12 @@ define('zotohlab/p/s/moveship',
         }
       },
 
-      processKeys: function(node,dt) {
-        var ship = node.ship,
-        wz= ccsx.screen(),
+      /**
+       * @private
+       */
+      processKeys(node,dt) {
+        let ship = node.ship,
+        wz= ccsx.vrect(),
         mot= node.motion,
         sp = ship.sprite,
         ok = false,
@@ -100,7 +123,14 @@ define('zotohlab/p/s/moveship',
 
     });
 
-    return MoveShip;
+    /**
+     * @memberof module:zotohlab/p/s/moveship~MoveShip
+     * @property {Number} Priority
+     */
+    MoveShip.Priority = pss.Movement;
+
+    exports=MoveShip;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////
