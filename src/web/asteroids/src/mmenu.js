@@ -30,7 +30,7 @@ define('zotohlab/p/mmenu',
   function (sjs, sh, ccsx, layers, scenes, mmenus) { "use strict";
 
     /** @alias module:zotohlab/p/mmenu */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -41,8 +41,8 @@ define('zotohlab/p/mmenu',
      */
     BackLayer = mmenus.XMenuBackLayer.extend({
 
-      setTitle: function() {
-        var wb=ccsx.vbox(),
+      setTitle() {
+        const wb=ccsx.vbox(),
         cw= ccsx.center(),
         tt=ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.JellyBelly'),
@@ -61,14 +61,12 @@ define('zotohlab/p/mmenu',
      */
     MainMenuLayer = mmenus.XMenuLayer.extend({
 
-      pkInit: function() {
-        var cw = ccsx.center(),
-        wz = ccsx.screen(),
-        menu;
-
+      pkInit() {
+        const cw = ccsx.center(),
+        wz = ccsx.vrect(),
         menu= ccsx.pmenu1({
           imgPath: '#play.png',
-          cb: function() {
+          cb() {
             sh.fire('/mmenu/newgame', { mode: sh.gtypes.P1_GAME});
           },
           target: this
@@ -88,7 +86,7 @@ define('zotohlab/p/mmenu',
         this.mkBackQuit(false, [
           { imgPath: '#icon_back.png',
             color: color,
-            cb: function() {
+            cb() {
               if (!!this.options.onBack) {
                 this.options.onBack();
               }
@@ -96,10 +94,10 @@ define('zotohlab/p/mmenu',
             target: this },
           { imgPath: '#icon_quit.png',
             color: color,
-            cb: function() { this.onQuit(); },
+            cb() { this.onQuit(); },
             target: this }
         ],
-        function (m,z) {
+        (m,z) => {
           m.setPosition(wb.left + csts.TILE + z.width * 1.1,
                         wb.bottom + csts.TILE + z.height * 0.45);
         });
@@ -108,11 +106,10 @@ define('zotohlab/p/mmenu',
 
     });
 
-    exports= {
+    exports= /** @lends exports# */{
 
       /**
        * @property {String} rtti
-       * @static
        */
       rtti : sh.ptypes.mmenu,
 
@@ -121,11 +118,11 @@ define('zotohlab/p/mmenu',
        * @param {Object} options
        * @return {cc.Scene}
        */
-      reify: function(options) {
+      reify(options) {
         return new scenes.XSceneFactory([
           BackLayer,
           MainMenuLayer
-        ]).reify(options).onmsg('/mmenu/newgame', function(topic, msg) {
+        ]).reify(options).onmsg('/mmenu/newgame', (topic, msg) => {
           cc.director.runScene( sh.protos[sh.ptypes.game].reify(msg));
         });
       }

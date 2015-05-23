@@ -30,7 +30,7 @@ define("zotohlab/p/s/resolution",
   function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/resolution */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -45,7 +45,7 @@ define("zotohlab/p/s/resolution",
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state = options;
       },
 
@@ -54,7 +54,7 @@ define("zotohlab/p/s/resolution",
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.arena=null;
       },
 
@@ -63,7 +63,7 @@ define("zotohlab/p/s/resolution",
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.arena = engine.getNodeList(gnodes.ArenaNode);
       },
 
@@ -72,12 +72,12 @@ define("zotohlab/p/s/resolution",
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var node= this.arena.head;
+      update(dt) {
+        const node= this.arena.head;
         if (this.state.running &&
            !!node) {
 
-          var cmap= node.collision.tiles,
+          const cmap= node.collision.tiles,
           motion = node.motion,
           layer=sh.main,
           shape= node.shell.shape;
@@ -110,8 +110,8 @@ define("zotohlab/p/s/resolution",
       /**
        * @private
        */
-      fastDrop: function(layer, node) {
-        var dp= node.dropper;
+      fastDrop(layer, node) {
+        const dp= node.dropper;
         dp.timer=null;
         utils.setDropper(layer, dp, dp.dropRate, 9000);
       }

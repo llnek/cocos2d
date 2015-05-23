@@ -28,7 +28,7 @@ define("zotohlab/p/s/rendering",
   function (pss, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/rendering */
-    var exports= {},
+    let exports= {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -43,7 +43,7 @@ define("zotohlab/p/s/rendering",
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state = options;
       },
 
@@ -52,7 +52,7 @@ define("zotohlab/p/s/rendering",
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
       },
 
       /**
@@ -60,7 +60,7 @@ define("zotohlab/p/s/rendering",
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
       },
 
       /**
@@ -68,7 +68,7 @@ define("zotohlab/p/s/rendering",
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
+      update(dt) {
       }
 
     });

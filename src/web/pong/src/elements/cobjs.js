@@ -24,7 +24,7 @@ define("zotohlab/p/elements",
   function (sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/elements */
-    var exports= {},
+    let exports= {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef;
@@ -40,7 +40,7 @@ define("zotohlab/p/elements",
        * @param {cc.Sprite} sprite
        * @param {Number} speed
        */
-      constructor: function(sprite, speed) {
+      constructor(sprite, speed) {
         this.ctor(sprite);
         this.speed= speed;
       }
@@ -56,7 +56,7 @@ define("zotohlab/p/elements",
        * @memberof module:zotohlab/p/elements~Motion
        * @method constructor
        */
-      constructor: function() {
+      constructor() {
         this.right = false;
         this.left= false;
       }
@@ -73,8 +73,9 @@ define("zotohlab/p/elements",
        * @method p1Keys
        * @return {Array}
        */
-      p1Keys: function() {
-        return  ccsx.isPortrait() ? [cc.KEY.left, cc.KEY.right] : [cc.KEY.down, cc.KEY.up];
+      p1Keys() {
+        return ccsx.isPortrait() ?
+          [cc.KEY.left, cc.KEY.right] : [cc.KEY.down, cc.KEY.up];
       },
 
       /**
@@ -82,8 +83,9 @@ define("zotohlab/p/elements",
        * @method p2Keys
        * @return {Array}
        */
-      p2Keys: function() {
-        return ccsx.isPortrait() ? [cc.KEY.a, cc.KEY.d] : [cc.KEY.s, cc.KEY.w];
+      p2Keys() {
+        return ccsx.isPortrait() ?
+          [cc.KEY.a, cc.KEY.d] : [cc.KEY.s, cc.KEY.w];
       },
 
       /**
@@ -92,7 +94,7 @@ define("zotohlab/p/elements",
        * @param {Array} keycodes
        * @param {String} snd
        */
-      onColor: function(keycodes, snd) {
+      onColor(keycodes, snd) {
         this.kcodes = keycodes;
         this.snd= snd;
       },
@@ -104,7 +106,7 @@ define("zotohlab/p/elements",
        * @param {Number} color
        * @param {Number} speed
        */
-      constructor: function(sprite, color, speed) {
+      constructor(sprite, color, speed) {
 
         this.ctor(sprite);
         this.color= color;
@@ -133,7 +135,7 @@ define("zotohlab/p/elements",
        * @param {Number} id
        * @param {Number} color
        */
-      constructor: function(category,value,id,color) {
+      constructor(category,value,id,color) {
         this.color= color;
         this.pnum=id;
         this.category= category;
@@ -152,7 +154,7 @@ define("zotohlab/p/elements",
        * @memberof module:zotohlab/p/elements~Faux
        * @method constructor
        */
-      constructor: function() {
+      constructor() {
       }
 
     });
@@ -168,7 +170,7 @@ define("zotohlab/p/elements",
        * @method constructor
        * @param {cc.Point} lp
        */
-      constructor: function(lp) {
+      constructor(lp) {
         this.lastDir= 0;
         this.lastP= lp;
       }
@@ -187,7 +189,7 @@ define("zotohlab/p/elements",
        * @param {Number} vx
        * @param {Number} vy
        */
-      constructor: function(vx,vy) {
+      constructor(vx,vy) {
         this.vel = {
           x: vx,
           y: vy

@@ -32,7 +32,7 @@ define("zotohlab/p/s/movement",
   function (pss, cobjs, gnodes, utils, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/movement */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -47,7 +47,7 @@ define("zotohlab/p/s/movement",
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state = options;
       },
 
@@ -56,7 +56,7 @@ define("zotohlab/p/s/movement",
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.arena=null;
       },
 
@@ -65,7 +65,7 @@ define("zotohlab/p/s/movement",
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.arena = engine.getNodeList(gnodes.ArenaNode);
       },
 
@@ -74,8 +74,8 @@ define("zotohlab/p/s/movement",
        * @method update
        * @param {Number} dt
        */
-      update: function(dt) {
-        var node= this.arena.head;
+      update(dt) {
+        const node= this.arena.head;
         if (this.state.running &&
            !!node) {
 
@@ -91,8 +91,8 @@ define("zotohlab/p/s/movement",
       /**
        * @private
        */
-      doFall: function(layer, node) {
-        var cmap= node.collision.tiles,
+      doFall(layer, node) {
+        const cmap= node.collision.tiles,
         shape= node.shell.shape,
         emap= node.blocks.grid,
         pu= node.pauser,

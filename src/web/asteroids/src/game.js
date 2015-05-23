@@ -34,7 +34,7 @@ define('zotohlab/p/arena',
   function(sobjs, sjs, sh, ccsx, layers, scenes, mmenus, huds) { "use strict";
 
     /** @alias module:zotohlab/p/arena */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -47,15 +47,13 @@ define('zotohlab/p/arena',
 
       /**
        */
-      replay: function() {
+      replay() {
         this.play(false);
       },
 
       /**
        */
-      play: function(newFlag) {
-
-        var pss = sobjs.Priorities;
+      play(newFlag) {
 
         this.reset(newFlag);
         this.cleanSlate();
@@ -65,9 +63,9 @@ define('zotohlab/p/arena',
         this.options.level=1;
         this.options.running=true;
 
-        R.forEach(function(z) {
+        R.forEach((z) => {
           this.engine.addSystem(new (z)(this.options), z.Priority);
-        }.bind(this),
+        },
         [ [sobjs.Supervisor, pss.PreUpdate],
           [sobjs.Motions, pss.Motion],
           [sobjs.MissileControl, pss.Motion],
@@ -81,9 +79,9 @@ define('zotohlab/p/arena',
       /**
        * @private
        */
-      reset: function(newFlag) {
+      reset(newFlag) {
         if (!sjs.isEmpty(this.atlases)) {
-          sjs.eachObj(function(v) { v.removeAllChildren(); }, this.atlases);
+          sjs.eachObj((v) => { v.removeAllChildren(); }, this.atlases);
         } else {
           this.regoAtlas('game-pics');
         }
@@ -96,20 +94,20 @@ define('zotohlab/p/arena',
 
       /**
        */
-      operational: function() {
+      operational() {
         return this.options.running;
       },
 
       /**
        */
-      spawnPlayer: function() {
+      spawnPlayer() {
         sh.factory.bornShip();
       },
 
       /**
        * @private
        */
-      onPlayerKilled: function(msg) {
+      onPlayerKilled(msg) {
         if ( this.getHUD().reduceLives(1)) {
           this.onDone();
         } else {
@@ -120,7 +118,7 @@ define('zotohlab/p/arena',
       /**
        * @private
        */
-      onDone: function() {
+      onDone() {
         this.reset();
         this.options.running =false;
         this.getHUD().enableReplay();
@@ -129,14 +127,14 @@ define('zotohlab/p/arena',
       /**
        * @private
        */
-      onEarnScore: function(msg) {
+      onEarnScore(msg) {
         this.getHUD().updateScore(msg.score);
       },
 
       /**
        * @private
        */
-      onNewGame: function(mode) {
+      onNewGame(mode) {
         //sh.xcfg.sfxPlay('start_game');
         this.setGameMode(mode);
         this.play(true);
@@ -144,45 +142,45 @@ define('zotohlab/p/arena',
 
     });
 
-    exports= {
+    exports= /** @lends exports# */{
 
       rtti : sh.ptypes.game,
 
-      reify: function(options) {
-        var scene = new scenes.XSceneFactory([
+      reify(options) {
+        const scene = new scenes.XSceneFactory([
           huds.BackLayer,
           GameLayer,
           huds.HUDLayer
         ]).reify(options);
 
-        scene.ebus.onmsg('/game/missiles/killed', function(topic, msg) {
+        scene.ebus.onmsg('/game/missiles/killed', (topic, msg) => {
           sh.main.onMissileKilled(msg);
         }).
-        onmsg('/game/ufos/killed', function(topic, msg) {
+        onmsg('/game/ufos/killed', (topic, msg) => {
           sh.main.onUfoKilled(msg);
         }).
-        onmsg('/game/players/shoot',function(t,msg) {
+        onmsg('/game/players/shoot',(t,msg) => {
           sh.main.onFireMissile(msg);
         }).
-        onmsg('/game/players/killed',function(t,msg) {
+        onmsg('/game/players/killed',(t,msg) => {
           sh.main.onPlayerKilled(msg);
         }).
-        onmsg('/game/ufos/shoot',function(t,msg) {
+        onmsg('/game/ufos/shoot',(t,msg) => {
           sh.main.onFireLaser(msg);
         }).
-        onmsg('/game/stones/create',function(t,msg) {
+        onmsg('/game/stones/create',(t,msg) => {
           sh.main.onCreateStones(msg);
         }).
-        onmsg('/game/rocks/create',function(t,msg) {
+        onmsg('/game/rocks/create',(t,msg) => {
           sh.main.onCreateRocks(msg);
         }).
-        onmsg('/game/players/earnscore', function(topic, msg) {
+        onmsg('/game/players/earnscore', (topic, msg) => {
           sh.main.onEarnScore(msg);
         }).
-        onmsg('/hud/showmenu',function(t,msg) {
+        onmsg('/hud/showmenu',(t,msg) => {
           mmenus.showMenu();
         }).
-        onmsg('/hud/replay',function(t,msg) {
+        onmsg('/hud/replay',(t,msg) => {
           sh.main.replay();
         });
 

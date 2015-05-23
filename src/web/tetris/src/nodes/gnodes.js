@@ -24,7 +24,7 @@ define("zotohlab/p/gnodes",
   function (cobjs, sjs, sh) { "use strict";
 
     /** @alias module:zotohlab/p/gnodes */
-    var exports= {},
+    let exports= {},
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -36,55 +36,46 @@ define("zotohlab/p/gnodes",
       /**
        * @memberof module:zotohlab/p/gnodes~ArenaNode
        * @property {TileGrid} collision
-       * @static
        */
       collision   : cobjs.TileGrid,
       /**
        * @memberof module:zotohlab/p/gnodes~ArenaNode
        * @property {GridBox} gbox
-       * @static
        */
       gbox        : cobjs.GridBox,
       /**
        * @memberof module:zotohlab/p/gnodes~ArenaNode
        * @property {BlockGrid} blocks
-       * @static
        */
       blocks      : cobjs.BlockGrid,
       /**
        * @memberof module:zotohlab/p/gnodes~ArenaNode
        * @property {Motion} motion
-       * @static
        */
       motion      : cobjs.Motion,
       /**
        * @memberof module:zotohlab/p/gnodes~ArenaNode
        * @property {Pauser} pauser
-       * @static
        */
       pauser      : cobjs.Pauser,
       /**
        * @memberof module:zotohlab/p/gnodes~ArenaNode
        * @property {Dropper} dropper
-       * @static
        */
       dropper     : cobjs.Dropper,
       /**
        * @memberof module:zotohlab/p/gnodes~ArenaNode
        * @property {ShapeShell} shell
-       * @static
        */
       shell       : cobjs.ShapeShell,
       /**
        * @memberof module:zotohlab/p/gnodes~ArenaNode
        * @property {FilledLines} flines
-       * @static
        */
       flines      : cobjs.FilledLines,
       /**
        * @memberof module:zotohlab/p/gnodes~ArenaNode
        * @property {CtrlPad} cpad
-       * @static
        */
       cpad        : cobjs.CtrlPad
     });

@@ -26,7 +26,7 @@ define('zotohlab/p/hud',
   function(sjs, sh, ccsx, layers) { "use strict";
 
     /** @alias module:zotohlab/p/hud */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -36,12 +36,11 @@ define('zotohlab/p/hud',
      */
     BackLayer = layers.XLayer.extend({
 
-      rtti: function() { return 'BackLayer'; },
+      rtti() { return 'BackLayer'; },
 
-      pkInit: function() {
+      pkInit() {
         this.centerImage(sh.getImagePath('game.bg'));
       }
-
     }),
 
     /**
@@ -49,12 +48,12 @@ define('zotohlab/p/hud',
      */
     HUDLayer = layers.XGameHUDLayer.extend({
 
-      initAtlases: function() {
+      initAtlases() {
         this.regoAtlas('game-pics');
       },
 
-      initLabels: function() {
-        var wb = ccsx.vbox();
+      initLabels() {
+        const wb = ccsx.vbox();
 
         this.scoreLabel = ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.SmallTypeWriting'),
@@ -69,7 +68,7 @@ define('zotohlab/p/hud',
       },
 
       initIcons: function() {
-        var wb = ccsx.vbox();
+        const wb = ccsx.vbox();
 
         this.lives = new layers.XHUDLives( this, csts.TILE + csts.S_OFF,
           wb.top - csts.TILE - csts.S_OFF, {
@@ -80,8 +79,8 @@ define('zotohlab/p/hud',
         this.lives.reify();
       },
 
-      ctor: function(options) {
-        var color= cc.color(255,255,255),
+      ctor(options) {
+        const color= cc.color(255,255,255),
         scale=1;
 
         this._super(options);
@@ -92,7 +91,7 @@ define('zotohlab/p/hud',
           color: color,
           scale : scale,
           visible: false,
-          cb: function() {
+          cb() {
             sh.fire('/hud/replay');
           }
         };
@@ -102,7 +101,7 @@ define('zotohlab/p/hud',
           where: ccsx.acs.Bottom,
           color: color,
           scale: scale,
-          cb: function() {
+          cb() {
             sh.fire('/hud/showmenu');
           }
         };
@@ -111,16 +110,14 @@ define('zotohlab/p/hud',
 
     });
 
-    exports= {
+    exports= /** @lends exports# */{
       /**
-       * @property {BackLayer.Class} BackLayer
-       * @static
+       * @property {BackLayer} BackLayer
        */
       BackLayer : BackLayer,
 
       /**
-       * @property {HUDLayer.Class} HUDLayer
-       * @static
+       * @property {HUDLayer} HUDLayer
        */
       HUDLayer : HUDLayer
     };

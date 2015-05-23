@@ -9,8 +9,8 @@
 // this software.
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-
 /**
+ * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -19,15 +19,16 @@
  */
 define('zotohlab/p/s/movepaddle',
 
-       ['zotohlab/p/gnodes',
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs, sh, ccsx) { "use strict";
+  function (pss, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/movepaddle */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -42,7 +43,7 @@ define('zotohlab/p/s/movepaddle',
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state= options;
       },
 
@@ -51,7 +52,7 @@ define('zotohlab/p/s/movepaddle',
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.paddleMotions = undef;
       },
 
@@ -60,7 +61,7 @@ define('zotohlab/p/s/movepaddle',
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.paddleMotions = engine.getNodeList(gnodes.PaddleMotionNode)
       },
 
@@ -69,8 +70,8 @@ define('zotohlab/p/s/movepaddle',
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var node=this.paddleMotions.head;
+      update(dt) {
+        const node=this.paddleMotions.head;
 
         if (this.state.running &&
            !!node) {
@@ -81,8 +82,8 @@ define('zotohlab/p/s/movepaddle',
       /**
        * @private
        */
-      processPaddleMotions: function(node,dt) {
-        var motion = node.motion,
+      processPaddleMotions(node,dt) {
+        let motion = node.motion,
         sv = node.velocity,
         pad= node.paddle,
         pos = pad.sprite.getPosition(),
@@ -107,8 +108,8 @@ define('zotohlab/p/s/movepaddle',
       /**
        * @private
        */
-      clamp: function(pad) {
-        var sz= pad.sprite.getContentSize(),
+      clamp(pad) {
+        const sz= pad.sprite.getContentSize(),
         pos= pad.sprite.getPosition(),
         wz = ccsx.vrect();
 
@@ -121,6 +122,12 @@ define('zotohlab/p/s/movepaddle',
       }
 
     });
+
+    /**
+     * @memberof module:zotohlab/p/s/movepaddle~MovementPaddle
+     * @property {Number} Priority
+     */
+    MovementPaddle.Priority= pss.Movement;
 
     exports= MovementPaddle;
     return exports;

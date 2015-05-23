@@ -21,7 +21,7 @@ define("zotohlab/p/s/priorities", [],
      * @enum {Number}
      * @readonly
      */
-    var exports= {
+    const exports= {
 
       PreUpdate: 1,
       Net: 2,

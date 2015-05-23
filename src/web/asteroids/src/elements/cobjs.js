@@ -24,7 +24,7 @@ define('zotohlab/p/elements',
   function (sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/elements */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -43,7 +43,7 @@ define('zotohlab/p/elements',
        * @param {Number} vx
        * @param {Number} vy
        */
-      constructor: function(sprite,value,rank, deg, vx, vy) {
+      constructor(sprite,value,rank, deg, vx, vy) {
         this.ctor(sprite, 1, value);
         this.rotation= deg;
         this.rank=rank;
@@ -66,7 +66,7 @@ define('zotohlab/p/elements',
        * @method constructor
        * @param {Number} coolDownWindow
        */
-      constructor: function(coolDownWindow) {
+      constructor(coolDownWindow) {
         this.coolDownWindow= coolDownWindow || 0.8;
         this.hasAmmo = true;
       }
@@ -84,7 +84,7 @@ define('zotohlab/p/elements',
        * @method constructor
        * @param {Number} count
        */
-      constructor: function(count) {
+      constructor(count) {
         this.timers=sjs.makeArray(count,null);
       }
 
@@ -102,7 +102,7 @@ define('zotohlab/p/elements',
        * @param {cc.Sprite} sprite
        * @param {Number} speed
        */
-      constructor: function(sprite,speed) {
+      constructor(sprite,speed) {
         this.speed=speed || 20;
         this.ctor(sprite);
         this.vel= {
@@ -123,7 +123,7 @@ define('zotohlab/p/elements',
        * @memberof module:zotohlab/p/elements~Motion
        * @method constructor
        */
-      constructor: function() {
+      constructor() {
         this.right = false;
         this.left = false;
         this.up=false;
@@ -144,7 +144,7 @@ define('zotohlab/p/elements',
        * @param {cc.Sprite} sprite
        * @param {Array} frames
        */
-      constructor: function(sprite,frames) {
+      constructor(sprite,frames) {
         this.ctor(sprite);
         this.frames=frames;
       }
@@ -165,7 +165,7 @@ define('zotohlab/p/elements',
        * @param {Number} mx
        * @param {Number} my
        */
-      constructor: function(vx,vy,mx,my) {
+      constructor(vx,vy,mx,my) {
         this.vel = {
           x: vx || 0,
           y: vy || 0
@@ -192,7 +192,7 @@ define('zotohlab/p/elements',
        * @memberof module:zotohlab/p/elements~Rotation
        * @param {Number} deg
        */
-      constructor: function(deg) {
+      constructor(deg) {
         this.angle = deg;
       }
 
@@ -208,7 +208,7 @@ define('zotohlab/p/elements',
        * @memberof module:zotohlab/p/elements~Thrust
        * @method constructor
        */
-      constructor: function(t) {
+      constructor(t) {
         this.power = t;
       }
 

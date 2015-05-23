@@ -51,53 +51,44 @@ define("zotohlab/p/sysobjs",
             Supervisor) { "use strict";
 
     /** @alias module:zotohlab/p/sysobjs */
-    var exports= {};
+    let exports= {};
 
     exports= {
 
       /**
        * @property {Priorities} Priorities
-       * @static
        */
       Priorities      : Priorities,
       /**
        * @property {Factory} EntityFactory
-       * @static
        */
       Factory   : EntityFactory,
       /**
        * @property {RowClearance} RowClearance
-       * @static
        */
       RowClearance    : RowClearance,
       /**
        * @property {Generator} Generator
-       * @static
        */
       Generator       : Generator,
       /**
        * @property {MotionControl} MotionControl
-       * @static
        */
       MotionControl   : MotionControl,
       /**
        * @property {Movements} Movements
-       * @static
        */
       Movements       : Movements,
       /**
        * @property {Rendering} Rendering
-       * @static
        */
       Rendering       : Rendering,
       /**
        * @property {Resolution} Resolution
-       * @static
        */
       Resolution      : Resolution,
       /**
        * @property {Supervisor} Supervisor
-       * @static
        */
       Supervisor      : Supervisor
 

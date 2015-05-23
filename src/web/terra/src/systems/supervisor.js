@@ -7,58 +7,103 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
-                                  'zotohlab/p/s/utils',
-                                  'zotohlab/p/gnodes',
-                                  'cherimoia/skarojs',
-                                  'zotohlab/asterix',
-                                  'zotohlab/asx/ccsx',
-                                  'zotohlab/asx/xpool'],
+/**
+ * @requires zotohlab/p/s/priorities
+ * @requires zotohlab/p/elements
+ * @requires zotohlab/p/s/utils
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xpool
+ * @module zotohlab/p/s/supervisor
+ */
+define("zotohlab/p/s/supervisor",
 
-  function (cobjs, utils, gnodes, sjs, sh, ccsx, XPool) { "use strict";
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/elements',
+        'zotohlab/p/s/utils',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/xpool'],
 
-    var xcfg = sh.xcfg,
+  function (pss, cobjs, utils, gnodes, sjs, sh, ccsx, XPool) { "use strict";
+
+    /** @alias module:zotohlab/p/s/supervisor */
+    let exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
+    /**
+     * class GameSupervisor
+     */
     GameSupervisor = sh.Ashley.sysDef({
 
-      constructor: function(options) {
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method constructor
+       * @param {Object} options
+       */
+      constructor(options) {
         this.state= options;
         this.inited=false;
       },
 
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
       removeFromEngine: function(engine) {
         this.ships=null;
       },
 
-      addToEngine: function(engine) {
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
+      addToEngine(engine) {
         this.ships = engine.getNodeList(gnodes.ShipMotionNode);
       },
 
-      update: function (dt) {
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method update
+       * @param {Number} dt
+       */
+      update(dt) {
         if (! this.inited) {
           this.onceOnly();
           this.inited=true;
         }
       },
 
-      initBackSkies: function () {
-        var bs = sh.pools.BackSkies.get();
+      /**
+       * @private
+       */
+      initBackSkies() {
+        const bs = sh.pools.BackSkies.get();
         bs.inflate({x: 0, y: 0});
         this.state.backSkyRe = null;
         this.state.backSky = bs;
         this.state.backSkyDim = cc.size(bs.size());
       },
 
-      sharedExplosion: function () {
-        var animFrames = [],
+      /**
+       * @private
+       */
+      sharedExplosion() {
+        let animFrames = [],
         animation,
-        frame, n,
-        str = "";
-        for (n = 1; n < 35; ++n) {
-          str = "explosion_" + (n < 10 ? ("0" + n) : n) + ".png";
+        frame;
+
+        for (let n = 1; n < 35; ++n) {
+          let str = "explosion_" + (n < 10 ? ("0" + n) : n) + ".png";
           frame = cc.spriteFrameCache.getSpriteFrame(str);
           animFrames.push(frame);
         }
@@ -66,7 +111,10 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
         cc.animationCache.addAnimation(animation, "Explosion");
       },
 
-      onceOnly: function() {
+      /**
+       * @private
+       */
+      onceOnly() {
 
         this.state.player= sh.factory.createShip();
 
@@ -97,7 +145,7 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
         sh.factory.createSparks();
         sh.factory.createHitEffects();
 
-        var node = this.ships.head;
+        const node = this.ships.head;
         if (!!node) {
           utils.bornShip(node.ship);
         }
@@ -105,7 +153,14 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/components',
 
     });
 
-    return GameSupervisor;
+    /**
+     * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+     * @property {Number} Priority
+     */
+    GameSupervisor.Priority = pss.PreUpdate;
+
+    exports = GameSupervisor;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

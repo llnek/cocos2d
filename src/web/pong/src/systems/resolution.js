@@ -28,7 +28,7 @@ define("zotohlab/p/s/resolution",
   function (pss, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/resolution */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -43,7 +43,7 @@ define("zotohlab/p/s/resolution",
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state = options;
       },
 
@@ -52,7 +52,7 @@ define("zotohlab/p/s/resolution",
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.nodeList=null;
         this.fauxs=null;
         this.balls=null;
@@ -63,7 +63,7 @@ define("zotohlab/p/s/resolution",
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.fauxs= engine.getNodeList(gnodes.FauxPaddleNode);
         this.nodeList= engine.getNodeList(gnodes.PaddleNode);
         this.balls= engine.getNodeList(gnodes.BallNode);
@@ -75,8 +75,8 @@ define("zotohlab/p/s/resolution",
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var bnode = this.balls.head,
+      update(dt) {
+        let bnode = this.balls.head,
         rc;
 
         if (this.state.mode === sh.gtypes.ONLINE_GAME) {
@@ -98,9 +98,9 @@ define("zotohlab/p/s/resolution",
       /**
        * @private
        */
-      checkNodes: function(nl, bnode) {
-        for (var node=nl.head; node; node=node.next) {
-          var winner =this.check(node,bnode);
+      checkNodes(nl, bnode) {
+        for (let node=nl.head; node; node=node.next) {
+          const winner =this.check(node,bnode);
           if (winner) {
             this.onWin(winner);
             return false;
@@ -111,8 +111,8 @@ define("zotohlab/p/s/resolution",
       /**
        * @private
        */
-      onWin: function(winner) {
-        var bnode= this.balls.head;
+      onWin(winner) {
+        const bnode= this.balls.head;
         //sjs.loggr.debug("winner ====== " + winner);
         bnode.ball.sprite.setPosition(
           this.state.ball.x,
@@ -126,8 +126,8 @@ define("zotohlab/p/s/resolution",
       /**
        * @private
        */
-      check: function(node,bnode) {
-        var b= bnode.ball,
+      check(node,bnode) {
+        const b= bnode.ball,
         pd= node.paddle,
         pc= pd.color,
         bp= b.sprite.getPosition();
@@ -161,7 +161,6 @@ define("zotohlab/p/s/resolution",
     /**
      * @memberof module:zotohlab/p/s/resolution~Resolution
      * @property {Number} Priority
-     * @static
      */
     Resolution.Priority = pss.Resolve;
 

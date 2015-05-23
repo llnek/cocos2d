@@ -50,51 +50,42 @@ define("zotohlab/p/sysobjs",
             Movements) { "use strict";
 
     /** @alias module:zotohlab/p/sysobjs */
-    var exports= {
+    var exports= /** @lends exports# */{
 
       /**
        * @property {Priorities} Priorities
-       * @static
        */
       Priorities        : Priorities,
       /**
        * @property {Factory} Factory
-       * @static
        */
       Factory     : EntityFactory,
       /**
        * @property {Collisions} Collisions
-       * @static
        */
       Collisions        : Collisions,
       /**
        * @property {Networking} Networking
-       * @static
        */
       Networking        : Networking,
       /**
        * @property {Rendering} Rendering
-       * @static
        */
       Rendering         : Rendering,
       /**
        * @property {Resolution} Resolution
-       * @static
        */
       Resolution        : Resolution,
       /**
        * @property {Supervisor} Supervisor
-       * @static
        */
       Supervisor        : Supervisor,
       /**
        * @property {Motions} Motions
-       * @static
        */
       Motions           : Motions,
       /**
        * @property {Movements} Movements
-       * @static
        */
       Movements         : Movements
 

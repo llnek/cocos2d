@@ -10,6 +10,7 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
+ * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/s/utils
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -18,15 +19,16 @@
  */
 define('zotohlab/p/s/movemissiles',
 
-       ['zotohlab/p/s/utils',
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/s/utils',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (utils, sjs, sh, ccsx) { "use strict";
+  function (pss, utils, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/movemissiles */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -42,7 +44,7 @@ define('zotohlab/p/s/movemissiles',
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state= options;
       },
 
@@ -51,7 +53,7 @@ define('zotohlab/p/s/movemissiles',
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
       },
 
       /**
@@ -59,7 +61,7 @@ define('zotohlab/p/s/movemissiles',
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
       },
 
       /**
@@ -67,11 +69,11 @@ define('zotohlab/p/s/movemissiles',
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var pos,
+      update(dt) {
+        let pos,
         x,y;
 
-        sh.pools.Missiles.iter(function(m) {
+        sh.pools.Missiles.iter((m) => {
           if (m.status) {
             pos= m.pos();
             y = pos.y + dt * m.vel.y * m.speed;
@@ -82,6 +84,12 @@ define('zotohlab/p/s/movemissiles',
       }
 
     });
+
+    /**
+     * @memberof module:zotohlab/p/s/movemissiles~MoveMissiles
+     * @property {Number} Priority
+     */
+    MoveMissiles.Priority = pss.Movement;
 
     exports= MoveMissiles;
     return exports;

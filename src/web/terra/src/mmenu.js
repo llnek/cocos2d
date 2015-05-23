@@ -7,29 +7,65 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/mmenu', ['cherimoia/skarojs',
-                           'zotohlab/asterix',
-                           'zotohlab/asx/ccsx',
-                           'zotohlab/asx/xlayers',
-                           'zotohlab/asx/xscenes',
-                           'zotohlab/asx/xmmenus'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xlayers
+ * @requires zotohlab/asx/xscenes
+ * @requires zotohlab/asx/xmmenus
+ * @module zotohlab/p/mmenu
+ */
+define('zotohlab/p/mmenu',
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/xlayers',
+        'zotohlab/asx/xscenes',
+        'zotohlab/asx/xmmenus'],
 
   function (sjs, sh, ccsx, layers, scenes, mmenus) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/mmenu */
+    let exports= {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
+
+    //////////////////////////////////////////////////////////////////////////////
+    /**
+     * @class BackLayer
+     */
+    BackLayer = mmenus.XMenuBackLayer.extend({
+
+      setTitle() {
+        const wb=ccsx.vbox(),
+        cw= ccsx.center(),
+        tt=ccsx.bmfLabel({
+          fontPath: sh.getFontPath('font.JellyBelly'),
+          text: sh.l10n('%mmenu'),
+          pos: cc.p(cw.x, wb.top * 0.9),
+          scale: xcfg.game.scale
+        });
+        this.addItem(tt);
+      }
+    }),
+
+    /**
+     * @class MainMenuLayer
+     */
     MainMenuLayer = mmenus.XMenuLayer.extend({
 
-      onButtonEffect: function(){
+      onButtonEffect() {
         sh.sfxPlay('buttonEffect');
       },
 
-      flareEffect: function (flare) {
-        flare.stopAllActions();
+      flareEffect(flare) {
         flare.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
+        flare.stopAllActions();
         flare.attr({
           x: -30,
           y: 297,
@@ -39,47 +75,46 @@ define('zotohlab/p/mmenu', ['cherimoia/skarojs',
           scale: 0.2
         });
 
-        var opacityAnim = cc.fadeTo(0.5, 255),
+        const opacityAnim = cc.fadeTo(0.5, 255),
         bigger = cc.scaleTo(0.5, 1),
         opacDim = cc.fadeTo(1, 0);
 
-        var biggerEase = cc.scaleBy(0.7, 1.2, 1.2).easing(cc.easeSineOut());
-        var easeMove = cc.moveBy(0.5, cc.p(328, 0)).easing(cc.easeSineOut());
-        var rotateEase = cc.rotateBy(2.5, 90).easing(cc.easeExponentialOut());
-        var onComplete = cc.callFunc(this.onNewGame, this);
-        var killflare = cc.callFunc(function () {
+        const biggerEase = cc.scaleBy(0.7, 1.2, 1.2).easing(cc.easeSineOut());
+        const easeMove = cc.moveBy(0.5, cc.p(328, 0)).easing(cc.easeSineOut());
+        const rotateEase = cc.rotateBy(2.5, 90).easing(cc.easeExponentialOut());
+        const onComplete = cc.callFunc(this.onNewGame, this);
+        const killflare = cc.callFunc(() => {
           this.removeItem(flare);
         }, this);
+
         flare.runAction(cc.sequence(opacityAnim, biggerEase, opacDim, killflare, onComplete));
         flare.runAction(easeMove);
         flare.runAction(rotateEase);
         flare.runAction(bigger);
       },
 
-      onNewGame: function() {
+      onNewGame() {
         cc.audioEngine.stopAllEffects();
         cc.audioEngine.stopMusic();
-        sh.fireEvent('/mmenu/controls/newgame', { mode: sh.P1_GAME });
+        sh.fire('/mmenu/newgame', { mode: sh.gtypes.P1_GAME });
       },
 
-      onSettings: function() {
+      onSettings() {
         this.onButtonEffect();
-
       },
 
-      onAbout: function() {
+      onAbout() {
         this.onButtonEffect();
-
       },
 
-      pkInit: function() {
-        var sps = [null,null,null],
+      pkInit() {
+        let sps = [null,null,null],
         ms=[null,null,null],
         flare,
         logo,
         menu, sp,
         cw = ccsx.center(),
-        wz = ccsx.screen();
+        wz = ccsx.vrect();
 
         flare = new cc.Sprite(sh.getImagePath('flare'));
         flare.setVisible(false);
@@ -93,10 +128,10 @@ define('zotohlab/p/mmenu', ['cherimoia/skarojs',
         sps[2] = new cc.Sprite(sp, cc.rect(0, 33 * 2, 126, 33));
         sps[1] = new cc.Sprite(sp, cc.rect(0, 33, 126, 33));
         sps[0] = new cc.Sprite(sp, cc.rect(0, 0, 126, 33));
-        ms[0] = new cc.MenuItemSprite(sps[0], sps[1], sps[2], function () {
-            this.flareEffect(flare);
-            this.onButtonEffect();
-        }.bind(this));
+        ms[0] = new cc.MenuItemSprite(sps[0], sps[1], sps[2], () => {
+          this.flareEffect(flare);
+          this.onButtonEffect();
+        });
 
         sps[2]= new cc.Sprite(sp, cc.rect(126, 33 * 2, 126, 33));
         sps[1]= new cc.Sprite(sp, cc.rect(126, 33, 126, 33));
@@ -121,21 +156,19 @@ define('zotohlab/p/mmenu', ['cherimoia/skarojs',
                this._ship.getPosition().y + wz.height + 100)));
 
         //sh.sfxPlayMusic('mainMainMusic');
-        this.schedule(function() {
-          this.update();
-        }.bind(this), 0.1);
+        this.schedule(() => { this.update(); }, 0.1);
 
-        this.doCtrlBtns();
+        //this.doCtrlBtns();
 
         //cc.audioEngine.setMusicVolume(0.7);
         sh.sfxPlayMusic('mainMainMusic', true);
 
-        return this._super();
+        this._super();
       },
 
-      update: function () {
-        var pos= this._ship.getPosition(),
-        wz= ccsx.screen();
+      update() {
+        let pos= this._ship.getPosition(),
+        wz= ccsx.vrect();
 
         if (pos.y > wz.height) {
           this._ship.setPosition(sjs.rand(wz.width), 10);
@@ -149,26 +182,30 @@ define('zotohlab/p/mmenu', ['cherimoia/skarojs',
 
     });
 
-    return {
+    exports= {
 
-      'MainMenu' : {
+      /**
+       * @property {String} rtti
+       */
+      rtti : sh.ptypes.mmenu,
 
-        create: function(options) {
-          var scene = new scenes.XSceneFactory([
-            mmenus.XMenuBackLayer,
-            MainMenuLayer
-          ]).create(options);
-          if (!!scene) {
-            scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
-              cc.director.runScene( sh.protos['GameArena'].create(msg));
-            });
-          }
-          return scene;
-        }
+      /**
+       * @method reify
+       * @param {Object} options
+       * @return {cc.Scene}
+       */
+      reify(options) {
+        return new scenes.XSceneFactory([
+          BackLayer,
+          MainMenuLayer
+        ]).reify(options).onmsg('/mmenu/newgame', (topic, msg) => {
+            cc.director.runScene( sh.protos[sh.ptypes.game].reify(msg));
+          });
       }
 
     };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

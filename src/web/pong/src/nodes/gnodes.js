@@ -24,7 +24,7 @@ define("zotohlab/p/gnodes",
   function (cobjs, sjs, sh) { "use strict";
 
     /** @alias module:zotohlab/p/gnodes */
-    var exports= {},
+    let exports= {},
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -35,13 +35,11 @@ define("zotohlab/p/gnodes",
       /**
        * @memberof module:zotohlab/p/gnodes~BallNode
        * @property {Velocity} velocity
-       * @static
        */
       velocity    : cobjs.Velocity,
       /**
        * @memberof module:zotohlab/p/gnodes~BallNode
        * @property {Ball} ball
-       * @static
        */
       ball        : cobjs.Ball
     });
@@ -54,25 +52,21 @@ define("zotohlab/p/gnodes",
       /**
        * @memberof module:zotohlab/p/gnodes~FauxPaddleNode
        * @property {Position} lastpos
-       * @static
        */
       lastpos   : cobjs.Position,
       /**
        * @memberof module:zotohlab/p/gnodes~FauxPaddleNode
        * @property {Paddle} paddle
-       * @static
        */
       paddle    : cobjs.Paddle,
       /**
        * @memberof module:zotohlab/p/gnodes~FauxPaddleNode
        * @property {Faux} faux
-       * @static
        */
       faux      : cobjs.Faux,
       /**
        * @memberof module:zotohlab/p/gnodes~FauxPaddleNode
        * @property {Player} player
-       * @static
        */
       player    : cobjs.Player
     });
@@ -84,25 +78,21 @@ define("zotohlab/p/gnodes",
       /**
        * @memberof module:zotohlab/p/gnodes~PaddleNode
        * @property {Position} lastpos
-       * @static
        */
       lastpos   : cobjs.Position,
       /**
        * @memberof module:zotohlab/p/gnodes~PaddleNode
        * @property {Motion} motion
-       * @static
        */
       motion    : cobjs.Motion,
       /**
        * @memberof module:zotohlab/p/gnodes~PaddleNode
        * @property {Paddle} paddle
-       * @static
        */
       paddle    : cobjs.Paddle,
       /**
        * @memberof module:zotohlab/p/gnodes~PaddleNode
        * @property {Player} player
-       * @static
        */
       player    : cobjs.Player
     });

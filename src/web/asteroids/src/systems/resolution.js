@@ -10,6 +10,7 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
+ * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
@@ -20,17 +21,18 @@
  */
 define('zotohlab/p/s/resolution',
 
-       ['zotohlab/p/elements',
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/elements',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
         'ash-js'],
 
-  function (cobjs, gnodes, sjs, sh, ccsx) { "use strict";
+  function (pss, cobjs, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/resolution */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -46,7 +48,7 @@ define('zotohlab/p/s/resolution',
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state= options;
       },
 
@@ -55,7 +57,7 @@ define('zotohlab/p/s/resolution',
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.ships= undef;
         this.engine=undef;
       },
@@ -65,7 +67,7 @@ define('zotohlab/p/s/resolution',
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.ships= engine.getNodeList(gnodes.ShipMotionNode);
         this.engine=engine;
       },
@@ -75,8 +77,8 @@ define('zotohlab/p/s/resolution',
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var ship = this.ships.head;
+      update(dt) {
+        const ship = this.ships.head;
 
         if (this.state.running) {
           this.checkMissiles();
@@ -89,9 +91,9 @@ define('zotohlab/p/s/resolution',
       /**
        * @private
        */
-      checkMissiles: function() {
-        var world = this.state.world;
-        sh.pools.Missiles.iter(function(m) {
+      checkMissiles() {
+        const world = this.state.world;
+        sh.pools.Missiles.iter((m) => {
           if (m.status) {
             if (m.HP <= 0 ||
                 sh.outOfBound(ccsx.bbox4(m.sprite), world)) {
@@ -103,9 +105,9 @@ define('zotohlab/p/s/resolution',
       /**
        * @private
        */
-      checkLasers: function() {
-        var world = this.state.world;
-        sh.pools.Lasers.iter(function(b) {
+      checkLasers() {
+        const world = this.state.world;
+        sh.pools.Lasers.iter((b) => {
           if (b.status) {
             if (b.HP <= 0 ||
                 sh.outOfBound(ccsx.bbox4(b.sprite), world)) {
@@ -117,8 +119,8 @@ define('zotohlab/p/s/resolution',
       /**
        * @private
        */
-      checkAstros: function() {
-        sh.pools.Astros1.iter(function(a) {
+      checkAstros() {
+        sh.pools.Astros1.iter((a) => {
           if (a.status &&
               a.HP <= 0) {
               sh.fire('/game/players/earnscore', {score: a.value});
@@ -126,7 +128,7 @@ define('zotohlab/p/s/resolution',
               a.deflate();
             }
         });
-        sh.pools.Astros2.iter(function(a) {
+        sh.pools.Astros2.iter((a) => {
           if (a.status &&
               a.HP <= 0) {
               sh.fire('/game/players/earnscore', {score: a.value});
@@ -134,7 +136,7 @@ define('zotohlab/p/s/resolution',
               a.deflate();
             }
         });
-        sh.pools.Astros3.iter(function(a) {
+        sh.pools.Astros3.iter((a) => {
           if (a.status &&
               a.HP <= 0) {
               sh.fire('/game/players/earnscore', {score: a.value});
@@ -146,8 +148,8 @@ define('zotohlab/p/s/resolution',
       /**
        * @private
        */
-      checkShip: function(node) {
-        var ship=node.ship;
+      checkShip(node) {
+        const ship=node.ship;
 
         if (ship.status && ship.HP <= 0) {
           ship.deflate();
@@ -156,6 +158,12 @@ define('zotohlab/p/s/resolution',
       }
 
     });
+
+    /**
+     * @memberof module:zotohlab/p/s/resolution~Resolution
+     * @property {Number} Priority
+     */
+    Resolution.Priority = pss.Resolve;
 
     exports= Resolution;
     return exports;

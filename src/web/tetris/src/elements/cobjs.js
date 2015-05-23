@@ -24,7 +24,7 @@ define("zotohlab/p/elements",
   function (sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/elements */
-    var exports= {},
+    let exports= {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef;
@@ -38,7 +38,7 @@ define("zotohlab/p/elements",
        * @memberof module:zotohlab/p/elements~ShapeShell
        * @method constructor
        */
-      constructor: function() {
+      constructor() {
         this.shape=null;
       }
     });
@@ -55,7 +55,7 @@ define("zotohlab/p/elements",
        * @param {Number} y
        * @param {Object} options
        */
-      constructor: function(x,y,options) {
+      constructor(x,y,options) {
         this.model= options.model;
         this.rot= options.rot;
         this.png = options.png;
@@ -74,7 +74,7 @@ define("zotohlab/p/elements",
        * @memberof module:zotohlab/p/elements~CtrlPad
        * @method constructor
        */
-      constructor: function() {
+      constructor() {
         this.hotspots= {};
       }
     });
@@ -88,7 +88,7 @@ define("zotohlab/p/elements",
        * @memberof module:zotohlab/p/elements~GridBox
        * @method constructor
        */
-      constructor: function() {
+      constructor() {
         this.box= {};
       }
     });
@@ -102,7 +102,7 @@ define("zotohlab/p/elements",
        * @memberof module:zotohlab/p/elements~BlockGrid
        * @method constructor
        */
-      constructor: function() {
+      constructor() {
         this.grid=[];
       }
     });
@@ -148,7 +148,7 @@ define("zotohlab/p/elements",
        * @memberof module:zotohlab/p/elements~Block
        * @method blink
        */
-      blink: function() {
+      blink() {
         this.setAnchorPoint(ccsx.acs.TopLeft);
         this.setSpriteFrame(this.frame1);
       },
@@ -156,7 +156,7 @@ define("zotohlab/p/elements",
        * @memberof module:zotohlab/p/elements~Block
        * @method show
        */
-      show: function() {
+      show() {
         this.setAnchorPoint(ccsx.acs.TopLeft);
         this.setSpriteFrame(this.frame0);
       },
@@ -167,7 +167,7 @@ define("zotohlab/p/elements",
        * @param {Number} y
        * @param {Object} options
        */
-      ctor: function(x, y, options) {
+      ctor(x, y, options) {
         this.options = options;
         this.frame0 = ccsx.getSpriteFrame(options.frames[0]);
         this.frame1 = ccsx.getSpriteFrame(options.frames[1]);
@@ -180,49 +180,50 @@ define("zotohlab/p/elements",
     /**
      * @class Brick
      */
-    exports.Brick= sjs.mixes({
+    class Brick {
 
       /**
        * @memberof module:zotohlab/p/elements~Brick
        * @method blink
        */
-      blink: function() {
+      blink() {
         if ( !!this.sprite) { this.sprite.blink(); }
-      },
+      }
 
       /**
        * @memberof module:zotohlab/p/elements~Brick
        * @method dispose
        */
-      dispose: function() {
+      dispose() {
         if (!!this.sprite) {
           this.sprite.removeFromParent();
           this.sprite=null;
         }
-      },
+      }
 
       /**
        * @memberof module:zotohlab/p/elements~Brick
        * @method create
        */
-      create: function() {
+      create() {
         return this.sprite = new Block(this.startPos.x, this.startPos.y, this.options);
-      },
+      }
 
       /**
        * @memberof module:zotohlab/p/elements~Brick
-       * @method ctor
+       * @method constructor
        * @param {Number} x
        * @param {Number} y
        * @param {Object} options
        */
-      ctor: function(x, y, options) {
+      constructor(x, y, options) {
         this.options = options || {};
         this.startPos = cc.p(x,y);
         this.options.frames= [ '' + options.frame + '.png', '0.png'];
       }
 
-    });
+    }
+    exports.Brick = Brick;
 
     //////////////////////////////////////////////////////////////////////////////
     /**
@@ -233,7 +234,7 @@ define("zotohlab/p/elements",
        * @memberof module:zotohlab/p/elements~Dropper
        * @method constructor
        */
-      constructor: function() {
+      constructor() {
         this.dropSpeed = csts.DROPSPEED;
         this.dropRate= 80 + 700/1 ;
         this.timer=null;
@@ -319,7 +320,7 @@ define("zotohlab/p/elements",
        * @memberof module:zotohlab/p/elements~FilledLines
        * @method constructor
        */
-      constructor: function() {
+      constructor() {
         this.lines=[];
       }
     });
@@ -372,7 +373,7 @@ define("zotohlab/p/elements",
        * @memberof module:zotohlab/p/elements~Motion
        * @method constructor
        */
-      constructor: function() {
+      constructor() {
         this.right=false;
         this.left=false;
         this.rotr= false;
@@ -426,11 +427,10 @@ define("zotohlab/p/elements",
        * @memberof module:zotohlab/p/elements~Pauser
        * @method constructor
        */
-      constructor: function() {
+      constructor() {
         this.pauseToClear=false;
         this.timer=null;
       }
-
     });
 
     //////////////////////////////////////////////////////////////////////////////
@@ -512,7 +512,7 @@ define("zotohlab/p/elements",
        * @memberof module:zotohlab/p/elements~TileGrid
        * @method constructor
        */
-      constructor: function() {
+      constructor() {
         this.tiles=[];
       }
     });

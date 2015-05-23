@@ -29,7 +29,7 @@ define("zotohlab/p/mmenu",
 
   function (sjs, sh, ccsx, layers, mmenus, scenes) { "use strict";
 
-    var SEED= { ppids: { }, pnum: 1, mode: 0 },
+    let SEED= { ppids: { }, pnum: 1, mode: 0 },
     /** @alias zotohlab/p/mmenu */
     exports = {},
     xcfg = sh.xcfg,
@@ -38,10 +38,13 @@ define("zotohlab/p/mmenu",
     undef,
 
     //////////////////////////////////////////////////////////////////////////////
+    /**
+     * @class BackLayer
+     */
     BackLayer = mmenus.XMenuBackLayer.extend({
 
-      setTitle: function() {
-        var wb=ccsx.vbox(),
+      setTitle() {
+        const wb=ccsx.vbox(),
         cw= ccsx.center(),
         tt=ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.JellyBelly'),
@@ -57,23 +60,21 @@ define("zotohlab/p/mmenu",
 
     MainMenuLayer = mmenus.XMenuLayer.extend({
 
-      pkInit: function() {
-        var color= cc.color('#32baf4'),
+      pkInit() {
+        const color= cc.color('#32baf4'),
         cw= ccsx.center(),
         wb= ccsx.vbox(),
-        menu;
-
         menu = ccsx.vmenu([
           { imgPath: '#online.png',
-            cb: function() {
+            cb() {
               sh.fire('/mmenu/online',
                       sjs.mergeEx(SEED,
                                   { mode: sh.gtypes.ONLINE_GAME }));
             }
           },
           { imgPath: '#player2.png',
-            cb: function() {
-              var pobj2={};
+            cb() {
+              const pobj2={};
               pobj2[ sh.l10n('%p1') ] = [ 1, sh.l10n('%player1') ];
               pobj2[ sh.l10n('%p2') ] = [ 2, sh.l10n('%player2') ];
               sh.fire('/mmenu/newgame',
@@ -84,8 +85,8 @@ define("zotohlab/p/mmenu",
           },
           {
             imgPath: '#player1.png',
-            cb: function() {
-              var pobj1={};
+            cb() {
+              const pobj1={};
               pobj1[ sh.l10n('%cpu') ] = [ 2, sh.l10n('%computer') ];
               pobj1[ sh.l10n('%p1') ] = [ 1,  sh.l10n('%player1') ];
               sh.fire('/mmenu/newgame',
@@ -108,7 +109,7 @@ define("zotohlab/p/mmenu",
         this.mkBackQuit(false, [
           { imgPath: '#icon_back.png',
             color: color,
-            cb: function() {
+            cb() {
               if (!!this.options.onBack) {
                 this.options.onBack();
               }
@@ -116,10 +117,10 @@ define("zotohlab/p/mmenu",
             target: this },
           { imgPath: '#icon_quit.png',
             color: color,
-            cb: function() { this.onQuit(); },
+            cb() { this.onQuit(); },
             target: this }
         ],
-        function (m,z) {
+        (m,z) => {
           m.setPosition(wb.left + csts.TILE + z.width * 1.1,
                         wb.bottom + csts.TILE + z.height * 0.45);
         });
@@ -127,43 +128,39 @@ define("zotohlab/p/mmenu",
 
     });
 
-    exports= {
+    exports= /** @lends exports# */{
 
       /**
        * @property {String} rtti
-       * @static
        */
       rtti : sh.ptypes.mmenu,
 
       /**
        * @method reify
-       * @static
        * @param {Object} options
        * @return {cc.Scene}
        */
-      reify: function(options) {
+      reify(options) {
 
-        var scene = new scenes.XSceneFactory([
+        const net = sh.protos[sh.ptypes.online],
+        game = sh.protos[sh.ptypes.game],
+        mm = sh.protos[sh.ptypes.mmenu],
+        dir=cc.director,
+        scene = new scenes.XSceneFactory([
           BackLayer,
           MainMenuLayer
-        ]).reify(options),
-        dir=cc.director,
-        net = sh.protos[sh.ptypes.online],
-        game = sh.protos[sh.ptypes.game],
-        mm = sh.protos[sh.ptypes.mmenu];
+        ]).reify(options);
 
-        scene.onmsg('/mmenu/newgame', function(topic, msg) {
+        scene.onmsg('/mmenu/newgame', (topic, msg) => {
           dir.runScene( game.reify(msg));
         }).
-        onmsg('/mmenu/online', function(topic, msg) {
-          msg.onBack=function() {
+        onmsg('/mmenu/online', (topic, msg) => {
+          msg.onBack=() => {
             dir.runScene( mm.reify());
           };
-          msg.yes=function(wss,pnum,startmsg) {
-            var m= sjs.mergeEx( R.omit(['yes', 'onBack'], msg), {
-              wsock: wss,
-              pnum: pnum
-            });
+          msg.yes= (wss,pnum,startmsg) => {
+            const m= sjs.mergeEx(R.omit(['yes','onBack'], msg),
+                                 { wsock: wss, pnum: pnum });
             m.ppids = startmsg.ppids;
             dir.runScene( game.reify(m));
           }

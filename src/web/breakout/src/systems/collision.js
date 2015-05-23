@@ -10,6 +10,7 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
+ * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -18,15 +19,16 @@
  */
 define('zotohlab/p/s/collisions',
 
-       ['zotohlab/p/gnodes',
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs, sh, ccsx) { "use strict";
+  function (pss, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/collisions */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.xcsts,
     undef,
@@ -41,7 +43,7 @@ define('zotohlab/p/s/collisions',
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state = options;
       },
 
@@ -50,7 +52,7 @@ define('zotohlab/p/s/collisions',
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.paddles=null;
         this.balls=null;
         this.fences= undef;
@@ -61,7 +63,7 @@ define('zotohlab/p/s/collisions',
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.paddles= engine.getNodeList(gnodes.PaddleMotionNode);
         this.balls= engine.getNodeList(gnodes.BallMotionNode);
         this.fences= engine.getNodeList(gnodes.BricksNode);
@@ -73,8 +75,8 @@ define('zotohlab/p/s/collisions',
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var bnode = this.balls.head,
+      update(dt) {
+        const bnode = this.balls.head,
         pnode= this.paddles.head,
         fnode= this.fences.head;
 
@@ -93,8 +95,8 @@ define('zotohlab/p/s/collisions',
       /**
        * @private
        */
-      onPlayerKilled: function(pnode, bnode) {
-        var pos= bnode.ball.sprite.getPosition();
+      onPlayerKilled(pnode, bnode) {
+        const pos= bnode.ball.sprite.getPosition();
 
         if (pos.y < ccsx.getBottom(pnode.paddle.sprite)) {
           sh.fire('/game/players/killed');
@@ -107,7 +109,7 @@ define('zotohlab/p/s/collisions',
       /**
        * @private
        */
-      checkNodes: function(pnode,bnode) {
+      checkNodes(pnode,bnode) {
         if (ccsx.collide0(pnode.paddle.sprite,
                           bnode.ball.sprite)) {
           this.check(pnode,bnode);
@@ -118,8 +120,8 @@ define('zotohlab/p/s/collisions',
       /**
        * @private
        */
-      check: function(pnode,bnode) {
-        var ball= bnode.ball,
+      check(pnode,bnode) {
+        const ball= bnode.ball,
         pad= pnode.paddle,
         hh= ball.sprite.getContentSize().height * 0.5,
         pos= ball.sprite.getPosition(),
@@ -133,12 +135,11 @@ define('zotohlab/p/s/collisions',
       /**
        * @private
        */
-      checkBricks: function(fence,bnode,dt) {
-        var bss = fence.fence.bricks,
-        n,
+      checkBricks(fence,bnode,dt) {
+        const bss = fence.fence.bricks,
         m= bnode.ball;
 
-        for (n=0; n < bss.length; ++n) {
+        for (let n=0; n < bss.length; ++n) {
           if (bss[n].status !== true) { continue; }
           if (ccsx.collide0(m.sprite, bss[n].sprite)) {
             this.onBrick(bnode, bss[n]);
@@ -150,8 +151,8 @@ define('zotohlab/p/s/collisions',
       /**
        * @private
        */
-      onBrick: function(bnode, brick) {
-        var bz = bnode.ball.sprite.getContentSize(),
+      onBrick(bnode, brick) {
+        const bz = bnode.ball.sprite.getContentSize(),
         kz= brick.sprite.getContentSize(),
         velo= bnode.velocity,
         ks= brick.sprite,
@@ -192,6 +193,12 @@ define('zotohlab/p/s/collisions',
       }
 
     });
+
+    /**
+     * @memberof module:zotohlab/p/s/collisions~CollisionSystem
+     * @property {Number} Priority
+     */
+    CollisionSystem.Priority = pss.Collision;
 
     exports= CollisionSystem;
     return exports;

@@ -10,27 +10,41 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/elements
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
- * @requires zotohlab/asx/ccsx
- * @module zotohlab/p/s/utils
+ * @requires zotohlab/asx/online
+ * @requires zotohlab/asx/msgbox
+ * @requires zotohlab/asx/ynbox
+ * @requires zotohlab/p/splash
+ * @requires zotohlab/p/mmenu
+ * @requires zotohlab/p/arena
+ * @module zotohlab/p/protodefs
  */
-define('zotohlab/p/s/utils',
+define("zotohlab/p/protodefs",
 
-       ['zotohlab/p/elements',
-        'cherimoia/skarojs',
+       ['cherimoia/skarojs',
         'zotohlab/asterix',
-        'zotohlab/asx/ccsx'],
+        'zotohlab/asx/online',
+        'zotohlab/asx/msgbox',
+        'zotohlab/asx/ynbox',
+        'zotohlab/p/splash',
+        'zotohlab/p/mmenu',
+        'zotohlab/p/arena'],
 
-  function (cobjs, sjs, sh, ccsx) { "use strict";
+  function (sjs, sh, online, msgbox, ynbox,
+            splash, mmenu, arena) { "use strict";
 
-    /** @alias module:zotohlab/p/s/utils */
-    let exports = {},
+    let ps= [online, splash, mmenu, msgbox, ynbox, arena],
+    protos= sh.protos,
+    /** @alias module:zotohlab/p/protodefs */
+    exports = protos,
     xcfg = sh.xcfg,
-    csts= xcfg.csts,
     R = sjs.ramda,
     undef;
+
+    R.forEach((obj) => {
+      protos[obj.rtti] = obj;
+    }, ps);
 
     return exports;
 });

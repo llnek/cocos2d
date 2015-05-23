@@ -10,6 +10,7 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
+ * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/s/utils
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -18,15 +19,16 @@
  */
 define('zotohlab/p/s/movelasers',
 
-       ['zotohlab/p/s/utils',
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/s/utils',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (utils, sjs, sh, ccsx) { "use strict";
+  function (pss, utils, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/movelasers */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -41,7 +43,7 @@ define('zotohlab/p/s/movelasers',
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state= options;
       },
 
@@ -50,7 +52,7 @@ define('zotohlab/p/s/movelasers',
        * @method removeFromEngine
        * @param {Object} options
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
       },
 
       /**
@@ -58,7 +60,7 @@ define('zotohlab/p/s/movelasers',
        * @method addToEngine
        * @param {Object} options
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
       },
 
       /**
@@ -66,11 +68,11 @@ define('zotohlab/p/s/movelasers',
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var pos,
+      update(dt) {
+        let pos,
         x, y;
 
-        sh.pools.Lasers.iter(function(b) {
+        sh.pools.Lasers.iter((b) => {
           if (b.status) {
             pos= b.pos();
             y = pos.y + dt * b.vel.y * b.speed;
@@ -81,6 +83,12 @@ define('zotohlab/p/s/movelasers',
       }
 
     });
+
+    /**
+     * @memberof module:zotohlab/p/s/movelasers~MovementBombs
+     * @property {Number} Priority
+     */
+    MovementBombs.Priority = pss.Movement;
 
     exports= MovementBombs;
     return exports;

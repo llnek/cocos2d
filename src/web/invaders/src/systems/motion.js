@@ -28,7 +28,7 @@ define('zotohlab/p/s/motions',
   function (pss, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/motions */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -43,7 +43,7 @@ define('zotohlab/p/s/motions',
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state= options;
       },
 
@@ -52,7 +52,7 @@ define('zotohlab/p/s/motions',
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.alienMotions = undef;
         this.shipMotions = undef;
       },
@@ -62,7 +62,7 @@ define('zotohlab/p/s/motions',
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.alienMotions = engine.getNodeList(gnodes.AlienMotionNode);
         this.shipMotions = engine.getNodeList(gnodes.ShipMotionNode);
       },
@@ -72,8 +72,8 @@ define('zotohlab/p/s/motions',
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var node = this.alienMotions.head;
+      update(dt) {
+        let node = this.alienMotions.head;
         if (this.state.running &&
            !!node) {
           this.processAlienMotions(node,dt);
@@ -89,7 +89,7 @@ define('zotohlab/p/s/motions',
       /**
        * @private
        */
-      scanInput: function(node, dt) {
+      scanInput(node, dt) {
         if (cc.sys.capabilities['keyboard'] &&
             !cc.sys.isNative) {
           this.processKeys(node,dt);
@@ -105,8 +105,8 @@ define('zotohlab/p/s/motions',
       /**
        * @private
        */
-      processAlienMotions: function(node,dt) {
-        var lpr = node.looper,
+      processAlienMotions(node,dt) {
+        const lpr = node.looper,
         sqad= node.aliens;
 
         if (! sjs.echt(lpr.timers[0])) {
@@ -121,8 +121,8 @@ define('zotohlab/p/s/motions',
       /**
        * @private
        */
-      processKeys: function(node,dt) {
-        var s= node.ship,
+      processKeys(node,dt) {
+        const s= node.ship,
         m= node.motion;
 
         if (sh.main.keyPoll(cc.KEY.right)) {

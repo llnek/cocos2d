@@ -30,7 +30,7 @@ define('zotohlab/p/s/movealiens',
   function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/movealiens */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -46,7 +46,7 @@ define('zotohlab/p/s/movealiens',
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state= options;
       },
 
@@ -55,7 +55,7 @@ define('zotohlab/p/s/movealiens',
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.alienMotions= undef;
       },
 
@@ -64,7 +64,7 @@ define('zotohlab/p/s/movealiens',
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.alienMotions = engine.getNodeList(gnodes.AlienMotionNode);
       },
 
@@ -73,8 +73,8 @@ define('zotohlab/p/s/movealiens',
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var node=this.alienMotions.head;
+      update(dt) {
+        const node=this.alienMotions.head;
 
         if (this.state.running &&
            !!node) {
@@ -86,8 +86,8 @@ define('zotohlab/p/s/movealiens',
       /**
        * @private
        */
-      processMovement: function(node,dt) {
-        var lpr = node.looper,
+      processMovement(node,dt) {
+        const lpr = node.looper,
         sqad= node.aliens;
 
         if (ccsx.timerDone(lpr.timers[0])) {
@@ -99,8 +99,8 @@ define('zotohlab/p/s/movealiens',
       /**
        * @private
        */
-      processBombs: function(node,dt) {
-        var lpr = node.looper,
+      processBombs(node,dt) {
+        const lpr = node.looper,
         sqad= node.aliens;
 
         if (ccsx.timerDone(lpr.timers[1])) {
@@ -112,8 +112,8 @@ define('zotohlab/p/s/movealiens',
       /**
        * @private
        */
-      checkBomb: function(sqad) {
-        var rc = [],
+      checkBomb(sqad) {
+        let rc = [],
         pos,
         n;
         for (n=0; n < sqad.aliens.pool.length; ++n) {
@@ -131,8 +131,8 @@ define('zotohlab/p/s/movealiens',
       /**
        * @private
        */
-      dropBomb: function(x,y) {
-        var bbs = sh.pools.Bombs,
+      dropBomb(x,y) {
+        let bbs = sh.pools.Bombs,
         ent = bbs.get();
 
         if (! sjs.echt(ent)) {
@@ -147,12 +147,13 @@ define('zotohlab/p/s/movealiens',
       /**
        * @private
        */
-      maybeShuffleAliens: function(sqad) {
-        var b = sqad.stepx > 0 ? this.findMaxX(sqad) : this.findMinX(sqad),
+      maybeShuffleAliens(sqad) {
+        let b = sqad.stepx > 0 ?
+          this.findMaxX(sqad) : this.findMinX(sqad),
         ok;
         if (!!b && b.status) {
-          ok = this.testDirX(b, sqad.stepx) ? this.doShuffle(sqad)
-                                       : this.doForward(sqad);
+          ok = this.testDirX(b, sqad.stepx) ?
+            this.doShuffle(sqad) : this.doForward(sqad);
           if (ok) {
             sh.sfxPlay('bugs-march');
           }
@@ -162,8 +163,8 @@ define('zotohlab/p/s/movealiens',
       /**
        * @private
        */
-      testDirX: function(b, stepx) {
-        var wz= ccsx.vrect(),
+      testDirX(b, stepx) {
+        const wz= ccsx.vrect(),
         wb= ccsx.vbox(),
         sp= b.sprite;
         if (stepx > 0) {
@@ -176,16 +177,16 @@ define('zotohlab/p/s/movealiens',
       /**
        * @private
        */
-      shuffleOneAlien: function(a,stepx) {
-        var pos= a.sprite.getPosition();
+      shuffleOneAlien(a,stepx) {
+        const pos= a.sprite.getPosition();
         a.sprite.setPosition(pos.x + stepx, pos.y);
       },
 
       /**
        * @private
        */
-      forwardOneAlien: function(a, delta) {
-        var pos= a.sprite.getPosition(),
+      forwardOneAlien(a, delta) {
+        const pos= a.sprite.getPosition(),
         wz= ccsx.vrect(),
         wb= ccsx.vbox();
         a.sprite.setPosition(pos.x,  pos.y - delta);
@@ -195,27 +196,23 @@ define('zotohlab/p/s/movealiens',
       /**
        * @private
        */
-      doShuffle: function(sqad) {
-        var rc = R.filter(function(a) {
-          return a.status;
-        }, sqad.aliens.pool);
-        R.forEach(function(a) {
-          this.shuffleOneAlien(a,sqad.stepx);
-        }.bind(this), rc);
+      doShuffle(sqad) {
+        const rc = R.filter((a) => {
+          return a.status; }, sqad.aliens.pool);
+        R.forEach((a) => {
+          this.shuffleOneAlien(a,sqad.stepx); }, rc);
         return rc.length > 0;
       },
 
       /**
        * @private
        */
-      doForward: function(sqad) {
-        var rc = R.filter(function(a) {
-          return a.status;
-        }, sqad.aliens.pool),
+      doForward(sqad) {
+        const rc = R.filter((a) => {
+          return a.status; }, sqad.aliens.pool),
         delta= Math.abs(sqad.stepx);
-        R.forEach(function(a) {
-          this.forwardOneAlien(a, delta);
-        }.bind(this), rc);
+        R.forEach((a) => {
+          this.forwardOneAlien(a, delta); }, rc);
         sqad.stepx = - sqad.stepx;
         return rc.length > 0;
       },
@@ -223,8 +220,8 @@ define('zotohlab/p/s/movealiens',
       /**
        * @private
        */
-      findMinX: function(sqad) {
-        return R.minBy(function(a) {
+      findMinX(sqad) {
+        return R.minBy((a) => {
           if (a.status) {
             return ccsx.getLeft(a.sprite);
           } else {
@@ -236,8 +233,8 @@ define('zotohlab/p/s/movealiens',
       /**
        * @private
        */
-      findMaxX: function(sqad) {
-        return R.maxBy(function(a) {
+      findMaxX(sqad) {
+        return R.maxBy((a) => {
           if (a.status) {
             return ccsx.getRight(a.sprite);
           } else {

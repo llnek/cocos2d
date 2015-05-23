@@ -26,7 +26,7 @@ define("zotohlab/p/s/factory",
   function (cobjs, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/factory */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -41,7 +41,7 @@ define("zotohlab/p/s/factory",
        * @method constructor
        * @param {Ash.Engine} engine
        */
-      constructor: function(engine) {
+      constructor(engine) {
         this.engine=engine;
       },
 
@@ -51,7 +51,7 @@ define("zotohlab/p/s/factory",
        * @param {cc.Layer} layer
        * @param {Object} options
        */
-      createPaddles: function(layer, options) {
+      createPaddles(layer, options) {
 
         this.createOnePaddle(layer, options.players[1],
                              options.p1,
@@ -70,8 +70,8 @@ define("zotohlab/p/s/factory",
        * @param {cc.Layer} layer
        * @param {Object} options
        */
-      createBall: function(layer, options) {
-        var ent = sh.Ashley.newEntity(),
+      createBall(layer, options) {
+        let ent = sh.Ashley.newEntity(),
         info = options.ball,
         vy = info.speed * sjs.randSign(),
         vx = info.speed * sjs.randSign(),
@@ -98,8 +98,8 @@ define("zotohlab/p/s/factory",
        * @param {Number} speed
        * @param {Object} options
        */
-      createOnePaddle: function(layer, p, info, speed, options) {
-        var res1 = '#red_paddle.png',
+      createOnePaddle(layer, p, info, speed, options) {
+        let res1 = '#red_paddle.png',
         res2= '#green_paddle.png',
         ent = sh.Ashley.newEntity(),
         res,

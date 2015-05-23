@@ -26,7 +26,7 @@ define('zotohlab/p/gnodes',
   function (cobjs, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/gnodes */
-    var exports={},
+    let exports={},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -40,19 +40,16 @@ define('zotohlab/p/gnodes',
       /**
        * @memberof module:zotohlab/p/gnodes~CannonCtrlNode
        * @property {Looper} looper
-       * @static
        */
       looper    : cobjs.Looper,
       /**
        * @memberof module:zotohlab/p/gnodes~CannonCtrlNode
        * @property {Cannon} cannon
-       * @static
        */
       cannon    : cobjs.Cannon,
       /**
        * @memberof module:zotohlab/p/gnodes~CannonCtrlNode
        * @property {Ship} ship
-       * @static
        */
       ship      : cobjs.Ship
     });
@@ -65,31 +62,26 @@ define('zotohlab/p/gnodes',
       /**
        * @memberof module:zotohlab/p/gnodes~ShipMotionNode
        * @property {Velocity} velocity
-       * @static
        */
       velocity    : cobjs.Velocity,
       /**
       * @memberof module:zotohlab/p/gnodes~ShipMotionNode
       * @property {Rotation} rotation
-      * @static
       */
       rotation    : cobjs.Rotation,
       /**
       * @memberof module:zotohlab/p/gnodes~ShipMotionNode
       * @property {Thrust} thrust
-      * @static
       */
       thrust      : cobjs.Thrust,
       /**
       * @memberof module:zotohlab/p/gnodes~ShipMotionNode
       * @property {Motion} motion
-      * @static
       */
       motion      : cobjs.Motion,
       /**
       * @memberof module:zotohlab/p/gnodes~ShipMotionNode
       * @property {Ship} ship
-      * @static
       */
       ship        : cobjs.Ship
     });

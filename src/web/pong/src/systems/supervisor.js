@@ -28,7 +28,7 @@ define("zotohlab/p/s/supervisor",
   function (pss, sjs, sh, ccsx, odin) { "use strict";
 
     /** @alias module:zotohlab/p/s/supervisor */
-    var exports= {},
+    let exports= {},
     evts= odin.Events,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
@@ -45,7 +45,7 @@ define("zotohlab/p/s/supervisor",
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state= options;
         this.inited=false;
       },
@@ -55,7 +55,7 @@ define("zotohlab/p/s/supervisor",
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
       },
 
       /**
@@ -63,7 +63,7 @@ define("zotohlab/p/s/supervisor",
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
       },
 
       /**
@@ -71,7 +71,7 @@ define("zotohlab/p/s/supervisor",
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
+      update(dt) {
         if (! this.inited) {
           this.onceOnly();
           this.inited=true;
@@ -83,8 +83,8 @@ define("zotohlab/p/s/supervisor",
       /**
        * @private
        */
-      onceOnly: function() {
-        var world = this.state.world,
+      onceOnly() {
+        const world = this.state.world,
         cw= ccsx.center(),
         ps = this.initPaddleSize(),
         bs = this.initBallSize(),
@@ -142,22 +142,15 @@ define("zotohlab/p/s/supervisor",
       /**
        * @private
        */
-      initPaddleSize: function() {
-        var id = '#red_paddle.png',
-        dummy;
-
-        if (ccsx.isPortrait()) {
-        } else {
-        }
-        return new cc.Sprite(id).getContentSize();
+      initPaddleSize() {
+        return new cc.Sprite('#red_paddle.png').getContentSize();
       },
 
       /**
        * @private
        */
-      initBallSize: function() {
-        var dummy= new cc.Sprite('#pongball.png');
-        return dummy.getContentSize();
+      initBallSize() {
+        return new cc.Sprite('#pongball.png').getContentSize();
       }
 
     });

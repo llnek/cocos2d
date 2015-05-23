@@ -10,6 +10,7 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
+ * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
@@ -19,16 +20,17 @@
  */
 define('zotohlab/p/s/collisions',
 
-       ['zotohlab/p/s/utils',
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/collisions */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -44,7 +46,7 @@ define('zotohlab/p/s/collisions',
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state= options;
       },
 
@@ -53,7 +55,7 @@ define('zotohlab/p/s/collisions',
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.ships= undef;
         this.engine=undef;
       },
@@ -63,7 +65,7 @@ define('zotohlab/p/s/collisions',
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.ships= engine.getNodeList(gnodes.ShipMotionNode);
         this.engine=engine;
       },
@@ -73,8 +75,8 @@ define('zotohlab/p/s/collisions',
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var ship = this.ships.head;
+      update(dt) {
+        const ship = this.ships.head;
 
         if (this.state.running) {
 
@@ -91,18 +93,18 @@ define('zotohlab/p/s/collisions',
       /**
        * @private
        */
-      collide: function(a,b) {
+      collide(a,b) {
         return ccsx.collide0(a.sprite, b.sprite);
       },
 
       /**
        * @private
        */
-      checkMissilesRocks: function() {
-        var me=this;
-        sh.pools.Missiles.iter(function(m) {
+      checkMissilesRocks() {
+        const me=this;
+        sh.pools.Missiles.iter((m) => {
           if (m.status && m.HP > 0) {
-            sh.pools.Astros3.iter(function(a) {
+            sh.pools.Astros3.iter((a) => {
               if (a.status && me.collide(m,a)) {
                 m.hurt();
                 a.hurt();
@@ -110,7 +112,7 @@ define('zotohlab/p/s/collisions',
             });
           }
           if (m.status && m.HP > 0) {
-            sh.pools.Astros2.iter(function(a) {
+            sh.pools.Astros2.iter((a) => {
               if (a.status && me.collide(m,a)) {
                 m.hurt();
                 a.hurt();
@@ -118,7 +120,7 @@ define('zotohlab/p/s/collisions',
             });
           }
           if (m.status && m.HP > 0) {
-            sh.pools.Astros1.iter(function(a) {
+            sh.pools.Astros1.iter((a) => {
               if (a.status && me.collide(m,a)) {
                 m.hurt();
                 a.hurt();
@@ -131,10 +133,10 @@ define('zotohlab/p/s/collisions',
       /**
        * @private
        */
-      checkShipBombs: function(node) {
-        var ship = node.ship,
+      checkShipBombs(node) {
+        const ship = node.ship,
         me=this;
-        sh.pools.Lasers.iter(function(b) {
+        sh.pools.Lasers.iter((b) => {
           if (b.status &&
               ship.status &&
               me.collide(b,ship)) {
@@ -147,12 +149,12 @@ define('zotohlab/p/s/collisions',
       /**
        * @private
        */
-      checkShipRocks: function(node) {
-        var ship = node.ship,
+      checkShipRocks(node) {
+        const ship = node.ship,
         me=this;
 
         if (ship.status && ship.HP > 0) {
-          sh.pools.Astros3.iter(function(a) {
+          sh.pools.Astros3.iter((a) => {
             if (a.status && me.collide(ship,a)) {
               ship.hurt();
               a.hurt();
@@ -160,7 +162,7 @@ define('zotohlab/p/s/collisions',
           });
         }
         if (ship.status && ship.HP > 0) {
-          sh.pools.Astros2.iter(function(a) {
+          sh.pools.Astros2.iter((a) => {
             if (a.status && me.collide(ship,a)) {
               ship.hurt();
               a.hurt();
@@ -168,7 +170,7 @@ define('zotohlab/p/s/collisions',
           });
         }
         if (ship.status && ship.HP > 0) {
-          sh.pools.Astros1.iter(function(a) {
+          sh.pools.Astros1.iter((a) => {
             if (a.status && me.collide(ship,a)) {
               ship.hurt();
               a.hurt();
@@ -178,6 +180,12 @@ define('zotohlab/p/s/collisions',
       }
 
     });
+
+    /**
+     * @memberof module:zotohlab/p/s/collisions~CollisionSystem
+     * @property {Number} Priority
+     */
+    CollisionSystem.Priority = pss.Collision;
 
     exports= CollisionSystem;
     return exports;

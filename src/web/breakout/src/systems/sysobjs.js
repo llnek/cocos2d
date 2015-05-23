@@ -33,41 +33,34 @@ define('zotohlab/p/sysobjs',
            MovementPaddle, Priorities, Supervisor) { "use strict";
 
     /** @alias module:zotohlab/p/sysobjs */
-    var exports= {
+    const exports= {
 
       /**
        * @property {Collisions} Collisions
-       * @static
        */
       Collisions        : Collisions,
       /**
        * @property {EntityFactory} Factory
-       * @static
        */
       Factory     : EntityFactory,
       /**
        * @property {Motions} Motions
-       * @static
        */
       Motions           : Motions,
       /**
        * @property {MovementBall} MovementBall
-       * @static
        */
       MovementBall      : MovementBall,
       /**
        * @property {MovementPaddle} MovementPaddle
-       * @static
        */
       MovementPaddle    : MovementPaddle,
       /**
        * @property {Priorities} Priorities
-       * @static
        */
       Priorities        : Priorities,
       /**
        * @property {Supervisor} Supervisor
-       * @static
        */
       Supervisor        : Supervisor
 

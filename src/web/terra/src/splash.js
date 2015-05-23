@@ -13,24 +13,22 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xsplash
  * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xscenes
+ * @requires zotohlab/asx/xsplash
  * @module zotohlab/p/splash
  */
-define('zotohlab/p/splash',
+define('zotohlab/p/splash', ['cherimoia/skarojs',
+                            'zotohlab/asterix',
+                            'zotohlab/asx/ccsx',
+                            'zotohlab/asx/xlayers',
+                            'zotohlab/asx/xscenes',
+                            'zotohlab/asx/xsplash'],
 
-       ['cherimoia/skarojs',
-        'zotohlab/asterix',
-        'zotohlab/asx/ccsx',
-        'zotohlab/asx/xsplash',
-        'zotohlab/asx/xlayers',
-        'zotohlab/asx/xscenes'],
-
-  function (sjs, sh, ccsx, splash, layers, scenes) { "use strict";
+  function (sjs, sh, ccsx, layers, scenes, splash) { "use strict";
 
     /** @alias module:zotohlab/p/splash */
-    let exports= {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -40,34 +38,30 @@ define('zotohlab/p/splash',
      */
     SplashLayer = splash.XSplashLayer.extend({
 
-      setTitle() {
-        const cw= ccsx.center(),
-        wb= ccsx.vbox();
-        this.addFrame('#title.png',
-                      cc.p(cw.x, wb.top * 0.9));
-      },
-
       setPlay() {
-        const cw= ccsx.center(),
-        wb= ccsx.vbox(),
-        menu= ccsx.pmenu1({
-          imgPath: '#play.png',
-          cb() {
-            sh.fire('/splash/playgame');
-          }
-        });
-        menu.setPosition(cw.x, wb.top * 0.1);
+        const cw = ccsx.center(),
+        wb = ccsx.vbox(),
+        // show the play button at the bottom
+        menu= ccsx.vmenu([
+          { imgPath: '#play.png',
+            cb() {
+              this.removeAll();
+              sh.fire('/splash/playgame');
+            },
+            target: this }
+        ]);
+        menu.setPosition(cw.x, wb.top * 0.10);
         this.addItem(menu);
       }
 
     });
 
-    exports = /** @lends exports# */{
+    exports= {
 
       /**
        * @property {String} rtti
        */
-      rtti: sh.ptypes.start,
+      rtti : sh.ptypes.start,
 
       /**
        * @method reify
@@ -81,11 +75,12 @@ define('zotohlab/p/splash',
         return new scenes.XSceneFactory([
           SplashLayer
         ]).reify(options).onmsg('/splash/playgame', () => {
-          dir.runScene( mm.reify({
-            onBack() { dir.runScene( ss.reify() ); }
-          }));
+              dir.runScene( mm.reify({
+                onBack() { dir.runScene( ss.reify() ); }
+              }));
         });
       }
+
     };
 
     return exports;

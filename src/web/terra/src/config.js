@@ -7,15 +7,23 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/xcfg
+ * @module zotohlab/p/config
+ */
 define("zotohlab/p/config", ['cherimoia/skarojs',
                             'zotohlab/asterix',
                             'zotohlab/asx/xcfg'],
 
   function (sjs, sh, xcfg) { "use strict";
 
-    var ENEMY_MOVE = {
+    /** @alias module:zotohlab/p/config */
+    let exports  = {},
+    ENEMY_MOVE = {
       RUSH    : 0,
       VERT    : 1,
       HORZ    : 2,
@@ -26,7 +34,7 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
       NORMAL      : 1
     };
 
-    sjs.merge( xcfg, {
+    exports = sjs.merge( xcfg, {
 
       appKey: '4d6b93c4-05d7-42f1-95cc-98ce8adeac0a',
 
@@ -160,7 +168,7 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
         }
       },
 
-      runOnce: function() {
+      runOnce() {
         cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('tr-pics'));
         cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('op-pics'));
         cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('explosions'));
@@ -169,7 +177,7 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
 
     });
 
-    return xcfg;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

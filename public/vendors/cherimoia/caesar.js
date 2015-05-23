@@ -13,125 +13,130 @@
  * @requires cherimoia/skarojs
  * @module cherimoia/caesar
  */
-define("cherimoia/caesar",
+"use strict";
 
-  ['cherimoia/skarojs'],
+define("cherimoia/caesar", ["cherimoia/skarojs"], function (sjs) {
+  "use strict";
 
-  function (sjs) { "use strict";
+  var VISCHS = " @N/\\Ri2}aP`(xeT4F3mt;8~%r0v:L5$+Z{'V)\"CKIc>z.*" + "fJEwSU7juYg<klO&1?[h9=n,yoQGsW]BMHpXb6A|D#q^_d!-",
+      VISCHS_LEN = VISCHS.length;
 
-    const VISCHS= " @N/\\Ri2}aP`(xeT4F3mt;8~%r0v:L5$+Z{'V)\"CKIc>z.*" +
-                "fJEwSU7juYg<klO&1?[h9=n,yoQGsW]BMHpXb6A|D#q^_d!-",
-    VISCHS_LEN=  VISCHS.length;
-
-    /////////////////////////////////////////////////////////////////////////////
-    //
-    let identifyChar = (pos) => VISCHS.charAt(pos);
-    let locateChar = (ch) => {
-      for (let n= 0; n < VISCHS_LEN; ++n) {
-        if (ch === VISCHS.charAt(n)) {
-          return n;
-        }
-      }
-      return -1;
-    }
-    let slideForward = (delta, cpos) => {
-      let ptr= cpos + delta,
-      np;
-      if (ptr >= VISCHS_LEN) {
-        np = ptr - VISCHS_LEN;
-      } else {
-        np = ptr;
-      }
-      return identifyChar(np);
-    }
-    let slideBack = (delta, cpos) => {
-      let ptr= cpos - delta,
-      np;
-      if (ptr < 0) {
-        np= VISCHS_LEN + ptr;
-      } else {
-        np= ptr;
-      }
-      return identifyChar(np);
-    }
-    let shiftEnc = (shiftpos, delta, cpos) => {
-      if (shiftpos < 0) {
-        return slideForward( delta, cpos);
-      } else {
-        return slideBack( delta, cpos);
+  /////////////////////////////////////////////////////////////////////////////
+  //
+  var identifyChar = function identifyChar(pos) {
+    return VISCHS.charAt(pos);
+  };
+  var locateChar = function locateChar(ch) {
+    for (var n = 0; n < VISCHS_LEN; ++n) {
+      if (ch === VISCHS.charAt(n)) {
+        return n;
       }
     }
-    let shiftDec = (shiftpos, delta, cpos) => {
-      if ( shiftpos <  0) {
-        return slideBack( delta, cpos);
-      } else {
-        return slideForward( delta, cpos);
+    return -1;
+  };
+  var slideForward = function slideForward(delta, cpos) {
+    var ptr = cpos + delta,
+        np = undefined;
+    if (ptr >= VISCHS_LEN) {
+      np = ptr - VISCHS_LEN;
+    } else {
+      np = ptr;
+    }
+    return identifyChar(np);
+  };
+  var slideBack = function slideBack(delta, cpos) {
+    var ptr = cpos - delta,
+        np = undefined;
+    if (ptr < 0) {
+      np = VISCHS_LEN + ptr;
+    } else {
+      np = ptr;
+    }
+    return identifyChar(np);
+  };
+  var shiftEnc = function shiftEnc(shiftpos, delta, cpos) {
+    if (shiftpos < 0) {
+      return slideForward(delta, cpos);
+    } else {
+      return slideBack(delta, cpos);
+    }
+  };
+  var shiftDec = function shiftDec(shiftpos, delta, cpos) {
+    if (shiftpos < 0) {
+      return slideBack(delta, cpos);
+    } else {
+      return slideForward(delta, cpos);
+    }
+  };
+
+  /** @alias module:cherimoia/caesar */
+  var exports = /** @lends exports# */{
+    /**
+     * Encrypt the text.
+     * @function
+     * @param {String} clearText
+     * @param {Number} shiftpos
+     * @return {String} cipher text
+     */
+    encrypt: function encrypt(str, shiftpos) {
+
+      if (sjs.isString(str) && str.length > 0 && shiftpos !== 0) {} else {
+        return "";
       }
+      var delta = sjs.xmod(Math.abs(shiftpos), VISCHS_LEN);
+      var out = [];
+      var p = undefined,
+          ch = undefined,
+          n = undefined,
+          len = str.length;
+      for (n = 0; n < len; ++n) {
+        ch = str.charAt(n);
+        p = locateChar(ch);
+        if (p < 0) {} else {
+          ch = shiftEnc(shiftpos, delta, p);
+        }
+        out.push(ch);
+      }
+      return out.join("");
+    },
+
+    /**
+     * Decrypt the cipher.
+     * @function
+     * @param {String} cipher
+     * @param {Number} shiftpos
+     * @return {String} clear text
+     */
+    decrypt: function decrypt(cipher, shiftpos) {
+
+      if (sjs.isString(cipher) && cipher.length > 0 && shiftpos !== 0) {} else {
+        return "";
+      }
+      var delta = sjs.xmod(Math.abs(shiftpos), VISCHS_LEN);
+      var out = [];
+      var p = undefined,
+          ch = undefined,
+          n = undefined,
+          len = cipher.length;
+      for (n = 0; n < len; ++n) {
+        ch = cipher.charAt(n);
+        p = locateChar(ch);
+        if (p < 0) {} else {
+          ch = shiftDec(shiftpos, delta, p);
+        }
+        out.push(ch);
+      }
+      return out.join("");
     }
 
-    /** @alias module:cherimoia/caesar */
-    let exports = /** @lends exports# */ {
-      /**
-       * Encrypt the text.
-       * @function
-       * @param {String} clearText
-       * @param {Number} shiftpos
-       * @return {String} cipher text
-       */
-      encrypt(str,shiftpos) {
+  };
 
-        if (sjs.isString(str) && str.length > 0 && shiftpos !== 0) {} else {
-          return "";
-        }
-        const delta = sjs.xmod(Math.abs(shiftpos), VISCHS_LEN);
-        const out=[];
-        let p, ch, n, len= str.length;
-        for (n=0; n < len; ++n) {
-          ch = str.charAt(n);
-          p= locateChar(ch);
-          if (p < 0) {
-            //ch
-          } else {
-            ch= shiftEnc(shiftpos, delta, p);
-          }
-          out.push(ch);
-        }
-        return out.join('');
-      },
-
-      /**
-       * Decrypt the cipher.
-       * @function
-       * @param {String} cipher
-       * @param {Number} shiftpos
-       * @return {String} clear text
-       */
-      decrypt(cipher,shiftpos) {
-
-        if (sjs.isString(cipher) && cipher.length > 0 && shiftpos !== 0) {} else {
-          return "";
-        }
-        const delta = sjs.xmod(Math.abs(shiftpos),VISCHS_LEN);
-        const out=[];
-        let p, ch, n, len= cipher.length;
-        for (n=0; n < len; ++n) {
-          ch= cipher.charAt(n);
-          p= locateChar(ch);
-          if (p < 0) {
-            //ch
-          } else {
-            ch= shiftDec(shiftpos, delta, p);
-          }
-          out.push(ch);
-        }
-        return out.join('');
-      }
-
-    };
-
-    return exports;
+  return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
 
+//ch
+
+//ch

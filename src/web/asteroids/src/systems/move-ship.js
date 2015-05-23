@@ -10,6 +10,7 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
+ * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -18,15 +19,16 @@
  */
 define('zotohlab/p/s/moveship',
 
-       ['zotohlab/p/gnodes',
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs, sh, ccsx) { "use strict";
+  function (pss, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/moveship */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -42,7 +44,7 @@ define('zotohlab/p/s/moveship',
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state= options;
       },
 
@@ -51,7 +53,7 @@ define('zotohlab/p/s/moveship',
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.shipMotions = undef;
       },
 
@@ -60,7 +62,7 @@ define('zotohlab/p/s/moveship',
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.shipMotions = engine.getNodeList(gnodes.ShipMotionNode)
       },
 
@@ -69,8 +71,8 @@ define('zotohlab/p/s/moveship',
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var node=this.shipMotions.head;
+      update(dt) {
+        const node=this.shipMotions.head;
 
         if (this.state.running &&
            !!node) {
@@ -81,7 +83,7 @@ define('zotohlab/p/s/moveship',
       /**
        * @private
        */
-      rotateShip: function(cur,deg) {
+      rotateShip(cur,deg) {
         cur += deg;
         if (cur >= 360) {
           cur = cur - 360;
@@ -95,8 +97,8 @@ define('zotohlab/p/s/moveship',
       /**
        * @private
        */
-      thrust: function(ship, angle,power) {
-        var rc= sh.calcXY(angle, power),
+      thrust(ship, angle,power) {
+        const rc= sh.calcXY(angle, power),
         accel = {
           x: rc[0],
           y: rc[1]
@@ -107,8 +109,8 @@ define('zotohlab/p/s/moveship',
       /**
        * @private
        */
-      processShipMotions: function(node,dt) {
-        var motion = node.motion,
+      processShipMotions(node,dt) {
+        let motion = node.motion,
         velo = node.velocity,
         tu = node.thrust,
         rot = node.rotation,
@@ -148,14 +150,14 @@ define('zotohlab/p/s/moveship',
       /**
        * @private
        */
-      clampVelocity: function() {
+      clampVelocity() {
       },
 
       /**
        * @private
        */
-      moveShip: function(snode, dt) {
-        var velo = snode.velocity,
+      moveShip(snode, dt) {
+        let velo = snode.velocity,
         B = this.state.world,
         ship = snode.ship,
         sp= ship.sprite,
@@ -215,6 +217,12 @@ define('zotohlab/p/s/moveship',
       }
 
     });
+
+    /**
+     * @memberof module:zotohlab/p/s/moveship~MovementShip
+     * @property {Number} Priority
+     */
+    MovementShip.Priority = pss.Movement;
 
     exports= MovementShip;
     return exports;

@@ -10,6 +10,7 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
+ * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -18,15 +19,16 @@
  */
 define('zotohlab/p/s/moveball',
 
-       ['zotohlab/p/gnodes',
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs, sh, ccsx) { "use strict";
+  function (pss, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/moveball */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -41,7 +43,7 @@ define('zotohlab/p/s/moveball',
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state= options;
       },
 
@@ -50,7 +52,7 @@ define('zotohlab/p/s/moveball',
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.ballMotions = undef;
       },
 
@@ -59,7 +61,7 @@ define('zotohlab/p/s/moveball',
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.ballMotions = engine.getNodeList( gnodes.BallMotionNode)
       },
 
@@ -68,8 +70,8 @@ define('zotohlab/p/s/moveball',
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var node=this.ballMotions.head;
+      update(dt) {
+        const node=this.ballMotions.head;
 
         if (this.state.running &&
            !!node) {
@@ -80,8 +82,8 @@ define('zotohlab/p/s/moveball',
       /**
        * @private
        */
-      processBallMotions: function(node, dt) {
-        var v = node.velocity,
+      processBallMotions(node, dt) {
+        let v = node.velocity,
         b= node.ball,
         rc,
         pos= b.sprite.getPosition(),
@@ -102,6 +104,12 @@ define('zotohlab/p/s/moveball',
       }
 
     });
+
+    /**
+     * @memberof module:zotohlab/p/s/moveball~MovementBall
+     * @property {Number} Priority
+     */
+    MovementBall.Priority = pss.Movement;
 
     exports= MovementBall;
     return exports;

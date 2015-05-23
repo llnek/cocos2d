@@ -7,44 +7,82 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/s/rendering', ['cherimoia/skarojs',
-                                  'zotohlab/asterix',
-                                  'zotohlab/asx/ccsx'],
+/**
+ * @requires zotohlab/p/s/priorities
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/rendering
+ */
+define('zotohlab/p/s/rendering',
 
-  function (sjs, sh, ccsx) { "use strict";
+       ['zotohlab/p/s/priorities',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
-    var xcfg = sh.xcfg,
+  function (pss, sjs, sh, ccsx) { "use strict";
+
+    /** @alias module:zotohlab/p/s/rendering */
+    let exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R= sjs.ramda,
     undef,
+    /**
+     * @class Rendering
+     */
     Rendering = sh.Ashley.sysDef({
 
-      constructor: function(options) {
+      /**
+       * @memberof module:zotohlab/p/s/rendering~Rendering
+       * @method constructor
+       * @param {Object} options
+       */
+      constructor(options) {
         this.state= options;
       },
 
-      removeFromEngine: function(engine) {
+      /**
+       * @memberof module:zotohlab/p/s/rendering~Rendering
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
+      removeFromEngine(engine) {
       },
 
-      addToEngine: function(engine) {
+      /**
+       * @memberof module:zotohlab/p/s/rendering~Rendering
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
+      addToEngine(engine) {
       },
 
-      update: function (dt) {
+      /**
+       * @memberof module:zotohlab/p/s/rendering~Rendering
+       * @method update
+       * @param {Number} dt
+       */
+      update(dt) {
         if (this.state.running) {
           this.processMovement(dt);
         }
       },
 
-      processMovement: function(dt) {
+      /**
+       * @private
+       */
+      processMovement(dt) {
         // background's moving rate is 16 pixel per second
-        var locSkyHeight = this.state.backSkyDim.height,
+        let locSkyHeight = this.state.backSkyDim.height,
         locBackSkyRe = this.state.backSkyRe,
         locBackSky = this.state.backSky,
         posy= locBackSky.sprite.getPositionY(),
         movingDist = 16 * dt,
-        wz = ccsx.screen(),
+        wz = ccsx.vrect(),
         currPosY = posy - movingDist;
 
         if (locSkyHeight + currPosY <= wz.height) {
@@ -78,7 +116,14 @@ define('zotohlab/p/s/rendering', ['cherimoia/skarojs',
 
     });
 
-    return Rendering;
+    /**
+     * @memberof module:zotohlab/p/s/rendering~Rendering
+     * @property {Number} Priority
+     */
+    Rendering.Priority = pss.Render;
+
+    exports = Rendering;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

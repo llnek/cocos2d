@@ -21,7 +21,7 @@ define('zotohlab/p/s/cannon',
   function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/cannon */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -36,7 +36,7 @@ define('zotohlab/p/s/cannon',
        * @method constructor
        * @param {Object} options
        */
-      constructor: function (options) {
+      constructor(options) {
         this.state = options;
       },
 
@@ -45,7 +45,7 @@ define('zotohlab/p/s/cannon',
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function (engine) {
+      addToEngine(engine) {
         this.nodeList = engine.getNodeList(gnodes.CannonCtrlNode);
       },
 
@@ -54,7 +54,7 @@ define('zotohlab/p/s/cannon',
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function (engine) {
+      removeFromEngine(engine) {
         this.nodeList = null;
       },
 
@@ -63,8 +63,8 @@ define('zotohlab/p/s/cannon',
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var node = this.nodeList.head;
+      update(dt) {
+        const node = this.nodeList.head;
         if (this.state.running &&
            !!node) {
           this.process(node, dt);
@@ -74,8 +74,8 @@ define('zotohlab/p/s/cannon',
       /**
        * @private
        */
-      process: function(node,dt) {
-        var gun = node.cannon,
+      process(node,dt) {
+        const gun = node.cannon,
         lpr= node.looper,
         ship=node.ship,
         t= lpr.timers[0];
@@ -94,8 +94,8 @@ define('zotohlab/p/s/cannon',
       /**
        * @private
        */
-      checkInput: function() {
-        var hit=false;
+      checkInput() {
+        let hit=false;
         if (cc.sys.capabilities['keyboard'] &&
             !cc.sys.isNative) {
           hit= sh.main.keyPoll(cc.KEY.space);
@@ -112,8 +112,8 @@ define('zotohlab/p/s/cannon',
       /**
        * @private
        */
-      scanInput: function (node, dt) {
-        var hit= this.checkInput();
+      scanInput(node, dt) {
+        const hit= this.checkInput();
         if (hit) {
           this.fireMissile(node,dt);
         }
@@ -122,8 +122,8 @@ define('zotohlab/p/s/cannon',
       /**
        * @private
        */
-      fireMissile: function(node,dt) {
-        var top= ccsx.getTop(node.ship.sprite),
+      fireMissile(node,dt) {
+        let top= ccsx.getTop(node.ship.sprite),
         p= sh.pools.Missiles,
         ship=node.ship,
         pos= ship.pos(),
@@ -151,8 +151,8 @@ define('zotohlab/p/s/cannon',
      * @property {Number} Priority
      */
     CannonControl.Priority= pss.Motion;
-    exports = CannonControl;
 
+    exports = CannonControl;
     return exports;
 });
 

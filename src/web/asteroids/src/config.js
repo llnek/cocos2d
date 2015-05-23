@@ -24,7 +24,7 @@ define('zotohlab/p/config',
   function (sjs, sh, xcfg) { "use strict";
 
     /** @alias module:zotohlab/p/config */
-    var exports = {},
+    let exports = {},
     P_AS3= 'aster3',
     P_AS2= 'aster2',
     P_AS1= 'aster1';
@@ -101,12 +101,12 @@ define('zotohlab/p/config',
         }
       },
 
-      handleResolution: function(rs) {
+      handleResolution(rs) {
         //for default font, we use 48pt
         this.game.scale = 52/256 * rs.width /320;
       },
 
-      runOnce: function() {
+      runOnce() {
         cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
         cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('lang-pics'));
       }

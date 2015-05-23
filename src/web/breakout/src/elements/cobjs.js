@@ -24,7 +24,7 @@ define('zotohlab/p/elements',
   function (sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/elements */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef;
@@ -40,7 +40,7 @@ define('zotohlab/p/elements',
        * @method constructor
        * @param {cc.Sprite}
        */
-      constructor: function(sprite) {
+      constructor(sprite) {
         this.ctor(sprite);
       }
     });
@@ -56,7 +56,7 @@ define('zotohlab/p/elements',
        * @method constructor
        * @param {Array} bricks
        */
-      constructor: function(bricks) {
+      constructor(bricks) {
         this.bricks=bricks;
       }
     });
@@ -73,7 +73,7 @@ define('zotohlab/p/elements',
        * @param {Number} value
        * @param {Number} color
        */
-      constructor: function(sprite,value,color) {
+      constructor(sprite,value,color) {
         this.ctor(sprite, 1, value);
         this.color=color;
       }
@@ -90,7 +90,7 @@ define('zotohlab/p/elements',
        * @memberof module:zotohlab/p/elements~Motion
        * @method constructor
        */
-      constructor: function() {
+      constructor() {
         this.right = false;
         this.left = false;
       }
@@ -107,7 +107,7 @@ define('zotohlab/p/elements',
        * @method constructor
        * @param {cc.Sprite}
        */
-      constructor: function(sprite) {
+      constructor(sprite) {
         this.ctor(sprite);
       }
     });
@@ -124,7 +124,7 @@ define('zotohlab/p/elements',
        * @param {Number} vx
        * @param {Number} vy
        */
-      constructor: function(vx,vy) {
+      constructor(vx,vy) {
         this.vel = {
           x: vx || 0,
           y: vy || 0

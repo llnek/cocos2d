@@ -30,7 +30,7 @@ define('zotohlab/p/s/collisions',
   function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/collisions */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -46,7 +46,7 @@ define('zotohlab/p/s/collisions',
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state= options;
         this.inited=false;
       },
@@ -56,7 +56,7 @@ define('zotohlab/p/s/collisions',
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.aliens= undef;
         this.ships= undef;
         this.engine=undef;
@@ -67,7 +67,7 @@ define('zotohlab/p/s/collisions',
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.aliens= engine.getNodeList(gnodes.AlienMotionNode);
         this.ships= engine.getNodeList(gnodes.ShipMotionNode);
         this.engine=engine;
@@ -78,8 +78,8 @@ define('zotohlab/p/s/collisions',
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var aliens= this.aliens.head,
+      update(dt) {
+        const aliens= this.aliens.head,
         ship = this.ships.head;
 
         // 1. get rid of all colliding bombs & missiles.
@@ -99,19 +99,19 @@ define('zotohlab/p/s/collisions',
 
       /**
        */
-      collide: function(a, b) {
+      collide(a, b) {
         return ccsx.collide0(a.sprite, b.sprite);
       },
 
       /**
        */
-      checkMissilesBombs: function() {
-        var mss = sh.pools.Missiles,
+      checkMissilesBombs() {
+        const mss = sh.pools.Missiles,
         bbs = sh.pools.Bombs,
         me=this;
 
-        mss.iter(function(m) {
-          bbs.iter(function(b) {
+        mss.iter((m) => {
+          bbs.iter((b) => {
             if (b.status &&
                 m.status &&
                 me.collide(m,b)) {
@@ -124,14 +124,14 @@ define('zotohlab/p/s/collisions',
 
       /**
        */
-      checkMissilesAliens: function(node) {
-        var mss = sh.pools.Missiles,
+      checkMissilesAliens(node) {
+        const mss = sh.pools.Missiles,
         sqad= node.aliens,
         me=this;
 
-        R.forEach(function(en) {
+        R.forEach((en) => {
           if (en.status) {
-            mss.iter(function(m){
+            mss.iter((m) => {
               if (m.status &&
                   me.collide(en,m)) {
                 en.hurt();
@@ -144,12 +144,12 @@ define('zotohlab/p/s/collisions',
 
       /**
        */
-      checkShipBombs: function(node) {
-        var bbs= sh.pools.Bombs,
+      checkShipBombs(node) {
+        const bbs= sh.pools.Bombs,
         me= this,
         ship=node.ship;
 
-        bbs.iter(function(b) {
+        bbs.iter((b) => {
           if (ship.status &&
               b.status &&
               me.collide(ship, b)) {
@@ -161,13 +161,13 @@ define('zotohlab/p/s/collisions',
 
       /**
        */
-      checkShipAliens: function(anode,snode) {
-        var n, sqad= anode.aliens,
+      checkShipAliens(anode,snode) {
+        const sqad= anode.aliens,
         ship = snode.ship,
         me=this,
         sz= sqad.aliens.length;
 
-        R.forEach(function(en) {
+        R.forEach((en) => {
           if (ship.status &&
               en.status &&
               me.collide(ship, en)) {

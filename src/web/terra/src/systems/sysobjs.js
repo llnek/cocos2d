@@ -11,97 +11,97 @@
 
 /**
  * @requires zotohlab/p/s/priorities
- * @requires zotohlab/p/s/factory
  * @requires zotohlab/p/s/utils
+ * @requires zotohlab/p/s/factory
  * @requires zotohlab/p/s/supervisor
+ * @requires zotohlab/p/levelmgr
  * @requires zotohlab/p/s/motions
- * @requires zotohlab/p/s/movealiens
- * @requires zotohlab/p/s/movebombs
  * @requires zotohlab/p/s/movemissiles
+ * @requires zotohlab/p/s/movebombs
  * @requires zotohlab/p/s/moveship
- * @requires zotohlab/p/s/cannon
  * @requires zotohlab/p/s/collisions
  * @requires zotohlab/p/s/resolution
+ * @requires zotohlab/p/s/rendering
  * @module zotohlab/p/sysobjs
  */
 define("zotohlab/p/sysobjs",
 
        ['zotohlab/p/s/priorities',
-        'zotohlab/p/s/factory',
         'zotohlab/p/s/utils',
+        'zotohlab/p/s/factory',
         'zotohlab/p/s/supervisor',
+        'zotohlab/p/levelmgr',
         'zotohlab/p/s/motions',
-        'zotohlab/p/s/movealiens',
-        'zotohlab/p/s/movebombs',
         'zotohlab/p/s/movemissiles',
+        'zotohlab/p/s/movebombs',
         'zotohlab/p/s/moveship',
-        'zotohlab/p/s/cannon',
         'zotohlab/p/s/collisions',
-        'zotohlab/p/s/resolution'],
+        'zotohlab/p/s/resolution',
+        'zotohlab/p/s/rendering'],
 
-  function (Priorities, EntityFactory, SystemUtils,
-            Supervisor, Motions, MovementAliens,
-            MovementBombs,
-            MovementMissiles,
-            MovementShip,
-            CannonControl,
-            CollisionSystem,
-            Resolution) { "use strict";
+  function (Priorities, Utils,
+            EntityFactory,
+            Supervisor,
+            LevelManager,
+            Motions,
+            MoveMissiles,
+            MoveBombs,
+            MoveShip,
+            Collisions,
+            Resolution,
+            Rendering) { "use strict";
 
     /** @alias module:zotohlab/p/sysobjs */
-    let exports= {};
-
-    exports= /** @lends exports# */{
+    const exports = {
 
       /**
-       * @property {Priorities} Priorities
+       * @property {EntityFactory}  EntityFactory
+       */
+      EntityFactory       : EntityFactory,
+      /**
+       * @property {Utils}    Utils
+       */
+      Utils               : Utils,
+      /**
+       * @property {Priorities}   Priorities
        */
       Priorities          : Priorities,
       /**
-       * @property {EntityFactory} EntityFactory
-       */
-      Factory       : EntityFactory,
-      /**
-       * @property {SystemUtils} SystemUtils
-       */
-      SystemUtils         : SystemUtils,
-      /**
-       * @property {Supervisor} Supervisor
+       * @property {Supervisor}   Supervisor
        */
       Supervisor          : Supervisor,
       /**
-       * @property {Motions} Motions
+       * @property {LevelManager}   LevelManager
+       */
+      LevelManager        : LevelManager,
+      /**
+       * @property {Motions}      Motions
        */
       Motions             : Motions,
       /**
-       * @property {MovementAliens} MovementAliens
+       * @property {MoveMissiles}     MoveMissiles
        */
-      MovementAliens      : MovementAliens,
+      MoveMissiles        : MoveMissiles,
       /**
-       * @property {MovementBombs} MovementBombs
+       * @property {MoveBombs}      MoveBombs
        */
-      MovementBombs       : MovementBombs,
+      MoveBombs           : MoveBombs,
       /**
-       * @property {MovementMissiles} MovementMissiles
+       * @property {MoveShip}     MoveShip
        */
-      MovementMissiles    : MovementMissiles,
+      MoveShip            : MoveShip,
       /**
-       * @property {MovemenyShip} MovemenyShip
+       * @property {Collisions}     Collisions
        */
-      MovementShip        : MovementShip,
+      Collisions       : Collisions,
       /**
-       * @property {CannonControl} CannonControl
+       * @property {Resolution}     Resolution
        */
-      CannonControl       : CannonControl,
+      Resolution       : Resolution,
       /**
-       * @property {CollisionSystem} CollisionSystem
+       * @property {Rendering}      Rendering
        */
-      CollisionSystem     : CollisionSystem,
-      /**
-       * @property {Resolution} Resolution
-       */
-      Resolution          : Resolution
-
+      Rendering        : Rendering
     };
 
     return exports;

@@ -10,6 +10,7 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
+ * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
@@ -19,16 +20,17 @@
  */
 define('zotohlab/p/s/factory',
 
-       ['zotohlab/p/elements',
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/elements',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (cobjs, gnodes, sjs, sh, ccsx) { "use strict";
+  function (pss, cobjs, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/factory */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -44,7 +46,7 @@ define('zotohlab/p/s/factory',
        * @param {Ash.Engine} engine
        * @param {Object} options
        */
-      constructor: function(engine, options) {
+      constructor(engine, options) {
         this.engine=engine;
         this.state= options;
       },
@@ -53,19 +55,19 @@ define('zotohlab/p/s/factory',
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createBricks
        */
-      createBricks: function() {
-        var wz = ccsx.screen(),
+      createBricks() {
+        let wz = ccsx.vrect(),
         cw= ccsx.center(),
         candies= csts.CANDIES,
         bks=[],
         cs= csts.LEVELS["1"],
-        ent, sp, b, w, r, c,
+        ent, sp, b, w,
         x,
         y= wz.height - csts.TOP_ROW * csts.TILE ;
 
-        for (r=0; r < csts.ROWS; ++r) {
+        for (let r=0; r < csts.ROWS; ++r) {
           x= csts.TILE + csts.LEFT_OFF + sh.hw(this.state.candySize);
-          for (c=0; c < csts.COLS; ++c) {
+          for (let c=0; c < csts.COLS; ++c) {
             sp= ccsx.createSpriteFrame( candies[cs[r]] + ".png");
             sh.main.addAtlasItem('game-pics', sp);
             sp = new cobjs.Brick(sp,10);
@@ -85,8 +87,8 @@ define('zotohlab/p/s/factory',
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method bornPaddle
        */
-      bornPaddle: function() {
-        var p= this.engine.getNodeList(gnodes.PaddleMotionNode).head,
+      bornPaddle() {
+        const p= this.engine.getNodeList(gnodes.PaddleMotionNode).head,
         cw= ccsx.center(),
         b= this.engine.getNodeList(gnodes.BallMotionNode).head;
 
@@ -101,8 +103,8 @@ define('zotohlab/p/s/factory',
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createPaddle
        */
-      createPaddle: function() {
-        var cw= ccsx.center(),
+      createPaddle() {
+        let cw= ccsx.center(),
         ent,
         sp;
 
@@ -121,8 +123,8 @@ define('zotohlab/p/s/factory',
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createBall
        */
-      createBall: function() {
-        var vy = 200 * sjs.randSign(),
+      createBall() {
+        let vy = 200 * sjs.randSign(),
         vx = 200 * sjs.randSign(),
         cw= ccsx.center(),
         ent,

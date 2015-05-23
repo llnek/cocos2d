@@ -30,7 +30,7 @@ define("zotohlab/p/s/movements",
   function (pss, gnodes, sjs, sh, ccsx, odin) { "use strict";
 
     /** @alias module:zotohlab/p/s/movements */
-    var exports= {     },
+    let exports= {     },
     evts= odin.Events,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
@@ -46,7 +46,7 @@ define("zotohlab/p/s/movements",
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state = options;
       },
 
@@ -55,7 +55,7 @@ define("zotohlab/p/s/movements",
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.fauxpads= null;
         this.paddles=null;
         this.balls= null;
@@ -66,7 +66,7 @@ define("zotohlab/p/s/movements",
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.fauxs= engine.getNodeList(gnodes.FauxPaddleNode);
         this.paddles= engine.getNodeList(gnodes.PaddleNode);
         this.balls= engine.getNodeList(gnodes.BallNode);
@@ -77,8 +77,8 @@ define("zotohlab/p/s/movements",
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var bnode= this.balls.head,
+      update(dt) {
+        let bnode= this.balls.head,
         node;
 
         if (this.state.running &&
@@ -105,8 +105,8 @@ define("zotohlab/p/s/movements",
       /**
        * @private
        */
-      simuMove: function(node, bnode, dt) {
-        var hw2 = ccsx.halfHW(node.paddle.sprite),
+      simuMove(node, bnode, dt) {
+        let hw2 = ccsx.halfHW(node.paddle.sprite),
         pos = node.paddle.sprite.getPosition(),
         world= this.state.world,
         lastpos= node.lastpos,
@@ -144,8 +144,8 @@ define("zotohlab/p/s/movements",
       /**
        * @private
        */
-      moveRobot: function(node, bnode, dt) {
-        var bp= bnode.ball.sprite.getPosition(),
+      moveRobot(node, bnode, dt) {
+        let bp= bnode.ball.sprite.getPosition(),
         pos = node.paddle.sprite.getPosition(),
         speed= this.state.paddle.speed,
         velo = bnode.velocity,
@@ -192,8 +192,8 @@ define("zotohlab/p/s/movements",
       /**
        * @private
        */
-      processBall: function(node, dt) {
-        var v = node.velocity,
+      processBall(node, dt) {
+        let v = node.velocity,
         b= node.ball,
         rc,
         pos= b.sprite.getPosition(),
@@ -216,8 +216,8 @@ define("zotohlab/p/s/movements",
       /**
        * @private
        */
-      process: function(node, dt) {
-        var p= node.paddle,
+      process(node, dt) {
+        let p= node.paddle,
         s= p.speed * dt,
         m= node.motion,
         nv, x,y,
@@ -260,7 +260,7 @@ define("zotohlab/p/s/movements",
           nv = p.sprite.getPosition().y;
         }
 
-        var delta= Math.abs(nv - lp),
+        let delta= Math.abs(nv - lp),
         dir=0;
         if (delta >= 1) {
           if (nv > lp) {
@@ -281,8 +281,8 @@ define("zotohlab/p/s/movements",
        * Inform the server that paddle has changed direction: up , down or stopped.
        * @private
        */
-      notifyServer: function(node, direction) {
-        var vv = direction * this.state.paddle.speed,
+      notifyServer(node, direction) {
+        let vv = direction * this.state.paddle.speed,
         pos = node.paddle.sprite.getPosition(),
         pnum= this.state.pnum,
         src,
@@ -307,8 +307,8 @@ define("zotohlab/p/s/movements",
       /**
        * @private
        */
-      clamp: function(sprite) {
-        var pos= sprite.getPosition(),
+      clamp(sprite) {
+        let pos= sprite.getPosition(),
         world= this.state.world,
         x= undef,
         y= undef,

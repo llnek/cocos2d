@@ -7,37 +7,75 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/s/resolution', ['zotohlab/p/components',
-                                  'zotohlab/p/s/utils',
-                                  'zotohlab/p/gnodes',
-                                  'cherimoia/skarojs',
-                                  'zotohlab/asterix',
-                                  'zotohlab/asx/ccsx'],
+/**
+ * @requires zotohlab/p/s/priorities
+ * @requires zotohlab/p/elements
+ * @requires zotohlab/p/s/utils
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/resolution
+ */
+define('zotohlab/p/s/resolution',
 
-  function (cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/elements',
+        'zotohlab/p/s/utils',
+        'zotohlab/p/gnodes',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
-    var xcfg = sh.xcfg,
+  function (pss, cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
+
+    /** @alias module:zotohlab/p/s/resolution */
+    let exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R= sjs.ramda,
     undef,
+    /**
+     * @class Resolution
+     */
     Resolution = sh.Ashley.sysDef({
 
-      constructor: function(options) {
+      /**
+       * @memberof module:zotohlab/p/s/resolution~Resolution
+       * @method constructor
+       * @param {Object} options
+       */
+      constructor(options) {
         this.state= options;
       },
 
-      removeFromEngine: function(engine) {
+      /**
+       * @memberof module:zotohlab/p/s/resolution~Resolution
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
+      removeFromEngine(engine) {
         this.ships=null;
       },
 
-      addToEngine: function(engine) {
+      /**
+       * @memberof module:zotohlab/p/s/resolution~Resolution
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
+      addToEngine(engine) {
         this.ships = engine.getNodeList(gnodes.ShipMotionNode);
       },
 
-      update: function (dt) {
-        var node = this.ships.head;
+      /**
+       * @memberof module:zotohlab/p/s/resolution~Resolution
+       * @method update
+       * @param {Number} dt
+       */
+      update(dt) {
+        const node = this.ships.head;
 
         if (this.state.running &&
            !!node) {
@@ -49,8 +87,11 @@ define('zotohlab/p/s/resolution', ['zotohlab/p/components',
         }
       },
 
-      onBulletDeath: function(b) {
-        var pe= sh.pools.HitEffects,
+      /**
+       * @private
+       */
+      onBulletDeath(b) {
+        let pe= sh.pools.HitEffects,
         pos= b.pos(),
         e= pe.get();
 
@@ -61,12 +102,15 @@ define('zotohlab/p/s/resolution', ['zotohlab/p/components',
         e.inflate({x : pos.x, y: pos.y});
       },
 
-      checkMissiles: function() {
-        var box= sh.main.getEnclosureBox(),
+      /**
+       * @private
+       */
+      checkMissiles() {
+        let box= sh.main.getEnclosureBox(),
         me=this,
         pos;
 
-        sh.pools.Missiles.iter(function(m){
+        sh.pools.Missiles.iter((m) => {
           if (m.status) {
             pos= m.sprite.getPosition();
             if (m.HP <= 0 ||
@@ -78,12 +122,15 @@ define('zotohlab/p/s/resolution', ['zotohlab/p/components',
         });
       },
 
-      checkBombs: function() {
-        var box= sh.main.getEnclosureBox(),
+      /**
+       * @private
+       */
+      checkBombs() {
+        let box= sh.main.getEnclosureBox(),
         me=this,
         pos;
 
-        sh.pools.Bombs.iter(function(b) {
+        sh.pools.Bombs.iter((b) => {
           if (b.status) {
             pos= b.sprite.getPosition();
             if (b.HP <= 0 ||
@@ -95,8 +142,11 @@ define('zotohlab/p/s/resolution', ['zotohlab/p/components',
         });
       },
 
-      onEnemyDeath: function(alien) {
-        var pe= sh.pools.Explosions,
+      /**
+       * @private
+       */
+      onEnemyDeath(alien) {
+        let pe= sh.pools.Explosions,
         ps= sh.pools.Sparks,
         pos= alien.pos(),
         e= pe.get(),
@@ -114,8 +164,11 @@ define('zotohlab/p/s/resolution', ['zotohlab/p/components',
         sh.sfxPlay('explodeEffect');
       },
 
-      onShipDeath: function(ship) {
-        var pe= sh.pools.Explosions,
+      /**
+       * @private
+       */
+      onShipDeath(ship) {
+        let pe= sh.pools.Explosions,
         pos= ship.pos(),
         e= pe.get();
 
@@ -127,41 +180,53 @@ define('zotohlab/p/s/resolution', ['zotohlab/p/components',
         sh.sfxPlay('shipDestroyEffect');
       },
 
-      checkAliens: function() {
-        var box= sh.main.getEnclosureBox(),
+      /**
+       * @private
+       */
+      checkAliens() {
+        let box= sh.main.getEnclosureBox(),
         me=this,
         pos;
 
-        sh.pools.Baddies.iter(function(a) {
+        sh.pools.Baddies.iter((a) => {
           if (a.status) {
             pos= a.sprite.getPosition();
             if (a.HP <= 0 ||
                 !ccsx.pointInBox(box, pos)) {
               me.onEnemyDeath(a);
               a.deflate();
-              sh.fireEvent('/game/objects/players/earnscore', { score: a.value });
+              sh.fire('/game/players/earnscore', { score: a.value });
             }
           }
         });
       },
 
-      checkShip: function(node) {
-        var ship = node.ship,
+      /**
+       * @private
+       */
+      checkShip(node) {
+        const ship = node.ship,
         me=this;
 
         if (ship.status) {
           if (ship.HP <= 0) {
             me.onShipDeath(ship);
             ship.deflate();
-            sh.fireEvent('/game/objects/players/killed');
+            sh.fire('/game/players/killed');
           }
         }
       }
 
-
     });
 
-    return Resolution;
+    /**
+     * @memberof module:zotohlab/p/s/resolution~Resolution
+     * @property {Number} Priority
+     */
+    Resolution.Priority = pss.Resolve;
+
+    exports=Resolution;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

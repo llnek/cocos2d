@@ -10,6 +10,7 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
+ * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -18,15 +19,16 @@
  */
 define('zotohlab/p/s/motions',
 
-       ['zotohlab/p/gnodes',
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs,  sh, ccsx) { "use strict";
+  function (pss, gnodes, sjs,  sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/motions */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -41,7 +43,7 @@ define('zotohlab/p/s/motions',
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state= options;
       },
 
@@ -50,7 +52,7 @@ define('zotohlab/p/s/motions',
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.paddleMotions = undef;
       },
 
@@ -59,7 +61,7 @@ define('zotohlab/p/s/motions',
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.paddleMotions = engine.getNodeList(gnodes.PaddleMotionNode);
       },
 
@@ -68,8 +70,8 @@ define('zotohlab/p/s/motions',
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var node=this.paddleMotions.head;
+      update(dt) {
+        const node=this.paddleMotions.head;
 
         if (this.state.running &&
            !!node) {
@@ -80,7 +82,7 @@ define('zotohlab/p/s/motions',
       /**
        * @private
        */
-      scanInput: function(node, dt) {
+      scanInput(node, dt) {
         if (cc.sys.capabilities['keyboard'] &&
             !cc.sys.isNative) {
           this.processKeys(node, dt);
@@ -96,8 +98,8 @@ define('zotohlab/p/s/motions',
       /**
        * @private
        */
-      processKeys: function(node, dt) {
-        var s= node.paddle,
+      processKeys(node, dt) {
+        const s= node.paddle,
         m= node.motion;
 
         if (sh.main.keyPoll(cc.KEY.right)) {
@@ -109,6 +111,12 @@ define('zotohlab/p/s/motions',
       }
 
     });
+
+    /**
+     * @memberof module:zotohlab/p/s/motions~MotionControl
+     * @property {Number} Priority
+     */
+    MotionControl.Priority = pss.Motion;
 
     exports= MotionControl;
     return exports;

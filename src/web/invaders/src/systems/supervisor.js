@@ -32,7 +32,7 @@ define("zotohlab/p/s/supervisor",
   function (pss, cobjs, utils, sjs, sh, ccsx, XPool) { "use strict";
 
     /** @alias module:zotohlab/p/s/supervisor */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -47,7 +47,7 @@ define("zotohlab/p/s/supervisor",
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state= options;
         this.inited=false;
       },
@@ -57,7 +57,7 @@ define("zotohlab/p/s/supervisor",
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
       },
 
       /**
@@ -65,14 +65,14 @@ define("zotohlab/p/s/supervisor",
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
       },
 
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method initAlienSize
        */
-      initAlienSize: function() {
+      initAlienSize() {
         //pick purple since it is the largest
         this.state.alienSize= ccsx.createSpriteFrame('purple_bug_0.png').getContentSize();
       },
@@ -81,7 +81,7 @@ define("zotohlab/p/s/supervisor",
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method initShipSize
        */
-      initShipSize: function() {
+      initShipSize() {
         this.state.shipSize= ccsx.createSpriteFrame( 'ship_0.png').getContentSize();
       },
 
@@ -90,7 +90,7 @@ define("zotohlab/p/s/supervisor",
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
+      update(dt) {
         if (! this.inited) {
           this.onceOnly();
           this.inited=true;
@@ -100,7 +100,7 @@ define("zotohlab/p/s/supervisor",
       /**
        * @private
        */
-      onceOnly: function() {
+      onceOnly() {
         sh.pools.Missiles = new XPool();
         sh.pools.Bombs = new XPool();
         sh.pools.Explosions = new XPool();

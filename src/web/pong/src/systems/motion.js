@@ -26,7 +26,7 @@ define("zotohlab/p/s/motion",
   function (pss, gnodes, sjs,  sh) { "use strict";
 
     /** @alias module:zotohlab/p/s/motion */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -41,7 +41,7 @@ define("zotohlab/p/s/motion",
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state = options;
       },
 
@@ -50,7 +50,7 @@ define("zotohlab/p/s/motion",
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.nodeList=null;
       },
 
@@ -59,14 +59,14 @@ define("zotohlab/p/s/motion",
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.nodeList= engine.getNodeList(gnodes.PaddleNode);
       },
 
       /**
        * @private
        */
-      scanInput: function(node, dt) {
+      scanInput(node, dt) {
         if (cc.sys.capabilities['keyboard'] &&
             !cc.sys.isNative) {
           this.processKeys(node,dt);
@@ -84,8 +84,8 @@ define("zotohlab/p/s/motion",
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        for (var node= this.nodeList.head; node; node=node.next) {
+      update(dt) {
+        for (let node= this.nodeList.head; node; node=node.next) {
           this.scanInput(node, dt);
         }
       },
@@ -93,8 +93,8 @@ define("zotohlab/p/s/motion",
       /**
        * @private
        */
-      processKeys: function(node, dt) {
-        var p= node.paddle,
+      processKeys(node, dt) {
+        const p= node.paddle,
         m= node.motion,
         cs = p.kcodes;
 

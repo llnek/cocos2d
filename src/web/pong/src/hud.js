@@ -19,14 +19,14 @@
 define("zotohlab/p/hud",
 
        ['cherimoia/skarojs',
-       'zotohlab/asterix',
-       'zotohlab/asx/ccsx',
-       'zotohlab/asx/xlayers'],
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/xlayers'],
 
   function(sjs, sh, ccsx, layers) { "use strict";
 
     /** @alias module:zotohlab/p/hud */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -36,9 +36,9 @@ define("zotohlab/p/hud",
      */
     BackLayer = layers.XLayer.extend({
 
-      rtti: function() { return 'BackLayer'; },
+      rtti() { return 'BackLayer'; },
 
-      pkInit: function() {
+      pkInit() {
         this.centerImage(sh.getImagePath('game.bg'));
       }
 
@@ -54,9 +54,9 @@ define("zotohlab/p/hud",
        * @method ctor
        * @param {Object} options
        */
-      ctor: function(options) {
-        var color= cc.color('#32baf4'),
-        scale;
+      ctor(options) {
+        const color= cc.color('#32baf4'),
+        scale=1;
 
         this._super(options);
         this.scores=  {};
@@ -72,7 +72,7 @@ define("zotohlab/p/hud",
           color:color,
           scale : scale,
           visible: false,
-          cb: function() {
+          cb() {
             sh.fire('/hud/replay');
           }
         };
@@ -82,7 +82,7 @@ define("zotohlab/p/hud",
           where: ccsx.acs.Top,
           color: color,
           scale: scale,
-          cb: function() {
+          cb() {
             sh.fire('/hud/showmenu');
           }
         };
@@ -90,7 +90,7 @@ define("zotohlab/p/hud",
 
       /**
        */
-      setGameMode: function(mode) {
+      setGameMode(mode) {
         this.mode=mode;
       },
 
@@ -105,8 +105,8 @@ define("zotohlab/p/hud",
        * @param {Object} p2
        * @param {Array} p2ids
        */
-      regoPlayers: function(p1,p1ids,p2,p2ids) {
-        var cw= ccsx.center(),
+      regoPlayers(p1,p1ids,p2,p2ids) {
+        const cw= ccsx.center(),
         wb= ccsx.vbox();
 
         this.play2= p2;
@@ -127,13 +127,13 @@ define("zotohlab/p/hud",
 
       /**
        */
-      resetAsNew: function() {
+      resetAsNew() {
         this.reset();
       },
 
       /**
        */
-      reset: function() {
+      reset() {
         this.scores=  {};
         this.scores[csts.P2_COLOR] = 0;
         this.scores[csts.P1_COLOR] = 0;
@@ -145,15 +145,15 @@ define("zotohlab/p/hud",
 
       /**
        */
-      endGame: function() {
+      endGame() {
         this.replayBtn.setVisible(true);
         this.resultMsg.setVisible(true);
       },
 
       /**
        */
-      initLabels: function() {
-        var color= cc.color('#ffffff'),
+      initLabels() {
+        const color= cc.color('#ffffff'),
         cw= ccsx.center(),
         wb= ccsx.vbox();
 
@@ -193,8 +193,8 @@ define("zotohlab/p/hud",
 
       /**
        */
-      isDone: function() {
-        var s2= this.scores[this.play2],
+      isDone() {
+        let s2= this.scores[this.play2],
         s1= this.scores[this.play1],
         rc= [false, null];
 
@@ -205,7 +205,7 @@ define("zotohlab/p/hud",
 
       /**
        */
-      updateScores: function(scores) {
+      updateScores(scores) {
         this.scores[this.play2] = scores[this.play2];
         this.scores[this.play1] = scores[this.play1];
         this.drawScores();
@@ -213,15 +213,15 @@ define("zotohlab/p/hud",
 
       /**
        */
-      updateScore: function(color,value) {
+      updateScore(color,value) {
         this.scores[color] = this.scores[color] + value;
         this.drawScores();
       },
 
       /**
        */
-      drawScores: function() {
-        var s2 = this.play2 ? this.scores[this.play2] : 0,
+      drawScores() {
+        const s2 = this.play2 ? this.scores[this.play2] : 0,
         s1 = this.play1 ? this.scores[this.play1] : 0,
         n2 = sjs.prettyNumber(s2,1),
         n1 = sjs.prettyNumber(s1,1);
@@ -231,8 +231,8 @@ define("zotohlab/p/hud",
 
       /**
        */
-      drawResult: function(winner) {
-        var msg="";
+      drawResult(winner) {
+        let msg="";
         if (winner === csts.P2_COLOR) {
           msg= sh.l10n('%whowin', { who: this.p2Long});
         } else {
@@ -243,16 +243,14 @@ define("zotohlab/p/hud",
 
     });
 
-    exports= {
+    exports= /** @lends exports# */{
       /**
        * @property {BackLayer} BackLayer
-       * @static
        */
       BackLayer: BackLayer,
 
       /**
        * @property {HUDLayer} HUDLayer
-       * @static
        */
       HUDLayer: HUDLayer
     };

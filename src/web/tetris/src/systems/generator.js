@@ -32,7 +32,7 @@ define("zotohlab/p/s/generator",
   function (pss, cobjs, gnodes, utils, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/generator */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R= sjs.ramda,
@@ -48,7 +48,7 @@ define("zotohlab/p/s/generator",
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state = options;
       },
 
@@ -57,7 +57,7 @@ define("zotohlab/p/s/generator",
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.arena=null;
       },
 
@@ -66,7 +66,7 @@ define("zotohlab/p/s/generator",
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.arena= engine.getNodeList(gnodes.ArenaNode);
         this.nextShapeInfo= this.randNext();
         this.nextShape=null;
@@ -77,8 +77,8 @@ define("zotohlab/p/s/generator",
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var node = this.arena.head,
+      update(dt) {
+        let node = this.arena.head,
         dp, sl;
 
         if (this.state.running &&
@@ -104,8 +104,8 @@ define("zotohlab/p/s/generator",
       /**
        * @private
        */
-      reifyNextShape: function(node, layer) {
-        var gbox= node.gbox,
+      reifyNextShape(node, layer) {
+        let gbox= node.gbox,
         wz= ccsx.vrect(),
         shape= new cobjs.Shape(gbox.box.left + 5 * csts.TILE,
                                gbox.box.top - csts.TILE,
@@ -134,8 +134,8 @@ define("zotohlab/p/s/generator",
       /**
        * @private
        */
-      previewNextShape: function(node, layer) {
-        var info = this.randNext(),
+      previewNextShape(node, layer) {
+        let info = this.randNext(),
         gbox= node.gbox,
         cw = ccsx.center(),
         wb = ccsx.vbox(),
@@ -159,8 +159,8 @@ define("zotohlab/p/s/generator",
       /**
        * @private
        */
-      randNext: function() {
-        var n= sjs.rand( cobjs.Shapes.length),
+      randNext() {
+        const n= sjs.rand( cobjs.Shapes.length),
         proto= cobjs.Shapes[n];
 
         return {

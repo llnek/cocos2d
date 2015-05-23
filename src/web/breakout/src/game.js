@@ -34,7 +34,7 @@ define('zotohlab/p/arena',
   function(sobjs, sjs, sh, ccsx, layers, scenes, mmenus, huds) { "use strict";
 
     /** @alias module:zotohlab/p/arena */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -48,9 +48,9 @@ define('zotohlab/p/arena',
       /**
        * @private
        */
-      reset: function(newFlag) {
+      reset(newFlag) {
         if (!sjs.isEmpty(this.atlases)) {
-          sjs.eachObj(function(v) { v.removeAllChildren(); }, this.atlases);
+          sjs.eachObj((v) => { v.removeAllChildren(); }, this.atlases);
         } else {
           this.regoAtlas('game-pics');
         }
@@ -63,23 +63,23 @@ define('zotohlab/p/arena',
 
       /**
        */
-      operational: function() {
+      operational() {
         return this.options.running;
       },
 
       /**
        * @private
        */
-      spawnPlayer: function() {
+      spawnPlayer() {
         sh.factory.bornPaddle();
       },
 
       /**
        * @private
        */
-      getEnclosureBox: function() {
-        var csts= sh.xcfg.csts,
-        wz= ccsx.screen();
+      getEnclosureBox() {
+        const csts= sh.xcfg.csts,
+        wz= ccsx.vrect();
         return { bottom: csts.TILE,
                  top: wz.height - csts.TOP * csts.TILE,
                  left: csts.TILE,
@@ -89,7 +89,7 @@ define('zotohlab/p/arena',
       /**
        * @private
        */
-      onPlayerKilled: function() {
+      onPlayerKilled() {
         if ( this.getHUD().reduceLives(1)) {
           this.onDone();
         } else {
@@ -100,7 +100,7 @@ define('zotohlab/p/arena',
       /**
        * @private
        */
-      onDone: function() {
+      onDone() {
         this.reset();
         this.options.running=false;
         this.getHUD().enableReplay();
@@ -108,15 +108,15 @@ define('zotohlab/p/arena',
 
       /**
        */
-      replay: function() {
+      replay() {
         this.play(false);
       },
 
       /**
        */
-      play: function(newFlag) {
+      play(newFlag) {
 
-        var pss = sobjs.Priorities;
+        const pss = sobjs.Priorities;
 
         this.reset(newFlag);
         this.cleanSlate();
@@ -126,27 +126,27 @@ define('zotohlab/p/arena',
         this.options.world= this.getEnclosureBox();
         this.options.running=true;
 
-        R.forEach(function(z) {
+        R.forEach((z) => {
           this.engine.addSystem(new (z)(this.options), z.Priority);
-        }.bind(this),
-        [ [sobjs.Supervisor, pss.PreUpdate],
-          [sobjs.Motions, pss.Motion],
-          [sobjs.MovementPaddle, pss.Movement],
-          [sobjs.MovementBall, pss.Movement],
-          [sobjs.Collisions, pss.Collision]]);
+        },
+        [ sobjs.Supervisor,
+          sobjs.Motions,
+          sobjs.MovementPaddle,
+          sobjs.MovementBall,
+          sobjs.Collisions]);
       },
 
       /**
        * @private
        */
-      onEarnScore: function(msg) {
+      onEarnScore(msg) {
         this.getHUD().updateScore(msg.value);
       },
 
       /**
        * @private
        */
-      onNewGame: function(mode) {
+      onNewGame(mode) {
         //sh.sfxPlay('start_game');
         this.setGameMode(mode);
         this.play(true);
@@ -154,11 +154,10 @@ define('zotohlab/p/arena',
 
     });
 
-    exports = {
+    exports = /** @lends exports# */{
 
       /**
        * @property {String} rtti
-       * @static
        */
       rtti : sh.ptypes.game,
 
@@ -167,26 +166,26 @@ define('zotohlab/p/arena',
        * @param {Object} options
        * @return {cc.Scene}
        */
-      reify: function(options) {
-        var scene = new scenes.XSceneFactory([
+      reify(options) {
+        const scene = new scenes.XSceneFactory([
           huds.BackLayer,
           GameLayer,
           huds.HUDLayer
         ]).reify(options);
 
-        scene.onmsg('/game/bricks/killed', function(topic, msg) {
+        scene.onmsg('/game/bricks/killed', (topic, msg) => {
           sh.main.onBrickKilled(msg);
         }).
-        onmsg('/game/players/killed', function(topic, msg) {
+        onmsg('/game/players/killed', (topic, msg) => {
           sh.main.onPlayerKilled(msg);
         }).
-        onmsg('/game/players/earnscore', function(topic, msg) {
+        onmsg('/game/players/earnscore', (topic, msg) => {
           sh.main.onEarnScore(msg);
         }).
-        onmsg('/hud/showmenu',function(t,msg) {
+        onmsg('/hud/showmenu',(t,msg) => {
           mmenus.showMenu();
         }).
-        onmsg('/hud/replay',function(t,msg) {
+        onmsg('/hud/replay',(t,msg) => {
           sh.main.replay();
         });
 

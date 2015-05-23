@@ -39,7 +39,7 @@ define("zotohlab/p/arena",
            odin, layers, scenes, mmenus, huds) { "use strict";
 
     /** @alias module:zotohlab/p/arena */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     evts= odin.Events,
@@ -55,7 +55,7 @@ define("zotohlab/p/arena",
        * Get an odin event, first level callback
        * @private
        */
-      onevent: function(topic, evt) {
+      onevent(topic, evt) {
 
         sjs.loggr.debug(evt);
 
@@ -72,13 +72,13 @@ define("zotohlab/p/arena",
       /**
        * @private
        */
-      onStop: function(evt) {
+      onStop(evt) {
       },
 
       /**
        * @private
        */
-      onNetworkEvent: function(evt) {
+      onNetworkEvent(evt) {
         switch (evt.code) {
           case evts.RESTART:
             sjs.loggr.debug("restarting a new game...");
@@ -98,7 +98,7 @@ define("zotohlab/p/arena",
       /**
        * @private
        */
-      onSessionEvent: function(evt) {
+      onSessionEvent(evt) {
         if (!sjs.isObject(evt.source)) { return; }
         switch (evt.code) {
           case evts.POKE_MOVE:
@@ -120,7 +120,7 @@ define("zotohlab/p/arena",
 
       /**
        */
-      replay: function() {
+      replay() {
         sjs.loggr.debug('replay game called');
         if (sjs.isObject(this.options.wsock)) {
 
@@ -136,13 +136,13 @@ define("zotohlab/p/arena",
 
       /**
        */
-      play: function(newFlag) {
-        var pss = sobjs.Priorities,
+      play(newFlag) {
+        let pss = sobjs.Priorities,
         p1ids,
         p2ids;
 
         // sort out names of players
-        sjs.eachObj(function(v,k) {
+        sjs.eachObj((v,k) => {
           if (v[0] === 1) {
             p1ids= [k, v[1] ];
           } else {
@@ -171,9 +171,9 @@ define("zotohlab/p/arena",
           this.options.wsock.subscribeAll(this.onevent,this);
         }
 
-        R.forEach(function(z) {
+        R.forEach((z) => {
           this.engine.addSystem(new (z)(this.options), z.Priority);
-        }.bind(this),
+        },
         [ sobjs.Supervisor,
           sobjs.Networking,
           sobjs.Motions,
@@ -186,7 +186,7 @@ define("zotohlab/p/arena",
       /**
        * @protected
        */
-      onNewGame: function(mode) {
+      onNewGame(mode) {
         //sh.xcfg.sfxPlay('start_game');
         this.setGameMode(mode);
         this.play(true);
@@ -194,15 +194,15 @@ define("zotohlab/p/arena",
 
       /**
        */
-      reset: function(newFlag) {
+      reset(newFlag) {
         if (!sjs.isEmpty(this.atlases)) {
-          sjs.eachObj(function(v){ v.removeAllChildren(); }, this.atlases);
+          sjs.eachObj((v) => { v.removeAllChildren(); }, this.atlases);
         } else {
           this.regoAtlas('game-pics');
           this.regoAtlas('lang-pics');
         }
-        R.forEach(function(z) {
-          if (z) { z.dispose(); }
+        R.forEach((z) => {
+          if (!!z) { z.dispose(); }
         }, this.players);
         if (newFlag) {
           this.getHUD().resetAsNew();
@@ -215,16 +215,16 @@ define("zotohlab/p/arena",
       /**
        * @protected
        */
-      operational: function() {
+      operational() {
         return this.options.running;
       },
 
       /**
        * @private
        */
-      initPlayers: function() {
-        var p2cat,p1cat,
-        p2,p1;
+      initPlayers() {
+        let p2cat, p1cat,
+        p2, p1;
 
         switch (this.options.mode) {
           case sh.gtypes.ONLINE_GAME:
@@ -252,16 +252,16 @@ define("zotohlab/p/arena",
        * Scores is a map {'o': 0, 'x': 0}
        * @private
        */
-      updatePoints: function(scores) {
+      updatePoints(scores) {
         this.getHUD().updateScores(scores);
       },
 
       /**
        * @private
        */
-      onWinner: function(p,score) {
+      onWinner(p,score) {
         this.getHUD().updateScore(p,score || 1);
-        var rc= this.getHUD().isDone();
+        const rc= this.getHUD().isDone();
         if (rc[0]) {
           this.doDone( rc[1] );
         } else {
@@ -271,7 +271,7 @@ define("zotohlab/p/arena",
       /**
        * @private
        */
-      doDone: function(p) {
+      doDone(p) {
         this.getHUD().drawResult(p);
         this.getHUD().endGame();
         //this.removeAll();
@@ -282,7 +282,7 @@ define("zotohlab/p/arena",
 
       /**
        */
-      setGameMode: function(mode) {
+      setGameMode(mode) {
         this._super(mode);
         this.getHUD().setGameMode(mode);
       },
@@ -290,17 +290,16 @@ define("zotohlab/p/arena",
       /**
        * @private
        */
-      getEnclosureBox: function() {
+      getEnclosureBox() {
         return ccsx.vbox();
       }
 
     });
 
-    exports= {
+    exports= /** @lends exports# */{
 
       /**
        * @property {String} rtti
-       * @static
        */
       rtti: sh.ptypes.game,
 
@@ -309,27 +308,27 @@ define("zotohlab/p/arena",
        * @param {Object} options
        * @return {cc.Scene}
        */
-      reify: function(options) {
+      reify(options) {
 
-        var scene = new scenes.XSceneFactory([
+        const scene = new scenes.XSceneFactory([
           huds.BackLayer,
           GameLayer,
           huds.HUDLayer
         ]).reify(options);
 
-        scene.onmsg('/hud/showmenu',function(t,msg) {
+        scene.onmsg('/hud/showmenu', (t,msg) => {
           mmenus.showMenu();
         }).
-        onmsg('/hud/replay',function(t,msg) {
+        onmsg('/hud/replay', (t,msg) => {
           sh.main.replay();
         }).
-        onmsg('/hud/score/update',function(t,msg) {
+        onmsg('/hud/score/update', (t,msg) => {
           sh.main.onWinner(msg.color, msg.score);
         }).
-        onmsg('/hud/score/sync',function(t,msg) {
+        onmsg('/hud/score/sync', (t,msg) => {
           sh.main.updatePoints(msg.points);
         }).
-        onmsg('/hud/end',function(t,msg) {
+        onmsg('/hud/end', (t,msg) => {
           sh.main.doDone(msg.winner);
         });
 

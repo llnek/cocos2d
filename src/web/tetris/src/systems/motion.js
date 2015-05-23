@@ -32,7 +32,7 @@ define("zotohlab/p/s/motioncontrol",
   function (pss, cobjs, gnodes, utils, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/motioncontrol */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -47,7 +47,7 @@ define("zotohlab/p/s/motioncontrol",
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.throttleWait= csts.THROTTLEWAIT;
         this.state = options;
       },
@@ -57,7 +57,7 @@ define("zotohlab/p/s/motioncontrol",
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.arena=null;
       },
 
@@ -66,7 +66,7 @@ define("zotohlab/p/s/motioncontrol",
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.arena= engine.getNodeList(gnodes.ArenaNode);
         this.ops={};
         this.initKeyOps();
@@ -75,7 +75,7 @@ define("zotohlab/p/s/motioncontrol",
       /**
        * @private
        */
-      onXXXEvent: function(node,dt) {
+      onXXXEvent(node,dt) {
         if (this.state.selQ.length > 0) {
           var evt= this.state.selQ.shift();
           this.processMouse(node, evt, dt);
@@ -86,7 +86,7 @@ define("zotohlab/p/s/motioncontrol",
       /**
        * @private
        */
-      checkInput: function(node, dt) {
+      checkInput(node, dt) {
         if (cc.sys.capabilities['touches']) {
           this.onXXXEvent(node, dt);
         }
@@ -105,8 +105,8 @@ define("zotohlab/p/s/motioncontrol",
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var node= this.arena.head;
+      update(dt) {
+        const node= this.arena.head;
         if (this.state.running &&
            !!node) {
           this.checkInput(node, dt);
@@ -116,8 +116,8 @@ define("zotohlab/p/s/motioncontrol",
       /**
        * @private
        */
-      processMouse: function(node, evt,dt) {
-        var hsps= node.cpad.hotspots,
+      processMouse(node, evt,dt) {
+        const hsps= node.cpad.hotspots,
         px= evt.x,
         py= evt.y;
 
@@ -145,7 +145,7 @@ define("zotohlab/p/s/motioncontrol",
       /**
        * @private
        */
-      processKeys: function(node, dt) {
+      processKeys(node, dt) {
 
         if (this.keyPoll(cc.KEY.right)) {
           this.ops.sftRight(node, dt);
@@ -168,49 +168,49 @@ define("zotohlab/p/s/motioncontrol",
       /**
        * @private
        */
-      keyPoll: function(kp) {
+      keyPoll(kp) {
         return sh.main.keyPoll(kp);
       },
 
       /**
        * @private
        */
-      shiftRight: function(node, dt) {
+      shiftRight(node, dt) {
         node.motion.right=true;
       },
 
       /**
        * @private
        */
-      shiftLeft: function(node, dt) {
+      shiftLeft(node, dt) {
         node.motion.left=true;
       },
 
       /**
       * @private
       */
-      shiftDown: function(node, dt) {
+      shiftDown(node, dt) {
         node.motion.down=true;
       },
 
       /**
       * @private
       */
-      rotateRight: function(node, dt) {
+      rotateRight(node, dt) {
         node.motion.rotr=true;
       },
 
       /**
       * @private
       */
-      rotateLeft: function(node, dt) {
+      rotateLeft(node, dt) {
         node.motion.rotl=true;
       },
 
       /**
       * @private
       */
-      bindKey: function(func, fid) {
+      bindKey(func, fid) {
         this.ops[fid] = sh.throttle(func,
                                     this.throttleWait,
                                     { trailing:false });
@@ -219,10 +219,10 @@ define("zotohlab/p/s/motioncontrol",
       /**
       * @private
       */
-      initKeyOps: function() {
-        sjs.eachObj(function(v, k) {
+      initKeyOps() {
+        sjs.eachObj((v, k) => {
           this.bindKey(v,k);
-        }.bind(this),
+        },
         {'sftRight' : this.shiftRight.bind(this),
          'sftLeft' : this.shiftLeft.bind(this),
          'rotRight' : this.rotateRight.bind(this),
@@ -239,7 +239,6 @@ define("zotohlab/p/s/motioncontrol",
     MotionCtrlSystem.Priority= pss.Motion;
 
     exports= MotionCtrlSystem;
-
     return exports;
 });
 

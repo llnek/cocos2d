@@ -7,39 +7,57 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define('zotohlab/p/hud', ['cherimoia/skarojs',
-                         'zotohlab/asterix',
-                         'zotohlab/asx/ccsx',
-                         'zotohlab/asx/xlayers'],
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xlayers
+ * @module zotohlab/p/hud
+ */
+define('zotohlab/p/hud',
+
+       ['cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/xlayers'],
 
   function(sjs, sh, ccsx, layers) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/hud */
+    let exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R= sjs.ramda,
     undef,
+
+    /**
+     * @class BackLayer
+     */
     BackLayer = layers.XLayer.extend({
 
-      rtti: function() { return 'BackLayer'; },
+      rtti() { return 'BackLayer'; },
 
-      pkInit: function() {
-        this._super();
+      pkInit() {
         this.regoAtlas('back-tiles');
         this.regoAtlas('tr-pics');
       }
 
     }),
+
+    /**
+     * @class HUDLayer
+     */
     HUDLayer = layers.XGameHUDLayer.extend({
 
-      initAtlases: function() {
+      initAtlases() {
         this.hudAtlas= 'tr-pics';
         this.regoAtlas(this.hudAtlas);
       },
 
-      initLabels: function() {
-        var wz = ccsx.screen();
+      initLabels() {
+        let wz = ccsx.vrect();
 
         this.scoreLabel = ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.TinyBoxBB'),
@@ -53,8 +71,8 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
         this.addChild(this.scoreLabel, this.lastZix, ++this.lastTag);
       },
 
-      initIcons: function() {
-        var wz = ccsx.screen();
+      initIcons() {
+        let wz = ccsx.vrect();
 
         this.lives = new layers.XHUDLives( this, csts.TILE + csts.S_OFF,
           wz.height - csts.TILE - csts.S_OFF, {
@@ -66,17 +84,26 @@ define('zotohlab/p/hud', ['cherimoia/skarojs',
         this.lives.create();
       },
 
-      initCtrlBtns: function(s) {
-        this._super(32/48);
+      XXinitCtrlBtns(s) {
+        //this._super(32/48);
       }
 
     });
 
-    return {
+    exports= /** @lends exports# */{
+
+      /**
+       * @property {BackLayer} BackLayer
+       */
       BackLayer : BackLayer,
+
+      /**
+       * @property {HUDLayer} HUDLayer
+       */
       HUDLayer : HUDLayer
     };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

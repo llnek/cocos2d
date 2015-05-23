@@ -7,22 +7,37 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/s/utils", ['zotohlab/p/components',
-                             'cherimoia/skarojs',
-                             'zotohlab/asterix',
-                             'zotohlab/asx/ccsx'],
+/**
+ * @requires zotohlab/p/elements
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/utils
+ */
+define("zotohlab/p/s/utils",
+
+       ['zotohlab/p/elements',
+        'cherimoia/skarojs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
   function (cobjs, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    let xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-    SystemUtils = {
+    /** @alias module:zotohlab/p/s/utils */
+    exports = {
 
-      fireMissiles: function(ship, dt) {
-        var po1= sh.pools.Missiles,
+      /**
+       * @method fireMissiles
+       * @param {Object} ship
+       * @param {Number} dt
+       */
+      fireMissiles(ship, dt) {
+        const po1= sh.pools.Missiles,
         pos = ship.pos(),
         sz = ship.size(),
         offy= 3 + sz.height * 0.3,
@@ -39,14 +54,18 @@ define("zotohlab/p/s/utils", ['zotohlab/p/components',
         m1.inflate({ x: pos.x + offx, y: pos.y + offy });
       },
 
-      bornShip: function(ship) {
-        var bsp= ship.bornSprite,
+      /**
+       * @method bornShip
+       * @param {Object} ship
+       */
+      bornShip(ship) {
+        const bsp= ship.bornSprite,
         ssp=ship.sprite,
         me=this,
-        makeBeAttack = cc.callFunc(function () {
+        makeBeAttack = cc.callFunc(() => {
           ship.canBeAttack = true;
           bsp.setVisible(false);
-          ssp.schedule(function(dt) {
+          ssp.schedule((dt) => {
             me.fireMissiles(ship, dt);
           }, 1/6);
           ship.inflate();
@@ -62,9 +81,14 @@ define("zotohlab/p/s/utils", ['zotohlab/p/components',
                                   cc.blink(3,9), makeBeAttack));
       },
 
-      processTouch: function(ship, delta) {
-        var pos = ship.pos(),
-        wz= ccsx.screen(),
+      /**
+       * @method processTouch
+       * @param {Object} ship
+       * @param {cc.Point} delta
+       */
+      processTouch(ship, delta) {
+        let pos = ship.pos(),
+        wz= ccsx.vrect(),
         cur= cc.pAdd(pos, delta);
         cur= cc.pClamp(cur, cc.p(0, 0),
                        cc.p(wz.width, wz.height));
@@ -74,7 +98,7 @@ define("zotohlab/p/s/utils", ['zotohlab/p/components',
 
     };
 
-    return SystemUtils;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

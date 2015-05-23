@@ -26,7 +26,7 @@ define('zotohlab/p/hud',
   function (sjs, sh, ccsx, layers) { "use strict";
 
     /** @alias module:zotohlab/p/hud */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -36,8 +36,9 @@ define('zotohlab/p/hud',
      */
     BackLayer = layers.XLayer.extend({
 
-      rtti: function() { return 'BackLayer'; },
-      pkInit: function() {
+      rtti() { return 'BackLayer'; },
+
+      pkInit() {
         this.addItem(new cc.TMXTiledMap(
           sh.getTilesPath('gamelevel1.tiles.arena')));
       }
@@ -52,7 +53,7 @@ define('zotohlab/p/hud',
       /**
        * @private
        */
-      updateScore: function(n) {
+      updateScore(n) {
         this.score += n;
         this.drawScore();
       },
@@ -60,7 +61,7 @@ define('zotohlab/p/hud',
       /**
        * @private
        */
-      resetAsNew: function() {
+      resetAsNew() {
         this.score = 0;
         this.reset();
       },
@@ -68,7 +69,7 @@ define('zotohlab/p/hud',
       /**
        * @private
        */
-      reset: function() {
+      reset() {
         this.replayBtn.setVisible(false);
         this.lives.resurrect();
       },
@@ -76,23 +77,23 @@ define('zotohlab/p/hud',
       /**
        * @protected
        */
-      initAtlases: function() {
+      initAtlases() {
         this.regoAtlas('game-pics');
-        this.hudAtlas= 'game-pics';
+        //this.hudAtlas= 'game-pics';
       },
 
       /**
        * @private
        */
-      drawScore: function() {
+      drawScore() {
         this.scoreLabel.setString(Number(this.score).toString());
       },
 
       /**
        * @private
        */
-      initLabels: function() {
-        var wz = ccsx.vrect();
+      initLabels() {
+        const wz = ccsx.vrect();
 
         this.scoreLabel = ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.TinyBoxBB'),
@@ -106,15 +107,15 @@ define('zotohlab/p/hud',
         this.addChild(this.scoreLabel, this.lastZix, ++this.lastTag);
       },
 
-      XXinitCtrlBtns: function() {
+      XXinitCtrlBtns() {
         //this._super(32/48);
       },
 
       /**
        * @protected
        */
-      initIcons: function() {
-        var wz = ccsx.vrect();
+      initIcons() {
+        const wz = ccsx.vrect();
 
         this.lives = new layers.XHUDLives( this, csts.TILE + csts.S_OFF,
           wz.height - csts.TILE - csts.S_OFF, {
@@ -128,16 +129,14 @@ define('zotohlab/p/hud',
 
     });
 
-    exports= {
+    exports= /** @lends exports# */{
       /**
        * @property {BackLayer} BackLayer
-       * @static
        */
       BackLayer: BackLayer,
 
       /**
        * @property {HUDLayer} HUDLayer
-       * @static
        */
       HUDLayer: HUDLayer
     };

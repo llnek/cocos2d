@@ -10,6 +10,7 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
+ * @requires zotohlab/p/s/priorities
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
@@ -17,14 +18,15 @@
  */
 define('zotohlab/p/s/moveasteroids',
 
-       ['cherimoia/skarojs',
+       ['zotohlab/p/s/priorities',
+        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, ccsx) { "use strict";
+  function (pss, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/moveasteroids */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -40,7 +42,7 @@ define('zotohlab/p/s/moveasteroids',
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state= options;
       },
 
@@ -49,7 +51,7 @@ define('zotohlab/p/s/moveasteroids',
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
       },
 
       /**
@@ -57,7 +59,7 @@ define('zotohlab/p/s/moveasteroids',
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
       },
 
       /**
@@ -65,15 +67,15 @@ define('zotohlab/p/s/moveasteroids',
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var me=this;
-        sh.pools.Astros3.iter(function(a) {
+      update(dt) {
+        const me=this;
+        sh.pools.Astros3.iter((a) => {
           if (a.status) { me.process(a, dt); }
         });
-        sh.pools.Astros2.iter(function(a) {
+        sh.pools.Astros2.iter((a) => {
           if (a.status) { me.process(a, dt); }
         });
-        sh.pools.Astros1.iter(function(a) {
+        sh.pools.Astros1.iter((a) => {
           if (a.status) { me.process(a, dt); }
         });
       },
@@ -81,8 +83,8 @@ define('zotohlab/p/s/moveasteroids',
       /**
        * @private
        */
-      process: function(astro, dt) {
-        var rot= astro.rotation,
+      process(astro, dt) {
+        let rot= astro.rotation,
         B = this.state.world,
         velo= astro.vel,
         sp= astro.sprite,
@@ -131,6 +133,12 @@ define('zotohlab/p/s/moveasteroids',
       }
 
     });
+
+    /**
+     * @memberof module:zotohlab/p/s/moveasteroids~MoveAsteroids
+     * @property {Number} Priority
+     */
+    MoveAsteroids.Priority = pss.Movement;
 
     exports= MoveAsteroids;
     return exports;

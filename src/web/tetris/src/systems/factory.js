@@ -28,7 +28,7 @@ define("zotohlab/p/s/factory",
   function (cobjs, utils, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/factory */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -43,7 +43,7 @@ define("zotohlab/p/s/factory",
        * @method constructor
        * @param {Ash.Engine} engine
        */
-      constructor: function(engine) {
+      constructor(engine) {
         this.engine=engine;
       },
 
@@ -54,8 +54,8 @@ define("zotohlab/p/s/factory",
        * @param {Object} options
        * @return {Ash.Entity}
        */
-      createArena: function(layer, options) {
-        var ent = sh.Ashley.newEntity();
+      createArena(layer, options) {
+        const ent = sh.Ashley.newEntity();
         ent.add(new cobjs.FilledLines());
         ent.add(new cobjs.ShapeShell());
         ent.add(new cobjs.BlockGrid());

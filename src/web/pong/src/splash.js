@@ -30,7 +30,7 @@ define("zotohlab/p/splash",
   function (sjs, sh, ccsx, splash, layers, scenes) { "use strict";
 
     /** @alias module:zotohlab/p/splash */
-    var exports= {},
+    let exports= {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -43,8 +43,8 @@ define("zotohlab/p/splash",
       /**
        * @protected
        */
-      setTitle: function() {
-        var cw = ccsx.center(),
+      setTitle() {
+        const cw = ccsx.center(),
         wb = ccsx.vbox();
         this.addFrame('#title.png',
                       cc.p(cw.x, wb.top * 0.9));
@@ -54,13 +54,11 @@ define("zotohlab/p/splash",
        * @protected
        */
       setPlay: function() {
-        var cw = ccsx.center(),
+        const cw = ccsx.center(),
         wb = ccsx.vbox(),
-        menu;
-
         menu = ccsx.pmenu1({
           imgPath: '#play.png',
-          cb: function() {
+          cb() {
             sh.fire('/splash/playgame');
           }
         });
@@ -74,7 +72,6 @@ define("zotohlab/p/splash",
 
       /**
        * @property {String} rtti
-       * @static
        */
       rtti : sh.ptypes.start,
 
@@ -84,14 +81,14 @@ define("zotohlab/p/splash",
        * @return {cc.Scene}
        */
       reify: function(options) {
+        const ss= sh.protos[sh.ptypes.start],
+        mm= sh.protos[sh.ptypes.mmenu],
+        dir= cc.director;
         return new scenes.XSceneFactory([
           SplashLayer
-        ]).reify(options).onmsg('/splash/playgame', function() {
-            var ss= sh.protos[sh.ptypes.start],
-            mm= sh.protos[sh.ptypes.mmenu],
-            dir= cc.director;
+        ]).reify(options).onmsg('/splash/playgame', () => {
             dir.runScene( mm.reify({
-              onBack: function() { dir.runScene( ss.reify() ); }
+              onBack() { dir.runScene( ss.reify() ); }
             }));
         });
       }

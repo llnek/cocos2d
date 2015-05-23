@@ -13,44 +13,62 @@
  * @requires cherimoia/skarojs
  * @module cherimoia/ebus
  */
-define("cherimoia/ebus",
+"use strict";
 
-       ['cherimoia/skarojs'],
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-  function (sjs) { "use strict";
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-    /** @alias module:cherimoia/ebus */
-    let exports={},
-    R = sjs.ramda,
-    undef,
-    _SEED=0;
+define("cherimoia/ebus", ["cherimoia/skarojs"], function (sjs) {
+  "use strict";
 
-    //////////////////////////////////////////////////////////////////////////////
-    let mkSubSCR = (topic, selector, target, repeat, args) => {
-      return {
-        id: "sub-" + Number(++_SEED),
-        repeat: sjs.boolify(repeat),
-        args: args || [],
-        action: selector,
-        target: target,
-        topic: topic,
-        active: true
-      };
-    }
+  /** @alias module:cherimoia/ebus */
+  var exports = {},
+      R = sjs.ramda,
+      undef = undefined,
+      _SEED = 0;
 
-    //////////////////////////////////////////////////////////////////////////////
-    let mkTreeNode = () => {
-      return {
-        tree: {},  // children - branches
-        subs: []   // subscribers (callbacks)
-      };
-    }
+  //////////////////////////////////////////////////////////////////////////////
+  var mkSubSCR = function mkSubSCR(topic, selector, target, repeat, args) {
+    return {
+      id: "sub-" + Number(++_SEED),
+      repeat: sjs.boolify(repeat),
+      args: args || [],
+      action: selector,
+      target: target,
+      topic: topic,
+      active: true
+    };
+  };
 
-    //////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  var mkTreeNode = function mkTreeNode() {
+    return {
+      tree: {}, // children - branches
+      subs: [] // subscribers (callbacks)
+    };
+  };
+
+  //////////////////////////////////////////////////////////////////////////////
+  /**
+   * @class EventBus
+   */
+
+  var EventBus = (function () {
+
     /**
-     * @class EventBus
+     * @private
      */
-    class EventBus {
+
+    function EventBus() {
+      _classCallCheck(this, EventBus);
+
+      this.rootNode = mkTreeNode();
+      this.allSubs = {};
+    }
+
+    _createClass(EventBus, [{
+      key: "once",
 
       /**
        * Subscribe to 1+ topics, returning a list of subscriber handles.
@@ -62,14 +80,12 @@ define("cherimoia/ebus",
        * @param {Object} target
        * @return {Array.String} - subscription ids
        */
-      once(topics, selector, target /*, more args */) {
-        const rc= this.pkListen(false,
-                                topics,
-                                selector,
-                                target,
-                                sjs.dropArgs(arguments,3));
+      value: function once(topics, selector, target /*, more args */) {
+        var rc = this.pkListen(false, topics, selector, target, sjs.dropArgs(arguments, 3));
         return sjs.echt(rc) ? rc : [];
       }
+    }, {
+      key: "on",
 
       /**
        * subscribe to 1+ topics, returning a list of subscriber handles.
@@ -81,14 +97,12 @@ define("cherimoia/ebus",
        * @param {Object} target
        * @return {Array.String} - subscription ids.
        */
-      on(topics, selector, target /*, more args */) {
-        const rc= this.pkListen(true,
-                                topics,
-                                selector,
-                                target,
-                                sjs.dropArgs(arguments,3));
+      value: function on(topics, selector, target /*, more args */) {
+        var rc = this.pkListen(true, topics, selector, target, sjs.dropArgs(arguments, 3));
         return sjs.echt(rc) ? rc : [];
       }
+    }, {
+      key: "fire",
 
       /**
        * Trigger event on this topic.
@@ -98,14 +112,16 @@ define("cherimoia/ebus",
        * @param {Object} msg
        * @return {Boolean}
        */
-      fire(topic, msg) {
-        const tokens= sjs.safeSplit(topic,'/');
-        if (tokens.length > 0 ) {
-          return this.pkDoPub(topic, this.rootNode, tokens, 0, msg || {} );
+      value: function fire(topic, msg) {
+        var tokens = sjs.safeSplit(topic, "/");
+        if (tokens.length > 0) {
+          return this.pkDoPub(topic, this.rootNode, tokens, 0, msg || {});
         } else {
           return false;
         }
       }
+    }, {
+      key: "resume",
 
       /**
        * Resume actions on this handle.
@@ -113,12 +129,14 @@ define("cherimoia/ebus",
        * @method resume
        * @param {Object} - handler id
        */
-      resume(handle) {
-        const sub= this.allSubs[handle];
+      value: function resume(handle) {
+        var sub = this.allSubs[handle];
         if (!!sub) {
-          sub.active=true;
+          sub.active = true;
         }
       }
+    }, {
+      key: "pause",
 
       /**
        * Pause actions on this handle.
@@ -126,12 +144,14 @@ define("cherimoia/ebus",
        * @method pause
        * @param {Object} - handler id
        */
-      pause(handle) {
-        const sub= this.allSubs[handle];
+      value: function pause(handle) {
+        var sub = this.allSubs[handle];
         if (!!sub) {
-          sub.active=false;
+          sub.active = false;
         }
       }
+    }, {
+      key: "off",
 
       /**
        * Stop actions on this handle.
@@ -140,86 +160,103 @@ define("cherimoia/ebus",
        * @method off
        * @param {Object} - handler id
        */
-      off(handle) {
-        const sub= this.allSubs[handle];
+      value: function off(handle) {
+        var sub = this.allSubs[handle];
         if (!!sub) {
-          this.pkUnSub(this.rootNode, sjs.safeSplit(sub.topic,'/'), 0, sub);
+          this.pkUnSub(this.rootNode, sjs.safeSplit(sub.topic, "/"), 0, sub);
         }
       }
+    }, {
+      key: "removeAll",
 
       /**
        * Remove all subscribers.
        * @memberof module:cherimoia/ebus~EventBus
        * @method removeAll
        */
-      removeAll() {
+      value: function removeAll() {
         this.rootNode = mkTreeNode();
         this.allSubs = {};
       }
+    }, {
+      key: "pkGetSubcr",
 
       /**
        * @private
        */
-      pkGetSubcr(id) {
+      value: function pkGetSubcr(id) {
         return this.allSubs[id];
       }
+    }, {
+      key: "pkListen",
 
       /**
        * @private
        */
-      pkListen(repeat, topics, selector, target, more) {
-        const ts= topics.trim().split(/\s+/);
+      value: function pkListen(repeat, topics, selector, target, more) {
+        var _this = this;
+
+        var ts = topics.trim().split(/\s+/);
         // for each topic, subscribe to it.
-        const rc= R.map((t) => {
-          return this.pkAddSub(repeat,t,selector,target,more);
+        var rc = R.map(function (t) {
+          return _this.pkAddSub(repeat, t, selector, target, more);
         }, ts);
-        return R.reject((z)=> { return z.length===0; }, rc);
+        return R.reject(function (z) {
+          return z.length === 0;
+        }, rc);
       }
+    }, {
+      key: "pkAddSub",
 
       /**
        * Register a subscriber to the topic leaf node, creating the path
        * when necessary.
        * @private
        */
-      pkAddSub(repeat, topic, selector, target, more) {
-        const tkns= sjs.safeSplit(topic,'/');
+      value: function pkAddSub(repeat, topic, selector, target, more) {
+        var _this2 = this;
+
+        var tkns = sjs.safeSplit(topic, "/");
         if (tkns.length > 0) {
-          const rc= mkSubSCR(topic, selector, target, repeat, more),
-          node= R.reduce((memo, z) => {
-            return this.pkDoSub(memo,z);
-          },
-          this.rootNode,
-          tkns);
+          var rc = mkSubSCR(topic, selector, target, repeat, more),
+              node = R.reduce(function (memo, z) {
+            return _this2.pkDoSub(memo, z);
+          }, this.rootNode, tkns);
 
           this.allSubs[rc.id] = rc;
           node.subs.push(rc);
           return rc.id;
         } else {
-          return '';
+          return "";
         }
       }
+    }, {
+      key: "pkUnSub",
 
       /**
        * Remove the subscriber and trim if it is a dangling leaf node.
        * @private
        */
-      pkUnSub(node, tokens, pos, sub) {
-        if (! sjs.echt(node)) { return; }
+      value: function pkUnSub(node, tokens, pos, sub) {
+        var _this3 = this;
+
+        if (!sjs.echt(node)) {
+          return;
+        }
         if (pos < tokens.length) {
-          const k= tokens[pos],
-          cn= node.tree[k];
-          this.pkUnSub(cn, tokens, pos+1, sub);
-          if (R.keys(cn.tree).length === 0 &&
-              cn.subs.length === 0) {
+          var k = tokens[pos],
+              cn = node.tree[k];
+          this.pkUnSub(cn, tokens, pos + 1, sub);
+          if (R.keys(cn.tree).length === 0 && cn.subs.length === 0) {
             delete node.tree[k];
           }
         } else {
-          pos= -1;
-          R.find((z) => {
+          pos = -1;
+          R.find(function (z) {
             pos += 1;
             if (z.id === sub.id) {
-              delete this.allSubs[z.id];
-              node.subs.splice(pos,1);
+              delete _this3.allSubs[z.id];
+              node.subs.splice(pos, 1);
               return true;
             } else {
               return false;
@@ -227,43 +264,50 @@ define("cherimoia/ebus",
           }, node.subs);
         }
       }
+    }, {
+      key: "pkDoPub",
 
       /**
        * @private
        */
-      pkDoPub(topic, node, tokens, pos, msg) {
-        if (! sjs.echt(node)) { return false; }
-        let rc=false;
+      value: function pkDoPub(topic, node, tokens, pos, msg) {
+        if (!sjs.echt(node)) {
+          return false;
+        }
+        var rc = false;
         if (pos < tokens.length) {
-          rc = rc || this.pkDoPub(topic, node.tree[ tokens[pos] ], tokens, pos+1, msg);
-          rc = rc || this.pkDoPub(topic, node.tree['*'], tokens, pos+1,msg);
+          rc = rc || this.pkDoPub(topic, node.tree[tokens[pos]], tokens, pos + 1, msg);
+          rc = rc || this.pkDoPub(topic, node.tree["*"], tokens, pos + 1, msg);
         } else {
-          rc = rc || this.pkRun(topic, node,msg);
+          rc = rc || this.pkRun(topic, node, msg);
         }
         return rc;
       }
+    }, {
+      key: "pkRun",
 
       /**
        * Invoke subscribers, and for non repeating ones, remove them from
        * the list.
        * @private
        */
-      pkRun(topic, node, msg) {
-        const cs= !!node ? node.subs : [];
-        let purge=false,
-        rc=false;
+      value: function pkRun(topic, node, msg) {
+        var _this4 = this;
 
-        R.forEach((z) => {
-          if (z.active &&
-              sjs.echt(z.action)) {
+        var cs = !!node ? node.subs : [];
+        var purge = false,
+            rc = false;
+
+        R.forEach(function (z) {
+          if (z.active && sjs.echt(z.action)) {
             // pass along any extra parameters, if any.
             z.action.apply(z.target, [topic, msg].concat(z.args));
             // if once only, kill it.
             if (!z.repeat) {
-              delete this.allSubs[z.id];
-              z.active= false;
-              z.action= null;
-              purge=true;
+              delete _this4.allSubs[z.id];
+              z.active = false;
+              z.action = null;
+              purge = true;
             }
             rc = true;
           }
@@ -271,49 +315,48 @@ define("cherimoia/ebus",
 
         // get rid of unwanted ones, and reassign new set to the node.
         if (purge && cs.length > 0) {
-          node.subs= R.filter((z) => {
+          node.subs = R.filter(function (z) {
             return z.action ? true : false;
           }, cs);
         }
 
         return rc;
       }
+    }, {
+      key: "pkDoSub",
 
       /**
        * Find or create a new child node.
        * @private
        */
-      pkDoSub(node,token) {
-        if (! sjs.hasKey(node.tree, token)) {
+      value: function pkDoSub(node, token) {
+        if (!sjs.hasKey(node.tree, token)) {
           node.tree[token] = mkTreeNode();
         }
         return node.tree[token];
       }
+    }]);
 
-      /**
-       * @private
-       */
-      constructor() {
-        this.rootNode = mkTreeNode();
-        this.allSubs = {};
-      }
+    return EventBus;
+  })();
 
-    };
+  ;
 
-    /**
-     * @method
-     * @return {EventBus}
-     */
-    exports.reify= function() { return new EventBus(); },
+  /**
+   * @method
+   * @return {EventBus}
+   */
+  exports.reify = function () {
+    return new EventBus();
+  },
 
-    /**
-     * @property {EventBus}
-     */
-    exports.EventBus= EventBus;
+  /**
+   * @property {EventBus}
+   */
+  exports.EventBus = EventBus;
 
-    return exports;
+  return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-

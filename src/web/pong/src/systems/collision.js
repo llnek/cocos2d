@@ -28,7 +28,7 @@ define("zotohlab/p/s/collision",
   function (pss, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/collision */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -43,7 +43,7 @@ define("zotohlab/p/s/collision",
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state = options;
       },
 
@@ -52,7 +52,7 @@ define("zotohlab/p/s/collision",
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.nodeList=null;
         this.fauxs=null;
         this.balls=null;
@@ -63,7 +63,7 @@ define("zotohlab/p/s/collision",
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.fauxs= engine.getNodeList(gnodes.FauxPaddleNode);
         this.nodeList= engine.getNodeList(gnodes.PaddleNode);
         this.balls= engine.getNodeList(gnodes.BallNode);
@@ -74,8 +74,8 @@ define("zotohlab/p/s/collision",
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var bnode = this.balls.head;
+      update(dt) {
+        const bnode = this.balls.head;
 
         if (this.state.running &&
            !!bnode) {
@@ -87,8 +87,8 @@ define("zotohlab/p/s/collision",
       /**
        * @private
        */
-      checkNodes: function(nl, bnode) {
-        for (var node=nl.head; node; node=node.next) {
+      checkNodes(nl, bnode) {
+        for (let node=nl.head; node; node=node.next) {
           if (ccsx.collide0(node.paddle.sprite,
                             bnode.ball.sprite)) {
             this.check(node, bnode);
@@ -100,8 +100,8 @@ define("zotohlab/p/s/collision",
        * Ball hits paddle.
        * @private
        */
-      check: function(node, bnode) {
-        var pos = bnode.ball.sprite.getPosition(),
+      check(node, bnode) {
+        let pos = bnode.ball.sprite.getPosition(),
         bb4 = ccsx.bbox4(node.paddle.sprite),
         velo = bnode.velocity,
         x= pos.x,

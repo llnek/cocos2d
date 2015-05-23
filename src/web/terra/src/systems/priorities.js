@@ -7,16 +7,33 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-(function () { "use strict";
+/**
+ * @module zotohlab/p/s/priorities
+ */
+define("zotohlab/p/s/priorities", [],
 
-  cc.game.onStart= function() {
-    supplicate('zotohlab/p/boot');
-  };
-  cc.game.run();
+  function () { "use strict";
 
-}).call(this);
+    /**
+     * @alias module:zotohlab/p/s/priorities
+     * @enum {Number}
+     * @readonly
+     */
+    const exports = {
+
+      PreUpdate: 1,
+      Motion: 2,
+      Movement: 3,
+      Collision: 4,
+      Resolve: 5,
+      Render: 6
+
+    };
+
+    return exports;
+});
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

@@ -30,7 +30,7 @@ define('zotohlab/p/s/resolution',
   function (pss, cobjs, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/resolution */
-    var exports= {},
+    let exports= {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -46,7 +46,7 @@ define('zotohlab/p/s/resolution',
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state= options;
       },
 
@@ -55,7 +55,7 @@ define('zotohlab/p/s/resolution',
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.aliens= undef;
         this.ships= undef;
         this.engine=undef;
@@ -66,7 +66,7 @@ define('zotohlab/p/s/resolution',
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.aliens= engine.getNodeList(gnodes.AlienMotionNode);
         this.ships= engine.getNodeList(gnodes.ShipMotionNode);
         this.engine=engine;
@@ -77,8 +77,8 @@ define('zotohlab/p/s/resolution',
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var aliens= this.aliens.head,
+      update(dt) {
+        const aliens= this.aliens.head,
         ship = this.ships.head;
 
         this.checkMissiles();
@@ -90,12 +90,12 @@ define('zotohlab/p/s/resolution',
       /**
        * @private
        */
-      checkMissiles: function() {
-        var mss = sh.pools.Missiles,
+      checkMissiles() {
+        const mss = sh.pools.Missiles,
         ht = ccsx.screenHeight(),
         me=this;
 
-        mss.iter(function(m) {
+        mss.iter((m) => {
           if (m.status) {
             if (m.pos().y >= ht ||
                 m.HP <= 0) {
@@ -108,12 +108,12 @@ define('zotohlab/p/s/resolution',
       /**
        * @private
        */
-      checkBombs: function() {
-        var bbs = sh.pools.Bombs,
+      checkBombs() {
+        const bbs = sh.pools.Bombs,
         bt = 0,
         me=this;
 
-        bbs.iter(function(b) {
+        bbs.iter((b) => {
           if (b.status) {
             if (b.pos().y <= bt ||
                 b.HP <= 0) {
@@ -126,11 +126,11 @@ define('zotohlab/p/s/resolution',
       /**
        * @private
        */
-      checkAliens: function(node) {
-        var sqad= node.aliens,
+      checkAliens(node) {
+        const sqad= node.aliens,
         me=this;
 
-        R.forEach(function(en) {
+        R.forEach((en) => {
           if (en.status) {
             if (en.HP <= 0) {
               sh.fire('/game/players/earnscore', {
@@ -144,8 +144,8 @@ define('zotohlab/p/s/resolution',
       /**
        * @private
        */
-      checkShip: function(node) {
-        var ship = node.ship;
+      checkShip(node) {
+        const ship = node.ship;
 
         if (ship.status &&
             ship.HP <= 0) {

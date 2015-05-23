@@ -28,7 +28,7 @@ define("zotohlab/p/s/networking",
   function (pss, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/networking */
-    var exports= {},
+    let exports= {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -43,7 +43,7 @@ define("zotohlab/p/s/networking",
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.netQ= options.netQ;
         this.state = options;
       },
@@ -53,7 +53,7 @@ define("zotohlab/p/s/networking",
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.paddles= null;
         this.balls= null;
         this.fauxs= null;
@@ -64,7 +64,7 @@ define("zotohlab/p/s/networking",
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.paddles= engine.getNodeList(gnodes.PaddleNode);
         this.balls= engine.getNodeList(gnodes.BallNode);
         this.fauxs= engine.getNodeList(gnodes.FauxPaddleNode);
@@ -75,7 +75,7 @@ define("zotohlab/p/s/networking",
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
+      update(dt) {
         if (this.netQ.length > 0) {
           return this.onEvent(this.netQ.shift());
         }
@@ -84,7 +84,7 @@ define("zotohlab/p/s/networking",
       /**
        * @private
        */
-      syncScores: function(scores) {
+      syncScores(scores) {
         var actors= this.state.players,
         rc= {};
         rc[actors[2].color] = scores.p2;
@@ -95,7 +95,7 @@ define("zotohlab/p/s/networking",
       /**
        * @private
        */
-      onEvent: function(evt) {
+      onEvent(evt) {
 
         sjs.loggr.debug("onEvent: => " + sjs.jsonfy(evt.source));
 
@@ -143,8 +143,8 @@ define("zotohlab/p/s/networking",
        * Reset back to default position, no movements
        * @private
        */
-      reposPaddles: function(nl) {
-        for (var node=nl.head; node; node=node.next) {
+      reposPaddles(nl) {
+        for (let node=nl.head; node; node=node.next) {
           if (node.player.pnum ===2) {
             node.paddle.sprite.setPosition(
               this.state.p2.x,
@@ -165,8 +165,8 @@ define("zotohlab/p/s/networking",
       /**
        * @private
        */
-      reposEntities: function() {
-        var node=this.balls.head;
+      reposEntities() {
+        const node=this.balls.head;
 
         this.reposPaddles(this.paddles);
         this.reposPaddles(this.fauxs);
@@ -184,9 +184,9 @@ define("zotohlab/p/s/networking",
       /**
        * @private
        */
-      syncPaddles: function(nl, evt) {
+      syncPaddles(nl, evt) {
 
-        for (var node = nl.head; node; node=node.next) {
+        for (let node = nl.head; node; node=node.next) {
 
           if (sjs.isObject(evt.source.p2) &&
               node.player.pnum===2) {
@@ -205,8 +205,8 @@ define("zotohlab/p/s/networking",
       /**
        * @private
        */
-      syncOnePaddle: function(node, c) {
-        var dir=0;
+      syncOnePaddle(node, c) {
+        let dir=0;
         node.paddle.sprite.setPosition(c.x, c.y);
         if (c.pv > 0) { dir = 1;}
         if (c.pv < 0) { dir = -1;}

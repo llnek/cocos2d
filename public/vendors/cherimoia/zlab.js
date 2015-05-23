@@ -13,18 +13,16 @@
  * @requires cherimoia/skarojs
  * @module zotohlab
  */
-define("zotohlab",
+"use strict";
 
-       ['cherimoia/skarojs'],
+define("zotohlab", ["cherimoia/skarojs"], function (sjs) {
+  "use strict";
 
-  function (sjs) { "use strict";
+  /** @alias module:zotohlab */
+  var exports = {};
 
-    /** @alias module:zotohlab */
-    var exports = {};
-
-    return exports;
+  return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
-

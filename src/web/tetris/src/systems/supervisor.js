@@ -30,7 +30,7 @@ define("zotohlab/p/s/supervisor",
   function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/supervisor */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -45,7 +45,7 @@ define("zotohlab/p/s/supervisor",
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state = options;
         this.inited=false;
       },
@@ -55,7 +55,7 @@ define("zotohlab/p/s/supervisor",
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.arena=null;
       },
 
@@ -64,7 +64,7 @@ define("zotohlab/p/s/supervisor",
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         engine.addEntity(sh.factory.createArena(sh.main, this.state));
         this.arena= engine.getNodeList(gnodes.ArenaNode);
       },
@@ -74,8 +74,8 @@ define("zotohlab/p/s/supervisor",
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var node = this.arena.head;
+      update(dt) {
+        const node = this.arena.head;
         if (this.state.running &&
             !!node) {
           if (! this.inited) {
@@ -88,8 +88,8 @@ define("zotohlab/p/s/supervisor",
       /**
        * @private
        */
-      onceOnly: function(node) {
-        var cw = ccsx.center(),
+      onceOnly(node) {
+        const cw = ccsx.center(),
         wb= ccsx.vbox(),
         wz= ccsx.vrect(),
         fz= ccsx.createSpriteFrame('gray.png').getContentSize(),
@@ -117,8 +117,8 @@ define("zotohlab/p/s/supervisor",
       /**
        * @private
        */
-      doCtrl: function(node) {
-        var hsps= node.cpad.hotspots,
+      doCtrl(node) {
+        let hsps= node.cpad.hotspots,
         cw = ccsx.center(),
         wb= ccsx.vbox(),
         wz= ccsx.vrect(),
@@ -169,8 +169,8 @@ define("zotohlab/p/s/supervisor",
        *
        * @private
        */
-      xh: function(fz, lf_bdy, rt_bdy, ypos) {
-        var cw = ccsx.center(),
+      xh(fz, lf_bdy, rt_bdy, ypos) {
+        let cw = ccsx.center(),
         wb= ccsx.vbox(),
         wz= ccsx.vrect(),
         hfzw = fz.width * 0.5,
@@ -191,8 +191,8 @@ define("zotohlab/p/s/supervisor",
        *
        * @private
        */
-      xv: function(fz, x) {
-        var cw = ccsx.center(),
+      xv(fz, x) {
+        let cw = ccsx.center(),
         wb= ccsx.vbox(),
         wz= ccsx.vrect(),
         f, y;
@@ -210,8 +210,8 @@ define("zotohlab/p/s/supervisor",
       /**
        * @private
        */
-      onceOnly_2: function (node, fz, bz, box) {
-        var tiles= this.fakeTileMap(bz, box);
+      onceOnly_2(node, fz, bz, box) {
+        const tiles= this.fakeTileMap(bz, box);
 
         node.blocks.grid = this.initBlockMap(tiles);
         node.collision.tiles = tiles;
@@ -228,13 +228,11 @@ define("zotohlab/p/s/supervisor",
       /**
        * @private
        */
-      initBlockMap: function(tiles) {
-        var grid=[],
-        rc,
-        r;
+      initBlockMap(tiles) {
+        const grid=[];
 
-        for (r= 0; r < tiles.length; ++r) {
-          rc= sjs.makeArray(tiles[r].length, undef);
+        for (let r= 0; r < tiles.length; ++r) {
+          let rc= sjs.makeArray(tiles[r].length, undef);
           grid.push(rc);
         }
 
@@ -245,15 +243,14 @@ define("zotohlab/p/s/supervisor",
        * Create our own collision map using cells.
        * @private
        */
-      fakeTileMap: function(bz, box) {
+      fakeTileMap(bz, box) {
 
-        var hlen = Math.floor( (box.top - box.bottom) / bz.height),
+        let hlen = Math.floor( (box.top - box.bottom) / bz.height),
         wlen = Math.floor((box.right - box.left) / bz.width),
         map=[],
-        r,
         rc;
 
-        for (r = 0; r <= hlen; ++r) {
+        for (let r = 0; r <= hlen; ++r) {
           if (r===0) {
             rc = sjs.makeArray(wlen+2, 1);
           } else {

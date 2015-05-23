@@ -17,7 +17,7 @@ define("zotohlab/p/s/priorities", [],
   function () { "use strict";
 
     /** @alias module:zotohlab/p/s/priorities */
-    var exports= {
+    const exports= {
 
       PreUpdate: 1,
       Motion: 2,

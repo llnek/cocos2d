@@ -10,6 +10,7 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
+ * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -18,15 +19,16 @@
  */
 define('zotohlab/p/s/motions',
 
-       ['zotohlab/p/gnodes',
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs, sh, ccsx) { "use strict";
+  function (pss, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/motions */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -41,7 +43,7 @@ define('zotohlab/p/s/motions',
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.throttleWait= 80;
         this.state = options;
       },
@@ -51,7 +53,7 @@ define('zotohlab/p/s/motions',
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.ships=null;
       },
 
@@ -60,7 +62,7 @@ define('zotohlab/p/s/motions',
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.ships= engine.getNodeList(gnodes.ShipMotionNode);
         this.ops={};
         this.initKeyOps();
@@ -71,8 +73,8 @@ define('zotohlab/p/s/motions',
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var node= this.ships.head;
+      update(dt) {
+        const node= this.ships.head;
 
         if (this.state.running &&
            !!node) {
@@ -83,7 +85,7 @@ define('zotohlab/p/s/motions',
       /**
        * @private
        */
-      scanInput: function(node, dt) {
+      scanInput(node, dt) {
         if (cc.sys.capabilities['keyboard'] &&
             !cc.sys.isNative) {
           this.processKeys(node,dt);
@@ -99,7 +101,7 @@ define('zotohlab/p/s/motions',
       /**
        * @private
        */
-      processKeys: function(node,dt) {
+      processKeys(node,dt) {
         if (sh.main.keyPoll(cc.KEY.right)) {
           this.ops.rotRight(node, dt);
         }
@@ -117,35 +119,35 @@ define('zotohlab/p/s/motions',
       /**
        * @private
        */
-      shiftDown: function(node, dt) {
+      shiftDown(node, dt) {
         node.motion.down=true;
       },
 
       /**
        * @private
        */
-      shiftUp: function(node, dt) {
+      shiftUp(node, dt) {
         node.motion.up=true;
       },
 
       /**
        * @private
        */
-      rotateRight: function(node, dt) {
+      rotateRight(node, dt) {
         node.motion.right=true;
       },
 
       /**
        * @private
        */
-      rotateLeft: function(node, dt) {
+      rotateLeft(node, dt) {
         node.motion.left=true;
       },
 
       /**
        * @private
        */
-      initKeyOps: function() {
+      initKeyOps() {
         this.ops.rotRight = sh.throttle(this.rotateRight.bind(this), this.throttleWait, {trailing:false});
         this.ops.rotLeft = sh.throttle(this.rotateLeft.bind(this), this.throttleWait, {trailing:false});
         this.ops.sftDown= sh.throttle(this.shiftDown.bind(this), this.throttleWait, {trailing:false});
@@ -153,6 +155,12 @@ define('zotohlab/p/s/motions',
       }
 
     });
+
+    /**
+     * @memberof module:zotohlab/p/s/motions~MotionControls
+     * @property {Number} Priority
+     */
+    MotionControls.Priority = pss.Motion;
 
     exports= MotionControls;
     return exports;

@@ -28,7 +28,7 @@ define('zotohlab/p/s/factory',
   function (cobjs, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/factory */
-    var exports= {},
+    let exports= {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -44,7 +44,7 @@ define('zotohlab/p/s/factory',
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(engine, options) {
+      constructor(engine, options) {
         this.state = options;
         this.engine=engine;
       },
@@ -54,9 +54,9 @@ define('zotohlab/p/s/factory',
        * @method createMissiles
        * @param {Number} count
        */
-      createMissiles: function(count) {
-        sh.pools.Missiles.preSet(function() {
-          var sp = ccsx.createSpriteFrame('laserGreen.png');
+      createMissiles(count) {
+        sh.pools.Missiles.preSet(() => {
+          const sp = ccsx.createSpriteFrame('laserGreen.png');
           sp.setVisible(false);
           sh.main.addAtlasItem('game-pics', sp);
           return new cobjs.Missile(sp);
@@ -68,9 +68,9 @@ define('zotohlab/p/s/factory',
        * @method createLasers
        * @param {Number} count
        */
-      createLasers: function(count) {
-        sh.pools.Lasers.preSet(function() {
-          var sp = ccsx.createSpriteFrame('laserRed.png');
+      createLasers(count) {
+        sh.pools.Lasers.preSet(() => {
+          const sp = ccsx.createSpriteFrame('laserRed.png');
           sp.setVisible(false);
           sh.main.addAtlasItem('game-pics', sp);
           return new cobjs.Laser(sp);
@@ -81,8 +81,8 @@ define('zotohlab/p/s/factory',
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createShip
        */
-      createShip: function() {
-        var ent= sh.Ashley.newEntity(),
+      createShip() {
+        let ent= sh.Ashley.newEntity(),
         deg = 90,//sjs.randPercent() * 360;
         sp= ccsx.createSpriteFrame('rship_0.png');
 
@@ -108,11 +108,11 @@ define('zotohlab/p/s/factory',
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method bornShip
        */
-      bornShip: function() {
-        var h = this.state.playerSize.height,
+      bornShip() {
+        let h = this.state.playerSize.height,
         w = this.state.playerSize.width,
         B= this.state.world,
-        wz = ccsx.screen(),
+        wz = ccsx.vrect(),
         cw = ccsx.center(),
         test=true,
         sp,aa,x,y,r;
@@ -138,8 +138,8 @@ define('zotohlab/p/s/factory',
        * @method createAsteroids
        * @param {Number} rank
        */
-      createAsteroids: function(rank) {
-        var cfg = sh.getLevelCfg(this.state.level),
+      createAsteroids(rank) {
+        let cfg = sh.getLevelCfg(this.state.level),
         B= this.state.world,
         pool,
         ht = this.state.astro1.height,
@@ -155,8 +155,8 @@ define('zotohlab/p/s/factory',
 
         sjs.loggr.debug('about to create more asteroids - ' + rank);
 
-        pool.preSet(function(pl) {
-          var wz = ccsx.screen(),
+        pool.preSet((pl) => {
+          let wz = ccsx.vrect(),
           cw = ccsx.center(),
           sp, x, y,
           deg, r, n=0;
@@ -190,18 +190,18 @@ define('zotohlab/p/s/factory',
       /**
        * @private
        */
-      maybeOverlap: function (ship) {
-        var rc= R.any(function(z) {
+      maybeOverlap(ship) {
+        let rc= R.any((z) => {
           return z.status ? sh.isIntersect(ship, ccsx.bbox4(z.sprite)) : false;
         }, sh.pools.Astros1.pool);
         if (rc) { return true; }
 
-        rc= R.any(function(z) {
+        rc= R.any((z) => {
           return z.status ? sh.isIntersect(ship, ccsx.bbox4(z.sprite)) : false;
         }, sh.pools.Astros2.pool);
         if (rc) { return true; }
 
-        rc= R.any(function(z) {
+        rc= R.any((z) => {
           return z.status ? sh.isIntersect(ship, ccsx.bbox4(z.sprite)) : false;
         }, sh.pools.Astros3.pool);
         if (rc) { return true; }

@@ -28,7 +28,7 @@ define('zotohlab/p/s/factory',
   function (cobjs, sjs, sh, ccsx, XPool) { "use strict";
 
     /** @alias module:zotohlab/p/s/factory */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -44,7 +44,7 @@ define('zotohlab/p/s/factory',
        * @param {Ash.Engine} engine
        * @param {Object} options
        */
-      constructor: function(engine, options) {
+      constructor(engine, options) {
         this.engine=engine;
         this.state= options;
       },
@@ -54,9 +54,9 @@ define('zotohlab/p/s/factory',
        * @method createMissiles
        * @param {Number} count
        */
-      createMissiles: function(count) {
-        sh.pools.Missiles.preSet(function() {
-          var sp = ccsx.createSpriteFrame('missile.png');
+      createMissiles(count) {
+        sh.pools.Missiles.preSet(() => {
+          const sp = ccsx.createSpriteFrame('missile.png');
           sp.setVisible(false);
           sh.main.addAtlasItem('game-pics', sp);
           return new cobjs.Missile(sp);
@@ -68,9 +68,9 @@ define('zotohlab/p/s/factory',
        * @method createExplosions
        * @param {Number} count
        */
-      createExplosions: function(count) {
+      createExplosions(count) {
         sh.pools.Explosions.preSet(function() {
-          var sp = ccsx.createSpriteFrame('boom_0.png');
+          const sp = ccsx.createSpriteFrame('boom_0.png');
           sp.setVisible(false);
           sh.main.addAtlasItem('game-pics', sp);
           return new cobjs.Explosion(sp);
@@ -82,9 +82,9 @@ define('zotohlab/p/s/factory',
        * @method createBombs
        * @param {Number} count
        */
-      createBombs: function(count) {
+      createBombs(count) {
         sh.pools.Bombs.preSet(function() {
-          var sp = ccsx.createSpriteFrame('bomb.png');
+          const sp = ccsx.createSpriteFrame('bomb.png');
           sp.setVisible(false);
           sh.main.addAtlasItem('game-pics', sp);
           return new cobjs.Bomb(sp);
@@ -96,7 +96,7 @@ define('zotohlab/p/s/factory',
        * @method calcImgSize
        * @param {String} img
        */
-      calcImgSize: function(img) {
+      calcImgSize(img) {
         return ccsx.createSpriteFrame(img).getContentSize();
       },
 
@@ -105,7 +105,7 @@ define('zotohlab/p/s/factory',
        * @method getRankInfo
        * @param {Number} rank
        */
-      getRankInfo: function(rank) {
+      getRankInfo(rank) {
         if (rank < 3) {
           return [100, [ 'blue_bug_0.png', 'blue_bug_1.png' ] ,
             this.calcImgSize('blue_bug_0.png') ];
@@ -126,18 +126,18 @@ define('zotohlab/p/s/factory',
        * @method fillSquad
        * @param {XPool} pool
        */
-      fillSquad: function(pool) {
-        var az= this.state.alienSize,
+      fillSquad(pool) {
+        let az= this.state.alienSize,
         wz= ccsx.vrect(),
         wb= ccsx.vbox(),
         row = 0,
         info,
         aa,
-        n,x,y;
+        x,y;
 
         info= this.getRankInfo(row);
         az= info[2];
-        for (n=0; n < csts.CELLS; ++n) {
+        for (let n=0; n < csts.CELLS; ++n) {
           if (n % csts.COLS === 0) {
             y = n === 0 ? wb.top * 0.9
                         : y - az.height - wz.height * 4/480;
@@ -164,13 +164,13 @@ define('zotohlab/p/s/factory',
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createAliens
        */
-      createAliens: function() {
-        var stepx= this.state.alienSize.width /3,
+      createAliens() {
+        const stepx= this.state.alienSize.width /3,
         ent= sh.Ashley.newEntity(),
         aliens= new XPool(),
         me=this;
 
-        aliens.preSet(function(pool) {
+        aliens.preSet((pool) => {
           me.fillSquad(pool);
         },1);
 
@@ -184,7 +184,7 @@ define('zotohlab/p/s/factory',
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method bornShip
        */
-      bornShip: function() {
+      bornShip() {
         if (!!this.state.ship) {
           this.state.ship.inflate();
         }
@@ -194,8 +194,8 @@ define('zotohlab/p/s/factory',
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createShip
        */
-      createShip: function() {
-        var s= ccsx.createSpriteFrame('ship_1.png'),
+      createShip() {
+        let s= ccsx.createSpriteFrame('ship_1.png'),
         ent= new sh.Ashley.newEntity(),
         wz= ccsx.vrect(),
         wb= ccsx.vbox(),

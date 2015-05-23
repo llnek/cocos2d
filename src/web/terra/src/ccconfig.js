@@ -13,7 +13,7 @@ document.ccConfig = {
   id: 'gameArea',
 
   engineDir: ['/public/extlibs/cocos2d-html5'],
-  modules: [ 'cocos2d', 'editbox', 'ccpool' ],
+  modules: [ 'cocos2d', 'ccui' ],
 
   jsList: [
 
@@ -46,34 +46,34 @@ document.ccConfig = {
     "/public/ig/lib/zotohlab/gui/online.js",
     "/public/ig/lib/zotohlab/gui/mainmenu.js",
 
-    '/public/ig/lib/game/terraformer/config.js',
-    '/public/ig/lib/game/terraformer/i18n/game_en_US.js',
+    '/public/ig/lib/game/terra/config.js',
+    '/public/ig/lib/game/terra/i18n/game_en_US.js',
 
-'/public/ig/lib/game/terraformer/components/cobjs.js',
-'/public/ig/lib/game/terraformer/nodes/gnodes.js',
+'/public/ig/lib/game/terra/elements/cobjs.js',
+'/public/ig/lib/game/terra/nodes/gnodes.js',
 
-'/public/ig/lib/game/terraformer/systems/priorities.js',
-'/public/ig/lib/game/terraformer/systems/utils.js',
+'/public/ig/lib/game/terra/systems/priorities.js',
+'/public/ig/lib/game/terra/systems/utils.js',
 
-'/public/ig/lib/game/terraformer/systems/factory.js',
-'/public/ig/lib/game/terraformer/systems/supervisor.js',
-'/public/ig/lib/game/terraformer/systems/motion.js',
-'/public/ig/lib/game/terraformer/systems/move-missiles.js',
-'/public/ig/lib/game/terraformer/systems/move-bombs.js',
-'/public/ig/lib/game/terraformer/systems/move-ship.js',
-'/public/ig/lib/game/terraformer/systems/levelmgr.js',
-'/public/ig/lib/game/terraformer/systems/collision.js',
-'/public/ig/lib/game/terraformer/systems/resolution.js',
-'/public/ig/lib/game/terraformer/systems/rendering.js',
-'/public/ig/lib/game/terraformer/systems/sysobjs.js',
+'/public/ig/lib/game/terra/systems/factory.js',
+'/public/ig/lib/game/terra/systems/supervisor.js',
+'/public/ig/lib/game/terra/systems/motion.js',
+'/public/ig/lib/game/terra/systems/move-missiles.js',
+'/public/ig/lib/game/terra/systems/move-bombs.js',
+'/public/ig/lib/game/terra/systems/move-ship.js',
+'/public/ig/lib/game/terra/systems/levelmgr.js',
+'/public/ig/lib/game/terra/systems/collision.js',
+'/public/ig/lib/game/terra/systems/resolution.js',
+'/public/ig/lib/game/terra/systems/rendering.js',
+'/public/ig/lib/game/terra/systems/sysobjs.js',
 
 
-'/public/ig/lib/game/terraformer/splash.js',
-'/public/ig/lib/game/terraformer/hud.js',
-'/public/ig/lib/game/terraformer/mmenu.js',
-'/public/ig/lib/game/terraformer/game.js',
+'/public/ig/lib/game/terra/splash.js',
+'/public/ig/lib/game/terra/hud.js',
+'/public/ig/lib/game/terra/mmenu.js',
+'/public/ig/lib/game/terra/game.js',
 
-'/public/ig/lib/game/terraformer/protos.js',
+'/public/ig/lib/game/terra/protos.js',
 '/public/ig/lib/zotohlab/ext/xboot.js'
   ]
 

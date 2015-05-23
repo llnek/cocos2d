@@ -37,7 +37,7 @@ define("zotohlab/p/arena",
            mmenus, huds, cobjs, sobjs) { "use strict";
 
     /** @alias module:zotohlab/p/arena */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts = xcfg.csts,
     R = sjs.ramda,
@@ -52,9 +52,9 @@ define("zotohlab/p/arena",
       /**
        * @private
        */
-      reset: function(newFlag) {
+      reset(newFlag) {
         if (!sjs.isEmpty(this.atlases)) {
-          sjs.eachObj(function(v) {
+          sjs.eachObj((v) => {
             v.removeAllChildren();
           }, this.atlases);
         } else {
@@ -72,7 +72,7 @@ define("zotohlab/p/arena",
        * @constructor
        * @private
        */
-      ctor: function (options) {
+      ctor(options) {
         this._super(options);
         this.collisionMap= [];
         this.ops = {};
@@ -81,14 +81,14 @@ define("zotohlab/p/arena",
       /**
        * @protected
        */
-      operational: function() {
+      operational() {
         return this.options.running;
       },
 
       /**
        * @protected
        */
-      onclicked: function(mx,my) {
+      onclicked(mx,my) {
         if (this.options.running &&
             this.options.selQ.length === 0) {
           sjs.loggr.debug("selection made at pos = " + mx + "," + my);
@@ -99,14 +99,14 @@ define("zotohlab/p/arena",
       /**
        * @method replay
        */
-      replay: function() {
+      replay() {
         this.play(false);
       },
 
       /**
        * @method play
        */
-      play: function(newFlag) {
+      play(newFlag) {
 
         this.reset(newFlag);
         this.cleanSlate();
@@ -115,9 +115,9 @@ define("zotohlab/p/arena",
         this.options.running=true;
         this.options.selQ=[];
 
-        R.forEach(function(z) {
+        R.forEach((z) => {
           this.engine.addSystem(new (z)(this.options), z.Priority);
-        }.bind(this),
+        },
         [sobjs.Supervisor,
          sobjs.RowClearance,
          sobjs.Generator,
@@ -127,12 +127,12 @@ define("zotohlab/p/arena",
          sobjs.Resolution ]);
       },
 
-      endGame: function() {
+      endGame() {
         this.options.running=false;
         this.getHUD().endGame();
       },
 
-      onNewGame: function(mode) {
+      onNewGame(mode) {
         //sh.xcfg.sfxPlay('start_game');
         this.setGameMode(mode);
         this.play(true);
@@ -140,11 +140,10 @@ define("zotohlab/p/arena",
 
     });
 
-    exports = {
+    exports = /** @lends exports# */{
 
       /**
        * @property {String} rtti
-       * @static
        */
       rtti : sh.ptypes.game,
 
@@ -153,22 +152,22 @@ define("zotohlab/p/arena",
        * @param {Object} options
        * @return {cc.Scene}
        */
-      reify: function(options) {
-        var scene = new scenes.XSceneFactory([
+      reify(options) {
+        const scene = new scenes.XSceneFactory([
           huds.BackLayer,
           GameLayer,
           huds.HUDLayer ]).reify(options);
 
-        scene.onmsg('/hud/end', function(topic, msg) {
+        scene.onmsg('/hud/end', (topic, msg) => {
           sh.main.endGame();
         }).
-        onmsg('/hud/score/update', function(topic, msg) {
+        onmsg('/hud/score/update', (topic, msg) => {
           sh.main.getHUD().updateScore(msg.score);
         }).
-        onmsg('/hud/showmenu',function(t,msg) {
+        onmsg('/hud/showmenu', (t,msg) => {
           mmenus.showMenu();
         }).
-        onmsg('/hud/replay',function(t,msg) {
+        onmsg('/hud/replay', (t,msg) => {
           sh.main.replay();
         });
 

@@ -28,7 +28,7 @@ define('zotohlab/p/s/moveship',
   function (pss, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/moveship */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -43,7 +43,7 @@ define('zotohlab/p/s/moveship',
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state= options;
       },
 
@@ -52,7 +52,7 @@ define('zotohlab/p/s/moveship',
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.shipMotions=null;
       },
 
@@ -61,7 +61,7 @@ define('zotohlab/p/s/moveship',
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.shipMotions = engine.getNodeList(gnodes.ShipMotionNode)
       },
 
@@ -70,8 +70,8 @@ define('zotohlab/p/s/moveship',
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var node = this.shipMotions.head;
+      update(dt) {
+        const node = this.shipMotions.head;
         if (this.state.running &&
            !!node) {
           this.processShipMotions(node, dt);
@@ -81,8 +81,8 @@ define('zotohlab/p/s/moveship',
       /**
        * @private
        */
-      processShipMotions: function(node,dt) {
-        var motion = node.motion,
+      processShipMotions(node,dt) {
+        let motion = node.motion,
         sv = node.velocity,
         ship= node.ship,
         pos = ship.pos(),
@@ -107,10 +107,10 @@ define('zotohlab/p/s/moveship',
       /**
        * @private
        */
-      clamp: function(ship) {
-        var sz= ship.sprite.getContentSize(),
+      clamp(ship) {
+        const sz= ship.sprite.getContentSize(),
         pos= ship.pos(),
-        wz = ccsx.screen();
+        wz = ccsx.vrect();
 
         if (ccsx.getRight(ship.sprite) > wz.width - csts.TILE) {
           ship.setPos(wz.width - csts.TILE - sz.width * 0.5, pos.y);

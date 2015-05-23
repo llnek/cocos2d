@@ -26,7 +26,7 @@ define("zotohlab/p/s/utils",
   function (cobjs, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/utils */
-    var exports= {},
+    let exports= {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -45,8 +45,8 @@ define("zotohlab/p/s/utils",
        * @param {Object} shape
        * @return {Object}
        */
-      reifyShape: function(layer, cmap, shape) {
-        var bbox= this.findBBox(cmap, shape.model,
+      reifyShape(layer, cmap, shape) {
+        let bbox= this.findBBox(cmap, shape.model,
                                 shape.x, shape.y, shape.rot),
         bricks;
         if (bbox.length > 0) {
@@ -66,8 +66,8 @@ define("zotohlab/p/s/utils",
        * @param {Node} node
        * @return {Number}
        */
-      topLine: function(node) {
-        var gbox= node.gbox,
+      topLine(node) {
+        const gbox= node.gbox,
         bx= gbox.box;
         return Math.floor((bx.top - bx.bottom) / csts.TILE);
       },
@@ -79,8 +79,8 @@ define("zotohlab/p/s/utils",
        * @param {Object} shape
        * @return {Object}
        */
-      previewShape: function(layer, shape) {
-        var bbox= this.findBBox([],shape.model,
+      previewShape(layer, shape) {
+        let bbox= this.findBBox([],shape.model,
                                 shape.x,shape.y,shape.rot,true),
         bricks;
         if (bbox.length > 0) {
@@ -97,7 +97,7 @@ define("zotohlab/p/s/utils",
        * @method disposeShape
        * @param {Object} shape
        */
-      disposeShape: function(shape) {
+      disposeShape(shape) {
         if (!!shape) {
           this.clearOldBricks(shape.bricks);
           shape.bricks.length=0;
@@ -110,10 +110,8 @@ define("zotohlab/p/s/utils",
        * @method clearOldBricks
        * @param {Array} bs
        */
-      clearOldBricks: function(bs) {
-        R.forEach(function(z) {
-          z.dispose();
-        }, bs);
+      clearOldBricks(bs) {
+        R.forEach((z) => { z.dispose(); }, bs);
       },
 
       /**
@@ -126,12 +124,11 @@ define("zotohlab/p/s/utils",
        * @param {Array} bs
        * @return {Array}
        */
-      reifyBricks: function(layer, png, x,y, bs) {
-        var pt, i,
-        obj,
+      reifyBricks(layer, png, x,y, bs) {
+        let pt, obj,
         bricks=[];
 
-        for (i=0; i < bs.length; ++i) {
+        for (let i=0; i < bs.length; ++i) {
           pt= bs[i];
           obj= new cobjs.Brick( pt.x, pt.y, { frame: png } );
           layer.addAtlasItem('game-pics',obj.create());
@@ -152,16 +149,16 @@ define("zotohlab/p/s/utils",
        * @param {Boolean} skipCollide
        * @return {Array}
        */
-      findBBox: function(cmap, model, left, top, rID, skipCollide) {
-        var skipCollide = skipCollide || false,
-        form= model.layout[rID],
-        x,y, r,c,
+      findBBox(cmap, model, left, top, rID, skipCollide) {
+        skipCollide = skipCollide || false;
+        let form= model.layout[rID],
+        x,y,
         pt,
         bs=[];
 
-        for (r=0; r < model.dim; ++r) {
+        for (let r=0; r < model.dim; ++r) {
           y = top - csts.TILE * r;
-          for (c=0; c < model.dim; ++c) {
+          for (let c=0; c < model.dim; ++c) {
             x = left + csts.TILE * c;
             if (form[r][c] === 1) {
               if (!skipCollide &&
@@ -180,8 +177,8 @@ define("zotohlab/p/s/utils",
       /**
        * @private
        */
-      maybeCollide: function(cmap, tl_x, tl_y, br_x, br_y) {
-        var tile= this.xrefTile(tl_x , tl_y),
+      maybeCollide(cmap, tl_x, tl_y, br_x, br_y) {
+        let tile= this.xrefTile(tl_x , tl_y),
         r,
         c;
 
@@ -199,8 +196,8 @@ define("zotohlab/p/s/utils",
       /**
        * @private
        */
-      xrefTile: function (x,y) {
-        var co = csts.TILE * 0.5;
+      xrefTile(x,y) {
+        const co = csts.TILE * 0.5;
 
         // find center, instead of top left
         y -= co;
@@ -216,14 +213,14 @@ define("zotohlab/p/s/utils",
       /**
        * @private
        */
-      initDropper: function(par, dp) {
+      initDropper(par, dp) {
         dp.timer = ccsx.createTimer(par, dp.dropRate / dp.dropSpeed);
       },
 
       /**
        * @private
        */
-      setDropper: function(par, dp, r, s) {
+      setDropper(par, dp, r, s) {
         dp.timer = ccsx.createTimer(par, r/s);
         dp.dropSpeed=s;
         dp.dropRate=r;
@@ -232,8 +229,8 @@ define("zotohlab/p/s/utils",
       /**
        * @private
        */
-      lockBricks: function(cmap, emap, z) {
-        var zs = z.sprite.getPosition(),
+      lockBricks(cmap, emap, z) {
+        const zs = z.sprite.getPosition(),
         t= this.xrefTile(zs.x, zs.y);
 
         cmap[t.row][t.col] = 1;
@@ -243,13 +240,13 @@ define("zotohlab/p/s/utils",
       /**
        * @private
        */
-      lock: function(node, shape) {
-        var cmap= node.collision.tiles,
+      lock(node, shape) {
+        const cmap= node.collision.tiles,
         emap= node.blocks.grid;
 
-        R.forEach(function(z) {
+        R.forEach((z) => {
           this.lockBricks(cmap, emap, z);
-        }.bind(this), shape.bricks);
+        }, shape.bricks);
 
         this.postLock(node, cmap, emap);
       },
@@ -257,16 +254,15 @@ define("zotohlab/p/s/utils",
       /**
        * @private
        */
-      postLock: function(node, cmap, emap) {
+      postLock(node, cmap, emap) {
 
         // search bottom up until top.
-        var rows= cmap.length,
+        let rows= cmap.length,
         top= rows - 0,//csts.FIELD_TOP,
-        r,
         rc=[];
 
         //for (r = csts.FIELD_BOTTOM; r < top; ++r) {
-        for (r = 0; r < top; ++r) {
+        for (let r = 0; r < top; ++r) {
           if (this.testFilledRow(cmap, r)) {
             rc.push(r);
           }
@@ -281,33 +277,30 @@ define("zotohlab/p/s/utils",
       /**
        * @private
        */
-      testFilledRow: function(cmap, r) {
-        var row= cmap[r],
-        c;
+      testFilledRow(cmap, r) {
+        const row= cmap[r];
 
         // negative if any holes in the row
-        for (c=0; c < row.length; ++c) {
+        for (let c=0; c < row.length; ++c) {
           if (row[c] !== 1) { return false; }
         }
 
-        // entire row msut be filled.
+        // entire row must be filled.
         return true;
       },
 
       /**
        * @private
        */
-      flashFilled: function(emap, flines, lines) {
-        var c, row;
-
-        R.forEach(function(z) {
-          row= emap[z];
-          for (c=0; c < row.length; ++c) {
+      flashFilled(emap, flines, lines) {
+        R.forEach((z) => {
+          let row= emap[z];
+          for (let c=0; c < row.length; ++c) {
             if (row[c]) {
               row[c].blink();
             }
           }
-        }.bind(this), lines);
+        }, lines);
 
         flines.lines=lines;
       },
@@ -315,8 +308,8 @@ define("zotohlab/p/s/utils",
       /**
        * @private
        */
-      pauseForClearance: function(node, b, delay) {
-        var pu= node.pauser;
+      pauseForClearance(node, b, delay) {
+        const pu= node.pauser;
 
         node.flines.lines=[];
         pu.pauseToClear=b;
@@ -331,11 +324,12 @@ define("zotohlab/p/s/utils",
       /**
        * @private
        */
-      moveDown: function(layer, cmap, shape) {
-        var new_y = shape.y - csts.TILE,
+      moveDown(layer, cmap, shape) {
+        let new_y = shape.y - csts.TILE,
         x = shape.x,
         bricks,
-        bs = this.findBBox(cmap, shape.model, x, new_y, shape.rot);
+        bs = this.findBBox(cmap, shape.model,
+                           x, new_y, shape.rot);
 
         if (bs.length > 0) {
           bricks=this.reifyBricks(layer,shape.png, x, new_y, bs);
@@ -351,11 +345,12 @@ define("zotohlab/p/s/utils",
       /**
        * @private
        */
-      shiftRight: function(layer, cmap, shape) {
-        var new_x= shape.x + csts.TILE,
+      shiftRight(layer, cmap, shape) {
+        let new_x= shape.x + csts.TILE,
         y= shape.y,
         bricks,
-        bs= this.findBBox(cmap, shape.model, new_x, y, shape.rot);
+        bs= this.findBBox(cmap, shape.model,
+                          new_x, y, shape.rot);
 
         if (bs.length > 0) {
           bricks=this.reifyBricks(layer,shape.png, new_x, y, bs);
@@ -371,11 +366,12 @@ define("zotohlab/p/s/utils",
       /**
        * @private
        */
-      shiftLeft: function(layer, cmap, shape) {
-        var new_x= shape.x - csts.TILE,
+      shiftLeft(layer, cmap, shape) {
+        let new_x= shape.x - csts.TILE,
         y= shape.y,
         bricks,
-        bs= this.findBBox(cmap, shape.model, new_x, y, shape.rot);
+        bs= this.findBBox(cmap, shape.model,
+                          new_x, y, shape.rot);
 
         if (bs.length > 0) {
           bricks=this.reifyBricks(layer,shape.png, new_x, y, bs);
@@ -391,8 +387,8 @@ define("zotohlab/p/s/utils",
       /**
        * @private
        */
-      rotateRight: function(layer,cmap,shape) {
-        var nF = sjs.xmod(shape.rot+1, shape.model.layout.length),
+      rotateRight(layer,cmap,shape) {
+        let nF = sjs.xmod(shape.rot+1, shape.model.layout.length),
         bricks,
         bs= this.findBBox(cmap, shape.model,
                           shape.x, shape.y, nF);
@@ -415,8 +411,8 @@ define("zotohlab/p/s/utils",
       /**
        * @private
        */
-      rotateLeft: function(layer,cmap,shape) {
-        var nF = sjs.xmod(shape.rot-1, shape.model.layout.length),
+      rotateLeft(layer,cmap,shape) {
+        let nF = sjs.xmod(shape.rot-1, shape.model.layout.length),
         bricks,
         bs= this.findBBox(cmap, shape.model,
                           shape.x, shape.y, nF);

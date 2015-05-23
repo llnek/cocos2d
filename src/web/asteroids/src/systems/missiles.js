@@ -10,6 +10,7 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
+ * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
@@ -19,16 +20,17 @@
  */
 define('zotohlab/p/s/missilecontrol',
 
-       ['zotohlab/p/s/utils',
+       ['zotohlab/p/s/priorities',
+        'zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (utils,  gnodes, sjs, sh, ccsx) { "use strict";
+  function (pss, utils,  gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/missilecontrol */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -43,7 +45,7 @@ define('zotohlab/p/s/missilecontrol',
        * @method constructor
        * @param {Object} options
        */
-      constructor: function (options) {
+      constructor(options) {
         this.state=options;
       },
 
@@ -52,7 +54,7 @@ define('zotohlab/p/s/missilecontrol',
        * @method addToEngine
        * @param {Object} options
        */
-      addToEngine: function (engine) {
+      addToEngine(engine) {
         this.nodeList = engine.getNodeList(gnodes.CannonCtrlNode);
       },
 
@@ -61,7 +63,7 @@ define('zotohlab/p/s/missilecontrol',
        * @method removeFromEngine
        * @param {Object} options
        */
-      removeFromEngine: function (engine) {
+      removeFromEngine(engine) {
         this.nodeList = null;
       },
 
@@ -70,8 +72,8 @@ define('zotohlab/p/s/missilecontrol',
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var node = this.nodeList.head;
+      update(dt) {
+        const node = this.nodeList.head;
 
         if (this.state.running &&
            !!node) {
@@ -82,8 +84,8 @@ define('zotohlab/p/s/missilecontrol',
       /**
        * @private
        */
-      process: function(node,dt) {
-        var gun = node.cannon,
+      process(node,dt) {
+        const gun = node.cannon,
         ship=node.ship,
         lpr= node.looper,
         t= lpr.timers[0];
@@ -102,8 +104,8 @@ define('zotohlab/p/s/missilecontrol',
       /**
        * @private
        */
-      scanInput: function (node, dt) {
-        var hit=false;
+      scanInput(node, dt) {
+        let hit=false;
 
         if (cc.sys.capabilities['keyboard'] &&
             !cc.sys.isNative) {
@@ -126,8 +128,8 @@ define('zotohlab/p/s/missilecontrol',
       /**
        * @private
        */
-      fireMissile: function(node,dt) {
-        var p= sh.pools.Missiles,
+      fireMissile(node,dt) {
+        let p= sh.pools.Missiles,
         lpr= node.looper,
         ship= node.ship,
         gun= node.cannon,
@@ -143,7 +145,7 @@ define('zotohlab/p/s/missilecontrol',
           ent= p.get();
         }
 
-        var rc= sh.calcXY(deg, sz.height * 0.5);
+        let rc= sh.calcXY(deg, sz.height * 0.5);
         ent.vel.x = rc[0];
         ent.vel.y = rc[1];
         ent.inflate({ x: pos.x + rc[0], y: pos.y + rc[1]});
@@ -155,6 +157,12 @@ define('zotohlab/p/s/missilecontrol',
       }
 
     });
+
+    /**
+     * @memberof module:zotohlab/p/s/missilecontrol~MissileControl
+     * @property {Number} Priority
+     */
+    MissileControl.Priority = pss.Motion;
 
     exports= MissileControl;
     return exports;

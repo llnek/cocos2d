@@ -6,7 +6,7 @@
     "src/terraformer/config.js",
     "src/terraformer/i18n/game_en_US.js",
 
-    "src/terraformer/components/cobjs.js",
+    "src/terraformer/elements/cobjs.js",
     "src/terraformer/nodes/gnodes.js",
 
     "src/terraformer/systems/priorities.js",

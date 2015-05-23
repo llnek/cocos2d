@@ -34,7 +34,7 @@ define("zotohlab/p/protodefs",
   function (sjs, sh, online,
             msgbox, ynbox, splash, mmenu, arena) { "use strict";
 
-    var ps= [online, splash, mmenu, msgbox, ynbox, arena],
+    let ps= [online, splash, mmenu, msgbox, ynbox, arena],
     protos= sh.protos,
     /** @alias module:zotohlab/p/protodefs */
     exports= {},

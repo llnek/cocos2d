@@ -30,7 +30,7 @@ define("zotohlab/p/hud",
   function(cobjs, sjs, sh, ccsx, layers, scenes) { "use strict";
 
     /** @alias module:zotohlab/p/hud */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -42,9 +42,9 @@ define("zotohlab/p/hud",
      */
     BackLayer = layers.XLayer.extend({
 
-      rtti: function() { return 'BackLayer'; },
+      rtti() { return 'BackLayer'; },
 
-      pkInit: function() {
+      pkInit() {
         this.centerImage(sh.getImagePath('game.bg'));
       }
     }),
@@ -55,12 +55,12 @@ define("zotohlab/p/hud",
      */
     HUDLayer = layers.XGameHUDLayer.extend({
 
-      initAtlases: function() {
+      initAtlases() {
         this.regoAtlas('game-pics');
       },
 
-      initLabels: function() {
-        var cw= ccsx.center(),
+      initLabels() {
+        const cw= ccsx.center(),
         wz = ccsx.vrect(),
         wb = ccsx.vbox();
 
@@ -85,39 +85,39 @@ define("zotohlab/p/hud",
         this.addItem(this.status);
       },
 
-      endGame: function() {
+      endGame() {
         this.replayBtn.setVisible(true);
         this.status.setVisible(true);
         this.drawStatusText(sh.l10n('%gameover'));
       },
 
-      drawStatusText: function(msg) {
+      drawStatusText(msg) {
         this.status.setString( msg);
       },
 
-      showStatus: function() {
+      showStatus() {
       },
 
-      initIcons: function() {
+      initIcons() {
       },
 
-      resetAsNew: function() {
+      resetAsNew() {
         this.reset();
       },
 
-      reset: function() {
+      reset() {
         this.replayBtn.setVisible(false);
         this.status.setVisible(false);
         this.score=0;
       },
 
-      updateScore: function(score) {
+      updateScore(score) {
         this.score += score;
         this.scoreLabel.setString('' + this.score);
       },
 
-      ctor: function(options) {
-        var color= cc.color(255,255,255),
+      ctor(options) {
+        const color= cc.color(255,255,255),
         scale=1;
 
         this._super(options);
@@ -127,7 +127,7 @@ define("zotohlab/p/hud",
           color: color,
           scale : scale,
           visible: false,
-          cb: function() {
+          cb() {
             sh.fire('/hud/replay'); }
         };
 
@@ -135,23 +135,21 @@ define("zotohlab/p/hud",
           imgPath: '#icon_menu.png',
           color: color,
           scale: scale,
-          cb: function() {
+          cb() {
             sh.fire('/hud/showmenu'); }
         };
       }
 
     });
 
-    exports = {
+    exports = /** @lends exports# */{
       /**
        * @property {BackLayer.Class} BackLayer
-       * @static
        */
       BackLayer: BackLayer,
 
       /**
        * @property {HUDLayer.Class} HUDLayer
-       * @static
        */
       HUDLayer: HUDLayer
     };

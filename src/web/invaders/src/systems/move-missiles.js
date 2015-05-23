@@ -30,7 +30,7 @@ define('zotohlab/p/s/movemissiles',
   function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/movemissiles */
-    var exports= {},
+    let exports= {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -46,7 +46,7 @@ define('zotohlab/p/s/movemissiles',
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state= options;
       },
 
@@ -55,7 +55,7 @@ define('zotohlab/p/s/movemissiles',
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
       },
 
       /**
@@ -63,7 +63,7 @@ define('zotohlab/p/s/movemissiles',
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
       },
 
       /**
@@ -71,12 +71,12 @@ define('zotohlab/p/s/movemissiles',
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
-        var mss= sh.pools.Missiles,
+      update(dt) {
+        let mss= sh.pools.Missiles,
         pos,
         y;
 
-        mss.iter(function(m) {
+        mss.iter((m) => {
           pos= m.pos();
           y = pos.y + dt * m.vel.y;
           m.setPos(pos.x, y);

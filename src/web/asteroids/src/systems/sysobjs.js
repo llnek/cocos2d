@@ -45,65 +45,53 @@ define('zotohlab/p/sysobjs',
            MovementShip, Supervisor, Resolution) {
 
     /** @alias module:zotohlab/p/sysobjs */
-    var exports = {
+    const exports = /** @lends exports# */{
       /**
        * @property {SystemUtils}   SystemUtils
-       * @static
        */
       SystemUtils     : SystemUtils,
       /**
        * @property {Priorities}      Priorities
-       * @static
        */
       Priorities      : Priorities,
       /**
        * @property {EntityFactory} Factory
-       * @static
        */
       Factory   : EntityFactory,
       /**
        * @property {Collisions} Collisions
-       * @static
        */
       Collisions      : Collisions,
       /**
        * @property {MissileControl}  MissileControl
-       * @static
        */
       MissileControl  : MissileControl,
       /**
        * @property {Motions}  Motions
-       * @static
        */
       Motions         : Motions,
       /**
        * @property {MoveAsteroids}  MoveAsteroids
-       * @static
        */
       MoveAsteroids   : MoveAsteroids,
       /**
        * @property {MoveLasers}   MoveLasers
-       * @static
        */
       MoveLasers      : MoveLasers,
       /**
        * @property {MoveMissiles}   MoveMissiles
-       * @static
        */
       MoveMissiles    : MoveMissiles,
       /**
        * @property {MovementShip}   MovementShip
-       * @static
        */
       MovementShip    : MovementShip,
       /**
        * @property {Supervisor}   Supervisor
-       * @static
        */
       Supervisor      : Supervisor,
       /**
        * @property {Resolution}   Resolution
-       * @static
        */
       Resolution      : Resolution
     };

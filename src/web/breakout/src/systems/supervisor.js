@@ -10,6 +10,7 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
+ * @requires zotohlab/p/s/priorities
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
@@ -17,11 +18,12 @@
  */
 define('zotohlab/p/s/supervisor',
 
-       ['cherimoia/skarojs',
+       ['zotohlab/p/s/priorities',
+        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, ccsx) { "use strict";
+  function (pss, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/supervisor */
     var exports= {},
@@ -39,7 +41,7 @@ define('zotohlab/p/s/supervisor',
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state= options;
         this.inited=false;
       },
@@ -49,7 +51,7 @@ define('zotohlab/p/s/supervisor',
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
       },
 
       /**
@@ -57,7 +59,7 @@ define('zotohlab/p/s/supervisor',
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
       },
 
       /**
@@ -65,7 +67,7 @@ define('zotohlab/p/s/supervisor',
        * @method update
        * @param {Number} dt
        */
-      update: function (dt) {
+      update(dt) {
         if (! this.inited) {
           this.onceOnly();
           this.inited=true;
@@ -76,7 +78,7 @@ define('zotohlab/p/s/supervisor',
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method initBrickSize
        */
-      initBrickSize: function() {
+      initBrickSize() {
         this.state.candySize= ccsx.createSpriteFrame('red_candy.png').getContentSize();
       },
 
@@ -84,14 +86,14 @@ define('zotohlab/p/s/supervisor',
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method initBallSize
        */
-      initBallSize: function() {
+      initBallSize() {
         this.state.ballSize= ccsx.createSpriteFrame('ball.png').getContentSize();
       },
 
       /**
        * @private
        */
-      onceOnly: function() {
+      onceOnly() {
         this.initBrickSize();
         this.initBallSize();
         sh.factory.createBricks();
@@ -100,6 +102,12 @@ define('zotohlab/p/s/supervisor',
       }
 
     });
+
+    /**
+     * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+     * @property {Number} Priority
+     */
+    GameSupervisor.Priority= pss.PreUpdate;
 
     exports= GameSupervisor;
     return exports;

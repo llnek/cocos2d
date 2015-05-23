@@ -24,7 +24,7 @@ define("zotohlab/p/elements",
   function (sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/elements */
-    var exports= {},
+    let exports= {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef;
@@ -41,7 +41,7 @@ define("zotohlab/p/elements",
        * @param {Array} aliens
        * @param {Number} step
        */
-      constructor: function(aliens,step) {
+      constructor(aliens,step) {
         this.aliens=aliens;
         this.stepx=step;
       }
@@ -60,7 +60,7 @@ define("zotohlab/p/elements",
        * @param {Number} value
        * @param {Number} rank
        */
-      constructor: function(sprite,value,rank) {
+      constructor(sprite,value,rank) {
         this.ctor(sprite, 1, value);
         this.rank=rank;
       }
@@ -77,8 +77,8 @@ define("zotohlab/p/elements",
        * @method constructor
        * @param {cc.Sprite}
        */
-      constructor: function(sprite) {
-        var wz= ccsx.vrect();
+      constructor(sprite) {
+        const wz= ccsx.vrect();
         this.ctor(sprite);
         this.vel={
           x: 0,
@@ -98,7 +98,7 @@ define("zotohlab/p/elements",
        * @method constructor
        * @param {Number} coolDownWindow
        */
-      constructor: function(coolDownWindow) {
+      constructor(coolDownWindow) {
         this.coolDownWindow= coolDownWindow || 0.8;
         this.hasAmmo = true;
       }
@@ -115,7 +115,7 @@ define("zotohlab/p/elements",
        * @method constructor
        * @param {cc.Sprite}
        */
-      constructor: function(sprite) {
+      constructor(sprite) {
         this.ctor(sprite);
         this.frameTime= 0.1;
       },
@@ -123,16 +123,18 @@ define("zotohlab/p/elements",
       /**
        * @protected
        */
-      inflate: function(options) {
-        var frames = [ccsx.getSpriteFrame('boom_0.png'),
-                      ccsx.getSpriteFrame('boom_1.png'),
-                      ccsx.getSpriteFrame('boom_2.png'),
-                      ccsx.getSpriteFrame('boom_3.png') ],
+      inflate(options) {
+        const frames = [ccsx.getSpriteFrame('boom_0.png'),
+                        ccsx.getSpriteFrame('boom_1.png'),
+                        ccsx.getSpriteFrame('boom_2.png'),
+                        ccsx.getSpriteFrame('boom_3.png') ],
         anim= new cc.Animation(frames, this.frameTime);
+
         this.sprite.setPosition(options.x, options.y);
         this.status=true;
+
         this.sprite.runAction(new cc.Sequence(new cc.Animate(anim),
-          new cc.CallFunc(function() {
+          new cc.CallFunc(() => {
             sjs.loggr.debug('explosion done.!');
             this.deflate();
           }, this)
@@ -152,7 +154,7 @@ define("zotohlab/p/elements",
        * @method constructor
        * @param {Number} count
        */
-      constructor: function(count) {
+      constructor(count) {
         this.timers=sjs.makeArray(count,null);
       }
     });
@@ -168,8 +170,8 @@ define("zotohlab/p/elements",
        * @method constructor
        * @param {cc.Sprite} sprite
        */
-      constructor: function(sprite) {
-        var wz= ccsx.vrect();
+      constructor(sprite) {
+        const wz= ccsx.vrect();
         this.ctor(sprite);
         this.vel= {
           x: 0,
@@ -189,7 +191,7 @@ define("zotohlab/p/elements",
        * @memberof module:zotohlab/p/elements~Motion
        * @method constructor
        */
-      constructor: function() {
+      constructor() {
         this.right = false;
         this.left = false;
       }
@@ -207,7 +209,7 @@ define("zotohlab/p/elements",
        * @param {cc.Sprite} sprite
        * @param {Array} frames
        */
-      constructor: function(sprite,frames) {
+      constructor(sprite,frames) {
         this.ctor(sprite);
         this.frames=frames;
       }
@@ -225,7 +227,7 @@ define("zotohlab/p/elements",
        * @param {Number} vx
        * @param {Number} vy
        */
-      constructor: function(vx,vy) {
+      constructor(vx,vy) {
         this.vel = {
           x: vx || 0,
           y: vy || 0

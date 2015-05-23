@@ -30,7 +30,7 @@ define("zotohlab/p/s/clearance",
   function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/clearance */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -45,7 +45,7 @@ define("zotohlab/p/s/clearance",
        * @method constructor
        * @param {Object} options
        */
-      constructor: function(options) {
+      constructor(options) {
         this.state = options;
       },
       /**
@@ -53,7 +53,7 @@ define("zotohlab/p/s/clearance",
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.arena=null;
       },
       /**
@@ -61,7 +61,7 @@ define("zotohlab/p/s/clearance",
        * @method addToEngine
        * @param {Ash.Engine} engine
        */
-      addToEngine: function(engine) {
+      addToEngine(engine) {
         this.arena= engine.getNodeList(gnodes.ArenaNode);
       },
       /**
@@ -69,8 +69,8 @@ define("zotohlab/p/s/clearance",
        * @method update
        * @return {Number}
        */
-      update: function(dt) {
-        var node = this.arena.head,
+      update(dt) {
+        let node = this.arena.head,
         ps;
 
         if (this.state.running &&
@@ -90,13 +90,13 @@ define("zotohlab/p/s/clearance",
       /**
        * @private
        */
-      clearFilled: function(node) {
-        var score= node.flines.lines.length;
+      clearFilled(node) {
+        const score= node.flines.lines.length;
 
-        R.forEach(function(z) {
+        R.forEach((z) => {
           this.clearOneRow(node,z);
           this.resetOneRow(node,z);
-        }.bind(this),
+        },
         node.flines.lines);
 
         this.shiftDownLines(node);
@@ -107,10 +107,10 @@ define("zotohlab/p/s/clearance",
        * Dispose and get rid of blocks which are marked to be cleared
        * @private
        */
-      clearOneRow: function(node, r) {
-        var row= node.blocks.grid[r],
-        c;
-        for (c=0; c < row.length; ++c) {
+      clearOneRow(node, r) {
+        const row= node.blocks.grid[r];
+
+        for (let c=0; c < row.length; ++c) {
           if (row[c]) {
             row[c].dispose();
             row[c]=undef;
@@ -122,10 +122,10 @@ define("zotohlab/p/s/clearance",
        * Clear collision mark
        * @private
        */
-      resetOneRow: function(node, r) {
-        var row= node.collision.tiles[r],
-        c;
-        for (c=0; c < row.length; ++c) {
+      resetOneRow(node, r) {
+        const row= node.collision.tiles[r];
+
+        for (let c=0; c < row.length; ++c) {
           row[c]= r===0 ? 1 : 0;
         }
         row[0]=1;
@@ -135,9 +135,8 @@ define("zotohlab/p/s/clearance",
       /**
        * @private
        */
-      shiftDownLines: function(node) {
-        var top= utils.topLine(node),
-        r,
+      shiftDownLines(node) {
+        let top= utils.topLine(node),
         f, e, d;
 
         while (true) {
@@ -147,7 +146,7 @@ define("zotohlab/p/s/clearance",
           e= this.findLastEmpty(node);
           if (e > f) { return; }
           d=e+1;
-          for (r=d; r < top; ++r) {
+          for (let r=d; r < top; ++r) {
             this.copyLine(node,r,e);
             ++e;
           }
@@ -157,11 +156,10 @@ define("zotohlab/p/s/clearance",
       /**
        * @private
        */
-      findFirstDirty: function(node) {
-        var t = utils.topLine(node),// - 1,
-        r;
+      findFirstDirty(node) {
+        const t = utils.topLine(node);// - 1,
 
-        for (r = t; r > 0; --r) {
+        for (let r = t; r > 0; --r) {
           if (!this.isEmptyRow(node,r)) { return r; }
         }
 
@@ -171,11 +169,10 @@ define("zotohlab/p/s/clearance",
       /**
        * @private
        */
-      findLastEmpty: function(node) {
-        var t = utils.topLine(node),
-        r;
+      findLastEmpty(node) {
+        const t = utils.topLine(node);
 
-        for (r=1; r < t; ++r) {
+        for (let r=1; r < t; ++r) {
           if (this.isEmptyRow(node,r)) { return r; }
         }
 
@@ -185,14 +182,13 @@ define("zotohlab/p/s/clearance",
       /**
        * @private
        */
-      isEmptyRow: function(node, r) {
-        var row= node.collision.tiles[r],
-        len= row.length-1,
-        c;
+      isEmptyRow(node, r) {
+        const row= node.collision.tiles[r],
+        len= row.length-1;
 
         if (r===0) { return false; }
 
-        for (c=1; c < len; ++c) {
+        for (let c=1; c < len; ++c) {
           if (row[c] !== 0) { return false; }
         }
         return true;
@@ -201,8 +197,8 @@ define("zotohlab/p/s/clearance",
       /**
        * @private
        */
-      copyLine: function(node, from, to) {
-        var line_f = node.collision.tiles[from],
+      copyLine(node, from, to) {
+        let line_f = node.collision.tiles[from],
         line_t = node.collision.tiles[to],
         c, pos;
 

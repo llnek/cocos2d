@@ -26,13 +26,10 @@ define("zotohlab/p/s/utils",
   function (cobjs, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/utils */
-    var exports = {},
+    let exports = {},
     xcfg = sh.xcfg,
     csts= xcfg.csts,
-    undef,
-
-    exports = {
-    };
+    undef;
 
     return exports;
 });
