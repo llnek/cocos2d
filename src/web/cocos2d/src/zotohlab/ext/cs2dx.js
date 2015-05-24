@@ -82,7 +82,7 @@ define("zotohlab/asx/ccsx",
        * @return {Boolean}
        */
       collide(a,b) {
-        return a && b ? this.collide0(a.sprite, b.sprite) : false;
+        return !!a && !!b ? this.collide0(a.sprite, b.sprite) : false;
       },
 
 
@@ -94,8 +94,24 @@ define("zotohlab/asx/ccsx",
        * @return {Boolean}
        */
       collide0(spriteA,spriteB) {
-        return spriteA && spriteB ?
+        return !!spriteA && !!spriteB ?
           cc.rectIntersectsRect(this.bbox(spriteA), this.bbox(spriteB)) : false;
+      },
+
+      /**
+       * Set device resolution, policy and orientation.
+       * @method
+       * @param {Boolean} landscape
+       * @param {Number} w
+       * @param {Number} h
+       * @param {Number} pcy
+       */
+      setdr(landscape, w, h, pcy) {
+        if (landscape) {
+          cc.view.setDesignResolutionSize(w, h, pcy);
+        } else {
+          cc.view.setDesignResolutionSize(h, w, pcy);
+        }
       },
 
       /**
@@ -116,9 +132,7 @@ define("zotohlab/asx/ccsx",
        * @return {Boolean}
        */
       outOfBound(ent,B) {
-        return !!ent ? sh.outOfBound(this.bbox4(ent.sprite),
-                                     B || this.vbox())
-                                     : false;
+        return !!ent ? sh.outOfBound(this.bbox4(ent.sprite), B || this.vbox()) : false;
       },
 
       /**
@@ -129,9 +143,7 @@ define("zotohlab/asx/ccsx",
        * @return null
        */
       releaseTimer(par, tm) {
-        if (cc.sys.isNative && !!tm) {
-          tm.release();
-        }
+        if (cc.sys.isNative && !!tm) { tm.release(); }
         return null;
       },
 
@@ -273,7 +285,7 @@ define("zotohlab/asx/ccsx",
        * @return {Number}
        */
       getLeft(sprite) {
-        return sprite.getPosition().x - this.getWidth(sprite)/2;
+        return sprite.getPosition().x - this.getWidth(sprite) * 0.5;
       },
 
       /**
@@ -283,7 +295,7 @@ define("zotohlab/asx/ccsx",
        * @return {Number}
        */
       getRight(sprite) {
-        return sprite.getPosition().x + this.getWidth(sprite)/2;
+        return sprite.getPosition().x + this.getWidth(sprite) * 0.5;
       },
 
       /**
@@ -293,7 +305,7 @@ define("zotohlab/asx/ccsx",
        * @return {Number}
        */
       getTop(sprite) {
-        return sprite.getPosition().y + this.getHeight(sprite)/2;
+        return sprite.getPosition().y + this.getHeight(sprite) * 0.5;
       },
 
       /**
@@ -303,7 +315,7 @@ define("zotohlab/asx/ccsx",
        * @return {Number}
        */
       getBottom(sprite) {
-        return sprite.getPosition().y - this.getHeight(sprite)/2;
+        return sprite.getPosition().y - this.getHeight(sprite) * 0.5;
       },
 
       /**
@@ -313,8 +325,11 @@ define("zotohlab/asx/ccsx",
        * @return {Number}
        */
       getLastLeft(ent) {
-        return sjs.echt(ent.lastPos) ? ent.lastPos.x - this.getWidth(ent.sprite)/2
-                                     : this.getLeft(ent);
+        if ( sjs.echt(ent.lastPos)) {
+          return ent.lastPos.x - this.getWidth(ent.sprite) * 0.5;
+        } else {
+          return this.getLeft(ent);
+        }
       },
 
       /**
@@ -324,8 +339,11 @@ define("zotohlab/asx/ccsx",
        * @return {Number}
        */
       getLastRight(ent) {
-        return sjs.echt(ent.lastPos) ? ent.lastPos.x + this.getWidth(ent.sprite)/2
-                                     : this.getRight(ent);
+        if ( sjs.echt(ent.lastPos)) {
+          return ent.lastPos.x + this.getWidth(ent.sprite) * 0.5;
+        } else {
+          return this.getRight(ent);
+        }
       },
 
       /**
@@ -335,8 +353,11 @@ define("zotohlab/asx/ccsx",
        * @return {Number}
        */
       getLastTop(ent) {
-        return sjs.echt(ent.lastPos) ? ent.lastPos.y + this.getHeight(ent.sprite)/2
-                                     : this.getTop(ent);
+        if ( sjs.echt(ent.lastPos)) {
+          return ent.lastPos.y + this.getHeight(ent.sprite) * 0.5;
+        } else {
+          return this.getTop(ent);
+        }
       },
 
       /**
@@ -346,8 +367,11 @@ define("zotohlab/asx/ccsx",
        * @return {Number}
        */
       getLastBottom(ent) {
-        return sjs.echt(ent.lastPos) ? ent.lastPos.y - this.getHeight(ent.sprite)/2
-                                     : this.getBottom(ent);
+        if ( sjs.echt(ent.lastPos)) {
+          return ent.lastPos.y - this.getHeight(ent.sprite) * 0.5;
+        } else {
+          return this.getBottom(ent);
+        }
       },
 
       /**
@@ -394,7 +418,8 @@ define("zotohlab/asx/ccsx",
        * @return {Object} cc.rect
        */
       vrect() {
-        const vo = cc.view.getVisibleOrigin(),
+        const vr= cc.view.getViewPortRect(),
+        vo = cc.view.getVisibleOrigin(),
         wz= cc.view.getVisibleSize();
         return cc.rect(vo.x, vo.y, wz.width, wz.height);
       },
@@ -405,7 +430,8 @@ define("zotohlab/asx/ccsx",
        * @return {Object} rectangle box.
        */
       vbox() {
-        const vo = cc.view.getVisibleOrigin(),
+        const vr= cc.view.getViewPortRect(),
+        vo = cc.view.getVisibleOrigin(),
         wz= cc.view.getVisibleSize();
         return {
           bottom: vo.y,
@@ -600,18 +626,16 @@ define("zotohlab/asx/ccsx",
         let menu= new cc.Menu(),
         mi,
         t=0,
-        obj, n;
+        obj;
 
-        scale = scale || 1;
-
-        for (n=0; n < items.length; ++n) {
+        for (let n=0; n < items.length; ++n) {
           obj= items[n];
           mi= new cc.MenuItemLabel(new cc.LabelBMFont(obj.text,
                                                       obj.fontPath),
                                    obj.selector || obj.cb,
                                    obj.target);
           mi.setOpacity(255 * 0.9);
-          mi.setScale(scale);
+          mi.setScale(scale || 1);
           mi.setTag(++t);
         }
         return menu;
@@ -625,10 +649,10 @@ define("zotohlab/asx/ccsx",
        */
       tmenu1(options) {
         let menu = this.tmenu(options);
-        menu.alignItemsVertically();
         if (options.anchor) { menu.setAnchorPoint(options.anchor); }
         if (options.pos) { menu.setPosition(options.pos); }
         if (options.visible === false) { menu.setVisible(false); }
+        menu.alignItemsVertically();
         return menu;
       },
 
@@ -667,15 +691,15 @@ define("zotohlab/asx/ccsx",
        */
       pmenu(vertical, items, scale, padding) {
         let menu = new cc.Menu(),
-        obj, n,
+        obj,
         mi,
         t=0;
 
-        for (n=0; n < items.length; ++n) {
+        for (let n=0; n < items.length; ++n) {
           obj=items[n];
-          mi= new cc.MenuItemSprite(new cc.Sprite(obj.imgPath),
-                                    new cc.Sprite(obj.imgPath),
-                                    new cc.Sprite(obj.imgPath),
+          mi= new cc.MenuItemSprite(new cc.Sprite(obj.nnnPath || obj.imgPath),
+                                    new cc.Sprite(obj.sssPath || obj.imgPath),
+                                    new cc.Sprite(obj.dddPath || obj.imgPath),
                                     obj.selector || obj.cb,
                                     obj.target);
           if (!!obj.color) { mi.setColor(obj.color); }
@@ -716,11 +740,11 @@ define("zotohlab/asx/ccsx",
        */
       bmfLabel(options) {
         let f= new cc.LabelBMFont(options.text, options.fontPath);
-        f.setScale( options.scale || 1);
         if (options.color) { f.setColor(options.color); }
         if (options.pos) { f.setPosition(options.pos); }
         if (options.anchor) { f.setAnchorPoint(options.anchor); }
         if (options.visible === false) { f.setVisible(false); }
+        f.setScale( options.scale || 1);
         f.setOpacity(0.9*255);
         return f;
       }

@@ -40,7 +40,7 @@ define("zotohlab/asx/highscores",
     /**
      * @class HighScores
      */
-    class HighScores{
+    class HighScores {
 
       /**
        * Read the scores from the cookie.
@@ -181,7 +181,7 @@ define("zotohlab/asx/highscores",
      * @param {Number} duration
      * @return {HighScores}
      */
-    exports.reify = function(key,size,duration) {
+    exports.reify = (key,size,duration) => {
       return new HighScores();
     }
 

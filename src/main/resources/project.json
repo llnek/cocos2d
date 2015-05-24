@@ -30,12 +30,11 @@
     "src/zotohlab/ext/cs2dx.js",
     "src/zotohlab/ext/odin.js",
 
-    "src/zotohlab/ext/xlayers.js",
     "src/zotohlab/ext/xscenes.js",
     "src/zotohlab/ext/xpool.js",
     "src/zotohlab/ext/xldr.js",
 
-    "src/zotohlab/gui/startscreen.js",
+    "src/zotohlab/gui/start.js",
     "src/zotohlab/gui/msgbox.js",
     "src/zotohlab/gui/ynbox.js",
     "src/zotohlab/gui/online.js",

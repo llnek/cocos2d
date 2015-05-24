@@ -1,4 +1,4 @@
-skaroHome=/wdrive/myspace/skaro/alchemy.dir/skaro/pack
+skaroHome=/wdrive/myspace/skaro/alchemy.dir/_/pack
 
 
 cljBuildDir=${basedir}/alchemy.dir/clojure.org

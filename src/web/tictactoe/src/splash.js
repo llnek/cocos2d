@@ -14,9 +14,8 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xsplash
- * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xscenes
+ * @requires zotohlab/asx/xsplash
  * @module zotohlab/p/splash
  */
 define("zotohlab/p/splash",
@@ -25,11 +24,10 @@ define("zotohlab/p/splash",
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
-        'zotohlab/asx/xsplash',
-        'zotohlab/asx/xlayers',
-        'zotohlab/asx/xscenes'],
+        'zotohlab/asx/xscenes',
+        'zotohlab/asx/xsplash'],
 
-  function (utils, sjs, sh, ccsx, splash, layers, scenes) { "use strict";
+  function (utils, sjs, sh, ccsx, scenes, splash) { "use strict";
 
     /** @alias module:zotohlab/p/splash */
     let exports = {},

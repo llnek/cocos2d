@@ -12,6 +12,7 @@
 /**
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/xcfg
  * @requires zotohlab/asx/xldr
  * @requires zotohlab/p/config
@@ -23,29 +24,20 @@ define("zotohlab/p/boot",
 
        ['cherimoia/skarojs',
         'zotohlab/asterix',
+        'ZotohLab/asx/ccsx',
         'zotohlab/asx/xcfg',
         'zotohlab/asx/xldr',
         'zotohlab/p/config',
         'zotohlab/p/l10n',
         'zotohlab/p/protodefs'],
 
-  function (sjs, sh, xcfg, loader, cfg, l10n, protos) { "use strict";
+  function (sjs, sh, ccsx, xcfg, loader, cfg, l10n, protos) { "use strict";
 
     let ss1= xcfg.game.start || 'StartScreen',
     /** @alias module:zotohlab/p/boot */
     exports={},
     R = sjs.ramda,
     undef;
-
-    //////////////////////////////////////////////////////////////////////////
-    // Set device resolution, policy and orientation.
-    let setdr= (landscape, w, h, pcy) => {
-      if (landscape) {
-        cc.view.setDesignResolutionSize(w, h, pcy);
-      } else {
-        cc.view.setDesignResolutionSize(h, w, pcy);
-      }
-    }
 
     //////////////////////////////////////////////////////////////////////////
     /**
@@ -56,7 +48,7 @@ define("zotohlab/p/boot",
       let searchPaths = jsb.fileUtils.getSearchPaths(),
       landscape = xcfg.game.landscape,
       pcy = xcfg.resolution.policy,
-      fsz= cc.view.getFrameSize(),
+      fsz= ccsx.screen(),
       ps;
 
       // device window size or canvas size.
@@ -73,30 +65,30 @@ define("zotohlab/p/boot",
       if (fsz.width >= 2048 || fsz.height >= 2048) {
         ps = ['assets/res/hdr', 'res/hdr'];
         xcfg.resolution.resDir = 'hdr';
-        setdr(landscape, 2048, 1536, pcy);
+        ccsx.setdr(landscape, 2048, 1536, pcy);
       }
       else
       if (fsz.width >= 1136 || fsz.height >= 1136) {
         ps = ['assets/res/hds', 'res/hds'];
         xcfg.resolution.resDir= 'hds';
-        setdr(landscape, 1136, 640, pcy);
+        ccsx.setdr(landscape, 1136, 640, pcy);
       }
       else
       if (fsz.width >= 1024 || fsz.height >= 1024) {
         ps = ['assets/res/hds', 'res/hds'];
         xcfg.resolution.resDir= 'hds';
-        setdr(landscape, 1024, 768, pcy);
+        ccsx.setdr(landscape, 1024, 768, pcy);
       }
       else
       if (fsz.width >= 960 || fsz.height >= 960) {
         ps = ['assets/res/hds', 'res/hds'];
         xcfg.resolution.resDir= 'hds';
-        setdr(landscape, 960, 640, pcy);
+        ccsx.setdr(landscape, 960, 640, pcy);
       }
       else {
         ps = ['assets/res/sd', 'res/sd'];
         xcfg.resolution.resDir= 'sd';
-        setdr(landscape, 480, 320, pcy);
+        ccsx.setdr(landscape, 480, 320, pcy);
       }
 
       ps= ps.concat(['assets/src', 'src']);
@@ -242,7 +234,7 @@ define("zotohlab/p/boot",
 
     //////////////////////////////////////////////////////////////////////////////
     let preLaunchApp = (sjs, sh, xcfg, ldr,  ss1) => {
-      let fz= cc.view.getFrameSize(),
+      let fz= ccsx.screen(),
       paths,
       sz,
       pfx,

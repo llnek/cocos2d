@@ -19,12 +19,11 @@ define("zotohlab/asx/negamax",
 
   function (sjs) { "use strict";
 
-    const PINF = 1000000;
-
     /** @alias module:zotohlab/asx/negamax */
     let exports = {},
     undef;
 
+    const PINF = 1000000;
     //////////////////////////////////////////////////////////////////////////////
     let negamax = (board, game, maxDepth, depth, alpha, beta) => {
       if (depth === 0 || board.isOver(game)) {
@@ -34,7 +33,6 @@ define("zotohlab/asx/negamax",
       let openMoves = board.getNextMoves(game),
       bestValue = -PINF,
       rc,
-      n,
       move,
       bestMove = openMoves[0];
 
@@ -42,7 +40,7 @@ define("zotohlab/asx/negamax",
         game.lastBestMove = openMoves[0];
       }
 
-      for (n=0; n < openMoves.length; ++n) {
+      for (let n=0; n < openMoves.length; ++n) {
         move = openMoves[n];
         board.makeMove(game, move);
         board.switchPlayer(game);

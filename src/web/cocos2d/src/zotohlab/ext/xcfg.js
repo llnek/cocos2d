@@ -198,13 +198,13 @@ define("zotohlab/asx/xcfg",
        * @method handleResolution
        * @param {cc.Size} rs
        */
-      handleResolution: function(rs) {},
+      handleResolution(rs) {},
 
       /**
        * @memberof module:zotohlab/asx/xcfg
        * @method runOnce
        */
-      runOnce: function() {}
+      runOnce() {}
 
     };
 

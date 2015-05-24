@@ -581,7 +581,7 @@ define("zotohlab/asterix",
        * @return {String} path
        */
       getFontPath(key) {
-        var obj= this.xcfg.assets.fonts[key];
+        const obj= this.xcfg.assets.fonts[key];
         return [this.fixUrl(obj[0]), '/' , obj[2]].join('');
       },
 
@@ -731,8 +731,8 @@ define("zotohlab/asterix",
           const now = sjs.now();
           if (!previous && options.leading === false) { previous = now; }
           let remaining = wait - (now - previous);
-          context = this;
           args = arguments;
+          context = this;
           if (remaining <= 0 || remaining > wait) {
             clearTimeout(timeout);
             timeout = null;

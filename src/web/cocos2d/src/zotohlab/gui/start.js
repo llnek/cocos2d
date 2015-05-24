@@ -13,7 +13,7 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xlayers
+ * @requires zotohlab/asx/xscenes
  * @module zotohlab/asx/xsplash
  */
 define("zotohlab/asx/xsplash",
@@ -21,9 +21,9 @@ define("zotohlab/asx/xsplash",
        ['cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
-        'zotohlab/asx/xlayers'],
+        'zotohlab/asx/xscenes'],
 
-  function (sjs, sh, ccsx, layers) { "use strict";
+  function (sjs, sh, ccsx, scenes) { "use strict";
 
     /** @alias module:zotohlab/asx/xsplash */
     let exports = {},
@@ -32,10 +32,10 @@ define("zotohlab/asx/xsplash",
     undef,
     //////////////////////////////////////////////////////////////////////////
     /**
-     * @extends XLayer
+     * @extends module:zotohlab/asx/xscenes.XLayer
      * @class XSplashLayer
      */
-    XSplashLayer = layers.XLayer.extend({
+    XSplashLayer = scenes.XLayer.extend({
 
       /**
        * @memberof module:zotohlab/asx/xsplash~XSplashLayer
@@ -49,6 +49,10 @@ define("zotohlab/asx/xsplash",
         this.setPlay();
       },
 
+      /**
+       * @method setPlay
+       * @protected
+       */
       setPlay() {
         const wb = ccsx.vbox(),
         cw = ccsx.center();
@@ -65,10 +69,18 @@ define("zotohlab/asx/xsplash",
         }));
       },
 
+      /**
+       * @method setBg
+       * @protected
+       */
       setBg() {
         this.centerImage(sh.getImagePath('game.bg'));
       },
 
+      /**
+       * @method setTitle
+       * @protected
+       */
       setTitle() {
         const wb = ccsx.vbox(),
         cw = ccsx.center();

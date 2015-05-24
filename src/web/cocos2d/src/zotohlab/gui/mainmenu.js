@@ -13,7 +13,7 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xlayers
+ * @requires zotohlab/asx/xscenes
  * @module zotohlab/asx/xmmenus
  */
 define("zotohlab/asx/xmmenus",
@@ -21,9 +21,9 @@ define("zotohlab/asx/xmmenus",
        ['cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
-        'zotohlab/asx/xlayers'],
+        'zotohlab/asx/xscenes'],
 
-  function (sjs, sh, ccsx, layers) { "use strict";
+  function (sjs, sh, ccsx, scenes) { "use strict";
 
     /** @alias module:zotohlab/asx/xmmenus */
     let exports = {},
@@ -34,10 +34,10 @@ define("zotohlab/asx/xmmenus",
 
     //////////////////////////////////////////////////////////////////////////
     /**
-     * @extends XLayer
+     * @extends module:zotohlab/asx/xscenes.XLayer
      * @class XMenuBackLayer
      */
-    XMenuBackLayer = layers.XLayer.extend({
+    XMenuBackLayer = scenes.XLayer.extend({
 
       /**
        * @memberof module:zotohlab/asx/xmmenus~XMenuBackLayer
@@ -72,10 +72,10 @@ define("zotohlab/asx/xmmenus",
     }),
 
     /**
-     * @extends XLayer
+     * @extends module:zotohlab/asx/xscenes.XLayer
      * @class XMenuLayer
      */
-    XMenuLayer= layers.XLayer.extend({
+    XMenuLayer= scenes.XLayer.extend({
 
       /**
        * @memberof module:zotohlab/asx/xmmenus~XMenuLayer
@@ -84,6 +84,10 @@ define("zotohlab/asx/xmmenus",
        */
       rtti() { return 'XMenuLayer'; },
 
+      /**
+       * @method mkBackQuit
+       * @protected
+       */
       mkBackQuit(vert, btns, posfn) {
         let sz, menu;
 
@@ -100,6 +104,10 @@ define("zotohlab/asx/xmmenus",
         this.addItem(menu);
       },
 
+      /**
+       * @method mkAudio
+       * @protected
+       */
       mkAudio(options) {
         this.addAudioIcon(options);
       }

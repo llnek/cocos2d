@@ -149,8 +149,8 @@ define("zotohlab/asx/odin",
        */
       constructor(config) {
         this.state= evts.S_NOT_CONNECTED;
-        this.ebus= ebus.reify();
         this.options=config || {};
+        this.ebus= ebus.reify();
         this.handlers= [];
         this.ws = null;
       }

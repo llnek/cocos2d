@@ -13,7 +13,6 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xscenes
  * @module zotohlab/asx/msgbox
  */
@@ -22,10 +21,9 @@ define("zotohlab/asx/msgbox",
        ['cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
-        'zotohlab/asx/xlayers',
         'zotohlab/asx/xscenes'],
 
-  function (sjs, sh, ccsx, layers, scenes) { "use strict";
+  function (sjs, sh, ccsx, scenes) { "use strict";
 
     /** @alias module:zotohlab/asx/msgbox */
     let exports = {},
@@ -35,12 +33,21 @@ define("zotohlab/asx/msgbox",
     undef,
     //////////////////////////////////////////////////////////////////////////
     /**
+     * @extends module:zotohlab/asx/xscenes.XLayer
      * @class BGLayer
      */
-    BGLayer = layers.XLayer.extend({
+    BGLayer = scenes.XLayer.extend({
 
+      /**
+       * @method rtti
+       * @protected
+       */
       rtti() { return "BGLayer"; },
 
+      /**
+       * @method ctor
+       * @constructs
+       */
       ctor() {
         const bg= new cc.Sprite(sh.getImagePath('game.bg')),
         cw= ccsx.center();
@@ -49,22 +56,30 @@ define("zotohlab/asx/msgbox",
         this.addItem(bg);
       },
 
+      /**
+       * @method pkInit
+       * @protected
+       */
       pkInit() {}
 
     }),
     //////////////////////////////////////////////////////////////////////////
     /**
+     * @extends module:zotohlab/asx/xscenes.XLayer
      * @class UILayer
      */
-    UILayer = layers.XLayer.extend({
+    UILayer = scenes.XLayer.extend({
 
+      /**
+       * @method pkInit
+       * @protected
+       */
       pkInit() {
         let qn= new cc.LabelBMFont(sh.l10n(this.options.msg),
                                    sh.getFontPath('font.OCR')),
         cw= ccsx.center(),
         wz= ccsx.vrect(),
         wb = ccsx.vbox(),
-        me=this,
         menu;
 
         this._super();
@@ -77,9 +92,9 @@ define("zotohlab/asx/msgbox",
         menu= ccsx.vmenu([
           { imgPath: '#ok.png',
             cb() {
-              me.options.yes();
+              this.options.yes();
             },
-            target: me
+            target: this
           }
         ]);
         menu.setPosition(cw.x, wb.top * 0.1);
