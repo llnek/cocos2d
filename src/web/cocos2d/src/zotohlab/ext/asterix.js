@@ -174,7 +174,7 @@ define("zotohlab/asterix",
        * @private
        */
       ctor(sprite, health, score) {
-        this._name= ["comp" , ++SEED].join(':');
+        this._name= ["co" , ++SEED].join(':');
         this.origHP = health || 1;
         this.sprite = sprite;
         this.HP = this.origHP;
@@ -194,7 +194,7 @@ define("zotohlab/asterix",
        * @method constructor
        * @param {cc.Sprite}
        */
-      constructor: function(sprite) {
+      constructor(sprite) {
         this.ctor(sprite);
       }
     })),
@@ -269,7 +269,7 @@ define("zotohlab/asterix",
     };
 
     /** @alias module:zotohlab/asterix */
-    let exports = /** @lends exports# */ {
+    let exports = /** @lends exports# */{
 
       /**
        * @property {Object} Ashley ash-js framework
