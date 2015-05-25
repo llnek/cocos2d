@@ -28,7 +28,7 @@ define("zotohlab/p/s/factory",
   function (cobjs, utils, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/factory */
-    let exports = {},
+    let exports = {    },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,

@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
@@ -20,14 +19,13 @@
  */
 define("zotohlab/p/s/rendering",
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/s/utils',
+       ['zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/rendering */
     let exports= {},
@@ -83,6 +81,7 @@ define("zotohlab/p/s/rendering",
       },
 
       /**
+       * @method process
        * @private
        */
       process(node) {
@@ -111,6 +110,7 @@ define("zotohlab/p/s/rendering",
 
       /**
        * Given a cell, find the screen co-ordinates for that cell.
+       * @method xrefCell
        * @private
        */
       xrefCell(pos, map) {
@@ -134,7 +134,7 @@ define("zotohlab/p/s/rendering",
      * @memberof module:zotohlab/p/s/rendering~RenderSystem
      * @property {Number} Priority
      */
-    RenderSystem.Priority = pss.Render;
+    RenderSystem.Priority = sh.ftypes.Render;
 
     exports= RenderSystem;
     return exports;

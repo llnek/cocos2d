@@ -35,12 +35,11 @@ document.ccConfig = {
     "/public/ig/lib/zotohlab/ext/cs2dx.js",
     "/public/ig/lib/zotohlab/ext/odin.js",
 
-    "/public/ig/lib/zotohlab/ext/xlayers.js",
     "/public/ig/lib/zotohlab/ext/xscenes.js",
     "/public/ig/lib/zotohlab/ext/xpool.js",
     "/public/ig/lib/zotohlab/ext/xldr.js",
 
-    "/public/ig/lib/zotohlab/gui/startscreen.js",
+    "/public/ig/lib/zotohlab/gui/start.js",
     "/public/ig/lib/zotohlab/gui/msgbox.js",
     "/public/ig/lib/zotohlab/gui/ynbox.js",
     "/public/ig/lib/zotohlab/gui/online.js",
@@ -52,7 +51,6 @@ document.ccConfig = {
     '/public/ig/lib/game/tetris/elements/cobjs.js',
     '/public/ig/lib/game/tetris/nodes/gnodes.js',
 
-    '/public/ig/lib/game/tetris/systems/priorities.js',
     '/public/ig/lib/game/tetris/systems/factory.js',
     '/public/ig/lib/game/tetris/systems/utils.js',
     '/public/ig/lib/game/tetris/systems/supervisor.js',

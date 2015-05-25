@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
@@ -21,15 +20,14 @@
  */
 define("zotohlab/p/s/supervisor",
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/s/utils',
+       ['zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
         'zotohlab/asx/odin'],
 
-  function (pss, utils, gnodes, sjs, sh, ccsx, odin) { "use strict";
+  function (utils, gnodes, sjs, sh, ccsx, odin) { "use strict";
 
     /** @alias module:zotohlab/p/s/supervisor */
     let exports = {       },
@@ -94,6 +92,7 @@ define("zotohlab/p/s/supervisor",
       },
 
       /**
+       * @method showGrid
        * @private
        */
       showGrid(node) {
@@ -111,6 +110,7 @@ define("zotohlab/p/s/supervisor",
       },
 
       /**
+       * @method onceOnly
        * @private
        */
       onceOnly(node,dt) {
@@ -139,6 +139,7 @@ define("zotohlab/p/s/supervisor",
       },
 
       /**
+       * @method process
        * @private
        */
       process(node,dt) {
@@ -162,7 +163,7 @@ define("zotohlab/p/s/supervisor",
      * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
      * @property {Number} Priority
      */
-    GameSupervisor.Priority= pss.PreUpdate;
+    GameSupervisor.Priority= sh.ftypes.PreUpdate;
 
     exports= GameSupervisor;
     return exports;

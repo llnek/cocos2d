@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
@@ -20,14 +19,13 @@
  */
 define("zotohlab/p/s/resolution",
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/s/utils',
+       ['zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/resolution */
     let exports = {},
@@ -83,6 +81,7 @@ define("zotohlab/p/s/resolution",
       },
 
       /**
+       * @method process
        * @private
        */
       process(node, dt) {
@@ -115,6 +114,7 @@ define("zotohlab/p/s/resolution",
       },
 
       /**
+       * @method doWin
        * @private
        */
       doWin(node, winner, combo) {
@@ -125,6 +125,7 @@ define("zotohlab/p/s/resolution",
       },
 
       /**
+       * @method doDraw
        * @private
        */
       doDraw(node) {
@@ -132,12 +133,13 @@ define("zotohlab/p/s/resolution",
       },
 
       /**
+       * @method doForfeit
        * @private
        */
       doForfeit(node) {
-        let other = this.state.actor===1 ? 2 : this.state.actor===2 ? 1 : 0;
-        let tv = this.state.players[this.state.actor];
-        let win= this.state.players[other];
+        const other = this.state.actor===1 ? 2 : this.state.actor===2 ? 1 : 0,
+        tv = this.state.players[this.state.actor],
+        win= this.state.players[other];
         let cs = node.view.cells,
         v2= -1,
         layer= node.view.layer;
@@ -163,10 +165,11 @@ define("zotohlab/p/s/resolution",
 
       /**
        * Flip all other icons except for the winning ones.
+       * @method showWinningIcons
        * @private
        */
       showWinningIcons(view, combo) {
-        let layer= view.layer,
+        const layer= view.layer,
         cs = view.cells;
 
         if (combo===null) { return; }
@@ -180,11 +183,12 @@ define("zotohlab/p/s/resolution",
       },
 
       /**
+       * @method doDone
        * @private
        */
       doDone(node, pobj, combo) {
 
-        let pnum = !!pobj ? pobj.pnum : 0;
+        const pnum = !!pobj ? pobj.pnum : 0;
 
         this.showWinningIcons(node.view, combo);
         sh.fire('/hud/timer/hide');
@@ -196,6 +200,7 @@ define("zotohlab/p/s/resolution",
       },
 
       /**
+       * @method checkDraw
        * @private
        */
       checkDraw(values) {
@@ -205,6 +210,7 @@ define("zotohlab/p/s/resolution",
       },
 
       /**
+       * @method checkWin
        * @private
        */
       checkWin(actor, game) {
@@ -227,7 +233,7 @@ define("zotohlab/p/s/resolution",
      * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
      * @property {Number} Priority
      */
-    ResolutionSystem.Priority= pss.Resolve;
+    ResolutionSystem.Priority= sh.ftypes.Resolve;
 
     exports= ResolutionSystem;
     return exports;

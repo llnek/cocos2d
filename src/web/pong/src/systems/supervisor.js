@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
@@ -19,16 +18,15 @@
  */
 define("zotohlab/p/s/supervisor",
 
-       ['zotohlab/p/s/priorities',
-        'cherimoia/skarojs',
+       ['cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
         'zotohlab/asx/odin'],
 
-  function (pss, sjs, sh, ccsx, odin) { "use strict";
+  function (sjs, sh, ccsx, odin) { "use strict";
 
     /** @alias module:zotohlab/p/s/supervisor */
-    let exports= {},
+    let exports= {        },
     evts= odin.Events,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
@@ -81,6 +79,7 @@ define("zotohlab/p/s/supervisor",
       },
 
       /**
+       * @method onceOnly
        * @private
        */
       onceOnly() {
@@ -140,6 +139,7 @@ define("zotohlab/p/s/supervisor",
       },
 
       /**
+       * @method initPaddleSize
        * @private
        */
       initPaddleSize() {
@@ -147,6 +147,7 @@ define("zotohlab/p/s/supervisor",
       },
 
       /**
+       * @method initBallSize
        * @private
        */
       initBallSize() {
@@ -160,7 +161,7 @@ define("zotohlab/p/s/supervisor",
      * @property {Number} Priority
      * @static
      */
-    GameSupervisor.Priority = pss.PreUpdate;
+    GameSupervisor.Priority = sh.ftypes.PreUpdate;
 
     exports= GameSupervisor;
     return exports;

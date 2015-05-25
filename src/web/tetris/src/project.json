@@ -7,7 +7,6 @@
       "src/tetris/elements/cobjs.js",
       "src/tetris/nodes/gnodes.js",
 
-      "src/tetris/systems/priorities.js",
       "src/tetris/systems/utils.js",
       "src/tetris/systems/factory.js",
       "src/tetris/systems/supervisor.js",

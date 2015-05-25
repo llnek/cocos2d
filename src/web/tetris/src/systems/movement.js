@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/gnodes
  * @requires zotohlab/p/s/utils
@@ -21,18 +20,17 @@
  */
 define("zotohlab/p/s/movement",
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/elements',
+       ['zotohlab/p/elements',
         'zotohlab/p/gnodes',
         'zotohlab/p/s/utils',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, cobjs, gnodes, utils, sjs, sh, ccsx) { "use strict";
+  function (cobjs, gnodes, utils, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/movement */
-    let exports = {},
+    let exports = {    },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -89,6 +87,7 @@ define("zotohlab/p/s/movement",
       },
 
       /**
+       * @method doFall
        * @private
        */
       doFall(layer, node) {
@@ -125,7 +124,7 @@ define("zotohlab/p/s/movement",
      * @memberof module:zotohlab/p/s/movement~MovementSystem
      * @property {Number} Priority
      */
-    MovementSystem.Priority= pss.Move;
+    MovementSystem.Priority= sh.ftypes.Move;
 
     exports = MovementSystem;
     return exports;

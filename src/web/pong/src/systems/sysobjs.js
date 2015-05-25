@@ -12,7 +12,6 @@
 /**
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/gnodes
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/s/factory
  * @requires zotohlab/p/s/collision
  * @requires zotohlab/p/s/networking
@@ -28,7 +27,6 @@ define("zotohlab/p/sysobjs",
 
        ['zotohlab/p/elements',
         'zotohlab/p/gnodes',
-        'zotohlab/p/s/priorities',
         'zotohlab/p/s/factory',
         'zotohlab/p/s/collision',
         'zotohlab/p/s/networking',
@@ -39,7 +37,6 @@ define("zotohlab/p/sysobjs",
         'zotohlab/p/s/movements'],
 
   function (cobjs, gnodes,
-            Priorities,
             EntityFactory,
             Collisions,
             Networking,
@@ -52,10 +49,6 @@ define("zotohlab/p/sysobjs",
     /** @alias module:zotohlab/p/sysobjs */
     var exports= /** @lends exports# */{
 
-      /**
-       * @property {Priorities} Priorities
-       */
-      Priorities        : Priorities,
       /**
        * @property {Factory} Factory
        */

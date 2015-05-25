@@ -13,7 +13,6 @@
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/gnodes
  * @requires zotohlab/p/s/utils
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/s/factory
  * @requires zotohlab/p/s/clearance
  * @requires zotohlab/p/s/generator
@@ -29,7 +28,6 @@ define("zotohlab/p/sysobjs",
        ['zotohlab/p/elements',
         'zotohlab/p/gnodes',
         'zotohlab/p/s/utils',
-        'zotohlab/p/s/priorities',
         'zotohlab/p/s/factory',
         'zotohlab/p/s/clearance',
         'zotohlab/p/s/generator',
@@ -40,7 +38,6 @@ define("zotohlab/p/sysobjs",
         'zotohlab/p/s/supervisor'],
 
   function (cobjs, gnodes, utils,
-            Priorities,
             EntityFactory,
             RowClearance,
             Generator,
@@ -51,14 +48,8 @@ define("zotohlab/p/sysobjs",
             Supervisor) { "use strict";
 
     /** @alias module:zotohlab/p/sysobjs */
-    let exports= {};
+    const exports= /** @lends exports# */{
 
-    exports= {
-
-      /**
-       * @property {Priorities} Priorities
-       */
-      Priorities      : Priorities,
       /**
        * @property {Factory} EntityFactory
        */

@@ -13,7 +13,6 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asx/xmmenus
  * @requires zotohlab/p/hud
@@ -26,18 +25,17 @@ define("zotohlab/p/arena",
        ['cherimoia/skarojs',
        'zotohlab/asterix',
        'zotohlab/asx/ccsx',
-       'zotohlab/asx/xlayers',
        'zotohlab/asx/xscenes',
        'zotohlab/asx/xmmenus',
        'zotohlab/p/hud',
        'zotohlab/p/elements',
        'zotohlab/p/sysobjs'],
 
-  function(sjs, sh, ccsx, layers, scenes,
+  function(sjs, sh, ccsx, scenes,
            mmenus, huds, cobjs, sobjs) { "use strict";
 
     /** @alias module:zotohlab/p/arena */
-    let exports = {},
+    let exports = {    },
     xcfg = sh.xcfg,
     csts = xcfg.csts,
     R = sjs.ramda,
@@ -45,12 +43,14 @@ define("zotohlab/p/arena",
 
     //////////////////////////////////////////////////////////////////////////
     /**
+     * @extends module:zotohlab/asx/xscenes.XGameLayer
      * @class GameLayer
      */
-    GameLayer = layers.XGameLayer.extend({
+    GameLayer = scenes.XGameLayer.extend({
 
       /**
-       * @private
+       * @method reset
+       * @protected
        */
       reset(newFlag) {
         if (!sjs.isEmpty(this.atlases)) {
@@ -69,8 +69,8 @@ define("zotohlab/p/arena",
       },
 
       /**
-       * @constructor
-       * @private
+       * @method ctor
+       * @constructs
        */
       ctor(options) {
         this._super(options);
@@ -79,6 +79,7 @@ define("zotohlab/p/arena",
       },
 
       /**
+       * @method operational
        * @protected
        */
       operational() {
@@ -86,6 +87,7 @@ define("zotohlab/p/arena",
       },
 
       /**
+       * @method onclicked
        * @protected
        */
       onclicked(mx,my) {
@@ -127,11 +129,19 @@ define("zotohlab/p/arena",
          sobjs.Resolution ]);
       },
 
+      /**
+       * @method endGame
+       * @private
+       */
       endGame() {
         this.options.running=false;
         this.getHUD().endGame();
       },
 
+      /**
+       * @method onNewGame
+       * @private
+       */
       onNewGame(mode) {
         //sh.xcfg.sfxPlay('start_game');
         this.setGameMode(mode);

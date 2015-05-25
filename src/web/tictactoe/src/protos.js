@@ -35,18 +35,17 @@ define("zotohlab/p/protodefs",
             msgbox, ynbox, splash, mmenu, arena) { "use strict";
 
     let ps= [online, splash, mmenu, msgbox, ynbox, arena],
-    /** @alias module:zotohlab/p/protodefs */
-    exports = {},
     protos= sh.protos,
+    /** @alias module:zotohlab/p/protodefs */
+    exports = protos,
     xcfg = sh.xcfg,
     R = sjs.ramda,
     undef;
 
-    R.forEach(function(obj) {
+    R.forEach((obj) => {
       protos[obj.rtti] = obj;
     }, ps);
 
-    exports= protos;
     return exports;
 });
 

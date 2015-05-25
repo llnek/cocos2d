@@ -74,6 +74,16 @@ define("zotohlab/asx/ccsx",
       },
 
       /**
+       * @property {cc.Color} white
+       */
+      white: cc.color(255,255,255),
+
+      /**
+       * @property {cc.Color} black
+       */
+      black: cc.color(0,0,0),
+
+      /**
        * Test collision of 2 entities using cc-rects.  Each entity
        * wraps a sprite object.
        * @method

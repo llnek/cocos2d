@@ -13,7 +13,7 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xlayers
+ * @requires zotohlab/asx/xscenes
  * @module zotohlab/p/hud
  */
 define("zotohlab/p/hud",
@@ -21,23 +21,31 @@ define("zotohlab/p/hud",
        ['cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
-        'zotohlab/asx/xlayers'],
+        'zotohlab/asx/xscenes'],
 
-  function(sjs, sh, ccsx, layers) { "use strict";
+  function(sjs, sh, ccsx, scenes) { "use strict";
 
     /** @alias module:zotohlab/p/hud */
-    let exports = {},
+    let exports = {    },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
     /**
+     * @extends module:zotohlab/asx/xscenes.XLayer
      * @class BackLayer
      */
-    BackLayer = layers.XLayer.extend({
+    BackLayer = scenes.XLayer.extend({
 
+      /**
+       * @method rtti
+       */
       rtti() { return 'BackLayer'; },
 
+      /**
+       * @method pkInit
+       * @protected
+       */
       pkInit() {
         this.centerImage(sh.getImagePath('game.bg'));
       }
@@ -45,9 +53,10 @@ define("zotohlab/p/hud",
     }),
 
     /**
+     * @extends module:zotohlab/asx/xscenes.XGameHUDLayer
      * @class HUDLayer
      */
-    HUDLayer = layers.XGameHUDLayer.extend({
+    HUDLayer = scenes.XGameHUDLayer.extend({
 
       /**
        * @memberof module:zotohlab/p/hud~HUDLayer
@@ -89,6 +98,8 @@ define("zotohlab/p/hud",
       },
 
       /**
+       * @method setGameMode
+       * @protected
        */
       setGameMode(mode) {
         this.mode=mode;
@@ -126,12 +137,14 @@ define("zotohlab/p/hud",
       },
 
       /**
+       * @method resetAsNew
        */
       resetAsNew() {
         this.reset();
       },
 
       /**
+       * @method reset
        */
       reset() {
         this.scores=  {};
@@ -144,6 +157,8 @@ define("zotohlab/p/hud",
       },
 
       /**
+       * @method endGame
+       * @private
        */
       endGame() {
         this.replayBtn.setVisible(true);
@@ -151,9 +166,11 @@ define("zotohlab/p/hud",
       },
 
       /**
+       * @method initLabels
+       * @protected
        */
       initLabels() {
-        const color= cc.color('#ffffff'),
+        const color= ccsx.white,
         cw= ccsx.center(),
         wb= ccsx.vbox();
 
@@ -192,6 +209,8 @@ define("zotohlab/p/hud",
       },
 
       /**
+       * @method isDone
+       * @private
        */
       isDone() {
         let s2= this.scores[this.play2],
@@ -204,6 +223,7 @@ define("zotohlab/p/hud",
       },
 
       /**
+       * @method updateScore
        */
       updateScores(scores) {
         this.scores[this.play2] = scores[this.play2];
@@ -212,6 +232,7 @@ define("zotohlab/p/hud",
       },
 
       /**
+       * @method updateScores
        */
       updateScore(color,value) {
         this.scores[color] = this.scores[color] + value;
@@ -219,6 +240,8 @@ define("zotohlab/p/hud",
       },
 
       /**
+       * @method drawScores
+       * @private
        */
       drawScores() {
         const s2 = this.play2 ? this.scores[this.play2] : 0,
@@ -230,6 +253,8 @@ define("zotohlab/p/hud",
       },
 
       /**
+       * @method drawResult
+       * @private
        */
       drawResult(winner) {
         let msg="";

@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -19,13 +18,12 @@
  */
 define("zotohlab/p/s/network",
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/gnodes',
+       ['zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/odin'],
 
-  function (pss, gnodes, sjs, sh, odin) { "use strict";
+  function (gnodes, sjs, sh, odin) { "use strict";
 
     /** @alias module:zotohlab/p/s/network */
     let exports = {  /* empty */ },
@@ -86,6 +84,7 @@ define("zotohlab/p/s/network",
       },
 
       /**
+       * @method process
        * @private
        */
       process(node, evt) {
@@ -109,6 +108,7 @@ define("zotohlab/p/s/network",
       /**
        * If the action from the server is valid, update the
        * state of the cell in the grid.
+       * @method maybeUpdateActions
        * @private
        */
       maybeUpdateActions(node, evt) {
@@ -139,7 +139,7 @@ define("zotohlab/p/s/network",
      * @property {Number} Priority
      * @static
      */
-    NetworkSystem.Priority= pss.Movement;
+    NetworkSystem.Priority= sh.ftypes.Move;
 
     exports= NetworkSystem;
     return exports;

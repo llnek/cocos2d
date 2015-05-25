@@ -16,7 +16,6 @@
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/odin
- * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asx/xmmenus
  * @requires zotohlab/p/hud
@@ -30,16 +29,15 @@ define("zotohlab/p/arena",
        'zotohlab/asterix',
        'zotohlab/asx/ccsx',
        'zotohlab/asx/odin',
-       'zotohlab/asx/xlayers',
        'zotohlab/asx/xscenes',
        'zotohlab/asx/xmmenus',
        'zotohlab/p/hud'],
 
   function(cobjs, sobjs, sjs, sh, ccsx,
-           odin, layers, scenes, mmenus, huds) { "use strict";
+           odin, scenes, mmenus, huds) { "use strict";
 
     /** @alias module:zotohlab/p/arena */
-    let exports = {},
+    let exports = {   },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     evts= odin.Events,
@@ -47,12 +45,14 @@ define("zotohlab/p/arena",
     undef,
 
     /**
+     * @extends module:zotohlab/asx/xscenes.XGameLayer
      * @class GameLayer
      */
-    GameLayer = layers.XGameLayer.extend({
+    GameLayer = scenes.XGameLayer.extend({
 
       /**
        * Get an odin event, first level callback
+       * @method onevent
        * @private
        */
       onevent(topic, evt) {
@@ -70,12 +70,14 @@ define("zotohlab/p/arena",
       },
 
       /**
+       * @method onStop
        * @private
        */
       onStop(evt) {
       },
 
       /**
+       * @method onNetworkEvent
        * @private
        */
       onNetworkEvent(evt) {
@@ -96,6 +98,7 @@ define("zotohlab/p/arena",
       },
 
       /**
+       * @method onSessionEvent
        * @private
        */
       onSessionEvent(evt) {
@@ -119,6 +122,7 @@ define("zotohlab/p/arena",
       },
 
       /**
+       * @method replay
        */
       replay() {
         sjs.loggr.debug('replay game called');
@@ -135,10 +139,10 @@ define("zotohlab/p/arena",
       },
 
       /**
+       * @method play
        */
       play(newFlag) {
-        let pss = sobjs.Priorities,
-        p1ids,
+        let p1ids,
         p2ids;
 
         // sort out names of players
@@ -184,7 +188,8 @@ define("zotohlab/p/arena",
       },
 
       /**
-       * @protected
+       * @method onNewGame
+       * @private
        */
       onNewGame(mode) {
         //sh.xcfg.sfxPlay('start_game');
@@ -193,6 +198,7 @@ define("zotohlab/p/arena",
       },
 
       /**
+       * @method reset
        */
       reset(newFlag) {
         if (!sjs.isEmpty(this.atlases)) {
@@ -213,6 +219,7 @@ define("zotohlab/p/arena",
       },
 
       /**
+       * @method operational
        * @protected
        */
       operational() {
@@ -220,6 +227,7 @@ define("zotohlab/p/arena",
       },
 
       /**
+       * @method initPlayers
        * @private
        */
       initPlayers() {
@@ -250,6 +258,7 @@ define("zotohlab/p/arena",
 
       /**
        * Scores is a map {'o': 0, 'x': 0}
+       * @method updatePoints
        * @private
        */
       updatePoints(scores) {
@@ -257,6 +266,7 @@ define("zotohlab/p/arena",
       },
 
       /**
+       * @method onWinner
        * @private
        */
       onWinner(p,score) {
@@ -269,6 +279,7 @@ define("zotohlab/p/arena",
       },
 
       /**
+       * @method doDone
        * @private
        */
       doDone(p) {
@@ -276,11 +287,12 @@ define("zotohlab/p/arena",
         this.getHUD().endGame();
         //this.removeAll();
         sh.sfxPlay('game_end');
-
         this.options.running=false;
       },
 
       /**
+       * @method setGameMode
+       * @protected
        */
       setGameMode(mode) {
         this._super(mode);
@@ -288,6 +300,7 @@ define("zotohlab/p/arena",
       },
 
       /**
+       * @method getEnclosureBox
        * @private
        */
       getEnclosureBox() {

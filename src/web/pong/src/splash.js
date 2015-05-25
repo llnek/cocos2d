@@ -13,9 +13,8 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xsplash
- * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xscenes
+ * @requires zotohlab/asx/xsplash
  * @module zotohlab/p/splash
  */
 define("zotohlab/p/splash",
@@ -23,24 +22,25 @@ define("zotohlab/p/splash",
        ['cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
-        'zotohlab/asx/xsplash',
-        'zotohlab/asx/xlayers',
-        'zotohlab/asx/xscenes'],
+        'zotohlab/asx/xscenes',
+        'zotohlab/asx/xsplash'],
 
-  function (sjs, sh, ccsx, splash, layers, scenes) { "use strict";
+  function (sjs, sh, ccsx, scenes, splash) { "use strict";
 
     /** @alias module:zotohlab/p/splash */
-    let exports= {},
+    let exports= {      },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
     /**
+     * @extends module:zotohlab/asx/xsplash.XSplashLayer
      * @class SplashLayer
      */
     SplashLayer = splash.XSplashLayer.extend({
 
       /**
+       * @method setTitle
        * @protected
        */
       setTitle() {
@@ -51,6 +51,7 @@ define("zotohlab/p/splash",
       },
 
       /**
+       * @method setPlay
        * @protected
        */
       setPlay: function() {
@@ -68,7 +69,7 @@ define("zotohlab/p/splash",
 
     });
 
-    exports= {
+    exports= /** @lends exports# */{
 
       /**
        * @property {String} rtti
@@ -80,7 +81,7 @@ define("zotohlab/p/splash",
        * @param {Object} options
        * @return {cc.Scene}
        */
-      reify: function(options) {
+      reify(options) {
         const ss= sh.protos[sh.ptypes.start],
         mm= sh.protos[sh.ptypes.mmenu],
         dir= cc.director;

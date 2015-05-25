@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
@@ -20,17 +19,16 @@
  */
 define("zotohlab/p/s/supervisor",
 
-       ['zotohlab/p/s/priorities',
-        "zotohlab/p/s/utils",
+       ["zotohlab/p/s/utils",
         "zotohlab/p/gnodes",
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/supervisor */
-    let exports = {},
+    let exports = {       },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -86,6 +84,7 @@ define("zotohlab/p/s/supervisor",
       },
 
       /**
+       * @method onceOnly
        * @private
        */
       onceOnly(node) {
@@ -115,6 +114,7 @@ define("zotohlab/p/s/supervisor",
       },
 
       /**
+       * @method doCtrl
        * @private
        */
       doCtrl(node) {
@@ -166,7 +166,7 @@ define("zotohlab/p/s/supervisor",
 
       /**
        * Draw horizontal wall.
-       *
+       * @method xh
        * @private
        */
       xh(fz, lf_bdy, rt_bdy, ypos) {
@@ -188,7 +188,7 @@ define("zotohlab/p/s/supervisor",
 
       /**
        * Draw vertical wall.
-       *
+       * @method xv
        * @private
        */
       xv(fz, x) {
@@ -208,6 +208,7 @@ define("zotohlab/p/s/supervisor",
       },
 
       /**
+       * @method onceOnly_2
        * @private
        */
       onceOnly_2(node, fz, bz, box) {
@@ -226,6 +227,7 @@ define("zotohlab/p/s/supervisor",
       },
 
       /**
+       * @method initBlockMap
        * @private
        */
       initBlockMap(tiles) {
@@ -241,6 +243,7 @@ define("zotohlab/p/s/supervisor",
 
       /**
        * Create our own collision map using cells.
+       * @method fakeTileMap
        * @private
        */
       fakeTileMap(bz, box) {
@@ -268,7 +271,7 @@ define("zotohlab/p/s/supervisor",
     /**
      * @property {Number} Priority
      */
-    GameSupervisor.Priority= pss.PreUpdate;
+    GameSupervisor.Priority= sh.ftypes.PreUpdate;
 
     exports= GameSupervisor;
     return exports;

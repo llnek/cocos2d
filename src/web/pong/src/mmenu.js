@@ -27,7 +27,7 @@ define("zotohlab/p/mmenu",
        'zotohlab/asx/xmmenus',
        'zotohlab/asx/xscenes'],
 
-  function (sjs, sh, ccsx, layers, mmenus, scenes) { "use strict";
+  function (sjs, sh, ccsx, mmenus, scenes) { "use strict";
 
     let SEED= { ppids: { }, pnum: 1, mode: 0 },
     /** @alias zotohlab/p/mmenu */
@@ -39,10 +39,15 @@ define("zotohlab/p/mmenu",
 
     //////////////////////////////////////////////////////////////////////////////
     /**
+     * @extends module:zotohlab/asx/xmmenus.XMenuBackLayer
      * @class BackLayer
      */
     BackLayer = mmenus.XMenuBackLayer.extend({
 
+      /**
+       * @method setTitle
+       * @protected
+       */
       setTitle() {
         const wb=ccsx.vbox(),
         cw= ccsx.center(),
@@ -58,8 +63,17 @@ define("zotohlab/p/mmenu",
 
     }),
 
+    //////////////////////////////////////////////////////////////////////////////
+    /**
+     * @extends module:zotohlab/asx/xmmenus.XMenuLayer
+     * @class MainMenuLayer
+     */
     MainMenuLayer = mmenus.XMenuLayer.extend({
 
+      /**
+       * @method pkInit
+       * @protected
+       */
       pkInit() {
         const color= cc.color('#32baf4'),
         cw= ccsx.center(),
@@ -110,9 +124,7 @@ define("zotohlab/p/mmenu",
           { imgPath: '#icon_back.png',
             color: color,
             cb() {
-              if (!!this.options.onBack) {
-                this.options.onBack();
-              }
+              this.options.onBack();
             },
             target: this },
           { imgPath: '#icon_quit.png',

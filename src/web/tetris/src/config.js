@@ -56,6 +56,11 @@ define("zotohlab/p/config",
         TILE: 0 // set via code
       },
 
+      ftypes : {
+        Clear: 350,
+        Generate: 360
+      },
+
       assets: {
         atlases: {
           'lang-pics' : 'res/{{appid}}/l10n/{{lang}}/images',

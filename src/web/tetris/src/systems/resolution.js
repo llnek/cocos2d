@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
@@ -20,17 +19,16 @@
  */
 define("zotohlab/p/s/resolution",
 
-       ['zotohlab/p/s/priorities',
-        "zotohlab/p/s/utils",
+       ["zotohlab/p/s/utils",
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/resolution */
-    let exports = {},
+    let exports = {   },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -108,6 +106,7 @@ define("zotohlab/p/s/resolution",
       },
 
       /**
+       * @method fastDrop
        * @private
        */
       fastDrop(layer, node) {
@@ -122,7 +121,7 @@ define("zotohlab/p/s/resolution",
      * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
      * @property {Number} Priority
      */
-    ResolutionSystem.Priority= pss.Resolve;
+    ResolutionSystem.Priority= sh.ftypes.Resolve;
 
     exports= ResolutionSystem;
     return exports;

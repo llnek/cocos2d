@@ -14,7 +14,6 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xscenes
  * @module zotohlab/p/hud
  */
@@ -24,13 +23,12 @@ define("zotohlab/p/hud",
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
-        'zotohlab/asx/xlayers',
         'zotohlab/asx/xscenes'],
 
-  function(cobjs, sjs, sh, ccsx, layers, scenes) { "use strict";
+  function(cobjs, sjs, sh, ccsx, scenes) { "use strict";
 
     /** @alias module:zotohlab/p/hud */
-    let exports = {},
+    let exports = {     },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -38,12 +36,20 @@ define("zotohlab/p/hud",
 
     //////////////////////////////////////////////////////////////////////////
     /**
+     * @extends module:zotohlab/asx/xscenes.XLayer
      * @class BackLayer
      */
-    BackLayer = layers.XLayer.extend({
+    BackLayer = scenes.XLayer.extend({
 
+      /**
+       * @method rtti
+       */
       rtti() { return 'BackLayer'; },
 
+      /**
+       * @method pkInit
+       * @protected
+       */
       pkInit() {
         this.centerImage(sh.getImagePath('game.bg'));
       }
@@ -51,14 +57,23 @@ define("zotohlab/p/hud",
 
     //////////////////////////////////////////////////////////////////////////
     /**
+     * @extends module:zotohlab/asx/xscenes.XGameHUDLayer
      * @class HUDLayer
      */
-    HUDLayer = layers.XGameHUDLayer.extend({
+    HUDLayer = scenes.XGameHUDLayer.extend({
 
+      /**
+       * @method initAtlases
+       * @protected
+       */
       initAtlases() {
         this.regoAtlas('game-pics');
       },
 
+      /**
+       * @method initLabels
+       * @protected
+       */
       initLabels() {
         const cw= ccsx.center(),
         wz = ccsx.vrect(),
@@ -85,47 +100,62 @@ define("zotohlab/p/hud",
         this.addItem(this.status);
       },
 
+      /**
+       * @method endGame
+       * @private
+       */
       endGame() {
         this.replayBtn.setVisible(true);
         this.status.setVisible(true);
         this.drawStatusText(sh.l10n('%gameover'));
       },
 
+      /**
+       * @method drawStatusText
+       * @private
+       */
       drawStatusText(msg) {
         this.status.setString( msg);
       },
 
-      showStatus() {
-      },
+      showStatus: sjs.NILFUNC,
+      initIcons: sjs.NILFUNC,
 
-      initIcons() {
-      },
-
+      /**
+       * @method resetAsNew
+       */
       resetAsNew() {
         this.reset();
       },
 
+      /**
+       * @method reset
+       */
       reset() {
         this.replayBtn.setVisible(false);
         this.status.setVisible(false);
         this.score=0;
       },
 
+      /**
+       * @method updateScore
+       */
       updateScore(score) {
         this.score += score;
         this.scoreLabel.setString('' + this.score);
       },
 
+      /**
+       * @method ctor
+       * @constructs
+       */
       ctor(options) {
-        const color= cc.color(255,255,255),
-        scale=1;
 
         this._super(options);
 
         this.options.i_replay= {
           imgPath: '#icon_replay.png',
-          color: color,
-          scale : scale,
+          color: ccsx.white,
           visible: false,
           cb() {
             sh.fire('/hud/replay'); }
@@ -133,8 +163,7 @@ define("zotohlab/p/hud",
 
         this.options.i_menu= {
           imgPath: '#icon_menu.png',
-          color: color,
-          scale: scale,
+          color: ccsx.white,
           cb() {
             sh.fire('/hud/showmenu'); }
         };

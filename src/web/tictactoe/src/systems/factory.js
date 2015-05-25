@@ -36,12 +36,12 @@ define("zotohlab/p/s/factory",
 
     //////////////////////////////////////////////////////////////////////////////
     // returns array of winning combinations.
-    let mapGoalSpace = (size) => {
-      let ROWSPACE = [],
+    const mapGoalSpace = (size) => {
+      const ROWSPACE = [],
       COLSPACE = [],
       dx = [],
-      dy = [],
-      h, v;
+      dy = [];
+      let h, v;
 
       for (let r=0; r < size; ++r) {
         h = [];

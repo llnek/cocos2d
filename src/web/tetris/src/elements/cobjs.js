@@ -143,7 +143,7 @@ define("zotohlab/p/elements",
      * @extends cc.Sprite
      * @class Block
      */
-    var Block = cc.Sprite.extend({
+    const Block = cc.Sprite.extend({
       /**
        * @memberof module:zotohlab/p/elements~Block
        * @method blink

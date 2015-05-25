@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/gnodes
  * @requires zotohlab/p/s/utils
@@ -21,18 +20,17 @@
  */
 define("zotohlab/p/s/generator",
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/elements',
+       ['zotohlab/p/elements',
         'zotohlab/p/gnodes',
         'zotohlab/p/s/utils',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, cobjs, gnodes, utils, sjs, sh, ccsx) { "use strict";
+  function (cobjs, gnodes, utils, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/generator */
-    let exports = {},
+    let exports = {       },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R= sjs.ramda,
@@ -102,6 +100,7 @@ define("zotohlab/p/s/generator",
       },
 
       /**
+       * @method reifyNextShape
        * @private
        */
       reifyNextShape(node, layer) {
@@ -132,6 +131,7 @@ define("zotohlab/p/s/generator",
       },
 
       /**
+       * @method previewNextShape
        * @private
        */
       previewNextShape(node, layer) {
@@ -157,6 +157,7 @@ define("zotohlab/p/s/generator",
       },
 
       /**
+       * @method randNext
        * @private
        */
       randNext() {
@@ -176,7 +177,7 @@ define("zotohlab/p/s/generator",
      * @memberof module:zotohlab/p/s/generator~ShapeGenerator
      * @property {Number} Priority
      */
-    ShapeGenerator.Priority= pss.Generate;
+    ShapeGenerator.Priority= xcfg.ftypes.Generate;
 
     exports= ShapeGenerator;
     return exports;

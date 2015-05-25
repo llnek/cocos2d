@@ -13,7 +13,6 @@
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/gnodes
  * @requires zotohlab/p/s/utils
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/s/factory
  * @requires zotohlab/p/s/network
  * @requires zotohlab/p/s/rendering
@@ -28,7 +27,6 @@ define("zotohlab/p/sysobjs",
        ['zotohlab/p/elements',
         'zotohlab/p/gnodes',
         'zotohlab/p/s/utils',
-        'zotohlab/p/s/priorities',
         'zotohlab/p/s/factory',
         'zotohlab/p/s/network',
         'zotohlab/p/s/rendering',
@@ -38,7 +36,6 @@ define("zotohlab/p/sysobjs",
         'zotohlab/p/s/uiselect'],
 
   function (cobjs, gnodes, utils,
-            Priorities,
             EntityFactory,
             NetworkSystem,
             RenderSystem,
@@ -50,10 +47,6 @@ define("zotohlab/p/sysobjs",
     /** @alias module:zotohlab/p/sysobjs */
     const exports= {
 
-      /**
-       * @property {Priorities} Priorities
-       */
-      Priorities: Priorities,
       /**
        * @property {Factory} Factory
        */

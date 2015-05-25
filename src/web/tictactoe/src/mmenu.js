@@ -13,7 +13,6 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xmmenus
  * @requires zotohlab/asx/xscenes
  * @module zotohlab/p/mmenu
@@ -23,11 +22,10 @@ define("zotohlab/p/mmenu",
        ['cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
-        'zotohlab/asx/xlayers',
         'zotohlab/asx/xmmenus',
         'zotohlab/asx/xscenes'],
 
-  function (sjs, sh, ccsx, layers, mmenus, scenes) { "use strict";
+  function (sjs, sh, ccsx, mmenus, scenes) { "use strict";
 
     /** @alias module:zotohlab/p/mmenu */
     let exports= {},
@@ -49,10 +47,15 @@ define("zotohlab/p/mmenu",
 
     //////////////////////////////////////////////////////////////////////////////
     /**
+     * @extends module:zotohlab/asx/xmmenus.XMenuBackLayer
      * @class BackLayer
      */
     BackLayer = mmenus.XMenuBackLayer.extend({
 
+      /**
+       * @method setTitle
+       * @protected
+       */
       setTitle() {
         const wb=ccsx.vbox(),
         cw= ccsx.center(),
@@ -70,17 +73,20 @@ define("zotohlab/p/mmenu",
 
     //////////////////////////////////////////////////////////////////////////////
     /**
+     * @extends module:zotohlab/asx/xmmenus.XMenuLayer
      * @class MainMenuLayer
      */
     MainMenuLayer = mmenus.XMenuLayer.extend({
 
+      /**
+       * @method pkInit
+       * @protected
+       */
       pkInit() {
 
         let color= cc.color(94,49,120),
         cw = ccsx.center(),
         wb= ccsx.vbox(),
-        sz,
-        // show the menu
         menu= ccsx.vmenu([
           { imgPath: '#online.png',
             cb() {
@@ -90,7 +96,7 @@ define("zotohlab/p/mmenu",
             }},
           { imgPath: '#player2.png',
             cb() {
-              let p={};
+              const p={};
               p[ sh.l10n('%p1') ] = [ 1, sh.l10n('%player1') ];
               p[ sh.l10n('%p2') ] = [ 2, sh.l10n('%player2') ];
               sh.fire('/mmenu/newgame',
@@ -100,7 +106,7 @@ define("zotohlab/p/mmenu",
             }},
           { imgPath: '#player1.png',
             cb() {
-              let p={};
+              const p={};
               p[ sh.l10n('%cpu') ] = [ 2, sh.l10n('%computer') ];
               p[ sh.l10n('%p1') ] = [ 1,  sh.l10n('%player1') ];
               sh.fire('/mmenu/newgame',
@@ -117,9 +123,7 @@ define("zotohlab/p/mmenu",
             imgPath: '#icon_back.png',
             color: color,
             cb() {
-              if (!!this.options.onBack) {
-                this.options.onBack();
-              }
+              this.options.onBack();
             },
             target: this },
           { imgPath: '#icon_quit.png',
@@ -132,7 +136,7 @@ define("zotohlab/p/mmenu",
                           wb.bottom + csts.TILE + z.height * 0.45);
         });
 
-        // show the control buttons
+        // show the audio button
         this.mkAudio({
           pos: cc.p(wb.right - csts.TILE,
                     wb.bottom + csts.TILE),
@@ -172,7 +176,7 @@ define("zotohlab/p/mmenu",
         }).onmsg('/mmenu/online',
           (topic, msg) => {
             msg.yes= (wss,pnum,startmsg) => {
-              let m= sjs.mergeEx( R.omit(['yes', 'onBack'], msg), {
+              const m= sjs.mergeEx( R.omit(['yes', 'onBack'], msg), {
                 wsock: wss,
                 pnum: pnum
               });

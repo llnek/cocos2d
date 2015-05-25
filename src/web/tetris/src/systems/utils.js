@@ -25,20 +25,15 @@ define("zotohlab/p/s/utils",
 
   function (cobjs, sjs, sh, ccsx) { "use strict";
 
-    /** @alias module:zotohlab/p/s/utils */
-    let exports= {},
-    xcfg = sh.xcfg,
+    let xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
-    undef,
+    undef;
 
-    /**
-     * @class SystemUtils
-     */
-    SystemUtils = {
+    /** @alias module:zotohlab/p/s/utils */
+    const exports= /** @lends exports# */{
 
       /**
-       * @memberof module:zotohlab/p/s/utils~SystemUtils
        * @method reifyShape
        * @param {cc.Layer} layer
        * @param {Object} cmap
@@ -61,7 +56,6 @@ define("zotohlab/p/s/utils",
       },
 
       /**
-       * @memberof module:zotohlab/p/s/utils~SystemUtils
        * @method topLine
        * @param {Node} node
        * @return {Number}
@@ -73,7 +67,6 @@ define("zotohlab/p/s/utils",
       },
 
       /**
-       * @memberof module:zotohlab/p/s/utils~SystemUtils
        * @method previewShape
        * @param {cc.Layer} layer
        * @param {Object} shape
@@ -93,7 +86,6 @@ define("zotohlab/p/s/utils",
       },
 
       /**
-       * @memberof module:zotohlab/p/s/utils~SystemUtils
        * @method disposeShape
        * @param {Object} shape
        */
@@ -106,7 +98,6 @@ define("zotohlab/p/s/utils",
       },
 
       /**
-       * @memberof module:zotohlab/p/s/utils~SystemUtils
        * @method clearOldBricks
        * @param {Array} bs
        */
@@ -115,7 +106,6 @@ define("zotohlab/p/s/utils",
       },
 
       /**
-       * @memberof module:zotohlab/p/s/utils~SystemUtils
        * @method reifyBricks
        * @param {cc.Layer} layer
        * @param {String} png
@@ -139,7 +129,6 @@ define("zotohlab/p/s/utils",
       },
 
       /**
-       * @memberof module:zotohlab/p/s/utils~SystemUtils
        * @method findBBox
        * @param {Object} cmap
        * @param {Object} model
@@ -175,6 +164,7 @@ define("zotohlab/p/s/utils",
       },
 
       /**
+       * @method maybeCollide
        * @private
        */
       maybeCollide(cmap, tl_x, tl_y, br_x, br_y) {
@@ -194,6 +184,7 @@ define("zotohlab/p/s/utils",
       },
 
       /**
+       * @method xrefTile
        * @private
        */
       xrefTile(x,y) {
@@ -211,6 +202,7 @@ define("zotohlab/p/s/utils",
       },
 
       /**
+       * @method initDropper
        * @private
        */
       initDropper(par, dp) {
@@ -218,6 +210,7 @@ define("zotohlab/p/s/utils",
       },
 
       /**
+       * @method setDropper
        * @private
        */
       setDropper(par, dp, r, s) {
@@ -227,6 +220,7 @@ define("zotohlab/p/s/utils",
       },
 
       /**
+       * @method lockBricks
        * @private
        */
       lockBricks(cmap, emap, z) {
@@ -238,6 +232,7 @@ define("zotohlab/p/s/utils",
       },
 
       /**
+       * @method lock
        * @private
        */
       lock(node, shape) {
@@ -252,6 +247,7 @@ define("zotohlab/p/s/utils",
       },
 
       /**
+       * @method postLock
        * @private
        */
       postLock(node, cmap, emap) {
@@ -275,6 +271,7 @@ define("zotohlab/p/s/utils",
       },
 
       /**
+       * @method testFilledRow
        * @private
        */
       testFilledRow(cmap, r) {
@@ -290,6 +287,7 @@ define("zotohlab/p/s/utils",
       },
 
       /**
+       * @method flashFilled
        * @private
        */
       flashFilled(emap, flines, lines) {
@@ -306,6 +304,7 @@ define("zotohlab/p/s/utils",
       },
 
       /**
+       * @method pauseForClearance
        * @private
        */
       pauseForClearance(node, b, delay) {
@@ -322,6 +321,7 @@ define("zotohlab/p/s/utils",
       },
 
       /**
+       * @method moveDown
        * @private
        */
       moveDown(layer, cmap, shape) {
@@ -343,6 +343,7 @@ define("zotohlab/p/s/utils",
       },
 
       /**
+       * @method shiftRight
        * @private
        */
       shiftRight(layer, cmap, shape) {
@@ -364,6 +365,7 @@ define("zotohlab/p/s/utils",
       },
 
       /**
+       * @method shiftLeft
        * @private
        */
       shiftLeft(layer, cmap, shape) {
@@ -385,6 +387,7 @@ define("zotohlab/p/s/utils",
       },
 
       /**
+       * @method rotateRight
        * @private
        */
       rotateRight(layer,cmap,shape) {
@@ -409,6 +412,7 @@ define("zotohlab/p/s/utils",
       },
 
       /**
+       * @method rotateLeft
        * @private
        */
       rotateLeft(layer,cmap,shape) {
@@ -434,7 +438,6 @@ define("zotohlab/p/s/utils",
 
     };
 
-    exports= SystemUtils;
     return exports;
 });
 

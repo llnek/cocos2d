@@ -13,9 +13,8 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xlayers
- * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asx/xmmenus
+ * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asx/odin
  * @requires zotohlab/p/hud
  * @requires zotohlab/p/elements
@@ -27,20 +26,18 @@ define("zotohlab/p/arena",
        ['cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
-        'zotohlab/asx/xlayers',
-        'zotohlab/asx/xscenes',
         'zotohlab/asx/xmmenus',
+        'zotohlab/asx/xscenes',
         'zotohlab/asx/odin',
         'zotohlab/p/hud',
         'zotohlab/p/elements',
         'zotohlab/p/sysobjs'],
 
-  function (sjs, sh, ccsx, layers, scenes,
-            mmenus, odin, huds, cobjs, sobjs) { "use strict";
+  function (sjs, sh, ccsx, mmenus, scenes,
+            odin, huds, cobjs, sobjs) { "use strict";
 
     /** @alias module:zotohlab/p/arena */
-    let exports = {},
-    prrs= sobjs.Priorities,
+    let exports = {          },
     evts= odin.Events,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
@@ -49,12 +46,20 @@ define("zotohlab/p/arena",
 
     //////////////////////////////////////////////////////////////////////////////
     /**
+     * @extends module:zotohlab/asx/xscenes.XGameLayer
      * @class GameLayer
      */
-    let GameLayer = layers.XGameLayer.extend({
+    const GameLayer = scenes.XGameLayer.extend({
 
+      /**
+       * @method onStop
+       * @private
+       */
       onStop(evt) { this.options.netQ.push(evt); },
 
+      /**
+       * @method replay
+       */
       replay() {
         if (sjs.isObject(this.options.wsock)) {
           // request server to restart a new game
@@ -67,6 +72,9 @@ define("zotohlab/p/arena",
         }
       },
 
+      /**
+       * @method play
+       */
       play(newFlag) {
 
         let p1ids, p2ids;
@@ -115,12 +123,19 @@ define("zotohlab/p/arena",
                                   csts.P2_COLOR, p2ids);
       },
 
+      /**
+       * @method onNewGame
+       * @private
+       */
       onNewGame(mode) {
         //sh.sfxPlay('start_game');
         this.setGameMode(mode);
         this.play(true);
       },
 
+      /**
+       * @method reset
+       */
       reset(newFlag) {
         if (!sjs.isEmpty(this.atlases)) {
           sjs.eachObj((v) => { v.removeAllChildren(); }, this.atlases);
@@ -135,6 +150,10 @@ define("zotohlab/p/arena",
         }
       },
 
+      /**
+       * @method onclicked
+       * @protected
+       */
       onclicked(mx,my) {
         if (this.options.running &&
             this.options.selQ.length === 0) {
@@ -143,6 +162,10 @@ define("zotohlab/p/arena",
         }
       },
 
+      /**
+       * @method updateHUD
+       * @private
+       */
       updateHUD() {
         if (this.options.running) {
           this.getHUD().drawStatus(this.actor);
@@ -151,15 +174,27 @@ define("zotohlab/p/arena",
         }
       },
 
+      /**
+       * @method playTimeExpired
+       * @private
+       */
       playTimeExpired(msg) {
         this.options.msgQ.push("forfeit");
       },
 
+      /**
+       * @method setGameMode
+       * @protected
+       */
       setGameMode(mode) {
         this._super(mode);
         this.getHUD().setGameMode(mode);
       },
 
+      /**
+       * @method initPlayers
+       * @private
+       */
       initPlayers() {
         let p2cat, p1cat,
         p2, p1;
@@ -186,6 +221,10 @@ define("zotohlab/p/arena",
         this.options.colors[csts.P2_COLOR] = p2;
       },
 
+      /**
+       * @method onevent
+       * @private
+       */
       onevent(topic, evt) {
         //sjs.loggr.debug(evt);
         switch (evt.type) {
@@ -198,6 +237,10 @@ define("zotohlab/p/arena",
         }
       },
 
+      /**
+       * @method onNetworkEvent
+       * @private
+       */
       onNetworkEvent(evt) {
         switch (evt.code) {
           case evts.RESTART:
@@ -217,6 +260,10 @@ define("zotohlab/p/arena",
         }
       },
 
+      /**
+       * @method onSessionEvent
+       * @private
+       */
       onSessionEvent(evt) {
         this.options.netQ.push(evt);
         /*

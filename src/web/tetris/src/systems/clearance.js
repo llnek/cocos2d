@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
@@ -20,17 +19,16 @@
  */
 define("zotohlab/p/s/clearance",
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/s/utils',
+       ['zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/clearance */
-    let exports = {},
+    let exports = {   },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -88,6 +86,7 @@ define("zotohlab/p/s/clearance",
         }
       },
       /**
+       * @method clearFilled
        * @private
        */
       clearFilled(node) {
@@ -105,6 +104,7 @@ define("zotohlab/p/s/clearance",
 
       /**
        * Dispose and get rid of blocks which are marked to be cleared
+       * @method clearOneRow
        * @private
        */
       clearOneRow(node, r) {
@@ -120,6 +120,7 @@ define("zotohlab/p/s/clearance",
 
       /**
        * Clear collision mark
+       * @method resetOneRow
        * @private
        */
       resetOneRow(node, r) {
@@ -133,6 +134,7 @@ define("zotohlab/p/s/clearance",
       },
 
       /**
+       * @method shiftDownLines
        * @private
        */
       shiftDownLines(node) {
@@ -154,6 +156,7 @@ define("zotohlab/p/s/clearance",
       },
 
       /**
+       * @method findFirstDirty
        * @private
        */
       findFirstDirty(node) {
@@ -167,6 +170,7 @@ define("zotohlab/p/s/clearance",
       },
 
       /**
+       * @method findLastEmpty
        * @private
        */
       findLastEmpty(node) {
@@ -180,6 +184,7 @@ define("zotohlab/p/s/clearance",
       },
 
       /**
+       * @method isEmptyRow
        * @private
        */
       isEmptyRow(node, r) {
@@ -195,6 +200,7 @@ define("zotohlab/p/s/clearance",
       },
 
       /**
+       * @method copyLine
        * @private
        */
       copyLine(node, from, to) {
@@ -229,7 +235,7 @@ define("zotohlab/p/s/clearance",
      * @memberof module:zotohlab/p/s/clearance~RowClearance
      * @property {Number} Priority
      */
-    RowClearance.Priority= pss.Clear;
+    RowClearance.Priority= xcfg.ftypes.Clear;
 
     exports= RowClearance;
     return exports;

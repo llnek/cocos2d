@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -20,14 +19,13 @@
  */
 define("zotohlab/p/s/turnbase",
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/gnodes',
+       ['zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
         'zotohlab/asx/odin'],
 
-  function (pss, gnodes, sjs, sh, ccsx, odin) { "use strict";
+  function (gnodes, sjs, sh, ccsx, odin) { "use strict";
 
     /** @alias module:zotohlab/p/s/turnbase */
     let exports = {          },
@@ -84,6 +82,7 @@ define("zotohlab/p/s/turnbase",
       },
 
       /**
+       * @method process
        * @private
        */
       process(node, evt) {
@@ -128,6 +127,7 @@ define("zotohlab/p/s/turnbase",
       },
 
       /**
+       * @method enqueue
        * @private
        */
       enqueue(pos, value, grid) {
@@ -161,10 +161,11 @@ define("zotohlab/p/s/turnbase",
       },
 
       /**
+       * @method onEnqueue
        * @private
        */
       onEnqueue(grid,pnum,cell) {
-        let src= {
+        const src= {
           color: this.state.players[pnum].color,
           value: this.state.players[pnum].value,
           grid: grid.values,
@@ -188,7 +189,7 @@ define("zotohlab/p/s/turnbase",
      * @memberof module:zotohlab/p/s/turnbase~TurnBaseSystem
      * @property {Number} Priority
      */
-    TurnBaseSystem.Priority = pss.TurnBase;
+    TurnBaseSystem.Priority = sh.ftypes.TurnBase;
 
     exports= TurnBaseSystem;
     return exports;

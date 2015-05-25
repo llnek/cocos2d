@@ -13,7 +13,6 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xmmenus
  * @requires zotohlab/asx/xscenes
  * @module zotohlab/p/mmenu
@@ -23,14 +22,13 @@ define("zotohlab/p/mmenu",
        ['cherimoia/skarojs',
        'zotohlab/asterix',
        'zotohlab/asx/ccsx',
-       'zotohlab/asx/xlayers',
        'zotohlab/asx/xmmenus',
        'zotohlab/asx/xscenes'],
 
-  function (sjs, sh, ccsx, layers, mmenus, scenes) { "use strict";
+  function (sjs, sh, ccsx, mmenus, scenes) { "use strict";
 
     /** @alias module:zotohlab/p/mmenu */
-    let exports= {},
+    let exports= {   },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R= sjs.ramda,
@@ -38,10 +36,15 @@ define("zotohlab/p/mmenu",
 
     //////////////////////////////////////////////////////////////////////////////
     /**
+     * @extends module:zotohlab/asx/xmmenus.XMenuBackLayer
      * @class BackLayer
      */
     BackLayer = mmenus.XMenuBackLayer.extend({
 
+      /**
+       * @method setTitle
+       * @protected
+       */
       setTitle() {
         const cw= ccsx.center(),
         wb=ccsx.vbox(),
@@ -59,14 +62,18 @@ define("zotohlab/p/mmenu",
 
     //////////////////////////////////////////////////////////////////////////
     /**
+     * @extends module:zotohlab/asx/xmmenus.XMenuLayer
      * @class MainMenuLayer
      */
     MainMenuLayer = mmenus.XMenuLayer.extend({
 
+      /**
+       * @method pkInit
+       * @protected
+       */
       pkInit() {
         const cw = ccsx.center(),
         wb = ccsx.vbox(),
-        // show the menu
         menu= ccsx.vmenu([
           { imgPath: '#player1.png',
             cb() {
@@ -87,9 +94,7 @@ define("zotohlab/p/mmenu",
         this.mkBackQuit(false, [{
             imgPath: '#icon_back.png',
             cb() {
-              if (!!this.options.onBack) {
-                this.options.onBack();
-              }
+              this.options.onBack();
             },
             target: this },
           {
@@ -97,7 +102,7 @@ define("zotohlab/p/mmenu",
             cb() { this.onQuit(); },
             target: this }
         ],
-        function (m,z) {
+        (m,z) => {
           m.setPosition(wb.left + csts.TILE + z.width * 1.1,
                          wb.bottom + csts.TILE + z.height * 0.45);
         });

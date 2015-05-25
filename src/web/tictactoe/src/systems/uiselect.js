@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -19,13 +18,12 @@
  */
 define("zotohlab/p/s/uiselect",
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/gnodes',
+       ['zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, gnodes, sjs, sh, ccsx) { "use strict";
+  function (gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/uiselect */
     let exports = {},
@@ -85,12 +83,12 @@ define("zotohlab/p/s/uiselect",
       },
 
       /**
+       * @method process
        * @private
        */
       process(node, evt) {
         let sel = node.selection,
         map = node.view.gridMap,
-        n,
         rect,
         sz= map.length;
 
@@ -104,7 +102,7 @@ define("zotohlab/p/s/uiselect",
         }
 
         //which cell did he click on?
-        for (n=0; n < sz; ++n) {
+        for (let n=0; n < sz; ++n) {
           rect = map[n];
           if (sel.px >= rect.left && sel.px <= rect.right &&
               sel.py >= rect.bottom && sel.py <= rect.top) {
@@ -120,7 +118,7 @@ define("zotohlab/p/s/uiselect",
      * @memberof module:zotohlab/p/s/uiselect~SelectionSystem
      * @property {Number} Priority
      */
-    SelectionSystem.Priority= pss.Movement;
+    SelectionSystem.Priority= sh.ftypes.Move;
 
     exports= SelectionSystem;
     return exports;

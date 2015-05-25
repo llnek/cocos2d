@@ -77,6 +77,7 @@ define("zotohlab/p/s/utils",
       },
 
       /**
+       * @method pkFlip
        * @private
        */
       pkFlip(img,flip) {
@@ -88,6 +89,7 @@ define("zotohlab/p/s/utils",
       },
 
       /**
+       * @method xrefImg
        * @private
        */
       xrefImg(value) {
@@ -109,7 +111,7 @@ define("zotohlab/p/s/utils",
        * @return {cc.Sprite}
        */
       drawSymbol(view, x,y,value,flip) {
-        let frame = this.pkFlip(this.xrefImg(value),flip),
+        const frame = this.pkFlip(this.xrefImg(value),flip),
         s1= ccsx.createSpriteFrame(frame);
         s1.setAnchorPoint(ccsx.acs.Center);
         s1.setPosition(x,y);

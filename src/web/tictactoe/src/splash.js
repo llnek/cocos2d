@@ -42,12 +42,19 @@ define("zotohlab/p/splash",
      */
     SplashLayer = splash.XSplashLayer.extend({
 
+      /**
+       * @method pkInit
+       * @protected
+       */
       pkInit() {
         this._super();
-        // show the demo icons
         this.showGrid();
       },
 
+      /**
+       * @method setPlay
+       * @protected
+       */
       setPlay() {
         const cw = ccsx.center(),
         wb = ccsx.vbox(),
@@ -64,8 +71,12 @@ define("zotohlab/p/splash",
         this.addItem(menu);
       },
 
+      /**
+       * @method showGrid
+       * @private
+       */
       showGrid() {
-        let scale= 0.75, me=this,
+        let scale= 0.75,
         pos=0,
         fm, sp, bx;
 
@@ -79,7 +90,7 @@ define("zotohlab/p/splash",
           bx=ccsx.vboxMID(mp);
           sp.setScale(scale);
           sp.setPosition(bx);
-          me.addItem(sp);
+          this.addItem(sp);
           ++pos;
         },
         utils.mapGridPos(3,scale));
