@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
@@ -20,17 +19,16 @@
  */
 define('zotohlab/p/s/movealiens',
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/s/utils',
+       ['zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/movealiens */
-    let exports = {},
+    let exports = {     },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -84,6 +82,7 @@ define('zotohlab/p/s/movealiens',
       },
 
       /**
+       * @method processMovement
        * @private
        */
       processMovement(node,dt) {
@@ -97,6 +96,7 @@ define('zotohlab/p/s/movealiens',
       },
 
       /**
+       * @method processBombs
        * @private
        */
       processBombs(node,dt) {
@@ -110,6 +110,7 @@ define('zotohlab/p/s/movealiens',
       },
 
       /**
+       * @method checkBomb
        * @private
        */
       checkBomb(sqad) {
@@ -129,6 +130,7 @@ define('zotohlab/p/s/movealiens',
       },
 
       /**
+       * @method dropBomb
        * @private
        */
       dropBomb(x,y) {
@@ -145,6 +147,7 @@ define('zotohlab/p/s/movealiens',
       },
 
       /**
+       * @method maybeShuffleAliens
        * @private
        */
       maybeShuffleAliens(sqad) {
@@ -161,6 +164,7 @@ define('zotohlab/p/s/movealiens',
       },
 
       /**
+       * @method testDirX
        * @private
        */
       testDirX(b, stepx) {
@@ -175,6 +179,7 @@ define('zotohlab/p/s/movealiens',
       },
 
       /**
+       * @method shuffleOneAlien
        * @private
        */
       shuffleOneAlien(a,stepx) {
@@ -183,6 +188,7 @@ define('zotohlab/p/s/movealiens',
       },
 
       /**
+       * @method forwardOneAlien
        * @private
        */
       forwardOneAlien(a, delta) {
@@ -194,6 +200,7 @@ define('zotohlab/p/s/movealiens',
       },
 
       /**
+       * @method doShuffle
        * @private
        */
       doShuffle(sqad) {
@@ -205,6 +212,7 @@ define('zotohlab/p/s/movealiens',
       },
 
       /**
+       * @method doForward
        * @private
        */
       doForward(sqad) {
@@ -218,6 +226,7 @@ define('zotohlab/p/s/movealiens',
       },
 
       /**
+       * @method findMinX
        * @private
        */
       findMinX(sqad) {
@@ -231,6 +240,7 @@ define('zotohlab/p/s/movealiens',
       },
 
       /**
+       * @method finxMaxX
        * @private
        */
       findMaxX(sqad) {
@@ -249,7 +259,7 @@ define('zotohlab/p/s/movealiens',
      * @memberof module:zotohlab/p/s/movealiens~MovementAliens
      * @property {Number} Priority
      */
-    MovementAliens.Priority= pss.Movement;
+    MovementAliens.Priority= sh.ftypes.Move;
 
     exports= MovementAliens;
     return exports;

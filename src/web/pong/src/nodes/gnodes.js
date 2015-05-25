@@ -24,7 +24,7 @@ define("zotohlab/p/gnodes",
   function (cobjs, sjs, sh) { "use strict";
 
     /** @alias module:zotohlab/p/gnodes */
-    let exports= {},
+    let exports= {    },
     undef;
 
     //////////////////////////////////////////////////////////////////////////////

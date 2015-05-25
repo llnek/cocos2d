@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -19,16 +18,15 @@
  */
 define('zotohlab/p/s/movepaddle',
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/gnodes',
+       ['zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, gnodes, sjs, sh, ccsx) { "use strict";
+  function (gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/movepaddle */
-    let exports = {},
+    let exports = {     },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -80,6 +78,7 @@ define('zotohlab/p/s/movepaddle',
       },
 
       /**
+       * @method processPaddleMotions
        * @private
        */
       processPaddleMotions(node,dt) {
@@ -106,6 +105,7 @@ define('zotohlab/p/s/movepaddle',
       },
 
       /**
+       * @method clamp
        * @private
        */
       clamp(pad) {
@@ -127,7 +127,7 @@ define('zotohlab/p/s/movepaddle',
      * @memberof module:zotohlab/p/s/movepaddle~MovementPaddle
      * @property {Number} Priority
      */
-    MovementPaddle.Priority= pss.Movement;
+    MovementPaddle.Priority= sh.ftypes.Move;
 
     exports= MovementPaddle;
     return exports;

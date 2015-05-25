@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
@@ -21,15 +20,14 @@
  */
 define('zotohlab/p/s/movebombs',
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/elements',
+       ['zotohlab/p/elements',
         'zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/movebombs */
     let exports = {},
@@ -79,6 +77,7 @@ define('zotohlab/p/s/movebombs',
       },
 
       /**
+       * @method moveBomb
        * @private
        */
       moveBomb(m, dt) {
@@ -88,6 +87,7 @@ define('zotohlab/p/s/movebombs',
       },
 
       /**
+       * @method processMovement
        * @private
        */
       processMovement(dt) {
@@ -105,7 +105,7 @@ define('zotohlab/p/s/movebombs',
      * @memberof module:zotohlab/p/s/movebombs~MoveBombs
      * @property {Number} Priority
      */
-    MoveBombs.Priority = pss.Movement;
+    MoveBombs.Priority = sh.ftypes.Move;
 
     exports= MoveBombs;
     return exports;

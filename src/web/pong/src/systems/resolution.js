@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -19,16 +18,15 @@
  */
 define("zotohlab/p/s/resolution",
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/gnodes',
+       ['zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, gnodes, sjs, sh, ccsx) { "use strict";
+  function (gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/resolution */
-    let exports = {},
+    let exports = {   },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -96,6 +94,7 @@ define("zotohlab/p/s/resolution",
       },
 
       /**
+       * @method checkNodes
        * @private
        */
       checkNodes(nl, bnode) {
@@ -109,6 +108,7 @@ define("zotohlab/p/s/resolution",
       },
 
       /**
+       * @method onWin
        * @private
        */
       onWin(winner) {
@@ -124,6 +124,7 @@ define("zotohlab/p/s/resolution",
 
       //check win
       /**
+       * @method check
        * @private
        */
       check(node,bnode) {
@@ -162,7 +163,7 @@ define("zotohlab/p/s/resolution",
      * @memberof module:zotohlab/p/s/resolution~Resolution
      * @property {Number} Priority
      */
-    Resolution.Priority = pss.Resolve;
+    Resolution.Priority = sh.ftypes.Resolve;
 
     exports= Resolution;
     return exports;

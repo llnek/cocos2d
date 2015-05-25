@@ -13,7 +13,6 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asx/xmmenus
  * @module zotohlab/p/mmenu
@@ -23,24 +22,28 @@ define('zotohlab/p/mmenu',
        ['cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
-        'zotohlab/asx/xlayers',
         'zotohlab/asx/xscenes',
         'zotohlab/asx/xmmenus'],
 
-  function (sjs, sh, ccsx, layers, scenes, mmenus) { "use strict";
+  function (sjs, sh, ccsx, scenes, mmenus) { "use strict";
 
     /** @alias module:zotohlab/p/mmenu */
-    let exports = {},
+    let exports = {     },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
     //////////////////////////////////////////////////////////////////////////////
     /**
+     * @extends module:zotohlab/asx/xmmenus.XMenuBackLayer
      * @class BackLayer
      */
     BackLayer = mmenus.XMenuBackLayer.extend({
 
+      /**
+       * @method setTitle
+       * @protected
+       */
       setTitle() {
         const wb=ccsx.vbox(),
         cw= ccsx.center(),
@@ -57,10 +60,15 @@ define('zotohlab/p/mmenu',
     }),
 
     /**
+     * @extends module:zotohlab/asx/xmmenus.XMenuLayer
      * @class MainMenuLayer
      */
     MainMenuLayer = mmenus.XMenuLayer.extend({
 
+      /**
+       * @method pkInit
+       * @protected
+       */
       pkInit() {
         const cw = ccsx.center(),
         wz = ccsx.vrect(),
@@ -78,7 +86,7 @@ define('zotohlab/p/mmenu',
         this.mkAudio({
           pos: cc.p(wb.right - csts.TILE,
                     wb.bottom + csts.TILE),
-          color: cc.color(255,255,255),
+          color: ccsx.white,
           anchor: ccsx.acs.BottomRight
         });
 
@@ -87,13 +95,11 @@ define('zotohlab/p/mmenu',
           { imgPath: '#icon_back.png',
             color: color,
             cb() {
-              if (!!this.options.onBack) {
-                this.options.onBack();
-              }
+              this.options.onBack();
             },
             target: this },
           { imgPath: '#icon_quit.png',
-            color: color,
+            color: cc.white,
             cb() { this.onQuit(); },
             target: this }
         ],

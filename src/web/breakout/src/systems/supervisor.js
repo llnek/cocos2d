@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
@@ -18,15 +17,14 @@
  */
 define('zotohlab/p/s/supervisor',
 
-       ['zotohlab/p/s/priorities',
-        'cherimoia/skarojs',
+       ['cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, sjs, sh, ccsx) { "use strict";
+  function (sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/supervisor */
-    var exports= {},
+    let exports= {      },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -91,6 +89,7 @@ define('zotohlab/p/s/supervisor',
       },
 
       /**
+       * @method onceOnly
        * @private
        */
       onceOnly() {
@@ -107,7 +106,7 @@ define('zotohlab/p/s/supervisor',
      * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
      * @property {Number} Priority
      */
-    GameSupervisor.Priority= pss.PreUpdate;
+    GameSupervisor.Priority= sh.ftypes.PreUpdate;
 
     exports= GameSupervisor;
     return exports;

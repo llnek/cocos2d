@@ -13,7 +13,6 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asx/xmmenus
  * @module zotohlab/p/mmenu
@@ -23,32 +22,36 @@ define('zotohlab/p/mmenu',
        ['cherimoia/skarojs',
        'zotohlab/asterix',
        'zotohlab/asx/ccsx',
-       'zotohlab/asx/xlayers',
        'zotohlab/asx/xscenes',
        'zotohlab/asx/xmmenus'],
 
-  function (sjs, sh, ccsx, layers, scenes, mmenus) { "use strict";
+  function (sjs, sh, ccsx, scenes, mmenus) { "use strict";
 
     /** @alias module:zotohlab/p/mmenu */
-    let exports = {},
+    let exports = {     },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
     //////////////////////////////////////////////////////////////////////////////
     /**
+     * @extends module:zotohlab/asx/xmmenus.XMenuBackLayer
      * @class BackLayer
      */
     BackLayer = mmenus.XMenuBackLayer.extend({
 
+      /**
+       * @method setTitle
+       * @protected
+       */
       setTitle() {
-        var wb=ccsx.vbox(),
+        const wb=ccsx.vbox(),
         cw= ccsx.center(),
         tt=ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.JellyBelly'),
           text: sh.l10n('%mmenu'),
           pos: cc.p(cw.x, wb.top * 0.9),
-          color: cc.color(255,255,255),
+          color: ccsx.white,
           scale: xcfg.game.scale
         });
         this.addItem(tt);
@@ -57,10 +60,15 @@ define('zotohlab/p/mmenu',
     }),
 
     /**
+     * @extends module:zotohlab/asx/xmmenus.XMenuLayer
      * @MainMenuLayer
      */
     MainMenuLayer = mmenus.XMenuLayer.extend({
 
+      /**
+       * @method pkInit
+       * @protected
+       */
       pkInit() {
         const color= cc.color(94,49,120),
         cw = ccsx.center(),
@@ -78,7 +86,7 @@ define('zotohlab/p/mmenu',
         this.mkAudio({
           pos: cc.p(wb.right - csts.TILE,
                     wb.bottom + csts.TILE),
-          color: cc.color(255,255,255),
+          color: ccsx.white,
           anchor: ccsx.acs.BottomRight
         });
 
@@ -87,9 +95,7 @@ define('zotohlab/p/mmenu',
           { imgPath: '#icon_back.png',
             color: color,
             cb() {
-              if (!!this.options.onBack) {
-                this.options.onBack();
-              }
+              this.options.onBack();
             },
             target: this },
           { imgPath: '#icon_quit.png',

@@ -14,7 +14,6 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asx/xmmenus
  * @requires zotohlab/p/hud
@@ -26,13 +25,12 @@ define('zotohlab/p/arena',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
-        'zotohlab/asx/xlayers',
         'zotohlab/asx/xscenes',
         'zotohlab/asx/xmmenus',
         'zotohlab/p/hud'],
 
   function (sobjs, sjs, sh, ccsx,
-            layers, scenes, mmenus, huds) { "use strict";
+            scenes, mmenus, huds) { "use strict";
 
     /** @alias module:zotohlab/p/arena */
     let exports = {},
@@ -42,10 +40,15 @@ define('zotohlab/p/arena',
     undef,
 
     /**
+     * @extends module:zotohlab/asx/xscenes.XGameLayer
      * @class GameLayer
      */
-    GameLayer = layers.XGameLayer.extend({
+    GameLayer = scenes.XGameLayer.extend({
 
+      /**
+       * @method cfgInputMouse
+       * @protected
+       */
       cfgInputMouse() {
         cc.eventManager.addListener({
           event: cc.EventListener.MOUSE,
@@ -57,10 +60,18 @@ define('zotohlab/p/arena',
         }, this);
       },
 
+      /**
+       * @method cfgTouch
+       * @protected
+       */
       cfgTouch() {
         this.cfgInputTouchesAll();
       },
 
+      /**
+       * @method processEvent
+       * @private
+       */
       processEvent(e) {
         const ship= this.options.player;
         if (this.options.running &&
@@ -69,6 +80,9 @@ define('zotohlab/p/arena',
         }
       },
 
+      /**
+       * @method reset
+       */
       reset(newFlag) {
         if (! sjs.isEmpty(this.atlases)) {
           //sjs.eachObj(function(z) { z.removeAllChildren(); }, this.atlases);
@@ -85,11 +99,19 @@ define('zotohlab/p/arena',
         this.getHUD().reset();
       },
 
+      /**
+       * @method initBackTiles
+       * @private
+       */
       initBackTiles() {
         this.moveBackTiles();
         this.schedule(this.moveBackTiles, 5);
       },
 
+      /**
+       * @method moveBackTiles
+       * @private
+       */
       moveBackTiles() {
         let ps= sh.pools.BackTiles,
         wz= ccsx.vrect(),
@@ -114,14 +136,24 @@ define('zotohlab/p/arena',
         tm.sprite.runAction(cc.sequence(move,fun));
       },
 
+      /**
+       * @method operational
+       * @protected
+       */
       operational() {
         return this.options.running;
       },
 
+      /**
+       * @method replay
+       */
       replay() {
         this.play(false);
       },
 
+      /**
+       * @method play
+       */
       play(newFlag) {
 
         this.reset(newFlag);
@@ -149,15 +181,27 @@ define('zotohlab/p/arena',
         this.schedule(this.countSeconds, 1);
       },
 
+      /**
+       * @method countSeconds
+       * @private
+       */
       countSeconds() {
         // this counter is used to spawn enemies
         ++this.options.secCount;
       },
 
+      /**
+       * @method spawnPlayer
+       * @private
+       */
       spawnPlayer() {
         sobjs.Utils.bornShip(this.options.player);
       },
 
+      /**
+       * @method onPlayerKilled
+       * @private
+       */
       onPlayerKilled(msg) {
         //sh.sfxPlay('xxx-explode');
         if ( this.getHUD().reduceLives(1)) {
@@ -167,16 +211,28 @@ define('zotohlab/p/arena',
         }
       },
 
+      /**
+       * @method onNewGame
+       * @private
+       */
       onNewGame(mode) {
         //sh.sfxPlay('start_game');
         this.setGameMode(mode);
         this.play(true);
       },
 
+      /**
+       * @method onEarnScore
+       * @private
+       */
       onEarnScore(msg) {
         this.getHUD().updateScore( msg.score);
       },
 
+      /**
+       * @method onDone
+       * @private
+       */
       onDone() {
         cc.audioEngine.stopAllEffects();
         cc.audioEngine.stopMusic();
@@ -185,6 +241,10 @@ define('zotohlab/p/arena',
         this.getHUD().enableReplay();
       },
 
+      /**
+       * @method getEnclosureBox
+       * @private
+       */
       getEnclosureBox() {
         var wz= ccsx.vrect();
         return {
@@ -195,6 +255,10 @@ define('zotohlab/p/arena',
         };
       },
 
+      /**
+       * @method ctor
+       * @constructs
+       */
       ctor(options) {
         //this._levelManager = new LevelManager(this);
         this._super(options);
@@ -202,13 +266,18 @@ define('zotohlab/p/arena',
 
     });
 
-    exports =  {
+    exports =  /** @lends exports# */{
 
       /**
        * @property {String} rtti
        */
       rtti : sh.ptypes.game,
 
+      /**
+       * @method reify
+       * @param {Object} options
+       * @return {cc.Scene}
+       */
       reify(options) {
         const scene = new scenes.XSceneFactory([
           huds.BackLayer,

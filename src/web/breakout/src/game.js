@@ -14,7 +14,6 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asx/xmmenus
  * @requires zotohlab/p/hud
@@ -26,15 +25,14 @@ define('zotohlab/p/arena',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
-        'zotohlab/asx/xlayers',
         'zotohlab/asx/xscenes',
         'zotohlab/asx/xmmenus',
         'zotohlab/p/hud'],
 
-  function(sobjs, sjs, sh, ccsx, layers, scenes, mmenus, huds) { "use strict";
+  function(sobjs, sjs, sh, ccsx, scenes, mmenus, huds) { "use strict";
 
     /** @alias module:zotohlab/p/arena */
-    let exports = {},
+    let exports = {     },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -43,10 +41,11 @@ define('zotohlab/p/arena',
     /**
      * @class GameLayer
      */
-    GameLayer = layers.XGameLayer.extend({
+    GameLayer = scenes.XGameLayer.extend({
 
       /**
-       * @private
+       * @method reset
+       * @protected
        */
       reset(newFlag) {
         if (!sjs.isEmpty(this.atlases)) {
@@ -62,12 +61,15 @@ define('zotohlab/p/arena',
       },
 
       /**
+       * @method operational
+       * @protected
        */
       operational() {
         return this.options.running;
       },
 
       /**
+       * @method spawnPlayer
        * @private
        */
       spawnPlayer() {
@@ -75,6 +77,7 @@ define('zotohlab/p/arena',
       },
 
       /**
+       * @method getEnclosureBox
        * @private
        */
       getEnclosureBox() {
@@ -87,6 +90,7 @@ define('zotohlab/p/arena',
       },
 
       /**
+       * @method onPlayerKilled
        * @private
        */
       onPlayerKilled() {
@@ -98,6 +102,7 @@ define('zotohlab/p/arena',
       },
 
       /**
+       * @method onDone
        * @private
        */
       onDone() {
@@ -107,16 +112,16 @@ define('zotohlab/p/arena',
       },
 
       /**
+       * @method replay
        */
       replay() {
         this.play(false);
       },
 
       /**
+       * @method play
        */
       play(newFlag) {
-
-        const pss = sobjs.Priorities;
 
         this.reset(newFlag);
         this.cleanSlate();
@@ -137,6 +142,7 @@ define('zotohlab/p/arena',
       },
 
       /**
+       * @method onEarnScore
        * @private
        */
       onEarnScore(msg) {
@@ -144,6 +150,7 @@ define('zotohlab/p/arena',
       },
 
       /**
+       * @method onNewGame
        * @private
        */
       onNewGame(mode) {

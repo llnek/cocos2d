@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2014, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/elements
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -20,17 +19,16 @@
  */
 define('zotohlab/p/s/supervisor',
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/elements',
+       ['zotohlab/p/elements',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
         'zotohlab/asx/xpool'],
 
-  function (pss, cobjs, sjs, sh, ccsx, XPool) { "use strict";
+  function (cobjs, sjs, sh, ccsx, XPool) { "use strict";
 
     /** @alias module:zotohlab/p/s/supervisor */
-    let exports = {},
+    let exports = {     },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -80,6 +78,7 @@ define('zotohlab/p/s/supervisor',
       },
 
       /**
+       * @method onceOnly
        * @private
        */
       onceOnly() {
@@ -100,6 +99,7 @@ define('zotohlab/p/s/supervisor',
       },
 
       /**
+       * @method initAsteroidSizes
        * @private
        */
       initAsteroidSizes() {
@@ -109,6 +109,7 @@ define('zotohlab/p/s/supervisor',
       },
 
       /**
+       * @method initPlayerSize
        * @private
        */
       initPlayerSize() {
@@ -116,6 +117,7 @@ define('zotohlab/p/s/supervisor',
       },
 
       /**
+       * @method initUfoSize
        * @private
        */
       initUfoSize() {
@@ -128,7 +130,7 @@ define('zotohlab/p/s/supervisor',
      * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
      * @property {Number} Priority
      */
-    GameSupervisor.Priority = pss.PreUpdate;
+    GameSupervisor.Priority = sh.ftypes.PreUpdate;
 
     exports= GameSupervisor;
     return exports;

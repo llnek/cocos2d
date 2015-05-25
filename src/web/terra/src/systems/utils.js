@@ -29,7 +29,7 @@ define("zotohlab/p/s/utils",
     csts= xcfg.csts,
     undef,
     /** @alias module:zotohlab/p/s/utils */
-    exports = {
+    exports = /** @lends exports# */{
 
       /**
        * @method fireMissiles

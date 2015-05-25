@@ -13,7 +13,7 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xlayers
+ * @requires zotohlab/asx/xscenes
  * @module zotohlab/p/hud
  */
 define('zotohlab/p/hud',
@@ -21,9 +21,9 @@ define('zotohlab/p/hud',
        ['cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
-        'zotohlab/asx/xlayers'],
+        'zotohlab/asx/xscenes'],
 
-  function(sjs, sh, ccsx, layers) { "use strict";
+  function(sjs, sh, ccsx, scenes) { "use strict";
 
     /** @alias module:zotohlab/p/hud */
     let exports = {},
@@ -33,12 +33,20 @@ define('zotohlab/p/hud',
     undef,
 
     /**
+     * @extends module:zotohlab/asx/xscenes.XLayer
      * @class BackLayer
      */
-    BackLayer = layers.XLayer.extend({
+    BackLayer = scenes.XLayer.extend({
 
+      /**
+       * @method rtti
+       */
       rtti() { return 'BackLayer'; },
 
+      /**
+       * @method pkInit
+       * @protected
+       */
       pkInit() {
         this.regoAtlas('back-tiles');
         this.regoAtlas('tr-pics');
@@ -47,15 +55,24 @@ define('zotohlab/p/hud',
     }),
 
     /**
+     * @extends module:zotohlab/asx/xscenes.XGameHUDLayer
      * @class HUDLayer
      */
-    HUDLayer = layers.XGameHUDLayer.extend({
+    HUDLayer = scenes.XGameHUDLayer.extend({
 
+      /**
+       * @method initAtlases
+       * @protected
+       */
       initAtlases() {
         this.hudAtlas= 'tr-pics';
         this.regoAtlas(this.hudAtlas);
       },
 
+      /**
+       * @method initLabels
+       * @protected
+       */
       initLabels() {
         let wz = ccsx.vrect();
 
@@ -71,10 +88,14 @@ define('zotohlab/p/hud',
         this.addChild(this.scoreLabel, this.lastZix, ++this.lastTag);
       },
 
+      /**
+       * @method initIcons
+       * @protected
+       */
       initIcons() {
         let wz = ccsx.vrect();
 
-        this.lives = new layers.XHUDLives( this, csts.TILE + csts.S_OFF,
+        this.lives = new scenes.XHUDLives( this, csts.TILE + csts.S_OFF,
           wz.height - csts.TILE - csts.S_OFF, {
           frames: ['ship01.png'],
           scale: 0.4,

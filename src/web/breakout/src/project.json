@@ -9,7 +9,6 @@
 "src/breakout/elements/cobjs.js",
 "src/breakout/nodes/gnodes.js",
 
-"src/breakout/systems/priorities.js",
 "src/breakout/systems/factory.js",
 "src/breakout/systems/motion.js",
 "src/breakout/systems/move-paddle.js",

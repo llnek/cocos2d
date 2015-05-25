@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
@@ -20,17 +19,16 @@
  */
 define('zotohlab/p/s/movebombs',
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/s/utils',
+       ['zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/movebombs */
-    let exports = {},
+    let exports = {     },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -91,7 +89,7 @@ define('zotohlab/p/s/movebombs',
      * @memberof module:zotohlab/p/s/movebombs~MovementBombs
      * @property {Number} Priority
      */
-    MovementBombs.Priority= pss.Movement;
+    MovementBombs.Priority= sh.ftypes.Move;
 
     exports= MovementBombs;
     return exports;

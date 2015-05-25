@@ -13,7 +13,6 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xmmenus
  * @requires zotohlab/asx/xscenes
  * @module zotohlab/p/mmenu
@@ -23,7 +22,6 @@ define("zotohlab/p/mmenu",
        ['cherimoia/skarojs',
        'zotohlab/asterix',
        'zotohlab/asx/ccsx',
-       'zotohlab/asx/xlayers',
        'zotohlab/asx/xmmenus',
        'zotohlab/asx/xscenes'],
 

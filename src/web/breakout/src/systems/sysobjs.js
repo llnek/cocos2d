@@ -15,7 +15,6 @@
  * @requires zotohlab/p/s/motions
  * @requires zotohlab/p/s/moveball
  * @requires zotohlab/p/s/movepaddle
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/s/supervisor
  * @module zotohlab/p/sysobjs
  */
@@ -26,11 +25,10 @@ define('zotohlab/p/sysobjs',
         'zotohlab/p/s/motions',
         'zotohlab/p/s/moveball',
         'zotohlab/p/s/movepaddle',
-        'zotohlab/p/s/priorities',
         'zotohlab/p/s/supervisor'],
 
   function(Collisions, EntityFactory, Motions, MovementBall,
-           MovementPaddle, Priorities, Supervisor) { "use strict";
+           MovementPaddle, Supervisor) { "use strict";
 
     /** @alias module:zotohlab/p/sysobjs */
     const exports= {
@@ -55,10 +53,6 @@ define('zotohlab/p/sysobjs',
        * @property {MovementPaddle} MovementPaddle
        */
       MovementPaddle    : MovementPaddle,
-      /**
-       * @property {Priorities} Priorities
-       */
-      Priorities        : Priorities,
       /**
        * @property {Supervisor} Supervisor
        */

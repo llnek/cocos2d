@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -19,13 +18,12 @@
  */
 define('zotohlab/p/s/motions',
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/gnodes',
+       ['zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, gnodes, sjs, sh, ccsx) { "use strict";
+  function (gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/motions */
     let exports = {},
@@ -83,6 +81,7 @@ define('zotohlab/p/s/motions',
       },
 
       /**
+       * @method scanInput
        * @private
        */
       scanInput(node, dt) {
@@ -99,6 +98,7 @@ define('zotohlab/p/s/motions',
       },
 
       /**
+       * @method processKeys
        * @private
        */
       processKeys(node,dt) {
@@ -117,6 +117,7 @@ define('zotohlab/p/s/motions',
       },
 
       /**
+       * @method shiftDown
        * @private
        */
       shiftDown(node, dt) {
@@ -124,6 +125,7 @@ define('zotohlab/p/s/motions',
       },
 
       /**
+       * @method shiftUp
        * @private
        */
       shiftUp(node, dt) {
@@ -131,6 +133,7 @@ define('zotohlab/p/s/motions',
       },
 
       /**
+       * @method rotateRight
        * @private
        */
       rotateRight(node, dt) {
@@ -138,6 +141,7 @@ define('zotohlab/p/s/motions',
       },
 
       /**
+       * @method rotateLeft
        * @private
        */
       rotateLeft(node, dt) {
@@ -145,6 +149,7 @@ define('zotohlab/p/s/motions',
       },
 
       /**
+       * @method initKeyOps
        * @private
        */
       initKeyOps() {
@@ -160,7 +165,7 @@ define('zotohlab/p/s/motions',
      * @memberof module:zotohlab/p/s/motions~MotionControls
      * @property {Number} Priority
      */
-    MotionControls.Priority = pss.Motion;
+    MotionControls.Priority = sh.ftypes.Motion;
 
     exports= MotionControls;
     return exports;

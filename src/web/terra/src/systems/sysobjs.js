@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/s/factory
  * @requires zotohlab/p/s/supervisor
@@ -26,8 +25,7 @@
  */
 define("zotohlab/p/sysobjs",
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/s/utils',
+       ['zotohlab/p/s/utils',
         'zotohlab/p/s/factory',
         'zotohlab/p/s/supervisor',
         'zotohlab/p/levelmgr',
@@ -39,7 +37,7 @@ define("zotohlab/p/sysobjs",
         'zotohlab/p/s/resolution',
         'zotohlab/p/s/rendering'],
 
-  function (Priorities, Utils,
+  function (Utils,
             EntityFactory,
             Supervisor,
             LevelManager,
@@ -52,7 +50,7 @@ define("zotohlab/p/sysobjs",
             Rendering) { "use strict";
 
     /** @alias module:zotohlab/p/sysobjs */
-    const exports = {
+    const exports = /** @lends exports# */{
 
       /**
        * @property {EntityFactory}  EntityFactory
@@ -62,10 +60,6 @@ define("zotohlab/p/sysobjs",
        * @property {Utils}    Utils
        */
       Utils               : Utils,
-      /**
-       * @property {Priorities}   Priorities
-       */
-      Priorities          : Priorities,
       /**
        * @property {Supervisor}   Supervisor
        */

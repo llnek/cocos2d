@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -19,16 +18,15 @@
  */
 define('zotohlab/p/s/motions',
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/gnodes',
+       ['zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, gnodes, sjs,  sh, ccsx) { "use strict";
+  function (gnodes, sjs,  sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/motions */
-    let exports = {},
+    let exports = {     },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -80,6 +78,7 @@ define('zotohlab/p/s/motions',
       },
 
       /**
+       * @method scanInput
        * @private
        */
       scanInput(node, dt) {
@@ -96,6 +95,7 @@ define('zotohlab/p/s/motions',
       },
 
       /**
+       * @method processKeys
        * @private
        */
       processKeys(node, dt) {
@@ -116,7 +116,7 @@ define('zotohlab/p/s/motions',
      * @memberof module:zotohlab/p/s/motions~MotionControl
      * @property {Number} Priority
      */
-    MotionControl.Priority = pss.Motion;
+    MotionControl.Priority = sh.ftypes.Motion;
 
     exports= MotionControl;
     return exports;

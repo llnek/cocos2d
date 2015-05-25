@@ -15,7 +15,6 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asx/xmmenus
  * @requires zotohlab/p/hud
@@ -28,27 +27,28 @@ define('zotohlab/p/arena',
        'cherimoia/skarojs',
        'zotohlab/asterix',
        'zotohlab/asx/ccsx',
-       'zotohlab/asx/xlayers',
        'zotohlab/asx/xscenes',
        'zotohlab/asx/xmmenus',
        'zotohlab/p/hud'],
 
   function (utils, sobjs, sjs, sh, ccsx,
-            layers, scenes, mmenus, huds) { "use strict";
+            scenes, mmenus, huds) { "use strict";
 
     /** @alias module:zotohlab/p/arena */
-    let exports = {},
+    let exports = {     },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
 
     /**
+     * @extends module:zotohlab/asx/xscenes.XGameLayer
      * @class GameLayer
      */
-    GameLayer = layers.XGameLayer.extend({
+    GameLayer = scenes.XGameLayer.extend({
 
       /**
+       * @method reset
        * @protected
        */
       reset(newFlag) {
@@ -62,22 +62,24 @@ define('zotohlab/p/arena',
       },
 
       /**
+       * @method operational
+       * @protected
        */
       operational() {
         return this.options.running;
       },
 
       /**
+       * @method replay
        */
       replay() {
         this.play(false);
       },
 
       /**
+       * @method play
        */
       play(newFlag) {
-
-        const pss = sobjs.Priorities;
 
         this.reset(newFlag);
         this.cleanSlate();
@@ -102,12 +104,16 @@ define('zotohlab/p/arena',
       },
 
       /**
+       * @method spawnPlayer
+       * @private
        */
       spawnPlayer() {
         sh.factory.bornShip();
       },
 
       /**
+       * @method onPlayerKilled
+       * @private
        */
       onPlayerKilled(msg) {
         sh.sfxPlay('xxx-explode');
@@ -119,6 +125,8 @@ define('zotohlab/p/arena',
       },
 
       /**
+       * @method onNewGame
+       * @private
        */
       onNewGame(mode) {
         //sh.sfxPlay('start_game');
@@ -127,12 +135,16 @@ define('zotohlab/p/arena',
       },
 
       /**
+       * @method onEarnScore
+       * @private
        */
       onEarnScore(msg) {
         this.getHUD().updateScore( msg.score);
       },
 
       /**
+       * @method onDone
+       * @private
        */
       onDone() {
         this.options.running=false;

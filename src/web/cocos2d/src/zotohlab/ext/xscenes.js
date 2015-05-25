@@ -786,7 +786,7 @@ define("zotohlab/asx/xscenes",
         cc.eventManager.addListener({
           prevTouchId: -1,
           event: cc.EventListener.TOUCH_ALL_AT_ONCE,
-          onTouchesMoved(touches, event) => {
+          onTouchesMoved(touches, event) {
             const touch = touches[0];
             if (this.prevTouchId != touch.getId()) {
                 this.prevTouchId = touch.getId();

@@ -9,7 +9,6 @@
     "src/terraformer/elements/cobjs.js",
     "src/terraformer/nodes/gnodes.js",
 
-    "src/terraformer/systems/priorities.js",
     "src/terraformer/systems/utils.js",
 
     "src/terraformer/systems/factory.js",

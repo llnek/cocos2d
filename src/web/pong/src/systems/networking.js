@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -19,16 +18,15 @@
  */
 define("zotohlab/p/s/networking",
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/gnodes',
+       ['zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, gnodes, sjs, sh, ccsx) { "use strict";
+  function (gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/networking */
-    let exports= {},
+    let exports= {      },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -82,10 +80,11 @@ define("zotohlab/p/s/networking",
       },
 
       /**
+       * @method syncScores
        * @private
        */
       syncScores(scores) {
-        var actors= this.state.players,
+        const actors= this.state.players,
         rc= {};
         rc[actors[2].color] = scores.p2;
         rc[actors[1].color] = scores.p1;
@@ -93,13 +92,14 @@ define("zotohlab/p/s/networking",
       },
 
       /**
+       * @method onevent
        * @private
        */
       onEvent(evt) {
 
-        sjs.loggr.debug("onEvent: => " + sjs.jsonfy(evt.source));
+        sjs.loggr.debug("onevent: => " + sjs.jsonfy(evt.source));
 
-        var actors= this.state.players,
+        let actors= this.state.players,
         win,
         node,
         ok= true;
@@ -124,7 +124,7 @@ define("zotohlab/p/s/networking",
 
         if (sjs.isObject(evt.source.ball)) {
           sjs.loggr.debug("server says: Ball got SYNC'ED !!!");
-          var c = evt.source.ball;
+          const c = evt.source.ball;
           node= this.balls.head;
           if (!!node) {
             node.ball.sprite.setPosition(c.x, c.y);
@@ -141,6 +141,7 @@ define("zotohlab/p/s/networking",
 
       /**
        * Reset back to default position, no movements
+       * @method reposPaddles
        * @private
        */
       reposPaddles(nl) {
@@ -163,6 +164,7 @@ define("zotohlab/p/s/networking",
       },
 
       /**
+       * @method reposEntities
        * @private
        */
       reposEntities() {
@@ -182,6 +184,7 @@ define("zotohlab/p/s/networking",
       },
 
       /**
+       * @syncPaddles
        * @private
        */
       syncPaddles(nl, evt) {
@@ -203,6 +206,7 @@ define("zotohlab/p/s/networking",
       },
 
       /**
+       * @method syncOnePaddle
        * @private
        */
       syncOnePaddle(node, c) {
@@ -218,9 +222,8 @@ define("zotohlab/p/s/networking",
     /**
      * @memberof module:zotohlab/p/s/networking~NetworkSystem
      * @property {Number} Priority
-     * @static
      */
-    NetworkSystem.Priority = pss.Net;
+    NetworkSystem.Priority = sh.ftypes.NetPlay;
 
     exports= NetworkSystem;
     return exports;

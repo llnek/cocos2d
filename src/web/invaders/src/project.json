@@ -10,7 +10,6 @@
     "src/invaders/elements/cobjs.js",
     "src/invaders/nodes/gnodes.js",
 
-    "src/invaders/systems/priorities.js",
     "src/invaders/systems/factory.js",
     "src/invaders/systems/utils.js",
     "src/invaders/systems/motion.js",

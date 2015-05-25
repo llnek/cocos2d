@@ -14,7 +14,6 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asx/xmmenus
  * @requires zotohlab/p/hud
@@ -26,32 +25,34 @@ define('zotohlab/p/arena',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
-        'zotohlab/asx/xlayers',
         'zotohlab/asx/xscenes',
         'zotohlab/asx/xmmenus',
         'zotohlab/p/hud'],
 
-  function(sobjs, sjs, sh, ccsx, layers, scenes, mmenus, huds) { "use strict";
+  function(sobjs, sjs, sh, ccsx, scenes, mmenus, huds) { "use strict";
 
     /** @alias module:zotohlab/p/arena */
-    let exports = {},
+    let exports = {   },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
 
     /**
+     * @extends module:zotohlab/asx/xscenes.XGameLayer
      * @class GameLayer
      */
-    GameLayer = layers.XGameLayer.extend({
+    GameLayer = scenes.XGameLayer.extend({
 
       /**
+       * @method replay
        */
       replay() {
         this.play(false);
       },
 
       /**
+       * @method play
        */
       play(newFlag) {
 
@@ -66,18 +67,18 @@ define('zotohlab/p/arena',
         R.forEach((z) => {
           this.engine.addSystem(new (z)(this.options), z.Priority);
         },
-        [ [sobjs.Supervisor, pss.PreUpdate],
-          [sobjs.Motions, pss.Motion],
-          [sobjs.MissileControl, pss.Motion],
-          [sobjs.MoveAsteroids, pss.Movement],
-          [sobjs.MovementShip, pss.Movement],
-          [sobjs.MoveMissiles, pss.Movement],
-          [sobjs.Collisions, pss.Collision],
-          [sobjs.Resolution, pss.Resolve] ]);
+        [ sobjs.Supervisor,
+          sobjs.Motions,
+          sobjs.MissileControl,
+          sobjs.MoveAsteroids,
+          sobjs.MovementShip,
+          sobjs.MoveMissiles,
+          sobjs.Collisions,
+          sobjs.Resolution ]);
       },
 
       /**
-       * @private
+       * @method reset
        */
       reset(newFlag) {
         if (!sjs.isEmpty(this.atlases)) {
@@ -93,18 +94,23 @@ define('zotohlab/p/arena',
       },
 
       /**
+       * @method operational
+       * @protected
        */
       operational() {
         return this.options.running;
       },
 
       /**
+       * @method spawnPlayer
+       * @private
        */
       spawnPlayer() {
         sh.factory.bornShip();
       },
 
       /**
+       * @method onPlayerKilled
        * @private
        */
       onPlayerKilled(msg) {
@@ -116,6 +122,7 @@ define('zotohlab/p/arena',
       },
 
       /**
+       * @method onDone
        * @private
        */
       onDone() {
@@ -125,6 +132,7 @@ define('zotohlab/p/arena',
       },
 
       /**
+       * @method onEarnScore
        * @private
        */
       onEarnScore(msg) {
@@ -132,6 +140,7 @@ define('zotohlab/p/arena',
       },
 
       /**
+       * @method onNewGame
        * @private
        */
       onNewGame(mode) {

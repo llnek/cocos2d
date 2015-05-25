@@ -13,7 +13,6 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asx/xsplash
  * @module zotohlab/p/splash
@@ -21,11 +20,10 @@
 define('zotohlab/p/splash', ['cherimoia/skarojs',
                             'zotohlab/asterix',
                             'zotohlab/asx/ccsx',
-                            'zotohlab/asx/xlayers',
                             'zotohlab/asx/xscenes',
                             'zotohlab/asx/xsplash'],
 
-  function (sjs, sh, ccsx, layers, scenes, splash) { "use strict";
+  function (sjs, sh, ccsx, scenes, splash) { "use strict";
 
     /** @alias module:zotohlab/p/splash */
     let exports = {},
@@ -34,10 +32,15 @@ define('zotohlab/p/splash', ['cherimoia/skarojs',
     undef,
 
     /**
+     * @extends module:zotohlab/asx/xsplash.XSplashLayer
      * @class SplashLayer
      */
     SplashLayer = splash.XSplashLayer.extend({
 
+      /**
+       * @method setPlay
+       * @protected
+       */
       setPlay() {
         const cw = ccsx.center(),
         wb = ccsx.vbox(),
@@ -56,7 +59,7 @@ define('zotohlab/p/splash', ['cherimoia/skarojs',
 
     });
 
-    exports= {
+    exports= /** @lends exports# */{
 
       /**
        * @property {String} rtti

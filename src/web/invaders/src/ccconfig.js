@@ -33,12 +33,11 @@ document.ccConfig = {
     "/public/ig/lib/zotohlab/ext/cs2dx.js",
     "/public/ig/lib/zotohlab/ext/odin.js",
 
-    "/public/ig/lib/zotohlab/ext/xlayers.js",
     "/public/ig/lib/zotohlab/ext/xscenes.js",
     "/public/ig/lib/zotohlab/ext/xpool.js",
     "/public/ig/lib/zotohlab/ext/xldr.js",
 
-    "/public/ig/lib/zotohlab/gui/startscreen.js",
+    "/public/ig/lib/zotohlab/gui/start.js",
     "/public/ig/lib/zotohlab/gui/msgbox.js",
     "/public/ig/lib/zotohlab/gui/ynbox.js",
     "/public/ig/lib/zotohlab/gui/online.js",
@@ -50,7 +49,6 @@ document.ccConfig = {
     '/public/ig/lib/game/invaders/elements/cobjs.js',
     '/public/ig/lib/game/invaders/nodes/gnodes.js',
 
-    '/public/ig/lib/game/invaders/systems/priorities.js',
     '/public/ig/lib/game/invaders/systems/factory.js',
     '/public/ig/lib/game/invaders/systems/utils.js',
     '/public/ig/lib/game/invaders/systems/motion.js',

@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/s/factory
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/s/supervisor
@@ -26,8 +25,7 @@
  */
 define("zotohlab/p/sysobjs",
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/s/factory',
+       ['zotohlab/p/s/factory',
         'zotohlab/p/s/utils',
         'zotohlab/p/s/supervisor',
         'zotohlab/p/s/motions',
@@ -39,7 +37,7 @@ define("zotohlab/p/sysobjs",
         'zotohlab/p/s/collisions',
         'zotohlab/p/s/resolution'],
 
-  function (Priorities, EntityFactory, SystemUtils,
+  function (EntityFactory, SystemUtils,
             Supervisor, Motions, MovementAliens,
             MovementBombs,
             MovementMissiles,
@@ -53,10 +51,6 @@ define("zotohlab/p/sysobjs",
 
     exports= /** @lends exports# */{
 
-      /**
-       * @property {Priorities} Priorities
-       */
-      Priorities          : Priorities,
       /**
        * @property {EntityFactory} EntityFactory
        */

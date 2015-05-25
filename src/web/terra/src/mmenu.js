@@ -13,7 +13,6 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asx/xmmenus
  * @module zotohlab/p/mmenu
@@ -23,11 +22,10 @@ define('zotohlab/p/mmenu',
        ['cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
-        'zotohlab/asx/xlayers',
         'zotohlab/asx/xscenes',
         'zotohlab/asx/xmmenus'],
 
-  function (sjs, sh, ccsx, layers, scenes, mmenus) { "use strict";
+  function (sjs, sh, ccsx, scenes, mmenus) { "use strict";
 
     /** @alias module:zotohlab/p/mmenu */
     let exports= {},
@@ -37,10 +35,15 @@ define('zotohlab/p/mmenu',
 
     //////////////////////////////////////////////////////////////////////////////
     /**
+     * @extends module:zotohlab/asx/xmmenus.XMenuBackLayer
      * @class BackLayer
      */
     BackLayer = mmenus.XMenuBackLayer.extend({
 
+      /**
+       * @method setTitle
+       * @protected
+       */
       setTitle() {
         const wb=ccsx.vbox(),
         cw= ccsx.center(),
@@ -55,14 +58,23 @@ define('zotohlab/p/mmenu',
     }),
 
     /**
+     * @extends module:zotohlab/asx/xmmenus.XMenuLayer
      * @class MainMenuLayer
      */
     MainMenuLayer = mmenus.XMenuLayer.extend({
 
+      /**
+       * @method onButtonEffect
+       * @private
+       */
       onButtonEffect() {
         sh.sfxPlay('buttonEffect');
       },
 
+      /**
+       * @method flareEffect
+       * @private
+       */
       flareEffect(flare) {
         flare.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
         flare.stopAllActions();
@@ -93,20 +105,36 @@ define('zotohlab/p/mmenu',
         flare.runAction(bigger);
       },
 
+      /**
+       * @method onNewGame
+       * @private
+       */
       onNewGame() {
         cc.audioEngine.stopAllEffects();
         cc.audioEngine.stopMusic();
         sh.fire('/mmenu/newgame', { mode: sh.gtypes.P1_GAME });
       },
 
+      /**
+       * @method onSettings
+       * @private
+       */
       onSettings() {
         this.onButtonEffect();
       },
 
+      /**
+       * @method onAbout
+       * @private
+       */
       onAbout() {
         this.onButtonEffect();
       },
 
+      /**
+       * @method pkInit
+       * @protected
+       */
       pkInit() {
         let sps = [null,null,null],
         ms=[null,null,null],
@@ -166,6 +194,10 @@ define('zotohlab/p/mmenu',
         this._super();
       },
 
+      /**
+       * @method update
+       * @protected
+       */
       update() {
         let pos= this._ship.getPosition(),
         wz= ccsx.vrect();
@@ -182,7 +214,7 @@ define('zotohlab/p/mmenu',
 
     });
 
-    exports= {
+    exports= /** @lends exports# */{
 
       /**
        * @property {String} rtti

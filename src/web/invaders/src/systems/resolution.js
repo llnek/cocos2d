@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
@@ -20,17 +19,16 @@
  */
 define('zotohlab/p/s/resolution',
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/elements',
+       ['zotohlab/p/elements',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, cobjs, gnodes, sjs, sh, ccsx) { "use strict";
+  function (cobjs, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/resolution */
-    let exports= {},
+    let exports= {      },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -88,11 +86,12 @@ define('zotohlab/p/s/resolution',
       },
 
       /**
+       * @method checkMissiles
        * @private
        */
       checkMissiles() {
         const mss = sh.pools.Missiles,
-        ht = ccsx.screenHeight(),
+        ht = ccsx.vrect().height,
         me=this;
 
         mss.iter((m) => {
@@ -106,6 +105,7 @@ define('zotohlab/p/s/resolution',
       },
 
       /**
+       * @method checkBombs
        * @private
        */
       checkBombs() {
@@ -124,6 +124,7 @@ define('zotohlab/p/s/resolution',
       },
 
       /**
+       * @method checkAliens
        * @private
        */
       checkAliens(node) {
@@ -142,6 +143,7 @@ define('zotohlab/p/s/resolution',
       },
 
       /**
+       * @method checkShip
        * @private
        */
       checkShip(node) {
@@ -160,7 +162,7 @@ define('zotohlab/p/s/resolution',
      * @memberof module:zotohlab/p/s/resolution~Resolution
      * @property {Number} Priority
      */
-    Resolution.Priority= pss.Resolve;
+    Resolution.Priority= sh.ftypes.Resolve;
 
     exports= Resolution;
     return exports;

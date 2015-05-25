@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -20,14 +19,13 @@
  */
 define("zotohlab/p/s/movements",
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/gnodes',
+       ['zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
         'zotohlab/asx/odin'],
 
-  function (pss, gnodes, sjs, sh, ccsx, odin) { "use strict";
+  function (gnodes, sjs, sh, ccsx, odin) { "use strict";
 
     /** @alias module:zotohlab/p/s/movements */
     let exports= {     },
@@ -103,6 +101,7 @@ define("zotohlab/p/s/movements",
       },
 
       /**
+       * @method simuMove
        * @private
        */
       simuMove(node, bnode, dt) {
@@ -142,6 +141,7 @@ define("zotohlab/p/s/movements",
 
       //TODO: better AI please
       /**
+       * @method moveRobot
        * @private
        */
       moveRobot(node, bnode, dt) {
@@ -190,6 +190,7 @@ define("zotohlab/p/s/movements",
       },
 
       /**
+       * @method processBall
        * @private
        */
       processBall(node, dt) {
@@ -214,6 +215,7 @@ define("zotohlab/p/s/movements",
       },
 
       /**
+       * @method process
        * @private
        */
       process(node, dt) {
@@ -279,6 +281,7 @@ define("zotohlab/p/s/movements",
 
       /**
        * Inform the server that paddle has changed direction: up , down or stopped.
+       * @method notifyServer
        * @private
        */
       notifyServer(node, direction) {
@@ -305,6 +308,7 @@ define("zotohlab/p/s/movements",
       },
 
       /**
+       * @method clamp
        * @private
        */
       clamp(sprite) {
@@ -345,9 +349,8 @@ define("zotohlab/p/s/movements",
     /**
      * @memberof module:zotohlab/p/s/movements~MovementSystem
      * @property {Number} Priority
-     * @static
      */
-    MovementSystem.Priority = pss.Move;
+    MovementSystem.Priority = sh.ftypes.Move;
 
     exports= MovementSystem;
     return exports;

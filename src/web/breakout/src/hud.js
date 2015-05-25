@@ -13,7 +13,7 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xlayers
+ * @requires zotohlab/asx/xscenes
  * @module zotohlab/p/hud
  */
 define('zotohlab/p/hud',
@@ -21,12 +21,12 @@ define('zotohlab/p/hud',
        ['cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
-        'zotohlab/asx/xlayers'],
+        'zotohlab/asx/xscenes'],
 
-  function(sjs, sh, ccsx, layers) { "use strict";
+  function(sjs, sh, ccsx, scenes) { "use strict";
 
     /** @alias module:zotohlab/p/hud */
-    let exports = {},
+    let exports = {     },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -34,10 +34,17 @@ define('zotohlab/p/hud',
     /**
      * @class BackLayer
      */
-    BackLayer = layers.XLayer.extend({
+    BackLayer = scenes.XLayer.extend({
 
+      /**
+       * @method rtti
+       */
       rtti() { return 'BackLayer'; },
 
+      /**
+       * @method pkInit
+       * @protected
+       */
       pkInit() {
         this.addItem(new cc.TMXTiledMap(
           sh.getTilesPath('gamelevel1.tiles.arena')));
@@ -46,11 +53,13 @@ define('zotohlab/p/hud',
     }),
 
     /**
+     * @extends module:zotohlab/asx/xscenes.XGameHUDLayer
      * @class HUDLayer
      */
-    HUDLayer = layers.XGameHUDLayer.extend({
+    HUDLayer = scenes.XGameHUDLayer.extend({
 
       /**
+       * @method initAtlases
        * @protected
        */
       initAtlases() {
@@ -59,7 +68,7 @@ define('zotohlab/p/hud',
       },
 
       /**
-       * @private
+       * @method updateScore
        */
       updateScore(n) {
         this.score += n;
@@ -67,6 +76,7 @@ define('zotohlab/p/hud',
       },
 
       /**
+       * @method resetAsNew
        * @private
        */
       resetAsNew() {
@@ -74,6 +84,7 @@ define('zotohlab/p/hud',
       },
 
       /**
+       * @method reset
        * @private
        */
       reset() {
@@ -83,6 +94,7 @@ define('zotohlab/p/hud',
       },
 
       /**
+       * @method initLabels
        * @protected
        */
       initLabels() {
@@ -101,12 +113,13 @@ define('zotohlab/p/hud',
       },
 
       /**
+       * @method initIcons
        * @protected
        */
       initIcons() {
         const wz = ccsx.vrect();
 
-        this.lives = new layers.XHUDLives( this, csts.TILE + csts.S_OFF,
+        this.lives = new scenes.XHUDLives( this, csts.TILE + csts.S_OFF,
           wz.height - csts.TILE - csts.S_OFF, {
           frames: ['paddle.png'],
           scale: 0.5,
@@ -117,6 +130,7 @@ define('zotohlab/p/hud',
       },
 
       /**
+       * @method drawScore
        * @private
        */
       drawScore() {

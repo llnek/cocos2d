@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
@@ -20,17 +19,16 @@
  */
 define('zotohlab/p/s/factory',
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/elements',
+       ['zotohlab/p/elements',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, cobjs, gnodes, sjs, sh, ccsx) { "use strict";
+  function (cobjs, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/factory */
-    let exports = {},
+    let exports = {   },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,

@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
@@ -18,12 +17,11 @@
  */
 define('zotohlab/p/s/moveasteroids',
 
-       ['zotohlab/p/s/priorities',
-        'cherimoia/skarojs',
+       ['cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, sjs, sh, ccsx) { "use strict";
+  function (sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/moveasteroids */
     let exports = {},
@@ -81,6 +79,7 @@ define('zotohlab/p/s/moveasteroids',
       },
 
       /**
+       * @method process
        * @private
        */
       process(astro, dt) {
@@ -138,7 +137,7 @@ define('zotohlab/p/s/moveasteroids',
      * @memberof module:zotohlab/p/s/moveasteroids~MoveAsteroids
      * @property {Number} Priority
      */
-    MoveAsteroids.Priority = pss.Movement;
+    MoveAsteroids.Priority = sh.ftypes.Move;
 
     exports= MoveAsteroids;
     return exports;

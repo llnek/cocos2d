@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
@@ -20,14 +19,13 @@
  */
 define('zotohlab/p/s/collisions',
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/s/utils',
+       ['zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/collisions */
     let exports = {},
@@ -91,6 +89,7 @@ define('zotohlab/p/s/collisions',
       },
 
       /**
+       * @method collide
        * @private
        */
       collide(a,b) {
@@ -98,6 +97,7 @@ define('zotohlab/p/s/collisions',
       },
 
       /**
+       * @method checkMissilesRocks
        * @private
        */
       checkMissilesRocks() {
@@ -131,6 +131,7 @@ define('zotohlab/p/s/collisions',
       },
 
       /**
+       * @method checkShipBombs
        * @private
        */
       checkShipBombs(node) {
@@ -147,6 +148,7 @@ define('zotohlab/p/s/collisions',
       },
 
       /**
+       * @method checkShipRocks
        * @private
        */
       checkShipRocks(node) {
@@ -185,7 +187,7 @@ define('zotohlab/p/s/collisions',
      * @memberof module:zotohlab/p/s/collisions~CollisionSystem
      * @property {Number} Priority
      */
-    CollisionSystem.Priority = pss.Collision;
+    CollisionSystem.Priority = sh.ftypes.Collision;
 
     exports= CollisionSystem;
     return exports;

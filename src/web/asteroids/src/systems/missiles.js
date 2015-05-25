@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
@@ -20,14 +19,13 @@
  */
 define('zotohlab/p/s/missilecontrol',
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/s/utils',
+       ['zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, utils,  gnodes, sjs, sh, ccsx) { "use strict";
+  function (utils,  gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/missilecontrol */
     let exports = {},
@@ -82,6 +80,7 @@ define('zotohlab/p/s/missilecontrol',
       },
 
       /**
+       * @method process
        * @private
        */
       process(node,dt) {
@@ -102,6 +101,7 @@ define('zotohlab/p/s/missilecontrol',
       },
 
       /**
+       * @method scanInput
        * @private
        */
       scanInput(node, dt) {
@@ -126,6 +126,7 @@ define('zotohlab/p/s/missilecontrol',
       },
 
       /**
+       * @method fireMissile
        * @private
        */
       fireMissile(node,dt) {
@@ -162,7 +163,7 @@ define('zotohlab/p/s/missilecontrol',
      * @memberof module:zotohlab/p/s/missilecontrol~MissileControl
      * @property {Number} Priority
      */
-    MissileControl.Priority = pss.Motion;
+    MissileControl.Priority = sh.ftypes.Motion;
 
     exports= MissileControl;
     return exports;

@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
@@ -20,17 +19,16 @@
  */
 define('zotohlab/p/s/movemissiles',
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/s/utils',
+       ['zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/movemissiles */
-    let exports= {},
+    let exports= {      },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -89,7 +87,7 @@ define('zotohlab/p/s/movemissiles',
      * @memberof module:zotohlab/p/s/movemissiles~MovementMissiles
      * @property {Number} Priority
      */
-    MovementMissiles.Priority= pss.Movement;
+    MovementMissiles.Priority= sh.ftypes.Move;
 
     exports= MovementMissiles;
     return exports;

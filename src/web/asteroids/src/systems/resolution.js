@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
@@ -21,15 +20,14 @@
  */
 define('zotohlab/p/s/resolution',
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/elements',
+       ['zotohlab/p/elements',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
         'ash-js'],
 
-  function (pss, cobjs, gnodes, sjs, sh, ccsx) { "use strict";
+  function (cobjs, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/resolution */
     let exports = {},
@@ -89,6 +87,7 @@ define('zotohlab/p/s/resolution',
       },
 
       /**
+       * @method checkMissiles
        * @private
        */
       checkMissiles() {
@@ -103,6 +102,7 @@ define('zotohlab/p/s/resolution',
       },
 
       /**
+       * @method checkLasers
        * @private
        */
       checkLasers() {
@@ -117,6 +117,7 @@ define('zotohlab/p/s/resolution',
       },
 
       /**
+       * @method checkAstros
        * @private
        */
       checkAstros() {
@@ -146,6 +147,7 @@ define('zotohlab/p/s/resolution',
       },
 
       /**
+       * @method checkShip
        * @private
        */
       checkShip(node) {
@@ -163,7 +165,7 @@ define('zotohlab/p/s/resolution',
      * @memberof module:zotohlab/p/s/resolution~Resolution
      * @property {Number} Priority
      */
-    Resolution.Priority = pss.Resolve;
+    Resolution.Priority = sh.ftypes.Resolve;
 
     exports= Resolution;
     return exports;

@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/p/s/utils
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/s/factory
  * @requires zotohlab/p/s/collisions
  * @requires zotohlab/p/s/missilecontrol
@@ -27,7 +26,6 @@
 define('zotohlab/p/sysobjs',
 
        ['zotohlab/p/s/utils',
-        'zotohlab/p/s/priorities',
         'zotohlab/p/s/factory',
         'zotohlab/p/s/collisions',
         'zotohlab/p/s/missilecontrol',
@@ -39,7 +37,7 @@ define('zotohlab/p/sysobjs',
         'zotohlab/p/s/supervisor',
         'zotohlab/p/s/resolution'],
 
-  function(SystemUtils, Priorities, EntityFactory,
+  function(SystemUtils, EntityFactory,
            Collisions, MissileControl, Motions,
            MoveAsteroids, MoveLasers, MoveMissiles,
            MovementShip, Supervisor, Resolution) {
@@ -50,10 +48,6 @@ define('zotohlab/p/sysobjs',
        * @property {SystemUtils}   SystemUtils
        */
       SystemUtils     : SystemUtils,
-      /**
-       * @property {Priorities}      Priorities
-       */
-      Priorities      : Priorities,
       /**
        * @property {EntityFactory} Factory
        */

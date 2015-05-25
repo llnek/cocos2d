@@ -14,7 +14,6 @@
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/xsplash
- * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xscenes
  * @module zotohlab/p/splash
  */
@@ -24,22 +23,26 @@ define('zotohlab/p/splash',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
         'zotohlab/asx/xsplash',
-        'zotohlab/asx/xlayers',
         'zotohlab/asx/xscenes'],
 
-  function (sjs, sh, ccsx, splash, layers, scenes) { "use strict";
+  function (sjs, sh, ccsx, splash, scenes) { "use strict";
 
     /** @alias module:zotohlab/p/splash */
-    let exports= {},
+    let exports= {    },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
     /**
+     * @extends module:zotohlab/asx/xsplash.XSplashLayer
      * @class SplashLayer
      */
     SplashLayer = splash.XSplashLayer.extend({
 
+      /**
+       * @method setTitle
+       * @protected
+       */
       setTitle() {
         const cw= ccsx.center(),
         wb= ccsx.vbox();
@@ -47,6 +50,10 @@ define('zotohlab/p/splash',
                       cc.p(cw.x, wb.top * 0.9));
       },
 
+      /**
+       * @method setPlay
+       * @protected
+       */
       setPlay() {
         const cw= ccsx.center(),
         wb= ccsx.vbox(),

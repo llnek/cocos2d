@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -19,13 +18,12 @@
  */
 define('zotohlab/p/s/motions',
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/gnodes',
+       ['zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, gnodes, sjs, sh, ccsx) { "use strict";
+  function (gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/motions */
     let exports = {},
@@ -78,6 +76,7 @@ define('zotohlab/p/s/motions',
       },
 
       /**
+       * @method processMotions
        * @private
        */
       processMotions(node,dt) {
@@ -85,6 +84,7 @@ define('zotohlab/p/s/motions',
       },
 
       /**
+       * @method scanInput
        * @private
        */
       scanInput(node, dt) {
@@ -95,6 +95,7 @@ define('zotohlab/p/s/motions',
       },
 
       /**
+       * @method processKeys
        * @private
        */
       processKeys(node,dt) {
@@ -120,7 +121,7 @@ define('zotohlab/p/s/motions',
        * @memberof module:zotohlab/p/s/motions~Motions
        * @property {Number} Priority
        */
-    Motions.Priority = pss.Motion;
+    Motions.Priority = sh.ftypes.Motion;
 
     exports = Motions;
     return exports;

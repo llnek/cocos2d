@@ -8,7 +8,6 @@
 "src/asteroids/elements/cobjs.js",
 "src/asteroids/nodes/gnodes.js",
 
-"src/asteroids/systems/priorities.js",
 "src/asteroids/systems/utils.js",
     "src/asteroids/systems/factory.js",
 

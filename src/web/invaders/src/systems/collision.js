@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
@@ -20,17 +19,16 @@
  */
 define('zotohlab/p/s/collisions',
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/s/utils',
+       ['zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/collisions */
-    let exports = {},
+    let exports = {     },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -98,12 +96,16 @@ define('zotohlab/p/s/collisions',
       },
 
       /**
+       * @method collide
+       * @private
        */
       collide(a, b) {
         return ccsx.collide0(a.sprite, b.sprite);
       },
 
       /**
+       * @method checkMissilesBombs
+       * @private
        */
       checkMissilesBombs() {
         const mss = sh.pools.Missiles,
@@ -123,6 +125,8 @@ define('zotohlab/p/s/collisions',
       },
 
       /**
+       * @method checkMissilesAliens
+       * @private
        */
       checkMissilesAliens(node) {
         const mss = sh.pools.Missiles,
@@ -143,6 +147,8 @@ define('zotohlab/p/s/collisions',
       },
 
       /**
+       * @method checkShipBombs
+       * @private
        */
       checkShipBombs(node) {
         const bbs= sh.pools.Bombs,
@@ -160,6 +166,8 @@ define('zotohlab/p/s/collisions',
       },
 
       /**
+       * @method checkShipAliens
+       * @private
        */
       checkShipAliens(anode,snode) {
         const sqad= anode.aliens,
@@ -183,7 +191,7 @@ define('zotohlab/p/s/collisions',
      * @memberof module:zotohlab/p/s/collisions~CollisionSystem
      * @property {Number} Priority
      */
-    CollisionSystem.Priority = pss.Collision;
+    CollisionSystem.Priority = sh.ftypes.Collision;
 
     exports= CollisionSystem;
     return exports;

@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -19,16 +18,15 @@
  */
 define("zotohlab/p/s/rendering",
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/gnodes',
+       ['zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, gnodes, sjs, sh, ccsx) { "use strict";
+  function (gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/rendering */
-    let exports= {},
+    let exports= {    },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -78,7 +76,7 @@ define("zotohlab/p/s/rendering",
      * @property {Number} Priority
      * @static
      */
-    RenderSystem.Priority = pss.Render;
+    RenderSystem.Priority = sh.ftypes.Render;
 
     exports= RenderSystem;
     return exports;

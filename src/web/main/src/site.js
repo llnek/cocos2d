@@ -9,18 +9,24 @@
 // this software.
 // Copyright (c) 2013-2014, Ken Leung. All rights reserved.
 
+/**
+ * @requires global/window
+ * @requires cherimoia/skarojs
+ * @requires cherimoia/caesar
+ * @module cocos2d/site
+ */
 define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar'],
 
   function (global, sjs, caesar) { "use strict";
-    var ModalWindow=global.ModalWindow,
+    let ModalWindow=global.ModalWindow,
     document=global.document,
     undef,
     $= global.jQuery;
 
     /////////////////////////////////////////////
     //
-    function toggleNavMenuItems() {
-      var uid= $.cookie('__u982i');
+    const toggleNavMenuItems = () => {
+      const uid= $.cookie('__u982i');
       if (sjs.isString(uid) && uid.length > 0) {
         $('#rego-mitem').parent().hide();
         $('#login-mitem').parent().hide();
@@ -34,10 +40,14 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar']
 
     ///////////////////////////////////////////
     //
-    function paintDoors() {
-      var doors= $('#intro img')
-      if (doors === null || doors.length <= 0) { return; }
-      var len= doors.length, ptr=0;
+    const paintDoors = () => {
+      const doors= $('#intro img');
+      if (doors === null ||
+          doors.length <= 0) {
+        return;
+      }
+      let len= doors.length,
+      ptr=0;
 
       $(doors[0]).addClass('open-door');
 
@@ -51,8 +61,8 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar']
 
     ///////////////////////////////////////////
     //
-    function initOverlay() {
-      var regBtn= $('#rego-mitem'),
+    const initOverlay = () => {
+      let regBtn= $('#rego-mitem'),
       logoutBtn= $('#logout-mitem' ),
       loginBtn= $('#login-mitem' ),
 
@@ -67,19 +77,19 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar']
       loginSend=$('#login-send'),
       forgSend=$('#forgot-send');
 
-      forgPwd.on('click',function(){
+      forgPwd.on('click', () => {
         document.location.href= document.location.origin + "/users/forgotlogin";
       });
-      backLogin.on('click',function(){
+      backLogin.on('click', () => {
         document.location.href= document.location.origin + "/users/login";
       });
 
-      function packFormAsJson(formObj) {
-        var nonce= $('#pg-footer').attr('data-ref') || '';
-        return sjs.R.reduce(function(memo, obj) {
-          var pobj=$(obj);
-          var dn= pobj.attr("data-name");
-          var dv= pobj.val() || '';
+      const packFormAsJson= (formObj) => {
+        const nonce= $('#pg-footer').attr('data-ref') || '';
+        return sjs.R.reduce((memo, obj) => {
+          let pobj=$(obj),
+          dn= pobj.attr("data-name"),
+          dv= pobj.val() || '';
           if ( (dn === 'credential'|| dn=== 'principal') && dv && nonce) {
             dv= caesar.encrypt(sjs.base64_encode(dv), 13);
           }
@@ -88,13 +98,13 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar']
         }, {}, $('input', formObj));
       }
 
-      function postToServer(formId,ok,error, uid,pwd) {
-        var form= $(formId),
+      const postToServer = (formId,ok,error, uid,pwd) => {
+        let form= $(formId),
         extras={},
         json= packFormAsJson(form),
         url= form.attr('action');
         if (sjs.echt(uid)) {
-          var rc= sjs.toBasicAuthHeader(
+          let rc= sjs.toBasicAuthHeader(
                     $('input[name="'+uid+'"]', form).val(),
                     $('input[name="'+pwd+'"]', form).val());
           extras[rc[0]] = rc[1];
@@ -102,7 +112,7 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar']
         $.ajax(url,{
           contentType: 'application/json',
           headers: extras,
-          data: JSON.stringify(json),
+          data: sjs.jsonfy(json),
           type: 'POST',
           dataType: 'json'
 
@@ -110,25 +120,25 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar']
 
       }
 
-      function getToServer(url,ok,error) {
+      const getToServer = (url,ok,error) => {
         $.ajax(url,{
         }).done(ok).fail(error);
       }
 
-      regoSend.on('click',function(evt) {
-        var fb= $('#register .acctxxx-result');
+      regoSend.on('click', (evt) => {
+        let fb= $('#register .acctxxx-result');
         sjs.pde(evt);
-        function ecb(xhr) {
-          var reason= "Bad request.";
+        const ecb = (xhr) => {
+          let reason= "Bad request.";
           if (xhr.status === 409) {
             reason= "Account with same id already exist.";
           }
-          var xxx= '<p>Account creation failed: ' + reason + '</p>';
+          let xxx= '<p>Account creation failed: ' + reason + '</p>';
           fb.empty().html(xxx);
           fb.show();
         }
-        function ok() {
-          var xxx= '<div class="login-actions"><p>Account created successfully.<br/>'+
+        const ok = () => {
+          let xxx= '<div class="login-actions"><p>Account created successfully.<br/>'+
             '<a href="/users/login">Continue to login?</a>' +
             '</p></div>';
           fb.empty().html(xxx);
@@ -137,38 +147,38 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar']
         postToServer('#register_form',ok,ecb);
       });
 
-      logoutBtn.on('click',function(evt){
-        function ecb(xhr) {
+      logoutBtn.on('click', (evt) => {
+        const ecb = (xhr) => {
           alert('Logout failed');
         }
-        function ok() {
+        const ok = () => {
           document.location.href= document.location.origin;
         }
         getToServer('/users/logout', ok, ecb);
       });
 
-      loginSend.on('click',function(evt){
-        var fb= $('#login .acctxxxx-result');
+      loginSend.on('click', (evt) => {
+        let fb= $('#login .acctxxxx-result');
         sjs.pde(evt);
-        function ecb(xhr) {
+        const ecb = (xhr) => {
           fb.empty().html('<p>Login failed.  Did you mistype?</p>');
           fb.show();
         }
-        function ok() {
+        const ok = () => {
           document.location.href= document.location.origin + "/games/toppicks";
         }
         fb.hide();
         postToServer('#login_form', ok, ecb, 'login-email','login-password');
       });
 
-      forgSend.on('click',function(evt){
-        var fb= $('#forgotpwd .acctxxxx-result');
+      forgSend.on('click', (evt) => {
+        let fb= $('#forgotpwd .acctxxxx-result');
         sjs.pde(evt);
-        function ecb(xhr) {
+        const ecb = (xhr) => {
           fb.empty().html('<p>Failed to send message.  Please try again later.</p>');
           fb.show();
         }
-        function ok() {
+        const ok = () => {
           fb.empty().html('<p>Message sent.</p>');
           fb.show();
         }
@@ -177,8 +187,8 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar']
       });
     }
 
-    function initCarousel() {
-      var el = $("#toppicks .owl-carousel");
+    const initCarousel = () => {
+      const el = $("#toppicks .owl-carousel");
       if (el === null || el.length === 0) {} else {
 
         el.owlCarousel({
@@ -191,16 +201,16 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar']
       }
     }
 
-    function boot() {
+    const boot = () => {
 
-      var em = $('html');
+      let em = $('html');
       if (sjs.isSafari() ) { em.addClass('is-safari'); } else {
         em.removeClass('is-safari');
       };
 
-      $('.navbar-toggle').on('click', function(){
-        var em2= $('.navbar-collapse');
-        var em = $('.navbar');
+      $('.navbar-toggle').on('click', () => {
+        let em2= $('.navbar-collapse'),
+        em = $('.navbar');
         if ( ! em2.hasClass("in")) {
           em.addClass('darken-menu');
         }
@@ -210,19 +220,19 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar']
         }
       });
 
-      $('.nav a').on('click', function () {
+      $('.nav a').on('click', () => {
         $('#main-nav').removeClass('in').addClass('collapse');
       });
 
-      $('.intro-section .scroll-more').click(function(evt) {
-        var place = $('body').children('section').eq(1);
+      $('.intro-section .scroll-more').click((evt) => {
+        let place = $('body').children('section').eq(1);
         // var offsetTop = $('.navbar').outerHeight();
         $('html, body').animate({scrollTop: $(place).offset().top}, 1200, 'easeInOutCubic');
         sjs.pde(evt);
       });
 
       // minimize and darken the menu bar
-      $('body').waypoint( function (dir) {
+      $('body').waypoint( (dir) => {
         $('.navbar').toggleClass('minified dark-menu');
       }, { offset: '-200px' });
 
@@ -231,10 +241,10 @@ define("cocos2d/site", ['global/window', 'cherimoia/skarojs','cherimoia/caesar']
       paintDoors();
 
       // show "back to top" button
-      $(document).scroll( function () {
-        var headerHt = $('#intro').outerHeight();
-        var pos = $(document).scrollTop();
-        var em= $('.scrolltotop');
+      $(document).scroll( () => {
+        let headerHt = $('#intro').outerHeight(),
+        pos = $(document).scrollTop(),
+        em= $('.scrolltotop');
         if (pos >= headerHt - 100){
           em.addClass('show-to-top');
         } else {

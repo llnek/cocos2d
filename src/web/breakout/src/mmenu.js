@@ -13,7 +13,6 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xlayers
  * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asx/xmmenus
  * @module zotohlab/p/mmenu
@@ -23,24 +22,28 @@ define('zotohlab/p/mmenu',
        ['cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
-        'zotohlab/asx/xlayers',
         'zotohlab/asx/xscenes',
         'zotohlab/asx/xmmenus'],
 
-  function (sjs, sh, ccsx, layers, scenes, mmenus) { "use strict";
+  function (sjs, sh, ccsx, scenes, mmenus) { "use strict";
 
     /** @alias module:zotohlab/p/mmenu */
-    let exports = {},
+    let exports = {     },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
     //////////////////////////////////////////////////////////////////////////////
     /**
+     * @extends module:zotohlab/asx/xmmenus.XMenuBackLayer
      * @class BackLayer
      */
     BackLayer = mmenus.XMenuBackLayer.extend({
 
+      /**
+       * @method setTitle
+       * @protected
+       */
       setTitle() {
         const wb=ccsx.vbox(),
         cw= ccsx.center(),
@@ -57,10 +60,15 @@ define('zotohlab/p/mmenu',
     }),
 
     /**
+     * @extends module:zotohlab/asx/xmmenus.XMenuLayer
      * @class MainMenuLayer
      */
     MainMenuLayer = mmenus.XMenuLayer.extend({
 
+      /**
+       * @method pkInit
+       * @protected
+       */
       pkInit() {
         const cw = ccsx.center(),
         wb = ccsx.vbox(),
@@ -79,8 +87,7 @@ define('zotohlab/p/mmenu',
         this.mkBackQuit(false, [
             { imgPath: '#icon_back.png',
               cb() {
-                if (!!this.options.onBack) {
-                  this.options.onBack(); }
+                this.options.onBack();
               },
               target: this },
 

@@ -9,19 +9,26 @@
 // this software.
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/p/s/utils
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/cannon
+ */
 define('zotohlab/p/s/cannon',
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/s/utils',
+       ['zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/cannon */
-    let exports = {},
+    let exports = {     },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -72,6 +79,7 @@ define('zotohlab/p/s/cannon',
       },
 
       /**
+       * @method process
        * @private
        */
       process(node,dt) {
@@ -92,6 +100,7 @@ define('zotohlab/p/s/cannon',
       },
 
       /**
+       * @method checkInput
        * @private
        */
       checkInput() {
@@ -110,6 +119,7 @@ define('zotohlab/p/s/cannon',
       },
 
       /**
+       * @method scanInput
        * @private
        */
       scanInput(node, dt) {
@@ -120,6 +130,7 @@ define('zotohlab/p/s/cannon',
       },
 
       /**
+       * @method fireMissile
        * @private
        */
       fireMissile(node,dt) {
@@ -150,7 +161,7 @@ define('zotohlab/p/s/cannon',
      * @memberof module:zotohlab/p/s/cannon~CannonControl
      * @property {Number} Priority
      */
-    CannonControl.Priority= pss.Motion;
+    CannonControl.Priority= sh.ftypes.Motion;
 
     exports = CannonControl;
     return exports;

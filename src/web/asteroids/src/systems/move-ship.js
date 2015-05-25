@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -19,13 +18,12 @@
  */
 define('zotohlab/p/s/moveship',
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/gnodes',
+       ['zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, gnodes, sjs, sh, ccsx) { "use strict";
+  function (gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/moveship */
     let exports = {},
@@ -81,6 +79,7 @@ define('zotohlab/p/s/moveship',
       },
 
       /**
+       * @method rotateShip
        * @private
        */
       rotateShip(cur,deg) {
@@ -95,6 +94,7 @@ define('zotohlab/p/s/moveship',
       },
 
       /**
+       * @method thrust
        * @private
        */
       thrust(ship, angle,power) {
@@ -107,6 +107,7 @@ define('zotohlab/p/s/moveship',
       },
 
       /**
+       * @method processShipMotions
        * @private
        */
       processShipMotions(node,dt) {
@@ -132,7 +133,7 @@ define('zotohlab/p/s/moveship',
         }
 
         if (motion.up) {
-          var acc= this.thrust(ship, rot.angle, tu.power);
+          const acc= this.thrust(ship, rot.angle, tu.power);
           sp.setSpriteFrame(ship.frames[1]);
           velo.acc.x= acc.x;
           velo.acc.y= acc.y;
@@ -148,12 +149,14 @@ define('zotohlab/p/s/moveship',
       },
 
       /**
+       * @method clampVelocity
        * @private
        */
       clampVelocity() {
       },
 
       /**
+       * @method moveShip
        * @private
        */
       moveShip(snode, dt) {
@@ -222,7 +225,7 @@ define('zotohlab/p/s/moveship',
      * @memberof module:zotohlab/p/s/moveship~MovementShip
      * @property {Number} Priority
      */
-    MovementShip.Priority = pss.Movement;
+    MovementShip.Priority = sh.ftypes.Move;
 
     exports= MovementShip;
     return exports;

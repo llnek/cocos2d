@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -19,16 +18,15 @@
  */
 define('zotohlab/p/s/collisions',
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/gnodes',
+       ['zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, gnodes, sjs, sh, ccsx) { "use strict";
+  function (gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/collisions */
-    let exports = {},
+    let exports = {     },
     xcfg = sh.xcfg,
     csts= xcfg.xcsts,
     undef,
@@ -93,6 +91,7 @@ define('zotohlab/p/s/collisions',
       },
 
       /**
+       * @method onPlayerKilled
        * @private
        */
       onPlayerKilled(pnode, bnode) {
@@ -107,6 +106,7 @@ define('zotohlab/p/s/collisions',
       },
 
       /**
+       * @method checkNodes
        * @private
        */
       checkNodes(pnode,bnode) {
@@ -118,6 +118,7 @@ define('zotohlab/p/s/collisions',
 
       //ball hits paddle
       /**
+       * @method check
        * @private
        */
       check(pnode,bnode) {
@@ -133,6 +134,7 @@ define('zotohlab/p/s/collisions',
       },
 
       /**
+       * @method checkBricks
        * @private
        */
       checkBricks(fence,bnode,dt) {
@@ -149,6 +151,7 @@ define('zotohlab/p/s/collisions',
       },
 
       /**
+       * @method onBrick
        * @private
        */
       onBrick(bnode, brick) {
@@ -198,7 +201,7 @@ define('zotohlab/p/s/collisions',
      * @memberof module:zotohlab/p/s/collisions~CollisionSystem
      * @property {Number} Priority
      */
-    CollisionSystem.Priority = pss.Collision;
+    CollisionSystem.Priority = sh.ftypes.Collision;
 
     exports= CollisionSystem;
     return exports;

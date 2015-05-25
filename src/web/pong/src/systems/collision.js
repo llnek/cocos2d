@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorities
  * @requires zotohlab/p/gnodes
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
@@ -19,16 +18,15 @@
  */
 define("zotohlab/p/s/collision",
 
-       ['zotohlab/p/s/priorities',
-        'zotohlab/p/gnodes',
+       ['zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, gnodes, sjs, sh, ccsx) { "use strict";
+  function (gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/collision */
-    let exports = {},
+    let exports = {    },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -85,6 +83,7 @@ define("zotohlab/p/s/collision",
       },
 
       /**
+       * @method checkNodes
        * @private
        */
       checkNodes(nl, bnode) {
@@ -98,6 +97,7 @@ define("zotohlab/p/s/collision",
 
       /**
        * Ball hits paddle.
+       * @method check
        * @private
        */
       check(node, bnode) {
@@ -137,9 +137,8 @@ define("zotohlab/p/s/collision",
     /**
      * @memberof module:zotohlab/p/s/collision~CollisionSystem
      * @property {Number} Priority
-     * @static
      */
-    CollisionSystem.Priority = pss.Collision;
+    CollisionSystem.Priority = sh.ftypes.Collision;
 
     exports= CollisionSystem;
     return exports;

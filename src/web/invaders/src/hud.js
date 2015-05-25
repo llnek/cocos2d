@@ -13,7 +13,7 @@
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xlayers
+ * @requires zotohlab/asx/xscenes
  * @module zotohlab/p/hud
  */
 define('zotohlab/p/hud',
@@ -21,37 +21,54 @@ define('zotohlab/p/hud',
        ['cherimoia/skarojs',
        'zotohlab/asterix',
        'zotohlab/asx/ccsx',
-       'zotohlab/asx/xlayers'],
+       'zotohlab/asx/xscenes'],
 
-  function(sjs, sh, ccsx, layers) { "use strict";
+  function(sjs, sh, ccsx, scenes) { "use strict";
 
     /** @alias module:zotohlab/p/hud */
-    let exports = {},
+    let exports = {     },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
     /**
+     * @extends module:zotohlab/asx/xscenes.XLayer
      * @class BackLayer
      */
-    BackLayer = layers.XLayer.extend({
+    BackLayer = scenes.XLayer.extend({
 
+      /**
+       * @method rtti
+       */
       rtti() { return 'BackLayer'; },
 
+      /**
+       * @method pkInit
+       * @protected
+       */
       pkInit() {
         this.centerImage(sh.getImagePath('game.bg'));
       }
     }),
 
     /**
+     * @extends module:zotohlab/asx/xscenes.XGameHUDLayer
      * @class HUDLayer
      */
-    HUDLayer = layers.XGameHUDLayer.extend({
+    HUDLayer = scenes.XGameHUDLayer.extend({
 
+      /**
+       * @method initAtlases
+       * @protected
+       */
       initAtlases() {
         this.regoAtlas('game-pics');
       },
 
+      /**
+       * @method initLabels
+       * @protected
+       */
       initLabels() {
         const wb = ccsx.vbox();
 
@@ -67,10 +84,14 @@ define('zotohlab/p/hud',
         this.addChild(this.scoreLabel, this.lastZix, ++this.lastTag);
       },
 
-      initIcons: function() {
+      /**
+       * @method initIcons
+       * @protected
+       */
+      initIcons() {
         const wb = ccsx.vbox();
 
-        this.lives = new layers.XHUDLives( this, csts.TILE + csts.S_OFF,
+        this.lives = new scenes.XHUDLives( this, csts.TILE + csts.S_OFF,
           wb.top - csts.TILE - csts.S_OFF, {
           frames: ['health.png'],
           totalLives: 3
@@ -79,8 +100,12 @@ define('zotohlab/p/hud',
         this.lives.reify();
       },
 
+      /**
+       * @method ctor
+       * @constructs
+       */
       ctor(options) {
-        const color= cc.color(255,255,255),
+        const color= ccsx.white,
         scale=1;
 
         this._super(options);

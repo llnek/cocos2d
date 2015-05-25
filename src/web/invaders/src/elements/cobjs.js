@@ -24,7 +24,7 @@ define("zotohlab/p/elements",
   function (sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/elements */
-    let exports= {},
+    let exports= {    },
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef;

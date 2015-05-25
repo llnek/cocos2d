@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/priorites
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
@@ -21,15 +20,14 @@
  */
 define("zotohlab/p/levelmgr",
 
-       ['zotohlab/p/s/priorites',
-        'zotohlab/p/elements',
+       ['zotohlab/p/elements',
         'zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
         'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (pss, cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/levelmgr */
     let exports = {},
@@ -246,7 +244,7 @@ define("zotohlab/p/levelmgr",
      * @memberof module:zotohlab/p/levelmgr~LevelManager
      * @property {Number} Priority
      */
-    LevelManager.Priority = pss.Movement;
+    LevelManager.Priority = sh.ftypes.Move;
 
     exports= LevelManager;
     return exports;
