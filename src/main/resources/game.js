@@ -7,33 +7,56 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/p/elements
+ * @requires zotohlab/p/sysobjs
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xscenes
+ * @requires zotohlab/asx/xmmenus
+ * @requires zotohlab/p/hud
+ * @module zotohlab/p/arena
+ */
 define('zotohlab/p/arena', ['zotohlab/p/elements',
                            'zotohlab/p/sysobjs',
                            'cherimoia/skarojs',
                            'zotohlab/asterix',
                            'zotohlab/asx/ccsx',
-                           'zotohlab/asx/xlayers',
                            'zotohlab/asx/xscenes',
                            'zotohlab/asx/xmmenus',
                            'zotohlab/p/hud'],
 
   function (cobjs, sobjs, sjs, sh, ccsx,
-            layers, scenes, mmenus, huds) { "use strict";
+            scenes, mmenus, huds) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/arena */
+    let exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
 
+    /**
+     * @extends module:zotohlab/asx/xscenes.XGameLayer
+     * @class GameLayer
+     */
     GameLayer = layers.XGameLayer.extend({
 
-      operational: function() { return this.options.running; },
+      /**
+       * @method operational
+       * @protected
+       */
+      operational() { return this.options.running; },
 
-      reset: function(newFlag) {
+      /**
+       * @method reset
+       */
+      reset(newFlag) {
         if (!sjs.isEmpty(this.atlases)) {
-          sjs.eachObj(function (v) {
+          sjs.eachObj((v) => {
             v.removeAllChildren();
           }, this.atlases);
         } else {
@@ -42,13 +65,17 @@ define('zotohlab/p/arena', ['zotohlab/p/elements',
         this.getHUD().reset();
       },
 
-      replay: function() {
+      /**
+       * @method replay
+       */
+      replay() {
         this.play(false);
       },
 
-      play: function(newFlag) {
-
-        var pss = sobjs.Priorities;
+      /**
+       * @method play
+       */
+      play(newFlag) {
 
         this.reset(newFlag);
         this.cleanSlate();
@@ -57,16 +84,19 @@ define('zotohlab/p/arena', ['zotohlab/p/elements',
                                      this.options);
         this.options.running = true;
 
-        R.forEach(function(z) {
-          this.engine.addSystem(new (z[0])(this.options), z[1]);
-        }.bind(this),
-        [ [sobjs.Supervisor, pss.PreUpdate],
-          [sobjs.Motions, pss.Motion],
-          [sobjs.Resolution, pss.Resolve] ]);
-
+        R.forEach((z) => {
+          this.engine.addSystem(new (z)(this.options), z.Priority);
+        },
+        [ sobjs.Supervisor,
+          sobjs.Motions,
+          sobjs.Resolution]);
       },
 
-      onPlayerKilled: function(msg) {
+      /**
+       * @method onPlayerKilled
+       * @private
+       */
+      onPlayerKilled(msg) {
         if ( this.getHUD().reduceLives(1)) {
           this.onDone();
         } else {
@@ -74,19 +104,35 @@ define('zotohlab/p/arena', ['zotohlab/p/elements',
         }
       },
 
-      spawnPlayer: function() {
+      /**
+       * @method spawnPlayer
+       * @private
+       */
+      spawnPlayer() {
       },
 
-      onNewGame: function(mode) {
+      /**
+       * @method onNewGame
+       * @private
+       */
+      onNewGame(mode) {
         this.setGameMode(mode);
         this.play(true);
       },
 
-      onEarnScore: function(msg) {
+      /**
+       * @method onEarnScore
+       * @private
+       */
+      onEarnScore(msg) {
         this.getHUD().updateScore( msg.score);
       },
 
-      onDone: function() {
+      /**
+       * @method onDone
+       * @private
+       */
+      onDone() {
         this.reset();
         this.options.running=false;
         this.getHUD().enableReplay();
@@ -94,34 +140,42 @@ define('zotohlab/p/arena', ['zotohlab/p/elements',
 
     });
 
-    return {
+    exports = /** @lends exports# */{
 
-      'GameArena' : {
+      /**
+       * @property {String} rtti
+       */
+      rtti: sh.ptypes.game,
 
-        create: function(options) {
-          var scene = new scenes.XSceneFactory([
-            huds.BackLayer,
-            GameLayer,
-            huds.HUDLayer ]).create(options);
+      /**
+       * @method reify
+       * @param {Object} options
+       * @return {cc.Scene}
+       */
+      reify(options) {
+        const scene = new scenes.XSceneFactory([
+          huds.BackLayer,
+          GameLayer,
+          huds.HUDLayer ]).reify(options);
 
-          scene.ebus.on('/game/objects/players/earnscore', function(topic, msg) {
-            sh.main.onEarnScore(msg);
-          });
-          scene.ebus.on('/game/hud/controls/showmenu',function(t,msg) {
-            mmenus.XMenuLayer.onShowMenu();
-          });
-          scene.ebus.on('/game/hud/controls/replay',function(t,msg) {
-            sh.main.replay();
-          });
-          scene.ebus.on('/game/objects/players/killed', function(topic, msg) {
-            sh.main.onPlayerKilled(msg);
-          });
+        scene.onmsg('/game/players/earnscore', (topic, msg) => {
+          sh.main.onEarnScore(msg);
+        }).
+        onmsg('/hud/showmenu',(t,msg) => {
+          mmenus.showMenu();
+        }).
+        onmsg('/hud/replay',(t,msg) => {
+          sh.main.replay();
+        }).
+        onmsg('/game/players/killed', (topic, msg) => {
+          sh.main.onPlayerKilled(msg);
+        });
 
-          return scene;
-        }
+        return scene;
       }
     };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

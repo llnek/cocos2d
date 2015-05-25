@@ -7,11 +7,11 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 (function () { "use strict";
 
-  cc.game.onStart= function() {
+  cc.game.onStart= () => {
     supplicate('zotohlab/p/boot');
   };
   cc.game.run();

@@ -7,43 +7,58 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xscenes
+ * @requires zotohlab/asx/xmmenus
+ * @module zotohlab/p/mmenu
+ */
 define('zotohlab/p/mmenu', ['cherimoia/skarojs',
                            'zotohlab/asterix',
                            'zotohlab/asx/ccsx',
-                           'zotohlab/asx/xlayers',
                            'zotohlab/asx/xscenes',
                            'zotohlab/asx/xmmenus'],
 
-  function (sjs, sh, ccsx, layers, scenes, mmenus) { "use strict";
+  function (sjs, sh, ccsx, scenes, mmenus) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/mmenu */
+    let exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @extends module:zotohlab/asx/xmmenus.XMenuLayer
+     * @class MainMenuLayer
+     */
     MainMenuLayer = mmenus.XMenuLayer.extend({
 
-      pkInit: function() {
-        var cw = ccsx.center(),
-        wz = ccsx.screen();
+      /**
+       * @method pkInit
+       * @protected
+       */
+      pkInit() {
+        const cw = ccsx.center(),
+        wz = ccsx.vrect();
 
         this._super();
 
         this.addItem( ccsx.tmenu1({
           fontPath: sh.getFontPath('font.OogieBoogie'),
           text: sh.l10n('%1player'),
-          selector: function() {
-            sh.fireEvent('/mmenu/controls/newgame', {
-              mode: sh.P1_GAME
+          cb() {
+            sh.fire('/mmenu/newgame', {
+              mode: sh.gtypes.P1_GAME
             });
           },
           target: this,
           scale: 0.5,
           pos: cc.p(cw.x, wz.height * 0.20)
         }));
-
-        this.doCtrlBtns();
       }
 
     });
