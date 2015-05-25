@@ -7,8 +7,16 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/p/elements
+ * @requires zotohlab/p/gnodes
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @module zotohlab/p/s/resolution
+ */
 define('zotohlab/p/s/resolution', ['zotohlab/p/elements',
                                   'zotohlab/p/gnodes',
                                   'cherimoia/skarojs',
@@ -17,31 +25,57 @@ define('zotohlab/p/s/resolution', ['zotohlab/p/elements',
 
   function (cobjs, gnodes, sjs, sh, ccsx) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/resolution */
+    let exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
 
+    /**
+     * @class Resolution
+     */
     Resolution = sh.Ashley.sysDef({
 
-      constructor: function(options) {
+      /**
+       * @memberof module:zotohlab/p/s/resolution~Resolution
+       * @method constructor
+       * @param {Object} options
+       */
+      constructor(options) {
         this.state= options;
         this.inited=false;
       },
 
-      removeFromEngine: function(engine) {
+      /**
+       * @memberof module:zotohlab/p/s/resolution~Resolution
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
+      removeFromEngine(engine) {
       },
 
-      addToEngine: function(engine) {
+      /**
+       * @memberof module:zotohlab/p/s/resolution~Resolution
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
+      addToEngine(engine) {
         this.engine=engine;
       },
 
-      update: function (dt) {
+      /**
+       * @memberof module:zotohlab/p/s/resolution~Resolution
+       * @method update
+       * @param {Number} dt
+       */
+      update(dt) {
       }
 
     });
 
-    return Resolution;
+    exports= Resolution;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

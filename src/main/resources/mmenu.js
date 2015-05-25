@@ -31,6 +31,14 @@ define('zotohlab/p/mmenu', ['cherimoia/skarojs',
     csts= xcfg.csts,
     undef,
 
+    //////////////////////////////////////////////////////////////////////////////
+    /**
+     * @extends module:zotohlab/asx/xmmenus.XMenuBackLayer
+     * @class BackLayer
+     */
+    BackLayer = mmenus.XMenuBackLayer.extend({
+    }),
+
     /**
      * @extends module:zotohlab/asx/xmmenus.XMenuLayer
      * @class MainMenuLayer
@@ -46,43 +54,38 @@ define('zotohlab/p/mmenu', ['cherimoia/skarojs',
         wz = ccsx.vrect();
 
         this._super();
-
-        this.addItem( ccsx.tmenu1({
-          fontPath: sh.getFontPath('font.OogieBoogie'),
-          text: sh.l10n('%1player'),
-          cb() {
-            sh.fire('/mmenu/newgame', {
-              mode: sh.gtypes.P1_GAME
-            });
-          },
-          target: this,
-          scale: 0.5,
-          pos: cc.p(cw.x, wz.height * 0.20)
-        }));
       }
 
     });
 
-    return {
+    exports = /** @lends exports# */{
 
-      'MainMenu' : {
+      /**
+       * @property {String} rtti
+       */
+      rtti: sh.ptypes.mmenu,
 
-        create: function(options) {
-          var scene = new scenes.XSceneFactory([
-            mmenus.XMenuBackLayer,
-            MainMenuLayer
-          ]).create(options);
+      /**
+       * @method reify
+       * @param {Object} options
+       * @return {cc.Scene}
+       */
+      reify(options) {
+        const scene = new scenes.XSceneFactory([
+          BackLayer,
+          MainMenuLayer
+        ]).reify(options);
 
-          scene.ebus.on('/mmenu/controls/newgame', function(topic, msg) {
-            cc.director.runScene( sh.protos['GameArena'].create(msg));
-          });
+        scene.onmsg('/mmenu/newgame', (topic, msg) => {
+          cc.director.runScene( sh.protos[sh.ptypes.game].reify(msg));
+        });
 
-          return scene;
-        }
+        return scene;
       }
 
     };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

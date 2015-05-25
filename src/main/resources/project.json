@@ -8,11 +8,11 @@
     "renderMode"    : 0,
 
     "engineDir"     : "frameworks/cocos2d-html5",
-    "modules"       : ["cocos2d","ccui", "ccpool"],
+    "modules"       : ["cocos2d","ccui"],
 
     "jsList"        : [
 
-"src/almond/almond.js",
+    "src/almond/almond.js",
     "src/ramda/ramda.js",
     "src/l10njs/l10n.js",
     "src/mustache/mustache.js",

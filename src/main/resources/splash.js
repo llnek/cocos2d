@@ -7,64 +7,69 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xscenes
+ * @requires zotohlab/asx/xsplash
+ * @module zotohlab/p/splash
+ */
 define('zotohlab/p/splash', ['cherimoia/skarojs',
                             'zotohlab/asterix',
                             'zotohlab/asx/ccsx',
-                            'zotohlab/asx/xlayers',
                             'zotohlab/asx/xscenes',
                             'zotohlab/asx/xsplash'],
 
-  function (sjs, sh, ccsx, layers, scenes, XSplashLayer) { "use strict";
+  function (sjs, sh, ccsx, scenes, splash) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/splash */
+    let exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
-    UILayer = layers.XLayer.extend({
-
-      pkInit: function() {
-        var ht = ccsx.screenHeight(),
-        cx = ccsx.centerX();
-
-        this._super();
-
-        this.addItem( ccsx.pmenu1({
-          imgPath: sh.getImagePath('splash.play-btn'),
-          pos: cc.p(cx, ht * 0.20),
-          selector: function() {
-            sh.fireEvent('/splash/controls/playgame');
-          },
-          target: this
-        }));
-
-      }
+    /**
+     * @extends module:zotohlab/asx/xsplash~XSplashLayer
+     * @class SplashLayer
+     */
+    SplashLayer = splash.XSplashLayer.extend({
 
     });
 
-    return {
-      'StartScreen' : {
-        create: function(options) {
-          var scene = new scenes.XSceneFactory([
-            XSplashLayer,
-            UILayer
-          ]).create(options);
+    exports = /** @lends exports# */{
 
-          scene.ebus.on('/splash/controls/playgame', function() {
-              var ss= sh.protos['StartScreen'],
-              mm= sh.protos['MainMenu'],
-              dir= cc.director;
-              dir.runScene( mm.create({
-                onBack: function() { dir.runScene( ss.create() ); }
-              }));
-          });
+      /**
+       * @property {String} rtti
+       */
+      rtti : sh.ptypes.start,
 
-          return scene;
-        }
+      /**
+       * @method reify
+       * @param {Object} options
+       * @return {cc.Scene}
+       */
+      reify(options) {
+        const ss= sh.protos[sh.ptypes.start],
+        mm= sh.protos[sh.ptypes.mmenu],
+        dir= cc.director,
+        scene = new scenes.XSceneFactory([
+          SplashLayer
+        ]).reify(options);
+
+        scene.onmsg('/splash/playgame', () => {
+            dir.runScene( mm.reify({
+              onBack() { dir.runScene( ss.reify() ); }
+            }));
+        });
+
+        return scene;
       }
     };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

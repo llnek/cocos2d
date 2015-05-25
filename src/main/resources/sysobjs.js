@@ -7,22 +7,29 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-define("zotohlab/p/sysobjs", ['zotohlab/p/s/priorities',
-                             'zotohlab/p/s/factory',
+/**
+ * @requires zotohlab/p/s/factory
+ * @requires zotohlab/p/s/utils
+ * @requires zotohlab/p/s/supervisor
+ * @requires zotohlab/p/s/motions
+ * @requires zotohlab/p/s/resolution
+ * @module zotohlab/p/sysobjs
+ */
+define("zotohlab/p/sysobjs", ['zotohlab/p/s/factory',
                              'zotohlab/p/s/utils',
                              'zotohlab/p/s/supervisor',
                              'zotohlab/p/s/motions',
                              'zotohlab/p/s/resolution'],
 
-  function (Priorities, EntityFactory, SystemUtils,
+  function (EntityFactory, SystemUtils,
             Supervisor, Motions,
             Resolution) { "use strict";
 
-    return {
+    /** @alias module:zotohlab/p/sysobjs */
+    const exports = /** @lends exports# */{
 
-      Priorities          : Priorities,
       Factory       : EntityFactory,
       SystemUtils         : SystemUtils,
       Supervisor          : Supervisor,
@@ -31,6 +38,7 @@ define("zotohlab/p/sysobjs", ['zotohlab/p/s/priorities',
 
     };
 
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////

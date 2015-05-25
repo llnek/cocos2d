@@ -7,8 +7,17 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+// Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
+/**
+ * @requires zotohlab/p/elements
+ * @requires zotohlab/p/s/utils
+ * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asx/xpool
+ * @module zotohlab/p/s/supervisor
+ */
 define("zotohlab/p/s/supervisor", ['zotohlab/p/elements',
                                   'zotohlab/p/s/utils',
                                   'cherimoia/skarojs',
@@ -18,37 +27,66 @@ define("zotohlab/p/s/supervisor", ['zotohlab/p/elements',
 
   function (cobjs, utils, sjs, sh, ccsx, xpool) { "use strict";
 
-    var xcfg = sh.xcfg,
+    /** @alias module:zotohlab/p/s/supervisor */
+    let exports = {},
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
 
+    /**
+     * @class GameSupervisor
+     */
     GameSupervisor = sh.Ashley.sysDef({
 
-      constructor: function(options) {
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method constructor
+       * @param {Object} options
+       */
+      constructor(options) {
         this.state= options;
         this.inited=false;
       },
 
-      removeFromEngine: function(engine) {
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method removeFromEngine
+       * @param {Ash.Engine} engine
+       */
+      removeFromEngine(engine) {
       },
 
-      addToEngine: function(engine) {
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method addToEngine
+       * @param {Ash.Engine} engine
+       */
+      addToEngine(engine) {
       },
 
-      update: function (dt) {
+      /**
+       * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
+       * @method update
+       * @param {Number} dt
+       */
+      update(dt) {
         if (! this.inited) {
           this.onceOnly();
           this.inited=true;
         }
       },
 
-      onceOnly: function() {
-
+      /**
+       * @method onceOnly
+       * @private
+       */
+      onceOnly() {
       }
 
     });
 
-    return GameSupervisor;
+    exports= GameSupervisor;
+    return exports;
 });
 
 //////////////////////////////////////////////////////////////////////////////
