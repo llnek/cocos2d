@@ -169,7 +169,7 @@ define("zotohlab/asx/online",
         this.addItem(qn);
 
         menu= ccsx.vmenu([
-          { imgPath: '#cancel.png',
+          { nnn: '#cancel.png',
             cb() {
               this.onCancelPlay();
             },
@@ -227,13 +227,13 @@ define("zotohlab/asx/online",
         this.addItem(pwd);
 
         menu= ccsx.vmenu([
-          { imgPath: '#continue.png',
+          { nnn: '#continue.png',
             cb() {
               this.onOnlineReq(uid.getString(),pwd.getString());
             },
             target: this },
 
-          { imgPath: '#cancel.png',
+          { nnn: '#cancel.png',
             cb() {
               this.options.onBack();
             },

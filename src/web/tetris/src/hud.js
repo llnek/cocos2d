@@ -154,7 +154,7 @@ define("zotohlab/p/hud",
         this._super(options);
 
         this.options.i_replay= {
-          imgPath: '#icon_replay.png',
+          nnn: '#icon_replay.png',
           color: ccsx.white,
           visible: false,
           cb() {
@@ -162,7 +162,7 @@ define("zotohlab/p/hud",
         };
 
         this.options.i_menu= {
-          imgPath: '#icon_menu.png',
+          nnn: '#icon_menu.png',
           color: ccsx.white,
           cb() {
             sh.fire('/hud/showmenu'); }

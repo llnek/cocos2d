@@ -85,13 +85,13 @@ define('zotohlab/p/mmenu',
         this.addItem(menu);
 
         this.mkBackQuit(false, [
-            { imgPath: '#icon_back.png',
+            { nnn: '#icon_back.png',
               cb() {
                 this.options.onBack();
               },
               target: this },
 
-            { imgPath: '#icon_quit.png',
+            { nnn: '#icon_quit.png',
               cb() { this.onQuit(); },
               target: this }
           ],

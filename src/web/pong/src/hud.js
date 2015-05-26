@@ -76,7 +76,7 @@ define("zotohlab/p/hud",
         this.p1ID= '';
 
         this.options.i_replay= {
-          imgPath: '#icon_replay.png',
+          img: '#icon_replay.png',
           where: ccsx.acs.Top,
           color:color,
           scale : scale,
@@ -87,7 +87,7 @@ define("zotohlab/p/hud",
         };
 
         this.options.i_menu= {
-          imgPath: '#icon_menu.png',
+          img: '#icon_menu.png',
           where: ccsx.acs.Top,
           color: color,
           scale: scale,

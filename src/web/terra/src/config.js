@@ -48,8 +48,10 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
         BOMB_SPEED: 200,
         SHIP_SPEED: 200,
 
-        SHIP_ZX: 3000
+        SHIP_ZX: 3000,
 
+        menuHeight: 36,
+        menuWidth: 123
       },
 
       game: {

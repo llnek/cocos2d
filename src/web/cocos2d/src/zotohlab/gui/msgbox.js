@@ -90,7 +90,7 @@ define("zotohlab/asx/msgbox",
         this.addItem(qn);
 
         menu= ccsx.vmenu([
-          { imgPath: '#ok.png',
+          { nnn: '#ok.png',
             cb() {
               this.options.yes();
             },

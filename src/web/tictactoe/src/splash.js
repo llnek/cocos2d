@@ -60,7 +60,7 @@ define("zotohlab/p/splash",
         wb = ccsx.vbox(),
         // show the play button at the bottom
         menu= ccsx.vmenu([
-          { imgPath: '#play.png',
+          { nnn: '#play.png',
             cb() {
               this.removeAll();
               sh.fire('/splash/playgame');

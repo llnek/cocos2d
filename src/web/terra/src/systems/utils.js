@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/elements
  * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
@@ -18,18 +17,58 @@
  */
 define("zotohlab/p/s/utils",
 
-       ['zotohlab/p/elements',
-        'cherimoia/skarojs',
+       ['cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (cobjs, sjs, sh, ccsx) { "use strict";
+  function (sjs, sh, ccsx) { "use strict";
 
     let xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
     /** @alias module:zotohlab/p/s/utils */
     exports = /** @lends exports# */{
+
+      /**
+       * @method flareEffect
+       * @param {Object} flare
+       * @param {Function} cb
+       * @param {Object} target
+       */
+      flareEffect(flare,cb,target) {
+        flare.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
+        flare.stopAllActions();
+        flare.attr({
+          x: -45,
+          y: MW.FLAREY,
+          visible: true,
+          opacity: 0,
+          rotation: -120,
+          scale: 0.3
+        });
+        const opacityAnim = cc.fadeTo(0.5, 255),
+        opacDim = cc.fadeTo(1, 0),
+        biggerEase = cc.scaleBy(0.7, 1.2, 1.2).easing(cc.easeSineOut()),
+        easeMove = cc.moveBy(0.5, cc.p(490, 0)).easing(cc.easeSineOut()),
+        rotateEase = cc.rotateBy(2.5, 90).easing(cc.easeExponentialOut()),
+        bigger = cc.scaleTo(0.5, 1),
+        onComplete = cc.callFunc(cb, target),
+        killflare = cc.callFunc(() => {
+            flare.removeFromParent();
+        }, flare);
+
+        flare.runAction(cc.sequence(opacityAnim, biggerEase, opacDim, killflare, onComplete));
+        flare.runAction(easeMove);
+        flare.runAction(rotateEase);
+        flare.runAction(bigger);
+      },
+
+      /**
+       * @method btnEffect
+       */
+      btnEffect() {
+        sh.sfxPlay('menuBtn');
+      },
 
       /**
        * @method fireMissiles

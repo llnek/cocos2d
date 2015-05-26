@@ -89,13 +89,13 @@ define("zotohlab/asx/ynbox",
         this.addItem(qn);
 
         menu= ccsx.vmenu([
-          { imgPath: '#continue.png',
+          { nnn: '#continue.png',
             cb() {
               this.options.yes();
             },
             target: this },
 
-          { imgPath: '#cancel.png',
+          { nnn: '#cancel.png',
             cb() {
               this.options.onBack();
             },

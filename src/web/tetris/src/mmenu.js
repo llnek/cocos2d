@@ -75,7 +75,7 @@ define("zotohlab/p/mmenu",
         const cw = ccsx.center(),
         wb = ccsx.vbox(),
         menu= ccsx.vmenu([
-          { imgPath: '#player1.png',
+          { nnn: '#player1.png',
             cb() {
               sh.fire('/mmenu/newgame', { mode: sh.gtypes.P1_GAME});
             }}
@@ -92,13 +92,13 @@ define("zotohlab/p/mmenu",
 
         // show back & quit
         this.mkBackQuit(false, [{
-            imgPath: '#icon_back.png',
+            nnn: '#icon_back.png',
             cb() {
               this.options.onBack();
             },
             target: this },
           {
-            imgPath: '#icon_quit.png',
+            nnn: '#icon_quit.png',
             cb() { this.onQuit(); },
             target: this }
         ],

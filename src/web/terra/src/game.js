@@ -34,6 +34,7 @@ define('zotohlab/p/arena',
 
     /** @alias module:zotohlab/p/arena */
     let exports = {},
+    uts=sobjs.utils,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -76,7 +77,7 @@ define('zotohlab/p/arena',
         const ship= this.options.player;
         if (this.options.running &&
             !!ship) {
-          sobjs.Utils.processTouch(ship, e.getDelta());
+          uts.processTouch(ship, e.getDelta());
         }
       },
 
@@ -96,7 +97,11 @@ define('zotohlab/p/arena',
                ['tr-pics', false],
                ['explosions', true]]);
         }
-        this.getHUD().reset();
+        if (newFlag) {
+          this.getHUD().resetAsNew();
+        } else {
+          this.getHUD().reset();
+        }
       },
 
       /**

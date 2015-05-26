@@ -707,9 +707,9 @@ define("zotohlab/asx/ccsx",
 
         for (let n=0; n < items.length; ++n) {
           obj=items[n];
-          mi= new cc.MenuItemSprite(new cc.Sprite(obj.nnnPath || obj.imgPath),
-                                    new cc.Sprite(obj.sssPath || obj.imgPath),
-                                    new cc.Sprite(obj.dddPath || obj.imgPath),
+          mi= new cc.MenuItemSprite(new cc.Sprite(obj.nnn),
+                                    new cc.Sprite(obj.sss || obj.nnn),
+                                    new cc.Sprite(obj.ddd || obj.nnn),
                                     obj.selector || obj.cb,
                                     obj.target);
           if (!!obj.color) { mi.setColor(obj.color); }

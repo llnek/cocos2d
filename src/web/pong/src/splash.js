@@ -58,7 +58,7 @@ define("zotohlab/p/splash",
         const cw = ccsx.center(),
         wb = ccsx.vbox(),
         menu = ccsx.pmenu1({
-          imgPath: '#play.png',
+          nnn: '#play.png',
           cb() {
             sh.fire('/splash/playgame');
           }

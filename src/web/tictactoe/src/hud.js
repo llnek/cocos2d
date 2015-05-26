@@ -77,7 +77,7 @@ define("zotohlab/p/hud",
 
         this.options.i_menu= {
           cb() { sh.fire('/hud/showmenu'); },
-          imgPath: '#icon_menu.png',
+          nnn: '#icon_menu.png',
           where: ccsx.acs.Bottom,
           color: color,
           scale: scale
@@ -85,7 +85,7 @@ define("zotohlab/p/hud",
         this.options.i_replay = {
           cb() { sh.fire('/hud/replay'); },
           where: ccsx.acs.Bottom,
-          imgPath: '#icon_replay.png',
+          nnn: '#icon_replay.png',
           color: color,
           scale : scale,
           visible: false

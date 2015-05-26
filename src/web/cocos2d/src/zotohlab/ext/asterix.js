@@ -615,12 +615,14 @@ define("zotohlab/asterix",
        * Play music mapped to this key, repeat if necessary.
        * @method
        * @param {String} key
-       * @param {Boolean} repeat
+       * @param {Object} options
        */
-      sfxPlayMusic(key,repeat) {
+      sfxPlayMusic(key,options) {
         if (this.xcfg.sound.open) {
+          options= options || {};
+          this.sfxMusicVol(options.vol);
           cc.audioEngine.playMusic(this.getSfxPath(key),
-                                   repeat===true);
+                                   options.repeat===true);
         }
       },
 
@@ -628,22 +630,43 @@ define("zotohlab/asterix",
        * Play sound effect mapped to this key, repeat if necessary.
        * @method
        * @param {String} key
-       * @param {Boolean} repeat
+       * @param {Object} options
        */
-      sfxPlay(key,repeat) {
+      sfxPlay(key,options) {
         if (this.xcfg.sound.open) {
+          options = options || {};
+          this.sfxMusicVol(options.vol);
           cc.audioEngine.playEffect(this.getSfxPath(key),
-                                    repeat===true);
+                                    options.repeat===true);
         }
       },
 
       /**
+       * Set Music volume.
+       * @method setMusicVol
+       */
+      sfxMusicVol(v) {
+        if (this.xcfg.sound.open && sjs.isNumber(v)) {
+          cc.audioEngine.setMusicVolume(v);
+        }
+      },
+
+      /**
+       * Cancel all sounds.
+       * @method sfxCancel
+       */
+      sfxCancel() {
+        cc.audioEngine.stopAllEffects();
+        cc.audioEngine.stopMusic();
+      },
+
+      /**
        * Initialize the sound system.
-       * @method
+       * @method sfxInit
        */
       sfxInit() {
-        cc.audioEngine.setMusicVolume(this.xcfg.sound.volume);
         this.xcfg.sound.open= true;
+        this.setMusicVol(this.xcfg.sound.volume);
       },
 
       /**
