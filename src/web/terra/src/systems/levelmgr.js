@@ -13,7 +13,6 @@
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/levelmgr
@@ -23,14 +22,14 @@ define("zotohlab/p/levelmgr",
        ['zotohlab/p/elements',
         'zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (cobjs, utils, gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/levelmgr */
     let exports = {},
+    sjs=sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -65,7 +64,7 @@ define("zotohlab/p/levelmgr",
        * @return {Object}
        */
       getLCfg() {
-        const k= 'gamelevel' + Number(this.curLevel).toString();
+        const k= Number(this.curLevel).toString();
         return xcfg['levels'][k]['cfg'];
       },
 
@@ -109,23 +108,22 @@ define("zotohlab/p/levelmgr",
       loadLevelResource(node, dt) {
         let enemies= sh.pools.Baddies,
         cfg= this.getLCfg(),
-        fc,
-        me=this;
+        fc;
 
         if (enemies.actives() < cfg.enemyMax) {
           sjs.eachObj((v) => {
             fc= () => {
               for (let t = 0; t < v.types.length; ++t) {
-                me.addEnemyToGame(node, v.types[t]);
+                this.addEnemyToGame(node, v.types[t]);
               }
             };
-            if (v.style === "Repeat" &&
+            if (v.style === "*" &&
                 dt % v.time === 0) {
               fc();
             }
-            if (v.style === "Once" &&
-                v.time >= dt && me.onceLatch > 0) {
-              me.onceLatch=0;
+            if (v.style === "1" &&
+                v.time >= dt) {
+              v.style="0";
               fc();
             }
           }, cfg.enemies);
@@ -160,7 +158,6 @@ define("zotohlab/p/levelmgr",
        */
       getB(arg) {
         let enemies = sh.pools.Baddies,
-        me=this,
         en,
         pred= (e) => {
           return (e.enemyType === arg.type
@@ -176,7 +173,7 @@ define("zotohlab/p/levelmgr",
 
         if (!!en) {
           en.sprite.schedule(() => {
-            me.dropBombs(en);
+            this.dropBombs(en);
           }, en.delayTime);
           en.inflate();
         }
@@ -191,16 +188,16 @@ define("zotohlab/p/levelmgr",
        * @param {Number} enemyType
        */
       addEnemyToGame(node, enemyType) {
-        let arg = xcfg.EnemyTypes[enemyType],
+        const arg = xcfg.EnemyTypes[enemyType],
         wz = ccsx.vrect(),
+        en = this.getB(arg);
 
-        en = this.getB(arg),
-        sz= en.size(),
+        if (!en) {return;}
+
+        let sz= en.size(),
         epos= en.pos(),
-
         ship= node.ship,
         pos= ship.pos(),
-
         act, a0, a1;
 
         en.setPos(sjs.rand(80 + wz.width * 0.5), wz.height);
@@ -223,7 +220,7 @@ define("zotohlab/p/levelmgr",
               p.runAction(cc.sequence(a2, a3,
                                       a2.clone(),
                                       a3.reverse()).repeatForever());
-            }.bind(en) );
+            });
             act = cc.sequence(a0, a1, onComplete);
           break;
 

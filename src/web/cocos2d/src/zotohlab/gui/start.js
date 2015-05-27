@@ -43,7 +43,7 @@ define("zotohlab/asx/xsplash",
        * @protected
        */
       pkInit() {
-        this._super();
+        //this._super();
         this.setBg();
         this.setTitle();
         this.setPlay();

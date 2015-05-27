@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/p/s/utils
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/xscenes
@@ -21,16 +20,16 @@
 define('zotohlab/p/mmenu',
 
        ['zotohlab/p/s/utils',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
         'zotohlab/asx/xscenes',
         'zotohlab/asx/xmmenus'],
 
-  function (utils, sjs, sh, ccsx, scenes, mmenus) { "use strict";
+  function (utils, sh, ccsx, scenes, mmenus) { "use strict";
 
     /** @alias module:zotohlab/p/mmenu */
     let exports= {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -42,28 +41,59 @@ define('zotohlab/p/mmenu',
     MainMenuLayer = mmenus.XMenuLayer.extend({
 
       /**
-       * @method onNewGame
-       * @private
-       */
-      onNewGame() {
-        sh.sfxCancel();
-        sh.fire('/mmenu/newgame', { mode: sh.gtypes.P1_GAME });
-      },
-
-      /**
        * @method pkInit
        * @protected
        */
       pkInit() {
-      },
+        const wb=ccsx.vbox(),
+        cw= ccsx.center();
 
-      /**
-       * @method update
-       * @protected
-       */
-      update() {
+        // background
+        this.centerImage(sh.getImagePath('bg'));
+
+        // title
+        const tt=ccsx.bmfLabel({
+          fontPath: sh.getFontPath('font.JellyBelly'),
+          text: sh.l10n('%mmenu'),
+          pos: cc.p(cw.x, wb.top * 0.9),
+          color: ccsx.white,
+          scale: xcfg.game.scale
+        });
+        this.addItem(tt);
+
+        // menu buttons
+        const mnu= ccsx.vmenu([
+          { nnn: '#player1.png',
+            cb() {
+              sh.fire('/mmenu/newgame', {mode: sh.gtypes.P1_GAME });
+            }
+        }]);
+        mnu.setPosition(cw);
+        this.addItem(mnu);
+
+        // show back & quit
+        this.mkBackQuit(false, [{
+            nnn: '#icon_back.png',
+            cb() {
+              this.options.onBack();
+            },
+            target: this },
+          { nnn: '#icon_quit.png',
+            cb() { this.onQuit(); },
+            target: this
+          }],
+          (m,z) => {
+            m.setPosition(wb.left + csts.TILE + z.width * 1.1,
+                          wb.bottom + csts.TILE + z.height * 0.45);
+        });
+
+        // show the audio button
+        this.mkAudio({
+          pos: cc.p(wb.right - csts.TILE,
+                    wb.bottom + csts.TILE),
+          anchor: ccsx.acs.BottomRight
+        });
       }
-
     });
 
     exports= /** @lends exports# */{
@@ -82,8 +112,8 @@ define('zotohlab/p/mmenu',
         return new scenes.XSceneFactory([
           MainMenuLayer
         ]).reify(options).onmsg('/mmenu/newgame', (topic, msg) => {
-            cc.director.runScene( sh.protos[sh.ptypes.game].reify(msg));
-          });
+          cc.director.runScene( sh.protos[sh.ptypes.game].reify(msg));
+        });
       }
 
     };

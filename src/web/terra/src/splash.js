@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/p/s/utils
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/xscenes
@@ -21,16 +20,16 @@
 define('zotohlab/p/splash',
 
        ['zotohlab/p/s/utils',
-        'cherimoia/skarojs',
-        'zotohlab/asterix',
+        'zotohlab/asx/asterix',
         'zotohlab/asx/ccsx',
         'zotohlab/asx/xscenes',
         'zotohlab/asx/xsplash'],
 
-  function (utils, sjs, sh, ccsx, scenes, splash) { "use strict";
+  function (utils, sh, ccsx, scenes, splash) { "use strict";
 
     /** @alias module:zotohlab/p/splash */
     let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -47,37 +46,53 @@ define('zotohlab/p/splash',
        * @protected
        */
       pkInit() {
-        const r = cc.rect(0,0, csts.menuWidth,csts.menuHeight),
-        img= sh.getImagePath('menu.png'),
-        cw=ccsx.center(),
-        wb=ccsx.vbox(),
-        wz= ccsx.vrect(),
-        itm = new cc.MenuItemSprite(new cc.Sprite(img, r),
-                                    new cc.Sprite(img, r),
-                                    new cc.Sprite(img, r),
-                                    () => { this.onPlay(); }),
-        menu = new cc.Menu(itm);
-        menu.attr({
-          y: wz.height * 0.25,
-          x: cw.x});
-        this.addItem(menu);
-
-        this.addItem(flare, 15, 10);
+        const wz = ccsx.vrect();
+        this._super();
 
         this.flare = new cc.Sprite(sh.getImagePath('flare'));
         this.flare.visible = false;
-        this.schedule(this.update, 0.1);
 
         this.ship = new cc.Sprite("#ship03.png");
         this.ship.attr({
           x: sjs.rand(wz.width),
           y: 0
         });
+
         this.addItem(this.ship, 0, 4);
+        this.addItem(flare, 15, 10);
+
         this.ship.runAction(cc.moveBy(2, cc.p(sjs.rand(wz.width),
                                               this.ship.y + wz.height + 100)));
 
         sh.sfxPlayMusic('mainMusic', { vol: 0.7});
+        this.schedule(this.update, 0.1);
+      },
+
+      setTitle() {
+      },
+
+      setPlay() {
+        const wb = ccsx.vbox(),
+        cw = ccsx.center();
+        mnu= ccsx.vmenu([{
+          nnn: '#play.png'
+          cb() {
+            sh.fire('/splash/playgame');
+          }
+        }]);
+        mnu.attr({
+          y: wb.top * 0.1,
+          x: cw.x
+        });
+        this.addItem(mnu);
+      },
+
+       /**
+       * @method setBg
+       * @protected
+       */
+      setBg() {
+        this.centerImage(sh.getImagePath('bg'));
       },
 
       /**
@@ -85,10 +100,15 @@ define('zotohlab/p/splash',
        * @private
        */
       onPlay() {
+        const ss= sh.protos[sh.ptypes.start],
+        mm= sh.protos[sh.ptypes.mmenu],
+        dir= cc.director;
         utils.btnEffect();
         utils.flare(this.flare, () => {
-          sh.fire('/splash/playgame');
-        }, this);
+          dir.runScene( mm.reify({
+              onBack() { dir.runScene( ss.reify() ); }
+          }));
+        });
       },
 
       /**
@@ -122,15 +142,10 @@ define('zotohlab/p/splash',
        * @return {cc.Scene}
        */
       reify(options) {
-        const ss= sh.protos[sh.ptypes.start],
-        mm= sh.protos[sh.ptypes.mmenu],
-        dir= cc.director;
         return new scenes.XSceneFactory([
           SplashLayer
         ]).reify(options).onmsg('/splash/playgame', () => {
-          dir.runScene( mm.reify({
-            onBack() { dir.runScene( ss.reify() ); }
-          }));
+          sh.main.onPlay();
         });
       }
 

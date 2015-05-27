@@ -11,20 +11,19 @@
 
 /**
  * @requires zotohlab/p/elements
- * @requires cherimoia/skarojs
  * @requires otohlab/asterix
  * @module zotohlab/p/gnodes
  */
 define("zotohlab/p/gnodes",
 
        ['zotohlab/p/elements',
-        'cherimoia/skarojs',
         'zotohlab/asterix'],
 
   function (cobjs, sjs, sh) { "use strict";
 
     /** @alias module:zotohlab/p/gnodes */
     let exports = {},
+    sjs=sh.skarojs,
     xcfg = sh.xcfg,
     csts = xcfg.csts,
     undef;

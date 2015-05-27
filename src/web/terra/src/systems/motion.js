@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/motions
@@ -19,14 +18,14 @@
 define('zotohlab/p/s/motions',
 
        ['zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs, sh, ccsx) { "use strict";
+  function (gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/motions */
     let exports = {},
+    sjs=sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,

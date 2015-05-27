@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/elements
@@ -18,14 +17,14 @@
 
 define("zotohlab/p/elements",
 
-       ['cherimoia/skarojs',
-        'zotohlab/asterix',
+       ['zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, ccsx) { "use strict";
+  function (sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/elements */
     let exports = {},
+    sjs=sh.skarojs,
     xcfg= sh.xcfg,
     csts= xcfg.csts,
     undef;

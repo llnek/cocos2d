@@ -13,7 +13,6 @@
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/resolution
@@ -23,14 +22,14 @@ define('zotohlab/p/s/resolution',
        ['zotohlab/p/elements',
         'zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (cobjs, utils, gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/resolution */
     let exports = {},
+    sjs=sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R= sjs.ramda,
@@ -107,7 +106,6 @@ define('zotohlab/p/s/resolution',
        */
       checkMissiles() {
         let box= sh.main.getEnclosureBox(),
-        me=this,
         pos;
 
         sh.pools.Missiles.iter((m) => {
@@ -115,7 +113,7 @@ define('zotohlab/p/s/resolution',
             pos= m.sprite.getPosition();
             if (m.HP <= 0 ||
                 !ccsx.pointInBox(box, pos)) {
-              me.onBulletDeath(m);
+              this.onBulletDeath(m);
               m.deflate();
             }
           }
@@ -128,7 +126,6 @@ define('zotohlab/p/s/resolution',
        */
       checkBombs() {
         let box= sh.main.getEnclosureBox(),
-        me=this,
         pos;
 
         sh.pools.Bombs.iter((b) => {
@@ -136,7 +133,7 @@ define('zotohlab/p/s/resolution',
             pos= b.sprite.getPosition();
             if (b.HP <= 0 ||
                 !ccsx.pointInBox(box, pos)) {
-              me.onBulletDeath(b);
+              this.onBulletDeath(b);
               b.deflate();
             }
           }
@@ -189,7 +186,6 @@ define('zotohlab/p/s/resolution',
        */
       checkAliens() {
         let box= sh.main.getEnclosureBox(),
-        me=this,
         pos;
 
         sh.pools.Baddies.iter((a) => {
@@ -197,7 +193,7 @@ define('zotohlab/p/s/resolution',
             pos= a.sprite.getPosition();
             if (a.HP <= 0 ||
                 !ccsx.pointInBox(box, pos)) {
-              me.onEnemyDeath(a);
+              this.onEnemyDeath(a);
               a.deflate();
               sh.fire('/game/players/earnscore', { score: a.value });
             }
@@ -210,12 +206,10 @@ define('zotohlab/p/s/resolution',
        * @private
        */
       checkShip(node) {
-        const ship = node.ship,
-        me=this;
-
+        const ship = node.ship;
         if (ship.status) {
           if (ship.HP <= 0) {
-            me.onShipDeath(ship);
+            this.onShipDeath(ship);
             ship.deflate();
             sh.fire('/game/players/killed');
           }

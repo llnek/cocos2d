@@ -277,6 +277,11 @@ define("zotohlab/asterix",
       Ashley: Ashley,
 
       /**
+       * @property {Object} skarojs back-ref to skarojs
+       */
+      skarojs: sjs,
+
+      /**
        * Initialize the l10n module with the string table.
        * @method
        * @param {Object} table

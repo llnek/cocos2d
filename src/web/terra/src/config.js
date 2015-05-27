@@ -10,40 +10,32 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/xcfg
  * @module zotohlab/p/config
  */
-define("zotohlab/p/config", ['cherimoia/skarojs',
-                            'zotohlab/asterix',
+define("zotohlab/p/config", ['zotohlab/asterix',
                             'zotohlab/asx/xcfg'],
 
-  function (sjs, sh, xcfg) { "use strict";
+  function (sh, xcfg) { "use strict";
+
+    const MOVES = { RUSH: 0, VERT: 1, HORZ: 2, OLAP: 3 },
+    ATTACKS= { TSUIHIKIDAN: 2, NORMAL: 1 };
 
     /** @alias module:zotohlab/p/config */
     let exports  = {},
-    ENEMY_MOVE = {
-      RUSH    : 0,
-      VERT    : 1,
-      HORZ    : 2,
-      OLAP    : 3
-    },
-    ENEMY_ATTACK= {
-      TSUIHIKIDAN : 2,
-      NORMAL      : 1
-    };
+    sjs=sh.skarojs;
 
     exports = sjs.merge( xcfg, {
 
       appKey: '4d6b93c4-05d7-42f1-95cc-98ce8adeac0a',
 
-      appid: 'terraformer',
       color: 'yellow',
+      appid: 'terra',
 
       csts: {
-        ENEMY_ATTACK: ENEMY_ATTACK,
-        ENEMY_MOVE : ENEMY_MOVE,
+        ENEMY_ATTACK: ATTACKS,
+        ENEMY_MOVES: MOVES,
         MISSILE_SPEED: 900,
         BOMB_SPEED: 200,
         SHIP_SPEED: 200,
@@ -51,16 +43,18 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
         SHIP_ZX: 3000,
 
         menuHeight: 36,
-        menuWidth: 123
+        menuWidth: 123,
+        flareY: 445
       },
 
       game: {
-        size: {width:320, height:480, scale:1}
+        sd: {width:320, height:480}
       },
 
       assets: {
         atlases: {
-          'tr-pics' : 'res/{{appid}}/pics/textureTransparentPack',
+          'game-pics' : 'res/{{appid}}/pics/textureTransparentPack',
+          'lang-pics' : 'res/{{appid}}/l10n/{{lang}}/images',
           'op-pics' : 'res/{{appid}}/pics/textureOpaquePack',
           'explosions' : 'res/{{appid}}/pics/explosion',
           'back-tiles' : 'res/{{appid}}/pics/b01'
@@ -70,35 +64,25 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
         tiles: {
         },
         images: {
-          'splash.play-btn' : 'res/cocos2d/btns/play_gray_x64.png',
-
-          'cocos2d_html5' : 'res/{{appid}}/pics/cocos2d-html5.png',
           'flare': 'res/{{appid}}/pics/flare.jpg',
-          'gameOver': 'res/{{appid}}/pics/gameOver.png',
-          'loading': 'res/{{appid}}/pics/loading.png',
-          'logo': 'res/{{appid}}/pics/logo.png',
-          'b01' : 'res/{{appid}}/pics/b01.png',
-
-          'menu-btns': 'res/{{appid}}/fon/{{lang}}/menu.png',
-          'menuTitle': 'res/{{appid}}/fon/{{lang}}/menuTitle.png'
-
+          'bg' : 'res/{{appid}}/pics/bg.png'
         },
         sounds: {
           'bgMusic' : 'res/{{appid}}/sfx/bgMusic',
-          'buttonEffect' : 'res/{{appid}}/sfx/buttonEffet',
+          'btnEffect' : 'res/{{appid}}/sfx/buttonEffet',
           'explodeEffect' : 'res/{{appid}}/sfx/explodeEffect',
           'fireEffect' : 'res/{{appid}}/sfx/fireEffect',
-          'mainMainMusic' : 'res/{{appid}}/sfx/mainMainMusic',
+          'mainMusic' : 'res/{{appid}}/sfx/mainMainMusic',
           'shipDestroyEffect' : 'res/{{appid}}/sfx/shipDestroyEffect'
         },
         fonts: {
-          'font.arial' : [ 'res/{{appid}}/fon/{{lang}}', 'arial-14.png', 'arial-14.fnt' ]
+          'font.arial' : [ 'res/{{appid}}/l10n/{{lang}}', 'arial-14.png', 'arial-14.fnt' ]
         }
       },
 
       EnemyTypes: [ {
-          attackMode: ENEMY_ATTACK.NORMAL,
-          moveType: ENEMY_MOVE.RUSH,
+          attackMode: ATTACKS.NORMAL,
+          moveType: MOVES.RUSH,
           type: 0,
           textureName:"E0.png",
           bulletType:"W2.png",
@@ -106,8 +90,8 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
           scoreValue:15
         },
         {
-          attackMode: ENEMY_ATTACK.NORMAL,
-          moveType: ENEMY_MOVE.RUSH,
+          attackMode: ATTACKS.NORMAL,
+          moveType: MOVES.RUSH,
           type:1,
           textureName:"E1.png",
           bulletType:"W2.png",
@@ -115,8 +99,8 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
           scoreValue:40
         },
         {
-          attackMode: ENEMY_ATTACK.TSUIHIKIDAN,
-          moveType: ENEMY_MOVE.HORZ,
+          attackMode: ATTACKS.TSUIHIKIDAN,
+          moveType: MOVES.HORZ,
           type:2,
           textureName:"E2.png",
           bulletType:"W2.png",
@@ -124,8 +108,8 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
           scoreValue:60
         },
         {
-          attackMode: ENEMY_ATTACK.NORMAL,
-          moveType: ENEMY_MOVE.OLAP,
+          attackMode: ATTACKS.NORMAL,
+          moveType: MOVES.OLAP,
           type:3,
           textureName:"E3.png",
           bulletType:"W2.png",
@@ -133,8 +117,8 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
           scoreValue:80
         },
         {
-          attackMode: ENEMY_ATTACK.TSUIHIKIDAN,
-          moveType: ENEMY_MOVE.HORZ,
+          attackMode: ATTACKS.TSUIHIKIDAN,
+          moveType: MOVES.HORZ,
           type:4,
           textureName:"E4.png",
           bulletType:"W2.png",
@@ -142,8 +126,8 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
           scoreValue:150
         },
         {
-          attackMode: ENEMY_ATTACK.NORMAL,
-          moveType: ENEMY_MOVE.HORZ,
+          attackMode: ATTACKS.NORMAL,
+          moveType: MOVES.HORZ,
           type:5,
           textureName:"E5.png",
           bulletType:"W2.png",
@@ -153,7 +137,7 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
       ],
 
       levels: {
-        "gamelevel1" : {
+        "1" : {
           sprites: {
           },
           tiles: {
@@ -163,15 +147,16 @@ define("zotohlab/p/config", ['cherimoia/skarojs',
           cfg: {
             enemyMax: 6,
             enemies: [
-              { style:"Repeat", time: 2, types:[0,1,2] },
-              { style:"Repeat", time: 5, types:[3,4,5] } ]
+              { style:"*", time: 2, types:[0,1,2] },
+              { style:"*", time: 5, types:[3,4,5] } ]
           }
 
         }
       },
 
       runOnce() {
-        cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('tr-pics'));
+        cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
+        cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('lang-pics'));
         cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('op-pics'));
         cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('explosions'));
         cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('back-tiles'));

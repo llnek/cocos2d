@@ -13,7 +13,6 @@
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/movebombs
@@ -23,14 +22,14 @@ define('zotohlab/p/s/movebombs',
        ['zotohlab/p/elements',
         'zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (cobjs, utils, gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/movebombs */
     let exports = {},
+    sjs=sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R= sjs.ramda,
@@ -91,10 +90,9 @@ define('zotohlab/p/s/movebombs',
        * @private
        */
       processMovement(dt) {
-        const me=this;
         sh.pools.Bombs.iter((b) => {
           if (b.status) {
-            me.moveBomb(b,dt);
+            this.moveBomb(b,dt);
           }
         });
       }

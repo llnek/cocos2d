@@ -13,7 +13,6 @@
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/collisions
@@ -23,14 +22,14 @@ define('zotohlab/p/s/collisions',
        ['zotohlab/p/elements',
         'zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (cobjs, utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (cobjs, utils, gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/collisions */
     let exports = {},
+    sjs=sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R= sjs.ramda,
@@ -101,12 +100,11 @@ define('zotohlab/p/s/collisions',
       checkMissilesBombs() {
         const bombs = sh.pools.Bombs,
         mss = sh.pools.Missiles,
-        me=this;
         bombs.iter((b) => {
           mss.iter((m) => {
             if (b.status &&
                 m.status &&
-                me.collide(b, m)) {
+                this.collide(b, m)) {
               m.hurt();
               b.hurt();
             }
@@ -121,12 +119,11 @@ define('zotohlab/p/s/collisions',
       checkMissilesAliens() {
         const enemies= sh.pools.Baddies,
         mss= sh.pools.Missiles,
-        me=this;
         enemies.iter((en) => {
           mss.iter((b) => {
             if (en.status &&
                 b.status &&
-                me.collide(en, b)) {
+                this.collide(en, b)) {
               en.hurt();
               b.hurt();
             }
@@ -140,13 +137,12 @@ define('zotohlab/p/s/collisions',
        */
       checkShipBombs(node) {
         const bombs = sh.pools.Bombs,
-        me=this,
         ship= node.ship;
 
         if (!ship.status) { return; }
         bombs.iter((b) => {
           if (b.status &&
-              me.collide(b, ship)) {
+              this.collide(b, ship)) {
             ship.hurt();
             b.hurt();
           }
@@ -159,13 +155,12 @@ define('zotohlab/p/s/collisions',
        */
       checkShipAliens(node) {
         const enemies= sh.pools.Baddies,
-        me=this,
         ship= node.ship;
 
         if (! ship.status) { return; }
         enemies.iter((en) => {
           if (en.status &&
-              me.collide(en, ship)) {
+              this.collide(en, ship)) {
             ship.hurt();
             en.hurt();
           }

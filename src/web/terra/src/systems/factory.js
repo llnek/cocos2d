@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/p/elements
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/factory
@@ -19,16 +18,16 @@
 define('zotohlab/p/s/factory',
 
        ['zotohlab/p/elements',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (cobjs, sjs, sh, ccsx) { "use strict";
+  function (cobjs, sh, ccsx) { "use strict";
 
     const BackTileMap= ["lvl1_map1.png", "lvl1_map2.png",
-                      "lvl1_map3.png", "lvl1_map4.png"];
+                        "lvl1_map3.png", "lvl1_map4.png"];
     /** @alias module:zotohlab/p/s/factory */
     let exports = {},
+    sjs=sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R=sjs.ramda,
@@ -69,7 +68,7 @@ define('zotohlab/p/s/factory',
         animate = cc.animate(animation);
         sp.runAction(animate.repeatForever());
 
-        sh.main.addAtlasItem('tr-pics', sp, csts.SHIP_ZX);
+        sh.main.addAtlasItem('game-pics', sp, csts.SHIP_ZX);
 
         bs = ccsx.createSpriteFrame("ship03.png");
         bs.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
@@ -95,7 +94,7 @@ define('zotohlab/p/s/factory',
           const bg = ccsx.createSpriteFrame('bg01.png');
           bg.setAnchorPoint(0,0);
           bg.setVisible(false);
-          layer.addAtlasItem('tr-pics', bg, -10);
+          layer.addAtlasItem('game-pics', bg, -10);
           return sh.Ashley.newObject(bg);
         }, 2);
       },
@@ -187,7 +186,7 @@ define('zotohlab/p/s/factory',
         const cr= (arg) => {
           const sp= ccsx.createSpriteFrame(arg.textureName);
           sp.setVisible(false);
-          sh.main.addAtlasItem('tr-pics', sp,
+          sh.main.addAtlasItem('game-pics', sp,
                                csts.SHIP_ZX - 1); // why?
           return new cobjs.Enemy(sp, arg);
         },

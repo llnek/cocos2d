@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/xscenes
@@ -18,41 +17,19 @@
  */
 define('zotohlab/p/hud',
 
-       ['cherimoia/skarojs',
-        'zotohlab/asterix',
+       ['zotohlab/asterix',
         'zotohlab/asx/ccsx',
         'zotohlab/asx/xscenes'],
 
-  function(sjs, sh, ccsx, scenes) { "use strict";
+  function(sh, ccsx, scenes) { "use strict";
 
     /** @alias module:zotohlab/p/hud */
     let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R= sjs.ramda,
     undef,
-
-    /**
-     * @extends module:zotohlab/asx/xscenes.XLayer
-     * @class BackLayer
-     */
-    BackLayer = scenes.XLayer.extend({
-
-      /**
-       * @method rtti
-       */
-      rtti() { return 'BackLayer'; },
-
-      /**
-       * @method pkInit
-       * @protected
-       */
-      pkInit() {
-        this.regoAtlas('back-tiles');
-        this.regoAtlas('tr-pics');
-      }
-
-    }),
 
     /**
      * @extends module:zotohlab/asx/xscenes.XGameHUDLayer
@@ -65,8 +42,7 @@ define('zotohlab/p/hud',
        * @protected
        */
       initAtlases() {
-        this.hudAtlas= 'tr-pics';
-        this.regoAtlas(this.hudAtlas);
+        this.regoAtlas(this.hudAtlas());
       },
 
       /**
@@ -74,12 +50,12 @@ define('zotohlab/p/hud',
        * @protected
        */
       initLabels() {
-        let wz = ccsx.vrect();
+        const wz = ccsx.vrect();
 
         this.scoreLabel = ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.TinyBoxBB'),
           text: '0',
-          anchor: ccsx.AnchorBottomRight,
+          anchor: ccsx.acs.BottomRight,
           scale: 12/72
         });
         this.scoreLabel.setPosition( wz.width - csts.TILE - csts.S_OFF,
@@ -93,7 +69,7 @@ define('zotohlab/p/hud',
        * @protected
        */
       initIcons() {
-        let wz = ccsx.vrect();
+        const wz = ccsx.vrect();
 
         this.lives = new scenes.XHUDLives( this, csts.TILE + csts.S_OFF,
           wz.height - csts.TILE - csts.S_OFF, {
@@ -105,19 +81,40 @@ define('zotohlab/p/hud',
         this.lives.create();
       },
 
-      XXinitCtrlBtns(s) {
-        //this._super(32/48);
+      /**
+       * @method resetAsNew
+       * @protected
+       */
+      resetAsNew() {
+        this.reset();
+        this.score=0;
+      },
+
+      /**
+       * @method ctor
+       * @constructs
+       * @param {Object} options
+       */
+      ctor(options) {
+        this._super(options);
+        this.options.i_menu= {
+          cb() { sh.fire('/hud/showmenu'); },
+          nnn: '#icon_menu.png',
+          where: ccsx.acs.Bottom,
+          scale: 32/48
+        };
+        this.options.i_replay = {
+          cb() { sh.fire('/hud/replay'); },
+          where: ccsx.acs.Bottom,
+          nnn: '#icon_replay.png',
+          scale : 32/48,
+          visible: false
+        };
       }
 
     });
 
     exports= /** @lends exports# */{
-
-      /**
-       * @property {BackLayer} BackLayer
-       */
-      BackLayer : BackLayer,
-
       /**
        * @property {HUDLayer} HUDLayer
        */

@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/p/sysobjs
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/xscenes
@@ -22,23 +21,44 @@
 define('zotohlab/p/arena',
 
        ['zotohlab/p/sysobjs',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
         'zotohlab/asx/xscenes',
         'zotohlab/asx/xmmenus',
         'zotohlab/p/hud'],
 
-  function (sobjs, sjs, sh, ccsx,
+  function (sobjs, sh, ccsx,
             scenes, mmenus, huds) { "use strict";
 
     /** @alias module:zotohlab/p/arena */
     let exports = {},
-    uts=sobjs.utils,
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
+
+    /**
+     * @extends module:zotohlab/asx/xscenes.XLayer
+     * @class BackLayer
+     */
+    BackLayer = scenes.XLayer.extend({
+
+      /**
+       * @method rtti
+       */
+      rtti() { return 'BackLayer'; },
+
+      /**
+       * @method pkInit
+       * @protected
+       */
+      pkInit() {
+        this.regoAtlas('back-tiles');
+        this.regoAtlas('game-pics');
+      }
+
+    }),
 
     /**
      * @extends module:zotohlab/asx/xscenes.XGameLayer
@@ -94,7 +114,7 @@ define('zotohlab/p/arena',
               b.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
             }
           }, [ ['op-pics', true],
-               ['tr-pics', false],
+               ['game-pics', false],
                ['explosions', true]]);
         }
         if (newFlag) {
@@ -182,17 +202,11 @@ define('zotohlab/p/arena',
           sobjs.Resolution,
           sobjs.Rendering ]);
 
-        sh.sfxPlayMusic('bgMusic', true);
-        this.schedule(this.countSeconds, 1);
-      },
-
-      /**
-       * @method countSeconds
-       * @private
-       */
-      countSeconds() {
-        // this counter is used to spawn enemies
-        ++this.options.secCount;
+        sh.sfxPlayMusic('bgMusic', {repeat: true});
+        this.schedule(() => {
+          // this counter is used to spawn enemies
+          ++this.options.secCount;
+        },1);
       },
 
       /**
@@ -200,7 +214,7 @@ define('zotohlab/p/arena',
        * @private
        */
       spawnPlayer() {
-        sobjs.Utils.bornShip(this.options.player);
+        uts.bornShip(this.options.player);
       },
 
       /**
@@ -239,9 +253,8 @@ define('zotohlab/p/arena',
        * @private
        */
       onDone() {
-        cc.audioEngine.stopAllEffects();
-        cc.audioEngine.stopMusic();
         this.options.running=false;
+        sh.sfxCancel();
         this.reset();
         this.getHUD().enableReplay();
       },
@@ -284,14 +297,18 @@ define('zotohlab/p/arena',
        * @return {cc.Scene}
        */
       reify(options) {
+        sjs.merge(options, {hudAtlas: 'game-pics'});
         const scene = new scenes.XSceneFactory([
-          huds.BackLayer,
+          BackLayer,
           GameLayer,
           huds.HUDLayer
         ]).reify(options);
 
         scene.onmsg('/game/players/earnscore', (topic, msg) => {
           sh.main.onEarnScore(msg);
+        }).
+        onmsg('/game/backtiles',(t,msg) => {
+          sh.main.initBackTiles();
         }).
         onmsg('/hud/showmenu',(t,msg) => {
           mmenus.showMenu();

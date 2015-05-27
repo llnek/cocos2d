@@ -537,7 +537,7 @@ define("zotohlab/asx/xscenes",
       },
 
       hudAtlas() {
-        return this.options.atlasId || 'game-pics';
+        return this.atlasId;
       },
 
       /**
@@ -546,6 +546,7 @@ define("zotohlab/asx/xscenes",
       pkInit(options) {
         this._super(options);
 
+        this.atlasId = this.options.hudAtlas || 'game-pics';
         this.scoreLabel = null;
         this.lives= null;
         this.score= 0;

@@ -10,21 +10,20 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/rendering
  */
 define('zotohlab/p/s/rendering',
 
-       ['cherimoia/skarojs',
-        'zotohlab/asterix',
+       ['zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, ccsx) { "use strict";
+  function (sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/rendering */
     let exports = {},
+    sjs=sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R= sjs.ramda,
@@ -87,7 +86,7 @@ define('zotohlab/p/s/rendering',
         if (locSkyHeight + currPosY <= wz.height) {
 
           if (!!locBackSkyRe) {
-            throw "The memory is leaking at moving background";
+            sjs.tne("The memory is leaking at moving background");
           }
 
           this.state.backSkyRe = this.state.backSky;

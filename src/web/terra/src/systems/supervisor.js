@@ -13,7 +13,6 @@
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/xpool
@@ -24,15 +23,15 @@ define("zotohlab/p/s/supervisor",
        ['zotohlab/p/elements',
         'zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
         'zotohlab/asx/xpool'],
 
-  function (cobjs, utils, gnodes, sjs, sh, ccsx, XPool) { "use strict";
+  function (cobjs, utils, gnodes, sh, ccsx, XPool) { "use strict";
 
     /** @alias module:zotohlab/p/s/supervisor */
     let exports = {},
+    sjs=sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
@@ -56,7 +55,7 @@ define("zotohlab/p/s/supervisor",
        * @method removeFromEngine
        * @param {Ash.Engine} engine
        */
-      removeFromEngine: function(engine) {
+      removeFromEngine(engine) {
         this.ships=null;
       },
 
@@ -82,7 +81,7 @@ define("zotohlab/p/s/supervisor",
       },
 
       /**
-       * @initBackSkies
+       * @method initBackSkies
        * @private
        */
       initBackSkies() {
@@ -133,10 +132,8 @@ define("zotohlab/p/s/supervisor",
         sh.factory.createBackSkies();
         sh.factory.createBackTiles();
 
+        sh.fire('/game/backtiles');
         this.sharedExplosion();
-        this.initBackSkies();
-
-        sh.main.initBackTiles();
 
         sh.factory.createMissiles();
         sh.factory.createBombs();

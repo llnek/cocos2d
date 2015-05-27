@@ -10,20 +10,19 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/utils
  */
 define("zotohlab/p/s/utils",
 
-       ['cherimoia/skarojs',
-        'zotohlab/asterix',
+       ['zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, ccsx) { "use strict";
+  function (sh, ccsx) { "use strict";
 
-    let xcfg = sh.xcfg,
+    let sjs=sh.skarojs,
+    xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
     /** @alias module:zotohlab/p/s/utils */
@@ -39,8 +38,8 @@ define("zotohlab/p/s/utils",
         flare.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
         flare.stopAllActions();
         flare.attr({
+          y: csts.flareY,
           x: -45,
-          y: MW.FLAREY,
           visible: true,
           opacity: 0,
           rotation: -120,
@@ -54,8 +53,8 @@ define("zotohlab/p/s/utils",
         bigger = cc.scaleTo(0.5, 1),
         onComplete = cc.callFunc(cb, target),
         killflare = cc.callFunc(() => {
-            flare.removeFromParent();
-        }, flare);
+          flare.removeFromParent();
+        });
 
         flare.runAction(cc.sequence(opacityAnim, biggerEase, opacDim, killflare, onComplete));
         flare.runAction(easeMove);
@@ -67,7 +66,7 @@ define("zotohlab/p/s/utils",
        * @method btnEffect
        */
       btnEffect() {
-        sh.sfxPlay('menuBtn');
+        sh.sfxPlay('btnEffect');
       },
 
       /**
@@ -100,24 +99,22 @@ define("zotohlab/p/s/utils",
       bornShip(ship) {
         const bsp= ship.bornSprite,
         ssp=ship.sprite,
-        me=this,
-        makeBeAttack = cc.callFunc(() => {
+        normal = cc.callFunc(() => {
           ship.canBeAttack = true;
           bsp.setVisible(false);
           ssp.schedule((dt) => {
-            me.fireMissiles(ship, dt);
+            this.fireMissiles(ship, dt);
           }, 1/6);
           ship.inflate();
         });
 
         ship.canBeAttack = false;
         bsp.scale = 8;
-
         bsp.setVisible(true);
         bsp.runAction(cc.scaleTo(0.5, 1, 1));
 
         ssp.runAction(cc.sequence(cc.delayTime(0.5),
-                                  cc.blink(3,9), makeBeAttack));
+                                  cc.blink(3,9), normal));
       },
 
       /**

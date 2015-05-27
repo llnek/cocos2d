@@ -10,21 +10,20 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/xcfg
  * @module zotohlab/p/l10n
  */
 define("zotohlab/p/l10n",
 
-       ['cherimoia/skarojs',
-        'zotohlab/asterix',
+       ['zotohlab/asterix',
         'zotohlab/asx/xcfg'],
 
-  function (sjs, sh, xcfg) { "use strict";
+  function (sh, xcfg) { "use strict";
 
     /** @alias module:zotohlab/p/l10n */
-    let exports = {};
+    let exports = {},
+    sjs=sh.skarojs;
 
     exports = sjs.merge(xcfg.l10nTable, {
 
