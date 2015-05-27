@@ -10,18 +10,18 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
+ * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xscenes
  * @module zotohlab/p/hud
  */
 define('zotohlab/p/hud',
 
-       ['zotohlab/asterix',
-        'zotohlab/asx/ccsx',
-        'zotohlab/asx/xscenes'],
+       ['zotohlab/asx/xscenes',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
-  function(sh, ccsx, scenes) { "use strict";
+  function(scenes, sh, ccsx ) { "use strict";
 
     /** @alias module:zotohlab/p/hud */
     let exports = {},

@@ -10,22 +10,22 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
+ * @requires zotohlab/asx/xscenes
+ * @requires zotohlab/asx/xsplash
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xscenes
- * @requires zotohlab/asx/xsplash
  * @module zotohlab/p/splash
  */
 define('zotohlab/p/splash',
 
-       ['zotohlab/p/s/utils',
+       ['zotohlab/asx/xscenes',
+        'zotohlab/asx/xsplash',
+        'zotohlab/p/s/utils',
         'zotohlab/asx/asterix',
-        'zotohlab/asx/ccsx',
-        'zotohlab/asx/xscenes',
-        'zotohlab/asx/xsplash'],
+        'zotohlab/asx/ccsx'],
 
-  function (utils, sh, ccsx, scenes, splash) { "use strict";
+  function (scenes, splash, utils, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/splash */
     let exports = {},
@@ -68,12 +68,20 @@ define('zotohlab/p/splash',
         this.schedule(this.update, 0.1);
       },
 
+      /**
+       * @method setTitle
+       * @protected
+       */
       setTitle() {
       },
 
+      /**
+       * @method setPlay
+       * @protected
+       */
       setPlay() {
         const wb = ccsx.vbox(),
-        cw = ccsx.center();
+        cw = ccsx.center(),
         mnu= ccsx.vmenu([{
           nnn: '#play.png'
           cb() {

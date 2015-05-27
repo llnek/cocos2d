@@ -10,25 +10,24 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
+ * @requires zotohlab/asx/xscenes
+ * @requires zotohlab/asx/xmmenus
  * @requires zotohlab/p/sysobjs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xscenes
- * @requires zotohlab/asx/xmmenus
  * @requires zotohlab/p/hud
  * @module zotohlab/p/arena
  */
 define('zotohlab/p/arena',
 
-       ['zotohlab/p/sysobjs',
+       ['zotohlab/asx/xscenes',
+        'zotohlab/asx/xmmenus',
+        'zotohlab/p/sysobjs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
-        'zotohlab/asx/xscenes',
-        'zotohlab/asx/xmmenus',
         'zotohlab/p/hud'],
 
-  function (sobjs, sh, ccsx,
-            scenes, mmenus, huds) { "use strict";
+  function (scenes, mmenus, sobjs, sh, ccsx, huds) { "use strict";
 
     /** @alias module:zotohlab/p/arena */
     let exports = {},
@@ -37,28 +36,6 @@ define('zotohlab/p/arena',
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-
-    /**
-     * @extends module:zotohlab/asx/xscenes.XLayer
-     * @class BackLayer
-     */
-    BackLayer = scenes.XLayer.extend({
-
-      /**
-       * @method rtti
-       */
-      rtti() { return 'BackLayer'; },
-
-      /**
-       * @method pkInit
-       * @protected
-       */
-      pkInit() {
-        this.regoAtlas('back-tiles');
-        this.regoAtlas('game-pics');
-      }
-
-    }),
 
     /**
      * @extends module:zotohlab/asx/xscenes.XGameLayer
@@ -156,7 +133,7 @@ define('zotohlab/p/arena',
                          cc.p(0, -wz.height - wz.height * 0.5));
         fun = cc.callFunc(() => {
           tm.deflate();
-        }, this);
+        });
 
         tm.sprite.runAction(cc.sequence(move,fun));
       },
@@ -204,7 +181,7 @@ define('zotohlab/p/arena',
 
         sh.sfxPlayMusic('bgMusic', {repeat: true});
         this.schedule(() => {
-          // this counter is used to spawn enemies
+          // counter used to spawn enemies
           ++this.options.secCount;
         },1);
       },
@@ -264,12 +241,12 @@ define('zotohlab/p/arena',
        * @private
        */
       getEnclosureBox() {
-        var wz= ccsx.vrect();
+        const wb= ccsx.vbox();
         return {
-          bottom: 0,
-          left: 0,
-          top: wz.height + 10,
-          right: wz.width
+          bottom: wb.bottom,
+          left: wb.left,
+          top: wb.top + 10,
+          right: wb.right
         };
       },
 
@@ -299,7 +276,6 @@ define('zotohlab/p/arena',
       reify(options) {
         sjs.merge(options, {hudAtlas: 'game-pics'});
         const scene = new scenes.XSceneFactory([
-          BackLayer,
           GameLayer,
           huds.HUDLayer
         ]).reify(options);

@@ -10,22 +10,22 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
+ * @requires zotohlab/asx/xscenes
+ * @requires zotohlab/asx/xmmenus
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xscenes
- * @requires zotohlab/asx/xmmenus
  * @module zotohlab/p/mmenu
  */
 define('zotohlab/p/mmenu',
 
-       ['zotohlab/p/s/utils',
+       ['zotohlab/asx/xscenes',
+        'zotohlab/asx/xmmenus',
+        'zotohlab/p/s/utils',
         'zotohlab/asterix',
-        'zotohlab/asx/ccsx',
-        'zotohlab/asx/xscenes',
-        'zotohlab/asx/xmmenus'],
+        'zotohlab/asx/ccsx'],
 
-  function (utils, sh, ccsx, scenes, mmenus) { "use strict";
+  function (scenes, mmenus, utils, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/mmenu */
     let exports= {},
@@ -33,6 +33,41 @@ define('zotohlab/p/mmenu',
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
+
+    //////////////////////////////////////////////////////////////////////////
+    /**
+     * @extends module:zotohlab/asx/xmmenus.XMenuBackLayer
+     * @class BackLayer
+     */
+    BackLayer = mmenus.XMenuBackLayer.extend({
+
+      /**
+       * @method setTitle
+       * @protected
+       */
+      setTitle() {
+        const cw=ccsx.center(),
+        wz=ccsx.vbox(),
+        tt=ccsx.bmfLabel({
+          fontPath: sh.getFontPath('font.JellyBelly'),
+          text: sh.l10n('%mmenu'),
+          pos: cc.p(cw.x, wb.top * 0.9),
+          color: ccsx.white,
+          scale: xcfg.game.scale
+        });
+        this.addItem(tt);
+      },
+
+      /**
+       * @method setBg
+       * @protected
+       */
+      setBg() {
+        this.centerImage(sh.getImagePath('bg'));
+      }
+
+    }),
+
 
     /**
      * @extends module:zotohlab/asx/xmmenus.XMenuLayer
@@ -46,23 +81,8 @@ define('zotohlab/p/mmenu',
        */
       pkInit() {
         const wb=ccsx.vbox(),
-        cw= ccsx.center();
-
-        // background
-        this.centerImage(sh.getImagePath('bg'));
-
-        // title
-        const tt=ccsx.bmfLabel({
-          fontPath: sh.getFontPath('font.JellyBelly'),
-          text: sh.l10n('%mmenu'),
-          pos: cc.p(cw.x, wb.top * 0.9),
-          color: ccsx.white,
-          scale: xcfg.game.scale
-        });
-        this.addItem(tt);
-
-        // menu buttons
-        const mnu= ccsx.vmenu([
+        cw= ccsx.center(),
+        mnu= ccsx.vmenu([
           { nnn: '#player1.png',
             cb() {
               sh.fire('/mmenu/newgame', {mode: sh.gtypes.P1_GAME });
@@ -94,6 +114,7 @@ define('zotohlab/p/mmenu',
           anchor: ccsx.acs.BottomRight
         });
       }
+
     });
 
     exports= /** @lends exports# */{
@@ -110,7 +131,7 @@ define('zotohlab/p/mmenu',
        */
       reify(options) {
         return new scenes.XSceneFactory([
-          MainMenuLayer
+          BackLayer, MainMenuLayer
         ]).reify(options).onmsg('/mmenu/newgame', (topic, msg) => {
           cc.director.runScene( sh.protos[sh.ptypes.game].reify(msg));
         });
