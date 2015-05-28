@@ -203,15 +203,15 @@ define("zotohlab/p/levelmgr",
         en.setPos(sjs.rand(80 + wz.width * 0.5), wz.height);
         switch (en.moveType) {
 
-          case csts.ENEMY_MOVE.RUSH:
+          case csts.ENEMY_MOVES.RUSH:
             act = cc.moveTo(1, cc.p(pos.x, pos.y));
           break;
 
-          case csts.ENEMY_MOVE.VERT:
+          case csts.ENEMY_MOVES.VERT:
             act = cc.moveBy(4, cc.p(0, -wz.height - sz.height));
           break;
 
-          case csts.ENEMY_MOVE.HORZ:
+          case csts.ENEMY_MOVES.HORZ:
             a0 = cc.moveBy(0.5, cc.p(0, -100 - sjs.rand(200)));
             a1 = cc.moveBy(1, cc.p(-50 - sjs.rand(100), 0));
             const onComplete = cc.callFunc((p) => {
@@ -224,7 +224,7 @@ define("zotohlab/p/levelmgr",
             act = cc.sequence(a0, a1, onComplete);
           break;
 
-          case csts.ENEMY_MOVE.OLAP:
+          case csts.ENEMY_MOVES.OLAP:
             const newX = (pos.x <= wz.width * 0.5) ? wz.width : -wz.width;
             a0 = cc.moveBy(4, cc.p(newX, -wz.width * 0.75));
             a1 = cc.moveBy(4,cc.p(-newX, -wz.width));

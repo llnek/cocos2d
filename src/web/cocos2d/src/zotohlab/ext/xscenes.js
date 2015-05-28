@@ -22,7 +22,7 @@ define("zotohlab/asx/xscenes",
        ['cherimoia/skarojs',
         'cherimoia/ebus',
         'zotohlab/asterix',
-        'zotohLab/asx/ccsx',
+        'zotohlab/asx/ccsx',
         'ash-js'],
 
   function (sjs, ebus, sh, ccsx, Ash) { "use strict";
@@ -43,7 +43,7 @@ define("zotohlab/asx/xscenes",
     const XLive = cc.Sprite.extend({
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XLive
+       * @memberof module:zotohlab/asx/xscenes~XLive
        * @method ctor
        * @param {Number} x
        * @param {Number} y
@@ -68,7 +68,7 @@ define("zotohlab/asx/xscenes",
       /**
        * Reduce life by x amount.
        *
-       * @memberof module:zotohlab/asx/xlayers~XHUDLives
+       * @memberof module:zotohlab/asx/xscenes~XHUDLives
        * @method reduce
        * @param {Number} x
        */
@@ -81,7 +81,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Test if no more lives.
-       * @memberof module:zotohlab/asx/xlayers~XHUDLives
+       * @memberof module:zotohlab/asx/xscenes~XHUDLives
        * @method isDead
        * @return {Boolean}
        */
@@ -89,7 +89,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Get the count of remaining lives.
-       * @memberof module:zotohlab/asx/xlayers~XHUDLives
+       * @memberof module:zotohlab/asx/xscenes~XHUDLives
        * @method getLives
        * @return {Number}
        */
@@ -97,7 +97,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Reset the icons.
-       * @memberof module:zotohlab/asx/xlayers~XHUDLives
+       * @memberof module:zotohlab/asx/xscenes~XHUDLives
        * @method reset
        */
       reset() {
@@ -108,7 +108,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Reset and refresh the hud.
-       * @memberof module:zotohlab/asx/xlayers~XHUDLives
+       * @memberof module:zotohlab/asx/xscenes~XHUDLives
        * @method resurrect
        */
       resurrect() {
@@ -118,7 +118,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Draw the icons for lives.
-       * @memberof module:zotohlab/asx/xlayers~XHUDLives
+       * @memberof module:zotohlab/asx/xscenes~XHUDLives
        * @method drawLives
        */
       drawLives() {
@@ -140,10 +140,10 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Create and show the lives.
-       * @memberof module:zotohlab/asx/xlayers~XHUDLives
+       * @memberof module:zotohlab/asx/xscenes~XHUDLives
        * @method reify
        */
-      reify() {
+      create() {
         const dummy = new XLive(0,0,this.options);
         this.lifeSize = { width: ccsx.getScaledWidth(dummy),
                           height: ccsx.getScaledHeight(dummy) } ;
@@ -151,7 +151,7 @@ define("zotohlab/asx/xscenes",
       }
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XHUDLives
+       * @memberof module:zotohlab/asx/xscenes~XHUDLives
        * @method constructor
        * @param {Object} hud
        * @param {Number} x
@@ -181,7 +181,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * The id of this layer.
-       * @memberof module:zotohlab/asx/xlayers~XLayer
+       * @memberof module:zotohlab/asx/xscenes~XLayer
        * @method rtti
        * @return {String}
        */
@@ -190,7 +190,7 @@ define("zotohlab/asx/xscenes",
       /**
        * Register this atlas by creating a sprite-batch-node from it
        * and mapping it to this name.
-       * @memberof module:zotohlab/asx/xlayers~XLayer
+       * @memberof module:zotohlab/asx/xscenes~XLayer
        * @method regoAtlas
        * @param {String} name
        * @param {Number} z - z-index
@@ -211,7 +211,7 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XLayer
+       * @memberof module:zotohlab/asx/xscenes~XLayer
        * @method pkInit
        * @param {Object} options
        * @protected
@@ -219,7 +219,7 @@ define("zotohlab/asx/xscenes",
       pkInit(options) { this.pkInput(); },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XLayer
+       * @memberof module:zotohlab/asx/xscenes~XLayer
        * @method pkInput
        * @protected
        */
@@ -227,7 +227,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Add Audio icon to UI.
-       * @memberof module:zotohlab/asx/xlayers~XLayer
+       * @memberof module:zotohlab/asx/xscenes~XLayer
        * @method addAudioIcon
        * @param {Object} options
        */
@@ -273,7 +273,7 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XLayer
+       * @memberof module:zotohlab/asx/xscenes~XLayer
        * @method onQuit
        * @protected
        */
@@ -296,7 +296,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Center an image chosen from this atlas.
-       * @memberof module:zotohlab/asx/xlayers~XLayer
+       * @memberof module:zotohlab/asx/xscenes~XLayer
        * @method centerAtlasImage
        * @param {String} frame
        * @param {Object} atlas
@@ -314,7 +314,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Center an image.
-       * @memberof module:zotohlab/asx/xlayers~XLayer
+       * @memberof module:zotohlab/asx/xscenes~XLayer
        * @method centerImage
        * @param {String} frame
        */
@@ -324,7 +324,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Add an image chosen from this atlas.
-       * @memberof module:zotohlab/asx/xlayers~XLayer
+       * @memberof module:zotohlab/asx/xscenes~XLayer
        * @method addAtlasFrame
        * @param {String} frame
        * @param {cc.Point} pos
@@ -342,7 +342,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Add an image.
-       * @memberof module:zotohlab/asx/xlayers~XLayer
+       * @memberof module:zotohlab/asx/xscenes~XLayer
        * @method addFrame
        * @param {String} frame
        * @param {cc.Point} pos
@@ -353,7 +353,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Get the atlas.
-       * @memberof module:zotohlab/asx/xlayers~XLayer
+       * @memberof module:zotohlab/asx/xscenes~XLayer
        * @method getAtlas
        * @param {String} name
        * @return {cc.SpriteBatchNode}
@@ -364,7 +364,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Remove all children from this atlas.
-       * @memberof module:zotohlab/asx/xlayers~XLayer
+       * @memberof module:zotohlab/asx/xscenes~XLayer
        * @method removeAtlasAll
        * @param {String} atlas
        * @param {Boolean} c
@@ -376,7 +376,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Remove child from this atlas.
-       * @memberof module:zotohlab/asx/xlayers~XLayer
+       * @memberof module:zotohlab/asx/xscenes~XLayer
        * @method removeAtlasItem
        * @param {String} atlas
        * @param {String} n - child
@@ -390,7 +390,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Remove all children.
-       * @memberof module:zotohlab/asx/xlayers~XLayer
+       * @memberof module:zotohlab/asx/xscenes~XLayer
        * @method removeAll
        * @param {Boolean} c
        */
@@ -400,7 +400,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Remove a child.
-       * @memberof module:zotohlab/asx/xlayers~XLayer
+       * @memberof module:zotohlab/asx/xscenes~XLayer
        * @method removeItem
        * @param {Object} n
        * @param {Boolean} c
@@ -413,7 +413,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Add a child to this atlas.
-       * @memberof module:zotohlab/asx/xlayers~XLayer
+       * @memberof module:zotohlab/asx/xscenes~XLayer
        * @method addAtlasItem
        * @param {String} atlas
        * @param {Object} n
@@ -443,7 +443,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Add a child.
-       * @memberof module:zotohlab/asx/xlayers~XLayer
+       * @memberof module:zotohlab/asx/xscenes~XLayer
        * @method addChild
        * @param {Object} n - child
        * @param {Number} zx
@@ -466,7 +466,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Remember the parent scene object.
-       * @memberof module:zotohlab/asx/xlayers~XLayer
+       * @memberof module:zotohlab/asx/xscenes~XLayer
        * @method setParentScene
        * @param {cc.Scene} par
        */
@@ -476,7 +476,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Init.
-       * @memberof module:zotohlab/asx/xlayers~XLayer
+       * @memberof module:zotohlab/asx/xscenes~XLayer
        * @method init
        */
       init() {
@@ -485,7 +485,7 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XLayer
+       * @memberof module:zotohlab/asx/xscenes~XLayer
        * @method ctor
        * @param {Object} options
        */
@@ -508,7 +508,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Get the id.
-       * @memberof module:zotohlab/asx/xlayers~XGameHUDLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameHUDLayer
        * @method rtti
        * @return {String}
        */
@@ -516,7 +516,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Remove this icon.
-       * @memberof module:zotohlab/asx/xlayers~XGameHUDLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameHUDLayer
        * @method removeIcon
        * @param {Object} icon
        */
@@ -526,7 +526,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Add an icon.
-       * @memberof module:zotohlab/asx/xlayers~XGameHUDLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameHUDLayer
        * @method addIcon
        * @param {Object} icon
        * @param {Number} z
@@ -580,7 +580,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Get the score.
-       * @memberof module:zotohlab/asx/xlayers~XGameHUDLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameHUDLayer
        * @method getScore
        * @return {Number}
        */
@@ -588,7 +588,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Reset the HUD.
-       * @memberof module:zotohlab/asx/xlayers~XGameHUDLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameHUDLayer
        * @method reset
        */
       reset() {
@@ -601,7 +601,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Reduce x amount of lives.
-       * @memberof module:zotohlab/asx/xlayers~XGameHUDLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameHUDLayer
        * @method reduceLives
        * @param {Number} x
        * @return {Boolean} - true if no more lives.
@@ -613,7 +613,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Update the score.
-       * @memberof module:zotohlab/asx/xlayers~XGameHUDLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameHUDLayer
        * @method updateScore
        * @param {Number}
        */
@@ -624,7 +624,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Disable the replay button.
-       * @memberof module:zotohlab/asx/xlayers~XGameHUDLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameHUDLayer
        * @method disableReplay
        */
       disableReplay() {
@@ -633,7 +633,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Enable the replay button.
-       * @memberof module:zotohlab/asx/xlayers~XGameHUDLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameHUDLayer
        * @method enableReplay
        */
       enableReplay() {
@@ -642,7 +642,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Add the main menu icon.
-       * @memberof module:zotohlab/asx/xlayers~XGameHUDLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameHUDLayer
        * @method addMenuItem
        * @param {cc.Menu} menu
        * @param {Object} where
@@ -665,7 +665,7 @@ define("zotohlab/asx/xscenes",
 
       /**
        * Add a replay icon.
-       * @memberof module:zotohlab/asx/xlayers~XGameHUDLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameHUDLayer
        * @method addReplayIcon
        * @param {cc.Menu} menu
        * @param {Object} where
@@ -695,7 +695,7 @@ define("zotohlab/asx/xscenes",
     const XGameLayer = XLayer.extend({
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method pkInput
        * @protected
        */
@@ -725,7 +725,7 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method cfgTouch
        * @protected
        */
@@ -735,7 +735,7 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method cfgInputKeyPad
        * @protected
        */
@@ -752,7 +752,7 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method cfgInputMouse
        * @protected
        */
@@ -779,7 +779,7 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method cfgInputTouchAll
        * @protected
        */
@@ -797,7 +797,7 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method cfgInputTouchOne
        * @protected
        */
@@ -812,7 +812,7 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method onTouchMoved
        * @protected
        */
@@ -820,7 +820,7 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method onTouchBegan
        * @protected
        */
@@ -829,7 +829,7 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method onTouchEnded
        * @protected
        */
@@ -841,7 +841,7 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method onKeyDown
        * @protected
        * @param {Event} e
@@ -852,7 +852,7 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method onKeyUp
        * @protected
        * @param {Event} e
@@ -863,7 +863,7 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method onMouseUp
        * @protected
        * @param {Event} evt
@@ -875,7 +875,7 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method onTouchesEnded
        * @protected
        */
@@ -885,7 +885,7 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method keyPoll
        * @protected
        * @param {Number} key
@@ -895,7 +895,7 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method onclicked
        * @protected
        * @param {Number} x
@@ -905,7 +905,7 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method getEnclosureBox
        * @return {Object} rect box.
        */
@@ -922,7 +922,7 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method setGameMode
        * @param {Number} mode
        */
@@ -933,7 +933,7 @@ define("zotohlab/asx/xscenes",
       /**
        * Reset and create new Ash Engine.
        *
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method cleanSlate
        */
       cleanSlate() {
@@ -941,7 +941,7 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method newGame
        * @param {Number} mode
        */
@@ -955,7 +955,7 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method pkInit
        * @protected
        */
@@ -971,14 +971,14 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method operational
        * @return {Boolean}
        */
       operational() { return true; },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method getBackgd
        * @return {cc.Layer} - background layer
        */
@@ -988,7 +988,7 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method getHUD
        * @return {cc.Layer}  the HUD layer
        */
@@ -998,7 +998,7 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method update
        */
       update(dt) {
@@ -1008,21 +1008,21 @@ define("zotohlab/asx/xscenes",
       },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method keys
        * @return {Array}  keys
        */
       keys() { return this.keyboard; },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method rtti
        * @return {String}  id
        */
       rtti() { return 'GameLayer'; },
 
       /**
-       * @memberof module:zotohlab/asx/xlayers~XGameLayer
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method ctor
        * @param {Object} options
        */
@@ -1083,15 +1083,15 @@ define("zotohlab/asx/xscenes",
         //hold off init'ing game layer, leave that as last
         rc = R.any((proto) => {
           obj= new (proto)(this.options);
-          if ( obj instanceof xlayers.XGameLayer ) {
+          if ( obj instanceof XGameLayer ) {
             glptr = obj;
           }
           else
-          if (obj instanceof xlayers.XLayer) {
+          if (obj instanceof XLayer) {
             obj.init();
           }
 
-          if (obj instanceof xlayers.XLayer) {
+          if (obj instanceof XLayer) {
             obj.setParentScene(this);
           }
 

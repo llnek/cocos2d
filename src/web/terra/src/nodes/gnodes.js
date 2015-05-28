@@ -19,7 +19,7 @@ define("zotohlab/p/gnodes",
        ['zotohlab/p/elements',
         'zotohlab/asterix'],
 
-  function (cobjs, sjs, sh) { "use strict";
+  function (cobjs, sh) { "use strict";
 
     /** @alias module:zotohlab/p/gnodes */
     let exports = {},

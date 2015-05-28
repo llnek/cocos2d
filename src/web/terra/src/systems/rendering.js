@@ -10,16 +10,16 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asterix
  * @module zotohlab/p/s/rendering
  */
 define('zotohlab/p/s/rendering',
 
-       ['zotohlab/asterix',
-        'zotohlab/asx/ccsx'],
+       ['zotohlab/asx/ccsx',
+        'zotohlab/asterix'],
 
-  function (sh, ccsx) { "use strict";
+  function (ccsx, sh) { "use strict";
 
     /** @alias module:zotohlab/p/s/rendering */
     let exports = {},

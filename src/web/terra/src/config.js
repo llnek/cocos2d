@@ -154,6 +154,11 @@ define("zotohlab/p/config", ['zotohlab/asterix',
         }
       },
 
+      handleResolution(rs) {
+        //for default font, we use 48pt
+        this.game.scale = 52/256 * rs.width /320;
+      },
+
       runOnce() {
         cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
         cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('lang-pics'));

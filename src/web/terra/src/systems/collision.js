@@ -99,7 +99,7 @@ define('zotohlab/p/s/collisions',
        */
       checkMissilesBombs() {
         const bombs = sh.pools.Bombs,
-        mss = sh.pools.Missiles,
+        mss = sh.pools.Missiles;
         bombs.iter((b) => {
           mss.iter((m) => {
             if (b.status &&
@@ -118,7 +118,7 @@ define('zotohlab/p/s/collisions',
        */
       checkMissilesAliens() {
         const enemies= sh.pools.Baddies,
-        mss= sh.pools.Missiles,
+        mss= sh.pools.Missiles;
         enemies.iter((en) => {
           mss.iter((b) => {
             if (en.status &&

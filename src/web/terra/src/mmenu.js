@@ -47,7 +47,7 @@ define('zotohlab/p/mmenu',
        */
       setTitle() {
         const cw=ccsx.center(),
-        wz=ccsx.vbox(),
+        wb=ccsx.vbox(),
         tt=ccsx.bmfLabel({
           fontPath: sh.getFontPath('font.JellyBelly'),
           text: sh.l10n('%mmenu'),

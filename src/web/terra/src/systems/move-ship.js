@@ -89,7 +89,7 @@ define('zotohlab/p/s/moveship',
         mot= node.motion,
         sp = ship.sprite,
         ok = false,
-        pos = sp.getPosition(),
+        pos = ship.pos(),//sp.getPosition(),
         x = pos.x,
         y = pos.y;
 
@@ -110,7 +110,7 @@ define('zotohlab/p/s/moveship',
           ok= true;
         }
 
-        if (ok) { sp.setPosition(x,y); }
+        if (ok) { ship.setPos(x,y); }
 
         mot.right= false;
         mot.left=false;

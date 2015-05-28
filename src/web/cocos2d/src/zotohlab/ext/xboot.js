@@ -24,7 +24,7 @@ define("zotohlab/p/boot",
 
        ['cherimoia/skarojs',
         'zotohlab/asterix',
-        'ZotohLab/asx/ccsx',
+        'zotohlab/asx/ccsx',
         'zotohlab/asx/xcfg',
         'zotohlab/asx/xldr',
         'zotohlab/p/config',

@@ -648,7 +648,7 @@ define("zotohlab/asterix",
 
       /**
        * Set Music volume.
-       * @method setMusicVol
+       * @method sfxMusicVol
        */
       sfxMusicVol(v) {
         if (this.xcfg.sound.open && sjs.isNumber(v)) {
@@ -671,7 +671,7 @@ define("zotohlab/asterix",
        */
       sfxInit() {
         this.xcfg.sound.open= true;
-        this.setMusicVol(this.xcfg.sound.volume);
+        this.sfxMusicVol(this.xcfg.sound.volume);
       },
 
       /**

@@ -114,26 +114,28 @@ define("zotohlab/p/s/supervisor",
        * @method onceOnly
        * @private
        */
-      onceOnly() {
 
+      onceOnly() {
         this.state.player= sh.factory.createShip();
+
+        sh.pools.BackTiles= new XPool();
+        sh.pools.BackSkies= new XPool();
 
         sh.pools.Missiles = new XPool();
         sh.pools.Baddies = new XPool();
         sh.pools.Bombs= new XPool();
-
-        sh.pools.BackTiles= new XPool();
-        sh.pools.BackSkies= new XPool();
 
         sh.pools.Explosions= new XPool();
         sh.pools.Sparks= new XPool();
         sh.pools.HitEffects= new XPool();
 
         sh.factory.createBackSkies();
-        sh.factory.createBackTiles();
 
-        sh.fire('/game/backtiles');
         this.sharedExplosion();
+        this.initBackSkies();
+
+        sh.factory.createBackTiles();
+        sh.fire('/game/backtiles');
 
         sh.factory.createMissiles();
         sh.factory.createBombs();

@@ -32,10 +32,29 @@ define('zotohlab/p/arena',
     /** @alias module:zotohlab/p/arena */
     let exports = {},
     sjs= sh.skarojs,
-    xcfg = sh.xcfg,
+    uts= sobjs.Utils,
+    xcfg= sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
+
+    /**
+     * @extends module:zotohlab/asx/xscenes.XLayer
+     * @class BackLayer
+     */
+    BackLayer = scenes.XLayer.extend({
+      /**
+       * @method rtti
+       */
+      rtti() { return 'BackLayer'; },
+      /**
+       * @method pkInit
+       */
+      pkInit() {
+        this.regoAtlas('back-tiles', 1);
+        this.regoAtlas('game-pics', 0);
+      }
+    }),
 
     /**
      * @extends module:zotohlab/asx/xscenes.XGameLayer
@@ -276,6 +295,7 @@ define('zotohlab/p/arena',
       reify(options) {
         sjs.merge(options, {hudAtlas: 'game-pics'});
         const scene = new scenes.XSceneFactory([
+          BackLayer,
           GameLayer,
           huds.HUDLayer
         ]).reify(options);

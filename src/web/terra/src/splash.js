@@ -22,7 +22,7 @@ define('zotohlab/p/splash',
        ['zotohlab/asx/xscenes',
         'zotohlab/asx/xsplash',
         'zotohlab/p/s/utils',
-        'zotohlab/asx/asterix',
+        'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
   function (scenes, splash, utils, sh, ccsx) { "use strict";
@@ -59,13 +59,11 @@ define('zotohlab/p/splash',
         });
 
         this.addItem(this.ship, 0, 4);
-        this.addItem(flare, 15, 10);
+        this.addItem(this.flare, 15, 10);
 
-        this.ship.runAction(cc.moveBy(2, cc.p(sjs.rand(wz.width),
-                                              this.ship.y + wz.height + 100)));
-
-        sh.sfxPlayMusic('mainMusic', { vol: 0.7});
-        this.schedule(this.update, 0.1);
+        this.update();
+        //sh.sfxPlayMusic('mainMusic', { repeat: true, vol: 0.7});
+        //this.schedule(this.update, 0.1);
       },
 
       /**
@@ -83,10 +81,9 @@ define('zotohlab/p/splash',
         const wb = ccsx.vbox(),
         cw = ccsx.center(),
         mnu= ccsx.vmenu([{
-          nnn: '#play.png'
-          cb() {
-            sh.fire('/splash/playgame');
-          }
+          nnn: '#play.png',
+          target: this,
+          cb() { this.onPlay(); }
         }]);
         mnu.attr({
           y: wb.top * 0.1,
@@ -112,7 +109,7 @@ define('zotohlab/p/splash',
         mm= sh.protos[sh.ptypes.mmenu],
         dir= cc.director;
         utils.btnEffect();
-        utils.flare(this.flare, () => {
+        utils.flareEffect(this.flare, () => {
           dir.runScene( mm.reify({
               onBack() { dir.runScene( ss.reify() ); }
           }));
@@ -124,15 +121,16 @@ define('zotohlab/p/splash',
        * @method update
        */
       update() {
-        const wz = ccsx.vrect();
-        if (this.ship.y > 750) {
-          const pt= cc.p(sjs.rand(wz.width), this.ship.y + 750);
+        const wz = ccsx.vrect(),
+        g= cc.callFunc(() => {
           this.ship.attr({
             x: sjs.rand(wz.width),
             y: 10
           });
-          this.ship.runAction(cc.moveBy(sjs.rand(5), pt));
-        }
+          this.update();
+        });
+        this.ship.runAction(cc.sequence(cc.moveBy(2, cc.p(sjs.rand(wz.width),
+                                                   wz.height + 100)),g));
       }
 
     });
@@ -152,9 +150,7 @@ define('zotohlab/p/splash',
       reify(options) {
         return new scenes.XSceneFactory([
           SplashLayer
-        ]).reify(options).onmsg('/splash/playgame', () => {
-          sh.main.onPlay();
-        });
+        ]).reify(options);
       }
 
     };

@@ -37,7 +37,7 @@ document.ccConfig = {
 
     "/public/ig/lib/zotohlab/ext/xscenes.js",
     "/public/ig/lib/zotohlab/ext/xpool.js",
-    "/public/ig/lib/zotohlab/ext/xloader.js",
+    "/public/ig/lib/zotohlab/ext/xldr.js",
 
     "/public/ig/lib/zotohlab/gui/start.js",
     "/public/ig/lib/zotohlab/gui/msgbox.js",

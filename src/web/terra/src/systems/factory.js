@@ -85,22 +85,6 @@ define('zotohlab/p/s/factory',
 
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
-       * @method createBackSkies
-       * @param {cc.Layer} layer
-       */
-      createBackSkies(layer) {
-        //let layer= sh.main.getBackgd();
-        sh.pools.BackSkies.preSet(() => {
-          const bg = ccsx.createSpriteFrame('bg01.png');
-          bg.setAnchorPoint(0,0);
-          bg.setVisible(false);
-          layer.addAtlasItem('game-pics', bg, -10);
-          return sh.Ashley.newObject(bg);
-        }, 2);
-      },
-
-      /**
-       * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createMissiles
        * @param {Number} count
        */
@@ -197,6 +181,21 @@ define('zotohlab/p/s/factory',
             pool.push( cr( ts[j]));
           }
         }, count||3);
+      },
+
+      /**
+       * @memberof module:zotohlab/p/s/factory~EntityFactory
+       * @method createBackSkies
+       */
+      createBackSkies() {
+        const layer= sh.main.getBackgd();
+        sh.pools.BackSkies.preSet(() => {
+          const bg = ccsx.createSpriteFrame('bg01.png');
+          bg.setAnchorPoint(0,0);
+          bg.setVisible(false);
+          layer.addAtlasItem('game-pics', bg, -10);
+          return sh.Ashley.newObject(bg);
+        }, 2);
       },
 
       /**
