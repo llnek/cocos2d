@@ -10,27 +10,26 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires zotohlab/p/s/utils
- * @requires cherimoia/skarojs
- * @requires zotohlab/asterix
- * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asx/xsplash
+ * @requires zotohlab/p/s/utils
+ * @requires zotohlab/asterix
+ * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/splash
  */
 define("zotohlab/p/splash",
 
-       ['zotohlab/p/s/utils',
-        'cherimoia/skarojs',
+       ['zotohlab/asx/xscenes',
+        'zotohlab/asx/xsplash',
+        'zotohlab/p/s/utils',
         'zotohlab/asterix',
-        'zotohlab/asx/ccsx',
-        'zotohlab/asx/xscenes',
-        'zotohlab/asx/xsplash'],
+        'zotohlab/asx/ccsx'],
 
-  function (utils, sjs, sh, ccsx, scenes, splash) { "use strict";
+  function (scenes, splash, utils, sh, ccsx ) { "use strict";
 
     /** @alias module:zotohlab/p/splash */
     let exports = {},
+    sjs=sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -48,7 +47,7 @@ define("zotohlab/p/splash",
        */
       pkInit() {
         this._super();
-        this.showGrid();
+        this.demo();
       },
 
       /**
@@ -58,7 +57,6 @@ define("zotohlab/p/splash",
       setPlay() {
         const cw = ccsx.center(),
         wb = ccsx.vbox(),
-        // show the play button at the bottom
         menu= ccsx.vmenu([
           { nnn: '#play.png',
             cb() {
@@ -72,10 +70,10 @@ define("zotohlab/p/splash",
       },
 
       /**
-       * @method showGrid
+       * @method demo
        * @private
        */
-      showGrid() {
+      demo() {
         let scale= 0.75,
         pos=0,
         fm, sp, bx;

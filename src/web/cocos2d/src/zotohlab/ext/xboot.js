@@ -14,7 +14,7 @@
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/xcfg
- * @requires zotohlab/asx/xldr
+ * @requires zotohlab/asx/xloader
  * @requires zotohlab/p/config
  * @requires zotohlab/p/l10n
  * @requires zotohlab/p/protodefs
@@ -26,7 +26,7 @@ define("zotohlab/p/boot",
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
         'zotohlab/asx/xcfg',
-        'zotohlab/asx/xldr',
+        'zotohlab/asx/xloader',
         'zotohlab/p/config',
         'zotohlab/p/l10n',
         'zotohlab/p/protodefs'],

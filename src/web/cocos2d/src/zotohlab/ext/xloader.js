@@ -10,21 +10,20 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
- * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @module zotohlab/asx/xldr
+ * @requires zotohlab/asterix
+ * @module zotohlab/asx/xloader
  */
-define("zotohlab/asx/xldr",
+define("zotohlab/asx/xloader",
 
-       ['cherimoia/skarojs',
-        'zotohlab/asterix',
-        'zotohlab/asx/ccsx'],
+       ['zotohlab/asx/ccsx',
+        'zotohlab/asterix'],
 
-  function (sjs, sh, ccsx) { "use strict";
+  function (ccsx, sh ) { "use strict";
 
-    /** @alias module:zotohlab/asx/xldr */
+    /** @alias module:zotohlab/asx/xloader */
     let exports = {},
+    sjs= sh.skarojs,
     _instance= null,
     CHUNK=36,
     undef;
