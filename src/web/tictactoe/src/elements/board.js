@@ -10,20 +10,20 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
+ * @requires zotohlab/asterix
  * @module zotohlab/p/c/board
  */
 define("zotohlab/p/c/board",
 
-       ['cherimoia/skarojs'],
+       ['zotohlab/asterix'],
 
-  function (sjs) { "use strict";
+  function (sh) { "use strict";
 
     /** @alias module:zotohlab/p/c/board */
     let exports= {},
+    sjs= sh.skarojs,
     R = sjs.ramda,
     undef;
-
     //////////////////////////////////////////////////////////////////////////////
     // A Tic Tac Toe board.
     /**

@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/odin
@@ -20,26 +19,24 @@
 define("zotohlab/p/s/turnbase",
 
        ['zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
         'zotohlab/asx/odin'],
 
-  function (gnodes, sjs, sh, ccsx, odin) { "use strict";
+  function (gnodes, sh, ccsx, odin) { "use strict";
 
     /** @alias module:zotohlab/p/s/turnbase */
-    let exports = {          },
+    let exports = {},
     evts= odin.Events,
+    sjs= sh.skarojs,
     xcfg= sh.xcfg,
     csts= xcfg.csts,
-    undef;
-
+    undef,
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class TurnBaseSystem
      */
-    const TurnBaseSystem = sh.Ashley.sysDef({
-
+    TurnBaseSystem = sh.Ashley.sysDef({
       /**
        * @memberof module:zotohlab/p/s/turnbase~TurnBaseSystem
        * @method constructor
@@ -49,7 +46,6 @@ define("zotohlab/p/s/turnbase",
         this.state= options;
         this.botTimer=null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/turnbase~TurnBaseSystem
        * @method removeFromEngine
@@ -58,7 +54,6 @@ define("zotohlab/p/s/turnbase",
       removeFromEngine(engine) {
         this.board=null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/turnbase~TurnBaseSystem
        * @method addToEngine
@@ -67,7 +62,6 @@ define("zotohlab/p/s/turnbase",
       addToEngine(engine) {
         this.board = engine.getNodeList(gnodes.BoardNode);
       },
-
       /**
        * @memberof module:zotohlab/p/s/turnbase~TurnBaseSystem
        * @method update
@@ -80,7 +74,6 @@ define("zotohlab/p/s/turnbase",
           this.process(node, dt);
         }
       },
-
       /**
        * @method process
        * @private
@@ -125,7 +118,6 @@ define("zotohlab/p/s/turnbase",
 
         sel.cell= -1;
       },
-
       /**
        * @method enqueue
        * @private
@@ -159,7 +151,6 @@ define("zotohlab/p/s/turnbase",
 
         }
       },
-
       /**
        * @method onEnqueue
        * @private
@@ -182,7 +173,6 @@ define("zotohlab/p/s/turnbase",
         sh.sfxPlay(snd);
       }
 
-
     });
 
     /**
@@ -190,7 +180,6 @@ define("zotohlab/p/s/turnbase",
      * @property {Number} Priority
      */
     TurnBaseSystem.Priority = sh.ftypes.TurnBase;
-
     exports= TurnBaseSystem;
     return exports;
 });

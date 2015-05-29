@@ -10,11 +10,9 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
+ * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xmmenus
- * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asx/odin
  * @requires zotohlab/p/hud
  * @requires zotohlab/p/elements
@@ -23,40 +21,54 @@
  */
 define("zotohlab/p/arena",
 
-       ['cherimoia/skarojs',
+       ['zotohlab/asx/xscenes',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
-        'zotohlab/asx/xmmenus',
-        'zotohlab/asx/xscenes',
         'zotohlab/asx/odin',
         'zotohlab/p/hud',
         'zotohlab/p/elements',
         'zotohlab/p/sysobjs'],
 
-  function (sjs, sh, ccsx, mmenus, scenes,
+  function (scenes, sh, ccsx,
             odin, huds, cobjs, sobjs) { "use strict";
 
     /** @alias module:zotohlab/p/arena */
-    let exports = {          },
+    let exports = {},
     evts= odin.Events,
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
-    undef;
-
+    undef,
+    //////////////////////////////////////////////////////////////////////////
+    /**
+     * @extends module:zotohlab/asx/xscenes.XLayer
+     * @class BackLayer
+     */
+    BackLayer = scenes.XLayer.extend({
+      /**
+       * @method setup
+       * @protected
+       */
+      setup() {
+        this.centerImage(sh.getImagePath('game.bg'));
+      },
+      /**
+       * @method rtti
+       */
+      rtti() { return 'BackLayer'; }
+    }),
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @extends module:zotohlab/asx/xscenes.XGameLayer
      * @class GameLayer
      */
-    const GameLayer = scenes.XGameLayer.extend({
-
+    GameLayer = scenes.XGameLayer.extend({
       /**
        * @method onStop
        * @private
        */
       onStop(evt) { this.options.netQ.push(evt); },
-
       /**
        * @method replay
        */
@@ -71,18 +83,16 @@ define("zotohlab/p/arena",
           this.play(false);
         }
       },
-
       /**
        * @method play
        */
       play(newFlag) {
 
-        let p1ids, p2ids;
-
         csts.CELLS = this.options.size*this.options.size;
         csts.GRID_SIZE= this.options.size;
 
         // sort out names of players
+        let p1ids, p2ids;
         sjs.eachObj((v,k) => {
           if (v[0] === 1) {
             p1ids= [k, v[1] ];
@@ -122,7 +132,6 @@ define("zotohlab/p/arena",
         this.getHUD().regoPlayers(csts.P1_COLOR, p1ids,
                                   csts.P2_COLOR, p2ids);
       },
-
       /**
        * @method onNewGame
        * @private
@@ -132,7 +141,6 @@ define("zotohlab/p/arena",
         this.setGameMode(mode);
         this.play(true);
       },
-
       /**
        * @method reset
        */
@@ -149,7 +157,6 @@ define("zotohlab/p/arena",
           this.getHUD().reset();
         }
       },
-
       /**
        * @method onclicked
        * @protected
@@ -161,7 +168,6 @@ define("zotohlab/p/arena",
           this.options.selQ.push({ x: mx, y: my, cell: -1 });
         }
       },
-
       /**
        * @method updateHUD
        * @private
@@ -173,7 +179,6 @@ define("zotohlab/p/arena",
           this.getHUD().drawResult(this.lastWinner);
         }
       },
-
       /**
        * @method playTimeExpired
        * @private
@@ -181,7 +186,6 @@ define("zotohlab/p/arena",
       playTimeExpired(msg) {
         this.options.msgQ.push("forfeit");
       },
-
       /**
        * @method setGameMode
        * @protected
@@ -190,7 +194,6 @@ define("zotohlab/p/arena",
         this._super(mode);
         this.getHUD().setGameMode(mode);
       },
-
       /**
        * @method initPlayers
        * @private
@@ -220,7 +223,6 @@ define("zotohlab/p/arena",
         this.options.colors[csts.P1_COLOR] = p1;
         this.options.colors[csts.P2_COLOR] = p2;
       },
-
       /**
        * @method onevent
        * @private
@@ -236,7 +238,6 @@ define("zotohlab/p/arena",
           break;
         }
       },
-
       /**
        * @method onNetworkEvent
        * @private
@@ -298,13 +299,13 @@ define("zotohlab/p/arena",
        */
       reify(options) {
         const scene = new scenes.XSceneFactory([
-          huds.BackLayer,
+          BackLayer,
           GameLayer,
           huds.HUDLayer
         ]).reify(options);
 
         scene.onmsg('/hud/showmenu',(t,msg) => {
-          mmenus.showMenu();
+          scenes.showMenu();
         }).
         onmsg('/hud/replay',(t,msg) => {
           sh.main.replay();

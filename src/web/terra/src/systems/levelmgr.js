@@ -33,11 +33,11 @@ define("zotohlab/p/levelmgr",
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class LevelManager
      */
     LevelManager = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/levelmgr~LevelManager
        * @method constructor
@@ -47,7 +47,6 @@ define("zotohlab/p/levelmgr",
         this.state= options;
         this.setLevel(1);
       },
-
       /**
        * @memberof module:zotohlab/p/levelmgr~LevelManager
        * @method setLevel
@@ -55,9 +54,7 @@ define("zotohlab/p/levelmgr",
        */
       setLevel(level) {
         this.curLevel = level;
-        this.onceLatch = 1;
       },
-
       /**
        * @memberof module:zotohlab/p/levelmgr~LevelManager
        * @method getLCfg
@@ -67,7 +64,6 @@ define("zotohlab/p/levelmgr",
         const k= Number(this.curLevel).toString();
         return xcfg['levels'][k]['cfg'];
       },
-
       /**
        * @memberof module:zotohlab/p/levelmgr~LevelManager
        * @method removeFromEngine
@@ -76,7 +72,6 @@ define("zotohlab/p/levelmgr",
       removeFromEngine(engine) {
         this.ships=null;
       },
-
       /**
        * @memberof module:zotohlab/p/levelmgr~LevelManager
        * @method addToEngine
@@ -85,7 +80,6 @@ define("zotohlab/p/levelmgr",
       addToEngine(engine) {
         this.ships = engine.getNodeList(gnodes.ShipMotionNode);
       },
-
       /**
        * @memberof module:zotohlab/p/levelmgr~LevelManager
        * @method update
@@ -98,7 +92,6 @@ define("zotohlab/p/levelmgr",
           this.loadLevelResource(node, this.state.secCount);
         }
       },
-
       /**
        * @memberof module:zotohlab/p/levelmgr~LevelManager
        * @method loadLevelResource
@@ -129,7 +122,6 @@ define("zotohlab/p/levelmgr",
           }, cfg.enemies);
         }
       },
-
       /**
        * @memberof module:zotohlab/p/levelmgr~LevelManager
        * @method dropBombs
@@ -150,7 +142,6 @@ define("zotohlab/p/levelmgr",
         b.inflate({ x: pos.x, y: pos.y - sz.height * 0.2 });
         b.attackMode=enemy.attackMode;
       },
-
       /**
        * @memberof module:zotohlab/p/levelmgr~LevelManager
        * @method getB
@@ -180,7 +171,6 @@ define("zotohlab/p/levelmgr",
 
         return en;
       },
-
       /**
        * @memberof module:zotohlab/p/levelmgr~LevelManager
        * @method addEnemyToGame

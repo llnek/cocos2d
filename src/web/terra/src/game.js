@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/asx/xscenes
- * @requires zotohlab/asx/xmmenus
  * @requires zotohlab/p/sysobjs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
@@ -21,13 +20,12 @@
 define('zotohlab/p/arena',
 
        ['zotohlab/asx/xscenes',
-        'zotohlab/asx/xmmenus',
         'zotohlab/p/sysobjs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
         'zotohlab/p/hud'],
 
-  function (scenes, mmenus, sobjs, sh, ccsx, huds) { "use strict";
+  function (scenes, sobjs, sh, ccsx, huds) { "use strict";
 
     /** @alias module:zotohlab/p/arena */
     let exports = {},
@@ -37,7 +35,7 @@ define('zotohlab/p/arena',
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @extends module:zotohlab/asx/xscenes.XLayer
      * @class BackLayer
@@ -50,18 +48,16 @@ define('zotohlab/p/arena',
       /**
        * @method pkInit
        */
-      pkInit() {
+      setup() {
         this.regoAtlas('back-tiles', 1);
         this.regoAtlas('game-pics', 0);
       }
     }),
-
     /**
      * @extends module:zotohlab/asx/xscenes.XGameLayer
      * @class GameLayer
      */
     GameLayer = scenes.XGameLayer.extend({
-
       /**
        * @method cfgInputMouse
        * @protected
@@ -76,7 +72,6 @@ define('zotohlab/p/arena',
           }
         }, this);
       },
-
       /**
        * @method cfgTouch
        * @protected
@@ -84,7 +79,6 @@ define('zotohlab/p/arena',
       cfgTouch() {
         this.cfgInputTouchesAll();
       },
-
       /**
        * @method processEvent
        * @private
@@ -96,7 +90,6 @@ define('zotohlab/p/arena',
           uts.processTouch(ship, e.getDelta());
         }
       },
-
       /**
        * @method reset
        */
@@ -119,7 +112,6 @@ define('zotohlab/p/arena',
           this.getHUD().reset();
         }
       },
-
       /**
        * @method initBackTiles
        * @private
@@ -128,7 +120,6 @@ define('zotohlab/p/arena',
         this.moveBackTiles();
         this.schedule(this.moveBackTiles, 5);
       },
-
       /**
        * @method moveBackTiles
        * @private
@@ -156,7 +147,6 @@ define('zotohlab/p/arena',
 
         tm.sprite.runAction(cc.sequence(move,fun));
       },
-
       /**
        * @method operational
        * @protected
@@ -164,14 +154,12 @@ define('zotohlab/p/arena',
       operational() {
         return this.options.running;
       },
-
       /**
        * @method replay
        */
       replay() {
         this.play(false);
       },
-
       /**
        * @method play
        */
@@ -204,7 +192,6 @@ define('zotohlab/p/arena',
           ++this.options.secCount;
         },1);
       },
-
       /**
        * @method spawnPlayer
        * @private
@@ -212,7 +199,6 @@ define('zotohlab/p/arena',
       spawnPlayer() {
         uts.bornShip(this.options.player);
       },
-
       /**
        * @method onPlayerKilled
        * @private
@@ -225,7 +211,6 @@ define('zotohlab/p/arena',
           this.spawnPlayer();
         }
       },
-
       /**
        * @method onNewGame
        * @private
@@ -235,7 +220,6 @@ define('zotohlab/p/arena',
         this.setGameMode(mode);
         this.play(true);
       },
-
       /**
        * @method onEarnScore
        * @private
@@ -243,7 +227,6 @@ define('zotohlab/p/arena',
       onEarnScore(msg) {
         this.getHUD().updateScore( msg.score);
       },
-
       /**
        * @method onDone
        * @private
@@ -254,7 +237,6 @@ define('zotohlab/p/arena',
         this.reset();
         this.getHUD().enableReplay();
       },
-
       /**
        * @method getEnclosureBox
        * @private
@@ -268,7 +250,6 @@ define('zotohlab/p/arena',
           right: wb.right
         };
       },
-
       /**
        * @method ctor
        * @constructs
@@ -281,38 +262,35 @@ define('zotohlab/p/arena',
     });
 
     exports =  /** @lends exports# */{
-
       /**
        * @property {String} rtti
        */
       rtti : sh.ptypes.game,
-
       /**
        * @method reify
        * @param {Object} options
        * @return {cc.Scene}
        */
       reify(options) {
-        sjs.merge(options, {hudAtlas: 'game-pics'});
         const scene = new scenes.XSceneFactory([
           BackLayer,
           GameLayer,
           huds.HUDLayer
         ]).reify(options);
 
-        scene.onmsg('/game/players/earnscore', (topic, msg) => {
+        scene.onmsg('/game/players/earnscore', (t, msg) => {
           sh.main.onEarnScore(msg);
         }).
         onmsg('/game/backtiles',(t,msg) => {
           sh.main.initBackTiles();
         }).
         onmsg('/hud/showmenu',(t,msg) => {
-          mmenus.showMenu();
+          scenes.showMenu();
         }).
         onmsg('/hud/replay',(t,msg) => {
           sh.main.replay();
         }).
-        onmsg('/game/players/killed', (topic, msg) => {
+        onmsg('/game/players/killed', (t, msg) => {
           sh.main.onPlayerKilled(msg);
         });
 

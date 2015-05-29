@@ -10,54 +10,31 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
+ * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xscenes
  * @module zotohlab/p/hud
  */
 define("zotohlab/p/hud",
 
-       ['cherimoia/skarojs',
+       ['zotohlab/asx/xscenes',
         'zotohlab/asterix',
-        'zotohlab/asx/ccsx',
-        'zotohlab/asx/xscenes'],
+        'zotohlab/asx/ccsx'],
 
-  function(sjs, sh, ccsx, scenes) { "use strict";
+  function(scenes, sh, ccsx ) { "use strict";
 
     /** @alias module:zotohlab/p/hud */
-    let exports = {    },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
-    /**
-     * @extends module:zotohlab/asx/xscenes.XLayer
-     * @class BackLayer
-     */
-    BackLayer = scenes.XLayer.extend({
-
-      /**
-       * @method rtti
-       */
-      rtti() { return 'BackLayer'; },
-
-      /**
-       * @method pkInit
-       * @protected
-       */
-      pkInit() {
-        this.centerImage(sh.getImagePath('game.bg'));
-      }
-
-    }),
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @extends module:zotohlab/asx/xscenes.XGameHUDLayer
      * @class HUDLayer
      */
     HUDLayer = scenes.XGameHUDLayer.extend({
-
       /**
        * @memberof module:zotohlab/p/hud~HUDLayer
        * @method ctor
@@ -76,7 +53,7 @@ define("zotohlab/p/hud",
         this.p1ID= '';
 
         this.options.i_replay= {
-          img: '#icon_replay.png',
+          nnn: '#icon_replay.png',
           where: ccsx.acs.Top,
           color:color,
           scale : scale,
@@ -87,7 +64,7 @@ define("zotohlab/p/hud",
         };
 
         this.options.i_menu= {
-          img: '#icon_menu.png',
+          nnn: '#icon_menu.png',
           where: ccsx.acs.Top,
           color: color,
           scale: scale,
@@ -96,7 +73,6 @@ define("zotohlab/p/hud",
           }
         };
       },
-
       /**
        * @method setGameMode
        * @protected
@@ -135,14 +111,12 @@ define("zotohlab/p/hud",
                                  ccsx.getScaledWidth(this.score2)/2 + 6,
                                  wb.top - csts.TILE * 6 /2 - 2);
       },
-
       /**
        * @method resetAsNew
        */
       resetAsNew() {
         this.reset();
       },
-
       /**
        * @method reset
        */
@@ -155,7 +129,6 @@ define("zotohlab/p/hud",
         this.resultMsg.setVisible(false);
         this.drawScores();
       },
-
       /**
        * @method endGame
        * @private
@@ -164,7 +137,6 @@ define("zotohlab/p/hud",
         this.replayBtn.setVisible(true);
         this.resultMsg.setVisible(true);
       },
-
       /**
        * @method initLabels
        * @protected
@@ -207,7 +179,6 @@ define("zotohlab/p/hud",
         });
         this.addItem(this.resultMsg);
       },
-
       /**
        * @method isDone
        * @private
@@ -221,7 +192,6 @@ define("zotohlab/p/hud",
         if (s1 >= csts.NUM_POINTS) { rc = [ true, this.play1]; }
         return rc;
       },
-
       /**
        * @method updateScore
        */
@@ -230,7 +200,6 @@ define("zotohlab/p/hud",
         this.scores[this.play1] = scores[this.play1];
         this.drawScores();
       },
-
       /**
        * @method updateScores
        */
@@ -238,7 +207,6 @@ define("zotohlab/p/hud",
         this.scores[color] = this.scores[color] + value;
         this.drawScores();
       },
-
       /**
        * @method drawScores
        * @private
@@ -251,7 +219,6 @@ define("zotohlab/p/hud",
         this.score1.setString(n1);
         this.score2.setString(n2);
       },
-
       /**
        * @method drawResult
        * @private
@@ -269,11 +236,6 @@ define("zotohlab/p/hud",
     });
 
     exports= /** @lends exports# */{
-      /**
-       * @property {BackLayer} BackLayer
-       */
-      BackLayer: BackLayer,
-
       /**
        * @property {HUDLayer} HUDLayer
        */

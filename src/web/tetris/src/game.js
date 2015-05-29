@@ -10,11 +10,9 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
+ * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xscenes
- * @requires zotohlab/asx/xmmenus
  * @requires zotohlab/p/hud
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/sysobjs
@@ -22,32 +20,47 @@
  */
 define("zotohlab/p/arena",
 
-       ['cherimoia/skarojs',
-       'zotohlab/asterix',
-       'zotohlab/asx/ccsx',
-       'zotohlab/asx/xscenes',
-       'zotohlab/asx/xmmenus',
-       'zotohlab/p/hud',
-       'zotohlab/p/elements',
-       'zotohlab/p/sysobjs'],
+       ['zotohlab/asx/xscenes',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/p/hud',
+        'zotohlab/p/elements',
+        'zotohlab/p/sysobjs'],
 
-  function(sjs, sh, ccsx, scenes,
-           mmenus, huds, cobjs, sobjs) { "use strict";
+  function(scenes, sh, ccsx,
+           huds, cobjs, sobjs) { "use strict";
 
     /** @alias module:zotohlab/p/arena */
-    let exports = {    },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts = xcfg.csts,
     R = sjs.ramda,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
+    /**
+     * @extends module:zotohlab/asx/xscenes.XLayer
+     * @class BackLayer
+     */
+    BackLayer = scenes.XLayer.extend({
+      /**
+       * @method rtti
+       */
+      rtti() { return 'BackLayer'; },
+      /**
+       * @method setup
+       * @protected
+       */
+      setup() {
+        this.centerImage(sh.getImagePath('game.bg'));
+      }
+    }),
     //////////////////////////////////////////////////////////////////////////
     /**
      * @extends module:zotohlab/asx/xscenes.XGameLayer
      * @class GameLayer
      */
     GameLayer = scenes.XGameLayer.extend({
-
       /**
        * @method reset
        * @protected
@@ -67,7 +80,6 @@ define("zotohlab/p/arena",
           this.getHUD().reset();
         }
       },
-
       /**
        * @method ctor
        * @constructs
@@ -77,7 +89,6 @@ define("zotohlab/p/arena",
         this.collisionMap= [];
         this.ops = {};
       },
-
       /**
        * @method operational
        * @protected
@@ -85,7 +96,6 @@ define("zotohlab/p/arena",
       operational() {
         return this.options.running;
       },
-
       /**
        * @method onclicked
        * @protected
@@ -97,14 +107,12 @@ define("zotohlab/p/arena",
           this.options.selQ.push({ x: mx, y: my, cell: -1 });
         }
       },
-
       /**
        * @method replay
        */
       replay() {
         this.play(false);
       },
-
       /**
        * @method play
        */
@@ -128,7 +136,6 @@ define("zotohlab/p/arena",
          sobjs.Rendering,
          sobjs.Resolution ]);
       },
-
       /**
        * @method endGame
        * @private
@@ -137,7 +144,6 @@ define("zotohlab/p/arena",
         this.options.running=false;
         this.getHUD().endGame();
       },
-
       /**
        * @method onNewGame
        * @private
@@ -151,12 +157,10 @@ define("zotohlab/p/arena",
     });
 
     exports = /** @lends exports# */{
-
       /**
        * @property {String} rtti
        */
       rtti : sh.ptypes.game,
-
       /**
        * @method reify
        * @param {Object} options
@@ -164,7 +168,7 @@ define("zotohlab/p/arena",
        */
       reify(options) {
         const scene = new scenes.XSceneFactory([
-          huds.BackLayer,
+          BackLayer,
           GameLayer,
           huds.HUDLayer ]).reify(options);
 
@@ -175,7 +179,7 @@ define("zotohlab/p/arena",
           sh.main.getHUD().updateScore(msg.score);
         }).
         onmsg('/hud/showmenu', (t,msg) => {
-          mmenus.showMenu();
+          scenes.showMenu();
         }).
         onmsg('/hud/replay', (t,msg) => {
           sh.main.replay();

@@ -12,7 +12,6 @@
 /**
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/supervisor
@@ -21,23 +20,22 @@ define("zotohlab/p/s/supervisor",
 
        ["zotohlab/p/s/utils",
         "zotohlab/p/gnodes",
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (utils, gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/supervisor */
-    let exports = {       },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class GameSupervisor
      */
     GameSupervisor = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method constructor
@@ -47,7 +45,6 @@ define("zotohlab/p/s/supervisor",
         this.state = options;
         this.inited=false;
       },
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method removeFromEngine
@@ -56,7 +53,6 @@ define("zotohlab/p/s/supervisor",
       removeFromEngine(engine) {
         this.arena=null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method addToEngine
@@ -66,7 +62,6 @@ define("zotohlab/p/s/supervisor",
         engine.addEntity(sh.factory.createArena(sh.main, this.state));
         this.arena= engine.getNodeList(gnodes.ArenaNode);
       },
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method update
@@ -82,7 +77,6 @@ define("zotohlab/p/s/supervisor",
           }
         }
       },
-
       /**
        * @method onceOnly
        * @private
@@ -112,7 +106,6 @@ define("zotohlab/p/s/supervisor",
 
         this.doCtrl(node);
       },
-
       /**
        * @method doCtrl
        * @private
@@ -163,7 +156,6 @@ define("zotohlab/p/s/supervisor",
               right: cbx.right - cw3,
               bottom: cbx.top - 2 * ch3 };
       },
-
       /**
        * Draw horizontal wall.
        * @method xh
@@ -185,7 +177,6 @@ define("zotohlab/p/s/supervisor",
           x += fz.width;
         }
       },
-
       /**
        * Draw vertical wall.
        * @method xv
@@ -206,7 +197,6 @@ define("zotohlab/p/s/supervisor",
           y += fz.height;
         }
       },
-
       /**
        * @method onceOnly_2
        * @private
@@ -225,7 +215,6 @@ define("zotohlab/p/s/supervisor",
         sjs.loggr.info("collision tiles and blocks init'ed.");
         sjs.loggr.info("tile size = " + csts.TILE);
       },
-
       /**
        * @method initBlockMap
        * @private
@@ -240,7 +229,6 @@ define("zotohlab/p/s/supervisor",
 
         return grid;
       },
-
       /**
        * Create our own collision map using cells.
        * @method fakeTileMap

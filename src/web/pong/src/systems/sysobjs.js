@@ -47,7 +47,7 @@ define("zotohlab/p/sysobjs",
             Movements) { "use strict";
 
     /** @alias module:zotohlab/p/sysobjs */
-    var exports= /** @lends exports# */{
+    const exports= /** @lends exports# */{
 
       /**
        * @property {Factory} Factory

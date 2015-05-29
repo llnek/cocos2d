@@ -13,7 +13,6 @@
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/c/board
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  *
  * @module zotohlab/p/s/factory
@@ -23,20 +22,19 @@ define("zotohlab/p/s/factory",
        ['zotohlab/p/elements',
         'zotohlab/p/c/board',
         'zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix'],
 
   function (cobjs, GameBoard, gnodes, sjs, sh) { "use strict";
 
     /** @alias module:zotohlab/p/s/factory */
     let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
-    undef;
-
+    undef,
     //////////////////////////////////////////////////////////////////////////////
     // returns array of winning combinations.
-    const mapGoalSpace = (size) => {
+    mapGoalSpace = (size) => {
       const ROWSPACE = [],
       COLSPACE = [],
       dx = [],
@@ -57,13 +55,12 @@ define("zotohlab/p/s/factory",
       }
       //var DAGSPACE = [dx, dy];
       return [dx, dy].concat(ROWSPACE, COLSPACE);
-    }
-
+    },
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class EntityFactory
      */
-    const EntityFactory = sh.Ashley.casDef({
+    EntityFactory = sh.Ashley.casDef({
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method constructor
@@ -72,7 +69,6 @@ define("zotohlab/p/s/factory",
       constructor(engine) {
         this.engine=engine;
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method reifyBoard

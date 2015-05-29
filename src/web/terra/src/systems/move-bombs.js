@@ -33,12 +33,12 @@ define('zotohlab/p/s/movebombs',
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R= sjs.ramda,
+    //////////////////////////////////////////////////////////////////////////
     undef,
     /**
      * @class MoveBombs
      */
     MoveBombs = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/movebombs~MoveBombs
        * @method constructor
@@ -47,7 +47,6 @@ define('zotohlab/p/s/movebombs',
       constructor(options) {
         this.state= options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/movebombs~MoveBombs
        * @method removeFromEngine
@@ -55,7 +54,6 @@ define('zotohlab/p/s/movebombs',
        */
       removeFromEngine(engine) {
       },
-
       /**
        * @memberof module:zotohlab/p/s/movebombs~MoveBombs
        * @method addToEngine
@@ -63,7 +61,6 @@ define('zotohlab/p/s/movebombs',
        */
       addToEngine(engine) {
       },
-
       /**
        * @memberof module:zotohlab/p/s/movebombs~MoveBombs
        * @method update
@@ -74,7 +71,6 @@ define('zotohlab/p/s/movebombs',
           this.processMovement(dt);
         }
       },
-
       /**
        * @method moveBomb
        * @private
@@ -84,7 +80,6 @@ define('zotohlab/p/s/movebombs',
         m.sprite.setPosition(pos.x + m.vel.x * dt,
                              pos.y + m.vel.y * dt);
       },
-
       /**
        * @method processMovement
        * @private

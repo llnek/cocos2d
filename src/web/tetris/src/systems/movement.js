@@ -13,7 +13,6 @@
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/gnodes
  * @requires zotohlab/p/s/utils
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/movement
@@ -23,23 +22,22 @@ define("zotohlab/p/s/movement",
        ['zotohlab/p/elements',
         'zotohlab/p/gnodes',
         'zotohlab/p/s/utils',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (cobjs, gnodes, utils, sjs, sh, ccsx) { "use strict";
+  function (cobjs, gnodes, utils, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/movement */
-    let exports = {    },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class MovementSystem
      */
     MovementSystem = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/movement~MovementSystem
        * @method constructor
@@ -48,7 +46,6 @@ define("zotohlab/p/s/movement",
       constructor(options) {
         this.state = options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/movement~MovementSystem
        * @method removeFromEngine
@@ -57,7 +54,6 @@ define("zotohlab/p/s/movement",
       removeFromEngine(engine) {
         this.arena=null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/movement~MovementSystem
        * @method addToEngine
@@ -66,7 +62,6 @@ define("zotohlab/p/s/movement",
       addToEngine(engine) {
         this.arena = engine.getNodeList(gnodes.ArenaNode);
       },
-
       /**
        * @memberof module:zotohlab/p/s/movement~MovementSystem
        * @method update
@@ -85,7 +80,6 @@ define("zotohlab/p/s/movement",
 
         }
       },
-
       /**
        * @method doFall
        * @private

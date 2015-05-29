@@ -23,13 +23,12 @@ define("zotohlab/p/gnodes",
 
     /** @alias module:zotohlab/p/gnodes */
     let exports= {},
-    undef;
-
+    undef,
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class BoardNode
      */
-    const BoardNode = sh.Ashley.nodeDef({
+    BoardNode = sh.Ashley.nodeDef({
       /**
        * @memberof module:zotohlab/p/gnodes~BoardNode
        * @property {UISelection} selection

@@ -10,56 +10,31 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
+ * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xscenes
  * @module zotohlab/p/hud
  */
 define("zotohlab/p/hud",
 
-       ['cherimoia/skarojs',
+       ['zotohlab/asx/xscenes',
         'zotohlab/asterix',
-        'zotohlab/asx/ccsx',
-        'zotohlab/asx/xscenes'],
+        'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, ccsx, scenes) { "use strict";
+  function (scenes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/hud */
     let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
-    //////////////////////////////////////////////////////////////////////////
-    /**
-     * @extends module:zotohlab/asx/xscenes.XLayer
-     * @class BackLayer
-     */
-    BackLayer = scenes.XLayer.extend({
-
-      /**
-       * @method pkInit
-       * @protected
-       */
-      pkInit() {
-        this.centerImage(sh.getImagePath('game.bg'));
-      },
-
-      /**
-       * @method rtti
-       */
-      rtti() { return 'BackLayer'; }
-
-    }),
-
     //////////////////////////////////////////////////////////////////////////
     /**
      * @extends module:zotohlab/asx/xscenes.XGameHUDLayer
      * @class HUDLayer
      */
     HUDLayer = scenes.XGameHUDLayer.extend({
-
       /**
        * @method ctor
        * @constructs
@@ -92,7 +67,6 @@ define("zotohlab/p/hud",
         };
         this.color= color;
       },
-
       /**
        * @method initScores
        * @protected
@@ -102,7 +76,6 @@ define("zotohlab/p/hud",
         this.scores[csts.P2_COLOR] =  0;
         this.scores[csts.P1_COLOR] =  0;
       },
-
       /**
        * @method setGameMode
        * @protected
@@ -111,13 +84,12 @@ define("zotohlab/p/hud",
         this.mode= mode;
         this.initScores();
       },
-
       /**
        * @method initLabels
        * @protected
        */
       initLabels() {
-        let cw= ccsx.center(),
+        const cw= ccsx.center(),
         c= this.color,
         wb= ccsx.vbox();
 
@@ -172,7 +144,6 @@ define("zotohlab/p/hud",
         });
         this.addItem(this.result);
       },
-
       /**
        * @method showTimer
        * @private
@@ -205,17 +176,14 @@ define("zotohlab/p/hud",
         this.schedule(this.updateTimer, 1.0);
         this.countDownState= true;
       },
-
       /**
        * @method updateTimer
        * @private
        */
       updateTimer(dt) {
-
         if (!this.countDownState) { return; } else {
           this.countDownValue -= 1;
         }
-
         if (this.countDownValue < 0) {
           this.killTimer();
           sh.fire('/player/timer/expired');
@@ -224,7 +192,6 @@ define("zotohlab/p/hud",
           this.showCountDown();
         }
       },
-
       /**
        * @method showCountDown
        * @private
@@ -234,7 +201,6 @@ define("zotohlab/p/hud",
           this.countDown.setString(msg || '' + this.countDownValue);
         }
       },
-
       /**
        * @method killTimer
        * @private
@@ -247,7 +213,6 @@ define("zotohlab/p/hud",
         this.countDownState=false;
         this.countDownValue=0;
       },
-
       /**
        * @method updateScore
        * @private
@@ -256,7 +221,6 @@ define("zotohlab/p/hud",
         this.scores[pcolor] += value;
         this.drawScores();
       },
-
       /**
        * @method update
        * @protected
@@ -268,7 +232,6 @@ define("zotohlab/p/hud",
           this.drawResult(pnum);
         }
       },
-
       /**
        * @method endGame
        * @private
@@ -279,7 +242,6 @@ define("zotohlab/p/hud",
         this.status.setVisible(false);
         this.drawResult(winner);
       },
-
       /**
        * @method drawStatusText
        * @private
@@ -287,7 +249,6 @@ define("zotohlab/p/hud",
       drawStatusText(obj, msg) {
         obj.setString(msg || '');
       },
-
       /**
        * @method drawScores
        * @private
@@ -301,7 +262,6 @@ define("zotohlab/p/hud",
         this.score1.setString(n1);
         this.score2.setString(n2);
       },
-
       /**
        * @method drawResult
        * @private
@@ -318,7 +278,6 @@ define("zotohlab/p/hud",
 
         this.drawStatusText(this.result, msg);
       },
-
       /**
        * @method drawStatus
        * @private
@@ -332,7 +291,6 @@ define("zotohlab/p/hud",
           }));
         }
       },
-
       /**
        * @method regoPlayers
        * @private
@@ -346,7 +304,6 @@ define("zotohlab/p/hud",
         this.p1ID= p1ids[0];
         this.title.setString(this.p1ID + " / " + this.p2ID);
       },
-
       /**
        * @method resetAsNew
        */
@@ -354,7 +311,6 @@ define("zotohlab/p/hud",
         this.initScores();
         this.reset();
       },
-
       /**
        * @method reset
        */
@@ -363,15 +319,9 @@ define("zotohlab/p/hud",
         this.result.setVisible(false);
         this.status.setVisible(true);
       }
-
     });
 
     exports = /** @lends exports# */{
-      /**
-       * @property {BackLayer} BackLayer
-       */
-      BackLayer: BackLayer,
-
       /**
        * @property {HUDLayer} HUDLayer
        */
@@ -380,7 +330,6 @@ define("zotohlab/p/hud",
 
     return exports;
 });
-
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

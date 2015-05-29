@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/uiselect
@@ -19,24 +18,22 @@
 define("zotohlab/p/s/uiselect",
 
        ['zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs, sh, ccsx) { "use strict";
+  function (gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/uiselect */
     let exports = {},
+    sjs= sh.skarojs,
     xcfg= sh.xcfg,
     csts = xcfg.csts,
-    undef;
-
+    undef,
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class SelectionSystem
      */
-    const SelectionSystem = sh.Ashley.sysDef({
-
+    SelectionSystem = sh.Ashley.sysDef({
       /**
        * @memberof module:zotohlab/p/s/uiselect~SelectionSystem
        * @method constructor
@@ -46,7 +43,6 @@ define("zotohlab/p/s/uiselect",
         this.events= options.selQ;
         this.state= options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/uiselect~SelectionSystem
        * @method removefromEngine
@@ -55,7 +51,6 @@ define("zotohlab/p/s/uiselect",
       removeFromEngine(engine) {
         this.gui=null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/uiselect~SelectionSystem
        * @method addToEngine
@@ -64,7 +59,6 @@ define("zotohlab/p/s/uiselect",
       addToEngine(engine) {
         this.gui = engine.getNodeList(gnodes.GUINode);
       },
-
       /**
        * @memberof module:zotohlab/p/s/uiselect~SelectionSystem
        * @method update
@@ -81,7 +75,6 @@ define("zotohlab/p/s/uiselect",
           this.events.length=0;
         }
       },
-
       /**
        * @method process
        * @private
@@ -119,7 +112,6 @@ define("zotohlab/p/s/uiselect",
      * @property {Number} Priority
      */
     SelectionSystem.Priority= sh.ftypes.Move;
-
     exports= SelectionSystem;
     return exports;
 });

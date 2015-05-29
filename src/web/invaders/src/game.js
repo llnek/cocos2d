@@ -10,43 +10,57 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
+ * @requires zotohlab/asx/xscenes
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/sysobjs
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xscenes
- * @requires zotohlab/asx/xmmenus
  * @requires zotohlab/p/hud
  * @module zotohlab/p/arena
  */
 define('zotohlab/p/arena',
 
-       ['zotohlab/p/s/utils',
-       'zotohlab/p/sysobjs',
-       'cherimoia/skarojs',
-       'zotohlab/asterix',
-       'zotohlab/asx/ccsx',
-       'zotohlab/asx/xscenes',
-       'zotohlab/asx/xmmenus',
-       'zotohlab/p/hud'],
+       ['zotohlab/asx/xscenes',
+        'zotohlab/p/s/utils',
+        'zotohlab/p/sysobjs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/p/hud'],
 
-  function (utils, sobjs, sjs, sh, ccsx,
-            scenes, mmenus, huds) { "use strict";
+  function (scenes, utils, sobjs,
+            sh, ccsx, huds) { "use strict";
 
     /** @alias module:zotohlab/p/arena */
-    let exports = {     },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
+    /**
+     * @extends module:zotohlab/asx/xscenes.XLayer
+     * @class BackLayer
+     */
+    BackLayer = scenes.XLayer.extend({
+      /**
+       * @method rtti
+       */
+      rtti() { return 'BackLayer'; },
+      /**
+       * @method setup
+       * @protected
+       */
+      setup() {
+        this.centerImage(sh.getImagePath('game.bg'));
+      }
+    }),
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @extends module:zotohlab/asx/xscenes.XGameLayer
      * @class GameLayer
      */
     GameLayer = scenes.XGameLayer.extend({
-
       /**
        * @method reset
        * @protected
@@ -60,7 +74,6 @@ define('zotohlab/p/arena',
         }
         this.getHUD().reset();
       },
-
       /**
        * @method operational
        * @protected
@@ -68,14 +81,12 @@ define('zotohlab/p/arena',
       operational() {
         return this.options.running;
       },
-
       /**
        * @method replay
        */
       replay() {
         this.play(false);
       },
-
       /**
        * @method play
        */
@@ -100,9 +111,7 @@ define('zotohlab/p/arena',
           sobjs.MovementMissiles,
           sobjs.CollisionSystem,
           sobjs.Resolution ]);
-
       },
-
       /**
        * @method spawnPlayer
        * @private
@@ -110,7 +119,6 @@ define('zotohlab/p/arena',
       spawnPlayer() {
         sh.factory.bornShip();
       },
-
       /**
        * @method onPlayerKilled
        * @private
@@ -123,7 +131,6 @@ define('zotohlab/p/arena',
           this.spawnPlayer();
         }
       },
-
       /**
        * @method onNewGame
        * @private
@@ -133,7 +140,6 @@ define('zotohlab/p/arena',
         this.setGameMode(mode);
         this.play(true);
       },
-
       /**
        * @method onEarnScore
        * @private
@@ -141,7 +147,6 @@ define('zotohlab/p/arena',
       onEarnScore(msg) {
         this.getHUD().updateScore( msg.score);
       },
-
       /**
        * @method onDone
        * @private
@@ -155,12 +160,10 @@ define('zotohlab/p/arena',
     });
 
     exports= /** @lends exports# */{
-
       /**
        * @property {String} rtti
        */
       rtti : sh.ptypes.game,
-
       /**
        * @method reify
        * @param {Object} options
@@ -168,7 +171,7 @@ define('zotohlab/p/arena',
        */
       reify(options) {
         const scene = new scenes.XSceneFactory([
-          huds.BackLayer,
+          BackLayer,
           GameLayer,
           huds.HUDLayer ]).reify(options);
 
@@ -176,7 +179,7 @@ define('zotohlab/p/arena',
           sh.main.onEarnScore(msg);
         }).
         onmsg('/hud/showmenu', (t,msg) => {
-          mmenus.showMenu();
+          scenes.showMenu();
         }).
         onmsg('/hud/replay', (t,msg) => {
           sh.main.replay();

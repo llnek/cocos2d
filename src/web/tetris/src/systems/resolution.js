@@ -12,7 +12,6 @@
 /**
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/resolution
@@ -21,23 +20,22 @@ define("zotohlab/p/s/resolution",
 
        ["zotohlab/p/s/utils",
         'zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (utils, gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/resolution */
-    let exports = {   },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class ResolutionSystem
      */
     ResolutionSystem = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
        * @method constructor
@@ -46,7 +44,6 @@ define("zotohlab/p/s/resolution",
       constructor(options) {
         this.state = options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
        * @method removeFromEngine
@@ -55,7 +52,6 @@ define("zotohlab/p/s/resolution",
       removeFromEngine(engine) {
         this.arena=null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
        * @method addToEngine
@@ -64,7 +60,6 @@ define("zotohlab/p/s/resolution",
       addToEngine(engine) {
         this.arena = engine.getNodeList(gnodes.ArenaNode);
       },
-
       /**
        * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
        * @method update
@@ -104,7 +99,6 @@ define("zotohlab/p/s/resolution",
           motion.down = false;
         }
       },
-
       /**
        * @method fastDrop
        * @private

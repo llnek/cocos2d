@@ -35,11 +35,11 @@ define("zotohlab/p/s/supervisor",
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
+    //////////////////////////////////////////////////////////////////////////
     /**
      * class GameSupervisor
      */
     GameSupervisor = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method constructor
@@ -49,7 +49,6 @@ define("zotohlab/p/s/supervisor",
         this.state= options;
         this.inited=false;
       },
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method removeFromEngine
@@ -58,7 +57,6 @@ define("zotohlab/p/s/supervisor",
       removeFromEngine(engine) {
         this.ships=null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method addToEngine
@@ -67,7 +65,6 @@ define("zotohlab/p/s/supervisor",
       addToEngine(engine) {
         this.ships = engine.getNodeList(gnodes.ShipMotionNode);
       },
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method update
@@ -79,7 +76,6 @@ define("zotohlab/p/s/supervisor",
           this.inited=true;
         }
       },
-
       /**
        * @method initBackSkies
        * @private
@@ -91,7 +87,6 @@ define("zotohlab/p/s/supervisor",
         this.state.backSky = bs;
         this.state.backSkyDim = cc.size(bs.size());
       },
-
       /**
        * @method sharedExplosion
        * @private
@@ -109,12 +104,10 @@ define("zotohlab/p/s/supervisor",
         animation = new cc.Animation(animFrames, 0.04);
         cc.animationCache.addAnimation(animation, "Explosion");
       },
-
       /**
        * @method onceOnly
        * @private
        */
-
       onceOnly() {
         this.state.player= sh.factory.createShip();
 

@@ -10,21 +10,20 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
- * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asterix
  * @module zotohlab/p/elements
  */
 define("zotohlab/p/elements",
 
-       ['cherimoia/skarojs',
-        'zotohlab/asterix',
+       ['zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, ccsx) { "use strict";
+  function (sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/elements */
     let exports= {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef;
@@ -33,7 +32,7 @@ define("zotohlab/p/elements",
     /**
      * @class Ball
      */
-    exports.Ball = sh.Ashley.compDef({
+    Ball = sh.Ashley.compDef({
       /**
        * @memberof module:zotohlab/p/elements~Ball
        * @constructor
@@ -45,12 +44,16 @@ define("zotohlab/p/elements",
         this.speed= speed;
       }
     });
+    /**
+     * @property {Ball} Ball
+     */
+    exports.Ball = Ball;
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class Motion
      */
-    exports.Motion = sh.Ashley.casDef({
+    Motion = sh.Ashley.casDef({
 
       /**
        * @memberof module:zotohlab/p/elements~Motion
@@ -61,12 +64,16 @@ define("zotohlab/p/elements",
         this.left= false;
       }
     });
+    /**
+     * @property {Motion} Motion
+     */
+    exports.Motion= Motion;
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class Paddle
      */
-    exports.Paddle = sh.Ashley.compDef({
+    Paddle = sh.Ashley.compDef({
 
       /**
        * @memberof module:zotohlab/p/elements~Paddle
@@ -120,12 +127,16 @@ define("zotohlab/p/elements",
       }
 
     });
+    /**
+     * @property {Paddle} Paddle
+     */
+    exports.Paddle= Paddle;
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class Player
      */
-    exports.Player = sh.Ashley.casDef({
+    Player = sh.Ashley.casDef({
 
       /**
        * @memberof module:zotohlab/p/elements~Player
@@ -143,12 +154,16 @@ define("zotohlab/p/elements",
       }
 
     });
+    /**
+     * @property {Player} Player
+     */
+    exports.Player= Player;
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class Faux
      */
-    exports.Faux= sh.Ashley.casDef({
+    Faux= sh.Ashley.casDef({
 
       /**
        * @memberof module:zotohlab/p/elements~Faux
@@ -158,12 +173,16 @@ define("zotohlab/p/elements",
       }
 
     });
+    /**
+     * @property {Faux} Faux
+     */
+    exports.Faux = Faux;
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class Position
      */
-    exports.Position = sh.Ashley.casDef({
+    Position = sh.Ashley.casDef({
 
       /**
        * @memberof module:zotohlab/p/elements~Position
@@ -176,12 +195,16 @@ define("zotohlab/p/elements",
       }
 
     });
+    /**
+     * @property {Position} Position
+     */
+    exports.Position= Position;
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class Velocity
      */
-    exports.Velocity = sh.Ashley.casDef({
+    Velocity = sh.Ashley.casDef({
 
       /**
        * @memberof module:zotohlab/p/elements~Velocity
@@ -197,6 +220,10 @@ define("zotohlab/p/elements",
       }
 
     });
+    /**
+     * @property {Velocity} Velocity
+     */
+    exports.Velocity= Velocity;
 
     return exports;
 });

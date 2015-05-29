@@ -10,43 +10,38 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
+ * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xmmenus
- * @requires zotohlab/asx/xscenes
  * @module zotohlab/p/mmenu
  */
 define("zotohlab/p/mmenu",
 
-       ['cherimoia/skarojs',
-       'zotohlab/asterix',
-       'zotohlab/asx/ccsx',
-       'zotohlab/asx/xmmenus',
-       'zotohlab/asx/xscenes'],
+       ['zotohlab/asx/xscenes',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, ccsx, mmenus, scenes) { "use strict";
+  function (scenes, sh, ccsx ) { "use strict";
 
     let SEED= { ppids: { }, pnum: 1, mode: 0 },
     /** @alias zotohlab/p/mmenu */
     exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     R=sjs.ramda,
     csts= xcfg.csts,
     undef,
-
     //////////////////////////////////////////////////////////////////////////////
     /**
-     * @extends module:zotohlab/asx/xmmenus.XMenuBackLayer
-     * @class BackLayer
+     * @extends module:zotohlab/asx/xmmenus.XMenuLayer
+     * @class MainMenuLayer
      */
-    BackLayer = mmenus.XMenuBackLayer.extend({
-
+    MainMenuLayer = scenes.XMenuLayer.extend({
       /**
-       * @method setTitle
-       * @protected
+       * @method title
+       * @private
        */
-      setTitle() {
+      title() {
         const wb=ccsx.vbox(),
         cw= ccsx.center(),
         tt=ccsx.bmfLabel({
@@ -57,66 +52,74 @@ define("zotohlab/p/mmenu",
           scale: xcfg.game.scale
         });
         this.addItem(tt);
-      }
-
-    }),
-
-    //////////////////////////////////////////////////////////////////////////////
-    /**
-     * @extends module:zotohlab/asx/xmmenus.XMenuLayer
-     * @class MainMenuLayer
-     */
-    MainMenuLayer = mmenus.XMenuLayer.extend({
-
+      },
       /**
-       * @method pkInit
+       * @method onplaynet
+       * @private
+       */
+      onplaynet(msg) {
+        const net = sh.protos[sh.ptypes.online],
+        game = sh.protos[sh.ptypes.game],
+        mm = sh.protos[sh.ptypes.mmenu],
+        dir=cc.director;
+        msg.onBack=() => {
+          dir.runScene( mm.reify());
+        };
+        msg.yes= (wss,pnum,startmsg) => {
+          const m= sjs.mergeEx(R.omit(['yes','onBack'], msg),
+                               { wsock: wss, pnum: pnum });
+          m.ppids = startmsg.ppids;
+          dir.runScene( game.reify(m));
+        }
+        dir.runScene(net.reify(msg));
+      },
+      /**
+       * @method onplay
+       * @private
+       */
+      onplay(msg) {
+        cc.director.runScene(sh.protos[sh.ptypes.game].reify(msg));
+      },
+      /**
+       * @method setup
        * @protected
        */
-      pkInit() {
+      setup() {
+        this.centerImage(sh.getImagePath('gui.mmenu.menu.bg'));
+        this.title();
         const color= cc.color('#32baf4'),
         cw= ccsx.center(),
         wb= ccsx.vbox(),
+        p={},
         menu = ccsx.vmenu([
           { nnn: '#online.png',
+            target: this,
             cb() {
-              sh.fire('/mmenu/online',
-                      sjs.mergeEx(SEED,
-                                  { mode: sh.gtypes.ONLINE_GAME }));
+              this.onplaynet(sjs.mergeEx(SEED,
+                                         {mode: sh.gtypes.ONLINE_GAME }));
             }
           },
           { nnn: '#player2.png',
+            target: this,
             cb() {
-              const pobj2={};
-              pobj2[ sh.l10n('%p1') ] = [ 1, sh.l10n('%player1') ];
-              pobj2[ sh.l10n('%p2') ] = [ 2, sh.l10n('%player2') ];
-              sh.fire('/mmenu/newgame',
-                      sjs.mergeEx(SEED, {
-                             ppids: pobj2,
-                             mode: sh.gtypes.P2_GAME }));
+              p[ sh.l10n('%p1') ] = [ 1, sh.l10n('%player1') ];
+              p[ sh.l10n('%p2') ] = [ 2, sh.l10n('%player2') ];
+              this.onplay(sjs.mergeEx(SEED,
+                                      {ppids: p,
+                                       mode: sh.gtypes.P2_GAME }));
             }
           },
-          {
-            nnn: '#player1.png',
+          { nnn: '#player1.png',
+            target: this,
             cb() {
-              const pobj1={};
-              pobj1[ sh.l10n('%cpu') ] = [ 2, sh.l10n('%computer') ];
-              pobj1[ sh.l10n('%p1') ] = [ 1,  sh.l10n('%player1') ];
-              sh.fire('/mmenu/newgame',
-                      sjs.mergeEx(SEED, {
-                             ppids: pobj1,
-                             mode: sh.gtypes.P1_GAME }));
+              p[ sh.l10n('%cpu') ] = [ 2, sh.l10n('%computer') ];
+              p[ sh.l10n('%p1') ] = [ 1,  sh.l10n('%player1') ];
+              this.onplay(sjs.mergeEx(SEED,
+                                      { ppids: p,
+                                        mode: sh.gtypes.P1_GAME }));
             }
-          }
-        ]);
-        menu.setPosition(cw);
+          }], { pos: cw });
         this.addItem(menu);
-
-        this.mkAudio({
-          pos: cc.p(wb.right - csts.TILE,
-                    wb.bottom + csts.TILE),
-          color: color,
-          anchor: ccsx.acs.BottomRight
-        });
 
         this.mkBackQuit(false, [
           { nnn: '#icon_back.png',
@@ -134,50 +137,31 @@ define("zotohlab/p/mmenu",
           m.setPosition(wb.left + csts.TILE + z.width * 1.1,
                         wb.bottom + csts.TILE + z.height * 0.45);
         });
+
+        this.mkAudio({
+          pos: cc.p(wb.right - csts.TILE,
+                    wb.bottom + csts.TILE),
+          color: color,
+          anchor: ccsx.acs.BottomRight
+        });
       }
 
     });
 
     exports= /** @lends exports# */{
-
       /**
        * @property {String} rtti
        */
       rtti : sh.ptypes.mmenu,
-
       /**
        * @method reify
        * @param {Object} options
        * @return {cc.Scene}
        */
       reify(options) {
-
-        const net = sh.protos[sh.ptypes.online],
-        game = sh.protos[sh.ptypes.game],
-        mm = sh.protos[sh.ptypes.mmenu],
-        dir=cc.director,
-        scene = new scenes.XSceneFactory([
-          BackLayer,
+        return new scenes.XSceneFactory([
           MainMenuLayer
         ]).reify(options);
-
-        scene.onmsg('/mmenu/newgame', (topic, msg) => {
-          dir.runScene( game.reify(msg));
-        }).
-        onmsg('/mmenu/online', (topic, msg) => {
-          msg.onBack=() => {
-            dir.runScene( mm.reify());
-          };
-          msg.yes= (wss,pnum,startmsg) => {
-            const m= sjs.mergeEx(R.omit(['yes','onBack'], msg),
-                                 { wsock: wss, pnum: pnum });
-            m.ppids = startmsg.ppids;
-            dir.runScene( game.reify(m));
-          }
-          dir.runScene( net.reify(msg));
-        });
-
-        return scene;
       }
     };
 

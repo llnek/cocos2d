@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/asterix
- * @requires zotohlab/asx/online
  * @requires zotohlab/asx/msgbox
  * @requires zotohlab/asx/ynbox
  * @requires zotohlab/p/splash
@@ -22,17 +21,16 @@
 define("zotohlab/p/protodefs",
 
        ['zotohlab/asterix',
-        'zotohlab/asx/online',
         'zotohlab/asx/msgbox',
         'zotohlab/asx/ynbox',
         'zotohlab/p/splash',
         'zotohlab/p/mmenu',
         'zotohlab/p/arena'],
 
-  function (sh, online, msgbox, ynbox,
+  function (sh, msgbox, ynbox,
             splash, mmenu, arena) { "use strict";
 
-    let ps= [online, splash, mmenu, msgbox, ynbox, arena],
+    let ps= [splash, mmenu, msgbox, ynbox, arena],
     protos= sh.protos,
     sjs= sh.skarojs,
     /** @alias module:zotohlab/p/protodefs */

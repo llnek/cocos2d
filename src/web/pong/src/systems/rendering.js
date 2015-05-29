@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/rendering
@@ -19,23 +18,22 @@
 define("zotohlab/p/s/rendering",
 
        ['zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs, sh, ccsx) { "use strict";
+  function (gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/rendering */
-    let exports= {    },
+    let exports= {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class RenderSystem
      */
     RenderSystem = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/rendering~RenderSystem
        * @method constructor
@@ -44,7 +42,6 @@ define("zotohlab/p/s/rendering",
       constructor(options) {
         this.state = options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/rendering~RenderSystem
        * @method removeFromEngine
@@ -52,7 +49,6 @@ define("zotohlab/p/s/rendering",
        */
       removeFromEngine(engine) {
       },
-
       /**
        * @memberof module:zotohlab/p/s/rendering~RenderSystem
        * @method addToEngine
@@ -60,7 +56,6 @@ define("zotohlab/p/s/rendering",
        */
       addToEngine(engine) {
       },
-
       /**
        * @memberof module:zotohlab/p/s/rendering~RenderSystem
        * @method update

@@ -10,88 +10,96 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
+ * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xscenes
- * @requires zotohlab/asx/xsplash
  * @module zotohlab/p/splash
  */
 define("zotohlab/p/splash",
 
-       ['cherimoia/skarojs',
+       ['zotohlab/asx/xscenes',
         'zotohlab/asterix',
-        'zotohlab/asx/ccsx',
-        'zotohlab/asx/xscenes',
-        'zotohlab/asx/xsplash'],
+        'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, ccsx, scenes, splash) { "use strict";
+  function (scenes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/splash */
-    let exports= {      },
+    let exports= {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
-     * @extends module:zotohlab/asx/xsplash.XSplashLayer
+     * @extends module:zotohlab/asx/xscenes.XLayer
      * @class SplashLayer
      */
-    SplashLayer = splash.XSplashLayer.extend({
-
+    SplashLayer = scenes.XLayer.extend({
       /**
-       * @method setTitle
-       * @protected
+       * @method title
+       * @private
        */
-      setTitle() {
+      title() {
         const cw = ccsx.center(),
         wb = ccsx.vbox();
         this.addFrame('#title.png',
                       cc.p(cw.x, wb.top * 0.9));
       },
-
       /**
-       * @method setPlay
-       * @protected
+       * @method btns
+       * @private
        */
-      setPlay: function() {
+      btns() {
         const cw = ccsx.center(),
         wb = ccsx.vbox(),
-        menu = ccsx.pmenu1({
+        menu = ccsx.vmenu([{
           nnn: '#play.png',
+          target: this,
           cb() {
-            sh.fire('/splash/playgame');
+            this.onplay();
           }
-        });
-        menu.setPosition(cw.x, wb.top * 0.2);
+        }],
+        { pos: cc.p(cw.x, wb.top * 0.1) });
         this.addItem(menu);
+      },
+      /**
+       * @method onplay
+       * @private
+       */
+      onplay() {
+        const ss= sh.protos[sh.ptypes.start],
+        mm= sh.protos[sh.ptypes.mmenu],
+        dir= cc.director;
+        dir.runScene( mm.reify({
+          onBack() { dir.runScene( ss.reify() ); }
+        }));
+      },
+      /**
+       * @method setup
+       * @protected
+       */
+      setup() {
+        this.centerImage(sh.getImagePath('game.bg'));
+        this.title();
+        this.btns();
       }
 
     });
 
     exports= /** @lends exports# */{
-
       /**
        * @property {String} rtti
        */
       rtti : sh.ptypes.start,
-
       /**
        * @method reify
        * @param {Object} options
        * @return {cc.Scene}
        */
       reify(options) {
-        const ss= sh.protos[sh.ptypes.start],
-        mm= sh.protos[sh.ptypes.mmenu],
-        dir= cc.director;
         return new scenes.XSceneFactory([
           SplashLayer
-        ]).reify(options).onmsg('/splash/playgame', () => {
-            dir.runScene( mm.reify({
-              onBack() { dir.runScene( ss.reify() ); }
-            }));
-        });
+        ]).reify(options);
       }
 
     };

@@ -670,24 +670,38 @@ define("zotohlab/asx/ccsx",
        * Create a vertically aligned menu with graphic buttons.
        * @method
        * @param {Array} items
-       * @param {Number} scale
-       * @param {Number} padding
+       * @param {Object} options
        * @return {cc.Menu}
        */
-      vmenu(items, scale, padding) {
-        return this.pmenu(true, items, scale, padding);
+      vmenu(items, options) {
+        const hint=options || {},
+        m= this.pmenu(true,
+                      items,
+                      hint.scale,
+                      hint.padding);
+        if (!!hint.pos) {
+          m.setPosition(hint.pos);
+        }
+        return m;
       },
 
       /**
        * Create a horizontally aligned menu with graphic buttons.
        * @method
        * @param {Array} items
-       * @param {Number} scale
-       * @param {Number} padding
+       * @param {Object} options
        * @return {cc.Menu}
        */
-      hmenu(items, scale, padding) {
-        return this.pmenu(false, items, scale, padding);
+      hmenu(items, options) {
+        const hint= options || {},
+        m= this.pmenu(false,
+                      items,
+                      hint.scale,
+                      hint.padding);
+        if (!!hint.pos) {
+          m.setPosition(hint.pos);
+        }
+        return m;
       },
 
       /**

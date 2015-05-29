@@ -30,13 +30,12 @@ define('zotohlab/p/hud',
     csts= xcfg.csts,
     R= sjs.ramda,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @extends module:zotohlab/asx/xscenes.XGameHUDLayer
      * @class HUDLayer
      */
     HUDLayer = scenes.XGameHUDLayer.extend({
-
       /**
        * @method initAtlases
        * @protected
@@ -44,7 +43,13 @@ define('zotohlab/p/hud',
       initAtlases() {
         this.regoAtlas(this.hudAtlas());
       },
-
+      /**
+       * @method hudAtlas
+       * @protected
+       */
+      hudAtlas() {
+        return 'game-pics';
+      },
       /**
        * @method initLabels
        * @protected
@@ -63,7 +68,6 @@ define('zotohlab/p/hud',
 
         this.addChild(this.scoreLabel, this.lastZix, ++this.lastTag);
       },
-
       /**
        * @method initIcons
        * @protected
@@ -80,7 +84,6 @@ define('zotohlab/p/hud',
 
         this.lives.create();
       },
-
       /**
        * @method resetAsNew
        * @protected
@@ -89,7 +92,6 @@ define('zotohlab/p/hud',
         this.reset();
         this.score=0;
       },
-
       /**
        * @method ctor
        * @constructs

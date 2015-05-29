@@ -10,25 +10,22 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
+ * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xmmenus
- * @requires zotohlab/asx/xscenes
  * @module zotohlab/p/mmenu
  */
 define("zotohlab/p/mmenu",
 
-       ['cherimoia/skarojs',
+       ['zotohlab/asx/xscenes',
         'zotohlab/asterix',
-        'zotohlab/asx/ccsx',
-        'zotohlab/asx/xmmenus',
-        'zotohlab/asx/xscenes'],
+        'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, ccsx, mmenus, scenes) { "use strict";
+  function (scenes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/mmenu */
     let exports= {},
+    sjs=sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R=sjs.ramda,
@@ -44,19 +41,25 @@ define("zotohlab/p/mmenu",
       pnum: 1,
       mode: 0
     },
-
     //////////////////////////////////////////////////////////////////////////////
     /**
-     * @extends module:zotohlab/asx/xmmenus.XMenuBackLayer
+     * @extends module:zotohlab/asx/xscenes.XLayer
      * @class BackLayer
      */
-    BackLayer = mmenus.XMenuBackLayer.extend({
-
+    BackLayer = scenes.XLayer.extend({
       /**
-       * @method setTitle
-       * @protected
+       * @method setup
+       * @private
        */
-      setTitle() {
+      setup() {
+        this.centerImage(sh.getImagePath('gui.mmenu.menu.bg'));
+        this.title();
+      },
+      /**
+       * @method title
+       * @private
+       */
+      title() {
         const wb=ccsx.vbox(),
         cw= ccsx.center(),
         tt=ccsx.bmfLabel({
@@ -68,57 +71,78 @@ define("zotohlab/p/mmenu",
         });
         this.addItem(tt);
       }
-
     }),
-
     //////////////////////////////////////////////////////////////////////////////
     /**
-     * @extends module:zotohlab/asx/xmmenus.XMenuLayer
+     * @extends module:zotohlab/asx/xscenes.XMenuLayer
      * @class MainMenuLayer
      */
-    MainMenuLayer = mmenus.XMenuLayer.extend({
-
+    MainMenuLayer = scenes.XMenuLayer.extend({
       /**
-       * @method pkInit
+       * @method onnetplay
+       * @private
+       */
+      onnetplay(msg) {
+        const gl= sh.protos[sh.ptypes.game],
+        ol= sh.protos[sh.ptypes.online],
+        mm= sh.protos[sh.ptypes.mmenu],
+        dir= cc.director;
+        msg.yes= (wss,pnum,startmsg) => {
+          const m= sjs.mergeEx( R.omit(['yes', 'onBack'], msg), {
+            wsock: wss,
+            pnum: pnum
+          });
+          sjs.merge(m, startmsg);
+          dir.runScene( gl.reify(m));
+        }
+        msg.onBack= () => { dir.runScene( mm.reify()); };
+        dir.runScene(ol.reify(msg));
+      },
+      /**
+       * @method onplay
+       * @private
+       */
+      onplay(msg) {
+        cc.director.runScene(sh.protos[sh.ptypes.game].reify(msg));
+      },
+      /**
+       * @method setup
        * @protected
        */
-      pkInit() {
-
-        let color= cc.color(94,49,120),
+      setup() {
+        const color= cc.color(94,49,120),
         cw = ccsx.center(),
         wb= ccsx.vbox(),
+        p={},
         menu= ccsx.vmenu([
           { nnn: '#online.png',
+            target: this,
             cb() {
-              sh.fire('/mmenu/online',
-                      sjs.mergeEx(SEED,
-                                  { mode: sh.gtypes.ONLINE_GAME }));
+              this.onnetplay(sjs.mergeEx(SEED,
+                                         { mode: sh.gtypes.ONLINE_GAME}));
             }},
           { nnn: '#player2.png',
+            target: this,
             cb() {
-              const p={};
               p[ sh.l10n('%p1') ] = [ 1, sh.l10n('%player1') ];
               p[ sh.l10n('%p2') ] = [ 2, sh.l10n('%player2') ];
-              sh.fire('/mmenu/newgame',
-                      sjs.mergeEx(SEED,
-                                  {ppids: p,
-                                   mode: sh.gtypes.P2_GAME }));
+              this.onplay(sjs.mergeEx(SEED,
+                                      {ppids: p,
+                                       mode: sh.gtypes.P2_GAME }));
             }},
           { nnn: '#player1.png',
+            target: this,
             cb() {
-              const p={};
               p[ sh.l10n('%cpu') ] = [ 2, sh.l10n('%computer') ];
               p[ sh.l10n('%p1') ] = [ 1,  sh.l10n('%player1') ];
-              sh.fire('/mmenu/newgame',
-                      sjs.mergeEx(SEED,
-                                  {ppids: p,
-                                   mode: sh.gtypes.P1_GAME }));
+              this.onplay(sjs.mergeEx(SEED,
+                                      {ppids: p,
+                                       mode: sh.gtypes.P1_GAME }));
             }}
-        ]);
-        menu.setPosition(cw);
+        ],
+        { pos: cw });
         this.addItem(menu);
 
-        // show back & quit
         this.mkBackQuit(false, [{
             nnn: '#icon_back.png',
             color: color,
@@ -136,16 +160,13 @@ define("zotohlab/p/mmenu",
                           wb.bottom + csts.TILE + z.height * 0.45);
         });
 
-        // show the audio button
         this.mkAudio({
           pos: cc.p(wb.right - csts.TILE,
                     wb.bottom + csts.TILE),
           color: color,
           anchor: ccsx.acs.BottomRight
         });
-
       }
-
     });
 
     exports= /** @lends exports# */{
@@ -153,7 +174,6 @@ define("zotohlab/p/mmenu",
        * @property {String} rtti
        */
       rtti: sh.ptypes.mmenu,
-
       /**
        * Create the Main Menu screen.
        * @method reify
@@ -161,36 +181,11 @@ define("zotohlab/p/mmenu",
        * @return {cc.Scene}
        */
       reify(options) {
-        let gl = sh.protos[sh.ptypes.game],
-        mm= sh.protos[sh.ptypes.mmenu],
-        ol= sh.protos[sh.ptypes.online],
-        dir= cc.director,
-        scene = new scenes.XSceneFactory([
+        return new scenes.XSceneFactory([
           BackLayer,
           MainMenuLayer
         ]).reify(options);
-
-        scene.onmsg('/mmenu/newgame',
-                    (topic, msg) => {
-                      dir.runScene( gl.reify(msg));
-        }).onmsg('/mmenu/online',
-          (topic, msg) => {
-            msg.yes= (wss,pnum,startmsg) => {
-              const m= sjs.mergeEx( R.omit(['yes', 'onBack'], msg), {
-                wsock: wss,
-                pnum: pnum
-              });
-              sjs.merge(m, startmsg);
-              dir.runScene( gl.reify(m));
-            }
-            msg.onBack=() => {
-              dir.runScene( mm.reify());
-            };
-            dir.runScene( ol.reify(msg));
-        });
-        return scene;
       }
-
     };
 
     return exports;

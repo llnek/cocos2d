@@ -12,7 +12,6 @@
 /**
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/rendering
@@ -21,25 +20,23 @@ define("zotohlab/p/s/rendering",
 
        ['zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (utils, gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/rendering */
     let exports= {},
+    sjs= sh.skarojs,
     R = sjs.ramda,
     xcfg= sh.xcfg,
     csts= xcfg.csts,
-    undef;
-
+    undef,
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class RenderSystem
      */
-    const RenderSystem = sh.Ashley.sysDef({
-
+    RenderSystem = sh.Ashley.sysDef({
       /**
        * @memberof module:zotohlab/p/s/rendering~RenderSystem
        * @method constructor
@@ -48,7 +45,6 @@ define("zotohlab/p/s/rendering",
       constructor(options) {
         this.state= options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/rendering~RenderSystem
        * @method removeFromEngine
@@ -57,7 +53,6 @@ define("zotohlab/p/s/rendering",
       removeFromEngine(engine) {
         this.board={};
       },
-
       /**
        * @memberof module:zotohlab/p/s/rendering~RenderSystem
        * @method addToEngine
@@ -66,7 +61,6 @@ define("zotohlab/p/s/rendering",
       addToEngine(engine) {
         this.board = engine.getNodeList(gnodes.BoardNode);
       },
-
       /**
        * @memberof module:zotohlab/p/s/rendering~RenderSystem
        * @method update
@@ -79,7 +73,6 @@ define("zotohlab/p/s/rendering",
           this.process(node);
         }
       },
-
       /**
        * @method process
        * @private
@@ -97,7 +90,7 @@ define("zotohlab/p/s/rendering",
             if (!!c) {
               z=cs[pos];
               if (!!z) {
-                sh.main.removeAtlasItem('markers', z[0]);
+                z[0].removeFromParent();
               }
               cs[pos] = [utils.drawSymbol(view, c[0], c[1], v),
                          c[0], c[1], v];
@@ -105,9 +98,7 @@ define("zotohlab/p/s/rendering",
           }
 
         }, values);
-
       },
-
       /**
        * Given a cell, find the screen co-ordinates for that cell.
        * @method xrefCell
@@ -135,7 +126,6 @@ define("zotohlab/p/s/rendering",
      * @property {Number} Priority
      */
     RenderSystem.Priority = sh.ftypes.Render;
-
     exports= RenderSystem;
     return exports;
 });

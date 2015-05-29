@@ -11,29 +11,27 @@
 
 /**
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @module zotohlab/p/s/motion
  */
 define("zotohlab/p/s/motion",
 
        ['zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix'],
 
-  function (gnodes, sjs,  sh) { "use strict";
+  function (gnodes, sh) { "use strict";
 
     /** @alias module:zotohlab/p/s/motion */
-    let exports = {     },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class MotionCtrlSystem
      */
     MotionCtrlSystem = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/motion~MotionCtrlSystem
        * @method constructor
@@ -42,7 +40,6 @@ define("zotohlab/p/s/motion",
       constructor(options) {
         this.state = options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/motion~MotionCtrlSystem
        * @method removeFromEngine
@@ -51,7 +48,6 @@ define("zotohlab/p/s/motion",
       removeFromEngine(engine) {
         this.nodeList=null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/motion~MotionCtrlSystem
        * @method addToEngine
@@ -60,7 +56,6 @@ define("zotohlab/p/s/motion",
       addToEngine(engine) {
         this.nodeList= engine.getNodeList(gnodes.PaddleNode);
       },
-
       /**
        * @method scanInput
        * @private
@@ -77,7 +72,6 @@ define("zotohlab/p/s/motion",
         if (cc.sys.capabilities['touches']) {
         }
       },
-
       /**
        * @memberof module:zotohlab/p/s/motion~MotionCtrlSystem
        * @method update
@@ -88,7 +82,6 @@ define("zotohlab/p/s/motion",
           this.scanInput(node, dt);
         }
       },
-
       /**
        * @method processKeys
        * @private

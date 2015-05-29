@@ -34,11 +34,11 @@ define('zotohlab/p/s/collisions',
     csts= xcfg.csts,
     R= sjs.ramda,
     undef,
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class Collisions
      */
     Collisions = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/collisions~Collisions
        * @method constructor
@@ -47,7 +47,6 @@ define('zotohlab/p/s/collisions',
       constructor(options) {
         this.state= options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/collisions~Collisions
        * @method removeFromEngine
@@ -56,7 +55,6 @@ define('zotohlab/p/s/collisions',
       removeFromEngine(engine) {
         this.ships=null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/collisions~Collisions
        * @method addToEngine
@@ -65,7 +63,6 @@ define('zotohlab/p/s/collisions',
       addToEngine(engine) {
         this.ships = engine.getNodeList(gnodes.ShipMotionNode);
       },
-
       /**
        * @method collide
        * @private
@@ -73,7 +70,6 @@ define('zotohlab/p/s/collisions',
       collide(a, b) {
         return ccsx.collide0(a.sprite, b.sprite);
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method update
@@ -92,7 +88,6 @@ define('zotohlab/p/s/collisions',
         }
 
       },
-
       /**
        * @method checkMissilesBombs
        * @private
@@ -111,7 +106,6 @@ define('zotohlab/p/s/collisions',
           });
         });
       },
-
       /**
        * @method checkMissilesAliens
        * @private
@@ -130,7 +124,6 @@ define('zotohlab/p/s/collisions',
           });
         });
       },
-
       /**
        * @checkShipBombs
        * @private
@@ -148,7 +141,6 @@ define('zotohlab/p/s/collisions',
           }
         });
       },
-
       /**
        * @method checkShipAliens
        * @private

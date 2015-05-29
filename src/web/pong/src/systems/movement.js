@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/odin
@@ -20,25 +19,24 @@
 define("zotohlab/p/s/movements",
 
        ['zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
         'zotohlab/asx/odin'],
 
-  function (gnodes, sjs, sh, ccsx, odin) { "use strict";
+  function (gnodes, sh, ccsx, odin) { "use strict";
 
     /** @alias module:zotohlab/p/s/movements */
-    let exports= {     },
+    let exports= {},
     evts= odin.Events,
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class MovementSystem
      */
     MovementSystem = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/movements~MovementSystem
        * @method constructor
@@ -47,7 +45,6 @@ define("zotohlab/p/s/movements",
       constructor(options) {
         this.state = options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/movements~MovementSystem
        * @method removeFromEngine
@@ -58,7 +55,6 @@ define("zotohlab/p/s/movements",
         this.paddles=null;
         this.balls= null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/movements~MovementSystem
        * @method addToEngine
@@ -69,7 +65,6 @@ define("zotohlab/p/s/movements",
         this.paddles= engine.getNodeList(gnodes.PaddleNode);
         this.balls= engine.getNodeList(gnodes.BallNode);
       },
-
       /**
        * @memberof module:zotohlab/p/s/movements~MovementSystem
        * @method update
@@ -99,7 +94,6 @@ define("zotohlab/p/s/movements",
           this.processBall(bnode, dt);
         }
       },
-
       /**
        * @method simuMove
        * @private
@@ -138,7 +132,6 @@ define("zotohlab/p/s/movements",
           this.clamp(node.paddle.sprite);
         }
       },
-
       //TODO: better AI please
       /**
        * @method moveRobot
@@ -188,7 +181,6 @@ define("zotohlab/p/s/movements",
           this.clamp(node.paddle.sprite);
         }
       },
-
       /**
        * @method processBall
        * @private
@@ -213,7 +205,6 @@ define("zotohlab/p/s/movements",
         }
         b.sprite.setPosition(rc.x, rc.y);
       },
-
       /**
        * @method process
        * @private
@@ -278,7 +269,6 @@ define("zotohlab/p/s/movements",
           node.lastpos.lastDir=dir;
         }
       },
-
       /**
        * Inform the server that paddle has changed direction: up , down or stopped.
        * @method notifyServer
@@ -306,7 +296,6 @@ define("zotohlab/p/s/movements",
           code: evts.PLAY_MOVE
         });
       },
-
       /**
        * @method clamp
        * @private

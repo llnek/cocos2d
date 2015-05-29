@@ -212,11 +212,11 @@ define("zotohlab/asx/xscenes",
 
       /**
        * @memberof module:zotohlab/asx/xscenes~XLayer
-       * @method pkInit
+       * @method setup
        * @param {Object} options
        * @protected
        */
-      pkInit(options) { this.pkInput(); },
+      setup() { this.pkInput(); },
 
       /**
        * @memberof module:zotohlab/asx/xscenes~XLayer
@@ -481,7 +481,7 @@ define("zotohlab/asx/xscenes",
        */
       init() {
         this._super();
-        this.pkInit();
+        this.setup();
       },
 
       /**
@@ -497,6 +497,45 @@ define("zotohlab/asx/xscenes",
         this.atlases= {};
       }
 
+    });
+
+    /**
+     * @extends module:zotohlab/asx/xscenes~XLayer
+     * @class XMenuLayer
+     */
+    XMenuLayer= scenes.XLayer.extend({
+      /**
+       * @memberof module:zotohlab/asx/xscenes~XMenuLayer
+       * @method rtti
+       * @return {String}
+       */
+      rtti() { return 'XMenuLayer'; },
+      /**
+       * @memberof module:zotohlab/asx/xscenes~XMenuLayer
+       * @method mkBackQuit
+       * @protected
+       */
+      mkBackQuit(vert, btns, posfn) {
+        let sz, menu;
+        if (vert) {
+          menu = ccsx.vmenu(btns);
+        } else {
+          menu= ccsx.hmenu(btns);
+        }
+        sz= menu.getChildren()[0].getContentSize();
+        if (posfn) {
+          posfn(menu, sz);
+        }
+        this.addItem(menu);
+      },
+      /**
+       * @memberof module:zotohlab/asx/xscenes~XMenuLayer
+       * @method mkAudio
+       * @protected
+       */
+      mkAudio(options) {
+        this.addAudioIcon(options);
+      }
     });
 
     //////////////////////////////////////////////////////////////////////////////
@@ -543,9 +582,8 @@ define("zotohlab/asx/xscenes",
       /**
        * @protected
        */
-      pkInit(options) {
-        this._super(options);
-
+      setup() {
+        //this._super();
         this.atlasId = this.options.hudAtlas || 'game-pics';
         this.scoreLabel = null;
         this.lives= null;
@@ -956,10 +994,10 @@ define("zotohlab/asx/xscenes",
 
       /**
        * @memberof module:zotohlab/asx/xscenes~XGameLayer
-       * @method pkInit
+       * @method setup
        * @protected
        */
-      pkInit() {
+      setup() {
         const m= this.options.mode;
         this._super();
 
@@ -1177,6 +1215,10 @@ define("zotohlab/asx/xscenes",
 
     exports= /** @lends exports# */{
       /**
+       * @property {XMenuLayer} XMenuLayer
+       */
+      XMenuLayer: XMenuLayer,
+      /**
        * @property {XGameHUDLayer} XGameHUDLayer
        */
       XGameHUDLayer: XGameHUDLayer,
@@ -1204,8 +1246,16 @@ define("zotohlab/asx/xscenes",
       /**
        * @property {XScene} XScene
        */
-      XScene: XScene
-
+      XScene: XScene,
+      /**
+       * @method showMenu
+       */
+      showMenu() {
+        const dir= cc.director;
+        dir.pushScene(sh.protos[sh.ptypes.mmenu].reify({
+          onBack() { dir.popScene(); }
+        }));
+      }
     };
 
     return exports;

@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/collision
@@ -19,23 +18,22 @@
 define("zotohlab/p/s/collision",
 
        ['zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs, sh, ccsx) { "use strict";
+  function (gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/collision */
-    let exports = {    },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class CollisionSystem
      */
     CollisionSystem = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/collision~CollisionSystem
        * @method constructor
@@ -44,7 +42,6 @@ define("zotohlab/p/s/collision",
       constructor(options) {
         this.state = options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/collision~CollisionSystem
        * @method removeFromEngine
@@ -55,7 +52,6 @@ define("zotohlab/p/s/collision",
         this.fauxs=null;
         this.balls=null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/collision~CollisionSystem
        * @method addToEngine
@@ -66,7 +62,6 @@ define("zotohlab/p/s/collision",
         this.nodeList= engine.getNodeList(gnodes.PaddleNode);
         this.balls= engine.getNodeList(gnodes.BallNode);
       },
-
       /**
        * @memberof module:zotohlab/p/s/collision~CollisionSystem
        * @method update
@@ -81,7 +76,6 @@ define("zotohlab/p/s/collision",
           this.checkNodes(this.fauxs, bnode);
         }
       },
-
       /**
        * @method checkNodes
        * @private
@@ -94,7 +88,6 @@ define("zotohlab/p/s/collision",
           }
         }
       },
-
       /**
        * Ball hits paddle.
        * @method check

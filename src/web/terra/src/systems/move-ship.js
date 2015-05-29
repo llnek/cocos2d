@@ -34,11 +34,11 @@ define('zotohlab/p/s/moveship',
     csts= xcfg.csts,
     R= sjs.ramda,
     undef,
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class MoveShip
      */
     MoveShip = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/moveship~MoveShip
        * @method constructor
@@ -47,7 +47,6 @@ define('zotohlab/p/s/moveship',
       constructor(options) {
         this.state= options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/moveship~MoveShip
        * @method removeFromEngine
@@ -56,7 +55,6 @@ define('zotohlab/p/s/moveship',
       removeFromEngine(engine) {
         this.ships=null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/moveship~MoveShip
        * @method addToEngine
@@ -65,7 +63,6 @@ define('zotohlab/p/s/moveship',
       addToEngine(engine) {
         this.ships = engine.getNodeList(gnodes.ShipMotionNode);
       },
-
       /**
        * @memberof module:zotohlab/p/s/moveship~MoveShip
        * @method update
@@ -78,7 +75,6 @@ define('zotohlab/p/s/moveship',
           this.processKeys(node,dt);
         }
       },
-
       /**
        * @method processKeys
        * @private

@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/asx/xscenes
- * @requires zotohlab/asx/xsplash
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
@@ -20,12 +19,11 @@
 define("zotohlab/p/splash",
 
        ['zotohlab/asx/xscenes',
-        'zotohlab/asx/xsplash',
         'zotohlab/p/s/utils',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (scenes, splash, utils, sh, ccsx ) { "use strict";
+  function (scenes, utils, sh, ccsx ) { "use strict";
 
     /** @alias module:zotohlab/p/splash */
     let exports = {},
@@ -39,34 +37,47 @@ define("zotohlab/p/splash",
     /**
      * @class SplashLayer
      */
-    SplashLayer = splash.XSplashLayer.extend({
+    SplashLayer = scenes.XLayer.extend({
 
       /**
-       * @method pkInit
+       * @method setup
        * @protected
        */
-      pkInit() {
-        this._super();
+      setup() {
+        this.centerImage(sh.getImagePath('game.bg'));
         this.demo();
+        this.btns();
       },
 
       /**
-       * @method setPlay
-       * @protected
+       * @method btns
+       * @private
        */
-      setPlay() {
+      btns() {
         const cw = ccsx.center(),
         wb = ccsx.vbox(),
         menu= ccsx.vmenu([
-          { nnn: '#play.png',
-            cb() {
-              this.removeAll();
-              sh.fire('/splash/playgame');
-            },
-            target: this }
-        ]);
-        menu.setPosition(cw.x, wb.top * 0.10);
+          { cb() { this.onplay(); },
+            target: this,
+            nnn: '#play.png' }
+        ], {
+          pos: cc.p(cw.x, wb.top * 0.1)
+        });
         this.addItem(menu);
+      },
+
+      /**
+       * @method onplay
+       * @private
+       */
+      onplay() {
+        const ss= sh.protos[sh.ptypes.start],
+        mm= sh.protos[sh.ptypes.mmenu],
+        dir= cc.director;
+              //this.removeAll();
+        dir.runScene( mm.reify({
+          onBack() { dir.runScene( ss.reify()); }
+        }));
       },
 
       /**
@@ -109,19 +120,9 @@ define("zotohlab/p/splash",
        * @return {cc.Scene}
        */
       reify(options) {
-        const ss= sh.protos[sh.ptypes.start],
-        mm= sh.protos[sh.ptypes.mmenu],
-        dir= cc.director;
         return new scenes.XSceneFactory([
           SplashLayer
-        ]).
-          reify(options).
-          onmsg('/splash/playgame',
-          () => {
-            dir.runScene( mm.reify({
-              onBack() { dir.runScene( ss.reify()); }
-          }));
-        });
+        ]).reify(options);
       }
     };
 

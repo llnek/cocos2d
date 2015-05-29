@@ -34,11 +34,11 @@ define('zotohlab/p/s/resolution',
     csts= xcfg.csts,
     R= sjs.ramda,
     undef,
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class Resolution
      */
     Resolution = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/resolution~Resolution
        * @method constructor
@@ -47,7 +47,6 @@ define('zotohlab/p/s/resolution',
       constructor(options) {
         this.state= options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/resolution~Resolution
        * @method removeFromEngine
@@ -56,7 +55,6 @@ define('zotohlab/p/s/resolution',
       removeFromEngine(engine) {
         this.ships=null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/resolution~Resolution
        * @method addToEngine
@@ -65,7 +63,6 @@ define('zotohlab/p/s/resolution',
       addToEngine(engine) {
         this.ships = engine.getNodeList(gnodes.ShipMotionNode);
       },
-
       /**
        * @memberof module:zotohlab/p/s/resolution~Resolution
        * @method update
@@ -83,7 +80,6 @@ define('zotohlab/p/s/resolution',
           this.checkShip(node);
         }
       },
-
       /**
        * @method onBulletDeath
        * @private
@@ -99,7 +95,6 @@ define('zotohlab/p/s/resolution',
         }
         e.inflate({x : pos.x, y: pos.y});
       },
-
       /**
        * @method checkMissiles
        * @private
@@ -119,7 +114,6 @@ define('zotohlab/p/s/resolution',
           }
         });
       },
-
       /**
        * @method checkBombs
        * @private
@@ -139,7 +133,6 @@ define('zotohlab/p/s/resolution',
           }
         });
       },
-
       /**
        * @method onEnemyDeath
        * @private
@@ -162,7 +155,6 @@ define('zotohlab/p/s/resolution',
         s.inflate({x : pos.x, y: pos.y});
         sh.sfxPlay('explodeEffect');
       },
-
       /**
        * @method onShipDeath
        * @private
@@ -179,7 +171,6 @@ define('zotohlab/p/s/resolution',
         e.inflate({x : pos.x, y: pos.y});
         sh.sfxPlay('shipDestroyEffect');
       },
-
       /**
        * @method checkAliens
        * @private
@@ -200,7 +191,6 @@ define('zotohlab/p/s/resolution',
           }
         });
       },
-
       /**
        * @method checkShip
        * @private

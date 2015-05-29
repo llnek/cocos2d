@@ -21,13 +21,15 @@ define("zotohlab/p/s/utils",
 
   function (ccsx, sh ) { "use strict";
 
-    let sjs=sh.skarojs,
+    /** @alias module:zotohlab/p/s/utils */
+    let exports= {},
+    sjs=sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
-    undef,
-    /** @alias module:zotohlab/p/s/utils */
-    exports = /** @lends exports# */{
+    undef;
 
+    //////////////////////////////////////////////////////////////////////////
+    exports = /** @lends exports# */{
       /**
        * @method flareEffect
        * @param {Object} flare
@@ -61,14 +63,12 @@ define("zotohlab/p/s/utils",
         flare.runAction(rotateEase);
         flare.runAction(bigger);
       },
-
       /**
        * @method btnEffect
        */
       btnEffect() {
         sh.sfxPlay('btnEffect');
       },
-
       /**
        * @method fireMissiles
        * @param {Object} ship
@@ -91,7 +91,6 @@ define("zotohlab/p/s/utils",
         m2.inflate({ x: pos.x - offx, y: pos.y + offy });
         m1.inflate({ x: pos.x + offx, y: pos.y + offy });
       },
-
       /**
        * @method bornShip
        * @param {Object} ship
@@ -116,7 +115,6 @@ define("zotohlab/p/s/utils",
         ssp.runAction(cc.sequence(cc.delayTime(0.5),
                                   cc.blink(3,9), normal));
       },
-
       /**
        * @method processTouch
        * @param {Object} ship

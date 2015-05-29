@@ -28,11 +28,11 @@ define('zotohlab/p/s/rendering',
     csts= xcfg.csts,
     R= sjs.ramda,
     undef,
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class Rendering
      */
     Rendering = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/rendering~Rendering
        * @method constructor
@@ -41,7 +41,6 @@ define('zotohlab/p/s/rendering',
       constructor(options) {
         this.state= options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/rendering~Rendering
        * @method removeFromEngine
@@ -49,7 +48,6 @@ define('zotohlab/p/s/rendering',
        */
       removeFromEngine(engine) {
       },
-
       /**
        * @memberof module:zotohlab/p/s/rendering~Rendering
        * @method addToEngine
@@ -57,7 +55,6 @@ define('zotohlab/p/s/rendering',
        */
       addToEngine(engine) {
       },
-
       /**
        * @memberof module:zotohlab/p/s/rendering~Rendering
        * @method update
@@ -68,7 +65,6 @@ define('zotohlab/p/s/rendering',
           this.processMovement(dt);
         }
       },
-
       /**
        * @method processMovement
        * @private

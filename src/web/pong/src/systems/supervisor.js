@@ -10,34 +10,32 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
- * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
+ * @requires zotohlab/asterix
  * @requires zotohlab/asx/odin
  * @module zotohlab/p/s/supervisor
  */
 define("zotohlab/p/s/supervisor",
 
-       ['cherimoia/skarojs',
+       ['zotohlab/asx/ccsx',
         'zotohlab/asterix',
-        'zotohlab/asx/ccsx',
         'zotohlab/asx/odin'],
 
-  function (sjs, sh, ccsx, odin) { "use strict";
+  function (ccsx, sh, odin) { "use strict";
 
     /** @alias module:zotohlab/p/s/supervisor */
-    let exports= {        },
+    let exports= {},
     evts= odin.Events,
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class GameSupervisor
      */
     GameSupervisor = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method constructor
@@ -47,7 +45,6 @@ define("zotohlab/p/s/supervisor",
         this.state= options;
         this.inited=false;
       },
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method removeFromEngine
@@ -55,7 +52,6 @@ define("zotohlab/p/s/supervisor",
        */
       removeFromEngine(engine) {
       },
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method addToEngine
@@ -63,7 +59,6 @@ define("zotohlab/p/s/supervisor",
        */
       addToEngine(engine) {
       },
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method update
@@ -77,7 +72,6 @@ define("zotohlab/p/s/supervisor",
         }
         return this.state.wsock ? this.state.poked : true;
       },
-
       /**
        * @method onceOnly
        * @private
@@ -121,14 +115,14 @@ define("zotohlab/p/s/supervisor",
         if (this.state.wsock) {
           // online play
           sjs.loggr.debug("reply to server: session started ok");
-          var src= R.pick(['framespersec',
-                          'world',
-                          'syncMillis',
-                          'paddle',
-                          'ball',
-                          'p1',
-                          'p2',
-                          'numpts'], this.state);
+          const src= R.pick(['framespersec',
+                             'world',
+                             'syncMillis',
+                             'paddle',
+                             'ball',
+                             'p1',
+                             'p2',
+                             'numpts'], this.state);
           this.state.wsock.send({
             source: sjs.jsonfy(src),
             type: evts.MSG_SESSION,
@@ -137,7 +131,6 @@ define("zotohlab/p/s/supervisor",
         }
 
       },
-
       /**
        * @method initPaddleSize
        * @private
@@ -145,7 +138,6 @@ define("zotohlab/p/s/supervisor",
       initPaddleSize() {
         return new cc.Sprite('#red_paddle.png').getContentSize();
       },
-
       /**
        * @method initBallSize
        * @private

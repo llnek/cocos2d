@@ -10,21 +10,20 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/elements
  */
 define("zotohlab/p/elements",
 
-       ['cherimoia/skarojs',
-        'zotohlab/asterix',
+       ['zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, ccsx) { "use strict";
+  function (sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/elements */
     let exports= {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef;
@@ -181,7 +180,6 @@ define("zotohlab/p/elements",
      * @class Brick
      */
     class Brick {
-
       /**
        * @memberof module:zotohlab/p/elements~Brick
        * @method blink
@@ -189,7 +187,6 @@ define("zotohlab/p/elements",
       blink() {
         if ( !!this.sprite) { this.sprite.blink(); }
       }
-
       /**
        * @memberof module:zotohlab/p/elements~Brick
        * @method dispose
@@ -200,7 +197,6 @@ define("zotohlab/p/elements",
           this.sprite=null;
         }
       }
-
       /**
        * @memberof module:zotohlab/p/elements~Brick
        * @method create
@@ -208,7 +204,6 @@ define("zotohlab/p/elements",
       create() {
         return this.sprite = new Block(this.startPos.x, this.startPos.y, this.options);
       }
-
       /**
        * @memberof module:zotohlab/p/elements~Brick
        * @method constructor
@@ -221,7 +216,6 @@ define("zotohlab/p/elements",
         this.startPos = cc.p(x,y);
         this.options.frames= [ '' + options.frame + '.png', '0.png'];
       }
-
     }
     exports.Brick = Brick;
 

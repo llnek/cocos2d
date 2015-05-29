@@ -11,27 +11,26 @@
 
 /**
  * @requires zotohlab/p/elements
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @module zotohlab/p/gnodes
  */
 define("zotohlab/p/gnodes",
 
        ['zotohlab/p/elements',
-        'cherimoia/skarojs',
         'zotohlab/asterix'],
 
-  function (cobjs, sjs, sh) { "use strict";
+  function (cobjs, sh) { "use strict";
 
     /** @alias module:zotohlab/p/gnodes */
-    let exports= {    },
+    let exports= {},
+    sjs= sh.skarojs,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class BallNode
      */
-    exports.BallNode = sh.Ashley.nodeDef({
+    BallNode = sh.Ashley.nodeDef({
       /**
        * @memberof module:zotohlab/p/gnodes~BallNode
        * @property {Velocity} velocity
@@ -43,12 +42,16 @@ define("zotohlab/p/gnodes",
        */
       ball        : cobjs.Ball
     });
+    /**
+     * @property {BallNode} BallNode
+     */
+    exports.BallNode = BallNode;
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class FauxPaddleNode
      */
-    exports.FauxPaddleNode = sh.Ashley.nodeDef({
+    FauxPaddleNode = sh.Ashley.nodeDef({
       /**
        * @memberof module:zotohlab/p/gnodes~FauxPaddleNode
        * @property {Position} lastpos
@@ -70,11 +73,15 @@ define("zotohlab/p/gnodes",
        */
       player    : cobjs.Player
     });
+    /**
+     * @property {FauxPaddleNode} FauxPaddleNode
+     */
+    exports.FauxPaddleNode = FauxPaddleNode;
 
     /**
      * @class PaddleNode
      */
-    exports.PaddleNode = sh.Ashley.nodeDef({
+    PaddleNode = sh.Ashley.nodeDef({
       /**
        * @memberof module:zotohlab/p/gnodes~PaddleNode
        * @property {Position} lastpos
@@ -96,6 +103,10 @@ define("zotohlab/p/gnodes",
        */
       player    : cobjs.Player
     });
+    /**
+     * @property {PaddleNode} PaddleNode
+     */
+    exports.PaddleNode = PaddleNode;
 
     return exports;
 });

@@ -29,11 +29,11 @@ define('zotohlab/p/s/motions',
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class Motions
      */
     Motions = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/motions~Motions
        * @method constructor
@@ -42,7 +42,6 @@ define('zotohlab/p/s/motions',
       constructor(options) {
         this.state= options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/motions~Motions
        * @method removeFromEngine
@@ -51,7 +50,6 @@ define('zotohlab/p/s/motions',
       removeFromEngine(engine) {
         this.ships=null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/motions~Motions
        * @method addToEngine
@@ -60,7 +58,6 @@ define('zotohlab/p/s/motions',
       addToEngine(engine) {
         this.ships= engine.getNodeList(gnodes.ShipMotionNode);
       },
-
       /**
        * @memberof module:zotohlab/p/s/motions~Motions
        * @method update
@@ -73,7 +70,6 @@ define('zotohlab/p/s/motions',
           this.processMotions(node,dt);
         }
       },
-
       /**
        * @method processMotions
        * @private
@@ -81,7 +77,6 @@ define('zotohlab/p/s/motions',
       processMotions(node,dt) {
         this.scanInput(node, dt);
       },
-
       /**
        * @method scanInput
        * @private
@@ -92,7 +87,6 @@ define('zotohlab/p/s/motions',
           this.processKeys(node,dt);
         }
       },
-
       /**
        * @method processKeys
        * @private

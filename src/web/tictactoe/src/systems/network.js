@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/odin
  * @module zotohlab/p/s/network
@@ -19,25 +18,23 @@
 define("zotohlab/p/s/network",
 
        ['zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/odin'],
 
-  function (gnodes, sjs, sh, odin) { "use strict";
+  function (gnodes, sh, odin) { "use strict";
 
     /** @alias module:zotohlab/p/s/network */
-    let exports = {  /* empty */ },
+    let exports = {},
     evts= odin.Events,
+    sjs= sh.skarojs,
     xcfg= sh.xcfg,
     csts= xcfg.csts,
-    undef;
-
+    undef,
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class NetworkSystem
      */
-    const NetworkSystem = sh.Ashley.sysDef({
-
+    NetworkSystem = sh.Ashley.sysDef({
       /**
        * @memberof module:zotohlab/p/s/network~NetworkSystem
        * @method constructor
@@ -47,7 +44,6 @@ define("zotohlab/p/s/network",
         this.events = options.netQ;
         this.state= options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/network~NetworkSystem
        * @method removeFromEngine
@@ -56,7 +52,6 @@ define("zotohlab/p/s/network",
       removeFromEngine(engine) {
         this.netplay=null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/network~NetworkSystem
        * @method addToEngine
@@ -65,7 +60,6 @@ define("zotohlab/p/s/network",
       addToEngine(engine) {
         this.netplay = engine.getNodeList(gnodes.NetPlayNode);
       },
-
       /**
        * @memberof module:zotohlab/p/s/network~NetworkSystem
        * @method update
@@ -82,7 +76,6 @@ define("zotohlab/p/s/network",
           }
         }
       },
-
       /**
        * @method process
        * @private
@@ -104,7 +97,6 @@ define("zotohlab/p/s/network",
           break;
         }
       },
-
       /**
        * If the action from the server is valid, update the
        * state of the cell in the grid.
@@ -131,7 +123,6 @@ define("zotohlab/p/s/network",
           sh.sfxPlay(snd);
         }
       }
-
     });
 
     /**
@@ -140,7 +131,6 @@ define("zotohlab/p/s/network",
      * @static
      */
     NetworkSystem.Priority= sh.ftypes.Move;
-
     exports= NetworkSystem;
     return exports;
 });

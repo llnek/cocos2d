@@ -12,7 +12,6 @@
 /**
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/resolution
@@ -21,25 +20,23 @@ define("zotohlab/p/s/resolution",
 
        ['zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (utils, gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/resolution */
     let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
-    undef;
-
+    undef,
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class ResolutionSystem
      */
-    const ResolutionSystem = sh.Ashley.sysDef({
-
+    ResolutionSystem = sh.Ashley.sysDef({
       /**
        * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
        * @method constructor
@@ -48,7 +45,6 @@ define("zotohlab/p/s/resolution",
       constructor(options) {
         this.state= options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
        * @method removeFromEngine
@@ -57,7 +53,6 @@ define("zotohlab/p/s/resolution",
       removeFromEngine(engine) {
         this.board=null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
        * @method addToEngine
@@ -66,7 +61,6 @@ define("zotohlab/p/s/resolution",
       addToEngine(engine) {
         this.board = engine.getNodeList(gnodes.BoardNode);
       },
-
       /**
        * @memberof module:zotohlab/p/s/resolution~ResolutionSystem
        * @method update
@@ -79,7 +73,6 @@ define("zotohlab/p/s/resolution",
           this.process(node, dt);
         }
       },
-
       /**
        * @method process
        * @private
@@ -112,7 +105,6 @@ define("zotohlab/p/s/resolution",
           }
         }
       },
-
       /**
        * @method doWin
        * @private
@@ -123,7 +115,6 @@ define("zotohlab/p/s/resolution",
                  score: 1});
         this.doDone(node, winner, combo);
       },
-
       /**
        * @method doDraw
        * @private
@@ -131,16 +122,15 @@ define("zotohlab/p/s/resolution",
       doDraw(node) {
         this.doDone(node, null, []);
       },
-
       /**
        * @method doForfeit
        * @private
        */
       doForfeit(node) {
-        const other = this.state.actor===1 ? 2 : this.state.actor===2 ? 1 : 0,
+        let other = this.state.actor===1 ? 2 : this.state.actor===2 ? 1 : 0,
         tv = this.state.players[this.state.actor],
-        win= this.state.players[other];
-        let cs = node.view.cells,
+        win= this.state.players[other],
+        cs = node.view.cells,
         v2= -1,
         layer= node.view.layer;
 
@@ -162,7 +152,6 @@ define("zotohlab/p/s/resolution",
 
         this.doDone(node, win, null);
       },
-
       /**
        * Flip all other icons except for the winning ones.
        * @method showWinningIcons
@@ -181,7 +170,6 @@ define("zotohlab/p/s/resolution",
           } }
         }, cs);
       },
-
       /**
        * @method doDone
        * @private
@@ -198,24 +186,22 @@ define("zotohlab/p/s/resolution",
         this.state.lastWinner = pnum;
         this.state.running=false;
       },
-
       /**
        * @method checkDraw
        * @private
        */
       checkDraw(values) {
-        return ! (csts.CV_Z === R.find(function(v) {
+        return ! (csts.CV_Z === R.find((v) => {
           return (v === csts.CV_Z);
         }, values));
       },
-
       /**
        * @method checkWin
        * @private
        */
       checkWin(actor, game) {
         //sjs.loggr.debug('checking win for ' + actor.color);
-        let combo, rc= R.any(function(r) {
+        let combo, rc= R.any((r) => {
           combo=r;
           return R.all((n) => {
             return actor.value === n;
@@ -234,7 +220,6 @@ define("zotohlab/p/s/resolution",
      * @property {Number} Priority
      */
     ResolutionSystem.Priority= sh.ftypes.Resolve;
-
     exports= ResolutionSystem;
     return exports;
 });

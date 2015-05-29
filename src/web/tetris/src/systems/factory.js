@@ -12,7 +12,6 @@
 /**
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/s/utils
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/factory
@@ -21,23 +20,22 @@ define("zotohlab/p/s/factory",
 
        ['zotohlab/p/elements',
         'zotohlab/p/s/utils',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (cobjs, utils, sjs, sh, ccsx) { "use strict";
+  function (cobjs, utils, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/factory */
-    let exports = {    },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class EntityFactory
      */
     EntityFactory = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method constructor
@@ -46,7 +44,6 @@ define("zotohlab/p/s/factory",
       constructor(engine) {
         this.engine=engine;
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createArena

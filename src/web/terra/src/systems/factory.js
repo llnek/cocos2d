@@ -32,11 +32,11 @@ define('zotohlab/p/s/factory',
     csts= xcfg.csts,
     R=sjs.ramda,
     undef,
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class EntityFactory
      */
     EntityFactory = sh.Ashley.casDef({
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method constructor
@@ -45,7 +45,6 @@ define('zotohlab/p/s/factory',
       constructor(engine) {
         this.engine=engine;
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createShip
@@ -82,7 +81,6 @@ define('zotohlab/p/s/factory',
         this.engine.addEntity(ent);
         return player;
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createMissiles
@@ -97,7 +95,6 @@ define('zotohlab/p/s/factory',
           return new cobjs.Missile(sp);
         }, count);
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createBombs
@@ -112,7 +109,6 @@ define('zotohlab/p/s/factory',
           return new cobjs.Bomb(sp);
         }, count);
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createExplosions
@@ -127,7 +123,6 @@ define('zotohlab/p/s/factory',
           return new cobjs.Explosion(sp);
         }, count || 6);
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createHitEffects
@@ -142,7 +137,6 @@ define('zotohlab/p/s/factory',
           return new cobjs.HitEffect(sp);
         }, count || 10);
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createSparks
@@ -160,7 +154,6 @@ define('zotohlab/p/s/factory',
           return new cobjs.Spark(sp[0], sp[1]);
         }, count || 6);
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createEnemies
@@ -182,7 +175,6 @@ define('zotohlab/p/s/factory',
           }
         }, count||3);
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createBackSkies
@@ -197,7 +189,6 @@ define('zotohlab/p/s/factory',
           return sh.Ashley.newObject(bg);
         }, 2);
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createBackTiles

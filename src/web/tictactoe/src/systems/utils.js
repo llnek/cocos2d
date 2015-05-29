@@ -10,34 +10,31 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/utils
  */
 define("zotohlab/p/s/utils",
 
-       ['cherimoia/skarojs',
-        'zotohlab/asterix',
+       ['zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, ccsx) { "use strict";
+  function (sh, ccsx) { "use strict";
 
     let xcfg= sh.xcfg,
+    sjs= sh.skarojs,
     csts= xcfg.csts,
-    undef;
-
+    undef,
     //////////////////////////////////////////////////////////////////////////////
     /** @alias module:zotohlab/p/s/utils */
-    let exports= {
-
+    exports= {
       /**
        * Calculate position of each individual cells in the grid,
        * so that we can detect when a user clicks on the cell.
        * @method mapGridPos
        * @param {Number} gsz
        * @param {Number} scale
-       * @return {Array}
+       * @return {Array} Array(Array(Int))
        */
       mapGridPos(gsz, scale) {
         gsz = gsz || csts.GRID_SIZE;
@@ -75,7 +72,6 @@ define("zotohlab/p/s/utils",
         }
         return gridMap;
       },
-
       /**
        * @method pkFlip
        * @private
@@ -87,7 +83,6 @@ define("zotohlab/p/s/utils",
           return img + ".png";
         }
       },
-
       /**
        * @method xrefImg
        * @private
@@ -99,7 +94,6 @@ define("zotohlab/p/s/utils",
           case csts.CV_Z: return 'z';
         }
       },
-
       //pass in gridview
       /**
        * @method drawSymbol

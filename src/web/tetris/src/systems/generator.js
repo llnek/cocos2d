@@ -13,7 +13,6 @@
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/gnodes
  * @requires zotohlab/p/s/utils
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/generator
@@ -23,24 +22,23 @@ define("zotohlab/p/s/generator",
        ['zotohlab/p/elements',
         'zotohlab/p/gnodes',
         'zotohlab/p/s/utils',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (cobjs, gnodes, utils, sjs, sh, ccsx) { "use strict";
+  function (cobjs, gnodes, utils, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/generator */
-    let exports = {       },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R= sjs.ramda,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class ShapeGenerator
      */
     ShapeGenerator = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/generator~ShapeGenerator
        * @method constructor
@@ -49,7 +47,6 @@ define("zotohlab/p/s/generator",
       constructor(options) {
         this.state = options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/generator~ShapeGenerator
        * @method removeFromEngine
@@ -58,7 +55,6 @@ define("zotohlab/p/s/generator",
       removeFromEngine(engine) {
         this.arena=null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/generator~ShapeGenerator
        * @method addToEngine
@@ -69,7 +65,6 @@ define("zotohlab/p/s/generator",
         this.nextShapeInfo= this.randNext();
         this.nextShape=null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/generator~ShapeGenerator
        * @method update
@@ -98,7 +93,6 @@ define("zotohlab/p/s/generator",
           }
         }
       },
-
       /**
        * @method reifyNextShape
        * @private
@@ -129,7 +123,6 @@ define("zotohlab/p/s/generator",
 
         return shape;
       },
-
       /**
        * @method previewNextShape
        * @private
@@ -155,7 +148,6 @@ define("zotohlab/p/s/generator",
         this.nextShapeInfo= info;
         this.nextShape= utils.previewShape(layer, shape);
       },
-
       /**
        * @method randNext
        * @private

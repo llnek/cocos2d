@@ -10,46 +10,60 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
+ * @requires zotohlab/asx/xscenes
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/sysobjs
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/odin
- * @requires zotohlab/asx/xscenes
- * @requires zotohlab/asx/xmmenus
  * @requires zotohlab/p/hud
  * @module zotohlab/p/arena
  */
 define("zotohlab/p/arena",
 
-       ['zotohlab/p/elements',
-       'zotohlab/p/sysobjs',
-       'cherimoia/skarojs',
-       'zotohlab/asterix',
-       'zotohlab/asx/ccsx',
-       'zotohlab/asx/odin',
-       'zotohlab/asx/xscenes',
-       'zotohlab/asx/xmmenus',
-       'zotohlab/p/hud'],
+       ['zotohlab/asx/xscenes',
+        'zotohlab/p/elements',
+        'zotohlab/p/sysobjs',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx',
+        'zotohlab/asx/odin',
+        'zotohlab/p/hud'],
 
-  function(cobjs, sobjs, sjs, sh, ccsx,
-           odin, scenes, mmenus, huds) { "use strict";
+  function(scenes, cobjs, sobjs,
+           sh, ccsx, odin, huds) { "use strict";
 
     /** @alias module:zotohlab/p/arena */
-    let exports = {   },
+    let exports = {},
+    evts= odin.Events,
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
-    evts= odin.Events,
     R= sjs.ramda,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
+    /**
+     * @extends module:zotohlab/asx/xscenes.XLayer
+     * @class BackLayer
+     */
+    BackLayer = scenes.XLayer.extend({
+      /**
+       * @method rtti
+       */
+      rtti() { return 'BackLayer'; },
+      /**
+       * @method setup
+       * @protected
+       */
+      setup() {
+        this.centerImage(sh.getImagePath('game.bg'));
+      }
+    }),
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @extends module:zotohlab/asx/xscenes.XGameLayer
      * @class GameLayer
      */
     GameLayer = scenes.XGameLayer.extend({
-
       /**
        * Get an odin event, first level callback
        * @method onevent
@@ -68,14 +82,12 @@ define("zotohlab/p/arena",
           break;
         }
       },
-
       /**
        * @method onStop
        * @private
        */
       onStop(evt) {
       },
-
       /**
        * @method onNetworkEvent
        * @private
@@ -96,7 +108,6 @@ define("zotohlab/p/arena",
           break;
         }
       },
-
       /**
        * @method onSessionEvent
        * @private
@@ -120,7 +131,6 @@ define("zotohlab/p/arena",
           break;
         }
       },
-
       /**
        * @method replay
        */
@@ -137,15 +147,13 @@ define("zotohlab/p/arena",
           this.play(false);
         }
       },
-
       /**
        * @method play
        */
       play(newFlag) {
+        // sort out names of players
         let p1ids,
         p2ids;
-
-        // sort out names of players
         sjs.eachObj((v,k) => {
           if (v[0] === 1) {
             p1ids= [k, v[1] ];
@@ -158,7 +166,6 @@ define("zotohlab/p/arena",
         this.reset(newFlag);
         this.cleanSlate();
 
-        //
         sh.factory= new sobjs.Factory(this.engine);
         this.options.world = this.getEnclosureBox();
         this.options.netQ= [];
@@ -186,7 +193,6 @@ define("zotohlab/p/arena",
           sobjs.Collisions,
           sobjs.Rendering] );
       },
-
       /**
        * @method onNewGame
        * @private
@@ -196,7 +202,6 @@ define("zotohlab/p/arena",
         this.setGameMode(mode);
         this.play(true);
       },
-
       /**
        * @method reset
        */
@@ -217,7 +222,6 @@ define("zotohlab/p/arena",
         }
         this.players.length=0;
       },
-
       /**
        * @method operational
        * @protected
@@ -225,7 +229,6 @@ define("zotohlab/p/arena",
       operational() {
         return this.options.running;
       },
-
       /**
        * @method initPlayers
        * @private
@@ -255,7 +258,6 @@ define("zotohlab/p/arena",
         this.options.colors[csts.P1_COLOR] = p1;
         this.options.colors[csts.P2_COLOR] = p2;
       },
-
       /**
        * Scores is a map {'o': 0, 'x': 0}
        * @method updatePoints
@@ -264,7 +266,6 @@ define("zotohlab/p/arena",
       updatePoints(scores) {
         this.getHUD().updateScores(scores);
       },
-
       /**
        * @method onWinner
        * @private
@@ -277,7 +278,6 @@ define("zotohlab/p/arena",
         } else {
         }
       },
-
       /**
        * @method doDone
        * @private
@@ -289,7 +289,6 @@ define("zotohlab/p/arena",
         sh.sfxPlay('game_end');
         this.options.running=false;
       },
-
       /**
        * @method setGameMode
        * @protected
@@ -298,7 +297,6 @@ define("zotohlab/p/arena",
         this._super(mode);
         this.getHUD().setGameMode(mode);
       },
-
       /**
        * @method getEnclosureBox
        * @private
@@ -310,27 +308,24 @@ define("zotohlab/p/arena",
     });
 
     exports= /** @lends exports# */{
-
       /**
        * @property {String} rtti
        */
       rtti: sh.ptypes.game,
-
       /**
        * @method reify
        * @param {Object} options
        * @return {cc.Scene}
        */
       reify(options) {
-
         const scene = new scenes.XSceneFactory([
-          huds.BackLayer,
+          BackLayer,
           GameLayer,
           huds.HUDLayer
         ]).reify(options);
 
         scene.onmsg('/hud/showmenu', (t,msg) => {
-          mmenus.showMenu();
+          scenes.showMenu();
         }).
         onmsg('/hud/replay', (t,msg) => {
           sh.main.replay();

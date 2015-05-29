@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/asx/xscenes
- * @requires zotohlab/asx/xmmenus
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
@@ -20,12 +19,11 @@
 define('zotohlab/p/mmenu',
 
        ['zotohlab/asx/xscenes',
-        'zotohlab/asx/xmmenus',
         'zotohlab/p/s/utils',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (scenes, mmenus, utils, sh, ccsx) { "use strict";
+  function (scenes, utils, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/mmenu */
     let exports= {},
@@ -33,7 +31,6 @@ define('zotohlab/p/mmenu',
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
     //////////////////////////////////////////////////////////////////////////
     /**
      * @extends module:zotohlab/asx/xmmenus.XMenuBackLayer
@@ -67,31 +64,43 @@ define('zotohlab/p/mmenu',
       }
 
     }),
-
-
+    //////////////////////////////////////////////////////////////////////////
     /**
-     * @extends module:zotohlab/asx/xmmenus.XMenuLayer
+     * @extends module:zotohlab/asx/xscenes.XMenuLayer
      * @class MainMenuLayer
      */
-    MainMenuLayer = mmenus.XMenuLayer.extend({
-
+    MainMenuLayer = scenes.XMenuLayer.extend({
       /**
-       * @method pkInit
+       * @method setup
        * @protected
        */
-      pkInit() {
+      setup() {
+        //this.centerImage(sh.getImagePath('gui.mmenus.menu.bg'));
+        this.centerImage(sh.getImagePath('bg'));
         const wb=ccsx.vbox(),
-        cw= ccsx.center(),
-        mnu= ccsx.vmenu([
-          { nnn: '#player1.png',
-            cb() {
-              sh.fire('/mmenu/newgame', {mode: sh.gtypes.P1_GAME });
-            }
-        }]);
-        mnu.setPosition(cw);
-        this.addItem(mnu);
+        cw= ccsx.center();
 
-        // show back & quit
+        // title
+        const tt=ccsx.bmfLabel({
+          fontPath: sh.getFontPath('font.JellyBelly'),
+          text: sh.l10n('%mmenu'),
+          pos: cc.p(cw.x, wb.top * 0.9),
+          color: ccsx.white,
+          scale: xcfg.game.scale
+        });
+        this.addItem(tt);
+
+        // buttons
+        const menu= ccsx.vmenu([
+          { nnn: '#player1.png',
+            target: this,
+            cb() {
+              this.onplay({mode: sh.gtypes.P1_GAME });
+            }
+        }],
+        {pos: cw});
+        this.addItem(menu);
+
         this.mkBackQuit(false, [{
             nnn: '#icon_back.png',
             cb() {
@@ -107,23 +116,27 @@ define('zotohlab/p/mmenu',
                           wb.bottom + csts.TILE + z.height * 0.45);
         });
 
-        // show the audio button
         this.mkAudio({
           pos: cc.p(wb.right - csts.TILE,
                     wb.bottom + csts.TILE),
           anchor: ccsx.acs.BottomRight
         });
+      },
+      /**
+       * @method onplay
+       * @private
+       */
+      onplay(msg) {
+        cc.director.runScene( sh.protos[sh.ptypes.game].reify(msg));
       }
 
     });
 
     exports= /** @lends exports# */{
-
       /**
        * @property {String} rtti
        */
       rtti : sh.ptypes.mmenu,
-
       /**
        * @method reify
        * @param {Object} options
@@ -131,10 +144,8 @@ define('zotohlab/p/mmenu',
        */
       reify(options) {
         return new scenes.XSceneFactory([
-          BackLayer, MainMenuLayer
-        ]).reify(options).onmsg('/mmenu/newgame', (topic, msg) => {
-          cc.director.runScene( sh.protos[sh.ptypes.game].reify(msg));
-        });
+          MainMenuLayer
+        ]).reify(options);
       }
 
     };

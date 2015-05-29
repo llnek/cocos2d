@@ -10,42 +10,37 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
+ * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xmmenus
- * @requires zotohlab/asx/xscenes
  * @module zotohlab/p/mmenu
  */
 define("zotohlab/p/mmenu",
 
-       ['cherimoia/skarojs',
-       'zotohlab/asterix',
-       'zotohlab/asx/ccsx',
-       'zotohlab/asx/xmmenus',
-       'zotohlab/asx/xscenes'],
+       ['zotohlab/asx/xscenes',
+        'zotohlab/asterix',
+        'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, ccsx, mmenus, scenes) { "use strict";
+  function (scenes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/mmenu */
-    let exports= {   },
+    let exports= {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R= sjs.ramda,
     undef,
-
-    //////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
     /**
-     * @extends module:zotohlab/asx/xmmenus.XMenuBackLayer
-     * @class BackLayer
+     * @extends module:zotohlab/asx/xscenes.XMenuLayer
+     * @class MainMenuLayer
      */
-    BackLayer = mmenus.XMenuBackLayer.extend({
-
+    MainMenuLayer = scenes.XMenuLayer.extend({
       /**
-       * @method setTitle
-       * @protected
+       * @method title
+       * @private
        */
-      setTitle() {
+      title() {
         const cw= ccsx.center(),
         wb=ccsx.vbox(),
         tt=ccsx.bmfLabel({
@@ -57,40 +52,34 @@ define("zotohlab/p/mmenu",
         });
         this.addItem(tt);
       }
-
-    }),
-
-    //////////////////////////////////////////////////////////////////////////
-    /**
-     * @extends module:zotohlab/asx/xmmenus.XMenuLayer
-     * @class MainMenuLayer
-     */
-    MainMenuLayer = mmenus.XMenuLayer.extend({
-
-      /**
-       * @method pkInit
-       * @protected
-       */
-      pkInit() {
+      btns() {
         const cw = ccsx.center(),
         wb = ccsx.vbox(),
-        menu= ccsx.vmenu([
-          { nnn: '#player1.png',
-            cb() {
-              sh.fire('/mmenu/newgame', { mode: sh.gtypes.P1_GAME});
-            }}
-        ]);
-        menu.setPosition(cw);
+        menu= ccsx.vmenu([{
+          nnn: '#player1.png',
+          target: this,
+          cb() {
+              this.onplay({ mode: sh.gtypes.P1_GAME});
+          }}],
+          { pos: cw});
         this.addItem(menu);
+      },
+      /**
+       * @method onplay
+       * @private
+       */
+      onplay(msg) {
+        cc.director.runScene( sh.protos[sh.ptypes.game].reify(msg));
+      },
+      /**
+       * @method setup
+       * @protected
+       */
+      setup() {
+        this.centerImage(sh.getImagePath('gui.mmenu.menu.bg'));
+        this.title();
+        this.btns();
 
-        // show audio
-        this.mkAudio({
-          pos: cc.p(wb.right - csts.TILE,
-                    wb.bottom + csts.TILE),
-          anchor: ccsx.acs.BottomRight
-        });
-
-        // show back & quit
         this.mkBackQuit(false, [{
             nnn: '#icon_back.png',
             cb() {
@@ -107,17 +96,21 @@ define("zotohlab/p/mmenu",
                          wb.bottom + csts.TILE + z.height * 0.45);
         });
 
+        this.mkAudio({
+          pos: cc.p(wb.right - csts.TILE,
+                    wb.bottom + csts.TILE),
+          anchor: ccsx.acs.BottomRight
+        });
+
       }
 
     });
 
     exports = /** @lends exports# */{
-
       /**
        * @property {String} rtti
        */
       rtti : sh.ptypes.mmenu,
-
       /**
        * @method reify
        * @param {Object} options
@@ -125,13 +118,9 @@ define("zotohlab/p/mmenu",
        */
       reify(options) {
         return new scenes.XSceneFactory([
-          BackLayer,
           MainMenuLayer
-        ]).reify(options).onmsg('/mmenu/newgame', (topic, msg) => {
-            cc.director.runScene( sh.protos[sh.ptypes.game].reify(msg));
-        });
+        ]).reify(options);
       }
-
     };
 
     return exports;

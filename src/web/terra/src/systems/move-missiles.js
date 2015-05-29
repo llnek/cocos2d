@@ -34,11 +34,11 @@ define('zotohlab/p/s/movemissiles',
     csts= xcfg.csts,
     R= sjs.ramda,
     undef,
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class MoveMissiles
      */
     MoveMissiles = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/movemissiles~MoveMissiles
        * @method constructor
@@ -47,7 +47,6 @@ define('zotohlab/p/s/movemissiles',
       constructor(options) {
         this.state= options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/movemissiles~MoveMissiles
        * @method removeFromEngine
@@ -55,7 +54,6 @@ define('zotohlab/p/s/movemissiles',
        */
       removeFromEngine(engine) {
       },
-
       /**
        * @memberof module:zotohlab/p/s/movemissiles~MoveMissiles
        * @method addToEngine
@@ -63,7 +61,6 @@ define('zotohlab/p/s/movemissiles',
        */
       addToEngine(engine) {
       },
-
       /**
        * @memberof module:zotohlab/p/s/movemissiles~MoveMissiles
        * @method update
@@ -74,7 +71,6 @@ define('zotohlab/p/s/movemissiles',
           this.processMovement(dt);
         }
       },
-
       /**
        * @method moveMissile
        * @private

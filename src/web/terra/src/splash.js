@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/asx/xscenes
- * @requires zotohlab/asx/xsplash
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
@@ -20,12 +19,11 @@
 define('zotohlab/p/splash',
 
        ['zotohlab/asx/xscenes',
-        'zotohlab/asx/xsplash',
         'zotohlab/p/s/utils',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (scenes, splash, utils, sh, ccsx) { "use strict";
+  function (scenes, utils, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/splash */
     let exports = {},
@@ -33,78 +31,57 @@ define('zotohlab/p/splash',
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
-     * @extends module:zotohlab/asx/xsplash.XSplashLayer
+     * @extends module:zotohlab/asx/xscenes.XLayer
      * @class SplashLayer
      */
-    SplashLayer = splash.XSplashLayer.extend({
-
+    SplashLayer = scenes.XLayer.extend({
       /**
        * @module:zotohlab/p/splash~SplashLayer
-       * @method pkInit
+       * @method setup
        * @protected
        */
-      pkInit() {
+      setup() {
+        this.centerImage(sh.getImagePath('bg'));
+        this.btns();
+        this.misc();
+      },
+      misc() {
         const wz = ccsx.vrect();
-        this._super();
-
         this.flare = new cc.Sprite(sh.getImagePath('flare'));
         this.flare.visible = false;
-
         this.ship = new cc.Sprite("#ship03.png");
         this.ship.attr({
           x: sjs.rand(wz.width),
           y: 0
         });
-
-        this.addItem(this.ship, 0, 4);
         this.addItem(this.flare, 15, 10);
-
+        this.addItem(this.ship, 0, 4);
         this.update();
-        //sh.sfxPlayMusic('mainMusic', { repeat: true, vol: 0.7});
+        sh.sfxPlayMusic('mainMusic', { repeat: true, vol: 0.7});
         //this.schedule(this.update, 0.1);
       },
-
       /**
-       * @method setTitle
-       * @protected
-       */
-      setTitle() {
-      },
-
-      /**
-       * @method setPlay
-       * @protected
-       */
-      setPlay() {
-        const wb = ccsx.vbox(),
-        cw = ccsx.center(),
-        mnu= ccsx.vmenu([{
-          nnn: '#play.png',
-          target: this,
-          cb() { this.onPlay(); }
-        }]);
-        mnu.attr({
-          y: wb.top * 0.1,
-          x: cw.x
-        });
-        this.addItem(mnu);
-      },
-
-       /**
-       * @method setBg
-       * @protected
-       */
-      setBg() {
-        this.centerImage(sh.getImagePath('bg'));
-      },
-
-      /**
-       * @method onPlay
+       * @method btns
        * @private
        */
-      onPlay() {
+      btns() {
+        const wb = ccsx.vbox(),
+        cw = ccsx.center(),
+        menu= ccsx.vmenu([{
+          nnn: '#play.png',
+          target: this,
+          cb() { this.onplay(); }
+        }],
+        { pos: cc.p(cw.x, wb.top * 0.1)});
+        this.addItem(menu);
+      },
+      /**
+       * @method onplay
+       * @private
+       */
+      onplay() {
         const ss= sh.protos[sh.ptypes.start],
         mm= sh.protos[sh.ptypes.mmenu],
         dir= cc.director;
@@ -115,7 +92,6 @@ define('zotohlab/p/splash',
           }));
         });
       },
-
       /**
        * @memberof module:zotohlab/p/splash~SplashLayer
        * @method update
@@ -136,12 +112,10 @@ define('zotohlab/p/splash',
     });
 
     exports= /** @lends exports# */{
-
       /**
        * @property {String} rtti
        */
       rtti : sh.ptypes.start,
-
       /**
        * @method reify
        * @param {Object} options

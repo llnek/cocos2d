@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/resolution
@@ -19,23 +18,22 @@
 define("zotohlab/p/s/resolution",
 
        ['zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs, sh, ccsx) { "use strict";
+  function (gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/resolution */
-    let exports = {   },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class Resolution
      */
     Resolution = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/resolution~Resolution
        * @method constructor
@@ -44,7 +42,6 @@ define("zotohlab/p/s/resolution",
       constructor(options) {
         this.state = options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/resolution~Resolution
        * @method removeFromEngine
@@ -55,7 +52,6 @@ define("zotohlab/p/s/resolution",
         this.fauxs=null;
         this.balls=null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/resolution~Resolution
        * @method addToEngine
@@ -67,7 +63,6 @@ define("zotohlab/p/s/resolution",
         this.balls= engine.getNodeList(gnodes.BallNode);
         this.engine=engine;
       },
-
       /**
        * @memberof module:zotohlab/p/s/resolution~Resolution
        * @method update
@@ -92,7 +87,6 @@ define("zotohlab/p/s/resolution",
 
         return rc;
       },
-
       /**
        * @method checkNodes
        * @private
@@ -106,7 +100,6 @@ define("zotohlab/p/s/resolution",
           }
         }
       },
-
       /**
        * @method onWin
        * @private
@@ -121,7 +114,6 @@ define("zotohlab/p/s/resolution",
         bnode.velocity.vel.y = this.state.ball.speed * sjs.randSign();
         sh.fire('/hud/score/update', { score: 1, color: winner });
       },
-
       //check win
       /**
        * @method check
@@ -154,7 +146,6 @@ define("zotohlab/p/s/resolution",
           }
 
         }
-
       }
 
     });

@@ -10,28 +10,27 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
+ * @requires zotohlab/asx/negamax
  * @requires zotohlab/p/s/utils
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/negamax
  * @requires zotohlab/p/c/board
  *
  * @module zotohlab/p/elements
  */
 define("zotohlab/p/elements",
 
-       ['zotohlab/p/s/utils',
-        'cherimoia/skarojs',
+       ['zotohlab/asx/negamax',
+        'zotohlab/p/s/utils',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
-        'zotohlab/asx/negamax',
         'zotohlab/p/c/board'],
 
-  function (utils, sjs, sh, ccsx, negax, GameBoard) { "use strict";
+  function (negax, utils, sh, ccsx, GameBoard) { "use strict";
 
     /** @alias module:zotohlab/p/elements */
     let exports= {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef;

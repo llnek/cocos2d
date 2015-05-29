@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/p/elements
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/utils
@@ -19,20 +18,18 @@
 define("zotohlab/p/s/utils",
 
        ["zotohlab/p/elements",
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (cobjs, sjs, sh, ccsx) { "use strict";
+  function (cobjs, sh, ccsx) { "use strict";
 
     let xcfg = sh.xcfg,
+    sjs= sh.skarojs,
     csts= xcfg.csts,
     R = sjs.ramda,
-    undef;
-
+    undef,
     /** @alias module:zotohlab/p/s/utils */
-    const exports= /** @lends exports# */{
-
+    exports= /** @lends exports# */{
       /**
        * @method reifyShape
        * @param {cc.Layer} layer
@@ -54,7 +51,6 @@ define("zotohlab/p/s/utils",
         }
         return shape;
       },
-
       /**
        * @method topLine
        * @param {Node} node
@@ -65,7 +61,6 @@ define("zotohlab/p/s/utils",
         bx= gbox.box;
         return Math.floor((bx.top - bx.bottom) / csts.TILE);
       },
-
       /**
        * @method previewShape
        * @param {cc.Layer} layer
@@ -84,7 +79,6 @@ define("zotohlab/p/s/utils",
         }
         return shape;
       },
-
       /**
        * @method disposeShape
        * @param {Object} shape
@@ -96,7 +90,6 @@ define("zotohlab/p/s/utils",
         }
         return null;
       },
-
       /**
        * @method clearOldBricks
        * @param {Array} bs
@@ -104,7 +97,6 @@ define("zotohlab/p/s/utils",
       clearOldBricks(bs) {
         R.forEach((z) => { z.dispose(); }, bs);
       },
-
       /**
        * @method reifyBricks
        * @param {cc.Layer} layer
@@ -127,7 +119,6 @@ define("zotohlab/p/s/utils",
 
         return bricks;
       },
-
       /**
        * @method findBBox
        * @param {Object} cmap
@@ -162,7 +153,6 @@ define("zotohlab/p/s/utils",
         }
         return bs;
       },
-
       /**
        * @method maybeCollide
        * @private
@@ -182,7 +172,6 @@ define("zotohlab/p/s/utils",
           return false;
         }
       },
-
       /**
        * @method xrefTile
        * @private
@@ -200,7 +189,6 @@ define("zotohlab/p/s/utils",
         return { row: Math.floor(y / csts.TILE),
                  col: Math.floor(x / csts.TILE) };
       },
-
       /**
        * @method initDropper
        * @private
@@ -208,7 +196,6 @@ define("zotohlab/p/s/utils",
       initDropper(par, dp) {
         dp.timer = ccsx.createTimer(par, dp.dropRate / dp.dropSpeed);
       },
-
       /**
        * @method setDropper
        * @private
@@ -218,7 +205,6 @@ define("zotohlab/p/s/utils",
         dp.dropSpeed=s;
         dp.dropRate=r;
       },
-
       /**
        * @method lockBricks
        * @private
@@ -230,7 +216,6 @@ define("zotohlab/p/s/utils",
         cmap[t.row][t.col] = 1;
         emap[t.row][t.col] = z;
       },
-
       /**
        * @method lock
        * @private
@@ -245,7 +230,6 @@ define("zotohlab/p/s/utils",
 
         this.postLock(node, cmap, emap);
       },
-
       /**
        * @method postLock
        * @private
@@ -269,7 +253,6 @@ define("zotohlab/p/s/utils",
           this.flashFilled(emap, node.flines, rc);
         }
       },
-
       /**
        * @method testFilledRow
        * @private
@@ -285,7 +268,6 @@ define("zotohlab/p/s/utils",
         // entire row must be filled.
         return true;
       },
-
       /**
        * @method flashFilled
        * @private
@@ -302,7 +284,6 @@ define("zotohlab/p/s/utils",
 
         flines.lines=lines;
       },
-
       /**
        * @method pauseForClearance
        * @private
@@ -319,7 +300,6 @@ define("zotohlab/p/s/utils",
           pu.timer=null;
         }
       },
-
       /**
        * @method moveDown
        * @private
@@ -341,7 +321,6 @@ define("zotohlab/p/s/utils",
           return false;
         }
       },
-
       /**
        * @method shiftRight
        * @private
@@ -363,7 +342,6 @@ define("zotohlab/p/s/utils",
           return false;
         }
       },
-
       /**
        * @method shiftLeft
        * @private
@@ -385,7 +363,6 @@ define("zotohlab/p/s/utils",
           return false;
         }
       },
-
       /**
        * @method rotateRight
        * @private
@@ -410,7 +387,6 @@ define("zotohlab/p/s/utils",
           return false;
         }
       },
-
       /**
        * @method rotateLeft
        * @private

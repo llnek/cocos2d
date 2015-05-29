@@ -12,7 +12,6 @@
 /**
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/odin
@@ -22,27 +21,25 @@ define("zotohlab/p/s/supervisor",
 
        ['zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
         'zotohlab/asx/odin'],
 
-  function (utils, gnodes, sjs, sh, ccsx, odin) { "use strict";
+  function (utils, gnodes, sh, ccsx, odin) { "use strict";
 
     /** @alias module:zotohlab/p/s/supervisor */
-    let exports = {       },
+    let exports = {},
     evts= odin.Events,
+    sjs= sh.skarojs,
     xcfg=sh.xcfg,
     csts= xcfg.csts,
     R=sjs.ramda,
-    undef;
-
+    undef,
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class GameSupervisor
      */
-    const GameSupervisor = sh.Ashley.sysDef({
-
+    GameSupervisor = sh.Ashley.sysDef({
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method constructor
@@ -52,7 +49,6 @@ define("zotohlab/p/s/supervisor",
         this.state= options;
         this.inited=false;
       },
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method removeFromEngine
@@ -61,7 +57,6 @@ define("zotohlab/p/s/supervisor",
       removeFromEngine(engine) {
         this.board=null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method addToEngine
@@ -72,7 +67,6 @@ define("zotohlab/p/s/supervisor",
                                                this.state));
         this.board= engine.getNodeList(gnodes.BoardNode);
       },
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method update
@@ -90,7 +84,6 @@ define("zotohlab/p/s/supervisor",
           }
         }
       },
-
       /**
        * @method showGrid
        * @private
@@ -137,7 +130,6 @@ define("zotohlab/p/s/supervisor",
           }
         }
       },
-
       /**
        * @method process
        * @private
@@ -164,7 +156,6 @@ define("zotohlab/p/s/supervisor",
      * @property {Number} Priority
      */
     GameSupervisor.Priority= sh.ftypes.PreUpdate;
-
     exports= GameSupervisor;
     return exports;
 });

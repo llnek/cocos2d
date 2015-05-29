@@ -12,7 +12,6 @@
 /**
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/clearance
@@ -21,19 +20,19 @@ define("zotohlab/p/s/clearance",
 
        ['zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (utils, gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/clearance */
-    let exports = {   },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class RowClearance
      */
@@ -101,7 +100,6 @@ define("zotohlab/p/s/clearance",
         this.shiftDownLines(node);
         sh.fire('/hud/score/update', { score: score * 50 });
       },
-
       /**
        * Dispose and get rid of blocks which are marked to be cleared
        * @method clearOneRow
@@ -117,7 +115,6 @@ define("zotohlab/p/s/clearance",
           }
         }
       },
-
       /**
        * Clear collision mark
        * @method resetOneRow
@@ -132,7 +129,6 @@ define("zotohlab/p/s/clearance",
         row[0]=1;
         row[row.length-1]=1;
       },
-
       /**
        * @method shiftDownLines
        * @private
@@ -154,7 +150,6 @@ define("zotohlab/p/s/clearance",
           }
         }
       },
-
       /**
        * @method findFirstDirty
        * @private
@@ -168,7 +163,6 @@ define("zotohlab/p/s/clearance",
 
         return 0;
       },
-
       /**
        * @method findLastEmpty
        * @private
@@ -182,7 +176,6 @@ define("zotohlab/p/s/clearance",
 
         return 0;
       },
-
       /**
        * @method isEmptyRow
        * @private
@@ -198,7 +191,6 @@ define("zotohlab/p/s/clearance",
         }
         return true;
       },
-
       /**
        * @method copyLine
        * @private

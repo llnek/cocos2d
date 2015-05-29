@@ -10,11 +10,10 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
- * @requires zotohlab/asterix
  * @requires zotohlab/asx/online
  * @requires zotohlab/asx/msgbox
  * @requires zotohlab/asx/ynbox
+ * @requires zotohlab/asterix
  * @requires zotohlab/p/splash
  * @requires zotohlab/p/mmenu
  * @requires zotohlab/p/arena
@@ -22,20 +21,20 @@
  */
 define("zotohlab/p/protodefs",
 
-       ['cherimoia/skarojs',
-        'zotohlab/asterix',
-        'zotohlab/asx/online',
+       ['zotohlab/asx/online',
         'zotohlab/asx/msgbox',
         'zotohlab/asx/ynbox',
+        'zotohlab/asterix',
         'zotohlab/p/splash',
         'zotohlab/p/mmenu',
         'zotohlab/p/arena'],
 
-  function (sjs, sh, online,
-            msgbox, ynbox, splash, mmenu, arena) { "use strict";
+  function (online, msgbox, ynbox,
+            sh, splash, mmenu, arena) { "use strict";
 
     let ps= [online, splash, mmenu, msgbox, ynbox, arena],
     protos= sh.protos,
+    sjs= sh.skarojs,
     /** @alias module:zotohlab/p/protodefs */
     exports = protos,
     R = sjs.ramda,

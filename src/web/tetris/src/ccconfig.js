@@ -16,7 +16,6 @@ document.ccConfig = {
   modules: [ 'cocos2d','ccui' ],
   jsList: [
 
-
     "/public/vendors/ramda/ramda.js",
     "/public/vendors/l10njs/l10n.js",
     "/public/vendors/mustache/mustache.js",
@@ -37,13 +36,11 @@ document.ccConfig = {
 
     "/public/ig/lib/zotohlab/ext/xscenes.js",
     "/public/ig/lib/zotohlab/ext/xpool.js",
-    "/public/ig/lib/zotohlab/ext/xldr.js",
+    "/public/ig/lib/zotohlab/ext/xloader.js",
 
-    "/public/ig/lib/zotohlab/gui/start.js",
     "/public/ig/lib/zotohlab/gui/msgbox.js",
     "/public/ig/lib/zotohlab/gui/ynbox.js",
     "/public/ig/lib/zotohlab/gui/online.js",
-    "/public/ig/lib/zotohlab/gui/mainmenu.js",
 
     '/public/ig/lib/game/tetris/config.js',
     '/public/ig/lib/game/tetris/i18n/game_en_US.js',

@@ -13,7 +13,6 @@
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/gnodes
  * @requires zotohlab/p/s/utils
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/motioncontrol
@@ -23,23 +22,22 @@ define("zotohlab/p/s/motioncontrol",
        ['zotohlab/p/elements',
         'zotohlab/p/gnodes',
         'zotohlab/p/s/utils',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (cobjs, gnodes, utils, sjs, sh, ccsx) { "use strict";
+  function (cobjs, gnodes, utils, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/motioncontrol */
-    let exports = {     },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class MotionCtrlSystem
      */
     MotionCtrlSystem = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/motioncontrol
        * @method constructor
@@ -49,7 +47,6 @@ define("zotohlab/p/s/motioncontrol",
         this.throttleWait= csts.THROTTLEWAIT;
         this.state = options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/motioncontrol
        * @method removeFromEngine
@@ -58,7 +55,6 @@ define("zotohlab/p/s/motioncontrol",
       removeFromEngine(engine) {
         this.arena=null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/motioncontrol
        * @method addToEngine
@@ -69,7 +65,6 @@ define("zotohlab/p/s/motioncontrol",
         this.ops={};
         this.initKeyOps();
       },
-
       /**
        * @method onXXXEvent
        * @private
@@ -81,7 +76,6 @@ define("zotohlab/p/s/motioncontrol",
           this.state.selQ.length=0;
         }
       },
-
       /**
        * @checkInput
        * @private
@@ -99,7 +93,6 @@ define("zotohlab/p/s/motioncontrol",
           this.processKeys(node, dt);
         }
       },
-
       /**
        * @memberof module:zotohlab/p/s/motioncontrol
        * @method update
@@ -112,7 +105,6 @@ define("zotohlab/p/s/motioncontrol",
           this.checkInput(node, dt);
         }
       },
-
       /**
        * @method processMouse
        * @private
@@ -142,7 +134,6 @@ define("zotohlab/p/s/motioncontrol",
           this.ops.sftDown(node, dt);
         }
       },
-
       /**
        * @processKeys
        * @private
@@ -166,7 +157,6 @@ define("zotohlab/p/s/motioncontrol",
         }
 
       },
-
       /**
        * @method keyPoll
        * @private
@@ -174,7 +164,6 @@ define("zotohlab/p/s/motioncontrol",
       keyPoll(kp) {
         return sh.main.keyPoll(kp);
       },
-
       /**
        * @method shiftRight
        * @private
@@ -182,7 +171,6 @@ define("zotohlab/p/s/motioncontrol",
       shiftRight(node, dt) {
         node.motion.right=true;
       },
-
       /**
        * @method shiftLeft
        * @private
@@ -190,7 +178,6 @@ define("zotohlab/p/s/motioncontrol",
       shiftLeft(node, dt) {
         node.motion.left=true;
       },
-
       /**
        * @method shiftDown
        * @private
@@ -198,7 +185,6 @@ define("zotohlab/p/s/motioncontrol",
       shiftDown(node, dt) {
         node.motion.down=true;
       },
-
       /**
        * @method rotateRight
        * @private
@@ -206,7 +192,6 @@ define("zotohlab/p/s/motioncontrol",
       rotateRight(node, dt) {
         node.motion.rotr=true;
       },
-
       /**
        * @method rotateLeft
        * @private
@@ -214,7 +199,6 @@ define("zotohlab/p/s/motioncontrol",
       rotateLeft(node, dt) {
         node.motion.rotl=true;
       },
-
       /**
        * @method bindKey
        * @private
@@ -224,7 +208,6 @@ define("zotohlab/p/s/motioncontrol",
                                     this.throttleWait,
                                     { trailing:false });
       },
-
       /**
        * @method initKeyOps
        * @private

@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/networking
@@ -19,23 +18,22 @@
 define("zotohlab/p/s/networking",
 
        ['zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs, sh, ccsx) { "use strict";
+  function (gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/networking */
-    let exports= {      },
+    let exports= {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class NetworkSystem
      */
     NetworkSystem = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/networking~NetworkSystem
        * @method constructor
@@ -45,7 +43,6 @@ define("zotohlab/p/s/networking",
         this.netQ= options.netQ;
         this.state = options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/networking~NetworkSystem
        * @method removeFromEngine
@@ -56,7 +53,6 @@ define("zotohlab/p/s/networking",
         this.balls= null;
         this.fauxs= null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/networking~NetworkSystem
        * @method addToEngine
@@ -67,7 +63,6 @@ define("zotohlab/p/s/networking",
         this.balls= engine.getNodeList(gnodes.BallNode);
         this.fauxs= engine.getNodeList(gnodes.FauxPaddleNode);
       },
-
       /**
        * @memberof module:zotohlab/p/s/networking~NetworkSystem
        * @method update
@@ -78,7 +73,6 @@ define("zotohlab/p/s/networking",
           return this.onEvent(this.netQ.shift());
         }
       },
-
       /**
        * @method syncScores
        * @private
@@ -90,7 +84,6 @@ define("zotohlab/p/s/networking",
         rc[actors[1].color] = scores.p1;
         sh.fire('/hud/score/sync', { points: rc});
       },
-
       /**
        * @method onevent
        * @private
@@ -138,7 +131,6 @@ define("zotohlab/p/s/networking",
 
         return ok;
       },
-
       /**
        * Reset back to default position, no movements
        * @method reposPaddles
@@ -162,7 +154,6 @@ define("zotohlab/p/s/networking",
           }
         }
       },
-
       /**
        * @method reposEntities
        * @private
@@ -182,7 +173,6 @@ define("zotohlab/p/s/networking",
           node.velocity.vel.x=0;
         }
       },
-
       /**
        * @syncPaddles
        * @private
@@ -204,7 +194,6 @@ define("zotohlab/p/s/networking",
           }
         }
       },
-
       /**
        * @method syncOnePaddle
        * @private

@@ -39,14 +39,11 @@ document.ccConfig = {
     "/public/ig/lib/zotohlab/ext/xpool.js",
     "/public/ig/lib/zotohlab/ext/xloader.js",
 
-    "/public/ig/lib/zotohlab/gui/start.js",
+    '/public/ig/lib/zotohlab/ext/negamax.js',
+
     "/public/ig/lib/zotohlab/gui/msgbox.js",
     "/public/ig/lib/zotohlab/gui/ynbox.js",
     "/public/ig/lib/zotohlab/gui/online.js",
-    "/public/ig/lib/zotohlab/gui/mainmenu.js",
-
-    '/public/ig/lib/zotohlab/ext/negamax.js',
-
 
     '/public/ig/lib/game/tictactoe/config.js',
     '/public/ig/lib/game/tictactoe/i18n/game_en_US.js',
