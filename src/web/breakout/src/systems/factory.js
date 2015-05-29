@@ -12,7 +12,6 @@
 /**
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/factory
@@ -21,23 +20,22 @@ define('zotohlab/p/s/factory',
 
        ['zotohlab/p/elements',
         'zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (cobjs, gnodes, sjs, sh, ccsx) { "use strict";
+  function (cobjs, gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/factory */
-    let exports = {   },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class EntityFactory
      */
     EntityFactory = sh.Ashley.casDef({
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method constructor
@@ -48,7 +46,6 @@ define('zotohlab/p/s/factory',
         this.engine=engine;
         this.state= options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createBricks
@@ -80,7 +77,6 @@ define('zotohlab/p/s/factory',
         ent.add(new cobjs.BrickFence(bks));
         this.engine.addEntity(ent);
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method bornPaddle
@@ -96,7 +92,6 @@ define('zotohlab/p/s/factory',
         b.velocity.vel.vy = 200 * sjs.randSign();
         b.velocity.vel.vx = 200 * sjs.randSign();
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createPaddle
@@ -116,7 +111,6 @@ define('zotohlab/p/s/factory',
         ent.add(new cobjs.Velocity(150,0));
         this.engine.addEntity(ent);
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createBall

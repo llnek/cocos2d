@@ -12,7 +12,6 @@
 /**
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/cannon
@@ -21,23 +20,22 @@ define('zotohlab/p/s/cannon',
 
        ['zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (utils, gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/cannon */
-    let exports = {     },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class CannonControl
      */
     CannonControl = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/cannon~CannonControl
        * @method constructor
@@ -46,7 +44,6 @@ define('zotohlab/p/s/cannon',
       constructor(options) {
         this.state = options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/cannon~CannonControl
        * @method addToEngine
@@ -55,7 +52,6 @@ define('zotohlab/p/s/cannon',
       addToEngine(engine) {
         this.nodeList = engine.getNodeList(gnodes.CannonCtrlNode);
       },
-
       /**
        * @memberof module:zotohlab/p/s/cannon~CannonControl
        * @method removeFromEngine
@@ -64,7 +60,6 @@ define('zotohlab/p/s/cannon',
       removeFromEngine(engine) {
         this.nodeList = null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/cannon~CannonControl
        * @method update
@@ -77,7 +72,6 @@ define('zotohlab/p/s/cannon',
           this.process(node, dt);
         }
       },
-
       /**
        * @method process
        * @private
@@ -98,7 +92,6 @@ define('zotohlab/p/s/cannon',
           this.scanInput(node,dt);
         }
       },
-
       /**
        * @method checkInput
        * @private
@@ -117,7 +110,6 @@ define('zotohlab/p/s/cannon',
         }
         return hit;
       },
-
       /**
        * @method scanInput
        * @private
@@ -128,7 +120,6 @@ define('zotohlab/p/s/cannon',
           this.fireMissile(node,dt);
         }
       },
-
       /**
        * @method fireMissile
        * @private

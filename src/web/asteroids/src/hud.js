@@ -10,55 +10,31 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
+ * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xscenes
  * @module zotohlab/p/hud
  */
 define('zotohlab/p/hud',
 
-       ['cherimoia/skarojs',
+       ['zotohlab/asx/xscenes',
         'zotohlab/asterix',
-        'zotohlab/asx/ccsx',
-        'zotohlab/asx/xscenes'],
+        'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, ccsx, scenes) { "use strict";
+  function (scenes, sh, ccsx ) { "use strict";
 
     /** @alias module:zotohlab/p/hud */
-    let exports = {     },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
-    /**
-     * @extends module:zotohlab/asx/xscenes.XLayer
-     * @class BackLayer
-     */
-    BackLayer = scenes.XLayer.extend({
-
-      /**
-       * @method rtti
-       */
-      rtti() { return 'BackLayer'; },
-
-      /**
-       * @method pkInit
-       * @protected
-       */
-      pkInit() {
-        this.addItem(new cc.TMXTiledMap(
-          sh.getTilesPath('gamelevel1.tiles.arena')));
-      }
-
-    }),
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @extends module:zotohlab/asx/xscenes.XGameHUDLayer
      * @class HUDLayer
      */
     HUDLayer = scenes.XGameHUDLayer.extend({
-
       /**
        * @method updateScore
        */
@@ -66,7 +42,6 @@ define('zotohlab/p/hud',
         this.score += n;
         this.drawScore();
       },
-
       /**
        * @method resetAsNew
        */
@@ -74,7 +49,6 @@ define('zotohlab/p/hud',
         this.score = 0;
         this.reset();
       },
-
       /**
        * @method reset
        */
@@ -82,16 +56,20 @@ define('zotohlab/p/hud',
         this.replayBtn.setVisible(false);
         this.lives.resurrect();
       },
-
       /**
        * @method initAtlases
        * @protected
        */
       initAtlases() {
-        this.regoAtlas('game-pics');
-        //this.hudAtlas= 'game-pics';
+        this.regoAtlas( this.hudAtlas());
       },
-
+      /**
+       * @method hudAtlas
+       * @private
+       */
+      hudAtlas() {
+        return 'game-pics';
+      },
       /**
        * @method drawScore
        * @private
@@ -99,7 +77,6 @@ define('zotohlab/p/hud',
       drawScore() {
         this.scoreLabel.setString(Number(this.score).toString());
       },
-
       /**
        * @method initLabels
        * @private
@@ -118,11 +95,6 @@ define('zotohlab/p/hud',
 
         this.addChild(this.scoreLabel, this.lastZix, ++this.lastTag);
       },
-
-      XXinitCtrlBtns() {
-        //this._super(32/48);
-      },
-
       /**
        * @method initIcons
        * @protected
@@ -143,11 +115,6 @@ define('zotohlab/p/hud',
     });
 
     exports= /** @lends exports# */{
-      /**
-       * @property {BackLayer} BackLayer
-       */
-      BackLayer: BackLayer,
-
       /**
        * @property {HUDLayer} HUDLayer
        */

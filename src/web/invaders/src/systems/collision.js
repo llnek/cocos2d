@@ -12,7 +12,6 @@
 /**
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/collisions
@@ -21,24 +20,23 @@ define('zotohlab/p/s/collisions',
 
        ['zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (utils, gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/collisions */
-    let exports = {     },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class CollisionSystem
      */
     CollisionSystem = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/collisions~CollisionSystem
        * @method constructor
@@ -48,7 +46,6 @@ define('zotohlab/p/s/collisions',
         this.state= options;
         this.inited=false;
       },
-
       /**
        * @memberof module:zotohlab/p/s/collisions~CollisionSystem
        * @method removeFromEngine
@@ -59,7 +56,6 @@ define('zotohlab/p/s/collisions',
         this.ships= undef;
         this.engine=undef;
       },
-
       /**
        * @memberof module:zotohlab/p/s/collisions~CollisionSystem
        * @method addToEngine
@@ -70,7 +66,6 @@ define('zotohlab/p/s/collisions',
         this.ships= engine.getNodeList(gnodes.ShipMotionNode);
         this.engine=engine;
       },
-
       /**
        * @memberof module:zotohlab/p/s/collisions~CollisionSystem
        * @method update
@@ -94,7 +89,6 @@ define('zotohlab/p/s/collisions',
           }
         }
       },
-
       /**
        * @method collide
        * @private
@@ -102,7 +96,6 @@ define('zotohlab/p/s/collisions',
       collide(a, b) {
         return ccsx.collide0(a.sprite, b.sprite);
       },
-
       /**
        * @method checkMissilesBombs
        * @private
@@ -123,7 +116,6 @@ define('zotohlab/p/s/collisions',
           });
         });
       },
-
       /**
        * @method checkMissilesAliens
        * @private
@@ -145,7 +137,6 @@ define('zotohlab/p/s/collisions',
           }
         }, sqad.aliens.pool);
       },
-
       /**
        * @method checkShipBombs
        * @private
@@ -164,7 +155,6 @@ define('zotohlab/p/s/collisions',
           }
         });
       },
-
       /**
        * @method checkShipAliens
        * @private

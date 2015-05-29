@@ -11,20 +11,19 @@
 
 /**
  * @requires zotohlab/p/elements
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @module zotohlab/p/gnodes
  */
 define("zotohlab/p/gnodes",
 
        ['zotohlab/p/elements',
-        'cherimoia/skarojs',
         'zotohlab/asterix'],
 
-  function (cobjs, sjs, sh) { "use strict";
+  function (cobjs, sh) { "use strict";
 
     /** @alias module:zotohlab/p/gnodes */
-    let exports= {      },
+    let exports= {},
+    sjs = sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef;
@@ -33,7 +32,7 @@ define("zotohlab/p/gnodes",
     /**
      * @class AlienMotionNode
      */
-    exports.AlienMotionNode = sh.Ashley.nodeDef({
+    AlienMotionNode = sh.Ashley.nodeDef({
       /**
        * @memberof module:zotohlab/p/gnodes~AlienMotionNode
        * @property {AlienSquad} aliens
@@ -45,12 +44,16 @@ define("zotohlab/p/gnodes",
        */
       looper  : cobjs.Looper
     });
+    /**
+     * @property {AlienMotionNode} AlienMotionNode
+     */
+    exports.AlienMotionNode = AlienMotionNode;
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class CannonCtrlNode
      */
-    exports.CannonCtrlNode = sh.Ashley.nodeDef({
+    CannonCtrlNode = sh.Ashley.nodeDef({
       /**
        * @memberof module:zotohlab/p/gnodes~CannonCtrlNode
        * @property {Looper} looper
@@ -67,12 +70,16 @@ define("zotohlab/p/gnodes",
        */
       ship    : cobjs.Ship
     });
+    /**
+     * @property {CannonCtrlNode} CannonCtrlNode
+     */
+    exports.CannonCtrlNode = CannonCtrlNode;
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class ShipMotionNode
      */
-    exports.ShipMotionNode = sh.Ashley.nodeDef({
+    ShipMotionNode = sh.Ashley.nodeDef({
       /**
        * @memberof module:zotohlab/p/gnodes~ShipMotionNode
        * @property {Velocity} velocity
@@ -89,6 +96,11 @@ define("zotohlab/p/gnodes",
        */
       ship      : cobjs.Ship
     });
+    /**
+     * @property {ShipMotionNode} ShipMotionNode
+     */
+    exports.ShipMotionNode = ShipMotionNode;
+
 
     return exports;
 });

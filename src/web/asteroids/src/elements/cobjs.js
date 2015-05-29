@@ -10,28 +10,27 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/elements
  */
 define('zotohlab/p/elements',
 
-       ['cherimoia/skarojs',
-        'zotohlab/asterix',
+       ['zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, ccsx) { "use strict";
+  function (sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/elements */
     let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
     ast= {};
 
     //////////////////////////////////////////////////////////////////////////////
-    exports.Asteroid = sh.Ashley.compDef({
+    Asteroid = sh.Ashley.compDef({
 
       /**
        * @memberof module:zotohlab/p/elements~Asteroid
@@ -54,12 +53,17 @@ define('zotohlab/p/elements',
       }
 
     });
+    /**
+     * @property {Asteroid} Asteroid
+     */
+    exports.Asteroid = Asteroid;
+
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @Cannon
      */
-    exports.Cannon = sh.Ashley.casDef({
+    Cannon = sh.Ashley.casDef({
 
       /**
        * @memberof module:zotohlab/p/elements~Cannon
@@ -72,12 +76,17 @@ define('zotohlab/p/elements',
       }
 
     });
+    /**
+     * @property {Cannon} Cannon
+     */
+    exports.Cannon = Cannon;
+
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class Looper
      */
-    exports.Looper = sh.Ashley.casDef({
+    Looper = sh.Ashley.casDef({
 
       /**
        * @memberof module:zotohlab/p/elements~Looper
@@ -89,12 +98,16 @@ define('zotohlab/p/elements',
       }
 
     });
+    /**
+     * @property {Looper} Looper
+     */
+    exports.Looper = Looper;
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class Missile
      */
-    exports.Missile = sh.Ashley.compDef({
+    Missile = sh.Ashley.compDef({
 
       /**
        * @memberof module:zotohlab/p/elements~Missile
@@ -112,12 +125,18 @@ define('zotohlab/p/elements',
       }
 
     });
+    /**
+     * @property {Missile} Missile
+     */
+    exports.Missile = Missile;
+
+
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class Motion
      */
-    exports.Motion = sh.Ashley.casDef({
+    Motion = sh.Ashley.casDef({
 
       /**
        * @memberof module:zotohlab/p/elements~Motion
@@ -131,12 +150,17 @@ define('zotohlab/p/elements',
       }
 
     });
+    /**
+     * @property {Motion} Motion
+     */
+    exports.Motion = Motion;
+
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class Ship
      */
-    exports.Ship = sh.Ashley.compDef({
+    Ship = sh.Ashley.compDef({
 
       /**
        * @memberof module:zotohlab/p/elements~Ship
@@ -150,12 +174,17 @@ define('zotohlab/p/elements',
       }
 
     });
+    /**
+     * @property {Ship} Ship
+     */
+    exports.Ship = Ship;
+
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class Velocity
      */
-    exports.Velocity = sh.Ashley.casDef({
+    Velocity = sh.Ashley.casDef({
 
       /**
        * @memberof module:zotohlab/p/elments~Velocity
@@ -181,12 +210,17 @@ define('zotohlab/p/elements',
       }
 
     });
+    /**
+     * @property {Velocity} Velocity
+     */
+    exports.Velocity = Velocity;
+
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class Rotation
      */
-    exports.Rotation = sh.Ashley.casDef({
+    Rotation = sh.Ashley.casDef({
 
       /**
        * @memberof module:zotohlab/p/elements~Rotation
@@ -197,12 +231,16 @@ define('zotohlab/p/elements',
       }
 
     });
+    /**
+     * @property {Rotation} Rotation
+     */
+    exports.Rotation = Rotation;
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class Thrust
      */
-    exports.Thrust = sh.Ashley.casDef({
+    Thrust = sh.Ashley.casDef({
 
       /**
        * @memberof module:zotohlab/p/elements~Thrust
@@ -213,6 +251,11 @@ define('zotohlab/p/elements',
       }
 
     });
+    /**
+     * @property {Thrust} Thrust
+     */
+    exports.Thrust = Thrust;
+
 
     return exports;
 });

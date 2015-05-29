@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/motions
@@ -19,23 +18,22 @@
 define('zotohlab/p/s/motions',
 
        ['zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs, sh, ccsx) { "use strict";
+  function (gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/motions */
-    let exports = {     },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class MotionCtrlSystem
      */
     MotionCtrlSystem = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/motions~MotionCtrlSystem
        * @method constructor
@@ -44,7 +42,6 @@ define('zotohlab/p/s/motions',
       constructor(options) {
         this.state= options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/motions~MotionCtrlSystem
        * @method removeFromEngine
@@ -54,7 +51,6 @@ define('zotohlab/p/s/motions',
         this.alienMotions = undef;
         this.shipMotions = undef;
       },
-
       /**
        * @memberof module:zotohlab/p/s/motions~MotionCtrlSystem
        * @method addToEngine
@@ -64,7 +60,6 @@ define('zotohlab/p/s/motions',
         this.alienMotions = engine.getNodeList(gnodes.AlienMotionNode);
         this.shipMotions = engine.getNodeList(gnodes.ShipMotionNode);
       },
-
       /**
        * @memberof module:zotohlab/p/s/motions~MotionCtrlSystem
        * @method update
@@ -83,7 +78,6 @@ define('zotohlab/p/s/motions',
           this.scanInput(node, dt);
         }
       },
-
       /**
        * @method scanInput
        * @private
@@ -100,7 +94,6 @@ define('zotohlab/p/s/motions',
         if (cc.sys.capabilities['touches']) {
         }
       },
-
       /**
        * @method processAlienMotions
        * @private
@@ -117,7 +110,6 @@ define('zotohlab/p/s/motions',
           lpr.timers[1]= ccsx.createTimer(sh.main,2);
         }
       },
-
       /**
        * @method processKeys
        * @private

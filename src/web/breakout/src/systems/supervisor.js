@@ -10,30 +10,28 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/supervisor
  */
 define('zotohlab/p/s/supervisor',
 
-       ['cherimoia/skarojs',
-        'zotohlab/asterix',
+       ['zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, ccsx) { "use strict";
+  function (sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/supervisor */
-    let exports= {      },
+    let exports= {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class GameSupervisor
      */
     GameSupervisor = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method constructor
@@ -43,7 +41,6 @@ define('zotohlab/p/s/supervisor',
         this.state= options;
         this.inited=false;
       },
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method removeFromEngine
@@ -51,7 +48,6 @@ define('zotohlab/p/s/supervisor',
        */
       removeFromEngine(engine) {
       },
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method addToEngine
@@ -59,7 +55,6 @@ define('zotohlab/p/s/supervisor',
        */
       addToEngine(engine) {
       },
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method update
@@ -71,7 +66,6 @@ define('zotohlab/p/s/supervisor',
           this.inited=true;
         }
       },
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method initBrickSize
@@ -79,7 +73,6 @@ define('zotohlab/p/s/supervisor',
       initBrickSize() {
         this.state.candySize= ccsx.createSpriteFrame('red_candy.png').getContentSize();
       },
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method initBallSize
@@ -87,7 +80,6 @@ define('zotohlab/p/s/supervisor',
       initBallSize() {
         this.state.ballSize= ccsx.createSpriteFrame('ball.png').getContentSize();
       },
-
       /**
        * @method onceOnly
        * @private

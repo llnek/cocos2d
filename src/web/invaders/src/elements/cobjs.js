@@ -10,21 +10,20 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/elements
  */
 define("zotohlab/p/elements",
 
-       ['cherimoia/skarojs',
-        'zotohlab/asterix',
+       ['zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, ccsx) { "use strict";
+  function (sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/elements */
-    let exports= {    },
+    let exports= {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef;
@@ -33,7 +32,7 @@ define("zotohlab/p/elements",
     /**
      * @class AlienSquad
      */
-    exports.AlienSquad = sh.Ashley.casDef({
+    AlienSquad = sh.Ashley.casDef({
 
       /**
        * @memberof module:zotohlab/p/elements~AlienSquad
@@ -46,12 +45,16 @@ define("zotohlab/p/elements",
         this.stepx=step;
       }
     });
+    /**
+     * @property {AlienSquad} AlienSquad
+     */
+    exports.AlienSquad = AlienSquad;
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class Alien
      */
-    exports.Alien = sh.Ashley.compDef({
+    Alien = sh.Ashley.compDef({
 
       /**
        * @memberof module:zotohlab/p/elements~Alien
@@ -65,12 +68,17 @@ define("zotohlab/p/elements",
         this.rank=rank;
       }
     });
+    /**
+     * @property {Alien} Alien
+     */
+    exports.Alien = Alien;
+
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class Bomb
      */
-    exports.Bomb = sh.Ashley.compDef({
+    Bomb = sh.Ashley.compDef({
 
       /**
        * @memberof module:zotohlab/p/elements~Bomb
@@ -86,12 +94,16 @@ define("zotohlab/p/elements",
         };
       }
     });
+    /**
+     * @property {Bomb} Bomb
+     */
+    exports.Bomb= Bomb;
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class Cannon
      */
-    exports.Cannon = sh.Ashley.casDef({
+    Cannon = sh.Ashley.casDef({
 
       /**
        * @memberof module:zotohlab/p/elements~Cannon
@@ -103,12 +115,16 @@ define("zotohlab/p/elements",
         this.hasAmmo = true;
       }
     });
+    /**
+     * @property {Cannon} Cannon
+     */
+    exports.Cannon = Cannon;
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class Explosion
      */
-    exports.Explosion = sh.Ashley.compDef({
+    Explosion = sh.Ashley.compDef({
 
       /**
        * @memberof module:zotohlab/p/elements~Explosion
@@ -142,12 +158,16 @@ define("zotohlab/p/elements",
       }
 
     });
+    /**
+     * @property {Explosion} Explosion
+     */
+    exports.Explosion = Explosion;
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class Looper
      */
-    exports.Looper = sh.Ashley.casDef({
+    Looper = sh.Ashley.casDef({
 
       /**
        * @memberof module:zotohlab/p/elements~Looper
@@ -158,12 +178,16 @@ define("zotohlab/p/elements",
         this.timers=sjs.makeArray(count,null);
       }
     });
+    /**
+     * @property {Looper} Looper
+     */
+    exports.Looper= Looper;
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class Missile
      */
-    exports.Missile = sh.Ashley.compDef({
+    Missile = sh.Ashley.compDef({
 
       /**
        * @memberof module:zotohlab/p/elements~Missile
@@ -178,14 +202,17 @@ define("zotohlab/p/elements",
           y: 150 * wz.height / 480
         };
       }
-
     });
+    /**
+     * @property {Missile} Missile
+     */
+    exports.Missile= Missile;
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class Motion
      */
-    exports.Motion = sh.Ashley.casDef({
+    Motion = sh.Ashley.casDef({
 
       /**
        * @memberof module:zotohlab/p/elements~Motion
@@ -196,12 +223,16 @@ define("zotohlab/p/elements",
         this.left = false;
       }
     });
+    /**
+     * @property {Motion} Motion
+     */
+    exports.Motion= Motion;
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class Ship
      */
-    exports.Ship = sh.Ashley.compDef({
+    Ship = sh.Ashley.compDef({
 
       /**
        * @memberof module:zotohlab/p/elements~Ship
@@ -214,12 +245,16 @@ define("zotohlab/p/elements",
         this.frames=frames;
       }
     });
+    /**
+     * @property {Ship} Ship
+     */
+    exports.Ship = Ship;
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class Velocity
      */
-    exports.Velocity = sh.Ashley.casDef({
+    Velocity = sh.Ashley.casDef({
 
       /**
        * @memberof module:zotohlab/p/elements~Velocity
@@ -234,6 +269,10 @@ define("zotohlab/p/elements",
         };
       }
     });
+    /**
+     * @property {Velocity} Velocity
+     */
+    exports.Velocity= Velocity;
 
     return exports;
 });

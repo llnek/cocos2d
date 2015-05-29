@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/p/elements
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/xpool
@@ -20,24 +19,23 @@
 define('zotohlab/p/s/factory',
 
        ['zotohlab/p/elements',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
         'zotohlab/asx/xpool'],
 
-  function (cobjs, sjs, sh, ccsx, XPool) { "use strict";
+  function (cobjs, sh, ccsx, XPool) { "use strict";
 
     /** @alias module:zotohlab/p/s/factory */
-    let exports = {     },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class EntityFactory
      */
     EntityFactory = sh.Ashley.casDef({
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method constructor
@@ -48,7 +46,6 @@ define('zotohlab/p/s/factory',
         this.engine=engine;
         this.state= options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createMissiles
@@ -62,7 +59,6 @@ define('zotohlab/p/s/factory',
           return new cobjs.Missile(sp);
         }, count || 36);
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createExplosions
@@ -76,7 +72,6 @@ define('zotohlab/p/s/factory',
           return new cobjs.Explosion(sp);
         }, count || 24);
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createBombs
@@ -90,7 +85,6 @@ define('zotohlab/p/s/factory',
           return new cobjs.Bomb(sp);
         }, count || 24);
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method calcImgSize
@@ -99,7 +93,6 @@ define('zotohlab/p/s/factory',
       calcImgSize(img) {
         return ccsx.createSpriteFrame(img).getContentSize();
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method getRankInfo
@@ -120,7 +113,6 @@ define('zotohlab/p/s/factory',
             this.calcImgSize('purple_bug_0.png') ];
         }
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method fillSquad
@@ -159,7 +151,6 @@ define('zotohlab/p/s/factory',
           pool.push(aa);
         }
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createAliens
@@ -179,7 +170,6 @@ define('zotohlab/p/s/factory',
 
         this.engine.addEntity(ent);
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method bornShip
@@ -189,7 +179,6 @@ define('zotohlab/p/s/factory',
           this.state.ship.inflate();
         }
       },
-
       /**
        * @memberof module:zotohlab/p/s/factory~EntityFactory
        * @method createShip

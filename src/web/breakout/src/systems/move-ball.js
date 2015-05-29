@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/moveball
@@ -19,23 +18,22 @@
 define('zotohlab/p/s/moveball',
 
        ['zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs, sh, ccsx) { "use strict";
+  function (gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/moveball */
-    let exports = {     },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class MovementBall
      */
     MovementBall = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/moveball~MovementBall
        * @method constructor
@@ -44,7 +42,6 @@ define('zotohlab/p/s/moveball',
       constructor(options) {
         this.state= options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/moveball~MovementBall
        * @method removeFromEngine
@@ -53,7 +50,6 @@ define('zotohlab/p/s/moveball',
       removeFromEngine(engine) {
         this.ballMotions = undef;
       },
-
       /**
        * @memberof module:zotohlab/p/s/moveball~MovementBall
        * @method addToEngine
@@ -62,7 +58,6 @@ define('zotohlab/p/s/moveball',
       addToEngine(engine) {
         this.ballMotions = engine.getNodeList( gnodes.BallMotionNode)
       },
-
       /**
        * @memberof module:zotohlab/p/s/moveball~MovementBall
        * @method update
@@ -76,7 +71,6 @@ define('zotohlab/p/s/moveball',
           this.processBallMotions(node, dt);
         }
       },
-
       /**
        * @method processBallMotions
        * @private

@@ -12,7 +12,6 @@
 /**
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/resolution
@@ -21,24 +20,23 @@ define('zotohlab/p/s/resolution',
 
        ['zotohlab/p/elements',
         'zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (cobjs, gnodes, sjs, sh, ccsx) { "use strict";
+  function (cobjs, gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/resolution */
-    let exports= {      },
+    let exports= {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class Resolution
      */
     Resolution = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/resolution~Resolution
        * @method constructor
@@ -47,7 +45,6 @@ define('zotohlab/p/s/resolution',
       constructor(options) {
         this.state= options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/resolution~Resolution
        * @method removeFromEngine
@@ -58,7 +55,6 @@ define('zotohlab/p/s/resolution',
         this.ships= undef;
         this.engine=undef;
       },
-
       /**
        * @memberof module:zotohlab/p/s/resolution~Resolution
        * @method addToEngine
@@ -69,7 +65,6 @@ define('zotohlab/p/s/resolution',
         this.ships= engine.getNodeList(gnodes.ShipMotionNode);
         this.engine=engine;
       },
-
       /**
        * @memberof module:zotohlab/p/s/resolution~Resolution
        * @method update
@@ -84,15 +79,13 @@ define('zotohlab/p/s/resolution',
         this.checkAliens(aliens);
         this.checkShip(ship);
       },
-
       /**
        * @method checkMissiles
        * @private
        */
       checkMissiles() {
         const mss = sh.pools.Missiles,
-        ht = ccsx.vrect().height,
-        me=this;
+        ht = ccsx.vrect().height;
 
         mss.iter((m) => {
           if (m.status) {
@@ -103,15 +96,13 @@ define('zotohlab/p/s/resolution',
           }
         });
       },
-
       /**
        * @method checkBombs
        * @private
        */
       checkBombs() {
         const bbs = sh.pools.Bombs,
-        bt = 0,
-        me=this;
+        bt = 0;
 
         bbs.iter((b) => {
           if (b.status) {
@@ -122,14 +113,12 @@ define('zotohlab/p/s/resolution',
           }
         });
       },
-
       /**
        * @method checkAliens
        * @private
        */
       checkAliens(node) {
-        const sqad= node.aliens,
-        me=this;
+        const sqad= node.aliens;
 
         R.forEach((en) => {
           if (en.status) {
@@ -141,7 +130,6 @@ define('zotohlab/p/s/resolution',
           }
         }, sqad.aliens.pool);
       },
-
       /**
        * @method checkShip
        * @private

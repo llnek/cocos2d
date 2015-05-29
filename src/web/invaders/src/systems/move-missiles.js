@@ -12,7 +12,6 @@
 /**
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/movemissiles
@@ -21,24 +20,23 @@ define('zotohlab/p/s/movemissiles',
 
        ['zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (utils, gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/movemissiles */
-    let exports= {      },
+    let exports= {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class MovementMissiles
      */
     MovementMissiles = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/movemissiles~MovementMissiles
        * @method constructor
@@ -47,7 +45,6 @@ define('zotohlab/p/s/movemissiles',
       constructor(options) {
         this.state= options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/movemissiles~MovementMissiles
        * @method removeFromEngine
@@ -55,7 +52,6 @@ define('zotohlab/p/s/movemissiles',
        */
       removeFromEngine(engine) {
       },
-
       /**
        * @memberof module:zotohlab/p/s/movemissiles~MovementMissiles
        * @method addToEngine
@@ -63,7 +59,6 @@ define('zotohlab/p/s/movemissiles',
        */
       addToEngine(engine) {
       },
-
       /**
        * @memberof module:zotohlab/p/s/movemissiles~MovementMissiles
        * @method update

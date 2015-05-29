@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/movepaddle
@@ -19,23 +18,22 @@
 define('zotohlab/p/s/movepaddle',
 
        ['zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs, sh, ccsx) { "use strict";
+  function (gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/movepaddle */
-    let exports = {     },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class MovementPaddle
      */
     MovementPaddle = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/movepaddle~MovementPaddle
        * @method constructor
@@ -44,7 +42,6 @@ define('zotohlab/p/s/movepaddle',
       constructor(options) {
         this.state= options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/movepaddle~MovementPaddle
        * @method removeFromEngine
@@ -53,7 +50,6 @@ define('zotohlab/p/s/movepaddle',
       removeFromEngine(engine) {
         this.paddleMotions = undef;
       },
-
       /**
        * @memberof module:zotohlab/p/s/movepaddle~MovementPaddle
        * @method addToEngine
@@ -62,7 +58,6 @@ define('zotohlab/p/s/movepaddle',
       addToEngine(engine) {
         this.paddleMotions = engine.getNodeList(gnodes.PaddleMotionNode)
       },
-
       /**
        * @memberof module:zotohlab/p/s/movepaddle~MovementPaddle
        * @method update
@@ -76,7 +71,6 @@ define('zotohlab/p/s/movepaddle',
           this.processPaddleMotions(node,dt);
         }
       },
-
       /**
        * @method processPaddleMotions
        * @private
@@ -103,7 +97,6 @@ define('zotohlab/p/s/movepaddle',
         motion.right=false;
         motion.left=false;
       },
-
       /**
        * @method clamp
        * @private

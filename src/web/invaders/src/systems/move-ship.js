@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/moveship
@@ -19,23 +18,22 @@
 define('zotohlab/p/s/moveship',
 
        [ 'zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs, sh, ccsx) { "use strict";
+  function (gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/moveship */
-    let exports = {     },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class MovementShip
      */
     MovementShip = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/moveship~MovementShip
        * @method constructor
@@ -44,7 +42,6 @@ define('zotohlab/p/s/moveship',
       constructor(options) {
         this.state= options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/moveship~MovementShip
        * @method removeFromEngine
@@ -53,7 +50,6 @@ define('zotohlab/p/s/moveship',
       removeFromEngine(engine) {
         this.shipMotions=null;
       },
-
       /**
        * @memberof module:zotohlab/p/s/moveship~MovementShip
        * @method addToEngine
@@ -62,7 +58,6 @@ define('zotohlab/p/s/moveship',
       addToEngine(engine) {
         this.shipMotions = engine.getNodeList(gnodes.ShipMotionNode)
       },
-
       /**
        * @memberof module:zotohlab/p/s/moveship~MovementShip
        * @method update
@@ -75,7 +70,6 @@ define('zotohlab/p/s/moveship',
           this.processShipMotions(node, dt);
         }
       },
-
       /**
        * @method processShipMotions
        * @private
@@ -102,7 +96,6 @@ define('zotohlab/p/s/moveship',
         motion.right=false;
         motion.left=false;
       },
-
       /**
        * @method clamp
        * @private

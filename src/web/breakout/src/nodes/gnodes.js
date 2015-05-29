@@ -11,20 +11,19 @@
 
 /**
  * @requires zotohlab/p/elements
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @module zotohlab/p/gnodes
  */
 define('zotohlab/p/gnodes',
 
        ['zotohlab/p/elements',
-        'cherimoia/skarojs',
         'zotohlab/asterix'],
 
-  function (cobjs, sjs, sh) { "use strict";
+  function (cobjs, sh) { "use strict";
 
     /** @alias module:zotohlab/p/gnodes */
-    let exports = {   },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef;
@@ -33,19 +32,23 @@ define('zotohlab/p/gnodes',
     /**
      * @class BricksNode
      */
-    exports.BricksNode = sh.Ashley.nodeDef({
+    BricksNode = sh.Ashley.nodeDef({
       /**
        * @memberof module:zotohlab/p/gnodes~BricksNode
        * @property {BrickFence} fence
        */
       fence   : cobjs.BrickFence
     });
+    /**
+     * @property {BricksNode} BricksNode
+     */
+    exports.BricksNode = BricksNode;
 
     //////////////////////////////////////////////////////////////////////////////
     /**
      * @class PaddleMotionNode
      */
-    exports.PaddleMotionNode = sh.Ashley.nodeDef({
+    PaddleMotionNode = sh.Ashley.nodeDef({
       /**
        * @memberof module:zotohlab/p/gnodes~PaddleMotionNode
        * @property {Velocity} velocity
@@ -65,9 +68,13 @@ define('zotohlab/p/gnodes',
        */
       paddle      : cobjs.Paddle
     });
+    /**
+     * @property {PaddleMotionNode} PaddleMotionNode
+     */
+    exports.PaddleMotionNode = PaddleMotionNode;
 
     //////////////////////////////////////////////////////////////////////////////
-    exports.BallMotionNode = sh.Ashley.nodeDef({
+    BallMotionNode = sh.Ashley.nodeDef({
       /**
        * @memberof module:zotohlab/p/gnodes~BallMotionNode
        * @property {Velocity} velocity
@@ -81,9 +88,12 @@ define('zotohlab/p/gnodes',
        */
       ball        : cobjs.Ball
     });
+    /**
+     * @property {BallMotionNode} BallMotionNode
+     */
+    exports.BallMotionNode = BallMotionNode;
 
     return exports;
-
 });
 
 //////////////////////////////////////////////////////////////////////////////

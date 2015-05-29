@@ -12,7 +12,6 @@
 /**
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/s/utils
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/xpool
@@ -22,24 +21,23 @@ define("zotohlab/p/s/supervisor",
 
        ['zotohlab/p/elements',
         'zotohlab/p/s/utils',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
         'zotohlab/asx/xpool'],
 
-  function (cobjs, utils, sjs, sh, ccsx, XPool) { "use strict";
+  function (cobjs, utils, sh, ccsx, XPool) { "use strict";
 
     /** @alias module:zotohlab/p/s/supervisor */
-    let exports = {     },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class GameSupervisor
      */
     GameSupervisor = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method constructor
@@ -49,7 +47,6 @@ define("zotohlab/p/s/supervisor",
         this.state= options;
         this.inited=false;
       },
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method removeFromEngine
@@ -57,7 +54,6 @@ define("zotohlab/p/s/supervisor",
        */
       removeFromEngine(engine) {
       },
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method addToEngine
@@ -65,7 +61,6 @@ define("zotohlab/p/s/supervisor",
        */
       addToEngine(engine) {
       },
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method initAlienSize
@@ -74,7 +69,6 @@ define("zotohlab/p/s/supervisor",
         //pick purple since it is the largest
         this.state.alienSize= ccsx.createSpriteFrame('purple_bug_0.png').getContentSize();
       },
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method initShipSize
@@ -82,7 +76,6 @@ define("zotohlab/p/s/supervisor",
       initShipSize() {
         this.state.shipSize= ccsx.createSpriteFrame( 'ship_0.png').getContentSize();
       },
-
       /**
        * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
        * @method update
@@ -94,7 +87,6 @@ define("zotohlab/p/s/supervisor",
           this.inited=true;
         }
       },
-
       /**
        * @method onceOnly
        * @private

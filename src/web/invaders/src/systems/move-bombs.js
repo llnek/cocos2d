@@ -12,7 +12,6 @@
 /**
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/movebombs
@@ -21,24 +20,23 @@ define('zotohlab/p/s/movebombs',
 
        ['zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (utils, gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/movebombs */
-    let exports = {     },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class MovementBombs
      */
     MovementBombs = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/movebombs~MovementBombs
        * @method constructor
@@ -47,7 +45,6 @@ define('zotohlab/p/s/movebombs',
       constructor(options) {
         this.state= options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/movebombs~MovementBombs
        * @method removeFromEngine
@@ -55,7 +52,6 @@ define('zotohlab/p/s/movebombs',
        */
       removeFromEngine(engine) {
       },
-
       /**
        * @memberof module:zotohlab/p/s/movebombs~MovementBombs
        * @method addToEngine
@@ -63,7 +59,6 @@ define('zotohlab/p/s/movebombs',
        */
       addToEngine(engine) {
       },
-
       /**
        * @memberof module:zotohlab/p/s/movebombs~MovementBombs
        * @method update

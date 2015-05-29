@@ -12,7 +12,6 @@
 /**
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/movealiens
@@ -21,24 +20,23 @@ define('zotohlab/p/s/movealiens',
 
        ['zotohlab/p/s/utils',
         'zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (utils, gnodes, sjs, sh, ccsx) { "use strict";
+  function (utils, gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/movealiens */
-    let exports = {     },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class MovementAiens
      */
     MovementAliens = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/movealiens~MovementAliens
        * @method constructor
@@ -47,7 +45,6 @@ define('zotohlab/p/s/movealiens',
       constructor(options) {
         this.state= options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/movealiens~MovementAliens
        * @method removeFromEngine
@@ -56,7 +53,6 @@ define('zotohlab/p/s/movealiens',
       removeFromEngine(engine) {
         this.alienMotions= undef;
       },
-
       /**
        * @memberof module:zotohlab/p/s/movealiens~MovementAliens
        * @method addToEngine
@@ -65,7 +61,6 @@ define('zotohlab/p/s/movealiens',
       addToEngine(engine) {
         this.alienMotions = engine.getNodeList(gnodes.AlienMotionNode);
       },
-
       /**
        * @memberof module:zotohlab/p/s/movealiens~MovementAliens
        * @method update
@@ -80,7 +75,6 @@ define('zotohlab/p/s/movealiens',
           this.processBombs(node,dt);
         }
       },
-
       /**
        * @method processMovement
        * @private
@@ -94,7 +88,6 @@ define('zotohlab/p/s/movealiens',
           lpr.timers[0]=ccsx.releaseTimer(lpr.timers[0]);
         }
       },
-
       /**
        * @method processBombs
        * @private
@@ -108,7 +101,6 @@ define('zotohlab/p/s/movealiens',
           lpr.timers[1]=ccsx.releaseTimer(lpr.timers[1]);
         }
       },
-
       /**
        * @method checkBomb
        * @private
@@ -128,7 +120,6 @@ define('zotohlab/p/s/movealiens',
           this.dropBomb(pos.x, pos.y-4);
         }
       },
-
       /**
        * @method dropBomb
        * @private
@@ -145,7 +136,6 @@ define('zotohlab/p/s/movealiens',
         sjs.loggr.debug('got one bomb from pool');
         ent.inflate({ x: x, y: y});
       },
-
       /**
        * @method maybeShuffleAliens
        * @private
@@ -162,7 +152,6 @@ define('zotohlab/p/s/movealiens',
           }
         }
       },
-
       /**
        * @method testDirX
        * @private
@@ -177,7 +166,6 @@ define('zotohlab/p/s/movealiens',
           return ccsx.getLeft(sp) + stepx > (wb.left + (2/40 * wz.width));
         }
       },
-
       /**
        * @method shuffleOneAlien
        * @private
@@ -186,7 +174,6 @@ define('zotohlab/p/s/movealiens',
         const pos= a.sprite.getPosition();
         a.sprite.setPosition(pos.x + stepx, pos.y);
       },
-
       /**
        * @method forwardOneAlien
        * @private
@@ -198,7 +185,6 @@ define('zotohlab/p/s/movealiens',
         a.sprite.setPosition(pos.x,  pos.y - delta);
                              //pos.y - ccsx.getHeight(a.sprite) - (2/480 * wz.height));
       },
-
       /**
        * @method doShuffle
        * @private
@@ -210,7 +196,6 @@ define('zotohlab/p/s/movealiens',
           this.shuffleOneAlien(a,sqad.stepx); }, rc);
         return rc.length > 0;
       },
-
       /**
        * @method doForward
        * @private
@@ -224,7 +209,6 @@ define('zotohlab/p/s/movealiens',
         sqad.stepx = - sqad.stepx;
         return rc.length > 0;
       },
-
       /**
        * @method findMinX
        * @private
@@ -238,7 +222,6 @@ define('zotohlab/p/s/movealiens',
           }
         }, sqad.aliens.pool);
       },
-
       /**
        * @method finxMaxX
        * @private

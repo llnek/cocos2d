@@ -10,63 +10,43 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
+ * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xscenes
  * @module zotohlab/p/hud
  */
 define('zotohlab/p/hud',
 
-       ['cherimoia/skarojs',
+       ['zotohlab/asx/xscenes',
         'zotohlab/asterix',
-        'zotohlab/asx/ccsx',
-        'zotohlab/asx/xscenes'],
+        'zotohlab/asx/ccsx'],
 
-  function(sjs, sh, ccsx, scenes) { "use strict";
+  function(scenes, sh, ccsx ) { "use strict";
 
     /** @alias module:zotohlab/p/hud */
-    let exports = {     },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
-    /**
-     * @class BackLayer
-     */
-    BackLayer = scenes.XLayer.extend({
-
-      /**
-       * @method rtti
-       */
-      rtti() { return 'BackLayer'; },
-
-      /**
-       * @method pkInit
-       * @protected
-       */
-      pkInit() {
-        this.addItem(new cc.TMXTiledMap(
-          sh.getTilesPath('gamelevel1.tiles.arena')));
-      }
-
-    }),
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @extends module:zotohlab/asx/xscenes.XGameHUDLayer
      * @class HUDLayer
      */
     HUDLayer = scenes.XGameHUDLayer.extend({
-
       /**
        * @method initAtlases
        * @protected
        */
       initAtlases() {
         this.regoAtlas('game-pics');
-        //this.hudAtlas= 'game-pics';
       },
-
+      /**
+       * @method hudAtlas
+       * @private
+       */
+      hudAtlas() { return 'game-pics'; },
       /**
        * @method updateScore
        */
@@ -74,7 +54,6 @@ define('zotohlab/p/hud',
         this.score += n;
         this.drawScore();
       },
-
       /**
        * @method resetAsNew
        * @private
@@ -82,7 +61,6 @@ define('zotohlab/p/hud',
       resetAsNew() {
         this.reset();
       },
-
       /**
        * @method reset
        * @private
@@ -92,7 +70,6 @@ define('zotohlab/p/hud',
         this.lives.resurrect();
         this.score=0;
       },
-
       /**
        * @method initLabels
        * @protected
@@ -111,7 +88,6 @@ define('zotohlab/p/hud',
 
         this.addChild(this.scoreLabel, this.lastZix, ++this.lastTag);
       },
-
       /**
        * @method initIcons
        * @protected
@@ -128,27 +104,17 @@ define('zotohlab/p/hud',
 
         this.lives.create();
       },
-
       /**
        * @method drawScore
        * @private
        */
       drawScore() {
         this.scoreLabel.setString(Number(this.score).toString());
-      },
-
-      XXinitCtrlBtns(s) {
-        //this._super(32/48);
       }
 
     });
 
     exports= /** @lends exports# */{
-      /**
-       * @property {BackLayer} BackLayer
-       */
-      BackLayer: BackLayer,
-
       /**
        * @property {HUDLayer} HUDLayer
        */
@@ -156,7 +122,6 @@ define('zotohlab/p/hud',
     };
 
     return exports;
-
 });
 
 //////////////////////////////////////////////////////////////////////////////

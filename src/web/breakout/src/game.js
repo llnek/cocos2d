@@ -10,39 +10,51 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
+ * @requires zotohlab/asx/xscenes
  * @requires zotohlab/p/sysobjs
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xscenes
- * @requires zotohlab/asx/xmmenus
  * @requires zotohlab/p/hud
  * @module zotohlab/p/arena
  */
 define('zotohlab/p/arena',
 
-       ['zotohlab/p/sysobjs',
-        'cherimoia/skarojs',
+       ['zotohlab/asx/xscenes',
+        'zotohlab/p/sysobjs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
-        'zotohlab/asx/xscenes',
-        'zotohlab/asx/xmmenus',
         'zotohlab/p/hud'],
 
-  function(sobjs, sjs, sh, ccsx, scenes, mmenus, huds) { "use strict";
+  function(scenes, sobjs, sh, ccsx, huds) { "use strict";
 
     /** @alias module:zotohlab/p/arena */
-    let exports = {     },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
+    /**
+     * @class BackLayer
+     */
+    BackLayer = scenes.XLayer.extend({
+      /**
+       * @method rtti
+       */
+      rtti() { return 'BackLayer'; },
+      /**
+       * @method setup
+       * @protected
+       */
+      setup() {
+      }
+    }),
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class GameLayer
      */
     GameLayer = scenes.XGameLayer.extend({
-
       /**
        * @method reset
        * @protected
@@ -59,7 +71,6 @@ define('zotohlab/p/arena',
           this.getHUD().reset();
         }
       },
-
       /**
        * @method operational
        * @protected
@@ -67,7 +78,6 @@ define('zotohlab/p/arena',
       operational() {
         return this.options.running;
       },
-
       /**
        * @method spawnPlayer
        * @private
@@ -75,7 +85,6 @@ define('zotohlab/p/arena',
       spawnPlayer() {
         sh.factory.bornPaddle();
       },
-
       /**
        * @method getEnclosureBox
        * @private
@@ -88,7 +97,6 @@ define('zotohlab/p/arena',
                  left: csts.TILE,
                  right: wz.width - csts.TILE };
       },
-
       /**
        * @method onPlayerKilled
        * @private
@@ -100,7 +108,6 @@ define('zotohlab/p/arena',
           this.spawnPlayer();
         }
       },
-
       /**
        * @method onDone
        * @private
@@ -110,14 +117,12 @@ define('zotohlab/p/arena',
         this.options.running=false;
         this.getHUD().enableReplay();
       },
-
       /**
        * @method replay
        */
       replay() {
         this.play(false);
       },
-
       /**
        * @method play
        */
@@ -140,7 +145,6 @@ define('zotohlab/p/arena',
           sobjs.MovementBall,
           sobjs.Collisions]);
       },
-
       /**
        * @method onEarnScore
        * @private
@@ -148,7 +152,6 @@ define('zotohlab/p/arena',
       onEarnScore(msg) {
         this.getHUD().updateScore(msg.value);
       },
-
       /**
        * @method onNewGame
        * @private
@@ -162,12 +165,10 @@ define('zotohlab/p/arena',
     });
 
     exports = /** @lends exports# */{
-
       /**
        * @property {String} rtti
        */
       rtti : sh.ptypes.game,
-
       /**
        * @method reify
        * @param {Object} options
@@ -175,22 +176,22 @@ define('zotohlab/p/arena',
        */
       reify(options) {
         const scene = new scenes.XSceneFactory([
-          huds.BackLayer,
+          BackLayer,
           GameLayer,
           huds.HUDLayer
         ]).reify(options);
 
-        scene.onmsg('/game/bricks/killed', (topic, msg) => {
+        scene.onmsg('/game/bricks/killed', (t, msg) => {
           sh.main.onBrickKilled(msg);
         }).
-        onmsg('/game/players/killed', (topic, msg) => {
+        onmsg('/game/players/killed', (t, msg) => {
           sh.main.onPlayerKilled(msg);
         }).
-        onmsg('/game/players/earnscore', (topic, msg) => {
+        onmsg('/game/players/earnscore', (t, msg) => {
           sh.main.onEarnScore(msg);
         }).
         onmsg('/hud/showmenu',(t,msg) => {
-          mmenus.showMenu();
+          scenes.showMenu();
         }).
         onmsg('/hud/replay',(t,msg) => {
           sh.main.replay();

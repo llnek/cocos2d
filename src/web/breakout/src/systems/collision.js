@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/collisions
@@ -19,23 +18,22 @@
 define('zotohlab/p/s/collisions',
 
        ['zotohlab/p/gnodes',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (gnodes, sjs, sh, ccsx) { "use strict";
+  function (gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/collisions */
-    let exports = {     },
+    let exports = {},
+    sjs = sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.xcsts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @class CollisionSystem
      */
     CollisionSystem = sh.Ashley.sysDef({
-
       /**
        * @memberof module:zotohlab/p/s/collisions~CollisionSystem
        * @method constructor
@@ -44,7 +42,6 @@ define('zotohlab/p/s/collisions',
       constructor(options) {
         this.state = options;
       },
-
       /**
        * @memberof module:zotohlab/p/s/collisions~CollisionSystem
        * @method removeFromEngine
@@ -55,7 +52,6 @@ define('zotohlab/p/s/collisions',
         this.balls=null;
         this.fences= undef;
       },
-
       /**
        * @memberof module:zotohlab/p/s/collisions~CollisionSystem
        * @method addToEngine
@@ -67,7 +63,6 @@ define('zotohlab/p/s/collisions',
         this.fences= engine.getNodeList(gnodes.BricksNode);
         this.engine=engine;
       },
-
       /**
        * @memberof module:zotohlab/p/s/collisions~CollisionSystem
        * @method update
@@ -89,7 +84,6 @@ define('zotohlab/p/s/collisions',
           }
         }
       },
-
       /**
        * @method onPlayerKilled
        * @private
@@ -104,7 +98,6 @@ define('zotohlab/p/s/collisions',
           return false;
         }
       },
-
       /**
        * @method checkNodes
        * @private
@@ -115,7 +108,6 @@ define('zotohlab/p/s/collisions',
           this.check(pnode,bnode);
         }
       },
-
       //ball hits paddle
       /**
        * @method check
@@ -132,7 +124,6 @@ define('zotohlab/p/s/collisions',
         ball.sprite.setPosition(pos.x, top+hh);
         bv.vel.y = - bv.vel.y;
       },
-
       /**
        * @method checkBricks
        * @private
@@ -149,7 +140,6 @@ define('zotohlab/p/s/collisions',
           }
         }
       },
-
       /**
        * @method onBrick
        * @private

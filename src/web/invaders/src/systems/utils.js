@@ -11,7 +11,6 @@
 
 /**
  * @requires zotohlab/p/elements
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/utils
@@ -19,14 +18,14 @@
 define("zotohlab/p/s/utils",
 
        ['zotohlab/p/elements',
-        'cherimoia/skarojs',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (cobjs, sjs, sh, ccsx) { "use strict";
+  function (cobjs, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/utils */
     let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef;

@@ -10,41 +10,36 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
+ * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xscenes
- * @requires zotohlab/asx/xmmenus
  * @module zotohlab/p/mmenu
  */
 define('zotohlab/p/mmenu',
 
-       ['cherimoia/skarojs',
+       ['zotohlab/asx/xscenes',
         'zotohlab/asterix',
-        'zotohlab/asx/ccsx',
-        'zotohlab/asx/xscenes',
-        'zotohlab/asx/xmmenus'],
+        'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, ccsx, scenes, mmenus) { "use strict";
+  function (scenes, sh, ccsx ) { "use strict";
 
     /** @alias module:zotohlab/p/mmenu */
-    let exports = {     },
+    let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
     //////////////////////////////////////////////////////////////////////////////
     /**
-     * @extends module:zotohlab/asx/xmmenus.XMenuBackLayer
-     * @class BackLayer
+     * @extends module:zotohlab/asx/xscenes.XMenuLayer
+     * @class MainMenuLayer
      */
-    BackLayer = mmenus.XMenuBackLayer.extend({
-
+    MainMenuLayer = scenes.XMenuLayer.extend({
       /**
-       * @method setTitle
-       * @protected
+       * @method title
+       * @private
        */
-      setTitle() {
+      title() {
         const wb=ccsx.vbox(),
         cw= ccsx.center(),
         tt=ccsx.bmfLabel({
@@ -55,33 +50,32 @@ define('zotohlab/p/mmenu',
           scale: xcfg.game.scale
         });
         this.addItem(tt);
-      }
-
-    }),
-
-    /**
-     * @extends module:zotohlab/asx/xmmenus.XMenuLayer
-     * @class MainMenuLayer
-     */
-    MainMenuLayer = mmenus.XMenuLayer.extend({
-
+      },
       /**
-       * @method pkInit
+       * @method onplay
+       * @private
+       */
+      onplay(msg) {
+        cc.director.runScene( sh.protos[sh.ptypes.game].reify(msg));
+      },
+      /**
+       * @method setup
        * @protected
        */
-      pkInit() {
+      setup() {
+        this.centerImage(sh.getImagePath('gui.mmenus.menu.bg'));
         const cw = ccsx.center(),
         wb = ccsx.vbox(),
         menu= ccsx.tmenu1({
           fontPath: sh.getFontPath('font.OogieBoogie'),
           text: sh.l10n('%1player'),
           scale: 0.5,
+          pos: cw,
           cb() {
-            sh.fire('/mmenu/newgame', { mode: sh.gtypes.P1_GAME });
+            this.onplay( { mode: sh.gtypes.P1_GAME });
           },
           target: this
         });
-        menu.setPosition(cw);
         this.addItem(menu);
 
         this.mkBackQuit(false, [
@@ -111,12 +105,10 @@ define('zotohlab/p/mmenu',
     });
 
     exports= /** @lends exports# */{
-
       /**
        * @property {String} rtti
        */
       rtti : sh.ptypes.mmenu,
-
       /**
        * @method reify
        * @param {Object} options
@@ -124,11 +116,8 @@ define('zotohlab/p/mmenu',
        */
       reify(options) {
         return new scenes.XSceneFactory([
-          BackLayer,
           MainMenuLayer
-        ]).reify(options).onmsg('/mmenu/newgame', (topic, msg) => {
-          cc.director.runScene( sh.protos[sh.ptypes.game].reify(msg));
-        });
+        ]).reify(options);
       }
 
     };
