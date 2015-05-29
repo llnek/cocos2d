@@ -10,19 +10,18 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/xcfg
  * @module zotohlab/p/config
  */
-define("zotohlab/p/config", ['cherimoia/skarojs',
-                            'zotohlab/asterix',
+define("zotohlab/p/config", ['zotohlab/asterix',
                             'zotohlab/asx/xcfg'],
 
-  function (sjs, sh, xcfg) { "use strict";
+  function (sh, xcfg) { "use strict";
 
     /** @alias module:zotohlab/p/config */
-    let exports = {};
+    let exports = {},
+    sjs= sh.skarojs;
 
     exports = sjs.merge( xcfg, {
 

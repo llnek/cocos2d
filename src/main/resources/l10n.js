@@ -10,17 +10,16 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @module zotohlab/p/l10n
  */
-define("zotohlab/p/l10n", ['cherimoia/skarojs',
-                          'zotohlab/asterix'],
+define("zotohlab/p/l10n", [ 'zotohlab/asterix'],
 
-  function (sjs, sh) { "use strict";
+  function (sh) { "use strict";
 
     /** @alias module:zotohlab/p/l10n */
     let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     undef;
 

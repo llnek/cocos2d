@@ -10,77 +10,76 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
+ * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xscenes
- * @requires zotohlab/asx/xmmenus
  * @module zotohlab/p/mmenu
  */
-define('zotohlab/p/mmenu', ['cherimoia/skarojs',
+define('zotohlab/p/mmenu', [ 'zotohlab/asx/xscenes',
                            'zotohlab/asterix',
-                           'zotohlab/asx/ccsx',
-                           'zotohlab/asx/xscenes',
-                           'zotohlab/asx/xmmenus'],
+                           'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, ccsx, scenes, mmenus) { "use strict";
+  function (scenes, sh, ccsx ) { "use strict";
 
     /** @alias module:zotohlab/p/mmenu */
     let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
     //////////////////////////////////////////////////////////////////////////////
     /**
-     * @extends module:zotohlab/asx/xmmenus.XMenuBackLayer
-     * @class BackLayer
-     */
-    BackLayer = mmenus.XMenuBackLayer.extend({
-    }),
-
-    /**
-     * @extends module:zotohlab/asx/xmmenus.XMenuLayer
+     * @extends module:zotohlab/asx/xscenes.XMenuLayer
      * @class MainMenuLayer
      */
-    MainMenuLayer = mmenus.XMenuLayer.extend({
-
+    MainMenuLayer = scenes.XMenuLayer.extend({
       /**
-       * @method pkInit
+       * @method setup
        * @protected
        */
-      pkInit() {
+      setup() {
+        this.centerImage(sh.getImagePath('gui.mmenus.menu.bg'));
+        this.title();
+        this.btns();
         const cw = ccsx.center(),
         wz = ccsx.vrect();
-
-        this._super();
+      },
+      /**
+       * @method title
+       * @private
+       */
+      title() {
+      },
+      /**
+       * @method btns
+       * @private
+       */
+      btns() {
+      },
+      /**
+       * @method onplay
+       * @private
+       */
+      onplay(msg) {
+        cc.director.runScene( sh.protos[sh.ptypes.game].reify(msg));
       }
 
     });
 
     exports = /** @lends exports# */{
-
       /**
        * @property {String} rtti
        */
       rtti: sh.ptypes.mmenu,
-
       /**
        * @method reify
        * @param {Object} options
        * @return {cc.Scene}
        */
       reify(options) {
-        const scene = new scenes.XSceneFactory([
-          BackLayer,
+        return new scenes.XSceneFactory([
           MainMenuLayer
         ]).reify(options);
-
-        scene.onmsg('/mmenu/newgame', (topic, msg) => {
-          cc.director.runScene( sh.protos[sh.ptypes.game].reify(msg));
-        });
-
-        return scene;
       }
 
     };

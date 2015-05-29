@@ -12,38 +12,53 @@
 /**
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/sysobjs
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/xscenes
- * @requires zotohlab/asx/xmmenus
  * @requires zotohlab/p/hud
  * @module zotohlab/p/arena
  */
 define('zotohlab/p/arena', ['zotohlab/p/elements',
                            'zotohlab/p/sysobjs',
-                           'cherimoia/skarojs',
                            'zotohlab/asterix',
                            'zotohlab/asx/ccsx',
                            'zotohlab/asx/xscenes',
-                           'zotohlab/asx/xmmenus',
                            'zotohlab/p/hud'],
 
-  function (cobjs, sobjs, sjs, sh, ccsx,
-            scenes, mmenus, huds) { "use strict";
+  function (cobjs, sobjs, sh, ccsx,
+            scenes, huds) { "use strict";
 
     /** @alias module:zotohlab/p/arena */
     let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
+    /**
+     * @extends module:zotohlab/asx/xscenes.XLayer
+     * @class BackLayer
+     */
+    BackLayer = scenes.XLayer.extend({
+      /**
+       * @method rtti
+       */
+      rtti{} { return 'BackLayer';},
+      /**
+       * @method setup
+       * @protected
+       */
+      setup() {
+        this.centerImage(sh.getImagePath('game.bg'));
+      }
+    }),
+    //////////////////////////////////////////////////////////////////////////
     /**
      * @extends module:zotohlab/asx/xscenes.XGameLayer
      * @class GameLayer
      */
-    GameLayer = layers.XGameLayer.extend({
+    GameLayer = scenes.XGameLayer.extend({
 
       /**
        * @method operational
@@ -154,7 +169,7 @@ define('zotohlab/p/arena', ['zotohlab/p/elements',
        */
       reify(options) {
         const scene = new scenes.XSceneFactory([
-          huds.BackLayer,
+          BackLayer,
           GameLayer,
           huds.HUDLayer ]).reify(options);
 
@@ -162,7 +177,7 @@ define('zotohlab/p/arena', ['zotohlab/p/elements',
           sh.main.onEarnScore(msg);
         }).
         onmsg('/hud/showmenu',(t,msg) => {
-          mmenus.showMenu();
+          scenes.showMenu();
         }).
         onmsg('/hud/replay',(t,msg) => {
           sh.main.replay();

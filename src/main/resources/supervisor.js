@@ -12,7 +12,6 @@
 /**
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/s/utils
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/xpool
@@ -20,15 +19,15 @@
  */
 define("zotohlab/p/s/supervisor", ['zotohlab/p/elements',
                                   'zotohlab/p/s/utils',
-                                  'cherimoia/skarojs',
                                   'zotohlab/asterix',
                                   'zotohlab/asx/ccsx',
                                   'zotohlab/asx/xpool'],
 
-  function (cobjs, utils, sjs, sh, ccsx, xpool) { "use strict";
+  function (cobjs, utils, sh, ccsx, xpool) { "use strict";
 
     /** @alias module:zotohlab/p/s/supervisor */
     let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,

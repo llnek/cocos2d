@@ -12,21 +12,20 @@
 /**
  * @requires zotohlab/p/elements
  * @requires zotohlab/p/gnodes
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @module zotohlab/p/s/resolution
  */
 define('zotohlab/p/s/resolution', ['zotohlab/p/elements',
                                   'zotohlab/p/gnodes',
-                                  'cherimoia/skarojs',
                                   'zotohlab/asterix',
                                   'zotohlab/asx/ccsx'],
 
-  function (cobjs, gnodes, sjs, sh, ccsx) { "use strict";
+  function (cobjs, gnodes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/s/resolution */
     let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,

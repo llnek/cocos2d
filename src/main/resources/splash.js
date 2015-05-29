@@ -10,62 +10,72 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
+ * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xscenes
- * @requires zotohlab/asx/xsplash
  * @module zotohlab/p/splash
  */
-define('zotohlab/p/splash', ['cherimoia/skarojs',
+define('zotohlab/p/splash', [ 'zotohlab/asx/xscenes',
                             'zotohlab/asterix',
-                            'zotohlab/asx/ccsx',
-                            'zotohlab/asx/xscenes',
-                            'zotohlab/asx/xsplash'],
+                            'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, ccsx, scenes, splash) { "use strict";
+  function (scenes, sh, ccsx ) { "use strict";
 
     /** @alias module:zotohlab/p/splash */
     let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     undef,
-
+    //////////////////////////////////////////////////////////////////////////
     /**
-     * @extends module:zotohlab/asx/xsplash~XSplashLayer
+     * @extends module:zotohlab/asx/xscenes~XLayer
      * @class SplashLayer
      */
-    SplashLayer = splash.XSplashLayer.extend({
+    SplashLayer = scenes.XLayer.extend({
+      /**
+       * @method setup
+       * @protected
+       */
+      setup() {
+        this.centerImage(sh.getImagePath('game.bg'));
+        this.btns();
+      },
+      /**
+       * @method btns
+       * @private
+       */
+      btns() {
 
+      },
+      /**
+       * @method onplay
+       * @private
+       */
+      onplay() {
+        const ss= sh.protos[sh.ptypes.start],
+        mm= sh.protos[sh.ptypes.mmenu],
+        dir= cc.director;
+        dir.runScene( mm.reify({
+          onBack() { dir.runScene( ss.reify() ); }
+        }));
+      }
     });
 
     exports = /** @lends exports# */{
-
       /**
        * @property {String} rtti
        */
       rtti : sh.ptypes.start,
-
       /**
        * @method reify
        * @param {Object} options
        * @return {cc.Scene}
        */
       reify(options) {
-        const ss= sh.protos[sh.ptypes.start],
-        mm= sh.protos[sh.ptypes.mmenu],
-        dir= cc.director,
-        scene = new scenes.XSceneFactory([
+        return new scenes.XSceneFactory([
           SplashLayer
         ]).reify(options);
-
-        scene.onmsg('/splash/playgame', () => {
-            dir.runScene( mm.reify({
-              onBack() { dir.runScene( ss.reify() ); }
-            }));
-        });
-
-        return scene;
       }
     };
 
