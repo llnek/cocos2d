@@ -10,23 +10,22 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
+ * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xscenes
  * @module zotohlab/asx/msgbox
  */
 define("zotohlab/asx/msgbox",
 
-       ['cherimoia/skarojs',
+       ['zotohlab/asx/xscenes',
         'zotohlab/asterix',
-        'zotohlab/asx/ccsx',
-        'zotohlab/asx/xscenes'],
+        'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, ccsx, scenes) { "use strict";
+  function (scenes, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/asx/msgbox */
     let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -37,31 +36,17 @@ define("zotohlab/asx/msgbox",
      * @class BGLayer
      */
     BGLayer = scenes.XLayer.extend({
-
       /**
        * @method rtti
-       * @protected
        */
-      rtti() { return "BGLayer"; },
-
+      rtti() { return "BackLayer"; },
       /**
        * @method ctor
        * @constructs
        */
-      ctor() {
-        const bg= new cc.Sprite(sh.getImagePath('game.bg')),
-        cw= ccsx.center();
-        this._super();
-        bg.setPosition(cw.x, cw.y);
-        this.addItem(bg);
-      },
-
-      /**
-       * @method pkInit
-       * @protected
-       */
-      pkInit() {}
-
+      setup() {
+        this.centerImage(sh.getImagePath('game.bg'));
+      }
     }),
     //////////////////////////////////////////////////////////////////////////
     /**
@@ -69,20 +54,23 @@ define("zotohlab/asx/msgbox",
      * @class UILayer
      */
     UILayer = scenes.XLayer.extend({
-
       /**
-       * @method pkInit
+       * @method rtti
+       */
+      rtti() {
+        return 'MBoxLayer';
+      },
+      /**
+       * @method setup
        * @protected
        */
-      pkInit() {
+      setup() {
         let qn= new cc.LabelBMFont(sh.l10n(this.options.msg),
                                    sh.getFontPath('font.OCR')),
         cw= ccsx.center(),
         wz= ccsx.vrect(),
         wb = ccsx.vbox(),
         menu;
-
-        this._super();
 
         qn.setPosition(cw.x, wb.top * 0.75);
         qn.setScale(xcfg.game.scale * 0.25);
@@ -96,20 +84,18 @@ define("zotohlab/asx/msgbox",
             },
             target: this
           }
-        ]);
-        menu.setPosition(cw.x, wb.top * 0.1);
+        ],
+        {pos: cc.p(cw.x, wb.top * 0.1) });
         this.addItem(menu);
       }
 
     });
 
     exports = /** @lends exports# */{
-
       /**
        * @property {String} rtti
        */
       rtti: sh.ptypes.mbox,
-
       /**
        * Create a scene to display the message.
        * @method reify
@@ -119,7 +105,6 @@ define("zotohlab/asx/msgbox",
       reify(options) {
         return new scenes.XSceneFactory([ BGLayer, UILayer ]).reify(options);
       }
-
     };
 
     return exports;

@@ -10,26 +10,25 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
+ * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asx/odin
  * @module zotohlab/asx/online
  */
 define("zotohlab/asx/online",
 
-       ['cherimoia/skarojs',
+       ['zotohlab/asx/xscenes',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
-        'zotohlab/asx/xscenes',
         'zotohlab/asx/odin'],
 
-  function (sjs, sh, ccsx, scenes, odin) { "use strict";
+  function (scenes, sh, ccsx, odin) { "use strict";
 
     /** @alias module:zotohlab/asx/online */
-    let exports = {        },
+    let exports = {},
     evts= odin.Events,
+    sjs= sh.skarojs,
     xcfg= sh.xcfg,
     csts= xcfg.csts,
     R = sjs.ramda,
@@ -40,30 +39,17 @@ define("zotohlab/asx/online",
      * @class BGLayer
      */
     BGLayer = scenes.XLayer.extend({
-
       /**
        * @method rtti
        */
-      rtti() { return "BGLayer"; },
-
+      rtti() { return "BackLayer"; },
       /**
-       * @method ctor
-       * @constructs
-       */
-      ctor() {
-        const bg= new cc.Sprite(sh.getImagePath('game.bg')),
-        cw= ccsx.center();
-        this._super();
-        bg.setPosition(cw.x, cw.y);
-        this.addItem(bg);
-      },
-
-      /**
-       * @method pkInit
+       * @method setup
        * @protected
        */
-      pkInit() {}
-
+      setup() {
+        this.centerImage(sh.getImagePath('game.bg'));
+      }
     }),
     //////////////////////////////////////////////////////////////////////////
     /**
@@ -71,7 +57,6 @@ define("zotohlab/asx/online",
      * @class UILayer
      */
     UILayer =  scenes.XLayer.extend({
-
       /**
        * @method onOnlineReq
        * @private
@@ -89,7 +74,6 @@ define("zotohlab/asx/online",
         this.wss.subscribeAll(this.onOdinEvent, this);
         this.wss.connect(wsurl);
       },
-
       /**
        * @method onOdinEvent
        * @private
@@ -101,7 +85,6 @@ define("zotohlab/asx/online",
           case evts.MSG_SESSION: this.onSessionEvent(evt); break;
         }
       },
-
       /**
        * @method onNetworkEvent
        * @private
@@ -120,7 +103,6 @@ define("zotohlab/asx/online",
           break;
         }
       },
-
       /**
        * @method onSessionEvent
        * @private
@@ -136,7 +118,6 @@ define("zotohlab/asx/online",
           break;
         }
       },
-
       /**
        * @method onCancelPlay
        * @private
@@ -148,7 +129,6 @@ define("zotohlab/asx/online",
         this.wss=null;
         this.options.onBack();
       },
-
       /**
        * @method showWaitOthers
        * @private
@@ -175,16 +155,15 @@ define("zotohlab/asx/online",
             },
             target: this
           }
-        ]);
-        menu.setPosition(cw.x, wb.top * 0.2);
+        ],
+        {pos: cc.p(cw.x, wb.top * 0.1) });
         this.addItem(menu);
       },
-
       /**
-       * @method pkInit
+       * @method setup
        * @protected
        */
-      pkInit() {
+      setup() {
         let qn= new cc.LabelBMFont(sh.l10n('%signinplay'),
                                    sh.getFontPath('font.OCR')),
         cw= ccsx.center(),
@@ -193,8 +172,6 @@ define("zotohlab/asx/online",
         uid, pwd,
         me=this,
         menu;
-
-        this._super();
 
         qn.setPosition(cw.x, wb.top * 0.75);
         qn.setScale(xcfg.game.scale * 0.3);
@@ -238,20 +215,18 @@ define("zotohlab/asx/online",
               this.options.onBack();
             },
             target: this }
-        ]);
-        menu.setPosition(cw.x, wb.top * 0.2);
+        ],
+        {pos: cc.p(cw.x, wb.top * 0.1) });
         this.addItem(menu);
       }
 
     });
 
     exports = /** @lends exports# */{
-
       /**
        * @property {String} rtti
        */
       rtti : sh.ptypes.online,
-
       /**
        * Create the online-request play screen.
        * @method reify
@@ -259,7 +234,7 @@ define("zotohlab/asx/online",
        * @return {cc.Scene}
        */
       reify(options) {
-        return new scenes.XSceneFactory([ BGLayer, UILayer ]).reify(options);
+        return new scenes.XSceneFactory([ BackLayer, UILayer ]).reify(options);
       }
 
     };

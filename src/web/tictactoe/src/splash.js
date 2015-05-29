@@ -32,13 +32,10 @@ define("zotohlab/p/splash",
     csts= xcfg.csts,
     R = sjs.ramda,
     undef,
-
-    //////////////////////////////////////////////////////////////////////////
     /**
      * @class SplashLayer
      */
     SplashLayer = scenes.XLayer.extend({
-
       /**
        * @method setup
        * @protected
@@ -48,7 +45,6 @@ define("zotohlab/p/splash",
         this.demo();
         this.btns();
       },
-
       /**
        * @method btns
        * @private
@@ -56,16 +52,14 @@ define("zotohlab/p/splash",
       btns() {
         const cw = ccsx.center(),
         wb = ccsx.vbox(),
-        menu= ccsx.vmenu([
-          { cb() { this.onplay(); },
-            target: this,
-            nnn: '#play.png' }
-        ], {
-          pos: cc.p(cw.x, wb.top * 0.1)
-        });
+        menu= ccsx.vmenu([{
+          cb() { this.onplay(); },
+          target: this,
+          nnn: '#play.png'
+        }],
+        { pos: cc.p(cw.x, wb.top * 0.1) });
         this.addItem(menu);
       },
-
       /**
        * @method onplay
        * @private
@@ -79,7 +73,6 @@ define("zotohlab/p/splash",
           onBack() { dir.runScene( ss.reify()); }
         }));
       },
-
       /**
        * @method demo
        * @private
@@ -112,7 +105,6 @@ define("zotohlab/p/splash",
        * @property {String} rtti
        */
       rtti: sh.ptypes.start,
-
       /**
        * Create the splash screen.
        * @method reify

@@ -10,23 +10,22 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
+ * @requires zotohlab/asx/xscenes
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xscenes
  * @module zotohlab/asx/ynbox
  */
 define("zotohlab/asx/ynbox",
 
-       ['cherimoia/skarojs',
+       ['zotohlab/asx/xscenes',
         'zotohlab/asterix',
-        'zotohlab/asx/ccsx',
-        'zotohlab/asx/xscenes'],
+        'zotohlab/asx/ccsx'],
 
-  function (sjs, sh, ccsx, scenes) { "use strict";
+  function (scenes, sh, ccsx ) { "use strict";
 
     /** @alias module:zotohlab/asx/ynbox */
     let exports = {},
+    sjs= sh.skarojs,
     xcfg= sh.xcfg,
     csts= xcfg.csts,
     R= sjs.ramda,
@@ -37,29 +36,17 @@ define("zotohlab/asx/ynbox",
      * @class BGLayer
      */
     BGLayer = scenes.XLayer.extend({
-
       /**
        * @method rtti
        */
-      rtti() { return "BGLayer"; },
-
+      rtti() { return "BackLayer"; },
       /**
-       * @method ctor
-       * @constructs
-       */
-      ctor() {
-        const bg= new cc.Sprite(sh.getImagePath('game.bg')),
-        cw= ccsx.center();
-        this._super();
-        bg.setPosition(cw.x, cw.y);
-        this.addItem(bg);
-      },
-
-      /**
-       * @method pkInit
+       * @method setup
        * @protected
        */
-      pkInit() {}
+      setup() {
+        this.centerImage(sh.getImagePath('game.bg'));
+      }
 
     }),
     //////////////////////////////////////////////////////////////////////////
@@ -70,18 +57,16 @@ define("zotohlab/asx/ynbox",
     UILayer =  scenes.XLayer.extend({
 
       /**
-       * @method pkInit
+       * @method setup
        * @protected
        */
-      pkInit() {
+      setup() {
         let qn= new cc.LabelBMFont(sh.l10n('%quit?'),
                                    sh.getFontPath('font.OCR')),
         cw= ccsx.center(),
         wz= ccsx.vrect(),
         wb= ccsx.vbox(),
         menu;
-
-        this._super();
 
         qn.setPosition(cw.x, wb.top * 0.75);
         qn.setScale(xcfg.game.scale * 0.25);
@@ -100,20 +85,18 @@ define("zotohlab/asx/ynbox",
               this.options.onBack();
             },
             target: this }
-        ]);
-        menu.setPosition(cw.x, cw.y);
+        ],
+        { pos: cw});
         this.addItem(menu);
       }
 
     });
 
     exports = /** @lends exports# */{
-
       /**
        * @property {String} rtti
        */
       rtti: sh.ptypes.yn,
-
       /**
        * Create a YesNo message screen.
        * @method reify
@@ -121,7 +104,7 @@ define("zotohlab/asx/ynbox",
        * @return {cc.Scene}
        */
       reify(options) {
-        return new scenes.XSceneFactory( [ BGLayer, UILayer ]).reify(options);
+        return new scenes.XSceneFactory( [ BackLayer, UILayer ]).reify(options);
       }
     };
 
