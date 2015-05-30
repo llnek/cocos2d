@@ -451,6 +451,7 @@ def doCompileJS(wappid) {
       }
     break
     default:
+      ant.copy (file: "${srcDir}/resources/main.js", todir: "${basedir}/public/ig/lib/game/${wappid}")
       ant.copy (todir: "${basedir}/public/ig/lib/game/${wappid}") {
         fileset (dir: "${websrc}/${wappid}")
       }

@@ -11,7 +11,7 @@
 
 (function () { "use strict";
 
-  cc.game.onStart= () => {
+  cc.game.onStart= function() {
     supplicate('zotohlab/p/boot');
   };
   cc.game.run();
