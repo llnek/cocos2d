@@ -87,15 +87,16 @@ define("zotohlab/p/mmenu",
         ol= sh.protos[sh.ptypes.online],
         mm= sh.protos[sh.ptypes.mmenu],
         dir= cc.director;
+        msg.onback= () => { dir.runScene( mm.reify()); };
         msg.yes= (wss,pnum,startmsg) => {
-          const m= sjs.mergeEx( R.omit(['yes', 'onBack'], msg), {
+          const m= sjs.mergeEx(R.omit(['yes',
+                                      'onback'], msg), {
             wsock: wss,
             pnum: pnum
           });
           sjs.merge(m, startmsg);
           dir.runScene( gl.reify(m));
         }
-        msg.onBack= () => { dir.runScene( mm.reify()); };
         dir.runScene(ol.reify(msg));
       },
       /**
@@ -147,7 +148,7 @@ define("zotohlab/p/mmenu",
             nnn: '#icon_back.png',
             color: color,
             cb() {
-              this.options.onBack();
+              this.options.onback();
             },
             target: this },
           { nnn: '#icon_quit.png',

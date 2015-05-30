@@ -42,8 +42,19 @@ define("zotohlab/p/splash",
        */
       setup() {
         this.centerImage(sh.getImagePath('game.bg'));
+        this.title();
         this.demo();
         this.btns();
+      },
+      /**
+       * @method title
+       * @private
+       */
+      title() {
+        const cw = ccsx.center(),
+        wb = ccsx.vbox();
+        this.addFrame('#title.png',
+                      cc.p(cw.x, wb.top * 0.9));
       },
       /**
        * @method btns
@@ -68,9 +79,8 @@ define("zotohlab/p/splash",
         const ss= sh.protos[sh.ptypes.start],
         mm= sh.protos[sh.ptypes.mmenu],
         dir= cc.director;
-              //this.removeAll();
         dir.runScene( mm.reify({
-          onBack() { dir.runScene( ss.reify()); }
+          onback() { dir.runScene( ss.reify()); }
         }));
       },
       /**
@@ -90,8 +100,11 @@ define("zotohlab/p/splash",
           else { fm= '#o.png'; }
           sp= new cc.Sprite(fm);
           bx=ccsx.vboxMID(mp);
-          sp.setScale(scale);
-          sp.setPosition(bx);
+          sp.attr({
+            scale: scale,
+            x: bx.x,
+            y: bx.y
+          });
           this.addItem(sp);
           ++pos;
         },
