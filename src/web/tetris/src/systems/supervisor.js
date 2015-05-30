@@ -259,7 +259,7 @@ define("zotohlab/p/s/supervisor",
     /**
      * @property {Number} Priority
      */
-    GameSupervisor.Priority= sh.ftypes.PreUpdate;
+    GameSupervisor.Priority= xcfg.ftypes.PreUpdate;
 
     exports= GameSupervisor;
     return exports;

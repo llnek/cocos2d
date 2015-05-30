@@ -179,7 +179,7 @@ define("zotohlab/p/s/turnbase",
      * @memberof module:zotohlab/p/s/turnbase~TurnBaseSystem
      * @property {Number} Priority
      */
-    TurnBaseSystem.Priority = sh.ftypes.TurnBase;
+    TurnBaseSystem.Priority = xcfg.ftypes.TurnBase;
     exports= TurnBaseSystem;
     return exports;
 });

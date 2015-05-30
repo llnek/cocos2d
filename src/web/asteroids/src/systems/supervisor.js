@@ -130,7 +130,7 @@ define('zotohlab/p/s/supervisor',
      * @memberof module:zotohlab/p/s/supervisor~GameSupervisor
      * @property {Number} Priority
      */
-    GameSupervisor.Priority = sh.ftypes.PreUpdate;
+    GameSupervisor.Priority = xcfg.ftypes.PreUpdate;
 
     exports= GameSupervisor;
     return exports;

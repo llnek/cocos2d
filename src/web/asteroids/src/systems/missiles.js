@@ -163,7 +163,7 @@ define('zotohlab/p/s/missilecontrol',
      * @memberof module:zotohlab/p/s/missilecontrol~MissileControl
      * @property {Number} Priority
      */
-    MissileControl.Priority = sh.ftypes.Motion;
+    MissileControl.Priority = xcfg.ftypes.Motion;
 
     exports= MissileControl;
     return exports;

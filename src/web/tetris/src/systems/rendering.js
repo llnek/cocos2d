@@ -72,7 +72,7 @@ define("zotohlab/p/s/rendering",
      * @memberof module:zotohlab/p/s/rendering~RenderSystem
      * @property {Number} Priority
      */
-    RenderSystem.Priority= sh.ftypes.Render;
+    RenderSystem.Priority= xcfg.ftypes.Render;
 
     exports= RenderSystem;
     return exports;

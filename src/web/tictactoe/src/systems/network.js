@@ -130,7 +130,7 @@ define("zotohlab/p/s/network",
      * @property {Number} Priority
      * @static
      */
-    NetworkSystem.Priority= sh.ftypes.Move;
+    NetworkSystem.Priority= xcfg.ftypes.Move;
     exports= NetworkSystem;
     return exports;
 });

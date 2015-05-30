@@ -71,7 +71,7 @@ define("zotohlab/p/s/rendering",
      * @property {Number} Priority
      * @static
      */
-    RenderSystem.Priority = sh.ftypes.Render;
+    RenderSystem.Priority = xcfg.ftypes.Render;
 
     exports= RenderSystem;
     return exports;

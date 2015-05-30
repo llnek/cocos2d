@@ -320,23 +320,6 @@ define("zotohlab/asterix",
        */
       pools: {},
 
-
-      /**
-       * @enum {Number}
-       * @readonly
-       */
-      ftypes: {
-        PreUpdate:  100,
-        NetPlay:    200,
-        Select:     300,
-        Motion:     400,
-        Move:       500,
-        TurnBase:   600,
-        Collision:  700,
-        Resolve:    800,
-        Render:     900
-      },
-
       /**
        * @enum {Number}
        * @readonly

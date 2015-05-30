@@ -231,7 +231,7 @@ define("zotohlab/p/levelmgr",
      * @memberof module:zotohlab/p/levelmgr~LevelManager
      * @property {Number} Priority
      */
-    LevelManager.Priority = sh.ftypes.Move;
+    LevelManager.Priority = xcfg.ftypes.Move;
 
     exports= LevelManager;
     return exports;

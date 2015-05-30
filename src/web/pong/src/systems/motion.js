@@ -108,7 +108,7 @@ define("zotohlab/p/s/motion",
      * @property {Number} Priority
      * @static
      */
-    MotionCtrlSystem.Priority = sh.ftypes.Motion;
+    MotionCtrlSystem.Priority = xcfg.ftypes.Motion;
 
     exports= MotionCtrlSystem;
     return exports;

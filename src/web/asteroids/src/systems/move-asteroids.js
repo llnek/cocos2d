@@ -137,7 +137,7 @@ define('zotohlab/p/s/moveasteroids',
      * @memberof module:zotohlab/p/s/moveasteroids~MoveAsteroids
      * @property {Number} Priority
      */
-    MoveAsteroids.Priority = sh.ftypes.Move;
+    MoveAsteroids.Priority = xcfg.ftypes.Move;
 
     exports= MoveAsteroids;
     return exports;

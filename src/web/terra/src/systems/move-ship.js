@@ -120,7 +120,7 @@ define('zotohlab/p/s/moveship',
      * @memberof module:zotohlab/p/s/moveship~MoveShip
      * @property {Number} Priority
      */
-    MoveShip.Priority = sh.ftypes.Move;
+    MoveShip.Priority = xcfg.ftypes.Move;
 
     exports=MoveShip;
     return exports;

@@ -111,7 +111,7 @@ define("zotohlab/p/s/uiselect",
      * @memberof module:zotohlab/p/s/uiselect~SelectionSystem
      * @property {Number} Priority
      */
-    SelectionSystem.Priority= sh.ftypes.Move;
+    SelectionSystem.Priority= xcfg.ftypes.Move;
     exports= SelectionSystem;
     return exports;
 });

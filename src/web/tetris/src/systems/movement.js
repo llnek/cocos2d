@@ -118,7 +118,7 @@ define("zotohlab/p/s/movement",
      * @memberof module:zotohlab/p/s/movement~MovementSystem
      * @property {Number} Priority
      */
-    MovementSystem.Priority= sh.ftypes.Move;
+    MovementSystem.Priority= xcfg.ftypes.Move;
 
     exports = MovementSystem;
     return exports;

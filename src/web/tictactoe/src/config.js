@@ -52,6 +52,11 @@ define("zotohlab/p/config",
         sd : { width: 320, height: 480 }
       },
 
+      ftypes: {
+        Resolve: 900,
+        Render: 800
+      },
+
       assets: {
         atlases: {
           'lang-pics' : 'res/{{appid}}/l10n/{{lang}}/images',

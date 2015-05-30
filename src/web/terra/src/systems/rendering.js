@@ -114,7 +114,7 @@ define('zotohlab/p/s/rendering',
      * @memberof module:zotohlab/p/s/rendering~Rendering
      * @property {Number} Priority
      */
-    Rendering.Priority = sh.ftypes.Render;
+    Rendering.Priority = xcfg.ftypes.Render;
 
     exports = Rendering;
     return exports;

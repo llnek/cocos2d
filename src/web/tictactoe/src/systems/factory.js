@@ -24,7 +24,7 @@ define("zotohlab/p/s/factory",
         'zotohlab/p/gnodes',
         'zotohlab/asterix'],
 
-  function (cobjs, GameBoard, gnodes, sjs, sh) { "use strict";
+  function (cobjs, GameBoard, gnodes, sh) { "use strict";
 
     /** @alias module:zotohlab/p/s/factory */
     let exports = {},

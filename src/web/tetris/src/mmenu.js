@@ -51,7 +51,7 @@ define("zotohlab/p/mmenu",
           scale: xcfg.game.scale
         });
         this.addItem(tt);
-      }
+      },
       btns() {
         const cw = ccsx.center(),
         wb = ccsx.vbox(),

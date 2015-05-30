@@ -99,7 +99,7 @@ define('zotohlab/p/s/movemissiles',
      * @memberof module:zotohlab/p/s/movemissiles~MoveMissiles
      * @property {Number} Priority
      */
-    MoveMissiles.Priority = sh.ftypes.Move;
+    MoveMissiles.Priority = xcfg.ftypes.Move;
 
     exports= MoveMissiles;
     return exports;

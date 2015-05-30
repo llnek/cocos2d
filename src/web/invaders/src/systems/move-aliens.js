@@ -242,7 +242,7 @@ define('zotohlab/p/s/movealiens',
      * @memberof module:zotohlab/p/s/movealiens~MovementAliens
      * @property {Number} Priority
      */
-    MovementAliens.Priority= sh.ftypes.Move;
+    MovementAliens.Priority= xcfg.ftypes.Move;
 
     exports= MovementAliens;
     return exports;

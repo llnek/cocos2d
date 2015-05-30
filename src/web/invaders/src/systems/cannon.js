@@ -152,7 +152,7 @@ define('zotohlab/p/s/cannon',
      * @memberof module:zotohlab/p/s/cannon~CannonControl
      * @property {Number} Priority
      */
-    CannonControl.Priority= sh.ftypes.Motion;
+    CannonControl.Priority= xcfg.ftypes.Motion;
 
     exports = CannonControl;
     return exports;

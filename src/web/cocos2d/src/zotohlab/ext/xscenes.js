@@ -503,7 +503,7 @@ define("zotohlab/asx/xscenes",
      * @extends module:zotohlab/asx/xscenes~XLayer
      * @class XMenuLayer
      */
-    XMenuLayer= scenes.XLayer.extend({
+    const XMenuLayer= XLayer.extend({
       /**
        * @memberof module:zotohlab/asx/xscenes~XMenuLayer
        * @method rtti

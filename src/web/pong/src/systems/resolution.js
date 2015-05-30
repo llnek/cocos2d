@@ -154,7 +154,7 @@ define("zotohlab/p/s/resolution",
      * @memberof module:zotohlab/p/s/resolution~Resolution
      * @property {Number} Priority
      */
-    Resolution.Priority = sh.ftypes.Resolve;
+    Resolution.Priority = xcfg.ftypes.Resolve;
 
     exports= Resolution;
     return exports;

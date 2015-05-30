@@ -120,7 +120,7 @@ define('zotohlab/p/s/movepaddle',
      * @memberof module:zotohlab/p/s/movepaddle~MovementPaddle
      * @property {Number} Priority
      */
-    MovementPaddle.Priority= sh.ftypes.Move;
+    MovementPaddle.Priority= xcfg.ftypes.Move;
 
     exports= MovementPaddle;
     return exports;

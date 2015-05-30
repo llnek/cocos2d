@@ -212,7 +212,7 @@ define("zotohlab/p/s/networking",
      * @memberof module:zotohlab/p/s/networking~NetworkSystem
      * @property {Number} Priority
      */
-    NetworkSystem.Priority = sh.ftypes.NetPlay;
+    NetworkSystem.Priority = xcfg.ftypes.NetPlay;
 
     exports= NetworkSystem;
     return exports;

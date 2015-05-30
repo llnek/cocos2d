@@ -102,7 +102,7 @@ define('zotohlab/p/s/moveball',
      * @memberof module:zotohlab/p/s/moveball~MovementBall
      * @property {Number} Priority
      */
-    MovementBall.Priority = sh.ftypes.Move;
+    MovementBall.Priority = xcfg.ftypes.Move;
 
     exports= MovementBall;
     return exports;

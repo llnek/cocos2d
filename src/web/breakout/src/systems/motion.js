@@ -109,7 +109,7 @@ define('zotohlab/p/s/motions',
      * @memberof module:zotohlab/p/s/motions~MotionControl
      * @property {Number} Priority
      */
-    MotionControl.Priority = sh.ftypes.Motion;
+    MotionControl.Priority = xcfg.ftypes.Motion;
 
     exports= MotionControl;
     return exports;

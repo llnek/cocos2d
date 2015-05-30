@@ -165,7 +165,7 @@ define('zotohlab/p/s/collisions',
      * @memberof module:zotohlab/p/s/collisions~Collisions
      * @property {Number} Priority
      */
-    Collisions.Priority = sh.ftypes.Collision;
+    Collisions.Priority = xcfg.ftypes.Collision;
 
     exports= Collisions;
     return exports;
