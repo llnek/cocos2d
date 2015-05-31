@@ -22,7 +22,7 @@
       "src/pong/mmenu.js",
       "src/pong/splash.js",
       "src/pong/protos.js",
-      "src/zotohlab/ext/xboot.js"
+      "src/zotohlab/ext/boot.js"
 
 
     ]

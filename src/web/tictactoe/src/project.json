@@ -27,6 +27,6 @@
     "src/tictactoe/game.js",
 
     "src/tictactoe/protos.js",
-    "src/zotohlab/ext/xboot.js"
+    "src/zotohlab/ext/boot.js"
   ]
 }

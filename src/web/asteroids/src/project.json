@@ -27,7 +27,7 @@
       "src/asteroids/mmenu.js",
       "src/asteroids/splash.js",
 "src/asteroids/protos.js",
-"src/zotohlab/ext/xboot.js"
+"src/zotohlab/ext/boot.js"
 
 
     ]

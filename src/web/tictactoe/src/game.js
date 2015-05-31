@@ -71,6 +71,7 @@ define("zotohlab/p/arena",
       onStop(evt) { this.options.netQ.push(evt); },
       /**
        * @method replay
+       * @private
        */
       replay() {
         if (sjs.isObject(this.options.wsock)) {
@@ -85,6 +86,7 @@ define("zotohlab/p/arena",
       },
       /**
        * @method play
+       * @private
        */
       play(newFlag) {
 
@@ -143,6 +145,7 @@ define("zotohlab/p/arena",
       },
       /**
        * @method reset
+       * @private
        */
       reset(newFlag) {
         if (!sjs.isEmpty(this.atlases)) {
@@ -286,12 +289,10 @@ define("zotohlab/p/arena",
     });
 
     exports = /** @lends exports# */{
-
       /**
        * @property {String} rtti
        */
       rtti: sh.ptypes.game,
-
       /**
        * @method reify
        * @param {Object} options
@@ -299,8 +300,7 @@ define("zotohlab/p/arena",
        */
       reify(options) {
         const scene = new scenes.XSceneFactory([
-          BackLayer,
-          GameLayer,
+          BackLayer, GameLayer,
           huds.HUDLayer
         ]).reify(options);
 

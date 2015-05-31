@@ -78,7 +78,7 @@ define("zotohlab/p/hud",
       },
       /**
        * @method setGameMode
-       * @protected
+       * @private
        */
       setGameMode(mode) {
         this.mode= mode;
@@ -306,6 +306,7 @@ define("zotohlab/p/hud",
       },
       /**
        * @method resetAsNew
+       * @protected
        */
       resetAsNew() {
         this.initScores();
@@ -313,6 +314,7 @@ define("zotohlab/p/hud",
       },
       /**
        * @method reset
+       * @protected
        */
       reset() {
         this.replayBtn.setVisible(false);

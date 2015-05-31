@@ -21,16 +21,13 @@
  */
 define("zotohlab/p/protodefs",
 
-       ['zotohlab/asx/online',
-        'zotohlab/asx/msgbox',
-        'zotohlab/asx/ynbox',
-        'zotohlab/asterix',
-        'zotohlab/p/splash',
-        'zotohlab/p/mmenu',
-        'zotohlab/p/arena'],
+       ['zotohlab/asx/online', 'zotohlab/asx/msgbox',
+        'zotohlab/asx/ynbox', 'zotohlab/asterix',
+        'zotohlab/p/splash', 'zotohlab/p/mmenu', 'zotohlab/p/arena'],
 
-  function (online, msgbox, ynbox,
-            sh, splash, mmenu, arena) { "use strict";
+  function (online, msgbox,
+            ynbox, sh,
+            splash, mmenu, arena) { "use strict";
 
     let ps= [online, splash, mmenu, msgbox, ynbox, arena],
     protos= sh.protos,

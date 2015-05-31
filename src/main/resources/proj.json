@@ -11,7 +11,7 @@
     "src/@@APPID@@/game.js",
 
     "src/@@APPID@@/protos.js",
-    "src/zotohlab/ext/xboot.js"
+    "src/zotohlab/ext/boot.js"
 
     ]
 }

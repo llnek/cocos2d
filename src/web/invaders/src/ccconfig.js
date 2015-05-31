@@ -29,13 +29,13 @@ document.ccConfig = {
     "/public/vendors/cherimoia/bus.js",
     "/public/vendors/cherimoia/zlab.js",
     "/public/ig/lib/zotohlab/ext/asterix.js",
-    "/public/ig/lib/zotohlab/ext/xcfg.js",
+    "/public/ig/lib/zotohlab/ext/cfg.js",
     "/public/ig/lib/zotohlab/ext/cs2dx.js",
     "/public/ig/lib/zotohlab/ext/odin.js",
 
-    "/public/ig/lib/zotohlab/ext/xscenes.js",
-    "/public/ig/lib/zotohlab/ext/xpool.js",
-    "/public/ig/lib/zotohlab/ext/xloader.js",
+    "/public/ig/lib/zotohlab/ext/scenes.js",
+    "/public/ig/lib/zotohlab/ext/pool.js",
+    "/public/ig/lib/zotohlab/ext/loader.js",
 
     "/public/ig/lib/zotohlab/gui/msgbox.js",
     "/public/ig/lib/zotohlab/gui/ynbox.js",
@@ -66,7 +66,7 @@ document.ccConfig = {
       '/public/ig/lib/game/invaders/splash.js',
 
       '/public/ig/lib/game/invaders/protos.js',
-      '/public/ig/lib/zotohlab/ext/xboot.js'
+      '/public/ig/lib/zotohlab/ext/boot.js'
   ]
 
 };

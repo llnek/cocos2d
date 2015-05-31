@@ -26,13 +26,13 @@
     "src/cherimoia/bus.js",
     "src/cherimoia/zlab.js",
     "src/zotohlab/ext/asterix.js",
-    "src/zotohlab/ext/xcfg.js",
+    "src/zotohlab/ext/cfg.js",
     "src/zotohlab/ext/cs2dx.js",
     "src/zotohlab/ext/odin.js",
 
-    "src/zotohlab/ext/xscenes.js",
-    "src/zotohlab/ext/xpool.js",
-    "src/zotohlab/ext/xloader.js",
+    "src/zotohlab/ext/scenes.js",
+    "src/zotohlab/ext/pool.js",
+    "src/zotohlab/ext/loader.js",
 
     "src/zotohlab/gui/msgbox.js",
     "src/zotohlab/gui/ynbox.js",

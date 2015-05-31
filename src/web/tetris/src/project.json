@@ -24,7 +24,7 @@
       "src/tetris/mmenu.js",
       "src/tetris/splash.js",
       "src/tetris/protos.js",
-      "src/zotohlab/ext/xboot.js"
+      "src/zotohlab/ext/boot.js"
 
     ]
 }

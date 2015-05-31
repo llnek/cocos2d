@@ -28,7 +28,7 @@
     "src/terra/game.js",
 
     "src/terra/protos.js",
-    "src/zotohlab/ext/xboot.js"
+    "src/zotohlab/ext/boot.js"
 
     ]
 }

@@ -23,7 +23,7 @@
   "src/breakout/splash.js",
 
 "src/breakout/protos.js",
-"src/zotohlab/ext/xboot.js"
+"src/zotohlab/ext/boot.js"
 
     ]
 }

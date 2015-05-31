@@ -623,7 +623,14 @@ define("zotohlab/asx/xscenes",
        * @return {Number}
        */
       getScore() { return this.score; },
-
+      /**
+       * Reset the HUD as a new game.
+       * @memberof module:zotohlab/asx/xscenes~XGameHUDLayer
+       * @method resetAsNew
+       */
+      resetAsNew() {
+        this.reset();
+      },
       /**
        * Reset the HUD.
        * @memberof module:zotohlab/asx/xscenes~XGameHUDLayer

@@ -27,7 +27,7 @@
       "src/invaders/splash.js",
 
       "src/invaders/protos.js",
-      "src/zotohlab/ext/xboot.js"
+      "src/zotohlab/ext/boot.js"
 
     ]
 }

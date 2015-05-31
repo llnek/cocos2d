@@ -43,18 +43,10 @@ define("zotohlab/p/mmenu",
     },
     //////////////////////////////////////////////////////////////////////////////
     /**
-     * @extends module:zotohlab/asx/xscenes.XLayer
-     * @class BackLayer
+     * @extends module:zotohlab/asx/xscenes.XMenuLayer
+     * @class MainMenuLayer
      */
-    BackLayer = scenes.XLayer.extend({
-      /**
-       * @method setup
-       * @private
-       */
-      setup() {
-        this.centerImage(sh.getImagePath('gui.mmenu.menu.bg'));
-        this.title();
-      },
+    MainMenuLayer = scenes.XMenuLayer.extend({
       /**
        * @method title
        * @private
@@ -70,14 +62,7 @@ define("zotohlab/p/mmenu",
           scale: xcfg.game.scale
         });
         this.addItem(tt);
-      }
-    }),
-    //////////////////////////////////////////////////////////////////////////////
-    /**
-     * @extends module:zotohlab/asx/xscenes.XMenuLayer
-     * @class MainMenuLayer
-     */
-    MainMenuLayer = scenes.XMenuLayer.extend({
+      },
       /**
        * @method onnetplay
        * @private
@@ -90,7 +75,7 @@ define("zotohlab/p/mmenu",
         msg.onback= () => { dir.runScene( mm.reify()); };
         msg.yes= (wss,pnum,startmsg) => {
           const m= sjs.mergeEx(R.omit(['yes',
-                                      'onback'], msg), {
+                                       'onback'], msg), {
             wsock: wss,
             pnum: pnum
           });
@@ -111,34 +96,34 @@ define("zotohlab/p/mmenu",
        * @protected
        */
       setup() {
+        this.centerImage(sh.getImagePath('gui.mmenu.menu.bg'));
+        this.title();
         const color= cc.color(94,49,120),
         cw = ccsx.center(),
         wb= ccsx.vbox(),
+        me=this,
         p={},
         menu= ccsx.vmenu([
           { nnn: '#online.png',
-            target: this,
             cb() {
-              this.onnetplay(sjs.mergeEx(SEED,
-                                         { mode: sh.gtypes.ONLINE_GAME}));
+              me.onnetplay(sjs.mergeEx(SEED,
+                                       { mode: sh.gtypes.ONLINE_GAME}));
             }},
           { nnn: '#player2.png',
-            target: this,
             cb() {
               p[ sh.l10n('%p1') ] = [ 1, sh.l10n('%player1') ];
               p[ sh.l10n('%p2') ] = [ 2, sh.l10n('%player2') ];
-              this.onplay(sjs.mergeEx(SEED,
-                                      {ppids: p,
-                                       mode: sh.gtypes.P2_GAME }));
+              me.onplay(sjs.mergeEx(SEED,
+                                    {ppids: p,
+                                     mode: sh.gtypes.P2_GAME }));
             }},
           { nnn: '#player1.png',
-            target: this,
             cb() {
               p[ sh.l10n('%cpu') ] = [ 2, sh.l10n('%computer') ];
               p[ sh.l10n('%p1') ] = [ 1,  sh.l10n('%player1') ];
-              this.onplay(sjs.mergeEx(SEED,
-                                      {ppids: p,
-                                       mode: sh.gtypes.P1_GAME }));
+              me.onplay(sjs.mergeEx(SEED,
+                                    {ppids: p,
+                                     mode: sh.gtypes.P1_GAME }));
             }}
         ],
         { pos: cw });
@@ -148,13 +133,11 @@ define("zotohlab/p/mmenu",
             nnn: '#icon_back.png',
             color: color,
             cb() {
-              this.options.onback();
-            },
-            target: this },
+              me.options.onback();
+            }},
           { nnn: '#icon_quit.png',
             color: color,
-            cb() { this.onQuit(); },
-            target: this
+            cb() { me.onQuit(); }
           }],
           (m,z) => {
             m.setPosition(wb.left + csts.TILE + z.width * 1.1,
@@ -183,7 +166,6 @@ define("zotohlab/p/mmenu",
        */
       reify(options) {
         return new scenes.XSceneFactory([
-          BackLayer,
           MainMenuLayer
         ]).reify(options);
       }

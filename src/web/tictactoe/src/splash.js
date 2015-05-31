@@ -23,7 +23,7 @@ define("zotohlab/p/splash",
         'zotohlab/asterix',
         'zotohlab/asx/ccsx'],
 
-  function (scenes, utils, sh, ccsx ) { "use strict";
+  function (scenes, utils, sh, ccsx) { "use strict";
 
     /** @alias module:zotohlab/p/splash */
     let exports = {},
