@@ -740,17 +740,18 @@ define("zotohlab/asx/xscenes",
     const XGameLayer = XLayer.extend({
 
       xxx() {
-        const h= new EventBus();
-        const f= (ob) => {
+        const bus= ebus.reify(),
+        me=this,
+        f= (ob) => {
           h.on('/mouse', (t,m) => {
             ob.onNext(m);
           });
           h.on('/touch', (t,m) => {
             ob.onNext(m);
           });
-          h.on('/key/down', (t,m) => { me.keyboard[m.key]=true; });
-          h.on('/key/up', (t,m) => { me.keyboard[m.key]=false; });
         };
+        bus.on('/key/down', (t,m) => { me.keyboard[m.key]=true; });
+        bus.on('/key/up', (t,m) => { me.keyboard[m.key]=false; });
         if (cc.sys.capabilities['touches']) {
           cc.eventManager.addListener({
             event: cc.EventListener.TOUCH_ALL_AT_ONCE,

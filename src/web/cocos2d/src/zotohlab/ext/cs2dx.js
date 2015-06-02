@@ -557,6 +557,30 @@ define("zotohlab/asx/ccsx",
       },
 
       /**
+       * @method hasKeyPad
+       * @return {Boolean}
+       */
+      hasKeyPad() {
+        return !!cc.sys.capabilities['keyboard'] && !cc.sys.isNative;
+      },
+
+      /**
+       * @method hasMouse
+       * @return {Boolean}
+       */
+      hasMouse() {
+        return !!cc.sys.capabilities['mouse'];
+      },
+
+      /**
+       * @method hasTouch
+       * @return {Boolean}
+       */
+      hasTouch() {
+        return !!cc.sys.capabilities['touches'];
+      },
+
+      /**
        * @property {Object} acs Anchor Points
        */
       acs : {
