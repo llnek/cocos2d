@@ -739,71 +739,34 @@ define("zotohlab/asx/xscenes",
      */
     const XGameLayer = XLayer.extend({
 
-      xxx() {
-        const h= new EventBus();
-        const f= (ob) => {
-          h.on('/mouse', (t,m) => {
-            ob.onNext(m);
-          });
-          h.on('/touch', (t,m) => {
-            ob.onNext(m);
-          });
-          h.on('/key/down', (t,m) => { me.keyboard[m.key]=true; });
-          h.on('/key/up', (t,m) => { me.keyboard[m.key]=false; });
-        };
-        if (cc.sys.capabilities['touches']) {
-          cc.eventManager.addListener({
-            event: cc.EventListener.TOUCH_ALL_AT_ONCE,
-            prevTouchId: -1,
-            onTouchesMoved(touches, event) {
-              const touch = touches[0];
-              if (this.prevTouchId != touch.getID()) {
-                this.prevTouchId = touch.getID();
-              } else {
-                //event.getCurrentTarget().processEvent(touches[0]);
-                h.fire('/touch', {type:'touch', loc: touch.getLocation()});
-              }
-            }
-          });
-        }
-        if (cc.sys.capabilities['mouse']) {
-          sjs.loggr.debug('mouse support - ok');
-          cc.eventManager.addListener({
-            onMouseMove(event) {},
-            onMouseDown(event){},
-            onMouseUp(event){
-              const pt= event.getLocation();
-              sjs.loggr.debug("mouse location [" + pt.x + "," + pt.y + "]");
-              bus.fire('/mouse/up', {type:'mouse', loc: pt});
-            },
-            event: cc.EventListener.MOUSE
-          });
-        } else {
-          sjs.loggr.debug('mouse not supported');
-        }
-        if (cc.sys.capabilities['keyboard'] &&
-            !cc.sys.isNative) {
-          sjs.loggr.debug('keyboard support - ok');
-          cc.eventManager.addListener({
-            onKeyPressed(key, event) {
-              bus.fire('/key/down', {type: 'key', key: key});
-            },
-            onKeyReleased(key, event) {
-              bus.fire('/key/up', {type: 'key', key: key});
-            },
-            event: cc.EventListener.KEYBOARD
-          });
-        } else {
-          sjs.loggr.debug('keyboard not supported');
-        }
-      },
-
       /**
        * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method pkInput
        * @protected
        */
       pkInput() {
+
+        if (cc.sys.capabilities['keyboard'] &&
+            !cc.sys.isNative) {
+          sjs.loggr.debug('pkInput:  keyboard supported');
+          this.cfgInputKeyPad();
+        }else{
+          sjs.loggr.debug('pkInput:  keyboard not supported');
+        }
+
+        if (cc.sys.capabilities['mouse']) {
+          sjs.loggr.debug('pkInput:  mouse supported');
+          this.cfgInputMouse();
+        }else{
+          sjs.loggr.debug('pkInput:  mouse not supported');
+        }
+
+        if (cc.sys.capabilities['touches']) {
+          sjs.loggr.debug('pkInput:  touch supported');
+          this.cfgTouch();
+        }else{
+          sjs.loggr.debug('pkInput:  touch not supported');
+        }
       },
 
       /**
@@ -814,6 +777,37 @@ define("zotohlab/asx/xscenes",
       cfgTouch() {
         this.cfgInputTouchOne();
         //this.cfgInputTouchesAll();
+      },
+
+      /**
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
+       * @method cfgInputKeyPad
+       * @protected
+       */
+      cfgInputKeyPad() {
+        cc.eventManager.addListener({
+          onKeyPressed(key, event) {
+            event.getCurrentTarget().onKeyDown(key);
+          },
+          onKeyReleased(key, event) {
+            event.getCurrentTarget().onKeyUp(key);
+          },
+          event: cc.EventListener.KEYBOARD
+        }, this);
+      },
+
+      /**
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
+       * @method cfgInputMouse
+       * @protected
+       */
+      cfgInputMouse() {
+        cc.eventManager.addListener({
+          onMouseUp(event){
+            event.getCurrentTarget().onMouseUp(event);
+          },
+          event: cc.EventListener.MOUSE
+        }, this);
       },
 
       //TODO: handle touch drag and move
@@ -827,6 +821,24 @@ define("zotohlab/asx/xscenes",
         this._ship.x = curPos.x;
         curPos = null;
         */
+      },
+
+      /**
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
+       * @method cfgInputTouchAll
+       * @protected
+       */
+      cfgInputTouchesAll() {
+        cc.eventManager.addListener({
+          prevTouchId: -1,
+          event: cc.EventListener.TOUCH_ALL_AT_ONCE,
+          onTouchesMoved(touches, event) {
+            const touch = touches[0];
+            if (this.prevTouchId != touch.getId()) {
+                this.prevTouchId = touch.getId();
+            } else  { event.getCurrentTarget().processEvent(touches[0]); }
+          }
+        }, this);
       },
 
       /**
@@ -875,6 +887,40 @@ define("zotohlab/asx/xscenes",
 
       /**
        * @memberof module:zotohlab/asx/xscenes~XGameLayer
+       * @method onKeyDown
+       * @protected
+       * @param {Event} e
+       */
+      onKeyDown(e) {
+        //loggr.debug('onKeyDown: e = ' + e);
+        this.keyboard[e] = true;
+      },
+
+      /**
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
+       * @method onKeyUp
+       * @protected
+       * @param {Event} e
+       */
+      onKeyUp(e) {
+        //loggr.debug('onKeyUp: e = ' + e);
+        this.keyboard[e] = false;
+      },
+
+      /**
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
+       * @method onMouseUp
+       * @protected
+       * @param {Event} evt
+       */
+      onMouseUp(evt) {
+        const pt= evt.getLocation();
+        sjs.loggr.debug("mouse location [" + pt.x + "," + pt.y + "]");
+        this.onclicked(pt.x, pt.y);
+      },
+
+      /**
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method onTouchesEnded
        * @protected
        */
@@ -891,6 +937,16 @@ define("zotohlab/asx/xscenes",
        */
       keyPoll(key){
         return this.keyboard[key];
+      },
+
+      /**
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
+       * @method onclicked
+       * @protected
+       * @param {Number} x
+       * @param {Number} y
+       */
+      onclicked(x,y) {
       },
 
       /**
