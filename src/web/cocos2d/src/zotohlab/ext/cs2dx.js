@@ -565,11 +565,52 @@ define("zotohlab/asx/ccsx",
       },
 
       /**
+       * @method onKeys
+       */
+      onKeys(bus) {
+        if (!this.hasKeyPad()) {return;}
+        cc.eventManager.addListener({
+          onKeyPressed(key, e) {
+            bus.fire('/key/down', {type: 'key', key: key, event: e});
+          },
+          onKeyReleased(key, e) {
+            bus.fire('/key/up', {type: 'key', key: key, event: e});
+          },
+          event: cc.EventListener.KEYBOARD
+        });
+      },
+
+      /**
        * @method hasMouse
        * @return {Boolean}
        */
       hasMouse() {
         return !!cc.sys.capabilities['mouse'];
+      },
+
+      onMouse(bus) {
+        if (!this.hasMouse()) {return;}
+        cc.eventManager.addListener({
+          onMouseMove(e) {
+            if (e.getButton() === cc.EventMouse.BUTTON_LEFT) {
+              bus.fire('/mouse/move', {type:'mouse',
+                       loc: e.getLocation(),
+                       delta: e.getDelta(),
+                       event: e});
+            }
+          },
+          onMouseDown(e) {
+            bus.fire('/mouse/down', {type:'mouse',
+                     loc: e.getLocation(),
+                     event: e});
+          },
+          onMouseUp(e) {
+            bus.fire('/mouse/up', {type:'mouse',
+                     loc: e.getLocation(),
+                     event: e});
+          },
+          event: cc.EventListener.MOUSE
+        });
       },
 
       /**
@@ -578,6 +619,50 @@ define("zotohlab/asx/ccsx",
        */
       hasTouch() {
         return !!cc.sys.capabilities['touches'];
+      },
+
+      onTouchAll(bus) {
+        if (!this.hasTouch()) {return;}
+        cc.eventManager.addListener({
+          event: cc.EventListener.TOUCH_ALL_AT_ONCE,
+          prevTouchId: -1,
+          onTouchesBegan(ts,e) { return true; },
+          onTouchesEnded(ts,e) {
+            bus.fire('/touch/all/end', {type:'touch',
+                       event: e,
+                       loc: ts[0].getLocation()});
+          },
+          onTouchesMoved(ts,e) {
+            const id = ts[0].id;
+            if (this.prevTouchId != id) {
+              this.prevTouchId = id;
+            } else {
+              bus.fire('/touch/all/move', {type:'touch',
+                       event: e,
+                       delta: ts[0].getDelta()});
+            }
+          }
+        });
+      },
+
+      onTouchOne(bus) {
+        if (!this.hasTouch()) {return;}
+        cc.eventManager.addListener({
+          event: cc.EventListener.TOUCH_ONE_BY_ONE,
+          swallowTouches: true,
+          onTouchBegan(t,e) { return true; },
+          onTouchMoved(t,e) {
+            bus.fire('/touch/one/move', {type:'touch',
+                     event: e,
+                     delta: t.getDelta(),
+                     loc: t.getLocation()});
+          },
+          onTouchEnded(t,e) {
+            bus.fire('/touch/one/end', {type:'touch',
+                     event: e,
+                     loc: t.getLocation()});
+          }
+        });
       },
 
       /**

@@ -752,51 +752,7 @@ define("zotohlab/asx/xscenes",
         };
         bus.on('/key/down', (t,m) => { me.keyboard[m.key]=true; });
         bus.on('/key/up', (t,m) => { me.keyboard[m.key]=false; });
-        if (cc.sys.capabilities['touches']) {
-          cc.eventManager.addListener({
-            event: cc.EventListener.TOUCH_ALL_AT_ONCE,
-            prevTouchId: -1,
-            onTouchesMoved(touches, event) {
-              const touch = touches[0];
-              if (this.prevTouchId != touch.getID()) {
-                this.prevTouchId = touch.getID();
-              } else {
-                //event.getCurrentTarget().processEvent(touches[0]);
-                h.fire('/touch', {type:'touch', loc: touch.getLocation()});
-              }
-            }
-          });
-        }
-        if (cc.sys.capabilities['mouse']) {
-          sjs.loggr.debug('mouse support - ok');
-          cc.eventManager.addListener({
-            onMouseMove(event) {},
-            onMouseDown(event){},
-            onMouseUp(event){
-              const pt= event.getLocation();
-              sjs.loggr.debug("mouse location [" + pt.x + "," + pt.y + "]");
-              bus.fire('/mouse/up', {type:'mouse', loc: pt});
-            },
-            event: cc.EventListener.MOUSE
-          });
-        } else {
-          sjs.loggr.debug('mouse not supported');
-        }
-        if (cc.sys.capabilities['keyboard'] &&
-            !cc.sys.isNative) {
-          sjs.loggr.debug('keyboard support - ok');
-          cc.eventManager.addListener({
-            onKeyPressed(key, event) {
-              bus.fire('/key/down', {type: 'key', key: key});
-            },
-            onKeyReleased(key, event) {
-              bus.fire('/key/up', {type: 'key', key: key});
-            },
-            event: cc.EventListener.KEYBOARD
-          });
-        } else {
-          sjs.loggr.debug('keyboard not supported');
-        }
+
       },
 
       /**
@@ -805,83 +761,6 @@ define("zotohlab/asx/xscenes",
        * @protected
        */
       pkInput() {
-      },
-
-      /**
-       * @memberof module:zotohlab/asx/xscenes~XGameLayer
-       * @method cfgTouch
-       * @protected
-       */
-      cfgTouch() {
-        this.cfgInputTouchOne();
-        //this.cfgInputTouchesAll();
-      },
-
-      //TODO: handle touch drag and move
-      processEvent (event) {
-        sjs.loggr.debug('event === ' + sjs.jsonfy(event));
-        /*
-        var delta = event.getDelta();
-        var curPos = cc.p(this._ship.x, this._ship.y);
-        curPos = cc.pAdd(curPos, delta);
-        curPos = cc.pClamp(curPos, cc.p(0, 0), cc.p(winSize.width, winSize.height));
-        this._ship.x = curPos.x;
-        curPos = null;
-        */
-      },
-
-      /**
-       * @memberof module:zotohlab/asx/xscenes~XGameLayer
-       * @method cfgInputTouchOne
-       * @protected
-       */
-      cfgInputTouchOne() {
-        cc.eventManager.addListener({
-          event: cc.EventListener.TOUCH_ONE_BY_ONE,
-          swallowTouches: true,
-          onTouchBegan(t,e) { return e.getCurrentTarget().onTouchBegan(t,e);},
-          onTouchMoved(t,e) { return e.getCurrentTarget().onTouchMoved(t,e);},
-          onTouchEnded(t,e) { return e.getCurrentTarget().onTouchEnded(t,e);}
-        }, this);
-      },
-
-      /**
-       * @memberof module:zotohlab/asx/xscenes~XGameLayer
-       * @method onTouchMoved
-       * @protected
-       */
-      onTouchMoved(touch,event) {
-      },
-
-      /**
-       * @memberof module:zotohlab/asx/xscenes~XGameLayer
-       * @method onTouchBegan
-       * @protected
-       */
-      onTouchBegan(touch,event) {
-        return true;
-      },
-
-      /**
-       * @memberof module:zotohlab/asx/xscenes~XGameLayer
-       * @method onTouchEnded
-       * @protected
-       */
-      onTouchEnded(touch,event) {
-        const pt= touch.getLocation();
-        sjs.loggr.debug("touch location [" + pt.x + "," + pt.y + "]");
-        this.onclicked(pt.x, pt.y);
-        return true;
-      },
-
-      /**
-       * @memberof module:zotohlab/asx/xscenes~XGameLayer
-       * @method onTouchesEnded
-       * @protected
-       */
-      onTouchesEnded(touches, event) {
-        sjs.loggr.debug("touch event = " + event);
-        sjs.loggr.debug("touch = " + touches);
       },
 
       /**
