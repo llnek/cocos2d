@@ -807,7 +807,7 @@ target (deployapp: '') {
       include (name: 'dbg.js')
     }
   }
-  ['almond','js-signals','ash-js','ramda','cherimoia', 'l10njs', 'cookies','mustache'].each { d ->
+  ['almond','js-signals','ash-js','rxjs','ramda','cherimoia', 'l10njs', 'cookies','mustache'].each { d ->
     ant.copy (todir: "${dd1path}/${d}") {
       fileset (dir: "${vendors}/${d}")
     }

@@ -13,15 +13,17 @@
  * @requires zotohlab/p/gnodes
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
+ * @requires Rx
  * @module zotohlab/p/s/uiselect
  */
 define("zotohlab/p/s/uiselect",
 
        ['zotohlab/p/gnodes',
         'zotohlab/asterix',
-        'zotohlab/asx/ccsx'],
+        'zotohlab/asx/ccsx',
+        'Rx'],
 
-  function (gnodes, sh, ccsx) { "use strict";
+  function (gnodes, sh, ccsx, Rx) { "use strict";
 
     /** @alias module:zotohlab/p/s/uiselect */
     let exports = {},
@@ -40,7 +42,6 @@ define("zotohlab/p/s/uiselect",
        * @param {Object} options
        */
       constructor(options) {
-        this.events= options.selQ;
         this.state= options;
       },
       /**
@@ -49,6 +50,8 @@ define("zotohlab/p/s/uiselect",
        * @param {Ash.Engine} engine
        */
       removeFromEngine(engine) {
+        this.stream=null;
+        this.evQ=null;
         this.gui=null;
       },
       /**
@@ -58,6 +61,24 @@ define("zotohlab/p/s/uiselect",
        */
       addToEngine(engine) {
         this.gui = engine.getNodeList(gnodes.GUINode);
+        this.evQ=[];
+        this.stream= Rx.Observable.merge(
+          Rx.Observable.create( obj => {
+            sh.main.signal('/touch/one/end', (t,m) => {
+              obj.onNext(m);
+            });
+          }),
+          Rx.Observable.create( obj => {
+            sh.main.signal('/mouse/up', (t,m) => {
+              obj.onNext(m);
+            });
+          })
+        );
+        this.stream.subscribe( msg => {
+          if (!!this.evQ) {
+            this.evQ.push({x: msg.loc.x, y: msg.loc.y, cell: -1});
+          }
+        });
       },
       /**
        * @memberof module:zotohlab/p/s/uiselect~SelectionSystem
@@ -65,14 +86,13 @@ define("zotohlab/p/s/uiselect",
        * @param {Number} dt
        */
       update(dt) {
-        if (this.events.length > 0) {
-          const evt = this.events.shift(),
+        if (this.evQ.length > 0) {
+          const evt = this.evQ.shift(),
           node= this.gui.head;
           if (this.state.running &&
               !!node) {
             this.process(node, evt);
           }
-          this.events.length=0;
         }
       },
       /**

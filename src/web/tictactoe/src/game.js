@@ -68,7 +68,15 @@ define("zotohlab/p/arena",
        * @method onStop
        * @private
        */
-      onStop(evt) { this.options.netQ.push(evt); },
+      onStop(evt) { },
+      /**
+       * @method pkInput
+       * @protected
+       */
+      pkInput() {
+        ccsx.onTouchOne(this.ebus);
+        ccsx.onMouse(this.ebus);
+      },
       /**
        * @method replay
        * @private
@@ -111,8 +119,6 @@ define("zotohlab/p/arena",
         this.options.running=true;
         this.initPlayers();
 
-        this.options.selQ = [];
-        this.options.netQ = [];
         this.options.msgQ = [];
 
         R.forEach((z) => {
@@ -125,11 +131,6 @@ define("zotohlab/p/arena",
          sobjs.ResolutionSystem,
          sobjs.RenderSystem
         ]);
-
-        if (this.options.wsock) {
-          this.options.wsock.unsubscribeAll();
-          this.options.wsock.subscribeAll(this.onevent,this);
-        }
 
         this.getHUD().regoPlayers(csts.P1_COLOR, p1ids,
                                   csts.P2_COLOR, p2ids);
@@ -158,17 +159,6 @@ define("zotohlab/p/arena",
           this.getHUD().resetAsNew();
         } else {
           this.getHUD().reset();
-        }
-      },
-      /**
-       * @method onclicked
-       * @protected
-       */
-      onclicked(mx,my) {
-        if (this.options.running &&
-            this.options.selQ.length === 0) {
-          //sjs.loggr.debug("selection made at pos = " + mx + "," + my);
-          this.options.selQ.push({ x: mx, y: my, cell: -1 });
         }
       },
       /**
@@ -226,65 +216,6 @@ define("zotohlab/p/arena",
         this.options.colors[csts.P1_COLOR] = p1;
         this.options.colors[csts.P2_COLOR] = p2;
       },
-      /**
-       * @method onevent
-       * @private
-       */
-      onevent(topic, evt) {
-        //sjs.loggr.debug(evt);
-        switch (evt.type) {
-          case evts.MSG_NETWORK:
-            this.onNetworkEvent(evt);
-          break;
-          case evts.MSG_SESSION:
-            this.onSessionEvent(evt);
-          break;
-        }
-      },
-      /**
-       * @method onNetworkEvent
-       * @private
-       */
-      onNetworkEvent(evt) {
-        switch (evt.code) {
-          case evts.RESTART:
-            sjs.loggr.debug("restarting a new game...");
-            this.getHUD().killTimer();
-            this.play(false);
-          break;
-          case evts.STOP:
-            sjs.loggr.debug("game will stop");
-            this.getHUD().killTimer();
-            this.onStop(evt);
-          break;
-          default:
-            //TODO: fix this hack
-            this.onSessionEvent(evt);
-          break;
-        }
-      },
-
-      /**
-       * @method onSessionEvent
-       * @private
-       */
-      onSessionEvent(evt) {
-        this.options.netQ.push(evt);
-        /*
-        if (_.isNumber(evt.source.pnum) &&
-            _.isObject(evt.source.cmd) &&
-            _.isNumber(evt.source.cmd.cell)) {
-          sjs.loggr.debug("action from server " + JSON.stringify(cmd));
-          this.options.netQ.push(evt);
-        }
-        switch (evt.code) {
-          case evts.POKE_MOVE:
-          case evts.POKE_WAIT:
-          break;
-        }
-
-    */
-      }
 
     });
 
@@ -312,6 +243,14 @@ define("zotohlab/p/arena",
         }).
         onmsg('/hud/timer/show',(t,msg) => {
           sh.main.getHUD().showTimer();
+        }).
+        onmsg('/net/restart', (t,msg) => {
+          sh.main.getHUD().killTimer();
+          sh.main.play(false);
+        }).
+        onmsg('/net/stop', (t,msg) => {
+          sh.main.getHUD().killTimer();
+          //sh.main.getHUD().endGame(msg.winner);
         }).
         onmsg('/hud/timer/hide', (t,msg) => {
           sh.main.getHUD().killTimer();

@@ -21,6 +21,8 @@
     "src/js-signals/signals.js",
     "src/ash-js/ash.js",
 
+    "src/rxjs/rx.all.js",
+
     "src/cherimoia/skaro.js",
     "src/cherimoia/caesar.js",
     "src/cherimoia/bus.js",

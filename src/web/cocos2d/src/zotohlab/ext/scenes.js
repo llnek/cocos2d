@@ -216,7 +216,7 @@ define("zotohlab/asx/xscenes",
        * @param {Object} options
        * @protected
        */
-      setup() { this.pkInput(); },
+      setup() {},
 
       /**
        * @memberof module:zotohlab/asx/xscenes~XLayer
@@ -472,6 +472,15 @@ define("zotohlab/asx/xscenes",
        */
       setParentScene(par) {
         this.ptScene=par;
+      },
+
+      /**
+       * @memberof module:zotohlab/asx/xscenes~XLayer
+       * @method scene
+       * @return {cc.Scene}
+       */
+      scene() {
+        return ptScene;
       },
 
       /**
@@ -739,28 +748,26 @@ define("zotohlab/asx/xscenes",
      */
     const XGameLayer = XLayer.extend({
 
-      xxx() {
-        const bus= ebus.reify(),
-        me=this,
-        f= (ob) => {
-          h.on('/mouse', (t,m) => {
-            ob.onNext(m);
-          });
-          h.on('/touch', (t,m) => {
-            ob.onNext(m);
-          });
-        };
-        bus.on('/key/down', (t,m) => { me.keyboard[m.key]=true; });
-        bus.on('/key/up', (t,m) => { me.keyboard[m.key]=false; });
-
-      },
-
       /**
        * @memberof module:zotohlab/asx/xscenes~XGameLayer
        * @method pkInput
        * @protected
        */
       pkInput() {
+        //ccsx.onKeyPolls(this.keyboard);
+        //ccsx.onTouchOne(this.ebus);
+        //ccsx.onMouse(this.ebus);
+      },
+
+      /**
+       * @memberof module:zotohlab/asx/xscenes~XGameLayer
+       * @method signal
+       * @protected
+       * @param {String} topic
+       * @param {Function} cb
+       */
+      signal(topic, cb) {
+        this.ebus.on(topic,cb);
       },
 
       /**
@@ -830,8 +837,6 @@ define("zotohlab/asx/xscenes",
        */
       setup() {
         const m= this.options.mode;
-        this._super();
-
         if (m === sh.gtypes.ONLINE_GAME ||
             m === sh.gtypes.P2_GAME ||
             m === sh.gtypes.P1_GAME) {
@@ -896,13 +901,14 @@ define("zotohlab/asx/xscenes",
        * @param {Object} options
        */
       ctor(options) {
+        this.ebus= ebus.reify();
         this._super(options);
         this.keyboard= [];
         this.players= [];
         this.level= 1;
         this.actor= null;
         sh.main = this;
-        var vbox= ccsx.vbox();
+        const vbox= ccsx.vbox();
         sjs.loggr.debug('cc.view: vbox: left: ' + vbox.left +
                         ', bottom: ' + vbox.bottom +
                         ', top: ' + vbox.top +

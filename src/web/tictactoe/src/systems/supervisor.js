@@ -129,6 +129,8 @@ define("zotohlab/p/s/supervisor",
           if (this.state.players[pnum].category === csts.BOT) {
           }
         }
+
+        sh.main.pkInput();
       },
       /**
        * @method process

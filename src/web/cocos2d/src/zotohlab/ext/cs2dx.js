@@ -565,6 +565,22 @@ define("zotohlab/asx/ccsx",
       },
 
       /**
+       * @method onKeyPolls
+       */
+      onKeyPolls(kb) {
+        if (!this.hasKeyPad()) {return;}
+        cc.eventManager.addListener({
+          onKeyPressed(key, e) {
+            kb[key]=true;
+          },
+          onKeyReleased(key, e) {
+            kb[key]=false;
+          },
+          event: cc.EventListener.KEYBOARD
+        }, sh.main);
+      },
+
+      /**
        * @method onKeys
        */
       onKeys(bus) {
@@ -577,7 +593,7 @@ define("zotohlab/asx/ccsx",
             bus.fire('/key/up', {type: 'key', key: key, event: e});
           },
           event: cc.EventListener.KEYBOARD
-        });
+        }, sh.main);
       },
 
       /**
@@ -610,7 +626,7 @@ define("zotohlab/asx/ccsx",
                      event: e});
           },
           event: cc.EventListener.MOUSE
-        });
+        }, sh.main);
       },
 
       /**
@@ -642,7 +658,7 @@ define("zotohlab/asx/ccsx",
                        delta: ts[0].getDelta()});
             }
           }
-        });
+        }, sh.main);
       },
 
       onTouchOne(bus) {
@@ -662,7 +678,7 @@ define("zotohlab/asx/ccsx",
                      event: e,
                      loc: t.getLocation()});
           }
-        });
+        }, sh.main);
       },
 
       /**

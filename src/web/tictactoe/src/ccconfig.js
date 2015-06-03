@@ -25,6 +25,7 @@ document.ccConfig = {
     "/public/vendors/js-signals/signals.js",
     "/public/vendors/ash-js/ash.js",
 
+    "/public/vendors/rxjs/rx.all.js",
 
     "/public/vendors/cherimoia/skaro.js",
     "/public/vendors/cherimoia/caesar.js",

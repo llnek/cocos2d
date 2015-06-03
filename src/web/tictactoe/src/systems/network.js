@@ -41,7 +41,6 @@ define("zotohlab/p/s/network",
        * @param {Object} options
        */
       constructor(options) {
-        this.events = options.netQ;
         this.state= options;
       },
       /**
@@ -51,6 +50,7 @@ define("zotohlab/p/s/network",
        */
       removeFromEngine(engine) {
         this.netplay=null;
+        this.netQ=null;
       },
       /**
        * @memberof module:zotohlab/p/s/network~NetworkSystem
@@ -59,6 +59,49 @@ define("zotohlab/p/s/network",
        */
       addToEngine(engine) {
         this.netplay = engine.getNodeList(gnodes.NetPlayNode);
+        this.netQ=[];
+        if (this.state.wsock) {
+          this.state.wsock.unsubscribeAll();
+          this.state.wsock.subscribeAll(this.onevent,this);
+        }
+      },
+      /**
+       * @method onevent
+       * @private
+       */
+      onevent(topic, evt) {
+        //sjs.loggr.debug(evt);
+        switch (evt.type) {
+          case evts.MSG_NETWORK:
+            this.onnetw(evt);
+          break;
+          case evts.MSG_SESSION:
+            this.onsess(evt);
+          break;
+        }
+      },
+      /**
+       * @method onnetw
+       * @private
+       */
+      onnetw(evt) {
+        switch (evt.code) {
+          case evts.RESTART:
+            sjs.loggr.debug("restarting a new game...");
+            sh.fire('/net/restart');
+          break;
+          case evts.STOP:
+            sjs.loggr.debug("game will stop");
+            sh.fire('/net/stop');
+          break;
+        }
+      },
+      /**
+       * @method onsess
+       * @private
+       */
+      onsess(evt) {
+        this.netQ.push(evt);
       },
       /**
        * @memberof module:zotohlab/p/s/network~NetworkSystem
@@ -66,8 +109,8 @@ define("zotohlab/p/s/network",
        * @param {Number} dt
        */
       update(dt) {
-        if (this.events.length > 0) {
-          const evt = this.events.shift(),
+        if (this.netQ.length > 0) {
+          const evt = this.netQ.shift(),
           node= this.netplay.head;
           if (this.state.running &&
               !!node) {

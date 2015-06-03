@@ -22,6 +22,8 @@ document.ccConfig = {
     "/public/vendors/js-signals/signals.js",
     "/public/vendors/ash-js/ash.js",
 
+    "/public/vendors/rxjs/rx.all.js",
+
     "/public/vendors/crypto-js/components/core-min.js",
     "/public/vendors/crypto-js/components/enc-utf16-min.js",
     "/public/vendors/crypto-js/components/enc-base64-min.js",
