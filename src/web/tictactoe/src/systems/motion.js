@@ -107,12 +107,10 @@ define("zotohlab/p/s/motion",
           const evt = this.evQ.shift(),
           n= this.netplay.head,
           g= this.gui.head;
-          if (this.state.running) {
-            if (evt.group === 'net') {
-              if (!!n) { this.onnet(n, evt.event); }
-            } else {
-              if (!!g) { this.ongui(g,evt); }
-            }
+          if (evt.group === 'net') {
+            if (!!n) { this.onnet(n, evt.event); }
+          } else {
+            if (!!g) { this.ongui(g,evt); }
           }
         }
       },
@@ -141,10 +139,12 @@ define("zotohlab/p/s/motion",
             sh.fire('/net/restart');
           break;
           case evts.STOP:
-            sjs.loggr.debug("game will stop");
-            sh.fire('/hud/timer/hide');
-            this.onsess(node,evt);
-            sh.fire('/net/stop', evt);
+            if (this.state.running) {
+              sjs.loggr.debug("game will stop");
+              sh.fire('/hud/timer/hide');
+              this.onsess(node,evt);
+              sh.fire('/net/stop', evt);
+            }
           break;
         }
       },
@@ -193,6 +193,7 @@ define("zotohlab/p/s/motion",
        * @private
        */
       ongui(node, evt) {
+        if (!this.state.running) {return;}
         let sel = node.selection,
         map = node.view.gridMap,
         rect,
