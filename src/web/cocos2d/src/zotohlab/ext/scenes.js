@@ -10,7 +10,6 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
  * @requires cherimoia/ebus
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
@@ -19,16 +18,16 @@
  */
 define("zotohlab/asx/xscenes",
 
-       ['cherimoia/skarojs',
-        'cherimoia/ebus',
+       ['cherimoia/ebus',
         'zotohlab/asterix',
         'zotohlab/asx/ccsx',
         'ash-js'],
 
-  function (sjs, ebus, sh, ccsx, Ash) { "use strict";
+  function (ebus, sh, ccsx, Ash) { "use strict";
 
     /** @alias module:zotohlab/asx/xscenes */
     let exports = {},
+    sjs= sh.skarojs,
     xcfg = sh.xcfg,
     csts = xcfg.csts,
     R= sjs.ramda,
@@ -63,7 +62,7 @@ define("zotohlab/asx/xscenes",
     /**
      * @class XHUDLives
      */
-    class XHUDLives {
+    class XHUDLives extends sjs.ES6Claxx {
 
       /**
        * Reduce life by x amount.
@@ -159,6 +158,7 @@ define("zotohlab/asx/xscenes",
        * @param {Object} options
        */
       constructor(hud, x, y, options) {
+        super();
         this.options = options || {};
         this.topLeft= cc.p(x,y);
         this.icons= [];
@@ -1015,7 +1015,7 @@ define("zotohlab/asx/xscenes",
     /**
      * @class XSceneFactory
      */
-    class XSceneFactory {
+    class XSceneFactory extends sjs.ES6Claxx {
 
       /**
        * @memberof module:zotohlab/asx/xscenes~XSceneFactory
@@ -1045,6 +1045,7 @@ define("zotohlab/asx/xscenes",
        * @param {Array} list of layers
        */
       constructor(ls) {
+        super();
         this.layers= ls || [];
       }
 

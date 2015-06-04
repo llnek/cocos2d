@@ -29,7 +29,7 @@ define("zotohlab/p/c/board",
     /**
      * @class GameBoard
      */
-    class GameBoard {
+    class GameBoard extends sjs.ES6Claxx {
 
       /**
        * @memberof module:zotohlab/p/c/board~GameBoard
@@ -49,6 +49,7 @@ define("zotohlab/p/c/board",
        * @param {Array} goals
        */
       constructor(size, nilValue, p1v, p2v, goals) {
+        super();
         this.actors= [nilValue, p1v, p2v];
         this.CV_Z= nilValue;
         this.grid= [];

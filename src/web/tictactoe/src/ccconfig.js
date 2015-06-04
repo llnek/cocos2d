@@ -56,12 +56,11 @@ document.ccConfig = {
 
     '/public/ig/lib/game/tictactoe/systems/factory.js',
     '/public/ig/lib/game/tictactoe/systems/utils.js',
-    '/public/ig/lib/game/tictactoe/systems/network.js',
     '/public/ig/lib/game/tictactoe/systems/rendering.js',
     '/public/ig/lib/game/tictactoe/systems/resolution.js',
     '/public/ig/lib/game/tictactoe/systems/supervisor.js',
     '/public/ig/lib/game/tictactoe/systems/turnbase.js',
-    '/public/ig/lib/game/tictactoe/systems/uiselect.js',
+    '/public/ig/lib/game/tictactoe/systems/motion.js',
     '/public/ig/lib/game/tictactoe/systems/sysobjs.js',
 
     '/public/ig/lib/game/tictactoe/splash.js',

@@ -13,12 +13,11 @@
 
     "src/tictactoe/systems/factory.js",
     "src/tictactoe/systems/utils.js",
-    "src/tictactoe/systems/network.js",
     "src/tictactoe/systems/rendering.js",
     "src/tictactoe/systems/resolution.js",
     "src/tictactoe/systems/supervisor.js",
     "src/tictactoe/systems/turnbase.js",
-    "src/tictactoe/systems/uiselect.js",
+    "src/tictactoe/systems/motion.js",
     "src/tictactoe/systems/sysobjs.js",
 
     "src/tictactoe/splash.js",

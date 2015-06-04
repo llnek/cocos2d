@@ -10,24 +10,23 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @module zotohlab/asx/xpool
  */
 define("zotohlab/asx/xpool",
 
-       ['cherimoia/skarojs',
-        'zotohlab/asterix'],
+       ['zotohlab/asterix'],
 
-  function (sjs, sh) { "use strict";
+  function (sh) { "use strict";
 
     //////////////////////////////////////////////////////////////////////////////
     /** @alias module:zotohlab/asx/xpool */
     let exports = {},
+    sjs= sh.skarojs,
     R= sjs.ramda,
     undef;
 
-    class XEntityPool {
+    class XEntityPool extends sjs.ES6Claxx {
 
       checkEntity(ent) {
         if (ent instanceof this.entType) {
@@ -64,6 +63,7 @@ define("zotohlab/asx/xpool",
       }
 
       constructor(options) {
+        super();
         this.options = options || {};
         this.maxSize = this.options.maxSize || 1000;
         this.entType = this.options.entityProto;
@@ -77,7 +77,7 @@ define("zotohlab/asx/xpool",
     /**
      * @class XPool
      */
-    class XPool {
+    class XPool extends sjs.ES6Claxx {
 
       /**
        * Pre-populate a bunch of objects in the pool.
@@ -196,6 +196,7 @@ define("zotohlab/asx/xpool",
        * @method constructor
        */
       constructor() {
+        super();
         this.pool = [];
       }
 

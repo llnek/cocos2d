@@ -36,24 +36,6 @@ define("zotohlab/asx/online",
     //////////////////////////////////////////////////////////////////////////
     /**
      * @extends module:zotohlab/asx/xscenes.XLayer
-     * @class BGLayer
-     */
-    BGLayer = scenes.XLayer.extend({
-      /**
-       * @method rtti
-       */
-      rtti() { return "BackLayer"; },
-      /**
-       * @method setup
-       * @protected
-       */
-      setup() {
-        this.centerImage(sh.getImagePath('game.bg'));
-      }
-    }),
-    //////////////////////////////////////////////////////////////////////////
-    /**
-     * @extends module:zotohlab/asx/xscenes.XLayer
      * @class UILayer
      */
     UILayer =  scenes.XLayer.extend({
@@ -127,7 +109,7 @@ define("zotohlab/asx/online",
           this.wss.close();
         } catch (e) {}
         this.wss=null;
-        this.options.onBack();
+        this.options.onback();
       },
       /**
        * @method showWaitOthers
@@ -173,6 +155,7 @@ define("zotohlab/asx/online",
         me=this,
         menu;
 
+        this.centerImage(sh.getImagePath('game.bg'));
         qn.setPosition(cw.x, wb.top * 0.75);
         qn.setScale(xcfg.game.scale * 0.3);
         qn.setOpacity(0.9*255);
@@ -212,7 +195,7 @@ define("zotohlab/asx/online",
 
           { nnn: '#cancel.png',
             cb() {
-              this.options.onBack();
+              this.options.onback();
             },
             target: this }
         ],
@@ -234,7 +217,7 @@ define("zotohlab/asx/online",
        * @return {cc.Scene}
        */
       reify(options) {
-        return new scenes.XSceneFactory([ BackLayer, UILayer ]).reify(options);
+        return new scenes.XSceneFactory([ UILayer ]).reify(options);
       }
 
     };

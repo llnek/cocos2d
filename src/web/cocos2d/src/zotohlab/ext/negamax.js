@@ -64,7 +64,7 @@ define("zotohlab/asx/negamax",
      * @interface GameBoard
      * @class
      */
-    class GameBoard {
+    class GameBoard extends sjs.ES6Claxx {
       /**
        * @memberof module:zotohlab/asx/negamax~GameBoard
        * @method isOver
@@ -118,7 +118,7 @@ define("zotohlab/asx/negamax",
      * The negamax algorithm implementation.
      * @class NegaMax
      */
-    class NegaMax {
+    class NegaMax extends sjs.ES6Claxx {
 
       /**
        * Get the game board.
@@ -135,7 +135,7 @@ define("zotohlab/asx/negamax",
        * @method constructor
        * @param {GameBoard} board
        */
-      constructor(board) { this.board= board; }
+      constructor(board) { super(); this.board= board; }
 
       /**
        * Run the algo for one iteration.
@@ -157,13 +157,14 @@ define("zotohlab/asx/negamax",
      * game board.
      * @class Snapshot
      */
-    class Snapshot {
+    class Snapshot extends sjs.ES6Claxx {
 
       /**
        * @method ctor
        * @private
        */
       constructor() {
+        super();
         this.lastBestMove= null;
         this.other= null;
         this.cur= null;

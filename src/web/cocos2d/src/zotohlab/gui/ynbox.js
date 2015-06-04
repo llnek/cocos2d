@@ -32,25 +32,6 @@ define("zotohlab/asx/ynbox",
     undef,
     //////////////////////////////////////////////////////////////////////////
     /**
-     * @extends module:zotohlab/asx/xscenes.XLayer
-     * @class BGLayer
-     */
-    BGLayer = scenes.XLayer.extend({
-      /**
-       * @method rtti
-       */
-      rtti() { return "BackLayer"; },
-      /**
-       * @method setup
-       * @protected
-       */
-      setup() {
-        this.centerImage(sh.getImagePath('game.bg'));
-      }
-
-    }),
-    //////////////////////////////////////////////////////////////////////////
-    /**
      * @module zotohlab/asx/xscenes.XLayer
      * @class UILayer
      */
@@ -68,6 +49,7 @@ define("zotohlab/asx/ynbox",
         wb= ccsx.vbox(),
         menu;
 
+        this.centerImage(sh.getImagePath('game.bg'));
         qn.setPosition(cw.x, wb.top * 0.75);
         qn.setScale(xcfg.game.scale * 0.25);
         qn.setOpacity(0.9*255);
@@ -104,7 +86,7 @@ define("zotohlab/asx/ynbox",
        * @return {cc.Scene}
        */
       reify(options) {
-        return new scenes.XSceneFactory( [ BackLayer, UILayer ]).reify(options);
+        return new scenes.XSceneFactory( [ UILayer ]).reify(options);
       }
     };
 

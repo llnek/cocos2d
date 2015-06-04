@@ -27,7 +27,7 @@ define("zotohlab/asx/ui",
     /**
      * @class Circle
      */
-    class Circle {
+    class Circle extends sjs.ES6Claxx {
       /**
        * Draw this circle.
        * @memberof module:zotohlab/asx/ui~Circle
@@ -51,6 +51,7 @@ define("zotohlab/asx/ui",
        * @param {Number} radius
        */
       constructor(x, y, radius) {
+        super();
         this.x = x;
         this.y = y;
         this.radius = radius;
@@ -61,7 +62,7 @@ define("zotohlab/asx/ui",
     /**
      * @class Line
      */
-    class Line {
+    class Line extends sjs.ES6Claxx {
       /**
        * Draw this line.
        * @memberof module:zotohlab/asx/ui~Line
@@ -90,6 +91,7 @@ define("zotohlab/asx/ui",
        * @param {Number} y2
        */
       constructor(x1, y1, x2, y2) {
+        super();
         this.x1 = x1;
         this.y1 = y1;
         this.x2 = x2;
@@ -100,7 +102,7 @@ define("zotohlab/asx/ui",
     /**
      * @class Point
      */
-    class Point {
+    class Point extends sjs.ES6Claxx {
       /**
        * @memberof module:zotohlab/asx/ui~Point
        * @method constructor
@@ -108,6 +110,7 @@ define("zotohlab/asx/ui",
        * @param {Number} y
        */
       constructor(x,y) {
+        super();
         this.y=y;
         this.x=x;
       }
@@ -116,7 +119,7 @@ define("zotohlab/asx/ui",
     /**
      * @class Area
      */
-    class Area {
+    class Area extends sjs.ES6Claxx {
       /**
        * @memberof module:zotohlab/asx/ui~Area
        * @method constructor
@@ -126,6 +129,7 @@ define("zotohlab/asx/ui",
        * @param {Number} height
        */
       constructor(x,y,width,height) {
+        super();
         this.pos= new Point(x,y);
         this.height=height;
         this.width=width;
@@ -135,12 +139,13 @@ define("zotohlab/asx/ui",
     /**
      * @class TextStyle
      */
-    class TextStyle {
+    class TextStyle extends sjs.ES6Claxx {
       /**
        * @memberof module:zotohlab/asx/ui~TextStyle
        * @method constructor
        */
       constructor() {
+        super();
         this.font = "14px 'Architects Daughter'";
         this.fill = "#dddddd";
         this.align = "left";

@@ -125,8 +125,7 @@ define("zotohlab/p/arena",
           this.engine.addSystem(new (z)(this.options), z.Priority);
         },
         [sobjs.GameSupervisor,
-         sobjs.SelectionSystem,
-         sobjs.NetworkSystem,
+         sobjs.Motions,
          sobjs.TurnBaseSystem,
          sobjs.ResolutionSystem,
          sobjs.RenderSystem
@@ -250,7 +249,7 @@ define("zotohlab/p/arena",
         }).
         onmsg('/net/stop', (t,msg) => {
           sh.main.getHUD().killTimer();
-          //sh.main.getHUD().endGame(msg.winner);
+          sh.main.getHUD().endGame(msg.status);
         }).
         onmsg('/hud/timer/hide', (t,msg) => {
           sh.main.getHUD().killTimer();

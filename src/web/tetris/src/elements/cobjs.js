@@ -179,7 +179,7 @@ define("zotohlab/p/elements",
     /**
      * @class Brick
      */
-    class Brick {
+    class Brick extends sjs.ES6Claxx {
       /**
        * @memberof module:zotohlab/p/elements~Brick
        * @method blink
@@ -212,6 +212,7 @@ define("zotohlab/p/elements",
        * @param {Object} options
        */
       constructor(x, y, options) {
+        super();
         this.options = options || {};
         this.startPos = cc.p(x,y);
         this.options.frames= [ '' + options.frame + '.png', '0.png'];

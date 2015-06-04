@@ -16,12 +16,12 @@
  */
 define("zotohlab/asx/ccsx",
 
-       ['cherimoia/skarojs',
-        'zotohlab/asterix'],
+       ['zotohlab/asterix'],
 
-  function (sjs,sh) { "use strict";
+  function (sh) { "use strict";
 
-    let R = sjs.ramda,
+    let sjs= sh.skarojs,
+    R = sjs.ramda,
     undef;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -587,10 +587,10 @@ define("zotohlab/asx/ccsx",
         if (!this.hasKeyPad()) {return;}
         cc.eventManager.addListener({
           onKeyPressed(key, e) {
-            bus.fire('/key/down', {type: 'key', key: key, event: e});
+            bus.fire('/key/down', {group: 'key', key: key, event: e});
           },
           onKeyReleased(key, e) {
-            bus.fire('/key/up', {type: 'key', key: key, event: e});
+            bus.fire('/key/up', {group: 'key', key: key, event: e});
           },
           event: cc.EventListener.KEYBOARD
         }, sh.main);
@@ -609,19 +609,19 @@ define("zotohlab/asx/ccsx",
         cc.eventManager.addListener({
           onMouseMove(e) {
             if (e.getButton() === cc.EventMouse.BUTTON_LEFT) {
-              bus.fire('/mouse/move', {type:'mouse',
+              bus.fire('/mouse/move', {group:'mouse',
                        loc: e.getLocation(),
                        delta: e.getDelta(),
                        event: e});
             }
           },
           onMouseDown(e) {
-            bus.fire('/mouse/down', {type:'mouse',
+            bus.fire('/mouse/down', {group:'mouse',
                      loc: e.getLocation(),
                      event: e});
           },
           onMouseUp(e) {
-            bus.fire('/mouse/up', {type:'mouse',
+            bus.fire('/mouse/up', {group:'mouse',
                      loc: e.getLocation(),
                      event: e});
           },
@@ -644,7 +644,7 @@ define("zotohlab/asx/ccsx",
           prevTouchId: -1,
           onTouchesBegan(ts,e) { return true; },
           onTouchesEnded(ts,e) {
-            bus.fire('/touch/all/end', {type:'touch',
+            bus.fire('/touch/all/end', {group:'touch',
                        event: e,
                        loc: ts[0].getLocation()});
           },
@@ -653,7 +653,7 @@ define("zotohlab/asx/ccsx",
             if (this.prevTouchId != id) {
               this.prevTouchId = id;
             } else {
-              bus.fire('/touch/all/move', {type:'touch',
+              bus.fire('/touch/all/move', {group:'touch',
                        event: e,
                        delta: ts[0].getDelta()});
             }
@@ -668,13 +668,13 @@ define("zotohlab/asx/ccsx",
           swallowTouches: true,
           onTouchBegan(t,e) { return true; },
           onTouchMoved(t,e) {
-            bus.fire('/touch/one/move', {type:'touch',
+            bus.fire('/touch/one/move', {group:'touch',
                      event: e,
                      delta: t.getDelta(),
                      loc: t.getLocation()});
           },
           onTouchEnded(t,e) {
-            bus.fire('/touch/one/end', {type:'touch',
+            bus.fire('/touch/one/end', {group:'touch',
                      event: e,
                      loc: t.getLocation()});
           }

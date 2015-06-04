@@ -31,7 +31,7 @@ define("cherimoia/ebus", ["cherimoia/skarojs"], function (sjs) {
   //////////////////////////////////////////////////////////////////////////////
   var mkSubSCR = function mkSubSCR(topic, selector, target, repeat, args) {
     return {
-      id: "sub-" + Number(++_SEED),
+      id: "sub#" + Number(++_SEED),
       repeat: sjs.boolify(repeat),
       args: args || [],
       action: selector,
@@ -343,7 +343,7 @@ define("cherimoia/ebus", ["cherimoia/skarojs"], function (sjs) {
   ;
 
   /**
-   * @method
+   * @method reify
    * @return {EventBus}
    */
   exports.reify = function () {
@@ -351,7 +351,7 @@ define("cherimoia/ebus", ["cherimoia/skarojs"], function (sjs) {
   },
 
   /**
-   * @property {EventBus}
+   * @property {EventBus} EventBus
    */
   exports.EventBus = EventBus;
 

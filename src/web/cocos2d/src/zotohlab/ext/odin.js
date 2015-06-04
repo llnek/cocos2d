@@ -10,21 +10,20 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
  * @requires cherimoia/ebus
  * @requires zotohlab/asterix
  * @module zotohlab/asx/odin
  */
 define("zotohlab/asx/odin",
 
-       ['cherimoia/skarojs',
-        'cherimoia/ebus',
+       ['cherimoia/ebus',
         'zotohlab/asterix'],
 
-  function (sjs, ebus, sh) { "use strict";
+  function (ebus, sh) { "use strict";
 
     /** @alias module:zotohlab/asx/odin */
     let exports={},
+    sjs= sh.skarojs,
     evts,
     undef;
 
@@ -130,7 +129,7 @@ define("zotohlab/asx/odin",
     /**
      * @class Session
      */
-    class Session {
+    class Session extends sjs.ES6Claxx {
 
       /**
        * Connect to this url and request a websocket upgrade.
@@ -148,6 +147,7 @@ define("zotohlab/asx/odin",
        * @param {Object} config
        */
       constructor(config) {
+        super();
         this.state= evts.S_NOT_CONNECTED;
         this.options=config || {};
         this.ebus= ebus.reify();

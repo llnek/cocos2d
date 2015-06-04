@@ -83,13 +83,12 @@ define("cherimoia/caesar", ["cherimoia/skarojs"], function (sjs) {
       if (sjs.isString(str) && str.length > 0 && shiftpos !== 0) {} else {
         return "";
       }
-      var delta = sjs.xmod(Math.abs(shiftpos), VISCHS_LEN);
-      var out = [];
-      var p = undefined,
-          ch = undefined,
-          n = undefined,
+      var delta = sjs.xmod(Math.abs(shiftpos), VISCHS_LEN),
+          out = [],
           len = str.length;
-      for (n = 0; n < len; ++n) {
+      var p = undefined,
+          ch = undefined;
+      for (var n = 0; n < len; ++n) {
         ch = str.charAt(n);
         p = locateChar(ch);
         if (p < 0) {} else {
@@ -112,13 +111,12 @@ define("cherimoia/caesar", ["cherimoia/skarojs"], function (sjs) {
       if (sjs.isString(cipher) && cipher.length > 0 && shiftpos !== 0) {} else {
         return "";
       }
-      var delta = sjs.xmod(Math.abs(shiftpos), VISCHS_LEN);
-      var out = [];
-      var p = undefined,
-          ch = undefined,
-          n = undefined,
+      var delta = sjs.xmod(Math.abs(shiftpos), VISCHS_LEN),
+          out = [],
           len = cipher.length;
-      for (n = 0; n < len; ++n) {
+      var p = undefined,
+          ch = undefined;
+      for (var n = 0; n < len; ++n) {
         ch = cipher.charAt(n);
         p = locateChar(ch);
         if (p < 0) {} else {

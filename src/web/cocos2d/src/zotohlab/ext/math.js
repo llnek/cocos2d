@@ -31,7 +31,7 @@ define("zotohlab/asx/math",
     /**
      * @class Vector2
      */
-    class Vector2 {
+    class Vector2 extends sjs.ES6Claxx {
 
       /**
        * Scalar multiplication.
@@ -109,6 +109,7 @@ define("zotohlab/asx/math",
        * @param {Number} y2
        */
       constructor(x1, y1, x2, y2) {
+        super();
         this.x = x2 - x1;
         this.y = y2 - y1;
       }

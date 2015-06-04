@@ -10405,6 +10405,8 @@ e;d++)if(d%4){var g=f.indexOf(b.charAt(d-1))<<2*(d%4),h=f.indexOf(b.charAt(d))>>
  */
 'use strict';
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
 define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function (global, DBG, R) {
   'use strict';
 
@@ -10516,7 +10518,6 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
     /**
      * Maybe pad a string (left side.)
      * @function
-     * @static
      * @param {String} str
      * @param {Number} len
      * @param {String} s
@@ -10565,7 +10566,7 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
      * @param {Number} to
      * @return {Number}
      */
-    randomRange: function randomRange(from, to) {
+    randRange: function randRange(from, to) {
       return Math.floor(Math.random() * (to - from + 1) + from);
     },
 
@@ -10592,9 +10593,8 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
      * @return {Array.Any}
      */
     makeArray: function makeArray(len, value) {
-      var n = undefined,
-          arr = [];
-      for (n = 0; n < len; ++n) {
+      var arr = [];
+      for (var n = 0; n < len; ++n) {
         arr.push(value);
       }
       return arr;
@@ -10879,12 +10879,10 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
           ext = undefined;
       for (key in extended) {
         ext = extended[key];
-        if (typeof ext !== 'object' ||
-        //ext instanceof wrapper ||
-        ext instanceof HTMLElement || ext === null) {
+        if (ext instanceof exports.ES6Claxx || ext instanceof HTMLElement || typeof ext !== 'object' || ext === null || !original[key]) {
           original[key] = ext;
         } else {
-          if (!original[key] || typeof original[key] !== 'object') {
+          if (typeof original[key] !== 'object') {
             original[key] = ext instanceof Array ? [] : {};
           }
           this.merge(original[key], ext);
@@ -10899,12 +10897,10 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
      * @return {Array}
      */
     removeFromArray: function removeFromArray(arr, item) {
-      if (arr && arr.indexOf && arr.splice) {
-        var index = arr.indexOf(item);
-        while (index !== -1) {
-          arr.splice(index, 1);
-          index = arr.indexOf(item);
-        }
+      var index = arr.indexOf(item);
+      while (index !== -1) {
+        arr.splice(index, 1);
+        index = arr.indexOf(item);
       }
       return arr;
     },
@@ -11053,7 +11049,7 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
      * Mixin this object.
      * @function
      * @param {Object} object
-     * @return {claxx}
+     * @return {Object}
      */
     mixes: function mixes(obj) {
       return _mixer(obj);
@@ -11077,7 +11073,14 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
     /**
      * @property {Ramda} R Short cut to Ramda
      */
-    R: R
+    R: R,
+
+    /**
+     * @property {Claxx} Claxx ES6 Class
+     */
+    ES6Claxx: function ES6Claxx() {
+      _classCallCheck(this, ES6Claxx);
+    }
 
   };
 
@@ -11170,13 +11173,12 @@ define("cherimoia/caesar", ["cherimoia/skarojs"], function (sjs) {
       if (sjs.isString(str) && str.length > 0 && shiftpos !== 0) {} else {
         return "";
       }
-      var delta = sjs.xmod(Math.abs(shiftpos), VISCHS_LEN);
-      var out = [];
-      var p = undefined,
-          ch = undefined,
-          n = undefined,
+      var delta = sjs.xmod(Math.abs(shiftpos), VISCHS_LEN),
+          out = [],
           len = str.length;
-      for (n = 0; n < len; ++n) {
+      var p = undefined,
+          ch = undefined;
+      for (var n = 0; n < len; ++n) {
         ch = str.charAt(n);
         p = locateChar(ch);
         if (p < 0) {} else {
@@ -11199,13 +11201,12 @@ define("cherimoia/caesar", ["cherimoia/skarojs"], function (sjs) {
       if (sjs.isString(cipher) && cipher.length > 0 && shiftpos !== 0) {} else {
         return "";
       }
-      var delta = sjs.xmod(Math.abs(shiftpos), VISCHS_LEN);
-      var out = [];
-      var p = undefined,
-          ch = undefined,
-          n = undefined,
+      var delta = sjs.xmod(Math.abs(shiftpos), VISCHS_LEN),
+          out = [],
           len = cipher.length;
-      for (n = 0; n < len; ++n) {
+      var p = undefined,
+          ch = undefined;
+      for (var n = 0; n < len; ++n) {
         ch = cipher.charAt(n);
         p = locateChar(ch);
         if (p < 0) {} else {

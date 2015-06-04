@@ -22,8 +22,7 @@
  */
 define("zotohlab/p/boot",
 
-       ['cherimoia/skarojs',
-        'zotohlab/asterix',
+       ['zotohlab/asterix',
         'zotohlab/asx/ccsx',
         'zotohlab/asx/xcfg',
         'zotohlab/asx/xloader',
@@ -31,9 +30,10 @@ define("zotohlab/p/boot",
         'zotohlab/p/l10n',
         'zotohlab/p/protodefs'],
 
-  function (sjs, sh, ccsx, xcfg, loader, cfg, l10n, protos) { "use strict";
+  function (sh, ccsx, xcfg, loader, cfg, l10n, protos) { "use strict";
 
     let ss1= xcfg.game.start || 'StartScreen',
+    sjs= sh.skarojs,
     /** @alias module:zotohlab/p/boot */
     exports={},
     R = sjs.ramda,

@@ -14,12 +14,11 @@
  * @requires zotohlab/p/gnodes
  * @requires zotohlab/p/s/utils
  * @requires zotohlab/p/s/factory
- * @requires zotohlab/p/s/network
  * @requires zotohlab/p/s/rendering
  * @requires zotohlab/p/s/resolution
  * @requires zotohlab/p/s/supervisor
  * @requires zotohlab/p/s/turnbase
- * @requires zotohlab/p/s/uiselect
+ * @requires zotohlab/p/s/motion
  * @module zotohlab/p/sysobjs
  */
 define("zotohlab/p/sysobjs",
@@ -28,21 +27,19 @@ define("zotohlab/p/sysobjs",
         'zotohlab/p/gnodes',
         'zotohlab/p/s/utils',
         'zotohlab/p/s/factory',
-        'zotohlab/p/s/network',
         'zotohlab/p/s/rendering',
         'zotohlab/p/s/resolution',
         'zotohlab/p/s/supervisor',
         'zotohlab/p/s/turnbase',
-        'zotohlab/p/s/uiselect'],
+        'zotohlab/p/s/motion'],
 
   function (cobjs, gnodes, utils,
             EntityFactory,
-            NetworkSystem,
             RenderSystem,
             ResolutionSystem,
             Supervisor,
             TurnBaseSystem,
-            SelectionSystem) { "use strict";
+            Motions) { "use strict";
 
     /** @alias module:zotohlab/p/sysobjs */
     const exports= {
@@ -56,13 +53,9 @@ define("zotohlab/p/sysobjs",
        */
       GameSupervisor: Supervisor,
       /**
-       * @property {NetworkSystem} NetworkSystem
+       * @property {Motions} Motions
        */
-      NetworkSystem: NetworkSystem,
-      /**
-       * @property {SelectionSystem} SelectionSystem
-       */
-      SelectionSystem: SelectionSystem,
+      Motions: Motions,
       /**
        * @property {TurnBaseSystem} TurnBaseSystem
        */

@@ -10,18 +10,17 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @module zotohlab/asx/xcfg
  */
 define("zotohlab/asx/xcfg",
 
-       ['cherimoia/skarojs',
-        'zotohlab/asterix'],
+       ['zotohlab/asterix'],
 
-  function (sjs, sh) { "use strict";
+  function (sh) { "use strict";
 
-    let R= sjs.ramda,
+    let sjs= sh.skarojs,
+    R= sjs.ramda,
     undef;
 
     /** @alias module:zotohlab/asx/xcfg */

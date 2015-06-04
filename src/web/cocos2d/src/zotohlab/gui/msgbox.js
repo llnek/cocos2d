@@ -33,24 +33,6 @@ define("zotohlab/asx/msgbox",
     //////////////////////////////////////////////////////////////////////////
     /**
      * @extends module:zotohlab/asx/xscenes.XLayer
-     * @class BGLayer
-     */
-    BGLayer = scenes.XLayer.extend({
-      /**
-       * @method rtti
-       */
-      rtti() { return "BackLayer"; },
-      /**
-       * @method ctor
-       * @constructs
-       */
-      setup() {
-        this.centerImage(sh.getImagePath('game.bg'));
-      }
-    }),
-    //////////////////////////////////////////////////////////////////////////
-    /**
-     * @extends module:zotohlab/asx/xscenes.XLayer
      * @class UILayer
      */
     UILayer = scenes.XLayer.extend({
@@ -72,6 +54,7 @@ define("zotohlab/asx/msgbox",
         wb = ccsx.vbox(),
         menu;
 
+        this.centerImage(sh.getImagePath('game.bg'));
         qn.setPosition(cw.x, wb.top * 0.75);
         qn.setScale(xcfg.game.scale * 0.25);
         qn.setOpacity(0.9*255);
@@ -103,7 +86,7 @@ define("zotohlab/asx/msgbox",
        * @return {cc.Scene}
        */
       reify(options) {
-        return new scenes.XSceneFactory([ BGLayer, UILayer ]).reify(options);
+        return new scenes.XSceneFactory([  UILayer ]).reify(options);
       }
     };
 

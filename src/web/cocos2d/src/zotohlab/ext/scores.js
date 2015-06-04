@@ -10,21 +10,20 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 /**
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires Cookies
  * @module  zotohlab/asx/highscores
  */
 define("zotohlab/asx/highscores",
 
-       ['cherimoia/skarojs',
-        'zotohlab/asterix',
+       ['zotohlab/asterix',
         'Cookies'],
 
-  function (sjs, sh, Cookies) { "use strict";
+  function (sh, Cookies) { "use strict";
 
     /** @alias module:zotohlab/asx/highscores */
     let exports= {},
+    sjs= sh.skarojs,
     R = sjs.ramda,
     undef;
 
@@ -40,7 +39,7 @@ define("zotohlab/asx/highscores",
     /**
      * @class HighScores
      */
-    class HighScores {
+    class HighScores extends sjs.ES6Claxx {
 
       /**
        * Read the scores from the cookie.
@@ -165,6 +164,7 @@ define("zotohlab/asx/highscores",
        * @param {Number} duration
        */
       constructor(key, size, duration) {
+        super();
         this.duration= duration || 60*60*24*1000;
         this.size = size || 10;
         this.scores = [];
