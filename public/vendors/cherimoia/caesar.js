@@ -1,28 +1,29 @@
-// This library is distributed in  the hope that it will be useful but without
-// any  warranty; without  even  the  implied  warranty of  merchantability or
-// fitness for a particular purpose.
-// The use and distribution terms for this software are covered by the Eclipse
-// Public License 1.0  (http://opensource.org/licenses/eclipse-1.0.php)  which
-// can be found in the file epl-v10.html at the root of this distribution.
-// By using this software in any  fashion, you are agreeing to be bound by the
-// terms of this license. You  must not remove this notice, or any other, from
-// this software.
-// Copyright (c) 2013-2015 Ken Leung. All rights reserved.
+define("cherimoia/caesar", ["exports", "cherimoia/skarojs"], function (exports, _cherimoiaSkarojs) {
+  // This library is distributed in  the hope that it will be useful but without
+  // any  warranty; without  even  the  implied  warranty of  merchantability or
+  // fitness for a particular purpose.
+  // The use and distribution terms for this software are covered by the Eclipse
+  // Public License 1.0  (http://opensource.org/licenses/eclipse-1.0.php)  which
+  // can be found in the file epl-v10.html at the root of this distribution.
+  // By using this software in any  fashion, you are agreeing to be bound by the
+  // terms of this license. You  must not remove this notice, or any other, from
+  // this software.
+  // Copyright (c) 2013-2015 Ken Leung. All rights reserved.
 
-/**
- * @requires cherimoia/skarojs
- * @module cherimoia/caesar
- */
-"use strict";
-
-define("cherimoia/caesar", ["cherimoia/skarojs"], function (sjs) {
   "use strict";
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+  /**
+  * @requires cherimoia/skarojs
+  * @module cherimoia/caesar
+  */
+
+  var _sjs = _interopRequireDefault(_cherimoiaSkarojs);
 
   var VISCHS = " @N/\\Ri2}aP`(xeT4F3mt;8~%r0v:L5$+Z{'V)\"CKIc>z.*" + "fJEwSU7juYg<klO&1?[h9=n,yoQGsW]BMHpXb6A|D#q^_d!-",
       VISCHS_LEN = VISCHS.length;
 
   /////////////////////////////////////////////////////////////////////////////
-  //
   var identifyChar = function identifyChar(pos) {
     return VISCHS.charAt(pos);
   };
@@ -70,7 +71,7 @@ define("cherimoia/caesar", ["cherimoia/skarojs"], function (sjs) {
   };
 
   /** @alias module:cherimoia/caesar */
-  var exports = /** @lends exports# */{
+  var xbox = /** @lends xbox# */{
     /**
      * Encrypt the text.
      * @function
@@ -80,10 +81,10 @@ define("cherimoia/caesar", ["cherimoia/skarojs"], function (sjs) {
      */
     encrypt: function encrypt(str, shiftpos) {
 
-      if (sjs.isString(str) && str.length > 0 && shiftpos !== 0) {} else {
+      if (_sjs["default"].isString(str) && str.length > 0 && shiftpos !== 0) {} else {
         return "";
       }
-      var delta = sjs.xmod(Math.abs(shiftpos), VISCHS_LEN),
+      var delta = _sjs["default"].xmod(Math.abs(shiftpos), VISCHS_LEN),
           out = [],
           len = str.length;
       var p = undefined,
@@ -108,10 +109,10 @@ define("cherimoia/caesar", ["cherimoia/skarojs"], function (sjs) {
      */
     decrypt: function decrypt(cipher, shiftpos) {
 
-      if (sjs.isString(cipher) && cipher.length > 0 && shiftpos !== 0) {} else {
+      if (_sjs["default"].isString(cipher) && cipher.length > 0 && shiftpos !== 0) {} else {
         return "";
       }
-      var delta = sjs.xmod(Math.abs(shiftpos), VISCHS_LEN),
+      var delta = _sjs["default"].xmod(Math.abs(shiftpos), VISCHS_LEN),
           out = [],
           len = cipher.length;
       var p = undefined,
@@ -129,11 +130,14 @@ define("cherimoia/caesar", ["cherimoia/skarojs"], function (sjs) {
 
   };
 
-  return exports;
-});
+  _sjs["default"].merge(exports, xbox);
+  
+  return xbox;
+  
 
-//////////////////////////////////////////////////////////////////////////////
-//EOF
+  //////////////////////////////////////////////////////////////////////////////
+  //EOF
+});
 
 //ch
 

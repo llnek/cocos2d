@@ -1,67 +1,71 @@
-// This library is distributed in  the hope that it will be useful but without
-// any  warranty; without  even  the  implied  warranty of  merchantability or
-// fitness for a particular purpose.
-// The use and distribution terms for this software are covered by the Eclipse
-// Public License 1.0  (http://opensource.org/licenses/eclipse-1.0.php)  which
-// can be found in the file epl-v10.html at the root of this distribution.
-// By using this software in any  fashion, you are agreeing to be bound by the
-// terms of this license. You  must not remove this notice, or any other, from
-// this software.
-// Copyright (c) 2013-2015 Ken Leung. All rights reserved.
+define("cherimoia/skarojs", ["exports", "global/window", "console/dbg", "ramda"], function (exports, _globalWindow, _consoleDbg, _ramda) {
+  // This library is distributed in  the hope that it will be useful but without
+  // any  warranty; without  even  the  implied  warranty of  merchantability or
+  // fitness for a particular purpose.
+  // The use and distribution terms for this software are covered by the Eclipse
+  // Public License 1.0  (http://opensource.org/licenses/eclipse-1.0.php)  which
+  // can be found in the file epl-v10.html at the root of this distribution.
+  // By using this software in any  fashion, you are agreeing to be bound by the
+  // terms of this license. You  must not remove this notice, or any other, from
+  // this software.
+  // Copyright (c) 2013-2015 Ken Leung. All rights reserved.
 
-/**
- * @requires global/window
- * @requires console/dbg
- * @requires ramda
- * @requires CryptoJS
- * @module cherimoia/skarojs
- */
-'use strict';
+  "use strict";
+  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+  function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function (global, DBG, R) {
-  'use strict';
+  /**
+  * @requires global/window
+  * @requires console/dbg
+  * @requires ramda
+  * @requires CryptoJS
+  * @module cherimoia/skarojs
+  */
+
+  var _global = _interopRequireDefault(_globalWindow);
+
+  var _DBG = _interopRequireDefault(_consoleDbg);
+
+  var _R = _interopRequireDefault(_ramda);
 
   var fnTest = /xyz/.test(function () {
     xyz;
   }) ? /\b_super\b/ : /[\D|\d]*/,
-      ZEROS = '00000000000000000000000000000000'; //32
+      ZEROS = "00000000000000000000000000000000"; //32
   var CjsBase64 = undefined,
       CjsUtf8 = undefined,
       undef = undefined;
 
-  if (typeof HTMLElement === 'undefined') {
+  if (typeof HTMLElement === "undefined") {
     // fake a type.
-    global.HTMLElement = function HTMLElement() {};
+    _global["default"].HTMLElement = function HTMLElement() {};
   }
 
-  if (typeof CryptoJS !== 'undefined') {
-    global.CryptoJS = CryptoJS;
+  if (typeof CryptoJS !== "undefined") {
+    _global["default"].CryptoJS = CryptoJS;
   }
 
   //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   //
   var _echt = function _echt(obj) {
-    return typeof obj !== 'undefined' && obj !== null;
+    return typeof obj !== "undefined" && obj !== null;
   };
 
-  if (_echt(global.CryptoJS)) {
-    CjsBase64 = global.CryptoJS.enc.Base64;
-    CjsUtf8 = global.CryptoJS.enc.Utf8;
+  if (_echt(_global["default"].CryptoJS)) {
+    CjsBase64 = _global["default"].CryptoJS.enc.Base64;
+    CjsUtf8 = _global["default"].CryptoJS.enc.Utf8;
   }
 
   //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   // js inheritance - lifted from impact.js
   //----------------------------------------------------------------------------
-  /**
-   * @private
-   */
+  /** * @private */
   function _patchProto(zuper, proto, other) {
     var par = {},
         name = undefined;
     for (name in other) {
-      if (typeof zuper[name] === 'function' && typeof other[name] === 'function' && fnTest.test(other[name])) {
+      if (typeof zuper[name] === "function" && typeof other[name] === "function" && fnTest.test(other[name])) {
         par[name] = zuper[name]; // save original function
         proto[name] = (function (name, fn) {
           return function () {
@@ -105,16 +109,15 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
   };
 
   //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  /** @alias module:cherimoia/skarojs
-   */
-  var exports = /** @lends exports# */{
+  /** @alias module:cherimoia/skarojs */
+  var xbox = /** @lends xbox# */{
     /*
-          strPadRight(str,len, pad){
-            return (str+new Array(len+1).join(pad)).slice(0,len);
-          },
-          strPadLeft(str,len,pad){
-            return (new Array(len+1).join(pad)+str).slice(-len);
-          },
+      strPadRight(str,len, pad){
+        return (str+new Array(len+1).join(pad)).slice(0,len);
+      },
+      strPadLeft(str,len,pad){
+        return (new Array(len+1).join(pad)+str).slice(-len);
+      },
     */
     /**
      * Maybe pad a string (right side.)
@@ -148,7 +151,7 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
      * @return {Array.String}
      */
     safeSplit: function safeSplit(s, sep) {
-      return !!s ? R.reject(function (z) {
+      return !!s ? _R["default"].reject(function (z) {
         return z.length === 0;
       }, s.trim().split(sep)) : [];
     },
@@ -244,7 +247,7 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
      * @return {String}
      */
     prettyNumber: function prettyNumber(num, digits) {
-      return this.strPadLeft(Number(num).toString(), digits, '0');
+      return this.strPadLeft(Number(num).toString(), digits, "0");
       /*
       var nums= Number(num).toString(),
       len= nums.length;
@@ -264,7 +267,7 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
      * @return {String} transport protocol for websocket
      */
     getWebSockProtocol: function getWebSockProtocol() {
-      return this.isSSL() ? 'wss://' : 'ws://';
+      return this.isSSL() ? "wss://" : "ws://";
     },
 
     /**
@@ -304,7 +307,7 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
      */
     isSSL: function isSSL() {
       if (!!window && window.location) {
-        return window.location.protocol.indexOf('https') >= 0;
+        return window.location.protocol.indexOf("https") >= 0;
       } else {
         return false;
       }
@@ -321,7 +324,7 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
       if (!!window && window.location) {
         return scheme + window.location.host + uri;
       } else {
-        return '';
+        return "";
       }
     },
 
@@ -435,8 +438,8 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
      * @return {Array.String} - [header, data]
      */
     toBasicAuthHeader: function toBasicAuthHeader(user, pwd) {
-      var str = 'Basic ' + this.base64_encode('' + user + ':' + pwd);
-      return ['Authorization', str];
+      var str = "Basic " + this.base64_encode("" + user + ":" + pwd);
+      return ["Authorization", str];
     },
 
     /**
@@ -492,10 +495,10 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
           ext = undefined;
       for (key in extended) {
         ext = extended[key];
-        if (ext instanceof exports.ES6Claxx || ext instanceof HTMLElement || typeof ext !== 'object' || ext === null || !original[key]) {
+        if (ext instanceof xbox.ES6Claxx || ext instanceof HTMLElement || typeof ext !== "object" || ext === null || !original[key]) {
           original[key] = ext;
         } else {
-          if (typeof original[key] !== 'object') {
+          if (typeof original[key] !== "object") {
             original[key] = ext instanceof Array ? [] : {};
           }
           this.merge(original[key], ext);
@@ -545,7 +548,7 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
      * @return {Boolean}
      */
     isNumber: function isNumber(obj) {
-      return toString.call(obj) === '[object Number]';
+      return toString.call(obj) === "[object Number]";
     },
 
     /**
@@ -555,7 +558,7 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
      * @return {Boolean}
      */
     isDate: function isDate(obj) {
-      return toString.call(obj) === '[object Date]';
+      return toString.call(obj) === "[object Date]";
     },
 
     /**
@@ -565,7 +568,7 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
      * @return {Boolean}
      */
     isFunction: function isFunction(obj) {
-      return toString.call(obj) === '[object Function]';
+      return toString.call(obj) === "[object Function]";
     },
 
     /**
@@ -575,7 +578,7 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
      * @return {Boolean}
      */
     isString: function isString(obj) {
-      return toString.call(obj) === '[object String]';
+      return toString.call(obj) === "[object String]";
     },
 
     /**
@@ -585,7 +588,7 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
      * @return {Boolean}
      */
     isArray: function isArray(obj) {
-      return !!obj && toString.call(obj) === '[object Array]';
+      return !!obj && toString.call(obj) === "[object Array]";
     },
 
     /**
@@ -596,7 +599,7 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
      */
     isObject: function isObject(obj) {
       var type = typeof obj;
-      return type === 'function' || type === 'object' && !!obj;
+      return type === "function" || type === "object" && !!obj;
     },
 
     /**
@@ -611,7 +614,7 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
         return Object.keys(obj).length === 0;
       }
 
-      if (!!obj && typeof obj.length === 'number') {
+      if (!!obj && typeof obj.length === "number") {
         return obj.length === 0;
       }
 
@@ -639,9 +642,9 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
      * @return {Object}  memo
      */
     reduceObj: function reduceObj(f, memo, obj) {
-      return R.reduce(function (sum, pair) {
+      return _R["default"].reduce(function (sum, pair) {
         return f(sum, pair[1], pair[0]);
-      }, memo, R.toPairs(obj));
+      }, memo, _R["default"].toPairs(obj));
     },
 
     /**
@@ -652,9 +655,9 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
      * @return {Object} original object
      */
     eachObj: function eachObj(f, obj) {
-      R.forEach(function (pair) {
+      _R["default"].forEach(function (pair) {
         return f(pair[1], pair[0]);
-      }, R.toPairs(obj));
+      }, _R["default"].toPairs(obj));
       return obj;
     },
 
@@ -671,22 +674,22 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
     /**
      * @property {Logger} logger Short cut to logger
      */
-    logger: DBG,
+    logger: _DBG["default"],
 
     /**
      * @property {Logger} loggr Short cut to logger
      */
-    loggr: DBG,
+    loggr: _DBG["default"],
 
     /**
      * @property {Ramda} ramda Short cut to Ramda
      */
-    ramda: R,
+    ramda: _R["default"],
 
     /**
      * @property {Ramda} R Short cut to Ramda
      */
-    R: R,
+    R: _R["default"],
 
     /**
      * @property {Claxx} Claxx ES6 Class
@@ -697,8 +700,11 @@ define('cherimoia/skarojs', ['global/window', 'console/dbg', 'ramda'], function 
 
   };
 
-  return exports;
-});
+  xbox.merge(exports, xbox);
+  
+  return xbox;
+  
 
-//////////////////////////////////////////////////////////////////////////////
-//EOF
+  //////////////////////////////////////////////////////////////////////////////
+  //EOF
+});
