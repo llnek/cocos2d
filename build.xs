@@ -1,9 +1,8 @@
 skaroHome=/wdrive/myspace/skaro/alchemy.dir/_/pack
+bldDir=alchemy.dir
 
-
-cljBuildDir=${basedir}/alchemy.dir/clojure.org
-buildDir=${basedir}/alchemy.dir/build
-
+cljBuildDir=${basedir}/${bldDir}/clojure.org
+buildDir=${basedir}/${bldDir}/_
 
 reportDir=${buildDir}/reports
 podDir=${basedir}/POD-INF

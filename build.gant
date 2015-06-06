@@ -421,20 +421,67 @@ target (poo: '') {
 
 //////////////////////////////////////////////////////////////////////////////
 //
-def doCompileJS(wappid) {
+def jsWalkTree(wappid, stk,seed) {
+  top=null;if (seed != null) { top=seed } else { top=stk.peek() }
+  skip="${bldDir}";path=null;fid="";mid="";
+  top.eachFile { f ->
+    if (skip == f.getName()) {}
+    else
+    if (f.isDirectory()) {
+      stk.push(f)
+      jsWalkTree(wappid, stk,null)
+    } else {
+      if (stk.empty()) { path="" } else {
+        path = stk.collect({ c -> c.getName() }).toArray(new ArrayList()).join('/')
+      }
+      mid= fid= f.getName()
+      if (path.length() > 0) {
+        mid=path + "/" + fid
+      }
+      babelFile(wappid,mid)
+      //println "f = " + f.getName()
+      //println "path = " + path + "/" + fid
+    }
+  }
+  if (!stk.empty()) { stk.pop(); }
+}
 
-  if (wappid == "cocos2d") {} else { return;}
-
-  ant.exec (executable: 'babel', dir: "${webDir}/${wappid}/src") {
+//////////////////////////////////////////////////////////////////////////////
+//
+def babelFile(wappid, mid) {
+  dir="${webDir}/${wappid}/src"
+  out="${websrc}/${wappid}"
+  ant.exec (executable: 'babel', dir: "${dir}") {
     arg(value: '--modules')
     arg(value: 'amd')
     arg(value: '--module-ids')
     arg(value: "${mid}")
     arg(value: '--out-dir')
-    arg(value: '_')
+    arg(value: "${bldDir}")
   }
+  ant.replace(file: "${dir}/${bldDir}/${mid}",token:"/*@@",value:"")
+  ant.replace(file: "${dir}/${bldDir}/${mid}",token:"@@*/",value:"")
+  des=new File(out, mid).getParentFile()
+  des.mkdirs()
+  des2=des.toString()
+  ant.move(file: "${dir}/${bldDir}/${mid}",todir: "${des2}")
+}
 
-  if (true) { return;}
+//////////////////////////////////////////////////////////////////////////////
+//
+def cleanLocalJs(wappid) {
+  ant.delete ( dir: "${webDir}/${wappid}/${bldDir}", quiet: true)
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//
+def doCompileJS(wappid) {
+
+  root=new File("${webDir}/${wappid}/src")
+
+  cleanLocalJs(wappid)
+  jsWalkTree(wappid, new Stack(),root)
+  cleanLocalJs(wappid)
 
   ant.exec(executable: "jsdoc", dir: "${basedir}", spawn: true) {
     arg(value: "${websrc}/${wappid}")
