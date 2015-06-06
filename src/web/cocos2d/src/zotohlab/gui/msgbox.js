@@ -9,89 +9,88 @@
 // this software.
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-/**
- * @requires zotohlab/asx/xscenes
- * @requires zotohlab/asterix
+"use strict";/**
+ * @requires zotohlab/asx/asterix
+ * @requires zotohlab/asx/scenes
  * @requires zotohlab/asx/ccsx
- * @module zotohlab/asx/msgbox
+ * @module zotohlab/gui/msgbox
  */
-define("zotohlab/asx/msgbox",
 
-       ['zotohlab/asx/xscenes',
-        'zotohlab/asterix',
-        'zotohlab/asx/ccsx'],
+import scenes from 'zotohlab/asx/xscenes';
+import sh from 'zotohlab/asx/asterix';
+import ccsx from 'zotohlab/asx/ccsx';
 
-  function (scenes, sh, ccsx) { "use strict";
+//////////////////////////////////////////////////////////////////////////
+let sjs= sh.skarojs,
+xcfg = sh.xcfg,
+csts= xcfg.csts,
+R = sjs.ramda,
+undef,
+//////////////////////////////////////////////////////////////////////////
+/**
+ * @extends module:zotohlab/asx/xscenes.XLayer
+ * @class UILayer
+ */
+UILayer = scenes.XLayer.extend({
+  /**
+   * @method rtti
+   */
+  rtti() {
+    return 'MBoxLayer';
+  },
+  /**
+   * @method setup
+   * @protected
+   */
+  setup() {
+    let qn= new cc.LabelBMFont(sh.l10n(this.options.msg),
+                               sh.getFontPath('font.OCR')),
+    cw= ccsx.center(),
+    wz= ccsx.vrect(),
+    wb = ccsx.vbox(),
+    menu;
 
-    /** @alias module:zotohlab/asx/msgbox */
-    let exports = {},
-    sjs= sh.skarojs,
-    xcfg = sh.xcfg,
-    csts= xcfg.csts,
-    R = sjs.ramda,
-    undef,
-    //////////////////////////////////////////////////////////////////////////
-    /**
-     * @extends module:zotohlab/asx/xscenes.XLayer
-     * @class UILayer
-     */
-    UILayer = scenes.XLayer.extend({
-      /**
-       * @method rtti
-       */
-      rtti() {
-        return 'MBoxLayer';
-      },
-      /**
-       * @method setup
-       * @protected
-       */
-      setup() {
-        let qn= new cc.LabelBMFont(sh.l10n(this.options.msg),
-                                   sh.getFontPath('font.OCR')),
-        cw= ccsx.center(),
-        wz= ccsx.vrect(),
-        wb = ccsx.vbox(),
-        menu;
+    this.centerImage(sh.getImagePath('game.bg'));
+    qn.setPosition(cw.x, wb.top * 0.75);
+    qn.setScale(xcfg.game.scale * 0.25);
+    qn.setOpacity(0.9*255);
+    this.addItem(qn);
 
-        this.centerImage(sh.getImagePath('game.bg'));
-        qn.setPosition(cw.x, wb.top * 0.75);
-        qn.setScale(xcfg.game.scale * 0.25);
-        qn.setOpacity(0.9*255);
-        this.addItem(qn);
-
-        menu= ccsx.vmenu([
-          { nnn: '#ok.png',
-            cb() {
-              this.options.yes();
-            },
-            target: this
-          }
-        ],
-        {pos: cc.p(cw.x, wb.top * 0.1) });
-        this.addItem(menu);
+    menu= ccsx.vmenu([
+      { nnn: '#ok.png',
+        cb() {
+          this.options.yes();
+        },
+        target: this
       }
+    ],
+    {pos: cc.p(cw.x, wb.top * 0.1) });
+    this.addItem(menu);
+  }
 
-    });
-
-    exports = /** @lends exports# */{
-      /**
-       * @property {String} rtti
-       */
-      rtti: sh.ptypes.mbox,
-      /**
-       * Create a scene to display the message.
-       * @method reify
-       * @param {Object} options
-       * @return {cc.Scene}
-       */
-      reify(options) {
-        return new scenes.XSceneFactory([  UILayer ]).reify(options);
-      }
-    };
-
-    return exports;
 });
+
+/** @alias module:zotohlab/asx/msgbox */
+const xbox = /** @lends xbox# */{
+  /**
+   * @property {String} rtti
+   */
+  rtti: sh.ptypes.mbox,
+  /**
+   * Create a scene to display the message.
+   * @method reify
+   * @param {Object} options
+   * @return {cc.Scene}
+   */
+  reify(options) {
+    return new scenes.XSceneFactory([  UILayer ]).reify(options);
+  }
+};
+
+sjs.merge(exports, xbox);
+/*@@
+return xbox;
+@@*/
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

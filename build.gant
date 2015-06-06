@@ -423,11 +423,18 @@ target (poo: '') {
 //
 def doCompileJS(wappid) {
 
-  ant.exec (executable: 'babel', dir: "${basedir}") {
-    arg(value: "${webDir}/${wappid}/src")
+  if (wappid == "cocos2d") {} else { return;}
+
+  ant.exec (executable: 'babel', dir: "${webDir}/${wappid}/src") {
+    arg(value: '--modules')
+    arg(value: 'amd')
+    arg(value: '--module-ids')
+    arg(value: "${mid}")
     arg(value: '--out-dir')
-    arg(value: "${websrc}/${wappid}")
+    arg(value: '_')
   }
+
+  if (true) { return;}
 
   ant.exec(executable: "jsdoc", dir: "${basedir}", spawn: true) {
     arg(value: "${websrc}/${wappid}")

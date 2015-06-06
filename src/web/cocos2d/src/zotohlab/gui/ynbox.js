@@ -9,89 +9,88 @@
 // this software.
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-/**
- * @requires zotohlab/asx/xscenes
- * @requires zotohlab/asterix
+"use strict";/**
+ * @requires zotohlab/asx/asterix
+ * @requires zotohlab/asx/scenes
  * @requires zotohlab/asx/ccsx
- * @module zotohlab/asx/ynbox
+ * @module zotohlab/gui/ynbox
  */
-define("zotohlab/asx/ynbox",
 
-       ['zotohlab/asx/xscenes',
-        'zotohlab/asterix',
-        'zotohlab/asx/ccsx'],
+import scenes from 'zotohlab/asx/scenes';
+import sh from 'zotohlab/asx/asterix';
+import ccsx from 'zotohlab/asx/ccsx';
 
-  function (scenes, sh, ccsx ) { "use strict";
+//////////////////////////////////////////////////////////////////////////
+let sjs= sh.skarojs,
+xcfg= sh.xcfg,
+csts= xcfg.csts,
+R= sjs.ramda,
+undef,
+//////////////////////////////////////////////////////////////////////////
+/**
+ * @module zotohlab/asx/xscenes.XLayer
+ * @class UILayer
+ */
+UILayer =  scenes.XLayer.extend({
 
-    /** @alias module:zotohlab/asx/ynbox */
-    let exports = {},
-    sjs= sh.skarojs,
-    xcfg= sh.xcfg,
-    csts= xcfg.csts,
-    R= sjs.ramda,
-    undef,
-    //////////////////////////////////////////////////////////////////////////
-    /**
-     * @module zotohlab/asx/xscenes.XLayer
-     * @class UILayer
-     */
-    UILayer =  scenes.XLayer.extend({
+  /**
+   * @method setup
+   * @protected
+   */
+  setup() {
+    let qn= new cc.LabelBMFont(sh.l10n('%quit?'),
+                               sh.getFontPath('font.OCR')),
+    cw= ccsx.center(),
+    wz= ccsx.vrect(),
+    wb= ccsx.vbox(),
+    menu;
 
-      /**
-       * @method setup
-       * @protected
-       */
-      setup() {
-        let qn= new cc.LabelBMFont(sh.l10n('%quit?'),
-                                   sh.getFontPath('font.OCR')),
-        cw= ccsx.center(),
-        wz= ccsx.vrect(),
-        wb= ccsx.vbox(),
-        menu;
+    this.centerImage(sh.getImagePath('game.bg'));
+    qn.setPosition(cw.x, wb.top * 0.75);
+    qn.setScale(xcfg.game.scale * 0.25);
+    qn.setOpacity(0.9*255);
+    this.addItem(qn);
 
-        this.centerImage(sh.getImagePath('game.bg'));
-        qn.setPosition(cw.x, wb.top * 0.75);
-        qn.setScale(xcfg.game.scale * 0.25);
-        qn.setOpacity(0.9*255);
-        this.addItem(qn);
+    menu= ccsx.vmenu([
+      { nnn: '#continue.png',
+        cb() {
+          this.options.yes();
+        },
+        target: this },
 
-        menu= ccsx.vmenu([
-          { nnn: '#continue.png',
-            cb() {
-              this.options.yes();
-            },
-            target: this },
+      { nnn: '#cancel.png',
+        cb() {
+          this.options.onBack();
+        },
+        target: this }
+    ],
+    { pos: cw});
+    this.addItem(menu);
+  }
 
-          { nnn: '#cancel.png',
-            cb() {
-              this.options.onBack();
-            },
-            target: this }
-        ],
-        { pos: cw});
-        this.addItem(menu);
-      }
-
-    });
-
-    exports = /** @lends exports# */{
-      /**
-       * @property {String} rtti
-       */
-      rtti: sh.ptypes.yn,
-      /**
-       * Create a YesNo message screen.
-       * @method reify
-       * @param {Object} options
-       * @return {cc.Scene}
-       */
-      reify(options) {
-        return new scenes.XSceneFactory( [ UILayer ]).reify(options);
-      }
-    };
-
-    return exports;
 });
+
+/** @alias module:zotohlab/asx/ynbox */
+const xbox = /** @lends xbox# */{
+  /**
+   * @property {String} rtti
+   */
+  rtti: sh.ptypes.yn,
+  /**
+   * Create a YesNo message screen.
+   * @method reify
+   * @param {Object} options
+   * @return {cc.Scene}
+   */
+  reify(options) {
+    return new scenes.XSceneFactory( [ UILayer ]).reify(options);
+  }
+};
+
+sjs.merge(exports, xbox);
+/*@@
+return xbox;
+@@*/
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF
