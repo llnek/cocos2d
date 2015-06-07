@@ -1,4 +1,4 @@
-define("cherimoia/caesar", ["exports", "cherimoia/skarojs"], function (exports, _cherimoiaSkarojs) {
+define("cherimoia/caesar", ["exports", "cherimoia/skaro"], function (exports, _cherimoiaSkaro) {
   // This library is distributed in  the hope that it will be useful but without
   // any  warranty; without  even  the  implied  warranty of  merchantability or
   // fitness for a particular purpose.
@@ -14,11 +14,11 @@ define("cherimoia/caesar", ["exports", "cherimoia/skarojs"], function (exports, 
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
   /**
-  * @requires cherimoia/skarojs
+  * @requires cherimoia/skaro
   * @module cherimoia/caesar
   */
 
-  var _sjs = _interopRequireDefault(_cherimoiaSkarojs);
+  var _sjs = _interopRequireDefault(_cherimoiaSkaro);
 
   var VISCHS = " @N/\\Ri2}aP`(xeT4F3mt;8~%r0v:L5$+Z{'V)\"CKIc>z.*" + "fJEwSU7juYg<klO&1?[h9=n,yoQGsW]BMHpXb6A|D#q^_d!-",
       VISCHS_LEN = VISCHS.length;

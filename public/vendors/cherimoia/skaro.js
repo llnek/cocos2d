@@ -1,4 +1,4 @@
-define("cherimoia/skarojs", ["exports", "global/window", "console/dbg", "ramda"], function (exports, _globalWindow, _consoleDbg, _ramda) {
+define("cherimoia/skaro", ["exports", "global/window", "console/dbg", "ramda"], function (exports, _globalWindow, _consoleDbg, _ramda) {
   // This library is distributed in  the hope that it will be useful but without
   // any  warranty; without  even  the  implied  warranty of  merchantability or
   // fitness for a particular purpose.
@@ -20,7 +20,7 @@ define("cherimoia/skarojs", ["exports", "global/window", "console/dbg", "ramda"]
   * @requires console/dbg
   * @requires ramda
   * @requires CryptoJS
-  * @module cherimoia/skarojs
+  * @module cherimoia/skaro
   */
 
   var _global = _interopRequireDefault(_globalWindow);
@@ -109,7 +109,7 @@ define("cherimoia/skarojs", ["exports", "global/window", "console/dbg", "ramda"]
   };
 
   //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  /** @alias module:cherimoia/skarojs */
+  /** @alias module:cherimoia/skaro */
   var xbox = /** @lends xbox# */{
     /*
       strPadRight(str,len, pad){

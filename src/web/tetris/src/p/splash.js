@@ -13,45 +13,32 @@
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/scenes
  * @requires zotohlab/asx/ccsx
- * @requires s/utils
  * @module p/splash
  */
 
 import scenes from 'zotohlab/asx/scenes';
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
-import utils from 's/utils';
 
 
-//////////////////////////////////////////////////////////////////////////////
-let sjs=sh.skarojs,
+let sjs= sh.skarojs,
 xcfg = sh.xcfg,
 csts= xcfg.csts,
-R = sjs.ramda,
+R= sjs.ramda,
 undef,
+//////////////////////////////////////////////////////////////////////////////
 /**
+ * @extends module:zotohlab/asx/xscenes.XLayer
  * @class SplashLayer
  */
 SplashLayer = scenes.XLayer.extend({
   /**
    * @method setup
-   * @protected
+   * @private
    */
   setup() {
     this.centerImage(sh.getImagePath('game.bg'));
-    this.title();
-    this.demo();
     this.btns();
-  },
-  /**
-   * @method title
-   * @private
-   */
-  title() {
-    const cw = ccsx.center(),
-    wb = ccsx.vbox();
-    this.addFrame('#title.png',
-                  cc.p(cw.x, wb.top * 0.9));
   },
   /**
    * @method btns
@@ -59,13 +46,12 @@ SplashLayer = scenes.XLayer.extend({
    */
   btns() {
     const cw = ccsx.center(),
-    wb = ccsx.vbox(),
+    wb= ccsx.vbox(),
     menu= ccsx.vmenu([{
       cb() { this.onplay(); },
       target: this,
-      nnn: '#play.png'
-    }],
-    { pos: cc.p(cw.x, wb.top * 0.1) });
+      nnn: '#play.png'}],
+      { pos: cc.p(cw.x, wb.top * 0.1)});
     this.addItem(menu);
   },
   /**
@@ -76,36 +62,10 @@ SplashLayer = scenes.XLayer.extend({
     const ss= sh.protos[sh.ptypes.start],
     mm= sh.protos[sh.ptypes.mmenu],
     dir= cc.director;
+          //this.removeAll();
     dir.runScene( mm.reify({
-      onback() { dir.runScene( ss.reify()); }
+      onback() { dir.runScene( ss.reify() ); }
     }));
-  },
-  /**
-   * @method demo
-   * @private
-   */
-  demo() {
-    let scale= 0.75,
-    pos=0,
-    fm, sp, bx;
-
-    // we scale down the icons to make it look nicer
-    R.forEach((mp) => {
-      // set up the grid icons
-      if (pos === 1 || pos===5 || pos===6 || pos===7) { fm= '#x.png'; }
-      else if (pos===0 || pos===4) { fm= '#z.png'; }
-      else { fm= '#o.png'; }
-      sp= new cc.Sprite(fm);
-      bx=ccsx.vboxMID(mp);
-      sp.attr({
-        scale: scale,
-        x: bx.x,
-        y: bx.y
-      });
-      this.addItem(sp);
-      ++pos;
-    },
-    utils.mapGridPos(3,scale));
   }
 
 });
@@ -117,7 +77,6 @@ const xbox = /** @lends xbox# */{
    */
   rtti: sh.ptypes.start,
   /**
-   * Create the splash screen.
    * @method reify
    * @param {Object} options
    * @return {cc.Scene}

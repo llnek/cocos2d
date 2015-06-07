@@ -11,52 +11,27 @@
 
 "use strict";/**
  * @requires zotohlab/asx/asterix
+ * @requires zotohlab/asx/ccsx
  * @requires nodes/cobjs
- * @requires nodes/board
- * @requires nodes/gnodes
+ * @requires s/utils
  * @module s/factory
  */
 
 import sh from 'zotohlab/asx/asterix';
+import ccsx from 'zotohlab/asx/ccsx';
 import cobjs from 'nodes/cobjs';
-import gboard from 'nodes/board';
-import gnodes from 'nodes/gnodes';
+import utils from 's/utils';
 
-//////////////////////////////////////////////////////////////////////////////
+
 let sjs= sh.skarojs,
 xcfg = sh.xcfg,
 csts= xcfg.csts,
 undef,
-
-//////////////////////////////////////////////////////////////////////////////
-// returns array of winning combinations.
-mapGoalSpace = (size) => {
-  const ROWSPACE = [],
-  COLSPACE = [],
-  dx = [],
-  dy = [];
-  let h, v;
-
-  for (let r=0; r < size; ++r) {
-    h = [];
-    v = [];
-    for (let c=0; c < size; ++c) {
-      h.push(r * size + c);
-      v.push(c * size + r);
-    }
-    ROWSPACE.push(h);
-    COLSPACE.push(v);
-    dx.push(r * size + r);
-    dy.push((size - r - 1) * size + r);
-  }
-  //var DAGSPACE = [dx, dy];
-  return [dx, dy].concat(ROWSPACE, COLSPACE);
-},
-//////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 /**
  * @class EntityFactory
  */
-EntityFactory = sh.Ashley.casDef({
+EntityFactory = sh.Ashley.sysDef({
   /**
    * @memberof module:s/factory~EntityFactory
    * @method constructor
@@ -67,27 +42,22 @@ EntityFactory = sh.Ashley.casDef({
   },
   /**
    * @memberof module:s/factory~EntityFactory
-   * @method reifyBoard
+   * @method createArena
    * @param {cc.Layer} layer
    * @param {Object} options
    * @return {Ash.Entity}
    */
-  reifyBoard(layer, options) {
-    const goals= mapGoalSpace(options.size),
-    bd= new gboard.GameBoard(options.size,
-                      csts.CV_Z,
-                      csts.CV_X,
-                      csts.CV_O, goals),
-    ent = sh.Ashley.newEntity();
-
-    ent.add(new cobjs.Grid(options.size, options.seed));
-    ent.add(new cobjs.Board(options.size, goals));
-    ent.add(new cobjs.UISelection());
-    ent.add(new cobjs.SmartAlgo(bd));
-    ent.add(new cobjs.NetPlay());
-    ent.add(new cobjs.GridView(options.size, layer));
-
-    options.GOALSPACE=goals;
+  createArena(layer, options) {
+    const ent = sh.Ashley.newEntity();
+    ent.add(new cobjs.FilledLines());
+    ent.add(new cobjs.ShapeShell());
+    ent.add(new cobjs.BlockGrid());
+    ent.add(new cobjs.TileGrid());
+    ent.add(new cobjs.Motion());
+    ent.add(new cobjs.Dropper());
+    ent.add(new cobjs.Pauser());
+    ent.add(new cobjs.GridBox());
+    ent.add(new cobjs.CtrlPad());
     return ent;
   }
 
@@ -95,6 +65,9 @@ EntityFactory = sh.Ashley.casDef({
 
 /** @alias module:s/factory */
 const xbox = /** @lends xbox# */{
+  /**
+   * @property {EntityFactory} EntityFactory
+   */
   EntityFactory : EntityFactory
 };
 

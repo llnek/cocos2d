@@ -14,7 +14,6 @@
  * @requires zotohlab/asx/negamax
  * @requires zotohlab/asx/ccsx
  * @requires s/utils
- * @requires nodes/board
  * @module nodes/cobjs
  */
 
@@ -22,7 +21,6 @@ import negax from 'zotohlab/asx/negamax';
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
 import utils from 's/utils';
-import board from 'nodes/board';
 
 //////////////////////////////////////////////////////////////////////////////
 /** @alias module:nodes/cobjs */
@@ -47,7 +45,7 @@ const SmartAlgo = sh.Ashley.casDef({
   }
 });
 /**
- * @property {Constructor} SmartAlgo
+ * @property {SmartAlgo} SmartAlgo
  */
 xbox.SmartAlgo = SmartAlgo;
 
@@ -68,7 +66,7 @@ const Board = sh.Ashley.casDef({
   }
 });
 /**
- * @property {Constructor} Board
+ * @property {GameBoard} Board
  */
 xbox.Board = Board;
 
@@ -89,7 +87,7 @@ const Grid = sh.Ashley.casDef({
   }
 });
 /**
- * @property {Constructor} Grid
+ * @property {Grid} Grid
  */
 xbox.Grid = Grid;
 
@@ -116,7 +114,7 @@ const GridView = sh.Ashley.casDef({
   }
 });
 /**
- * @property {Constructor} GridView
+ * @property {GridView} GridView
  */
 xbox.GridView = GridView;
 
@@ -134,7 +132,7 @@ const NetPlay = sh.Ashley.casDef({
   }
 });
 /**
- * @property {Constructor} NetPlay
+ * @property {NetPlay} NetPlay
  */
 xbox.NetPlay = NetPlay;
 
@@ -160,7 +158,7 @@ const Player = sh.Ashley.casDef({
   }
 });
 /**
- * @property {Constructor} Player
+ * @property {Player} Player
  */
 xbox.Player = Player;
 
@@ -180,7 +178,7 @@ const UISelection = sh.Ashley.casDef({
   }
 });
 /**
- * @property {Constructor} UISelection
+ * @property {UISelection} UISelection
  */
 xbox.UISelection = UISelection;
 

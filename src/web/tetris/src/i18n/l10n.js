@@ -11,38 +11,30 @@
 
 "use strict";/**
  * @requires zotohlab/asx/asterix
- * @requires zotohlab/asx/online
- * @requires zotohlab/asx/msgbox
- * @requires zotohlab/asx/ynbox
- * @requires p/splash
- * @requires p/mmenu
- * @requires p/game
- * @module p/protos
+ * @module p/l10n
  */
 
-import online from 'zotohlab/asx/online';
-import msgbox from 'zotohlab/asx/msgbox';
-import ynbox from 'zotohlab/asx/ynbox';
 import sh from 'zotohlab/asx/asterix';
-import splash from 'p/splash';
-import mmenu from 'p/mmenu';
-import arena from 'p/game';
 
-//////////////////////////////////////////////////////////////////////////////
-let ps= [online, splash, mmenu, msgbox, ynbox, arena],
-protos= sh.protos,
-sjs= sh.skarojs,
-/** @alias module:p/protos */
-xbox = protos,
+let sjs= sh.skarojs,
 xcfg = sh.xcfg,
-R = sjs.ramda,
 undef;
 
-R.forEach((obj) => {
-  protos[obj.rtti] = obj;
-}, ps);
+/** @alias module:p/l10n */
+const xbox = sjs.merge(xcfg.l10nTable, {
 
-sjs.merge(exports, protos);
+  "en" : {
+
+    "%whowin" : "{{who}} Wins!",
+
+    "%p2" : "P2",
+    "%p1" : "P1"
+
+  }
+
+});
+
+sjs.merge(exports, xbox);
 /*@@
 return xbox;
 @@*/

@@ -26,6 +26,6 @@
     "src/tictactoe/p/protos.js",
 
 
-    "src/zotohlab/asx/boot.js"
+    "src/zotohlab/p/boot.js"
   ]
 }

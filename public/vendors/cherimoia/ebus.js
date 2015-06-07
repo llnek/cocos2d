@@ -1,4 +1,4 @@
-define("cherimoia/ebus", ["exports", "cherimoia/skarojs"], function (exports, _cherimoiaSkarojs) {
+define("cherimoia/ebus", ["exports", "cherimoia/skaro"], function (exports, _cherimoiaSkaro) {
   // This library is distributed in  the hope that it will be useful but without
   // any  warranty; without  even  the  implied  warranty of  merchantability or
   // fitness for a particular purpose.
@@ -22,11 +22,11 @@ define("cherimoia/ebus", ["exports", "cherimoia/skarojs"], function (exports, _c
   function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
   /**
-  * @requires cherimoia/skarojs
+  * @requires cherimoia/skaro
   * @module cherimoia/ebus
   */
 
-  var _sjs = _interopRequireDefault(_cherimoiaSkarojs);
+  var _sjs = _interopRequireDefault(_cherimoiaSkaro);
 
   var R = _sjs["default"].ramda,
       undef = undefined,

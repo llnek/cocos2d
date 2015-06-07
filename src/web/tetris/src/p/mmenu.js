@@ -13,118 +13,109 @@
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/scenes
  * @requires zotohlab/asx/ccsx
- * @requires s/utils
- * @module p/splash
+ * @module p/mmenu
  */
 
 import scenes from 'zotohlab/asx/scenes';
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
-import utils from 's/utils';
 
 
-//////////////////////////////////////////////////////////////////////////////
-let sjs=sh.skarojs,
+let sjs= sh.skarojs,
 xcfg = sh.xcfg,
 csts= xcfg.csts,
-R = sjs.ramda,
+R= sjs.ramda,
 undef,
+//////////////////////////////////////////////////////////////////////////
 /**
- * @class SplashLayer
+ * @extends module:zotohlab/asx/scenes.XMenuLayer
+ * @class MainMenuLayer
  */
-SplashLayer = scenes.XLayer.extend({
-  /**
-   * @method setup
-   * @protected
-   */
-  setup() {
-    this.centerImage(sh.getImagePath('game.bg'));
-    this.title();
-    this.demo();
-    this.btns();
-  },
+MainMenuLayer = scenes.XMenuLayer.extend({
   /**
    * @method title
    * @private
    */
   title() {
-    const cw = ccsx.center(),
-    wb = ccsx.vbox();
-    this.addFrame('#title.png',
-                  cc.p(cw.x, wb.top * 0.9));
+    const cw= ccsx.center(),
+    wb=ccsx.vbox(),
+    tt=ccsx.bmfLabel({
+      fontPath: sh.getFontPath('font.JellyBelly'),
+      text: sh.l10n('%mmenu'),
+      pos: cc.p(cw.x, wb.top * 0.9),
+      color: cc.color(246,177,127),
+      scale: xcfg.game.scale
+    });
+    this.addItem(tt);
   },
-  /**
-   * @method btns
-   * @private
-   */
   btns() {
     const cw = ccsx.center(),
     wb = ccsx.vbox(),
     menu= ccsx.vmenu([{
-      cb() { this.onplay(); },
+      nnn: '#player1.png',
       target: this,
-      nnn: '#play.png'
-    }],
-    { pos: cc.p(cw.x, wb.top * 0.1) });
+      cb() {
+          this.onplay({ mode: sh.gtypes.P1_GAME});
+      }}],
+      { pos: cw});
     this.addItem(menu);
   },
   /**
    * @method onplay
    * @private
    */
-  onplay() {
-    const ss= sh.protos[sh.ptypes.start],
-    mm= sh.protos[sh.ptypes.mmenu],
-    dir= cc.director;
-    dir.runScene( mm.reify({
-      onback() { dir.runScene( ss.reify()); }
-    }));
+  onplay(msg) {
+    cc.director.runScene( sh.protos[sh.ptypes.game].reify(msg));
   },
   /**
-   * @method demo
-   * @private
+   * @method setup
+   * @protected
    */
-  demo() {
-    let scale= 0.75,
-    pos=0,
-    fm, sp, bx;
+  setup() {
+    this.centerImage(sh.getImagePath('gui.mmenu.menu.bg'));
+    this.title();
+    this.btns();
 
-    // we scale down the icons to make it look nicer
-    R.forEach((mp) => {
-      // set up the grid icons
-      if (pos === 1 || pos===5 || pos===6 || pos===7) { fm= '#x.png'; }
-      else if (pos===0 || pos===4) { fm= '#z.png'; }
-      else { fm= '#o.png'; }
-      sp= new cc.Sprite(fm);
-      bx=ccsx.vboxMID(mp);
-      sp.attr({
-        scale: scale,
-        x: bx.x,
-        y: bx.y
-      });
-      this.addItem(sp);
-      ++pos;
-    },
-    utils.mapGridPos(3,scale));
+    this.mkBackQuit(false, [{
+        nnn: '#icon_back.png',
+        cb() {
+          this.options.onback();
+        },
+        target: this },
+      {
+        nnn: '#icon_quit.png',
+        cb() { this.onQuit(); },
+        target: this }
+    ],
+    (m,z) => {
+      m.setPosition(wb.left + csts.TILE + z.width * 1.1,
+                    wb.bottom + csts.TILE + z.height * 0.45);
+    });
+
+    this.mkAudio({
+      pos: cc.p(wb.right - csts.TILE,
+                wb.bottom + csts.TILE),
+      anchor: ccsx.acs.BottomRight
+    });
+
   }
 
 });
 
-/** @alias module:p/splash */
+/** @alias module:p/mmenu */
 const xbox = /** @lends xbox# */{
   /**
    * @property {String} rtti
    */
-  rtti: sh.ptypes.start,
+  rtti : sh.ptypes.mmenu,
   /**
-   * Create the splash screen.
    * @method reify
    * @param {Object} options
    * @return {cc.Scene}
    */
   reify(options) {
     return new scenes.XSceneFactory([
-      SplashLayer
+      MainMenuLayer
     ]).reify(options);
   }
 };

@@ -15,8 +15,8 @@
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/odin
  * @requires p/hud
- * @requires p/e/elements
- * @requires p/s/sysobjs
+ * @requires nodes/cobjs
+ * @requires s/sysobjs
  * @module p/game
  */
 
@@ -25,8 +25,8 @@ import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
 import odin from 'zotohlab/asx/odin';
 import huds from 'p/hud';
-import cobjs from 'p/e/elements';
-import sobjs from 'p/s/sysobjs';
+import cobjs from 'nodes/cobjs';
+import sobjs from 's/sysobjs';
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -214,7 +214,7 @@ GameLayer = scenes.XGameLayer.extend({
 
 });
 
-/** @alias module:p/arena */
+/** @alias module:p/game */
 const xbox = /** @lends xbox# */{
   /**
    * @property {String} rtti
@@ -272,7 +272,6 @@ sjs.merge(exports, xbox);
 /*@@
 return xbox;
 @@*/
-
 //////////////////////////////////////////////////////////////////////////////
 //EOF
 

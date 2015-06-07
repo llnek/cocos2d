@@ -11,44 +11,48 @@
 
 "use strict";/**
  * @requires zotohlab/asx/asterix
- * @requires zotohlab/asx/xcfg
+ * @requires zotohlab/asx/cfg
  * @module p/config
  */
 
 import sh from 'zotohlab/asx/asterix';
 import xcfg from 'zotohlab/asx/cfg';
 
-//////////////////////////////////////////////////////////////////////////////
 const sjs= sh.skarojs,
 /** @alias module:p/config */
 xbox = sjs.merge( xcfg, {
 
-  appKey : "bd5f79bb-eb41-4ed5-bb44-2529dc27ed3c",
+  appKey: "fb0fdd0b-1821-42d9-b6f7-26b11218b40d",
 
-  appid: 'tictactoe',
-  color: 'white',
+  appid: 'tetris',
+  color: 'silver',
 
   resolution: {
-    policy: cc.ResolutionPolicy.FIXED_HEIGHT,
+    policy: cc.ResolutionPolicy.FIXED_WIDTH,
     resSize: [0,0]
   },
 
   csts: {
-    PLAYER_THINK_TIME: 7,
-    GRID_SIZE: 3,
-    CELLS: 9,
-    CV_Z: 0
+    BLOCK_COLORS: 8,
+    //FIELD_SIDE: 1,
+    //FIELD_TOP: 1,
+    FIELD_W: 12,
+    //FIELD_BOTTOM: 1,
+
+    THROTTLEWAIT: 100,
+    DROPSPEED: 1000,
+
+    BTN_SIZE: 32,
+    //GRID_W: 30,
+    //GRID_H: 20,
+    CBOX: null,
+    FENCE: 0,
+    TILE: 0 // set via code
   },
 
-  game: {
-    //hdr: { width: 960, height: 1440 },
-    //hds: { width: 640, height: 960 },
-    sd : { width: 320, height: 480 }
-  },
-
-  ftypes: {
-    Resolve: 900,
-    Render: 800
+  ftypes : {
+    Clear: 350,
+    Generate: 360
   },
 
   assets: {
@@ -59,14 +63,11 @@ xbox = sjs.merge( xcfg, {
     tiles: {
     },
     images: {
-      'gui.edit.orange': 'res/cocos2d/pics/orange_edit.png',
-      'game.bg' : 'res/{{appid}}/pics/bg.png',
-      'gui.mmenu.menu.bg' : 'res/{{appid}}/pics/bg.png'
+      'gui.mmenu.menu.bg' : 'res/{{appid}}/pics/bg.png',
+      'game.bg' : 'res/{{appid}}/pics/bg.png'
     },
     sounds: {
       'game_end' : 'res/cocos2d/sfx/MineExplosion',
-      'x_pick' : 'res/cocos2d/sfx/ElevatorBeep',
-      'o_pick' : 'res/cocos2d/sfx/MineBeep',
       'game_quit' : 'res/cocos2d/sfx/Death'
     },
     fonts: {
@@ -77,20 +78,25 @@ xbox = sjs.merge( xcfg, {
     }
   },
 
+  game: {
+    sd: {height:320, width:480, scale:1},
+    landscape: true
+  },
+
   levels: {
-    "gamelevel1" : {
-      tiles: {
+    "1" : {
+      'tiles' : {
       },
-      images: {
+      'images' : {
       },
-      sprites: {
+      'sprites' : {
       }
     }
   },
 
   handleResolution(rs) {
     //for default font, we use 48pt
-    this.game.scale = 52/256 * rs.width /320;
+    this.game.scale = 12/72 * rs.width /480;
   },
 
   runOnce() {
@@ -99,8 +105,6 @@ xbox = sjs.merge( xcfg, {
   }
 
 });
-
-
 
 sjs.merge(exports, xbox);
 /*@@

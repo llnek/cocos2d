@@ -69,7 +69,7 @@ document.ccConfig = {
     '/public/ig/lib/game/tictactoe/p/protos.js',
 
 
-    '/public/ig/lib/zotohlab/asx/boot.js'
+    '/public/ig/lib/zotohlab/p/boot.js'
   ]
 
 };

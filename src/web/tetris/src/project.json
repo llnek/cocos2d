@@ -1,30 +1,30 @@
  {
     "jsList"        : [
 
-      "src/tetris/config.js",
-      "src/tetris/i18n/game_en_US.js",
+      "src/tetris/p/config.js",
+      "src/tetris/i18n/l10n.js",
 
-      "src/tetris/elements/cobjs.js",
+      "src/tetris/nodes/cobjs.js",
       "src/tetris/nodes/gnodes.js",
 
-      "src/tetris/systems/utils.js",
-      "src/tetris/systems/factory.js",
-      "src/tetris/systems/supervisor.js",
-      "src/tetris/systems/clearance.js",
-      "src/tetris/systems/generator.js",
-      "src/tetris/systems/motion.js",
-      "src/tetris/systems/movement.js",
-      "src/tetris/systems/rendering.js",
-      "src/tetris/systems/resolution.js",
+      "src/tetris/s/utils.js",
+      "src/tetris/s/factory.js",
+      "src/tetris/s/supervisor.js",
+      "src/tetris/s/clearance.js",
+      "src/tetris/s/generator.js",
+      "src/tetris/s/motion.js",
+      "src/tetris/s/movement.js",
+      "src/tetris/s/rendering.js",
+      "src/tetris/s/resolution.js",
 
-      "src/tetris/systems/sysobjs.js",
+      "src/tetris/s/sysobjs.js",
 
-      "src/tetris/hud.js",
-      "src/tetris/game.js",
-      "src/tetris/mmenu.js",
-      "src/tetris/splash.js",
-      "src/tetris/protos.js",
-      "src/zotohlab/ext/boot.js"
+      "src/tetris/p/hud.js",
+      "src/tetris/p/game.js",
+      "src/tetris/p/mmenu.js",
+      "src/tetris/p/splash.js",
+      "src/tetris/p/protos.js",
 
+      "src/zotohlab/p/boot.js"
     ]
 }

@@ -10,58 +10,69 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 "use strict";/**
- * @requires cherimoia/skaro
+ * @requires nodes/cobjs
+ * @requires nodes/gnodes
  * @requires s/utils
  * @requires s/factory
+ * @requires s/clearance
+ * @requires s/generator
+ * @requires s/motioncontrol
+ * @requires s/movement
  * @requires s/rendering
  * @requires s/resolution
  * @requires s/supervisor
- * @requires s/turnbase
- * @requires s/motion
  * @module s/sysobjs
  */
 
-import sjs from 'cherimoia/skaro';
+import cobjs from 'nodes/cobjs';
+import gnodes from 'nodes/gnodes';
 import utils from 's/utils';
-import fact from 's/factory';
-import render from 's/rendering';
-import res from 's/resolution';
-import visor from 's/supervisor';
-import turn from 's/turnbase';
-import motion from 's/motion';
+import f from 's/factory';
+import c from 's/clearance';
+import g from 's/generator';
+import mo from 's/motioncontrol';
+import mv from 's/movement';
+import rd from 's/rendering';
+import rs from 's/resolution';
+import v from 's/supervisor';
 
 /** @alias module:s/sysobjs */
 const xbox= /** @lends xbox# */{
-  /**
-   * @property {EntityFactory} Factory
-   */
-  Factory: fact.EntityFactory,
-  /**
-   * @property {GameSupervisor} GameSupervisor
-   */
-  GameSupervisor: visor.GameSupervisor,
-  /**
-   * @property {Motions} Motions
-   */
-  Motions: motion.Motions,
-  /**
-   * @property {TurnBaseSystem} TurnBaseSystem
-   */
-  TurnBaseSystem: turn.TurnBaseSystem,
-  /**
-   * @property {ResolutionSystem} ResolutionSystem
-   */
-  ResolutionSystem: res.ResolutionSystem,
-  /**
-   * @property {RenderSystem} RenderSystem
-   */
-  RenderSystem: render.RenderSystem,
-  /**
-   * @property {SystemUtils} SystemUtils
-   */
-  SystemUtils: utils
 
+  /**
+   * @property {Factory} EntityFactory
+   */
+  Factory   : f.EntityFactory,
+  /**
+   * @property {RowClearance} RowClearance
+   */
+  RowClearance    : c.RowClearance,
+  /**
+   * @property {Generator} Generator
+   */
+  Generator       : g.Generator,
+  /**
+   * @property {MotionControl} MotionControl
+   */
+  MotionControl   : mo.MotionControl,
+  /**
+   * @property {Movements} Movements
+   */
+  Movements       : mv.Movements,
+  /**
+   * @property {Rendering} Rendering
+   */
+  Rendering       : rd.Rendering,
+  /**
+   * @property {Resolution} Resolution
+   */
+  Resolution      : rs.Resolution,
+  /**
+   * @property {Supervisor} Supervisor
+   */
+  Supervisor      : v.Supervisor
 };
+
 
 sjs.merge(exports, xbox);
 /*@@

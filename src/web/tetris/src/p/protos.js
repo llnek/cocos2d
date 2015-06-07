@@ -9,38 +9,42 @@
 // this software.
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-/**
- * @requires zotohlab/asterix
- * @module zotohlab/p/l10n
+"use strict";/**
+ * @requires zotohlab/asx/asterix
+ * @requires zotohlab/asx/online
+ * @requires zotohlab/asx/msgbox
+ * @requires zotohlab/asx/ynbox
+ * @requires p/splash
+ * @requires p/mmenu
+ * @requires p/arena
+ * @module p/protos
  */
-define("zotohlab/p/l10n",
 
-       ['zotohlab/asterix'],
+import online from 'zotohlab/asx/online';
+import msgbox from 'zotohlab/asx/msgbox';
+import ynbox from 'zotohlab/asx/ynbox';
+import sh from 'zotohlab/asx/asterix';
+import splash from 'p/splash';
+import mmenu from 'p/mmenu';
+import arena from 'p/game';
 
-  function (sh) { "use strict";
 
-    /** @alias module:zotohlab/p/l10n */
-    let exports = {},
-    sjs= sh.skarojs,
-    xcfg = sh.xcfg,
-    undef;
+let ps= [online, splash, mmenu, msgbox, ynbox, arena],
+protos= sh.protos,
+sjs= sh.skarojs,
+/** @alias module:p/protos */
+xbox= protos,
+R = sjs.ramda,
+undef;
 
-    exports = sjs.merge(xcfg.l10nTable, {
+R.forEach( obj => {
+  protos[obj.rtti] = obj;
+}, ps);
 
-      "en" : {
-
-        "%whowin" : "{{who}} Wins!",
-
-        "%p2" : "P2",
-        "%p1" : "P1"
-
-      }
-
-    });
-
-    return exports;
-});
-
+sjs.merge(exports, xbox);
+/*@@
+return xbox;
+@@*/
 //////////////////////////////////////////////////////////////////////////////
 //EOF
 

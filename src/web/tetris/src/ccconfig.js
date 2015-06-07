@@ -27,46 +27,45 @@ document.ccConfig = {
 
     "/public/vendors/cherimoia/skaro.js",
     "/public/vendors/cherimoia/caesar.js",
-    "/public/vendors/cherimoia/bus.js",
-    "/public/vendors/cherimoia/zlab.js",
-    "/public/ig/lib/zotohlab/ext/asterix.js",
-    "/public/ig/lib/zotohlab/ext/cfg.js",
-    "/public/ig/lib/zotohlab/ext/cs2dx.js",
-    "/public/ig/lib/zotohlab/ext/odin.js",
+    "/public/vendors/cherimoia/ebus.js",
 
-    "/public/ig/lib/zotohlab/ext/scenes.js",
-    "/public/ig/lib/zotohlab/ext/pool.js",
-    "/public/ig/lib/zotohlab/ext/loader.js",
+    "/public/ig/lib/zotohlab/asx/asterix.js",
+    "/public/ig/lib/zotohlab/asx/cfg.js",
+    "/public/ig/lib/zotohlab/asx/cs2dx.js",
+    "/public/ig/lib/zotohlab/asx/odin.js",
+
+    "/public/ig/lib/zotohlab/asx/scenes.js",
+    "/public/ig/lib/zotohlab/asx/pool.js",
+    "/public/ig/lib/zotohlab/asx/loader.js",
 
     "/public/ig/lib/zotohlab/gui/msgbox.js",
     "/public/ig/lib/zotohlab/gui/ynbox.js",
     "/public/ig/lib/zotohlab/gui/online.js",
 
-    '/public/ig/lib/game/tetris/config.js',
-    '/public/ig/lib/game/tetris/i18n/game_en_US.js',
+    '/public/ig/lib/game/tetris/p/config.js',
+    '/public/ig/lib/game/tetris/i18n/l10n.js',
 
-    '/public/ig/lib/game/tetris/elements/cobjs.js',
+    '/public/ig/lib/game/tetris/nodes/cobjs.js',
     '/public/ig/lib/game/tetris/nodes/gnodes.js',
 
-    '/public/ig/lib/game/tetris/systems/factory.js',
-    '/public/ig/lib/game/tetris/systems/utils.js',
-    '/public/ig/lib/game/tetris/systems/supervisor.js',
-    '/public/ig/lib/game/tetris/systems/clearance.js',
-    '/public/ig/lib/game/tetris/systems/generator.js',
-    '/public/ig/lib/game/tetris/systems/motion.js',
-    '/public/ig/lib/game/tetris/systems/movement.js',
-    '/public/ig/lib/game/tetris/systems/rendering.js',
-    '/public/ig/lib/game/tetris/systems/resolution.js',
-    '/public/ig/lib/game/tetris/systems/sysobjs.js',
+    '/public/ig/lib/game/tetris/s/factory.js',
+    '/public/ig/lib/game/tetris/s/utils.js',
+    '/public/ig/lib/game/tetris/s/supervisor.js',
+    '/public/ig/lib/game/tetris/s/clearance.js',
+    '/public/ig/lib/game/tetris/s/generator.js',
+    '/public/ig/lib/game/tetris/s/motion.js',
+    '/public/ig/lib/game/tetris/s/movement.js',
+    '/public/ig/lib/game/tetris/s/rendering.js',
+    '/public/ig/lib/game/tetris/s/resolution.js',
+    '/public/ig/lib/game/tetris/s/sysobjs.js',
 
-    '/public/ig/lib/game/tetris/splash.js',
-    '/public/ig/lib/game/tetris/mmenu.js',
-    '/public/ig/lib/game/tetris/hud.js',
-    '/public/ig/lib/game/tetris/game.js',
+    '/public/ig/lib/game/tetris/p/splash.js',
+    '/public/ig/lib/game/tetris/p/mmenu.js',
+    '/public/ig/lib/game/tetris/p/hud.js',
+    '/public/ig/lib/game/tetris/p/game.js',
 
-    '/public/ig/lib/game/tetris/protos.js',
-    '/public/ig/lib/zotohlab/ext/boot.js'
-
+    '/public/ig/lib/game/tetris/p/protos.js',
+    '/public/ig/lib/zotohlab/p/boot.js'
   ]
 
 };
