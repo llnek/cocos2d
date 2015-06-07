@@ -16,7 +16,7 @@
  * @module zotohlab/gui/msgbox
  */
 
-import scenes from 'zotohlab/asx/xscenes';
+import scenes from 'zotohlab/asx/scenes';
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
 
@@ -28,7 +28,7 @@ R = sjs.ramda,
 undef,
 //////////////////////////////////////////////////////////////////////////
 /**
- * @extends module:zotohlab/asx/xscenes.XLayer
+ * @extends module:zotohlab/asx/scenes.XLayer
  * @class UILayer
  */
 UILayer = scenes.XLayer.extend({

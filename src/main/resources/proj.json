@@ -2,16 +2,15 @@
 
     "jsList"        : [
 
-    "src/@@APPID@@/config.js",
-    "src/@@APPID@@/i18n/game_en_US.js",
+    "src/@@APPID@@/p/config.js",
+    "src/@@APPID@@/i18n/l10n.js",
 
-    "src/@@APPID@@/splash.js",
-    "src/@@APPID@@/mmenu.js",
-    "src/@@APPID@@/hud.js",
-    "src/@@APPID@@/game.js",
+    "src/@@APPID@@/p/splash.js",
+    "src/@@APPID@@/p/mmenu.js",
+    "src/@@APPID@@/p/hud.js",
+    "src/@@APPID@@/p/game.js",
 
-    "src/@@APPID@@/protos.js",
-    "src/zotohlab/ext/boot.js"
-
+    "src/@@APPID@@/p/protos.js",
+    "src/zotohlab/p/boot.js"
     ]
 }

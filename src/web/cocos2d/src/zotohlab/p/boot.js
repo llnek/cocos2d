@@ -10,14 +10,13 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 "use strict";/**
- * @requires cherimoia/skarojs
  * @requires zotohlab/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/xcfg
  * @requires zotohlab/asx/xloader
- * @requires zotohlab/p/config
- * @requires zotohlab/p/l10n
- * @requires zotohlab/p/protodefs
+ * @requires p/config
+ * @requires p/l10n
+ * @requires p/protos
  * @module zotohlab/p/boot
  */
 
@@ -25,9 +24,9 @@ import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
 import xcfg from 'zotohlab/asx/cfg';
 import loader from 'zotohlab/asx/loader';
-import cfg from 'zotohlab/p/config';
-import l10n from 'zotohlab/p/l10n';
-import protos from 'zotohlab/p/protodefs';
+import cfg from 'p/config';
+import l10n from 'p/l10n';
+import protos from 'p/protos';
 
 //////////////////////////////////////////////////////////////////////////
 let ss1= xcfg.game.start || 'StartScreen',

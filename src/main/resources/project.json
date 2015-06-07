@@ -25,21 +25,20 @@
 
     "src/cherimoia/skaro.js",
     "src/cherimoia/caesar.js",
-    "src/cherimoia/bus.js",
-    "src/cherimoia/zlab.js",
-    "src/zotohlab/ext/asterix.js",
-    "src/zotohlab/ext/cfg.js",
-    "src/zotohlab/ext/cs2dx.js",
-    "src/zotohlab/ext/odin.js",
+    "src/cherimoia/ebus.js",
 
-    "src/zotohlab/ext/scenes.js",
-    "src/zotohlab/ext/pool.js",
-    "src/zotohlab/ext/loader.js",
+    "src/zotohlab/asx/asterix.js",
+    "src/zotohlab/asx/cfg.js",
+    "src/zotohlab/asx/ccsx.js",
+    "src/zotohlab/asx/odin.js",
+
+    "src/zotohlab/asx/scenes.js",
+    "src/zotohlab/asx/pool.js",
+    "src/zotohlab/asx/loader.js",
 
     "src/zotohlab/gui/msgbox.js",
     "src/zotohlab/gui/ynbox.js",
     "src/zotohlab/gui/online.js"
-
 
     ]
 }

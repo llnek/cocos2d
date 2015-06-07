@@ -9,64 +9,62 @@
 // this software.
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-/**
- * @requires zotohlab/asterix
- * @requires zotohlab/asx/xcfg
- * @module zotohlab/p/config
+"use strict";/**
+ * @requires zotohlab/asx/asterix
+ * @requires zotohlab/asx/cfg
+ * @module p/config
  */
-define("zotohlab/p/config", ['zotohlab/asterix',
-                            'zotohlab/asx/xcfg'],
 
-  function (sh, xcfg) { "use strict";
+import sh from 'zotohlab/asx/asterix';
+import xcfg from 'zotohlab/asx/cfg';
 
-    /** @alias module:zotohlab/p/config */
-    let exports = {},
-    sjs= sh.skarojs;
+let sjs= sh.skarojs;
 
-    exports = sjs.merge( xcfg, {
+/** @alias module:p/config */
+const xbox = sjs.merge( xcfg, {
 
-      appKey: '@@UUID@@',
+  appKey: '@@UUID@@',
 
+  appid: '',
+  color: '',
 
-      appid: '',
-      color: '',
+  csts: {
+  },
 
-      csts: {
+  game: {
+    sd: {width:320, height:480 }
+  },
+
+  assets: {
+    tiles: {
+    },
+    images: {
+    },
+    sounds: {
+    },
+    fonts: {
+    }
+  },
+
+  levels: {
+    "1" : {
+      tiles: {
       },
-
-      game: {
-        size: {width:320, height:480, scale:1}
+      images: {
       },
-
-      assets: {
-        tiles: {
-        },
-        images: {
-        },
-        sounds: {
-        },
-        fonts: {
-        }
+      sprites: {
       },
-
-      levels: {
-        "gamelevel1" : {
-          tiles: {
-          },
-          images: {
-          },
-          sprites: {
-          },
-          cfg {
-          }
-        }
+      cfg {
       }
+    }
+  }
 
-    });
-
-    return exports;
 });
 
+sjs.merge(exports, xbox);
+/*@@
+return xbox;
+@@*/
 //////////////////////////////////////////////////////////////////////////////
 //EOF
 

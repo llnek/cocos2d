@@ -9,79 +9,78 @@
 // this software.
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-/**
- * @requires zotohlab/asx/xscenes
- * @requires zotohlab/asterix
+"use strict";/**
+ * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
- * @module zotohlab/p/splash
+ * @requires zotohlab/asx/scenes
+ * @module p/splash
  */
-define('zotohlab/p/splash', [ 'zotohlab/asx/xscenes',
-                            'zotohlab/asterix',
-                            'zotohlab/asx/ccsx'],
 
-  function (scenes, sh, ccsx ) { "use strict";
+import scenes from 'zotohlab/asx/scenes';
+import sh from 'zotohlab/asx/asterix';
+import ccsx from 'zotohlab/asx/ccsx';
 
-    /** @alias module:zotohlab/p/splash */
-    let exports = {},
-    sjs= sh.skarojs,
-    xcfg = sh.xcfg,
-    csts= xcfg.csts,
-    undef,
-    //////////////////////////////////////////////////////////////////////////
-    /**
-     * @extends module:zotohlab/asx/xscenes~XLayer
-     * @class SplashLayer
-     */
-    SplashLayer = scenes.XLayer.extend({
-      /**
-       * @method setup
-       * @protected
-       */
-      setup() {
-        this.centerImage(sh.getImagePath('game.bg'));
-        this.btns();
-      },
-      /**
-       * @method btns
-       * @private
-       */
-      btns() {
+let sjs= sh.skarojs,
+xcfg = sh.xcfg,
+csts= xcfg.csts,
+undef,
+//////////////////////////////////////////////////////////////////////////
+/**
+ * @extends module:zotohlab/asx/scenes~XLayer
+ * @class SplashLayer
+ */
+SplashLayer = scenes.XLayer.extend({
+  /**
+   * @method setup
+   * @protected
+   */
+  setup() {
+    this.centerImage(sh.getImagePath('game.bg'));
+    this.btns();
+  },
+  /**
+   * @method btns
+   * @private
+   */
+  btns() {
 
-      },
-      /**
-       * @method onplay
-       * @private
-       */
-      onplay() {
-        const ss= sh.protos[sh.ptypes.start],
-        mm= sh.protos[sh.ptypes.mmenu],
-        dir= cc.director;
-        dir.runScene( mm.reify({
-          onBack() { dir.runScene( ss.reify() ); }
-        }));
-      }
-    });
-
-    exports = /** @lends exports# */{
-      /**
-       * @property {String} rtti
-       */
-      rtti : sh.ptypes.start,
-      /**
-       * @method reify
-       * @param {Object} options
-       * @return {cc.Scene}
-       */
-      reify(options) {
-        return new scenes.XSceneFactory([
-          SplashLayer
-        ]).reify(options);
-      }
-    };
-
-    return exports;
+  },
+  /**
+   * @method onplay
+   * @private
+   */
+  onplay() {
+    const ss= sh.protos[sh.ptypes.start],
+    mm= sh.protos[sh.ptypes.mmenu],
+    dir= cc.director;
+    dir.runScene( mm.reify({
+      onBack() { dir.runScene( ss.reify() ); }
+    }));
+  }
 });
 
+/** @alias module:p/splash */
+const xbox = /** @lends xbox# */{
+  /**
+   * @property {String} rtti
+   */
+  rtti : sh.ptypes.start,
+  /**
+   * @method reify
+   * @param {Object} options
+   * @return {cc.Scene}
+   */
+  reify(options) {
+    return new scenes.XSceneFactory([
+      SplashLayer
+    ]).reify(options);
+  }
+};
+
+sjs.merge(exports, xbox);
+/*@@
+return xbox;
+@@*/
 //////////////////////////////////////////////////////////////////////////////
 //EOF
 

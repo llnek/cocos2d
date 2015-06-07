@@ -9,30 +9,29 @@
 // this software.
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-/**
- * @requires zotohlab/asterix
- * @module zotohlab/p/l10n
+"use strict";/**
+ * @requires zotohlab/asx/asterix
+ * @module p/l10n
  */
-define("zotohlab/p/l10n", [ 'zotohlab/asterix'],
 
-  function (sh) { "use strict";
+import sh from 'zotohlab/asx/asterix';
 
-    /** @alias module:zotohlab/p/l10n */
-    let exports = {},
-    sjs= sh.skarojs,
-    xcfg = sh.xcfg,
-    undef;
+let sjs= sh.skarojs,
+xcfg = sh.xcfg,
+undef;
 
-    exports = sjs.merge(xcfg.l10nTable, {
+/** @alias module:p/l10n */
+const xbox = sjs.merge(xcfg.l10nTable, {
 
-      "en" : {
-      }
+  "en" : {
+  }
 
-    });
-
-    return exports;
 });
 
+sjs.merge(exports, xbox);
+/*@@
+return xbox;
+@@*/
 //////////////////////////////////////////////////////////////////////////////
 //EOF
 

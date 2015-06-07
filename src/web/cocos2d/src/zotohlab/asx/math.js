@@ -10,11 +10,11 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 "use strict";/**
- * @requires cherimoia/skarojs
+ * @requires cherimoia/skaro
  * @module zotohlab/asx/math
  */
 
-import sjs from 'cherimoia/skarojs';
+import sjs from 'cherimoia/skaro';
 
 //////////////////////////////////////////////////////////////////////////////
 let radToDeg = (rad) => 180 * rad / Math.PI;

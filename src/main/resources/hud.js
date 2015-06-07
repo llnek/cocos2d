@@ -9,91 +9,90 @@
 // this software.
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-/**
- * @requires zotohlab/asx/xscenes
- * @requires zotohlab/asterix
+"use strict";/**
+ * @requires zotohlab/asx/asterix
+ * @requires zotohlab/asx/scenes
  * @requires zotohlab/asx/ccsx
- * @module zotohlab/p/hud
+ * @module p/hud
  */
-define('zotohlab/p/hud', ['zotohlab/asx/xscenes',
-                         'zotohlab/asterix',
-                         'zotohlab/asx/ccsx'],
 
-  function(scenes, sh, ccsx ) { "use strict";
+import scenes from 'zotohlab/asx/scenes';
+import sh from 'zotohlab/asx/asterix';
+import ccsx from 'zotohlab/asx/ccsx';
 
-    /** @alias module:zotohlab/p/hud */
-    let exports = {},
-    sjs= sh.skarojs,
-    xcfg = sh.xcfg,
-    csts= xcfg.csts,
-    undef,
-    //////////////////////////////////////////////////////////////////////////
-    /**
-     * @extends module:zotohlab/asx/xscenes.XGameHUDLayer
-     * @class HUDLayer
-     */
-    HUDLayer = scenes.XGameHUDLayer.extend({
-      /**
-       * @method initAtlases
-       * @protected
-       */
-      initAtlases() {
-      },
-      /**
-       * @method hudAtlas
-       * @private
-       */
-      hudAtlas() {
-        return 'game-pics';
-      },
-      /**
-       * @method initLabels
-       * @protected
-       */
-      initLabels() {
-        let offset = csts.TILE - csts.S_OFF,
-        wz = ccsx.vrect();
+let sjs= sh.skarojs,
+xcfg = sh.xcfg,
+csts= xcfg.csts,
+undef,
+//////////////////////////////////////////////////////////////////////////
+/**
+ * @extends module:zotohlab/asx/scenes.XGameHUDLayer
+ * @class HUDLayer
+ */
+HUDLayer = scenes.XGameHUDLayer.extend({
+  /**
+   * @method initAtlases
+   * @protected
+   */
+  initAtlases() {
+  },
+  /**
+   * @method hudAtlas
+   * @private
+   */
+  hudAtlas() {
+    return 'game-pics';
+  },
+  /**
+   * @method initLabels
+   * @protected
+   */
+  initLabels() {
+    let offset = csts.TILE - csts.S_OFF,
+    wz = ccsx.vrect();
 
-        this.scoreLabel = ccsx.bmfLabel({
-          fontPath: sh.getFontPath('font.TinyBoxBB'),
-          text: '0',
-          anchor: ccsx.acs.BottomRight,
-          scale: 12/72
-        });
-
-        this.scoreLabel.setPosition(wz.width - offset,
-          wz.height - offset - ccsx.getScaledHeight(this.scoreLabel));
-
-        this.addChild(this.scoreLabel, this.lastZix, ++this.lastTag);
-      },
-      /**
-       * @method initIcons
-       * @protected
-       */
-      initIcons() {
-        const wz = ccsx.vrect();
-
-        this.lives = new layers.XHUDLives( this, csts.TILE + csts.S_OFF,
-          wz.height - csts.TILE - csts.S_OFF, {
-          frames: ['health.png'],
-          totalLives: 3
-        });
-
-        this.lives.create();
-      }
-
+    this.scoreLabel = ccsx.bmfLabel({
+      fontPath: sh.getFontPath('font.TinyBoxBB'),
+      text: '0',
+      anchor: ccsx.acs.BottomRight,
+      scale: 12/72
     });
 
-    exports = /** @lends exports# */ {
-      /**
-       * @property {HUDLayer} HUDLayer
-       */
-      HUDLayer : HUDLayer
-    };
+    this.scoreLabel.setPosition(wz.width - offset,
+      wz.height - offset - ccsx.getScaledHeight(this.scoreLabel));
 
-    return exports;
+    this.addChild(this.scoreLabel, this.lastZix, ++this.lastTag);
+  },
+  /**
+   * @method initIcons
+   * @protected
+   */
+  initIcons() {
+    const wz = ccsx.vrect();
+
+    this.lives = new layers.XHUDLives( this, csts.TILE + csts.S_OFF,
+      wz.height - csts.TILE - csts.S_OFF, {
+      frames: ['health.png'],
+      totalLives: 3
+    });
+
+    this.lives.create();
+  }
+
 });
 
+/** @alias module:p/hud */
+const xbox = /** @lends xbox# */ {
+  /**
+   * @property {HUDLayer} HUDLayer
+   */
+  HUDLayer : HUDLayer
+};
+
+sjs.merge(exports, xbox);
+/*@@
+return xbox;
+@@*/
 //////////////////////////////////////////////////////////////////////////////
 //EOF
 

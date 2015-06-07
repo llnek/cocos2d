@@ -9,45 +9,44 @@
 // this software.
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-/**
- * @requires zotohlab/p/elements
- * @requires zotohlab/asterix
+"use strict";/**
+ * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
- * @module zotohlab/p/elements
+ * @requires nodes/cobjs
+ * @module s/factory
  */
-define('zotohlab/p/s/factory', ['zotohlab/p/elements',
-                               'zotohlab/asterix',
-                               'zotohlab/asx/ccsx'],
 
-  function (cobjs, sh, ccsx) { "use strict";
+import sh from 'zotohlab/asx/asterix';
+import ccsx from 'zotohlab/asx/ccsx';
+import cobjs from 'nodes/cobjs';
 
-    /** @alias module:zotohlab/p/s/factory */
-    let exports = {},
-    sjs= sh.skarojs,
-    xcfg = sh.xcfg,
-    csts= xcfg.csts,
-    undef,
+let sjs= sh.skarojs,
+xcfg = sh.xcfg,
+csts= xcfg.csts,
+undef;
 
+/** @alias module:s/factory */
+const xbox = /** @lends xbox# */{
+  /**
+   * @property {EntityFactory} EntityFactory
+   * @class EntityFactory
+   */
+  EntityFactory : sh.Ashley.casDef({
     /**
-     * @class EntityFactory
+     * @memberof module:s/factory~EntityFactory
+     * @method constructor
+     * @param {Ash.Engine} engine
      */
-    EntityFactory = sh.Ashley.casDef({
+    constructor(engine) {
+      this.engine=engine;
+    }
+  });
+};
 
-      /**
-       * @memberof module:zotohlab/p/s/factory~EntityFactory
-       * @method constructor
-       * @param {Ash.Engine} engine
-       */
-      constructor: function(engine) {
-        this.engine=engine;
-      }
-
-    });
-
-    exports= EntityFactory;
-    return exports;
-});
-
+sjs.merge(exports, xbox);
+/*@@
+return xbox;
+@@*/
 //////////////////////////////////////////////////////////////////////////////
 //EOF
 

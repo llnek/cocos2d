@@ -9,190 +9,192 @@
 // this software.
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-/**
- * @requires zotohlab/p/elements
- * @requires zotohlab/p/sysobjs
- * @requires zotohlab/asterix
+"use strict";/**
+ * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
- * @requires zotohlab/asx/xscenes
- * @requires zotohlab/p/hud
- * @module zotohlab/p/arena
+ * @requires zotohlab/asx/scenes
+ * @requires nodes/cobjs
+ * @requires s/sysobjs
+ * @requires p/hud
+ * @module p/game
  */
-define('zotohlab/p/arena', ['zotohlab/p/elements',
-                           'zotohlab/p/sysobjs',
-                           'zotohlab/asterix',
-                           'zotohlab/asx/ccsx',
-                           'zotohlab/asx/xscenes',
-                           'zotohlab/p/hud'],
 
-  function (cobjs, sobjs, sh, ccsx,
-            scenes, huds) { "use strict";
+import scenes from 'zotohlab/asx/scenes';
+import sh from 'zotohlab/asx/asterix';
+import ccsx from 'zotohlab/asx/ccsx';
+import cobjs from 'nodes/cobjs';
+import sobjs from 's/sysobjs';
+import huds from 'p/hud';
 
-    /** @alias module:zotohlab/p/arena */
-    let exports = {},
-    sjs= sh.skarojs,
-    xcfg = sh.xcfg,
-    csts= xcfg.csts,
-    R = sjs.ramda,
-    undef,
-    //////////////////////////////////////////////////////////////////////////
-    /**
-     * @extends module:zotohlab/asx/xscenes.XLayer
-     * @class BackLayer
-     */
-    BackLayer = scenes.XLayer.extend({
-      /**
-       * @method rtti
-       */
-      rtti{} { return 'BackLayer';},
-      /**
-       * @method setup
-       * @protected
-       */
-      setup() {
-        this.centerImage(sh.getImagePath('game.bg'));
-      }
-    }),
-    //////////////////////////////////////////////////////////////////////////
-    /**
-     * @extends module:zotohlab/asx/xscenes.XGameLayer
-     * @class GameLayer
-     */
-    GameLayer = scenes.XGameLayer.extend({
+let sjs= sh.skarojs,
+xcfg = sh.xcfg,
+csts= xcfg.csts,
+R = sjs.ramda,
+undef;
 
-      /**
-       * @method operational
-       * @protected
-       */
-      operational() { return this.options.running; },
+//////////////////////////////////////////////////////////////////////////
+/**
+ * @extends module:zotohlab/asx/scenes.XLayer
+ * @class BackLayer
+ */
+BackLayer = scenes.XLayer.extend({
+  /**
+   * @method rtti
+   */
+  rtti{} { return 'BackLayer';},
+  /**
+   * @method setup
+   * @protected
+   */
+  setup() {
+    this.centerImage(sh.getImagePath('game.bg'));
+  }
+}),
+//////////////////////////////////////////////////////////////////////////
+/**
+ * @extends module:zotohlab/asx/scenes.XGameLayer
+ * @class GameLayer
+ */
+GameLayer = scenes.XGameLayer.extend({
 
-      /**
-       * @method reset
-       */
-      reset(newFlag) {
-        if (!sjs.isEmpty(this.atlases)) {
-          sjs.eachObj((v) => {
-            v.removeAllChildren();
-          }, this.atlases);
-        } else {
-          this.regoAtlas('game-pics');
-        }
-        this.getHUD().reset();
-      },
+  /**
+   * @method operational
+   * @protected
+   */
+  operational() { return this.options.running; },
 
-      /**
-       * @method replay
-       */
-      replay() {
-        this.play(false);
-      },
+  /**
+   * @method reset
+   */
+  reset(newFlag) {
+    if (!sjs.isEmpty(this.atlases)) {
+      sjs.eachObj( v => {
+        v.removeAllChildren();
+      }, this.atlases);
+    } else {
+      this.regoAtlas('game-pics');
+    }
+    if (newFlag) {
+      this.getHUD().resetAsNew();
+    } else {
+      this.getHUD().reset();
+    }
+  },
 
-      /**
-       * @method play
-       */
-      play(newFlag) {
+  /**
+   * @method replay
+   */
+  replay() {
+    this.play(false);
+  },
 
-        this.reset(newFlag);
-        this.cleanSlate();
+  /**
+   * @method play
+   */
+  play(newFlag) {
 
-        sh.factory=new sobjs.Factory(this.engine,
-                                     this.options);
-        this.options.running = true;
+    this.reset(newFlag);
+    this.cleanSlate();
 
-        R.forEach((z) => {
-          this.engine.addSystem(new (z)(this.options), z.Priority);
-        },
-        [ sobjs.Supervisor,
-          sobjs.Motions,
-          sobjs.Resolution]);
-      },
+    sh.factory=new sobjs.Factory(this.engine,
+                                 this.options);
+    this.options.running = true;
 
-      /**
-       * @method onPlayerKilled
-       * @private
-       */
-      onPlayerKilled(msg) {
-        if ( this.getHUD().reduceLives(1)) {
-          this.onDone();
-        } else {
-          this.spawnPlayer();
-        }
-      },
+    R.forEach((z) => {
+      this.engine.addSystem(new (z)(this.options), z.Priority);
+    },
+    [ sobjs.Supervisor,
+      sobjs.Motions,
+      sobjs.Resolution]);
+  },
 
-      /**
-       * @method spawnPlayer
-       * @private
-       */
-      spawnPlayer() {
-      },
+  /**
+   * @method onPlayerKilled
+   * @private
+   */
+  onPlayerKilled(msg) {
+    if ( this.getHUD().reduceLives(1)) {
+      this.onDone();
+    } else {
+      this.spawnPlayer();
+    }
+  },
 
-      /**
-       * @method onNewGame
-       * @private
-       */
-      onNewGame(mode) {
-        this.setGameMode(mode);
-        this.play(true);
-      },
+  /**
+   * @method spawnPlayer
+   * @private
+   */
+  spawnPlayer() {
+  },
 
-      /**
-       * @method onEarnScore
-       * @private
-       */
-      onEarnScore(msg) {
-        this.getHUD().updateScore( msg.score);
-      },
+  /**
+   * @method onNewGame
+   * @private
+   */
+  onNewGame(mode) {
+    this.setGameMode(mode);
+    this.play(true);
+  },
 
-      /**
-       * @method onDone
-       * @private
-       */
-      onDone() {
-        this.reset();
-        this.options.running=false;
-        this.getHUD().enableReplay();
-      }
+  /**
+   * @method onEarnScore
+   * @private
+   */
+  onEarnScore(msg) {
+    this.getHUD().updateScore( msg.score);
+  },
 
-    });
+  /**
+   * @method onDone
+   * @private
+   */
+  onDone() {
+    this.reset();
+    this.options.running=false;
+    this.getHUD().enableReplay();
+  }
 
-    exports = /** @lends exports# */{
-
-      /**
-       * @property {String} rtti
-       */
-      rtti: sh.ptypes.game,
-
-      /**
-       * @method reify
-       * @param {Object} options
-       * @return {cc.Scene}
-       */
-      reify(options) {
-        const scene = new scenes.XSceneFactory([
-          BackLayer,
-          GameLayer,
-          huds.HUDLayer ]).reify(options);
-
-        scene.onmsg('/game/players/earnscore', (topic, msg) => {
-          sh.main.onEarnScore(msg);
-        }).
-        onmsg('/hud/showmenu',(t,msg) => {
-          scenes.showMenu();
-        }).
-        onmsg('/hud/replay',(t,msg) => {
-          sh.main.replay();
-        }).
-        onmsg('/game/players/killed', (topic, msg) => {
-          sh.main.onPlayerKilled(msg);
-        });
-
-        return scene;
-      }
-    };
-
-    return exports;
 });
 
+/** @alias module:p/game */
+const xbox = /** @lends xbox# */{
+  /**
+   * @property {String} rtti
+   */
+  rtti: sh.ptypes.game,
+  /**
+   * @method reify
+   * @param {Object} options
+   * @return {cc.Scene}
+   */
+  reify(options) {
+    const scene = new scenes.XSceneFactory([
+      BackLayer,
+      GameLayer,
+      huds.HUDLayer ]).reify(options);
+
+    scene.onmsg('/game/players/earnscore', (topic, msg) => {
+      sh.main.onEarnScore(msg);
+    }).
+    onmsg('/hud/showmenu',(t,msg) => {
+      scenes.showMenu();
+    }).
+    onmsg('/hud/replay',(t,msg) => {
+      sh.main.replay();
+    }).
+    onmsg('/game/players/killed', (topic, msg) => {
+      sh.main.onPlayerKilled(msg);
+    });
+
+    return scene;
+  }
+};
+
+
+sjs.merge(exports, xbox);
+/*@@
+return xbox;
+@@*/
 //////////////////////////////////////////////////////////////////////////////
 //EOF
 

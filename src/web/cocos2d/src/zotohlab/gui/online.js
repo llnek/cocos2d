@@ -31,7 +31,7 @@ R = sjs.ramda,
 undef,
 //////////////////////////////////////////////////////////////////////////
 /**
- * @extends module:zotohlab/asx/xscenes.XLayer
+ * @extends module:zotohlab/asx/scenes.XLayer
  * @class UILayer
  */
 UILayer =  scenes.XLayer.extend({

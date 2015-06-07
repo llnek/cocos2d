@@ -9,38 +9,37 @@
 // this software.
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-/**
- * @requires zotohlab/p/s/factory
- * @requires zotohlab/p/s/utils
- * @requires zotohlab/p/s/supervisor
- * @requires zotohlab/p/s/motions
- * @requires zotohlab/p/s/resolution
- * @module zotohlab/p/sysobjs
+"use strict";/**
+ * @requires cherimoia/skaro
+ * @requires s/factory
+ * @requires s/utils
+ * @requires s/supervisor
+ * @requires s/motions
+ * @requires s/resolution
+ * @module s/sysobjs
  */
-define("zotohlab/p/sysobjs", ['zotohlab/p/s/factory',
-                             'zotohlab/p/s/utils',
-                             'zotohlab/p/s/supervisor',
-                             'zotohlab/p/s/motions',
-                             'zotohlab/p/s/resolution'],
 
-  function (EntityFactory, SystemUtils,
-            Supervisor, Motions,
-            Resolution) { "use strict";
+import fact from 's/factory';
+import u from 's/utils';
+import v from 's/supervisor';
+import m from 's/motions';
+import res from 's/resolution';
 
-    /** @alias module:zotohlab/p/sysobjs */
-    const exports = /** @lends exports# */{
+/** @alias module:s/sysobjs */
+const xbox = /** @lends xbox# */{
 
-      Factory       : EntityFactory,
-      SystemUtils         : SystemUtils,
-      Supervisor          : Supervisor,
-      Motions             : Motions,
-      Resolution     : Resolution
+  Factory       : fact.EntityFactory,
+  SystemUtils   : u.SystemUtils,
+  Supervisor    : v.GameSupervisor,
+  Motions       : m.Motions,
+  Resolution    : res.Resolution
 
-    };
+};
 
-    return exports;
-});
-
+sjs.merge(exports, xbox);
+/*@@
+return xbox;
+@@*/
 //////////////////////////////////////////////////////////////////////////////
 //EOF
 

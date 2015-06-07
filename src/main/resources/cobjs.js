@@ -9,30 +9,30 @@
 // this software.
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-/**
- * @requires zotohlab/asterix
+"use strict";/**
+ * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
- * @module zotohlab/p/elements
+ * @module nodes/cobjs
  */
-define("zotohlab/p/elements", ['zotohlab/asterix',
-                                'zotohlab/asx/ccsx'],
 
-  function (sh, ccsx) { "use strict";
+import sh from 'zotohlab/asx/asterix';
+import ccsx from 'zotohlab/asx/ccsx';
 
-    /** @alias module:zotohlab/p/elements */
-    let exports = {},
-    sjs= sh.skarojs,
-    xcfg = sh.xcfg,
-    csts= xcfg.csts,
-    undef;
+let sjs= sh.skarojs,
+xcfg = sh.xcfg,
+csts= xcfg.csts,
+undef;
 
-    //////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+/** @alias module:nodes/cobjs */
+const xbox = /** @lends xbox# */{
 
+};
 
-
-    return exports;
-});
-
+sjs.merge(exports, xbox);
+/*@@
+return xbox;
+@@*/
 //////////////////////////////////////////////////////////////////////////////
 //EOF
 

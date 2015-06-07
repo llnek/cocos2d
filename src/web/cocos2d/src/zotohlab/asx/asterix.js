@@ -10,14 +10,14 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 "use strict";/**
- * @requires cherimoia/skarojs
+ * @requires cherimoia/skaro
  * @requires mustache
  * @requires eligrey/l10njs
  * @requires ash-js
  * @module zotohlab/asx/asterix
  */
 
-import sjs from "cherimoia/skarojs";
+import sjs from "cherimoia/skaro";
 import Mustache from "mustache";
 import LZString from "eligrey/l10njs";
 import Ash from "ash-js";
@@ -274,7 +274,7 @@ let xbox = /** @lends xbox# */{
   Ashley: Ashley,
 
   /**
-   * @property {Object} skarojs back-ref to skarojs
+   * @property {Object} skarojs back-ref to skaro
    */
   skarojs: sjs,
 
@@ -781,7 +781,7 @@ if (!!cc) {
   sjs.loggr= cc;
   sjs.loggr.info = cc.log;
   sjs.loggr.debug = cc.log;
-  sjs.loggr.info('Monkey patched skarojs#loggr to cc.log');
+  sjs.loggr.info('Monkey patched skaro#loggr to cc.log');
 }
 
 sjs.merge(exports, xbox);

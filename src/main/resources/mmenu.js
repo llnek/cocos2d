@@ -9,84 +9,84 @@
 // this software.
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-/**
- * @requires zotohlab/asx/xscenes
- * @requires zotohlab/asterix
+"use strict";/**
+ * @requires zotohlab/asx/asterix
+ * @requires zotohlab/asx/scenes
  * @requires zotohlab/asx/ccsx
- * @module zotohlab/p/mmenu
+ * @module p/mmenu
  */
-define('zotohlab/p/mmenu', [ 'zotohlab/asx/xscenes',
-                           'zotohlab/asterix',
-                           'zotohlab/asx/ccsx'],
 
-  function (scenes, sh, ccsx ) { "use strict";
+import scenes from 'zotohlab/asx/scenes';
+import sh from 'zotohlab/asx/asterix';
+import ccsx from 'zotohlab/asx/ccsx';
 
-    /** @alias module:zotohlab/p/mmenu */
-    let exports = {},
-    sjs= sh.skarojs,
-    xcfg = sh.xcfg,
-    csts= xcfg.csts,
-    undef,
-    //////////////////////////////////////////////////////////////////////////////
-    /**
-     * @extends module:zotohlab/asx/xscenes.XMenuLayer
-     * @class MainMenuLayer
-     */
-    MainMenuLayer = scenes.XMenuLayer.extend({
-      /**
-       * @method setup
-       * @protected
-       */
-      setup() {
-        this.centerImage(sh.getImagePath('gui.mmenus.menu.bg'));
-        this.title();
-        this.btns();
-        const cw = ccsx.center(),
-        wz = ccsx.vrect();
-      },
-      /**
-       * @method title
-       * @private
-       */
-      title() {
-      },
-      /**
-       * @method btns
-       * @private
-       */
-      btns() {
-      },
-      /**
-       * @method onplay
-       * @private
-       */
-      onplay(msg) {
-        cc.director.runScene( sh.protos[sh.ptypes.game].reify(msg));
-      }
 
-    });
+let sjs= sh.skarojs,
+xcfg = sh.xcfg,
+csts= xcfg.csts,
+undef,
+//////////////////////////////////////////////////////////////////////////////
+/**
+ * @extends module:zotohlab/asx/scenes.XMenuLayer
+ * @class MainMenuLayer
+ */
+MainMenuLayer = scenes.XMenuLayer.extend({
+  /**
+   * @method setup
+   * @protected
+   */
+  setup() {
+    this.centerImage(sh.getImagePath('gui.mmenus.menu.bg'));
+    this.title();
+    this.btns();
+    const cw = ccsx.center(),
+    wz = ccsx.vrect();
+  },
+  /**
+   * @method title
+   * @private
+   */
+  title() {
+  },
+  /**
+   * @method btns
+   * @private
+   */
+  btns() {
+  },
+  /**
+   * @method onplay
+   * @private
+   */
+  onplay(msg) {
+    cc.director.runScene( sh.protos[sh.ptypes.game].reify(msg));
+  }
 
-    exports = /** @lends exports# */{
-      /**
-       * @property {String} rtti
-       */
-      rtti: sh.ptypes.mmenu,
-      /**
-       * @method reify
-       * @param {Object} options
-       * @return {cc.Scene}
-       */
-      reify(options) {
-        return new scenes.XSceneFactory([
-          MainMenuLayer
-        ]).reify(options);
-      }
-
-    };
-
-    return exports;
 });
 
+/** @alias module:p/mmenu */
+const xbox = /** @lends xbox# */{
+  /**
+   * @property {String} rtti
+   */
+  rtti: sh.ptypes.mmenu,
+  /**
+   * @method reify
+   * @param {Object} options
+   * @return {cc.Scene}
+   */
+  reify(options) {
+    return new scenes.XSceneFactory([
+      MainMenuLayer
+    ]).reify(options);
+  }
+
+};
+
+sjs.merge(exports, xbox);
+/*@@
+return xbox;
+@@*/
 //////////////////////////////////////////////////////////////////////////////
 //EOF
 
