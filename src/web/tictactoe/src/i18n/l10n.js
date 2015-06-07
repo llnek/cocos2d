@@ -9,39 +9,39 @@
 // this software.
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-/**
- * @requires zotohlab/asterix
- * @module zotohlab/p/l10n
+"use strict";/**
+ * @requires zotohlab/asx/asterix
+ * @module i18n/l10n
  */
-define("zotohlab/p/l10n",
 
-       ['zotohlab/asterix'],
+import sh from 'zotohlab/asx/asterix';
 
-  function (sh) { "use strict";
 
-    /** @alias module:zotohlab/p/l10n */
-    let exports = {},
-    sjs= sh.skarojs,
-    xcfg = sh.xcfg,
-    undef;
+//////////////////////////////////////////////////////////////////////////////
+let sjs= sh.skarojs,
+xcfg = sh.xcfg,
+undef;
 
-    exports = sjs.merge(xcfg.l10nTable, {
+/** @alias module:i18n/l10n */
+const xbox = sjs.merge(xcfg.l10nTable, {
 
-      "en" : {
+  "en" : {
 
-        "%whosturn" : "{{who}}'s TURN...",
-        "%whodraw" : "No one wins!",
-        "%whowin" : "{{who}} Wins!",
+    "%whosturn" : "{{who}}'s TURN...",
+    "%whodraw" : "No one wins!",
+    "%whowin" : "{{who}} Wins!",
 
-        "%p2" : "P2",
-        "%p1" : "P1"
+    "%p2" : "P2",
+    "%p1" : "P1"
 
-      }
+  }
 
-    });
-
-    return exports;
 });
+
+sjs.merge(exports, xbox);
+/*@@
+return xbox;
+@@*/
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

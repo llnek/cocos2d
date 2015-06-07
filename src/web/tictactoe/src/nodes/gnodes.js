@@ -9,101 +9,102 @@
 // this software.
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-/**
- * @requires zotohlab/p/elements
- * @requires zotohlab/asterix
- * @module zotohlab/p/gnodes
+"use strict";/**
+ * @requires zotohlab/asx/asterix
+ * @requires nodes/cobjs
+ * @module nodes/gnodes
  */
-define("zotohlab/p/gnodes",
 
-       ['zotohlab/p/elements',
-        'zotohlab/asterix'],
+import sh from 'zotohlab/asx/asterix';
+import cobjs from 'nodes/cobjs';
 
-  function (cobjs, sh) { "use strict";
-
-    /** @alias module:zotohlab/p/gnodes */
-    let exports= {},
-    undef,
-    //////////////////////////////////////////////////////////////////////////////
-    /**
-     * @class BoardNode
-     */
-    BoardNode = sh.Ashley.nodeDef({
-      /**
-       * @memberof module:zotohlab/p/gnodes~BoardNode
-       * @property {UISelection} selection
-       */
-      selection: cobjs.UISelection,
-      /**
-       * @memberof module:zotohlab/p/gnodes~BoardNode
-       * @property {Board} board
-       */
-      board: cobjs.Board,
-      /**
-       * @memberof module:zotohlab/p/gnodes~BoardNode
-       * @property {SmartAlgo} robot
-       */
-      robot: cobjs.SmartAlgo,
-      /**
-       * @memberof module:zotohlab/p/gnodes~BoardNode
-       * @property {Grid} grid
-       */
-      grid: cobjs.Grid,
-      /**
-       * @memberof module:zotohlab/p/gnodes~BoardNode
-       * @property {GridView} view
-       */
-      view: cobjs.GridView
-    });
-    /**
-     * @property {BoardNode} BoardNode
-     */
-    exports.BoardNode = BoardNode;
-
-    //////////////////////////////////////////////////////////////////////////////
-    /**
-     * @class GUINode
-     */
-    const GUINode = sh.Ashley.nodeDef({
-      /**
-       * @memberof module:zotohlab/p/gnodes~GUINode
-       * @property {UISelection} selection
-       */
-      selection: cobjs.UISelection,
-      /**
-       * @memberof module:zotohlab/p/gnodes~GUINode
-       * @property {GridView} view
-       */
-      view: cobjs.GridView
-    });
-    /**
-     * @property {GUINode} GUINode
-     */
-    exports.GUINode = GUINode;
-
-    //////////////////////////////////////////////////////////////////////////////
-    /**
-     * @class NetPlayNode
-     */
-    const NetPlayNode = sh.Ashley.nodeDef({
-      /**
-       * @memberof module:zotohlab/p/gnodes~NetPlayNode
-       * @property {NetPlay} playcmd
-       */
-      playcmd: cobjs.NetPlay,
-      /**
-       * @memberof module:zotohlab/p/gnodes~Grid
-       * @property {Grid} grid
-       */
-      grid: cobjs.Grid
-    });
-    /**
-     * @property {NetPlayNode} NetPlayNode
-     */
-    exports.NetPlayNode = NetPlayNode;
-
-    return exports;
+//////////////////////////////////////////////////////////////////////////////
+/** @alias module:nodes/gnodes */
+let xbox= {},
+undef,
+//////////////////////////////////////////////////////////////////////////////
+/**
+ * @class BoardNode
+ */
+BoardNode = sh.Ashley.nodeDef({
+  /**
+   * @memberof module:nodes/gnodes~BoardNode
+   * @property {UISelection} selection
+   */
+  selection: cobjs.UISelection,
+  /**
+   * @memberof module:nodes/gnodes~BoardNode
+   * @property {Board} board
+   */
+  board: cobjs.Board,
+  /**
+   * @memberof module:nodes/gnodes~BoardNode
+   * @property {SmartAlgo} robot
+   */
+  robot: cobjs.SmartAlgo,
+  /**
+   * @memberof module:nodes/gnodes~BoardNode
+   * @property {Grid} grid
+   */
+  grid: cobjs.Grid,
+  /**
+   * @memberof module:nodes/gnodes~BoardNode
+   * @property {GridView} view
+   */
+  view: cobjs.GridView
 });
+/**
+ * @property {BoardNode} BoardNode
+ */
+xbox.BoardNode = BoardNode;
+
+//////////////////////////////////////////////////////////////////////////////
+/**
+ * @class GUINode
+ */
+const GUINode = sh.Ashley.nodeDef({
+  /**
+   * @memberof module:nodes/gnodes~GUINode
+   * @property {UISelection} selection
+   */
+  selection: cobjs.UISelection,
+  /**
+   * @memberof module:nodes/gnodes~GUINode
+   * @property {GridView} view
+   */
+  view: cobjs.GridView
+});
+/**
+ * @property {GUINode} GUINode
+ */
+xbox.GUINode = GUINode;
+
+//////////////////////////////////////////////////////////////////////////////
+/**
+ * @class NetPlayNode
+ */
+const NetPlayNode = sh.Ashley.nodeDef({
+  /**
+   * @memberof module:nodes/gnodes~NetPlayNode
+   * @property {NetPlay} playcmd
+   */
+  playcmd: cobjs.NetPlay,
+  /**
+   * @memberof module:nodes/gnodes~Grid
+   * @property {Grid} grid
+   */
+  grid: cobjs.Grid
+});
+/**
+ * @property {NetPlayNode} NetPlayNode
+ */
+xbox.NetPlayNode = NetPlayNode;
+
+
+sjs.merge(exports, xbox);
+/*@@
+return xbox;
+@@*/
 
 //////////////////////////////////////////////////////////////////////////////
 //EOF

@@ -29,47 +29,47 @@ document.ccConfig = {
 
     "/public/vendors/cherimoia/skaro.js",
     "/public/vendors/cherimoia/caesar.js",
-    "/public/vendors/cherimoia/bus.js",
-    "/public/vendors/cherimoia/zlab.js",
-    "/public/ig/lib/zotohlab/ext/asterix.js",
-    "/public/ig/lib/zotohlab/ext/cfg.js",
-    "/public/ig/lib/zotohlab/ext/cs2dx.js",
-    "/public/ig/lib/zotohlab/ext/odin.js",
+    "/public/vendors/cherimoia/ebus.js",
 
-    "/public/ig/lib/zotohlab/ext/scenes.js",
-    "/public/ig/lib/zotohlab/ext/pool.js",
-    "/public/ig/lib/zotohlab/ext/loader.js",
+    "/public/ig/lib/zotohlab/asx/asterix.js",
+    "/public/ig/lib/zotohlab/asx/cfg.js",
+    "/public/ig/lib/zotohlab/asx/ccsx.js",
+    "/public/ig/lib/zotohlab/asx/odin.js",
 
-    '/public/ig/lib/zotohlab/ext/negamax.js',
+    "/public/ig/lib/zotohlab/asx/scenes.js",
+    "/public/ig/lib/zotohlab/asx/pool.js",
+    "/public/ig/lib/zotohlab/asx/loader.js",
+
+    '/public/ig/lib/zotohlab/asx/negamax.js',
 
     "/public/ig/lib/zotohlab/gui/msgbox.js",
     "/public/ig/lib/zotohlab/gui/ynbox.js",
     "/public/ig/lib/zotohlab/gui/online.js",
 
-    '/public/ig/lib/game/tictactoe/config.js',
-    '/public/ig/lib/game/tictactoe/i18n/game_en_US.js',
+    '/public/ig/lib/game/tictactoe/p/config.js',
+    '/public/ig/lib/game/tictactoe/i18n/l10n.js',
 
-    '/public/ig/lib/game/tictactoe/elements/board.js',
-    '/public/ig/lib/game/tictactoe/elements/cobjs.js',
-
+    '/public/ig/lib/game/tictactoe/nodes/board.js',
+    '/public/ig/lib/game/tictactoe/nodes/cobjs.js',
     '/public/ig/lib/game/tictactoe/nodes/gnodes.js',
 
-    '/public/ig/lib/game/tictactoe/systems/factory.js',
-    '/public/ig/lib/game/tictactoe/systems/utils.js',
-    '/public/ig/lib/game/tictactoe/systems/rendering.js',
-    '/public/ig/lib/game/tictactoe/systems/resolution.js',
-    '/public/ig/lib/game/tictactoe/systems/supervisor.js',
-    '/public/ig/lib/game/tictactoe/systems/turnbase.js',
-    '/public/ig/lib/game/tictactoe/systems/motion.js',
-    '/public/ig/lib/game/tictactoe/systems/sysobjs.js',
+    '/public/ig/lib/game/tictactoe/s/factory.js',
+    '/public/ig/lib/game/tictactoe/s/utils.js',
+    '/public/ig/lib/game/tictactoe/s/rendering.js',
+    '/public/ig/lib/game/tictactoe/s/resolution.js',
+    '/public/ig/lib/game/tictactoe/s/supervisor.js',
+    '/public/ig/lib/game/tictactoe/s/turnbase.js',
+    '/public/ig/lib/game/tictactoe/s/motion.js',
+    '/public/ig/lib/game/tictactoe/s/sysobjs.js',
 
-    '/public/ig/lib/game/tictactoe/splash.js',
-    '/public/ig/lib/game/tictactoe/mmenu.js',
-    '/public/ig/lib/game/tictactoe/hud.js',
-    '/public/ig/lib/game/tictactoe/game.js',
+    '/public/ig/lib/game/tictactoe/p/splash.js',
+    '/public/ig/lib/game/tictactoe/p/mmenu.js',
+    '/public/ig/lib/game/tictactoe/p/hud.js',
+    '/public/ig/lib/game/tictactoe/p/game.js',
+    '/public/ig/lib/game/tictactoe/p/protos.js',
 
-    '/public/ig/lib/game/tictactoe/protos.js',
-    '/public/ig/lib/zotohlab/ext/boot.js'
+
+    '/public/ig/lib/zotohlab/asx/boot.js'
   ]
 
 };

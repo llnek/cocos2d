@@ -1,31 +1,31 @@
 {
   "jsList": [
 
-    "src/zotohlab/ext/negamax.js",
+    "src/zotohlab/asx/negamax.js",
 
-    "src/tictactoe/config.js",
-    "src/tictactoe/i18n/game_en_US.js",
+    "src/tictactoe/p/config.js",
+    "src/tictactoe/i18n/l10n.js",
 
-    "src/tictactoe/elements/board.js",
-    "src/tictactoe/elements/cobjs.js",
-
+    "src/tictactoe/nodes/board.js",
+    "src/tictactoe/nodes/cobjs.js",
     "src/tictactoe/nodes/gnodes.js",
 
-    "src/tictactoe/systems/factory.js",
-    "src/tictactoe/systems/utils.js",
-    "src/tictactoe/systems/rendering.js",
-    "src/tictactoe/systems/resolution.js",
-    "src/tictactoe/systems/supervisor.js",
-    "src/tictactoe/systems/turnbase.js",
-    "src/tictactoe/systems/motion.js",
-    "src/tictactoe/systems/sysobjs.js",
+    "src/tictactoe/s/factory.js",
+    "src/tictactoe/s/utils.js",
+    "src/tictactoe/s/rendering.js",
+    "src/tictactoe/s/resolution.js",
+    "src/tictactoe/s/supervisor.js",
+    "src/tictactoe/s/turnbase.js",
+    "src/tictactoe/s/motion.js",
+    "src/tictactoe/s/sysobjs.js",
 
-    "src/tictactoe/splash.js",
-    "src/tictactoe/mmenu.js",
-    "src/tictactoe/hud.js",
-    "src/tictactoe/game.js",
+    "src/tictactoe/p/splash.js",
+    "src/tictactoe/p/mmenu.js",
+    "src/tictactoe/p/hud.js",
+    "src/tictactoe/p/game.js",
+    "src/tictactoe/p/protos.js",
 
-    "src/tictactoe/protos.js",
-    "src/zotohlab/ext/boot.js"
+
+    "src/zotohlab/asx/boot.js"
   ]
 }
