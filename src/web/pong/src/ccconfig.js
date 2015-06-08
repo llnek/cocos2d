@@ -25,46 +25,46 @@ document.ccConfig = {
 
     "/public/vendors/cherimoia/skaro.js",
     "/public/vendors/cherimoia/caesar.js",
-    "/public/vendors/cherimoia/bus.js",
-    "/public/vendors/cherimoia/zlab.js",
+    "/public/vendors/cherimoia/ebus.js",
 
-    "/public/ig/lib/zotohlab/ext/asterix.js",
-    "/public/ig/lib/zotohlab/ext/cfg.js",
-    "/public/ig/lib/zotohlab/ext/cs2dx.js",
-    "/public/ig/lib/zotohlab/ext/odin.js",
+    "/public/ig/lib/zotohlab/asx/asterix.js",
+    "/public/ig/lib/zotohlab/asx/cfg.js",
+    "/public/ig/lib/zotohlab/asx/ccsx.js",
+    "/public/ig/lib/zotohlab/asx/odin.js",
 
-    "/public/ig/lib/zotohlab/ext/scenes.js",
-    "/public/ig/lib/zotohlab/ext/pool.js",
-    "/public/ig/lib/zotohlab/ext/loader.js",
+    "/public/ig/lib/zotohlab/asx/scenes.js",
+    "/public/ig/lib/zotohlab/asx/pool.js",
+    "/public/ig/lib/zotohlab/asx/loader.js",
 
     "/public/ig/lib/zotohlab/gui/msgbox.js",
     "/public/ig/lib/zotohlab/gui/ynbox.js",
     "/public/ig/lib/zotohlab/gui/online.js",
 
-      '/public/ig/lib/game/pong/config.js',
-      '/public/ig/lib/game/pong/i18n/game_en_US.js',
+      '/public/ig/lib/game/pong/p/config.js',
+      '/public/ig/lib/game/pong/i18n/l10n.js',
 
-      '/public/ig/lib/game/pong/elements/cobjs.js',
+      '/public/ig/lib/game/pong/nodes/cobjs.js',
       '/public/ig/lib/game/pong/nodes/gnodes.js',
 
-      '/public/ig/lib/game/pong/systems/factory.js',
-      '/public/ig/lib/game/pong/systems/motion.js',
-      '/public/ig/lib/game/pong/systems/supervisor.js',
-      '/public/ig/lib/game/pong/systems/movement.js',
-      '/public/ig/lib/game/pong/systems/networking.js',
-      '/public/ig/lib/game/pong/systems/collision.js',
-      '/public/ig/lib/game/pong/systems/resolution.js',
-      '/public/ig/lib/game/pong/systems/rendering.js',
+      '/public/ig/lib/game/pong/s/factory.js',
+      '/public/ig/lib/game/pong/s/motion.js',
+      '/public/ig/lib/game/pong/s/supervisor.js',
+      '/public/ig/lib/game/pong/s/movement.js',
+      '/public/ig/lib/game/pong/s/networking.js',
+      '/public/ig/lib/game/pong/s/collision.js',
+      '/public/ig/lib/game/pong/s/resolution.js',
+      '/public/ig/lib/game/pong/s/rendering.js',
 
-      '/public/ig/lib/game/pong/systems/sysobjs.js',
+      '/public/ig/lib/game/pong/s/sysobjs.js',
 
-      '/public/ig/lib/game/pong/hud.js',
-      '/public/ig/lib/game/pong/game.js',
-      '/public/ig/lib/game/pong/mmenu.js',
-      '/public/ig/lib/game/pong/splash.js',
+      '/public/ig/lib/game/pong/p/hud.js',
+      '/public/ig/lib/game/pong/p/game.js',
+      '/public/ig/lib/game/pong/p/mmenu.js',
+      '/public/ig/lib/game/pong/p/splash.js',
+      '/public/ig/lib/game/pong/p/protos.js',
 
-      '/public/ig/lib/game/pong/protos.js',
-      '/public/ig/lib/zotohlab/ext/boot.js'
+
+      '/public/ig/lib/zotohlab/p/boot.js'
   ]
 
 };

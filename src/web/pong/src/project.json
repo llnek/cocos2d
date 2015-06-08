@@ -1,29 +1,28 @@
  {
 
     "jsList"        : [
-     "src/pong/config.js",
-      "src/pong/i18n/game_en_US.js",
+     "src/pong/p/config.js",
+      "src/pong/i18n/l10n.js",
 
-      "src/pong/elements/cobjs.js",
+      "src/pong/nodes/cobjs.js",
       "src/pong/nodes/gnodes.js",
 
-      "src/pong/systems/factory.js",
-      "src/pong/systems/motion.js",
-      "src/pong/systems/supervisor.js",
-      "src/pong/systems/movement.js",
-      "src/pong/systems/networking.js",
-      "src/pong/systems/collision.js",
-      "src/pong/systems/resolution.js",
-      "src/pong/systems/rendering.js",
-      "src/pong/systems/sysobjs.js",
+      "src/pong/s/factory.js",
+      "src/pong/s/motion.js",
+      "src/pong/s/supervisor.js",
+      "src/pong/s/movement.js",
+      "src/pong/s/networking.js",
+      "src/pong/s/collision.js",
+      "src/pong/s/resolution.js",
+      "src/pong/s/rendering.js",
+      "src/pong/s/sysobjs.js",
 
-      "src/pong/hud.js",
-      "src/pong/game.js",
-      "src/pong/mmenu.js",
-      "src/pong/splash.js",
-      "src/pong/protos.js",
-      "src/zotohlab/ext/boot.js"
+      "src/pong/p/hud.js",
+      "src/pong/p/game.js",
+      "src/pong/p/mmenu.js",
+      "src/pong/p/splash.js",
+      "src/pong/p/protos.js",
 
-
+      "src/zotohlab/p/boot.js"
     ]
 }
