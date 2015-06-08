@@ -2,32 +2,32 @@
 
     "jsList"        : [
 
-    "src/invaders/config.js",
-    "src/invaders/i18n/game_en_US.js",
+    "src/invaders/p/config.js",
+    "src/invaders/i18n/l10n.js",
 
-    "src/invaders/elements/cobjs.js",
+    "src/invaders/nodes/cobjs.js",
     "src/invaders/nodes/gnodes.js",
 
-    "src/invaders/systems/factory.js",
-    "src/invaders/systems/utils.js",
-    "src/invaders/systems/motion.js",
-    "src/invaders/systems/cannon.js",
-    "src/invaders/systems/move-aliens.js",
-    "src/invaders/systems/move-bombs.js",
-    "src/invaders/systems/move-missiles.js",
-    "src/invaders/systems/move-ship.js",
-    "src/invaders/systems/collision.js",
-    "src/invaders/systems/supervisor.js",
-    "src/invaders/systems/resolution.js",
-    "src/invaders/systems/sysobjs.js",
+    "src/invaders/s/factory.js",
+    "src/invaders/s/utils.js",
+    "src/invaders/s/motion.js",
+    "src/invaders/s/cannon.js",
+    "src/invaders/s/move-aliens.js",
+    "src/invaders/s/move-bombs.js",
+    "src/invaders/s/move-missiles.js",
+    "src/invaders/s/move-ship.js",
+    "src/invaders/s/collision.js",
+    "src/invaders/s/supervisor.js",
+    "src/invaders/s/resolution.js",
+    "src/invaders/s/sysobjs.js",
 
-      "src/invaders/hud.js",
-      "src/invaders/game.js",
-      "src/invaders/mmenu.js",
-      "src/invaders/splash.js",
+      "src/invaders/p/hud.js",
+      "src/invaders/p/game.js",
+      "src/invaders/p/mmenu.js",
+      "src/invaders/p/splash.js",
+      "src/invaders/p/protos.js",
 
-      "src/invaders/protos.js",
-      "src/zotohlab/ext/boot.js"
 
+      "src/zotohlab/p/boot.js"
     ]
 }
