@@ -26,43 +26,43 @@ document.ccConfig = {
 
     "/public/vendors/cherimoia/skaro.js",
     "/public/vendors/cherimoia/caesar.js",
-    "/public/vendors/cherimoia/bus.js",
-    "/public/vendors/cherimoia/zlab.js",
+    "/public/vendors/cherimoia/ebus.js",
 
-    "/public/ig/lib/zotohlab/ext/asterix.js",
-    "/public/ig/lib/zotohlab/ext/cfg.js",
-    "/public/ig/lib/zotohlab/ext/cs2dx.js",
-    "/public/ig/lib/zotohlab/ext/odin.js",
+    "/public/ig/lib/zotohlab/asx/asterix.js",
+    "/public/ig/lib/zotohlab/asx/cfg.js",
+    "/public/ig/lib/zotohlab/asx/ccsx.js",
+    "/public/ig/lib/zotohlab/asx/odin.js",
 
-    "/public/ig/lib/zotohlab/ext/scenes.js",
-    "/public/ig/lib/zotohlab/ext/pool.js",
-    "/public/ig/lib/zotohlab/ext/loader.js",
+    "/public/ig/lib/zotohlab/asx/scenes.js",
+    "/public/ig/lib/zotohlab/asx/pool.js",
+    "/public/ig/lib/zotohlab/asx/loader.js",
 
     "/public/ig/lib/zotohlab/gui/msgbox.js",
     "/public/ig/lib/zotohlab/gui/ynbox.js",
     "/public/ig/lib/zotohlab/gui/online.js",
 
-  '/public/ig/lib/game/breakout/config.js',
-  '/public/ig/lib/game/breakout/i18n/game_en_US.js',
+  '/public/ig/lib/game/breakout/p/config.js',
+  '/public/ig/lib/game/breakout/i18n/l10n.js',
 
-'/public/ig/lib/game/breakout/elements/cobjs.js',
+'/public/ig/lib/game/breakout/nodes/cobjs.js',
 '/public/ig/lib/game/breakout/nodes/gnodes.js',
 
-'/public/ig/lib/game/breakout/systems/factory.js',
-'/public/ig/lib/game/breakout/systems/motion.js',
-'/public/ig/lib/game/breakout/systems/move-paddle.js',
-'/public/ig/lib/game/breakout/systems/move-ball.js',
-'/public/ig/lib/game/breakout/systems/collision.js',
-'/public/ig/lib/game/breakout/systems/supervisor.js',
-'/public/ig/lib/game/breakout/systems/sysobjs.js',
+'/public/ig/lib/game/breakout/s/factory.js',
+'/public/ig/lib/game/breakout/s/motion.js',
+'/public/ig/lib/game/breakout/s/move-paddle.js',
+'/public/ig/lib/game/breakout/s/move-ball.js',
+'/public/ig/lib/game/breakout/s/collision.js',
+'/public/ig/lib/game/breakout/s/supervisor.js',
+'/public/ig/lib/game/breakout/s/sysobjs.js',
 
-  '/public/ig/lib/game/breakout/hud.js',
-  '/public/ig/lib/game/breakout/game.js',
-  '/public/ig/lib/game/breakout/mmenu.js',
-  '/public/ig/lib/game/breakout/splash.js',
+  '/public/ig/lib/game/breakout/p/hud.js',
+  '/public/ig/lib/game/breakout/p/game.js',
+  '/public/ig/lib/game/breakout/p/mmenu.js',
+  '/public/ig/lib/game/breakout/p/splash.js',
+'/public/ig/lib/game/breakout/p/protos.js',
 
-'/public/ig/lib/game/breakout/protos.js',
-'/public/ig/lib/zotohlab/ext/boot.js'
+
+'/public/ig/lib/zotohlab/p/boot.js'
 
   ]
 

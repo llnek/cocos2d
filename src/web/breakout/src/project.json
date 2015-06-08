@@ -3,27 +3,27 @@
     "jsList"        : [
 
 
-  "src/breakout/config.js",
-  "src/breakout/i18n/game_en_US.js",
+  "src/breakout/p/config.js",
+  "src/breakout/i18n/l10n.js",
 
-"src/breakout/elements/cobjs.js",
+"src/breakout/nodes/cobjs.js",
 "src/breakout/nodes/gnodes.js",
 
-"src/breakout/systems/factory.js",
-"src/breakout/systems/motion.js",
-"src/breakout/systems/move-paddle.js",
-"src/breakout/systems/move-ball.js",
-"src/breakout/systems/collision.js",
-"src/breakout/systems/supervisor.js",
-"src/breakout/systems/sysobjs.js",
+"src/breakout/s/factory.js",
+"src/breakout/s/motion.js",
+"src/breakout/s/move-paddle.js",
+"src/breakout/s/move-ball.js",
+"src/breakout/s/collision.js",
+"src/breakout/s/supervisor.js",
+"src/breakout/s/sysobjs.js",
 
-  "src/breakout/hud.js",
-  "src/breakout/game.js",
-  "src/breakout/mmenu.js",
-  "src/breakout/splash.js",
+  "src/breakout/p/hud.js",
+  "src/breakout/p/game.js",
+  "src/breakout/p/mmenu.js",
+  "src/breakout/p/splash.js",
+"src/breakout/p/protos.js",
 
-"src/breakout/protos.js",
-"src/zotohlab/ext/boot.js"
 
+"src/zotohlab/p/boot.js"
     ]
 }
