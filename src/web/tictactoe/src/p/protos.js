@@ -11,18 +11,18 @@
 
 "use strict";/**
  * @requires zotohlab/asx/asterix
- * @requires zotohlab/asx/online
- * @requires zotohlab/asx/msgbox
- * @requires zotohlab/asx/ynbox
+ * @requires zotohlab/gui/online
+ * @requires zotohlab/gui/msgbox
+ * @requires zotohlab/gui/ynbox
  * @requires p/splash
  * @requires p/mmenu
  * @requires p/game
  * @module p/protos
  */
 
-import online from 'zotohlab/asx/online';
-import msgbox from 'zotohlab/asx/msgbox';
-import ynbox from 'zotohlab/asx/ynbox';
+import online from 'zotohlab/gui/online';
+import msgbox from 'zotohlab/gui/msgbox';
+import ynbox from 'zotohlab/gui/ynbox';
 import sh from 'zotohlab/asx/asterix';
 import splash from 'p/splash';
 import mmenu from 'p/mmenu';

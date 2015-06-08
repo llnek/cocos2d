@@ -16,5 +16,8 @@
 <script src="/public/vendors/codrops/btmenu.js"></script>
 -->
 <script src="/public/c/webcommon.js"></script>
-<script src="/public/scripts/site.js"></script>
+<script src="/public/scripts/cocos2d/site.js"></script>
+<script>
+supplicate('cocos2d/site');
+</script>
 

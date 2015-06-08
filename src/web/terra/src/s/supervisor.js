@@ -23,8 +23,8 @@ import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
 import xpool from 'zotohlab/asx/pool';
 import cobjs from 'nodes/cobjs';
-import cobjs from 's/utils';
-import cobjs from 'nodes/gnodes';
+import utils from 's/utils';
+import gnodes from 'nodes/gnodes';
 
 let sjs=sh.skarojs,
 xcfg = sh.xcfg,

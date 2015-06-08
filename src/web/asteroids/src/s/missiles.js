@@ -24,7 +24,7 @@ import gnodes from 'nodes/gnodes';
 
 
 let xcfg = sh.xcfg,
-sjs.sh.skarojs,
+sjs=sh.skarojs,
 csts= xcfg.csts,
 undef,
 

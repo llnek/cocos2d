@@ -32,8 +32,8 @@ property( name: 'ivySettingsDir', value: "${basedir}")
 property( name: 'gantProjectName' , value: 'cocos2d')
 property( name: "PID", value: "${gantProjectName}")
 loadproperties (srcFile: "${basedir}/build.xs") {}
-property( name: 'websrc', value: "${buildDir}/webscripts")
-property( name: 'webcss', value: "${buildDir}/webstyles")
+property( name: 'websrc', value: "${buildDir}/${wjs}")
+property( name: 'webcss', value: "${buildDir}/${wcs}")
 property( name: 'docs', value: "${buildDir}/docs")
 property( environment: "env" )
 
@@ -186,7 +186,7 @@ def doCompileJava() {
          sourcepath: '',
          srcdir: "${srcDir}/java",
          destdir: "${outJarDir}",
-         includeantruntime: 'false',
+         includeantruntime: false,
          excludes: '',
          target: '1.8',
          debug: "${buildDebug}",
@@ -202,11 +202,11 @@ def doCompileJava() {
 def doCompileClj() {
   ant.java (
         classname: 'clojure.lang.Compile',
-        fork: 'true',
-        failonerror: 'true',
+        fork: true,
+        failonerror: true,
         maxmemory: '2048m',
         classpathref: 'compile.path.id') {
-    sysproperty (key: 'clojure.compile.warn-on-reflection', value: 'true')
+    sysproperty (key: 'clojure.compile.warn-on-reflection', value: true)
     sysproperty (key: 'clojure.compile.path', value: "${buildDir}")
     arg (value: 'czlabclj.odin.event.core')
     arg (value: 'czlabclj.odin.event.disp')
@@ -240,10 +240,10 @@ def doCompileClj() {
 //////////////////////////////////////////////////////////////////////////////
 //
 def doClean() {
-  ant.delete (includeemptydirs: 'true') {
-    fileset (erroronmissingdir: 'false', dir: "${outJarDir}",  includes: '**/*')
-    fileset (erroronmissingdir: 'false', dir: "${buildDir}", includes: '**/*')
-    fileset (erroronmissingdir: 'false', dir: "${libDir}", includes: '**/*.jar')
+  ant.delete (includeemptydirs: true) {
+    fileset (erroronmissingdir: false, dir: "${outJarDir}",  includes: '**/*')
+    fileset (erroronmissingdir: false, dir: "${buildDir}", includes: '**/*')
+    fileset (erroronmissingdir: false, dir: "${libDir}", includes: '**/*.jar')
   }
   doCleanPublic()
 }
@@ -251,11 +251,11 @@ def doClean() {
 //////////////////////////////////////////////////////////////////////////////
 //
 def doCleanPublic() {
-  ant.delete (includeemptydirs: 'true') {
-    fileset (erroronmissingdir: 'false', dir: "${basedir}/public/scripts", includes: '**/*')
-    fileset (erroronmissingdir: 'false', dir: "${basedir}/public/styles", includes: '**/*')
-    fileset (erroronmissingdir: 'false', dir: "${basedir}/public/pages", includes: '**/*')
-    fileset (erroronmissingdir: 'false', dir: "${basedir}/public/ig", includes: '**/*')
+  ant.delete (includeemptydirs: true) {
+    fileset (erroronmissingdir: false, dir: "${basedir}/public/scripts", includes: '**/*')
+    fileset (erroronmissingdir: false, dir: "${basedir}/public/styles", includes: '**/*')
+    fileset (erroronmissingdir: false, dir: "${basedir}/public/pages", includes: '**/*')
+    fileset (erroronmissingdir: false, dir: "${basedir}/public/ig", includes: '**/*')
   }
   ant.mkdir (dir: "${basedir}/public/ig")
 }
@@ -307,13 +307,13 @@ def doCompileCljScript(wappid) {
   }
   ant.java (
         classname: 'clojure.main',
-        fork: 'true',
-        failonerror: 'true',
+        fork: true,
+        failonerror: true,
         maxmemory: '2048m',
         classpathref: 'compile.path.id') {
     arg (value: "${basedir}/conf/cljsc.clj")
     arg (value: "${sdir}")
-    arg (value: 'true')
+    arg (value: true)
     // advanced none whitespace simple
     arg (value: 'none')
     arg (value: "${websrc}/${wappid}")
@@ -328,8 +328,8 @@ def doFinzBuild() {
       <fileset file="${basedir}/public/vendors/zepto/zepto.min.js"/>
       <fileset file="${basedir}/public/vendors/modernizr/modernizr.custom.js"/>
       */
-  ant.delete (file: "${basedir}/public/c/webcommon.js", quiet: 'true')
-  concat (destfile: "${basedir}/public/c/webcommon.js", append: 'true') {
+  ant.delete (file: "${basedir}/public/c/webcommon.js", quiet: true)
+  concat (destfile: "${basedir}/public/c/webcommon.js", append: true) {
     //fileset (file: "${basedir}/public/vendors/jquery/jquery-2.1.1.min.js")
     fileset (file: "${basedir}/public/vendors/almond/almond.js")
     fileset (file: "${basedir}/public/vendors/ramda/ramda.js")
@@ -351,8 +351,8 @@ def doFinzBuild() {
 //////////////////////////////////////////////////////////////////////////////
 //
 def doBuildForCC2DX() {
-  ant.delete (file: "${basedir}/public/c/ztlcommon.js", quiet: 'true')
-  concat (destfile: "${basedir}/public/c/ztlcommon.js", append: 'true') {
+  ant.delete (file: "${basedir}/public/c/ztlcommon.js", quiet: true)
+  concat (destfile: "${basedir}/public/c/ztlcommon.js", append: true) {
     fileset (file: "${basedir}/public/vendors/underscore/underscore-min.js")
     fileset (file: "${basedir}/public/vendors/l10njs/l10n.min.js")
     fileset (file: "${basedir}/public/vendors/mustache/mustache.js")
@@ -416,7 +416,7 @@ def doCompileCoffeeScript(wappid) {
 }
 
 target (poo: '') {
-  doCompileJS('tictactoe')
+  doCompileJS('main')
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -476,7 +476,7 @@ def babelFile(wappid, mid) {
 //////////////////////////////////////////////////////////////////////////////
 //
 def cleanLocalJs(wappid) {
-  ant.delete ( dir: "${webDir}/${wappid}/${bldDir}", quiet: true)
+  ant.delete ( dir: "${webDir}/${wappid}/src/${bldDir}", quiet: true)
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -489,12 +489,14 @@ def doCompileJS(wappid) {
   jsWalkTree(wappid, new Stack(),root)
   cleanLocalJs(wappid)
 
-  ant.exec(executable: "jsdoc", dir: "${basedir}", spawn: true) {
-    arg(value: "${websrc}/${wappid}")
-    arg(value:"-c")
-    arg(value:"${basedir}/src/jsdoc.json")
-    arg(value:"-d")
-    arg(value:"${docs}/${wappid}")
+  if (false) {
+    ant.exec(executable: "jsdoc", dir: "${basedir}",spawn:true) {
+      arg(value: "${basedir}/${bldDir}/${prj}/${wjs}/${wappid}")
+      arg(value:"-c")
+      arg(value:"${basedir}/jsdoc.json")
+      arg(value:"-d")
+      arg(value:"${docs}/${wappid}")
+    }
   }
 
   ant.mkdir (dir: "${basedir}/public/ig/lib/game")
@@ -530,7 +532,7 @@ def doCompileLESS(wappid) {
       include (name: '**/*.less')
     }
   }
-  ant.apply (executable: "lessc", parallel: 'false') {
+  ant.apply (executable: "lessc", parallel: false) {
     fileset (dir: "${webcss}/${wappid}") {
       include (name: '**/*.less')
     }
@@ -562,7 +564,7 @@ def doCompileSCSS(wappid) {
       include (name: '**/*.scss')
     }
   }
-  ant.apply (executable: 'sass', parallel: 'false') {
+  ant.apply (executable: 'sass', parallel: false) {
     fileset (dir: "${webcss}/${wappid}") {
       include (name: '**/*.scss')
     }
@@ -688,7 +690,7 @@ def doFinzApp(wappid) {
 //////////////////////////////////////////////////////////////////////////////
 //
 def doYuiCSS() {
-  ant.apply (executable: 'java', parallel: 'false') {
+  ant.apply (executable: 'java', parallel: false) {
     fileset (dir: "${basedir}/public/styles") {
       exclude (name: '**/*.min.css')
       include (name: '**/*.css')
@@ -708,7 +710,7 @@ def doYuiCSS() {
 //////////////////////////////////////////////////////////////////////////////
 //
 def doYuiJS() {
-  ant.apply (executable: 'java', parallel: 'false') {
+  ant.apply (executable: 'java', parallel: false) {
     fileset (dir: "${basedir}/public/scripts") {
       exclude (name: '**/*.min.js')
       include (name: '**/*.js')

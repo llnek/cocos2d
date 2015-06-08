@@ -14,7 +14,7 @@
  * @module p/l10n
  */
 
-import sh 'zotohlab/asx/asterix';
+import sh from 'zotohlab/asx/asterix';
 
 
 let sjs= sh.skarojs,

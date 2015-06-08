@@ -197,6 +197,13 @@ class XPool extends sjs.ES6Claxx {
 /** @alias module:zotohlab/asx/pool */
 const xbox = {
   /**
+   * @method reify
+   * @return {XPool}
+   */
+  reify() {
+    return new XPool();
+  },
+  /**
    * @property {XPool} XPool
    */
   XPool: XPool

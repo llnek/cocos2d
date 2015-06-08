@@ -15,7 +15,7 @@
  * @requires zotohlab/asx/xcfg
  * @requires zotohlab/asx/xloader
  * @requires p/config
- * @requires p/l10n
+ * @requires i18n/l10n
  * @requires p/protos
  * @module zotohlab/p/boot
  */
@@ -25,7 +25,7 @@ import ccsx from 'zotohlab/asx/ccsx';
 import xcfg from 'zotohlab/asx/cfg';
 import loader from 'zotohlab/asx/loader';
 import cfg from 'p/config';
-import l10n from 'p/l10n';
+import l10n from 'i18n/l10n';
 import protos from 'p/protos';
 
 //////////////////////////////////////////////////////////////////////////

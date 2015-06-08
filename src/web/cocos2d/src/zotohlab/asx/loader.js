@@ -173,7 +173,7 @@ let xbox = cc.Scene.extend({
 xbox.preload = (resources, selector, target) => {
   const director = cc.director;
 
-  if (!_instance) { _instance = new XLoader(); }
+  if (!_instance) { _instance = new xbox(); }
 
   _instance.initWithResources(resources, selector, target);
   director.runScene(_instance);
