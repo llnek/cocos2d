@@ -9,46 +9,44 @@
 // this software.
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-/**
- * @requires zotohlab/p/elements
- * @requires otohlab/asterix
- * @module zotohlab/p/gnodes
+"use strict";/**
+ * @requires zotohlab/asx/asterix
+ * @requires nodes/cobjs
+ * @module nodes/gnodes
  */
-define("zotohlab/p/gnodes",
 
-       ['zotohlab/p/elements',
-        'zotohlab/asterix'],
+import sh from 'zotohlab/asx/asterix';
+import cobjs from 'nodes/gnodes';
 
-  function (cobjs, sh) { "use strict";
+/** @alias module:nodes/gnodes */
+let xbox = {},
+sjs=sh.skarojs,
+xcfg = sh.xcfg,
+csts = xcfg.csts,
+undef;
 
-    /** @alias module:zotohlab/p/gnodes */
-    let exports = {},
-    sjs=sh.skarojs,
-    xcfg = sh.xcfg,
-    csts = xcfg.csts,
-    undef;
+//////////////////////////////////////////////////////////////////////////////
+/**
+ * @class ShipMotionNode
+ */
+xbox.ShipMotionNode = sh.Ashley.nodeDef({
+  /**
+   * @memberof module:nodes/gnodes~ShipMotionNode
+   * @property {Motion} motion
+   */
+  motion : cobjs.Motion,
 
-    //////////////////////////////////////////////////////////////////////////////
-    /**
-     * @class ShipMotionNode
-     */
-    exports.ShipMotionNode = sh.Ashley.nodeDef({
-      /**
-       * @memberof module:zotohlab/p/gnodes~ShipMotionNode
-       * @property {Motion} motion
-       */
-      motion : cobjs.Motion,
-
-      /**
-       * @memberof module:zotohlab/p/gnodes~ShipMotionNode
-       * @property {Ship} ship
-       */
-      ship  : cobjs.Ship
-    });
-
-    return exports;
+  /**
+   * @memberof module:nodes/gnodes~ShipMotionNode
+   * @property {Ship} ship
+   */
+  ship  : cobjs.Ship
 });
 
+sjs.merge(exports, xbox);
+/*@@
+return xbox;
+@@*/
 //////////////////////////////////////////////////////////////////////////////
 //EOF
 

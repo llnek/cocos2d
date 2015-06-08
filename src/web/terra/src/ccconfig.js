@@ -27,50 +27,49 @@ document.ccConfig = {
 
     "/public/vendors/cherimoia/skaro.js",
     "/public/vendors/cherimoia/caesar.js",
-    "/public/vendors/cherimoia/bus.js",
-    "/public/vendors/cherimoia/zlab.js",
+    "/public/vendors/cherimoia/ebus.js",
 
-    "/public/ig/lib/zotohlab/ext/asterix.js",
-    "/public/ig/lib/zotohlab/ext/cfg.js",
-    "/public/ig/lib/zotohlab/ext/cs2dx.js",
-    "/public/ig/lib/zotohlab/ext/odin.js",
+    "/public/ig/lib/zotohlab/asx/asterix.js",
+    "/public/ig/lib/zotohlab/asx/cfg.js",
+    "/public/ig/lib/zotohlab/asx/ccsx.js",
+    "/public/ig/lib/zotohlab/asx/odin.js",
 
-    "/public/ig/lib/zotohlab/ext/scenes.js",
-    "/public/ig/lib/zotohlab/ext/pool.js",
-    "/public/ig/lib/zotohlab/ext/loader.js",
+    "/public/ig/lib/zotohlab/asx/scenes.js",
+    "/public/ig/lib/zotohlab/asx/pool.js",
+    "/public/ig/lib/zotohlab/asx/loader.js",
 
     "/public/ig/lib/zotohlab/gui/msgbox.js",
     "/public/ig/lib/zotohlab/gui/ynbox.js",
     "/public/ig/lib/zotohlab/gui/online.js",
 
-    '/public/ig/lib/game/terra/config.js',
-    '/public/ig/lib/game/terra/i18n/game_en_US.js',
+    '/public/ig/lib/game/terra/p/config.js',
+    '/public/ig/lib/game/terra/i18n/l10n.js',
 
-'/public/ig/lib/game/terra/elements/cobjs.js',
+'/public/ig/lib/game/terra/nodes/cobjs.js',
 '/public/ig/lib/game/terra/nodes/gnodes.js',
 
-'/public/ig/lib/game/terra/systems/utils.js',
+'/public/ig/lib/game/terra/s/utils.js',
 
-'/public/ig/lib/game/terra/systems/factory.js',
-'/public/ig/lib/game/terra/systems/supervisor.js',
-'/public/ig/lib/game/terra/systems/motion.js',
-'/public/ig/lib/game/terra/systems/move-missiles.js',
-'/public/ig/lib/game/terra/systems/move-bombs.js',
-'/public/ig/lib/game/terra/systems/move-ship.js',
-'/public/ig/lib/game/terra/systems/levelmgr.js',
-'/public/ig/lib/game/terra/systems/collision.js',
-'/public/ig/lib/game/terra/systems/resolution.js',
-'/public/ig/lib/game/terra/systems/rendering.js',
-'/public/ig/lib/game/terra/systems/sysobjs.js',
+'/public/ig/lib/game/terra/s/factory.js',
+'/public/ig/lib/game/terra/s/supervisor.js',
+'/public/ig/lib/game/terra/s/motion.js',
+'/public/ig/lib/game/terra/s/move-missiles.js',
+'/public/ig/lib/game/terra/s/move-bombs.js',
+'/public/ig/lib/game/terra/s/move-ship.js',
+'/public/ig/lib/game/terra/s/levelmgr.js',
+'/public/ig/lib/game/terra/s/collision.js',
+'/public/ig/lib/game/terra/s/resolution.js',
+'/public/ig/lib/game/terra/s/rendering.js',
+'/public/ig/lib/game/terra/s/sysobjs.js',
 
 
-'/public/ig/lib/game/terra/splash.js',
-'/public/ig/lib/game/terra/hud.js',
-'/public/ig/lib/game/terra/mmenu.js',
-'/public/ig/lib/game/terra/game.js',
+'/public/ig/lib/game/terra/p/splash.js',
+'/public/ig/lib/game/terra/p/hud.js',
+'/public/ig/lib/game/terra/p/mmenu.js',
+'/public/ig/lib/game/terra/p/game.js',
 
-'/public/ig/lib/game/terra/protos.js',
-'/public/ig/lib/zotohlab/ext/boot.js'
+'/public/ig/lib/game/terra/p/protos.js',
+'/public/ig/lib/zotohlab/p/boot.js'
   ]
 
 };

@@ -9,43 +9,41 @@
 // this software.
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-/**
- * @requires zotohlab/asterix
+"use strict";/**
+ * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/msgbox
  * @requires zotohlab/asx/ynbox
- * @requires zotohlab/p/splash
- * @requires zotohlab/p/mmenu
- * @requires zotohlab/p/arena
- * @module zotohlab/p/protodefs
+ * @requires p/splash
+ * @requires p/mmenu
+ * @requires p/game
+ * @module p/protos
  */
-define("zotohlab/p/protodefs",
 
-       ['zotohlab/asterix',
-        'zotohlab/asx/msgbox',
-        'zotohlab/asx/ynbox',
-        'zotohlab/p/splash',
-        'zotohlab/p/mmenu',
-        'zotohlab/p/arena'],
+import msgbox from 'zotohlab/asx/msgbox';
+import sh from 'zotohlab/asx/asterix';
+import ynbox from 'zotohlab/asx/ynbox';
+import splash from 'p/splash';
+import mmenu from 'p/mmenu';
+import arena from 'p/game';
 
-  function (sh, msgbox, ynbox,
-            splash, mmenu, arena) { "use strict";
 
-    let ps= [splash, mmenu, msgbox, ynbox, arena],
-    protos= sh.protos,
-    sjs= sh.skarojs,
-    /** @alias module:zotohlab/p/protodefs */
-    exports = protos,
-    xcfg = sh.xcfg,
-    R = sjs.ramda,
-    undef;
+let ps= [splash, mmenu, msgbox, ynbox, arena],
+protos= sh.protos,
+sjs= sh.skarojs,
+/** @alias module:p/protos */
+xbox = protos,
+xcfg = sh.xcfg,
+R = sjs.ramda,
+undef;
 
-    R.forEach((obj) => {
-      protos[obj.rtti] = obj;
-    }, ps);
+R.forEach((obj) => {
+  protos[obj.rtti] = obj;
+}, ps);
 
-    return exports;
-});
-
+sjs.merge(exports, xbox);
+/*@@
+return xbox;
+@@*/
 //////////////////////////////////////////////////////////////////////////////
 //EOF
 

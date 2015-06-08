@@ -2,33 +2,33 @@
 
     "jsList"        : [
 
-    "src/terra/config.js",
-    "src/terra/i18n/game_en_US.js",
+    "src/terra/p/config.js",
+    "src/terra/i18n/l10n.js",
 
-    "src/terra/elements/cobjs.js",
+    "src/terra/nodes/cobjs.js",
     "src/terra/nodes/gnodes.js",
 
-    "src/terra/systems/utils.js",
+    "src/terra/s/utils.js",
 
-    "src/terra/systems/factory.js",
-    "src/terra/systems/supervisor.js",
-    "src/terra/systems/motion.js",
-    "src/terra/systems/move-missiles.js",
-    "src/terra/systems/move-bombs.js",
-    "src/terra/systems/move-ship.js",
-    "src/terra/systems/levelmgr.js",
-    "src/terra/systems/collision.js",
-    "src/terra/systems/resolution.js",
-    "src/terra/systems/rendering.js",
-    "src/terra/systems/sysobjs.js",
+    "src/terra/s/factory.js",
+    "src/terra/s/supervisor.js",
+    "src/terra/s/motion.js",
+    "src/terra/s/move-missiles.js",
+    "src/terra/s/move-bombs.js",
+    "src/terra/s/move-ship.js",
+    "src/terra/s/levelmgr.js",
+    "src/terra/s/collision.js",
+    "src/terra/s/resolution.js",
+    "src/terra/s/rendering.js",
+    "src/terra/s/sysobjs.js",
 
-    "src/terra/splash.js",
-    "src/terra/hud.js",
-    "src/terra/mmenu.js",
-    "src/terra/game.js",
+    "src/terra/p/splash.js",
+    "src/terra/p/hud.js",
+    "src/terra/p/mmenu.js",
+    "src/terra/p/game.js",
 
-    "src/terra/protos.js",
-    "src/zotohlab/ext/boot.js"
+    "src/terra/p/protos.js",
+    "src/zotohlab/p/boot.js"
 
     ]
 }
