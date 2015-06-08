@@ -2,33 +2,33 @@
 
     "jsList"        : [
 
-    "src/asteroids/config.js",
-    "src/asteroids/i18n/game_en_US.js",
+    "src/asteroids/p/config.js",
+    "src/asteroids/i18n/l10n.js",
 
-"src/asteroids/elements/cobjs.js",
+"src/asteroids/nodes/cobjs.js",
 "src/asteroids/nodes/gnodes.js",
 
-"src/asteroids/systems/utils.js",
-    "src/asteroids/systems/factory.js",
+"src/asteroids/s/utils.js",
+    "src/asteroids/s/factory.js",
 
-"src/asteroids/systems/motion.js",
-"src/asteroids/systems/missiles.js",
-"src/asteroids/systems/move-asteroids.js",
-"src/asteroids/systems/move-missiles.js",
-"src/asteroids/systems/move-lasers.js",
-"src/asteroids/systems/move-ship.js",
-"src/asteroids/systems/collision.js",
-"src/asteroids/systems/supervisor.js",
-"src/asteroids/systems/resolution.js",
-"src/asteroids/systems/sysobjs.js",
+"src/asteroids/s/motion.js",
+"src/asteroids/s/missiles.js",
+"src/asteroids/s/move-asteroids.js",
+"src/asteroids/s/move-missiles.js",
+"src/asteroids/s/move-lasers.js",
+"src/asteroids/s/move-ship.js",
+"src/asteroids/s/collision.js",
+"src/asteroids/s/supervisor.js",
+"src/asteroids/s/resolution.js",
+"src/asteroids/s/sysobjs.js",
 
-      "src/asteroids/hud.js",
-      "src/asteroids/game.js",
-      "src/asteroids/mmenu.js",
-      "src/asteroids/splash.js",
-"src/asteroids/protos.js",
-"src/zotohlab/ext/boot.js"
+      "src/asteroids/p/hud.js",
+      "src/asteroids/p/game.js",
+      "src/asteroids/p/mmenu.js",
+      "src/asteroids/p/splash.js",
+"src/asteroids/p/protos.js",
 
 
+"src/zotohlab/p/boot.js"
     ]
 }

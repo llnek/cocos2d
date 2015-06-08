@@ -9,32 +9,55 @@
 // this software.
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
-/**
- * @requires zotohlab/p/elements
- * @requires cherimoia/skarojs
- * @requires zotohlab/asterix
- * @requires zotohlab/asx/ccsx
- * @module zotohlab/p/s/utils
+"use strict";/**
+ * @requires zotohlab/asx/asterix
+ * @module p/l10n
  */
-define('zotohlab/p/s/utils',
 
-       ['zotohlab/p/elements',
-        'cherimoia/skarojs',
-        'zotohlab/asterix',
-        'zotohlab/asx/ccsx'],
+import sh 'zotohlab/asx/asterix';
 
-  function (cobjs, sjs, sh, ccsx) { "use strict";
 
-    /** @alias module:zotohlab/p/s/utils */
-    let exports = {},
-    xcfg = sh.xcfg,
-    csts= xcfg.csts,
-    R = sjs.ramda,
-    undef;
+let sjs= sh.skarojs,
+xcfg = sh.xcfg,
+undef;
 
-    return exports;
+/** @alias module:p/l10n */
+const xbox = sjs.merge(xcfg.l10nTable, {
+
+  "en" : {
+
+    "%whosturn" : "{{who}}'s TURN...",
+    "%whodraw" : "Draw!",
+    "%whowin" : "{{who}} Wins!",
+    "%computer" : 'Computer',
+    "%player2" : 'Player 2',
+    "%player1" : 'Player 1',
+
+    "%quit!" : 'Quit',
+    "%back" : 'Back',
+    "%ok" : 'OK',
+
+    "%cpu" : "CPU",
+    "%p2" : "P2",
+    "%p1" : "P1",
+
+    "%mmenu" : 'Main Menu',
+
+    "%replay" : 'REPLAY',
+    "%play" : 'PLAY',
+
+    "%quit?" : 'Continue to quit game?',
+    "%scores" : '= scores ='
+
+  }
+
 });
 
+
+sjs.merge(exports, xbox);
+/*@@
+return xbox;
+@@*/
 //////////////////////////////////////////////////////////////////////////////
 //EOF
 
