@@ -30,7 +30,7 @@ undef;
 /**
  * @class AlienSquad
  */
-AlienSquad = sh.Ashley.casDef({
+const AlienSquad = sh.Ashley.casDef({
 
   /**
    * @memberof module:nodes/cobjs~AlienSquad
@@ -52,7 +52,7 @@ xbox.AlienSquad = AlienSquad;
 /**
  * @class Alien
  */
-Alien = sh.Ashley.compDef({
+const Alien = sh.Ashley.compDef({
 
   /**
    * @memberof module:nodes/cobjs~Alien
@@ -76,7 +76,7 @@ xbox.Alien = Alien;
 /**
  * @class Bomb
  */
-Bomb = sh.Ashley.compDef({
+const Bomb = sh.Ashley.compDef({
 
   /**
    * @memberof module:nodes/cobjs~Bomb
@@ -101,7 +101,7 @@ xbox.Bomb= Bomb;
 /**
  * @class Cannon
  */
-Cannon = sh.Ashley.casDef({
+const Cannon = sh.Ashley.casDef({
 
   /**
    * @memberof module:nodes/cobjs~Cannon
@@ -122,7 +122,7 @@ xbox.Cannon = Cannon;
 /**
  * @class Explosion
  */
-Explosion = sh.Ashley.compDef({
+const Explosion = sh.Ashley.compDef({
 
   /**
    * @memberof module:nodes/cobjs~Explosion
@@ -165,7 +165,7 @@ xbox.Explosion = Explosion;
 /**
  * @class Looper
  */
-Looper = sh.Ashley.casDef({
+const Looper = sh.Ashley.casDef({
 
   /**
    * @memberof module:nodes/cobjs~Looper
@@ -185,7 +185,7 @@ xbox.Looper= Looper;
 /**
  * @class Missile
  */
-Missile = sh.Ashley.compDef({
+const Missile = sh.Ashley.compDef({
 
   /**
    * @memberof module:nodes/cobjs~Missile
@@ -210,7 +210,7 @@ xbox.Missile= Missile;
 /**
  * @class Motion
  */
-Motion = sh.Ashley.casDef({
+const Motion = sh.Ashley.casDef({
 
   /**
    * @memberof module:nodes/cobjs~Motion
@@ -230,7 +230,7 @@ xbox.Motion= Motion;
 /**
  * @class Ship
  */
-Ship = sh.Ashley.compDef({
+const Ship = sh.Ashley.compDef({
 
   /**
    * @memberof module:nodes/cobjs~Ship
@@ -252,7 +252,7 @@ xbox.Ship = Ship;
 /**
  * @class Velocity
  */
-Velocity = sh.Ashley.casDef({
+const Velocity = sh.Ashley.casDef({
 
   /**
    * @memberof module:nodes/cobjs~Velocity

@@ -12,7 +12,7 @@
 "use strict";/**
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
- * @module s/moveasteroids
+ * @module s/moveastros
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -31,7 +31,7 @@ undef,
 MoveAsteroids = sh.Ashley.sysDef({
 
   /**
-   * @memberof module:s/moveasteroids~MoveAsteroids
+   * @memberof module:s/movestros~MoveAsteroids
    * @method constructor
    * @param {Object} options
    */
@@ -40,7 +40,7 @@ MoveAsteroids = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/moveasteroids~MoveAsteroids
+   * @memberof module:s/movestros~MoveAsteroids
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -48,7 +48,7 @@ MoveAsteroids = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/moveasteroids~MoveAsteroids
+   * @memberof module:s/movestros~MoveAsteroids
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -56,7 +56,7 @@ MoveAsteroids = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/moveasteroids~MoveAsteroids
+   * @memberof module:s/movestros~MoveAsteroids
    * @method update
    * @param {Number} dt
    */
@@ -129,12 +129,12 @@ MoveAsteroids = sh.Ashley.sysDef({
 });
 
 /**
- * @memberof module:s/moveasteroids~MoveAsteroids
+ * @memberof module:s/movestros~MoveAsteroids
  * @property {Number} Priority
  */
 MoveAsteroids.Priority = xcfg.ftypes.Move;
 
-/** @alias module:s/moveasteroids */
+/** @alias module:s/movestros */
 const xbox = /** @lends xbox# */{
 
   /**

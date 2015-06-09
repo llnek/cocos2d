@@ -49,7 +49,7 @@ SplashLayer = scenes.XLayer.extend({
     mm= sh.protos[sh.ptypes.mmenu],
     dir= cc.director;
     dir.runScene( mm.reify({
-      onBack() { dir.runScene( ss.reify() ); }
+      onback() { dir.runScene( ss.reify() ); }
     }));
   },
   /**

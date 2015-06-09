@@ -13,12 +13,14 @@
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/odin
+ * @requires nodes/gnodes
  * @module s/supervisor
  */
 
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
 import odin from 'zotohlab/asx/odin';
+import gnodes from 'nodes/gnodes';
 
 let evts= odin.Events,
 sjs= sh.skarojs,
@@ -46,6 +48,7 @@ GameSupervisor = sh.Ashley.sysDef({
    * @param {Ash.Engine} engine
    */
   removeFromEngine(engine) {
+    this.nodeList=null;
   },
   /**
    * @memberof module:s/supervisor~GameSupervisor
@@ -53,6 +56,7 @@ GameSupervisor = sh.Ashley.sysDef({
    * @param {Ash.Engine} engine
    */
   addToEngine(engine) {
+    this.nodeList= engine.getNodeList(gnodes.PaddleNode);
   },
   /**
    * @memberof module:s/supervisor~GameSupervisor
@@ -125,7 +129,6 @@ GameSupervisor = sh.Ashley.sysDef({
       });
     }
 
-
     ccsx.onTouchOne(this);
     ccsx.onMouse(this);
     sh.main.pkInput();
@@ -135,19 +138,32 @@ GameSupervisor = sh.Ashley.sysDef({
    * @private
    */
   fire(t, evt) {
-    if ('/touch/one/move' === t || '/mouse/move' === t) {} else {
+    if (('/touch/one/move' === t || '/mouse/move' === t) &&
+        this.state.running) {} else {
       return;
     }
-    if (this.state.running &&
-        !!this.ships.head) {
-      let ship = this.ships.head.ship,
-      pos = ship.pos(),
-      wz= ccsx.vrect(),
-      cur= cc.pAdd(pos, evt.delta);
-      cur= cc.pClamp(cur, cc.p(0, 0),
-                     cc.p(wz.width, wz.height));
-      ship.setPos(cur.x, cur.y);
+    for (let node= this.nodeList.head; node; node=node.next) {
+      this.process(node,evt);
     }
+  },
+  /**
+   * @method process
+   * @private
+   */
+  process(node, evt) {
+    let p = node.paddle,
+    pos = p.pos(),
+    x=pos.x,
+    y=pos.y,
+    wz= ccsx.vrect();
+    if (ccsx.isPortrait()) {
+      x = pos.x + evt.delta.x;
+    } else {
+      y = pos.y + evt.delta.y;
+    }
+    cur= cc.pClamp(cc.p(x,y), cc.p(0, 0),
+                   cc.p(wz.width, wz.height));
+    p.setPos(cur.x, cur.y);
   },
   /**
    * @method initPaddleSize

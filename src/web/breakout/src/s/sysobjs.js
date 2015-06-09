@@ -10,18 +10,20 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 "use strict";/**
- * @requires s/collisions
+ * @requires cherimoia/skaro
+ * @requires s/collision
  * @requires s/factory
- * @requires s/motions
+ * @requires s/motion
  * @requires s/moveball
  * @requires s/movepaddle
  * @requires s/supervisor
  * @module s/sysobjs
  */
 
-import co from 's/collisions';
+import sjs from 'cherimoia/skaro';
+import co from 's/collision';
 import f from 's/factory';
-import mo from 's/motions';
+import mo from 's/motion';
 import mb from 's/moveball';
 import mp from 's/movepaddle';
 import v from 's/supervisor';
@@ -33,7 +35,7 @@ const xbox= /** @lends xbox# */{
   /**
    * @property {Collisions} Collisions
    */
-  Collisions        : co.Collisions,
+  Collisions        : co.CollisionSystem,
   /**
    * @property {EntityFactory} Factory
    */
@@ -41,7 +43,7 @@ const xbox= /** @lends xbox# */{
   /**
    * @property {Motions} Motions
    */
-  Motions           : mo.Motions,
+  Motions           : mo.MotionControl,
   /**
    * @property {MovementBall} MovementBall
    */

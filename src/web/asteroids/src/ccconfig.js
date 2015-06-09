@@ -24,6 +24,8 @@ document.ccConfig = {
     "/public/vendors/js-signals/signals.js",
     "/public/vendors/ash-js/ash.js",
 
+"/public/vendors/rxjs/rx.all.js",
+
     "/public/vendors/cherimoia/skaro.js",
     "/public/vendors/cherimoia/caesar.js",
     "/public/vendors/cherimoia/ebus.js",
@@ -52,10 +54,10 @@ document.ccConfig = {
 
 '/public/ig/lib/game/asteroids/s/motion.js',
 '/public/ig/lib/game/asteroids/s/missiles.js',
-'/public/ig/lib/game/asteroids/s/move-asteroids.js',
-'/public/ig/lib/game/asteroids/s/move-missiles.js',
-'/public/ig/lib/game/asteroids/s/move-lasers.js',
-'/public/ig/lib/game/asteroids/s/move-ship.js',
+'/public/ig/lib/game/asteroids/s/moveastros.js',
+'/public/ig/lib/game/asteroids/s/movemissiles.js',
+'/public/ig/lib/game/asteroids/s/movelasers.js',
+'/public/ig/lib/game/asteroids/s/moveship.js',
 '/public/ig/lib/game/asteroids/s/collision.js',
 '/public/ig/lib/game/asteroids/s/supervisor.js',
 '/public/ig/lib/game/asteroids/s/resolution.js',

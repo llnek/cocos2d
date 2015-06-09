@@ -30,7 +30,7 @@ undef;
 /**
  * @class AlienMotionNode
  */
-AlienMotionNode = sh.Ashley.nodeDef({
+const AlienMotionNode = sh.Ashley.nodeDef({
   /**
    * @memberof module:nodes/gnodes~AlienMotionNode
    * @property {AlienSquad} aliens
@@ -51,7 +51,7 @@ xbox.AlienMotionNode = AlienMotionNode;
 /**
  * @class CannonCtrlNode
  */
-CannonCtrlNode = sh.Ashley.nodeDef({
+const CannonCtrlNode = sh.Ashley.nodeDef({
   /**
    * @memberof module:nodes/gnodes~CannonCtrlNode
    * @property {Looper} looper
@@ -77,7 +77,7 @@ xbox.CannonCtrlNode = CannonCtrlNode;
 /**
  * @class ShipMotionNode
  */
-ShipMotionNode = sh.Ashley.nodeDef({
+const ShipMotionNode = sh.Ashley.nodeDef({
   /**
    * @memberof module:nodes/gnodes~ShipMotionNode
    * @property {Velocity} velocity

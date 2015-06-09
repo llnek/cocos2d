@@ -33,7 +33,7 @@ ast= {};
 /**
  * @class CannonCtrlNode
  */
-CannonCtrlNode = sh.Ashley.nodeDef({
+const CannonCtrlNode = sh.Ashley.nodeDef({
   /**
    * @memberof module:nodes/gnodes~CannonCtrlNode
    * @property {Looper} looper
@@ -59,7 +59,7 @@ xbox.CannonCtrlNode = CannonCtrlNode;
 /**
  * @class ShipMotionNode
  */
-ShipMotionNode = sh.Ashley.nodeDef({
+const ShipMotionNode = sh.Ashley.nodeDef({
   /**
    * @memberof module:nodes/gnodes~ShipMotionNode
    * @property {Velocity} velocity

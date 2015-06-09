@@ -10,12 +10,13 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 "use strict";/**
+ * @requires cherimoia/skaro
  * @requires s/utils
  * @requires s/factory
- * @requires s/collisions
- * @requires s/missilecontrol
- * @requires s/motions
- * @requires s/moveasteroids
+ * @requires s/collision
+ * @requires s/missiles
+ * @requires s/motion
+ * @requires s/moveastros
  * @requires s/movelasers
  * @requires s/movemissiles
  * @requires s/moveship
@@ -24,12 +25,13 @@
  * @module s/sysobjs
  */
 
+import sjs from 'cherimoia/skaro';
 import u from 's/utils';
 import f from 's/factory';
-import co from 's/collisions';
-import mc from 's/missilecontrol';
-import mo from 's/motions';
-import ma from 's/moveasteroids';
+import co from 's/collision';
+import mc from 's/missiles';
+import mo from 's/motion';
+import ma from 's/moveastros';
 import ml from 's/movelasers';
 import ms from 's/movemissiles';
 import mp from 's/moveship';
@@ -50,7 +52,7 @@ const xbox = /** @lends xbox# */{
   /**
    * @property {Collisions} Collisions
    */
-  Collisions      : co.Collisions,
+  Collisions      : co.CollisionSystem,
   /**
    * @property {MissileControl}  MissileControl
    */
@@ -58,7 +60,7 @@ const xbox = /** @lends xbox# */{
   /**
    * @property {Motions}  Motions
    */
-  Motions         : mo.Motions,
+  Motions         : mo.MotionControls,
   /**
    * @property {MoveAsteroids}  MoveAsteroids
    */
@@ -66,7 +68,7 @@ const xbox = /** @lends xbox# */{
   /**
    * @property {MoveLasers}   MoveLasers
    */
-  MoveLasers      : ml.MoveLasers,
+  MoveLasers      : ml.MoveBombs,
   /**
    * @property {MoveMissiles}   MoveMissiles
    */

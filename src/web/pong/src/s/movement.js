@@ -332,12 +332,12 @@ MovementSystem = sh.Ashley.sysDef({
 });
 
 /**
- * @memberof module:s/movements~MovementSystem
+ * @memberof module:s/movement~MovementSystem
  * @property {Number} Priority
  */
 MovementSystem.Priority = xcfg.ftypes.Move;
 
-/** @alias module:s/movements */
+/** @alias module:s/movement */
 const xbox = /** @lends xbox# */{
 
   /**

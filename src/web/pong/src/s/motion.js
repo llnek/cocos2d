@@ -11,11 +11,13 @@
 
 "use strict";/**
  * @requires zotohlab/asx/asterix
+ * @requires zotohlab/asx/ccsx
  * @requires nodes/gnodes
  * @module s/motion
  */
 
 import sh from 'zotohlab/asx/asterix';
+import ccsx from 'zotohlab/asx/ccsx';
 import gnodes from 'nodes/gnodes';
 
 let sjs= sh.skarojs,
@@ -42,6 +44,7 @@ MotionCtrlSystem = sh.Ashley.sysDef({
    */
   removeFromEngine(engine) {
     this.nodeList=null;
+    this.evQ=null;
   },
   /**
    * @memberof module:s/motion~MotionCtrlSystem
@@ -50,38 +53,48 @@ MotionCtrlSystem = sh.Ashley.sysDef({
    */
   addToEngine(engine) {
     this.nodeList= engine.getNodeList(gnodes.PaddleNode);
+    this.evQ=[];
   },
   /**
-   * @method scanInput
-   * @private
-   */
-  scanInput(node, dt) {
-    if (cc.sys.capabilities['keyboard'] &&
-        !cc.sys.isNative) {
-      this.processKeys(node,dt);
-    }
-    else
-    if (cc.sys.capabilities['mouse']) {
-    }
-    else
-    if (cc.sys.capabilities['touches']) {
-    }
-  },
-  /**
-   * @memberof module:s/motion~MotionCtrlSystem
+   * @memberof module:s/motions~Motions
    * @method update
    * @param {Number} dt
    */
   update(dt) {
     for (let node= this.nodeList.head; node; node=node.next) {
-      this.scanInput(node, dt);
+      this.process(node,dt);
     }
   },
   /**
-   * @method processKeys
+   * @process
    * @private
    */
-  processKeys(node, dt) {
+  process(node, dt) {
+    let evt;
+    if (this.evQ.length > 0) {
+      evt = this.evQ.shift();
+    }
+    if (this.state.running &&
+       !!node) {
+      if (!!evt) {
+        this.ongui(node,evt,dt);
+      }
+      if (ccsx.hasKeyPad()) {
+        this.onkey(node, dt);
+      }
+    }
+  },
+  /**
+   * @method ongui
+   * @private
+   */
+  ongui(node,evt,dt) {
+  },
+  /**
+   * @method onkey
+   * @private
+   */
+  onkey(node, dt) {
     const p= node.paddle,
     m= node.motion,
     cs = p.kcodes;

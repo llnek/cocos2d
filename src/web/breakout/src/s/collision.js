@@ -13,7 +13,7 @@
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
  * @requires nodes/gnodes
- * @module s/collisions
+ * @module s/collision
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -31,7 +31,7 @@ undef,
  */
 CollisionSystem = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/collisions~CollisionSystem
+   * @memberof module:s/collision~CollisionSystem
    * @method constructor
    * @param {Object} options
    */
@@ -39,7 +39,7 @@ CollisionSystem = sh.Ashley.sysDef({
     this.state = options;
   },
   /**
-   * @memberof module:s/collisions~CollisionSystem
+   * @memberof module:s/collision~CollisionSystem
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -49,7 +49,7 @@ CollisionSystem = sh.Ashley.sysDef({
     this.fences= undef;
   },
   /**
-   * @memberof module:s/collisions~CollisionSystem
+   * @memberof module:s/collision~CollisionSystem
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -60,7 +60,7 @@ CollisionSystem = sh.Ashley.sysDef({
     this.engine=engine;
   },
   /**
-   * @memberof module:s/collisions~CollisionSystem
+   * @memberof module:s/collision~CollisionSystem
    * @method update
    * @param {Number} dt
    */
@@ -184,12 +184,12 @@ CollisionSystem = sh.Ashley.sysDef({
 });
 
 /**
- * @memberof module:s/collisions~CollisionSystem
+ * @memberof module:s/collision~CollisionSystem
  * @property {Number} Priority
  */
 CollisionSystem.Priority = xcfg.ftypes.Collision;
 
-/** @alias module:s/collisions */
+/** @alias module:s/collision */
 const xbox = /** @lends xbox# */{
   /**
    * @property {CollisionSystem} CollisionSystem

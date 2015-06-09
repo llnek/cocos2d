@@ -28,7 +28,7 @@ undef,
 ast= {};
 
 //////////////////////////////////////////////////////////////////////////////
-Asteroid = sh.Ashley.compDef({
+const Asteroid = sh.Ashley.compDef({
 
   /**
    * @memberof module:nodes/cobjs~Asteroid
@@ -61,7 +61,7 @@ xbox.Asteroid = Asteroid;
 /**
  * @Cannon
  */
-Cannon = sh.Ashley.casDef({
+const Cannon = sh.Ashley.casDef({
 
   /**
    * @memberof module:nodes/cobjs~Cannon
@@ -84,7 +84,7 @@ xbox.Cannon = Cannon;
 /**
  * @class Looper
  */
-Looper = sh.Ashley.casDef({
+const Looper = sh.Ashley.casDef({
 
   /**
    * @memberof module:nodes/cobjs~Looper
@@ -105,7 +105,7 @@ xbox.Looper = Looper;
 /**
  * @class Missile
  */
-Missile = sh.Ashley.compDef({
+const Missile = sh.Ashley.compDef({
 
   /**
    * @memberof module:nodes/cobjs~Missile
@@ -134,7 +134,7 @@ xbox.Missile = Missile;
 /**
  * @class Motion
  */
-Motion = sh.Ashley.casDef({
+const Motion = sh.Ashley.casDef({
 
   /**
    * @memberof module:nodes/cobjs~Motion
@@ -158,7 +158,7 @@ xbox.Motion = Motion;
 /**
  * @class Ship
  */
-Ship = sh.Ashley.compDef({
+const Ship = sh.Ashley.compDef({
 
   /**
    * @memberof module:nodes/cobjs~Ship
@@ -182,7 +182,7 @@ xbox.Ship = Ship;
 /**
  * @class Velocity
  */
-Velocity = sh.Ashley.casDef({
+const Velocity = sh.Ashley.casDef({
 
   /**
    * @memberof module:zotohlab/p/elments~Velocity
@@ -218,7 +218,7 @@ xbox.Velocity = Velocity;
 /**
  * @class Rotation
  */
-Rotation = sh.Ashley.casDef({
+const Rotation = sh.Ashley.casDef({
 
   /**
    * @memberof module:nodes/cobjs~Rotation
@@ -238,7 +238,7 @@ xbox.Rotation = Rotation;
 /**
  * @class Thrust
  */
-Thrust = sh.Ashley.casDef({
+const Thrust = sh.Ashley.casDef({
 
   /**
    * @memberof module:nodes/cobjs~Thrust

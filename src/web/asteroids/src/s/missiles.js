@@ -14,7 +14,7 @@
  * @requires zotohlab/asx/ccsx
  * @requires s/utils
  * @requires nodes/gnodes
- * @module s/missilecontrol
+ * @module s/missiles
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -34,7 +34,7 @@ undef,
 MissileControl = sh.Ashley.sysDef({
 
   /**
-   * @memberof module:s/missilecontrol~MissileControl
+   * @memberof module:s/missiles~MissileControl
    * @method constructor
    * @param {Object} options
    */
@@ -43,7 +43,7 @@ MissileControl = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/missilecontrol~MissileControl
+   * @memberof module:s/missiles~MissileControl
    * @method addToEngine
    * @param {Object} options
    */
@@ -52,7 +52,7 @@ MissileControl = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/missilecontrol~MissileControl
+   * @memberof module:s/missiles~MissileControl
    * @method removeFromEngine
    * @param {Object} options
    */
@@ -61,7 +61,7 @@ MissileControl = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/missilecontrol~MissileControl
+   * @memberof module:s/missiles~MissileControl
    * @method update
    * @param {Number} dt
    */
@@ -155,12 +155,12 @@ MissileControl = sh.Ashley.sysDef({
 });
 
 /**
- * @memberof module:s/missilecontrol~MissileControl
+ * @memberof module:s/missiles~MissileControl
  * @property {Number} Priority
  */
 MissileControl.Priority = xcfg.ftypes.Motion;
 
-/** @alias module:s/missilecontrol */
+/** @alias module:s/missiles */
 const xbox = /** @lends xbox# */{
 
   /**

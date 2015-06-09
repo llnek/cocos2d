@@ -10,6 +10,7 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 "use strict";/**
+ * @requires cherimoia/skaro
  * @requires s/factory
  * @requires s/utils
  * @requires s/supervisor
@@ -19,11 +20,12 @@
  * @requires s/movemissiles
  * @requires s/moveship
  * @requires s/cannon
- * @requires s/collisions
+ * @requires s/collision
  * @requires s/resolution
  * @module s/sysobjs
  */
 
+import sjs from 'cherimoia/skaro';
 import f from 's/factory';
 import u from 's/utils';
 import v from 's/supervisor';
@@ -33,7 +35,7 @@ import bombs from 's/movebombs';
 import mi from 's/movemissiles';
 import ship from 's/moveship';
 import cn from 's/cannon';
-import co from 's/collisions';
+import co from 's/collision';
 import rs from 's/resolution';
 
 
@@ -55,7 +57,7 @@ const xbox = /** @lends xbox# */{
   /**
    * @property {Motions} Motions
    */
-  Motions             : mo.Motions,
+  Motions             : mo.MotionCtrlSystem,
   /**
    * @property {MovementAliens} MovementAliens
    */

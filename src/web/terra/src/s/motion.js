@@ -55,24 +55,6 @@ Motions = sh.Ashley.sysDef({
   addToEngine(engine) {
     this.ships= engine.getNodeList(gnodes.ShipMotionNode);
     this.evQ=[];
-    return;
-    this.stream= Rx.Observable.merge(
-      Rx.Observable.create( obj => {
-        sh.main.signal('/touch/one/move', (t,m) => {
-          obj.onNext(m);
-        });
-      }),
-      Rx.Observable.create( obj => {
-        sh.main.signal('/mouse/move', (t,m) => {
-          obj.onNext(m);
-        });
-      })
-    );
-    this.stream.subscribe( msg => {
-      if (!!this.evQ) {
-        this.evQ.push(msg);
-      }
-    });
   },
   /**
    * @memberof module:s/motions~Motions

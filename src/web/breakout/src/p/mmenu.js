@@ -10,8 +10,8 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 "use strict";/**
- * @requires zotohlab/asx/scenes
  * @requires zotohlab/asx/asterix
+ * @requires zotohlab/asx/scenes
  * @requires zotohlab/asx/ccsx
  * @module p/mmenu
  */
@@ -76,7 +76,7 @@ MainMenuLayer = scenes.XMenuLayer.extend({
     this.mkBackQuit(false, [
         { nnn: '#icon_back.png',
           cb() {
-            this.options.onBack();
+            this.options.onback();
           },
           target: this },
 

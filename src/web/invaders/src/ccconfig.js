@@ -24,6 +24,8 @@ document.ccConfig = {
     "/public/vendors/js-signals/signals.js",
     "/public/vendors/ash-js/ash.js",
 
+    "/public/vendors/rxjs/rx.all.js",
+
     "/public/vendors/cherimoia/skaro.js",
     "/public/vendors/cherimoia/caesar.js",
     "/public/vendors/cherimoia/ebus.js",
@@ -51,10 +53,10 @@ document.ccConfig = {
     '/public/ig/lib/game/invaders/s/utils.js',
     '/public/ig/lib/game/invaders/s/motion.js',
     '/public/ig/lib/game/invaders/s/cannon.js',
-    '/public/ig/lib/game/invaders/s/move-aliens.js',
-    '/public/ig/lib/game/invaders/s/move-bombs.js',
-    '/public/ig/lib/game/invaders/s/move-missiles.js',
-    '/public/ig/lib/game/invaders/s/move-ship.js',
+    '/public/ig/lib/game/invaders/s/movealiens.js',
+    '/public/ig/lib/game/invaders/s/movebombs.js',
+    '/public/ig/lib/game/invaders/s/movemissiles.js',
+    '/public/ig/lib/game/invaders/s/moveship.js',
     '/public/ig/lib/game/invaders/s/collision.js',
     '/public/ig/lib/game/invaders/s/supervisor.js',
     '/public/ig/lib/game/invaders/s/resolution.js',

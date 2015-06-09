@@ -30,7 +30,7 @@ undef;
 /**
  * @class Ball
  */
-Ball = sh.Ashley.compDef({
+const Ball = sh.Ashley.compDef({
 
   /**
    * @memberof module:nodes/cobjs~Ball
@@ -50,7 +50,7 @@ xbox.Ball= Ball;
 /**
  * @class BrickFence
  */
-BrickFence = sh.Ashley.casDef({
+const BrickFence = sh.Ashley.casDef({
 
   /**
    * @memberof module:nodes/cobjs~BrickFence
@@ -69,7 +69,7 @@ xbox.BrickFence = BrickFence;
 /**
  * @class Brick
  */
-Brick = sh.Ashley.compDef({
+const Brick = sh.Ashley.compDef({
 
   /**
    * @memberof module:nodes/cobjs~Brick
@@ -93,7 +93,7 @@ xbox.Brick = Brick;
 /**
  * @class Motion
  */
-Motion = sh.Ashley.casDef({
+const Motion = sh.Ashley.casDef({
 
   /**
    * @memberof module:nodes/cobjs~Motion
@@ -113,7 +113,7 @@ xbox.Motion = Motion;
 /**
  * @class Paddle
  */
-Paddle = sh.Ashley.compDef({
+const Paddle = sh.Ashley.compDef({
 
   /**
    * @memberof module:nodes/cobjs~Paddle
@@ -133,7 +133,7 @@ xbox.Paddle = Paddle;
 /**
  * @class Velocity
  */
-Velocity = sh.Ashley.casDef({
+const Velocity = sh.Ashley.casDef({
 
   /**
    * @memberof module:nodes/cobjs~Velocity

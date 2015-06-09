@@ -13,7 +13,7 @@
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
  * @requires nodes/gnodes
- * @module s/motions
+ * @module s/motion
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -30,7 +30,7 @@ undef,
  */
 MotionCtrlSystem = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/motions~MotionCtrlSystem
+   * @memberof module:s/motion~MotionCtrlSystem
    * @method constructor
    * @param {Object} options
    */
@@ -38,7 +38,7 @@ MotionCtrlSystem = sh.Ashley.sysDef({
     this.state= options;
   },
   /**
-   * @memberof module:s/motions~MotionCtrlSystem
+   * @memberof module:s/motion~MotionCtrlSystem
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -47,7 +47,7 @@ MotionCtrlSystem = sh.Ashley.sysDef({
     this.shipMotions = undef;
   },
   /**
-   * @memberof module:s/motions~MotionCtrlSystem
+   * @memberof module:s/motion~MotionCtrlSystem
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -56,7 +56,7 @@ MotionCtrlSystem = sh.Ashley.sysDef({
     this.shipMotions = engine.getNodeList(gnodes.ShipMotionNode);
   },
   /**
-   * @memberof module:s/motions~MotionCtrlSystem
+   * @memberof module:s/motion~MotionCtrlSystem
    * @method update
    * @param {Number} dt
    */
@@ -124,12 +124,12 @@ MotionCtrlSystem = sh.Ashley.sysDef({
 });
 
 /**
- * @memberof module:s/motions~MotionCtrlSystem
+ * @memberof module:s/motion~MotionCtrlSystem
  * @property {Number} Priority
  */
 MotionCtrlSystem.Priority= xcfg.ftypes.Motion;
 
-/** @alias module:s/motions */
+/** @alias module:s/motion */
 const xbox = /** @lends xbox# */{
 
   /**

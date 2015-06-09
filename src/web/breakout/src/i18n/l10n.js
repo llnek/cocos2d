@@ -11,7 +11,7 @@
 
 "use strict";/**
  * @requires zotohlab/asx/asterix
- * @module p/l10n
+ * @module i18n/l10n
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -21,7 +21,7 @@ let sjs= sh.skarojs,
 xcfg = sh.xcfg,
 undef;
 
-/** @alias module:p/l10n */
+/** @alias module:i18n/l10n */
 const xbox = sjs.merge( xcfg.l10nTable, {
 
   "en" : {

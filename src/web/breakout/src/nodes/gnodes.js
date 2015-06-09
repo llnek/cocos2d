@@ -30,7 +30,7 @@ undef;
 /**
  * @class BricksNode
  */
-BricksNode = sh.Ashley.nodeDef({
+const BricksNode = sh.Ashley.nodeDef({
   /**
    * @memberof module:nodes/gnodes~BricksNode
    * @property {BrickFence} fence
@@ -46,7 +46,7 @@ xbox.BricksNode = BricksNode;
 /**
  * @class PaddleMotionNode
  */
-PaddleMotionNode = sh.Ashley.nodeDef({
+const PaddleMotionNode = sh.Ashley.nodeDef({
   /**
    * @memberof module:nodes/gnodes~PaddleMotionNode
    * @property {Velocity} velocity
@@ -72,7 +72,7 @@ PaddleMotionNode = sh.Ashley.nodeDef({
 xbox.PaddleMotionNode = PaddleMotionNode;
 
 //////////////////////////////////////////////////////////////////////////////
-BallMotionNode = sh.Ashley.nodeDef({
+const BallMotionNode = sh.Ashley.nodeDef({
   /**
    * @memberof module:nodes/gnodes~BallMotionNode
    * @property {Velocity} velocity

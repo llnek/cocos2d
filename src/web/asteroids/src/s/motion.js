@@ -13,7 +13,7 @@
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
  * @requires nodes/gnodes
- * @module s/motions
+ * @module s/motion
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -32,7 +32,7 @@ undef,
 MotionControls = sh.Ashley.sysDef({
 
   /**
-   * @memberof module:s/motions~MotionControls
+   * @memberof module:s/motion~MotionControls
    * @method constructor
    * @param {Object} options
    */
@@ -42,7 +42,7 @@ MotionControls = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/motions~MotionControls
+   * @memberof module:s/motion~MotionControls
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -51,7 +51,7 @@ MotionControls = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/motions~MotionControls
+   * @memberof module:s/motion~MotionControls
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -62,7 +62,7 @@ MotionControls = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/motions~MotionControls
+   * @memberof module:s/motion~MotionControls
    * @method update
    * @param {Number} dt
    */
@@ -157,12 +157,12 @@ MotionControls = sh.Ashley.sysDef({
 });
 
 /**
- * @memberof module:s/motions~MotionControls
+ * @memberof module:s/motion~MotionControls
  * @property {Number} Priority
  */
 MotionControls.Priority = xcfg.ftypes.Motion;
 
-/** @alias module:s/motions */
+/** @alias module:s/motion */
 const xbox = /** @lends xbox# */{
   /**
    * @property {MotionControls} MotionControls

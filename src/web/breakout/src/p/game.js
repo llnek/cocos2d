@@ -31,25 +31,14 @@ csts= xcfg.csts,
 R = sjs.ramda,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @class BackLayer
- */
+/** * @class BackLayer */
 BackLayer = scenes.XLayer.extend({
-  /**
-   * @method rtti
-   */
   rtti() { return 'BackLayer'; },
-  /**
-   * @method setup
-   * @protected
-   */
   setup() {
   }
 }),
 //////////////////////////////////////////////////////////////////////////
-/**
- * @class GameLayer
- */
+/** * @class GameLayer */
 GameLayer = scenes.XGameLayer.extend({
   /**
    * @method reset
@@ -57,7 +46,7 @@ GameLayer = scenes.XGameLayer.extend({
    */
   reset(newFlag) {
     if (!sjs.isEmpty(this.atlases)) {
-      sjs.eachObj((v) => { v.removeAllChildren(); }, this.atlases);
+      sjs.eachObj( v => { v.removeAllChildren(); }, this.atlases);
     } else {
       this.regoAtlas('game-pics');
     }
