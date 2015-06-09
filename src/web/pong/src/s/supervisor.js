@@ -125,6 +125,29 @@ GameSupervisor = sh.Ashley.sysDef({
       });
     }
 
+
+    ccsx.onTouchOne(this);
+    ccsx.onMouse(this);
+    sh.main.pkInput();
+  },
+  /**
+   * @method fire
+   * @private
+   */
+  fire(t, evt) {
+    if ('/touch/one/move' === t || '/mouse/move' === t) {} else {
+      return;
+    }
+    if (this.state.running &&
+        !!this.ships.head) {
+      let ship = this.ships.head.ship,
+      pos = ship.pos(),
+      wz= ccsx.vrect(),
+      cur= cc.pAdd(pos, evt.delta);
+      cur= cc.pClamp(cur, cc.p(0, 0),
+                     cc.p(wz.width, wz.height));
+      ship.setPos(cur.x, cur.y);
+    }
   },
   /**
    * @method initPaddleSize

@@ -51,11 +51,6 @@ BackLayer = scenes.XLayer.extend({
  */
 GameLayer = scenes.XGameLayer.extend({
   /**
-   * @method onStop
-   * @private
-   */
-  onStop(evt) { },
-  /**
    * @method pkInput
    * @protected
    */

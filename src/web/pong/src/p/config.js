@@ -11,7 +11,7 @@
 
 "use strict";/**
  * @requires zotohlab/asx/asterix
- * @requires zotohlab/asx/xcfg
+ * @requires zotohlab/asx/cfg
  * @module p/config
  */
 

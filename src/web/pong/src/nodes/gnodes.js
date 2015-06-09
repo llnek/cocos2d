@@ -28,7 +28,7 @@ undef;
 /**
  * @class BallNode
  */
-BallNode = sh.Ashley.nodeDef({
+const BallNode = sh.Ashley.nodeDef({
   /**
    * @memberof module:nodes/gnodes~BallNode
    * @property {Velocity} velocity
@@ -49,7 +49,7 @@ xbox.BallNode = BallNode;
 /**
  * @class FauxPaddleNode
  */
-FauxPaddleNode = sh.Ashley.nodeDef({
+const FauxPaddleNode = sh.Ashley.nodeDef({
   /**
    * @memberof module:nodes/gnodes~FauxPaddleNode
    * @property {Position} lastpos
@@ -79,7 +79,7 @@ xbox.FauxPaddleNode = FauxPaddleNode;
 /**
  * @class PaddleNode
  */
-PaddleNode = sh.Ashley.nodeDef({
+const PaddleNode = sh.Ashley.nodeDef({
   /**
    * @memberof module:nodes/gnodes~PaddleNode
    * @property {Position} lastpos

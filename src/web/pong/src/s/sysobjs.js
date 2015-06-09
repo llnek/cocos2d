@@ -10,8 +10,7 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 "use strict";/**
- * @requires nodes/cobjs
- * @requires nodes/gnodes
+ * @requires cherimoia/skaro
  * @requires s/factory
  * @requires s/collision
  * @requires s/networking
@@ -19,12 +18,11 @@
  * @requires s/resolution
  * @requires s/supervisor
  * @requires s/motion
- * @requires s/movements
+ * @requires s/movement
  * @module s/sysobjs
  */
 
-import cobjs from 'nodes/cobjs';
-import gnodes from 'nodes/gnodes';
+import sjs from 'cherimoia/skaro';
 import f from 's/factory';
 import co from 's/collision';
 import net from 's/networking';
@@ -32,7 +30,7 @@ import rd from 's/rendering';
 import rs from 's/resolution';
 import v from 's/supervisor';
 import mo from 's/motion';
-import mv from 's/movements';
+import mv from 's/movement';
 
 
 /** @alias module:s/sysobjs */
@@ -45,15 +43,15 @@ const xbox= /** @lends xbox# */{
   /**
    * @property {Collisions} Collisions
    */
-  Collisions        : co.Collisions,
+  Collisions        : co.CollisionSystem,
   /**
    * @property {Networking} Networking
    */
-  Networking        : net.Networking,
+  Networking        : net.NetworkSystem,
   /**
    * @property {Rendering} Rendering
    */
-  Rendering         : rd.Rendering,
+  Rendering         : rd.RenderSystem,
   /**
    * @property {Resolution} Resolution
    */
@@ -65,11 +63,11 @@ const xbox= /** @lends xbox# */{
   /**
    * @property {Motions} Motions
    */
-  Motions           : mo.Motions,
+  Motions           : mo.MotionCtrlSystem,
   /**
    * @property {Movements} Movements
    */
-  Movements         : mv.Movements
+  Movements         : mv.MovementSystem
 };
 
 

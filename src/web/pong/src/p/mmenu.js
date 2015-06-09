@@ -58,11 +58,11 @@ MainMenuLayer = scenes.XMenuLayer.extend({
     game = sh.protos[sh.ptypes.game],
     mm = sh.protos[sh.ptypes.mmenu],
     dir=cc.director;
-    msg.onBack=() => {
+    msg.onback=() => {
       dir.runScene( mm.reify());
     };
     msg.yes= (wss,pnum,startmsg) => {
-      const m= sjs.mergeEx(R.omit(['yes','onBack'], msg),
+      const m= sjs.mergeEx(R.omit(['yes','onback'], msg),
                            { wsock: wss, pnum: pnum });
       m.ppids = startmsg.ppids;
       dir.runScene( game.reify(m));
@@ -121,7 +121,7 @@ MainMenuLayer = scenes.XMenuLayer.extend({
       { nnn: '#icon_back.png',
         color: color,
         cb() {
-          this.options.onBack();
+          this.options.onback();
         },
         target: this },
       { nnn: '#icon_quit.png',

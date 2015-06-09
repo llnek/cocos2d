@@ -14,7 +14,7 @@
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/odin
  * @requires nodes/gnodes
- * @module s/movements
+ * @module s/movement
  */
 
 import sh from 'zotohlab/asx/asterix';

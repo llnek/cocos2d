@@ -15,8 +15,8 @@
  * @module s/motion
  */
 
-import gnodes from 'zotohlab/p/gnodes';
 import sh from 'zotohlab/asx/asterix';
+import gnodes from 'nodes/gnodes';
 
 let sjs= sh.skarojs,
 xcfg = sh.xcfg,

@@ -36,29 +36,25 @@ csts= xcfg.csts,
 R= sjs.ramda,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @extends module:zotohlab/asx/scenes.XLayer
- * @class BackLayer
- */
+/** * @class BackLayer */
 BackLayer = scenes.XLayer.extend({
-  /**
-   * @method rtti
-   */
-  rtti() { return 'BackLayer'; },
-  /**
-   * @method setup
-   * @protected
-   */
   setup() {
     this.centerImage(sh.getImagePath('game.bg'));
-  }
+  },
+  rtti() { return 'BackLayer'; }
 }),
 //////////////////////////////////////////////////////////////////////////
-/**
- * @extends module:zotohlab/asx/scenes.XGameLayer
- * @class GameLayer
- */
+/** * @class GameLayer */
 GameLayer = scenes.XGameLayer.extend({
+  /**
+   * @method pkInput
+   * @protected
+   */
+  pkInput() {
+    ccsx.onKeyPolls(this.keyboard);
+    //ccsx.onTouchOne(this.ebus);
+    //ccsx.onMouse(this.ebus);
+  },
   /**
    * Get an odin event, first level callback
    * @method onevent
@@ -76,12 +72,6 @@ GameLayer = scenes.XGameLayer.extend({
         this.onSessionEvent(evt);
       break;
     }
-  },
-  /**
-   * @method onStop
-   * @private
-   */
-  onStop(evt) {
   },
   /**
    * @method onNetworkEvent
@@ -169,14 +159,6 @@ GameLayer = scenes.XGameLayer.extend({
 
     this.initPlayers();
 
-    this.getHUD().regoPlayers(csts.P1_COLOR,p1ids,
-                              csts.P2_COLOR,p2ids);
-
-    if (this.options.wsock) {
-      this.options.wsock.unsubscribeAll();
-      this.options.wsock.subscribeAll(this.onevent,this);
-    }
-
     R.forEach((z) => {
       this.engine.addSystem(new (z)(this.options), z.Priority);
     },
@@ -187,6 +169,10 @@ GameLayer = scenes.XGameLayer.extend({
       sobjs.Resolution,
       sobjs.Collisions,
       sobjs.Rendering] );
+
+    this.getHUD().regoPlayers(csts.P1_COLOR,p1ids,
+                              csts.P2_COLOR,p2ids);
+
   },
   /**
    * @method onNewGame
@@ -207,7 +193,7 @@ GameLayer = scenes.XGameLayer.extend({
       this.regoAtlas('game-pics');
       this.regoAtlas('lang-pics');
     }
-    R.forEach((z) => {
+    R.forEach( z => {
       if (!!z) { z.dispose(); }
     }, this.players);
     if (newFlag) {
