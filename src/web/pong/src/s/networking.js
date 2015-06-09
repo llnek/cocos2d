@@ -13,16 +13,22 @@
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
  * @requires nodes/gnodes
+ * @requires zotohlab/asx/odin
+ * @requires Rx
  * @module s/networking
  */
 
 import sh from 'zotohlab/asx/asterix';
 import gnodes from 'nodes/gnodes';
 import ccsx from 'zotohlab/asx/ccsx';
+import odin from 'zotohlab/asx/odin';
+import Rx from 'Rx';
 
-let sjs= sh.skarojs,
+let evts= odin.Events,
+sjs= sh.skarojs,
 xcfg = sh.xcfg,
 csts= xcfg.csts,
+R=sjs.ramda,
 undef,
 //////////////////////////////////////////////////////////////////////////
 /**
@@ -35,8 +41,8 @@ NetworkSystem = sh.Ashley.sysDef({
    * @param {Object} options
    */
   constructor(options) {
-    this.netQ= options.netQ;
     this.state = options;
+    this.inited=false;
   },
   /**
    * @memberof module:s/networking~NetworkSystem
@@ -47,6 +53,8 @@ NetworkSystem = sh.Ashley.sysDef({
     this.paddles= null;
     this.balls= null;
     this.fauxs= null;
+    this.stream=null;
+    this.evQ=null;
   },
   /**
    * @memberof module:s/networking~NetworkSystem
@@ -59,14 +67,115 @@ NetworkSystem = sh.Ashley.sysDef({
     this.fauxs= engine.getNodeList(gnodes.FauxPaddleNode);
   },
   /**
+   * @method onceOnly
+   * @private
+   */
+  onceOnly() {
+    this.evQ=[];
+    if (this.state.wsock) {
+      sjs.loggr.debug("reply to server: session started ok");
+      const src= R.pick(['framespersec',
+                         'world',
+                         'syncMillis',
+                         'paddle',
+                         'ball',
+                         'p1',
+                         'p2',
+                         'numpts'], this.state);
+      this.state.wsock.unsubscribeAll();
+      this.state.wsock.send({
+        source: sjs.jsonfy(src),
+        type: evts.MSG_SESSION,
+        code: evts.STARTED
+      });
+      this.stream=Rx.Observable.create( obj => {
+        this.state.wsock.subscribeAll((t,e)=>{
+          obj.onNext({group:'net', event: e});
+        });
+      });
+    } else {
+      this.stream= Rx.Observable.never();
+    }
+    this.stream.subscribe( msg => {
+      if (!!this.evQ) {
+        this.evQ.push(msg);
+      }
+    });
+  },
+  /**
    * @memberof module:s/networking~NetworkSystem
    * @method update
    * @param {Number} dt
    */
   update(dt) {
-    if (this.netQ.length > 0) {
-      return this.onEvent(this.netQ.shift());
+    if (!this.inited) {
+      this.onceOnly();
+      this.inited=true;
     }
+    else
+    if (this.evQ.length > 0) {
+      const evt = this.evQ.shift();
+      this.onevent(evt.event);
+    }
+  },
+  /**
+   * Get an odin event, first level callback
+   * @method onevent
+   * @private
+   */
+  onevent(evt) {
+    sjs.loggr.debug(evt);
+    switch (evt.type) {
+      case evts.MSG_NETWORK:
+        this.onnetw(evt);
+      break;
+      case evts.MSG_SESSION:
+        this.onsess(evt);
+      break;
+    }
+  },
+  /**
+   * @method onnetw
+   * @private
+   */
+  onnetw(evt) {
+    switch (evt.code) {
+      case evts.RESTART:
+        sjs.loggr.debug("restarting a new game...");
+        sh.fire('/game/restart');
+      break;
+      case evts.STOP:
+        sjs.loggr.debug("game will stop");
+        sh.fire('/game/stop', evt);
+      break;
+      case evts.SYNC_ARENA:
+        sjs.loggr.debug("synchronize ui as defined by server.");
+        this.process(evt);
+        this.state.poked=true;
+      break;
+    }
+  },
+  /**
+   * @method onSessionEvent
+   * @private
+   */
+  onsess(evt) {
+    if (!sjs.isObject(evt.source)) { return; }
+    switch (evt.code) {
+      case evts.POKE_MOVE:
+        sjs.loggr.debug("activate arena, start to rumble!");
+        if (this.state.pnum === evt.source.pnum) {
+          this.state.poked=true;
+        } else {
+          sjs.loggr.error("Got POKED but with wrong player number. " +
+                          evt.source.pnum);
+        }
+      break;
+      case evts.SYNC_ARENA:
+        sjs.loggr.debug("synchronize ui as defined by server.");
+        this.process(evt);
+        this.state.poked=true;
+      break;}
   },
   /**
    * @method syncScores
@@ -80,13 +189,11 @@ NetworkSystem = sh.Ashley.sysDef({
     sh.fire('/hud/score/sync', { points: rc});
   },
   /**
-   * @method onevent
+   * @method process
    * @private
    */
-  onEvent(evt) {
-
-    sjs.loggr.debug("onevent: => " + sjs.jsonfy(evt.source));
-
+  process(evt) {
+    sjs.loggr.debug("process: => " + sjs.jsonfy(evt.source));
     let actors= this.state.players,
     win,
     node,

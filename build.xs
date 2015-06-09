@@ -1,6 +1,6 @@
-skaroHome=/wdrive/myspace/skaro/alchemy.dir/_/pack
-bldDir=alchemy.dir
-prj=_
+skaroHome=/wdrive/myspace/skaro/alchemy.dir/0/pack
+bldDir=a.out
+prj=0
 wjs=webscripts
 wcs=webstyles
 

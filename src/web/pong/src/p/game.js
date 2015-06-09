@@ -56,67 +56,6 @@ GameLayer = scenes.XGameLayer.extend({
     //ccsx.onMouse(this.ebus);
   },
   /**
-   * Get an odin event, first level callback
-   * @method onevent
-   * @private
-   */
-  onevent(topic, evt) {
-
-    sjs.loggr.debug(evt);
-
-    switch (evt.type) {
-      case evts.MSG_NETWORK:
-        this.onNetworkEvent(evt);
-      break;
-      case evts.MSG_SESSION:
-        this.onSessionEvent(evt);
-      break;
-    }
-  },
-  /**
-   * @method onNetworkEvent
-   * @private
-   */
-  onNetworkEvent(evt) {
-    switch (evt.code) {
-      case evts.RESTART:
-        sjs.loggr.debug("restarting a new game...");
-        this.play(false);
-      break;
-      case evts.STOP:
-        sjs.loggr.debug("game will stop");
-        this.onStop(evt);
-      break;
-      default:
-        //TODO: fix this hack
-        this.onSessionEvent(evt);
-      break;
-    }
-  },
-  /**
-   * @method onSessionEvent
-   * @private
-   */
-  onSessionEvent(evt) {
-    if (!sjs.isObject(evt.source)) { return; }
-    switch (evt.code) {
-      case evts.POKE_MOVE:
-        sjs.loggr.debug("activate arena, start to rumble!");
-        if (this.options.pnum === evt.source.pnum) {
-          this.options.poked=true;
-        } else {
-          sjs.loggr.error("Got POKED but with wrong player number. " +
-                          evt.source.pnum);
-        }
-      break;
-      case evts.SYNC_ARENA:
-        sjs.loggr.debug("synchronize ui as defined by server.");
-        this.options.netQ.push(evt);
-        this.options.poked=true;
-      break;
-    }
-  },
-  /**
    * @method replay
    */
   replay() {
@@ -153,13 +92,12 @@ GameLayer = scenes.XGameLayer.extend({
 
     sh.factory= new sobjs.Factory(this.engine);
     this.options.world = this.getEnclosureBox();
-    this.options.netQ= [];
     this.options.running=true;
     this.options.poked=false;
 
     this.initPlayers();
 
-    R.forEach((z) => {
+    R.forEach( z => {
       this.engine.addSystem(new (z)(this.options), z.Priority);
     },
     [ sobjs.Supervisor,
@@ -188,7 +126,7 @@ GameLayer = scenes.XGameLayer.extend({
    */
   reset(newFlag) {
     if (!sjs.isEmpty(this.atlases)) {
-      sjs.eachObj((v) => { v.removeAllChildren(); }, this.atlases);
+      sjs.eachObj( v => { v.removeAllChildren(); }, this.atlases);
     } else {
       this.regoAtlas('game-pics');
       this.regoAtlas('lang-pics');
@@ -308,6 +246,11 @@ const xbox = /** @lends xbox# */{
 
     scene.onmsg('/hud/showmenu', (t,msg) => {
       scenes.showMenu();
+    }).
+    onmsg('/game/restart', (t,msg) => {
+      sh.main.play(false);
+    }).
+    onmsg('/game/stop', (t,msg) => {
     }).
     onmsg('/hud/replay', (t,msg) => {
       sh.main.replay();

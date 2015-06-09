@@ -148,7 +148,7 @@ class Session extends sjs.ES6Claxx {
     super();
     this.state= evts.S_NOT_CONNECTED;
     this.options=config || {};
-    this.ebus= ebus.reify();
+    this.ebus= ebus.reifyRvBus();
     this.handlers= [];
     this.ws = null;
   }

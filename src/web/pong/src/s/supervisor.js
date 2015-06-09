@@ -69,7 +69,7 @@ GameSupervisor = sh.Ashley.sysDef({
       this.inited=true;
     } else {
     }
-    return this.state.wsock ? this.state.poked : true;
+    //return this.state.wsock ? this.state.poked : true;
   },
   /**
    * @method onceOnly
@@ -111,26 +111,11 @@ GameSupervisor = sh.Ashley.sysDef({
     sh.factory.createPaddles(sh.main, this.state);
     sh.factory.createBall(sh.main, this.state);
 
-    if (this.state.wsock) {
-      // online play
-      sjs.loggr.debug("reply to server: session started ok");
-      const src= R.pick(['framespersec',
-                         'world',
-                         'syncMillis',
-                         'paddle',
-                         'ball',
-                         'p1',
-                         'p2',
-                         'numpts'], this.state);
-      this.state.wsock.send({
-        source: sjs.jsonfy(src),
-        type: evts.MSG_SESSION,
-        code: evts.STARTED
-      });
+    // mouse only for 1p or netplay
+    if (xcfg.csts.GAME_MODE !== sh.gtypes.P2_GAME) {
+      ccsx.onMouse(this);
     }
-
     ccsx.onTouchOne(this);
-    ccsx.onMouse(this);
     sh.main.pkInput();
   },
   /**
@@ -139,31 +124,61 @@ GameSupervisor = sh.Ashley.sysDef({
    */
   fire(t, evt) {
     if (('/touch/one/move' === t || '/mouse/move' === t) &&
-        this.state.running) {} else {
-      return;
-    }
+        this.state.running) {}
+    else
+    { return; }
+
     for (let node= this.nodeList.head; node; node=node.next) {
-      this.process(node,evt);
+      if (ccsx.isPortrait()) {
+        this.processP(node,evt);
+      } else {
+        this.processL(node,evt);
+      }
     }
   },
   /**
-   * @method process
+   * @method processP
    * @private
    */
-  process(node, evt) {
-    let p = node.paddle,
+  processP(node, evt) {
+    let pnum= node.player.pnum,
+    p = node.paddle,
     pos = p.pos(),
+    loc= evt.loc,
+    cur,
     x=pos.x,
     y=pos.y,
     wz= ccsx.vrect();
-    if (ccsx.isPortrait()) {
+
+    if (pnum === 2 && loc.y > pos.y ||
+        pnum === 1 && loc.y < pos.y) {
       x = pos.x + evt.delta.x;
-    } else {
-      y = pos.y + evt.delta.y;
+      cur= cc.pClamp(cc.p(x,y), cc.p(0, 0),
+                     cc.p(wz.width, wz.height));
+      p.setPos(cur.x, cur.y);
     }
-    cur= cc.pClamp(cc.p(x,y), cc.p(0, 0),
-                   cc.p(wz.width, wz.height));
-    p.setPos(cur.x, cur.y);
+  },
+  /**
+   * @method processL
+   * @private
+   */
+  processL(node, evt) {
+    let pnum= node.player.pnum,
+    p = node.paddle,
+    pos = p.pos(),
+    loc= evt.loc,
+    cur,
+    x=pos.x,
+    y=pos.y,
+    wz= ccsx.vrect();
+
+    if (pnum === 2 && loc.x > pos.x ||
+        pnum === 1 && loc.x < pos.x) {
+      y = pos.y + evt.delta.y;
+      cur= cc.pClamp(cc.p(x,y), cc.p(0, 0),
+                     cc.p(wz.width, wz.height));
+      p.setPos(cur.x, cur.y);
+    }
   },
   /**
    * @method initPaddleSize
