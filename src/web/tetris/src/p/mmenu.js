@@ -75,7 +75,8 @@ MainMenuLayer = scenes.XMenuLayer.extend({
     this.centerImage(sh.getImagePath('gui.mmenu.menu.bg'));
     this.title();
     this.btns();
-
+    const cw = ccsx.center(),
+    wb = ccsx.vbox();
     this.mkBackQuit(false, [{
         nnn: '#icon_back.png',
         cb() {

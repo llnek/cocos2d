@@ -712,7 +712,6 @@ const XGameHUDLayer = XLayer.extend({
     menu.setPosition(wz.right - csts.TILE - hw, y);
     this.addItem(menu);
   },
-
   /**
    * Add a replay icon.
    * @memberof module:zotohlab/asx/scenes~XGameHUDLayer
@@ -722,15 +721,17 @@ const XGameHUDLayer = XLayer.extend({
    */
   addReplayIcon(menu, where) {
     let c= menu.getChildByTag(1),
+    hh = ccsx.getScaledHeight(c) * 0.5,
+    hw = ccsx.getScaledWidth(c) * 0.5,
     wz= ccsx.vbox(),
     x, y;
 
     if (where === ccsx.acs.Bottom) {
-      y = wz.bottom + csts.TILE  + ccsx.getScaledHeight(c) * 0.5;
+      y = wz.bottom + csts.TILE  + hh;
     } else {
-      y = wz.top - csts.TILE  - ccsx.getScaledHeight(c) * 0.5;
+      y = wz.top - csts.TILE  - hh;
     }
-    menu.setPosition(wz.left + csts.TILE + ccsx.getScaledWidth(c) * 0.5, y);
+    menu.setPosition(wz.left + csts.TILE + hw, y);
     this.replayBtn=menu;
     this.addItem(menu);
   }

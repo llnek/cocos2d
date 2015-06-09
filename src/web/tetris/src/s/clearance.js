@@ -87,7 +87,7 @@ RowClearance = sh.Ashley.sysDef({
   clearFilled(node) {
     const score= node.flines.lines.length;
 
-    R.forEach((z) => {
+    R.forEach( z => {
       this.clearOneRow(node,z);
       this.resetOneRow(node,z);
     },

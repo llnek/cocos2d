@@ -33,28 +33,15 @@ csts = xcfg.csts,
 R = sjs.ramda,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @extends module:zotohlab/asx/scenes.XLayer
- * @class BackLayer
- */
+/** @class BackLayer */
 BackLayer = scenes.XLayer.extend({
-  /**
-   * @method rtti
-   */
-  rtti() { return 'BackLayer'; },
-  /**
-   * @method setup
-   * @protected
-   */
   setup() {
     this.centerImage(sh.getImagePath('game.bg'));
-  }
+  },
+  rtti() { return 'BackLayer'; }
 }),
 //////////////////////////////////////////////////////////////////////////
-/**
- * @extends module:zotohlab/asx/scenes.XGameLayer
- * @class GameLayer
- */
+/** @class GameLayer */
 GameLayer = scenes.XGameLayer.extend({
   /**
    * @method reset
@@ -62,7 +49,7 @@ GameLayer = scenes.XGameLayer.extend({
    */
   reset(newFlag) {
     if (!sjs.isEmpty(this.atlases)) {
-      sjs.eachObj((v) => {
+      sjs.eachObj( v => {
         v.removeAllChildren();
       }, this.atlases);
     } else {
@@ -74,6 +61,15 @@ GameLayer = scenes.XGameLayer.extend({
     } else {
       this.getHUD().reset();
     }
+  },
+  /**
+   * @method pkInput
+   * @protected
+   */
+  pkInput() {
+    ccsx.onKeyPolls(this.keyboard);
+    ccsx.onTouchOne(this.ebus);
+    ccsx.onMouse(this.ebus);
   },
   /**
    * @method ctor
@@ -120,7 +116,7 @@ GameLayer = scenes.XGameLayer.extend({
     this.options.running=true;
     this.options.selQ=[];
 
-    R.forEach((z) => {
+    R.forEach( z => {
       this.engine.addSystem(new (z)(this.options), z.Priority);
     },
     [sobjs.Supervisor,

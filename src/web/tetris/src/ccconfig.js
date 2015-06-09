@@ -24,6 +24,7 @@ document.ccConfig = {
     "/public/vendors/js-signals/signals.js",
     "/public/vendors/ash-js/ash.js",
 
+    "/public/vendors/rxjs/rx.all.js",
 
     "/public/vendors/cherimoia/skaro.js",
     "/public/vendors/cherimoia/caesar.js",
@@ -31,7 +32,7 @@ document.ccConfig = {
 
     "/public/ig/lib/zotohlab/asx/asterix.js",
     "/public/ig/lib/zotohlab/asx/cfg.js",
-    "/public/ig/lib/zotohlab/asx/cs2dx.js",
+    "/public/ig/lib/zotohlab/asx/ccsx.js",
     "/public/ig/lib/zotohlab/asx/odin.js",
 
     "/public/ig/lib/zotohlab/asx/scenes.js",

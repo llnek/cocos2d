@@ -16,7 +16,6 @@
       "src/tetris/s/movement.js",
       "src/tetris/s/rendering.js",
       "src/tetris/s/resolution.js",
-
       "src/tetris/s/sysobjs.js",
 
       "src/tetris/p/hud.js",

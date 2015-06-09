@@ -101,6 +101,7 @@ GameSupervisor = sh.Ashley.sysDef({
     });
 
     this.doCtrl(node);
+    sh.main.pkInput();
   },
   /**
    * @method doCtrl

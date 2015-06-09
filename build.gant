@@ -733,6 +733,16 @@ def doYuiJS() {
        public TARGETS
        */
 
+target (game: '') {
+  property( name: 'pmode' , value: 'release')
+  input(message:'Enter game: ', addproperty: 'gamename')
+  new File("${webDir}").eachDir { f ->
+    if (f.getName() == "${gamename}") {
+      doBuildOneWebApp(f);
+    }
+  }
+}
+
 target (fast: '') {
   property( name: 'pmode' , value: 'release')
   //depends (buildr)

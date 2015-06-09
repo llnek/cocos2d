@@ -15,7 +15,7 @@
  * @requires nodes/cobjs
  * @requires nodes/gnodes
  * @requires s/utils
- * @module s/motioncontrol
+ * @module s/motion
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -23,7 +23,7 @@ import ccsx from 'zotohlab/asx/ccsx';
 import cobjs from 'nodes/cobjs';
 import gnodes from 'nodes/gnodes';
 import utils from 's/utils';
-
+import Rx from 'Rx';
 
 let sjs= sh.skarojs,
 xcfg = sh.xcfg,
@@ -49,7 +49,9 @@ MotionCtrlSystem = sh.Ashley.sysDef({
    * @param {Ash.Engine} engine
    */
   removeFromEngine(engine) {
+    this.stream=null;
     this.arena=null;
+    this.evQ=null;
   },
   /**
    * @memberof module:s/motioncontrol
@@ -59,34 +61,43 @@ MotionCtrlSystem = sh.Ashley.sysDef({
   addToEngine(engine) {
     this.arena= engine.getNodeList(gnodes.ArenaNode);
     this.ops={};
-    this.initKeyOps();
-  },
-  /**
-   * @method onXXXEvent
-   * @private
-   */
-  onXXXEvent(node,dt) {
-    if (this.state.selQ.length > 0) {
-      const evt= this.state.selQ.shift();
-      this.processMouse(node, evt, dt);
-      this.state.selQ.length=0;
+    this.evQ=[];
+    this.stream= Rx.Observable.merge(
+      Rx.Observable.create( obj => {
+        sh.main.signal('/touch/one/end', (t,m) => {
+          obj.onNext(m);
+        });
+      }),
+      Rx.Observable.create( obj => {
+        sh.main.signal('/mouse/up', (t,m) => {
+          obj.onNext(m);
+        });
+      })
+    );
+    this.stream.subscribe( msg => {
+      if (!!this.evQ) {
+        this.evQ.push(msg);
+      }
+    });
+    if (ccsx.hasKeyPad()) {
+      this.initKeyOps();
     }
   },
   /**
-   * @checkInput
+   * @process
    * @private
    */
-  checkInput(node, dt) {
-    if (cc.sys.capabilities['touches']) {
-      this.onXXXEvent(node, dt);
+  process(node, dt) {
+    let evt;
+    if (this.evQ.length > 0) {
+      evt = this.evQ.shift();
     }
-    else
-    if (cc.sys.capabilities['mouse']) {
-      this.onXXXEvent(node, dt);
-    }
-    else
-    if (cc.sys.capabilities['keyboard']) {
-      this.processKeys(node, dt);
+    if (this.state.running &&
+       !!node) {
+      if (!!evt) {
+        this.ongui(node,evt,dt);
+      }
+      this.onkey(node, dt);
     }
   },
   /**
@@ -96,19 +107,16 @@ MotionCtrlSystem = sh.Ashley.sysDef({
    */
   update(dt) {
     const node= this.arena.head;
-    if (this.state.running &&
-       !!node) {
-      this.checkInput(node, dt);
-    }
+    this.process(node, dt);
   },
   /**
-   * @method processMouse
+   * @method obgui
    * @private
    */
-  processMouse(node, evt,dt) {
+  ongui(node, evt,dt) {
     const hsps= node.cpad.hotspots,
-    px= evt.x,
-    py= evt.y;
+    px= evt.loc.x,
+    py= evt.loc.y;
 
     if (ccsx.pointInBox(hsps.rr, px,py)) {
       this.ops.rotRight(node, dt);
@@ -131,10 +139,10 @@ MotionCtrlSystem = sh.Ashley.sysDef({
     }
   },
   /**
-   * @processKeys
+   * @onkey
    * @private
    */
-  processKeys(node, dt) {
+  onkey(node, dt) {
 
     if (this.keyPoll(cc.KEY.right)) {
       this.ops.sftRight(node, dt);

@@ -112,6 +112,28 @@ HUDLayer = scenes.XGameHUDLayer.extend({
     this.scoreLabel.setString('' + this.score);
   },
   /**
+   * @method addReplayIcon
+   * @protected
+   */
+  addReplayIcon(menu, where) {
+    let wall=ccsx.createSpriteFrame('gray.png').getContentSize().width,
+    c= menu.getChildByTag(1),
+    hh = ccsx.getScaledHeight(c) * 0.5,
+    hw = ccsx.getScaledWidth(c) * 0.5,
+    wb= ccsx.vbox(),
+    cw = ccsx.center(),
+    y;
+
+    if (where === ccsx.acs.Bottom) {
+      y = wb.bottom + csts.TILE  + hh;
+    } else {
+      y = wb.top - csts.TILE  - hh;
+    }
+    menu.setPosition(cw.x + wall * 0.5 + hw, y);
+    this.replayBtn=menu;
+    this.addItem(menu);
+  },
+  /**
    * @method ctor
    * @constructs
    */
@@ -122,6 +144,7 @@ HUDLayer = scenes.XGameHUDLayer.extend({
     this.options.i_replay= {
       nnn: '#icon_replay.png',
       color: ccsx.white,
+      where: ccsx.acs.Bottom,
       visible: false,
       cb() {
         sh.fire('/hud/replay'); }
@@ -129,6 +152,7 @@ HUDLayer = scenes.XGameHUDLayer.extend({
 
     this.options.i_menu= {
       nnn: '#icon_menu.png',
+      where: ccsx.acs.Bottom,
       color: ccsx.white,
       cb() {
         sh.fire('/hud/showmenu'); }

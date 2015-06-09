@@ -16,7 +16,7 @@
  * @requires s/factory
  * @requires s/clearance
  * @requires s/generator
- * @requires s/motioncontrol
+ * @requires s/motion
  * @requires s/movement
  * @requires s/rendering
  * @requires s/resolution
@@ -24,13 +24,14 @@
  * @module s/sysobjs
  */
 
+import sjs from 'cherimoia/skaro';
 import cobjs from 'nodes/cobjs';
 import gnodes from 'nodes/gnodes';
 import utils from 's/utils';
 import f from 's/factory';
 import c from 's/clearance';
 import g from 's/generator';
-import mo from 's/motioncontrol';
+import mo from 's/motion';
 import mv from 's/movement';
 import rd from 's/rendering';
 import rs from 's/resolution';
@@ -50,27 +51,27 @@ const xbox= /** @lends xbox# */{
   /**
    * @property {Generator} Generator
    */
-  Generator       : g.Generator,
+  Generator       : g.ShapeGenerator,
   /**
    * @property {MotionControl} MotionControl
    */
-  MotionControl   : mo.MotionControl,
+  MotionControl   : mo.MotionCtrlSystem,
   /**
    * @property {Movements} Movements
    */
-  Movements       : mv.Movements,
+  Movements       : mv.MovementSystem,
   /**
    * @property {Rendering} Rendering
    */
-  Rendering       : rd.Rendering,
+  Rendering       : rd.RenderSystem,
   /**
    * @property {Resolution} Resolution
    */
-  Resolution      : rs.Resolution,
+  Resolution      : rs.ResolutionSystem,
   /**
    * @property {Supervisor} Supervisor
    */
-  Supervisor      : v.Supervisor
+  Supervisor      : v.GameSupervisor
 };
 
 

@@ -37,21 +37,11 @@ csts= xcfg.csts,
 R = sjs.ramda,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @extends module:zotohlab/asx/scenes.XLayer
- * @class BackLayer
- */
+/** @class BackLayer */
 BackLayer = scenes.XLayer.extend({
-  /**
-   * @method setup
-   * @protected
-   */
   setup() {
     this.centerImage(sh.getImagePath('game.bg'));
   },
-  /**
-   * @method rtti
-   */
   rtti() { return 'BackLayer'; }
 }),
 //////////////////////////////////////////////////////////////////////////////
