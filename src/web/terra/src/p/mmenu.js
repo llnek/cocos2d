@@ -66,7 +66,7 @@ MainMenuLayer = scenes.XMenuLayer.extend({
     this.mkBackQuit(false, [{
         nnn: '#icon_back.png',
         cb() {
-          this.options.onBack();
+          this.options.onback();
         },
         target: this },
       { nnn: '#icon_quit.png',

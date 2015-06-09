@@ -85,7 +85,7 @@ SplashLayer = scenes.XLayer.extend({
     utils.btnEffect();
     utils.flareEffect(this.flare, () => {
       dir.runScene( mm.reify({
-          onBack() { dir.runScene( ss.reify() ); }
+          onback() { dir.runScene( ss.reify() ); }
       }));
     });
   },

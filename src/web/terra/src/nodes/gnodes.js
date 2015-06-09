@@ -16,7 +16,7 @@
  */
 
 import sh from 'zotohlab/asx/asterix';
-import cobjs from 'nodes/gnodes';
+import cobjs from 'nodes/cobjs';
 
 /** @alias module:nodes/gnodes */
 let xbox = {},

@@ -16,7 +16,7 @@
  */
 
 import sh from 'zotohlab/asx/asterix';
-import xcfg from 'zotohlab/asx/xcfg';
+import xcfg from 'zotohlab/asx/cfg';
 
 
 const MOVES = { RUSH: 0, VERT: 1, HORZ: 2, OLAP: 3 },

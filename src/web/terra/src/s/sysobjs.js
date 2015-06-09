@@ -10,29 +10,31 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 "use strict";/**
+ * @requires cherimoia/skaro
  * @requires s/utils
  * @requires s/factory
  * @requires s/supervisor
  * @requires s/levelmgr
- * @requires s/motions
+ * @requires s/motion
  * @requires s/movemissiles
  * @requires s/movebombs
  * @requires s/moveship
- * @requires s/collisions
+ * @requires s/collision
  * @requires s/resolution
  * @requires s/rendering
  * @module s/sysobjs
  */
 
+import sjs from 'cherimoia/skaro';
 import u from 's/utils';
 import f from 's/factory';
 import v from 's/supervisor';
 import lm from 's/levelmgr';
-import mo from 's/motions';
+import mo from 's/motion';
 import ms from 's/movemissiles';
 import bs from 's/movebombs';
 import sp from 's/moveship';
-import co from 's/collisions';
+import co from 's/collision';
 import rs from 's/resolution';
 import rd from 's/rendering';
 
@@ -50,7 +52,7 @@ const xbox = /** @lends xbox# */{
   /**
    * @property {Supervisor}   Supervisor
    */
-  Supervisor          : v.Supervisor,
+  Supervisor          : v.GameSupervisor,
   /**
    * @property {LevelManager}   LevelManager
    */

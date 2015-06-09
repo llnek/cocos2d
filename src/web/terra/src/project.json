@@ -13,9 +13,9 @@
     "src/terra/s/factory.js",
     "src/terra/s/supervisor.js",
     "src/terra/s/motion.js",
-    "src/terra/s/move-missiles.js",
-    "src/terra/s/move-bombs.js",
-    "src/terra/s/move-ship.js",
+    "src/terra/s/movemissiles.js",
+    "src/terra/s/movebombs.js",
+    "src/terra/s/moveship.js",
     "src/terra/s/levelmgr.js",
     "src/terra/s/collision.js",
     "src/terra/s/resolution.js",
@@ -26,9 +26,9 @@
     "src/terra/p/hud.js",
     "src/terra/p/mmenu.js",
     "src/terra/p/game.js",
-
     "src/terra/p/protos.js",
-    "src/zotohlab/p/boot.js"
 
+
+    "src/zotohlab/p/boot.js"
     ]
 }

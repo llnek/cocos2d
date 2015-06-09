@@ -25,6 +25,8 @@ document.ccConfig = {
     "/public/vendors/js-signals/signals.js",
     "/public/vendors/ash-js/ash.js",
 
+    "/public/vendors/rxjs/rx.all.js",
+
     "/public/vendors/cherimoia/skaro.js",
     "/public/vendors/cherimoia/caesar.js",
     "/public/vendors/cherimoia/ebus.js",
@@ -53,9 +55,9 @@ document.ccConfig = {
 '/public/ig/lib/game/terra/s/factory.js',
 '/public/ig/lib/game/terra/s/supervisor.js',
 '/public/ig/lib/game/terra/s/motion.js',
-'/public/ig/lib/game/terra/s/move-missiles.js',
-'/public/ig/lib/game/terra/s/move-bombs.js',
-'/public/ig/lib/game/terra/s/move-ship.js',
+'/public/ig/lib/game/terra/s/movemissiles.js',
+'/public/ig/lib/game/terra/s/movebombs.js',
+'/public/ig/lib/game/terra/s/moveship.js',
 '/public/ig/lib/game/terra/s/levelmgr.js',
 '/public/ig/lib/game/terra/s/collision.js',
 '/public/ig/lib/game/terra/s/resolution.js',
@@ -67,8 +69,9 @@ document.ccConfig = {
 '/public/ig/lib/game/terra/p/hud.js',
 '/public/ig/lib/game/terra/p/mmenu.js',
 '/public/ig/lib/game/terra/p/game.js',
-
 '/public/ig/lib/game/terra/p/protos.js',
+
+
 '/public/ig/lib/zotohlab/p/boot.js'
   ]
 

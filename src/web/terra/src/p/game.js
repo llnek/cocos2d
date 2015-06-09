@@ -13,6 +13,7 @@
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/scenes
  * @requires s/sysobjs
+ * @requires s/utils
  * @requires zotohlab/asx/ccsx
  * @requires p/hud
  * @module p/game
@@ -20,71 +21,37 @@
 
 import scenes from 'zotohlab/asx/scenes';
 import sobjs from 's/sysobjs';
+import uts from 's/utils';
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
 import huds from 'p/hud';
 
 
 let sjs= sh.skarojs,
-uts= sobjs.Utils,
 xcfg= sh.xcfg,
 csts= xcfg.csts,
 R = sjs.ramda,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @extends module:zotohlab/asx/scenes.XLayer
- * @class BackLayer
- */
+/** * @class BackLayer */
 BackLayer = scenes.XLayer.extend({
-  /**
-   * @method rtti
-   */
   rtti() { return 'BackLayer'; },
-  /**
-   * @method pkInit
-   */
   setup() {
     this.regoAtlas('back-tiles', 1);
     this.regoAtlas('game-pics', 0);
   }
 }),
-/**
- * @extends module:zotohlab/asx/scenes.XGameLayer
- * @class GameLayer
- */
+//////////////////////////////////////////////////////////////////////////
+/** * @class GameLayer */
 GameLayer = scenes.XGameLayer.extend({
   /**
-   * @method cfgInputMouse
+   * @method pkInput
    * @protected
    */
-  cfgInputMouse() {
-    cc.eventManager.addListener({
-      event: cc.EventListener.MOUSE,
-      onMouseMove(e) {
-        if (e.getButton() === cc.EventMouse.BUTTON_LEFT) {
-          e.getCurrentTarget().processEvent(e);
-        }
-      }
-    }, this);
-  },
-  /**
-   * @method cfgTouch
-   * @protected
-   */
-  cfgTouch() {
-    this.cfgInputTouchesAll();
-  },
-  /**
-   * @method processEvent
-   * @private
-   */
-  processEvent(e) {
-    const ship= this.options.player;
-    if (this.options.running &&
-        !!ship) {
-      uts.processTouch(ship, e.getDelta());
-    }
+  pkInput() {
+    ccsx.onKeyPolls(this.keyboard);
+    //ccsx.onTouchOne(this.ebus);
+    //ccsx.onMouse(this.ebus);
   },
   /**
    * @method reset

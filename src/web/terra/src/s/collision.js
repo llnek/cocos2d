@@ -15,7 +15,7 @@
  * @requires nodes/cobjs
  * @requires s/utils
  * @requires nodes/gnodes
- * @module s/collisions
+ * @module s/collision
  */
 
 import sh from 'zotohlab/asx/asterix';
