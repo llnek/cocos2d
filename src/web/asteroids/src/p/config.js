@@ -54,14 +54,12 @@ const xbox = sjs.merge( xcfg, {
   assets: {
     atlases: {
       'lang-pics' : 'res/{{appid}}/l10n/{{lang}}/images',
-      'game-pics' : 'res/{{appid}}/pics/images'
+      'game-pics' : 'res/{{appid}}/pics/sprites'
     },
     tiles: {
     },
     images: {
-      'splash.play-btn' : 'res/cocos2d/btns/play_gray_x64.png',
-      'arena' : 'res/{{appid}}/pics/arena.png',
-      'gui.mmenu.menu.bg' : 'res/{{appid}}/pics/bg.png',
+      'gui.mmenus.menu.bg' : 'res/{{appid}}/pics/bg.png',
       'game.bg' : 'res/{{appid}}/pics/bg.png'
     },
     sounds: {
@@ -79,11 +77,8 @@ const xbox = sjs.merge( xcfg, {
   levels: {
     "1" : {
       tiles : {
-        'hudwall' : 'game/{{appid}}/levels/hudwall.tmx',
-        'arena' : 'game/{{appid}}/levels/arena.tmx'
       },
       images : {
-        'arena' : 'game/{{appid}}/levels/arena.png'
       },
       sprites : {
       },

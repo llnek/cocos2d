@@ -106,7 +106,40 @@ HUDLayer = scenes.XGameHUDLayer.extend({
     });
 
     this.lives.create();
+  },
+  /**
+   * @method ctor
+   * @constructs
+   */
+  ctor(options) {
+    const color= ccsx.white,
+    scale=1;
+
+    this._super(options);
+
+    this.options.i_replay= {
+      nnn: '#icon_replay.png',
+      where: ccsx.acs.Bottom,
+      color: color,
+      scale : scale,
+      visible: false,
+      cb() {
+        sh.fire('/hud/replay');
+      }
+    };
+
+    this.options.i_menu= {
+      nnn: '#icon_menu.png',
+      where: ccsx.acs.Bottom,
+      color: color,
+      scale: scale,
+      cb() {
+        sh.fire('/hud/showmenu');
+      }
+    };
+
   }
+
 
 });
 

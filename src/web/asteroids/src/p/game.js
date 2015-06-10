@@ -41,6 +41,15 @@ BackLayer = scenes.XLayer.extend({
 /** * @class GameLayer */
 GameLayer = scenes.XGameLayer.extend({
   /**
+   * @method pkInput
+   * @protected
+   */
+  pkInput() {
+    ccsx.onKeyPolls(this.keyboard);
+    //ccsx.onTouchOne(this.ebus);
+    //ccsx.onMouse(this.ebus);
+  },
+  /**
    * @method replay
    */
   replay() {
@@ -59,7 +68,7 @@ GameLayer = scenes.XGameLayer.extend({
     this.options.level=1;
     this.options.running=true;
 
-    R.forEach((z) => {
+    R.forEach( z => {
       this.engine.addSystem(new (z)(this.options), z.Priority);
     },
     [ sobjs.Supervisor,
@@ -157,7 +166,7 @@ const xbox= /** @lends xbox# */{
       huds.HUDLayer
     ]).reify(options);
 
-    scene.ebus.onmsg('/game/missiles/killed', (t, msg) => {
+    scene.onmsg('/game/missiles/killed', (t, msg) => {
       sh.main.onMissileKilled(msg);
     }).
     onmsg('/game/ufos/killed', (t, msg) => {

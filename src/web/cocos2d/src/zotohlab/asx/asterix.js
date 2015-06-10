@@ -380,7 +380,7 @@ let xbox = /** @lends xbox# */{
    * @return {Object} the config
    */
   getLevelCfg(level) {
-    return this.xcfg.levels['gamelevel' + level]['cfg'];
+    return this.xcfg.levels['' + level]['cfg'];
   },
 
   /**

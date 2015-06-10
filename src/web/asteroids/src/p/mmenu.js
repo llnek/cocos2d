@@ -58,7 +58,7 @@ MainMenuLayer = scenes.XMenuLayer.extend({
     this.centerImage(sh.getImagePath('gui.mmenus.menu.bg'));
     this.title();
     const cw = ccsx.center(),
-    wz = ccsx.vrect(),
+    wb = ccsx.vbox(),
     menu= ccsx.pmenu1({
       nnn: '#play.png',
       pos: cw,
@@ -71,13 +71,13 @@ MainMenuLayer = scenes.XMenuLayer.extend({
 
     this.mkBackQuit(false, [
       { nnn: '#icon_back.png',
-        color: color,
+        where: ccsx.acs.Bottom,
         cb() {
           this.options.onback();
         },
         target: this },
       { nnn: '#icon_quit.png',
-        color: cc.white,
+        where: ccsx.acs.Bottom,
         cb() { this.onQuit(); },
         target: this }
     ],
@@ -93,6 +93,13 @@ MainMenuLayer = scenes.XMenuLayer.extend({
       anchor: ccsx.acs.BottomRight
     });
 
+  },
+  /**
+   * @method ctor
+   * @private
+   */
+  ctor(options) {
+    this._super(options);
   }
 
 });

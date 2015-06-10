@@ -20,7 +20,7 @@
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
 import cobjs from 'nodes/cobjs';
-
+import xpool from 'zotohlab/asx/pool';
 
 let xcfg = sh.xcfg,
 sjs=sh.skarojs,
@@ -77,12 +77,12 @@ GameSupervisor = sh.Ashley.sysDef({
    */
   onceOnly() {
 
-    sh.pools.Missiles = new XPool();
-    sh.pools.Lasers = new XPool();
+    sh.pools.Missiles = xpool.reify();
+    sh.pools.Lasers = xpool.reify();
 
-    sh.pools.Astros3 = new XPool();
-    sh.pools.Astros2 = new XPool();
-    sh.pools.Astros1 = new XPool();
+    sh.pools.Astros3 = xpool.reify();
+    sh.pools.Astros2 = xpool.reify();
+    sh.pools.Astros1 = xpool.reify();
 
     this.initAsteroidSizes();
     this.initPlayerSize();
@@ -90,6 +90,11 @@ GameSupervisor = sh.Ashley.sysDef({
 
     sh.factory.createAsteroids(csts.P_AS1);
     sh.factory.createShip();
+
+
+    //ccsx.onTouchOne(this.ebus);
+    //ccsx.onMouse(this.ebus);
+    sh.main.pkInput();
   },
 
   /**
