@@ -4,8 +4,8 @@
      "src/pong/p/config.js",
       "src/pong/i18n/l10n.js",
 
-      "src/pong/nodes/cobjs.js",
-      "src/pong/nodes/gnodes.js",
+      "src/pong/n/cobjs.js",
+      "src/pong/n/gnodes.js",
 
       "src/pong/s/factory.js",
       "src/pong/s/motion.js",

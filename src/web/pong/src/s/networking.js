@@ -12,14 +12,14 @@
 "use strict";/**
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
- * @requires nodes/gnodes
+ * @requires n/gnodes
  * @requires zotohlab/asx/odin
  * @requires Rx
  * @module s/networking
  */
 
 import sh from 'zotohlab/asx/asterix';
-import gnodes from 'nodes/gnodes';
+import gnodes from 'n/gnodes';
 import ccsx from 'zotohlab/asx/ccsx';
 import odin from 'zotohlab/asx/odin';
 import Rx from 'Rx';

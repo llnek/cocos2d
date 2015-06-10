@@ -46,8 +46,8 @@ document.ccConfig = {
     '/public/ig/lib/game/invaders/p/config.js',
     '/public/ig/lib/game/invaders/i18n/l10n.js',
 
-    '/public/ig/lib/game/invaders/nodes/cobjs.js',
-    '/public/ig/lib/game/invaders/nodes/gnodes.js',
+    '/public/ig/lib/game/invaders/n/cobjs.js',
+    '/public/ig/lib/game/invaders/n/gnodes.js',
 
     '/public/ig/lib/game/invaders/s/factory.js',
     '/public/ig/lib/game/invaders/s/utils.js',

@@ -46,8 +46,8 @@ document.ccConfig = {
     '/public/ig/lib/game/asteroids/p/config.js',
     '/public/ig/lib/game/asteroids/i18n/l10n.js',
 
-'/public/ig/lib/game/asteroids/nodes/cobjs.js',
-'/public/ig/lib/game/asteroids/nodes/gnodes.js',
+'/public/ig/lib/game/asteroids/n/cobjs.js',
+'/public/ig/lib/game/asteroids/n/gnodes.js',
 
 '/public/ig/lib/game/asteroids/s/utils.js',
     '/public/ig/lib/game/asteroids/s/factory.js',

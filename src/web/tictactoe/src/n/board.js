@@ -11,7 +11,7 @@
 
 "use strict";/**
  * @requires zotohlab/asx/asterix
- * @module nodes/board
+ * @module n/board
  */
 
 
@@ -31,7 +31,7 @@ undef;
 class GameBoard extends sjs.ES6Claxx {
 
   /**
-   * @memberof module:nodes/board~GameBoard
+   * @memberof module:n/board~GameBoard
    * @method isNil
    * @param {Number} cellv
    * @return {Boolean}
@@ -39,7 +39,7 @@ class GameBoard extends sjs.ES6Claxx {
   isNil(cellv) { return cellv === this.CV_Z; }
 
   /**
-   * @memberof module:nodes/board~GameBoard
+   * @memberof module:n/board~GameBoard
    * @method constructor
    * @param {Number} size
    * @param {Number} nilValue
@@ -57,7 +57,7 @@ class GameBoard extends sjs.ES6Claxx {
   }
 
   /**
-   * @memberof module:nodes/board~GameBoard
+   * @memberof module:n/board~GameBoard
    * @method getFirstMove
    * @return {Number}
    */
@@ -73,7 +73,7 @@ class GameBoard extends sjs.ES6Claxx {
   }
 
   /**
-   * @memberof module:nodes/board~GameBoard
+   * @memberof module:n/board~GameBoard
    * @method syncState
    * @param {Array} seed
    * @param {Number} actor
@@ -84,7 +84,7 @@ class GameBoard extends sjs.ES6Claxx {
   }
 
   /**
-   * @memberof module:nodes/board~GameBoard
+   * @memberof module:n/board~GameBoard
    * @method getNextMoves
    * @param {SnapShot} snap
    * @return {Array}
@@ -101,7 +101,7 @@ class GameBoard extends sjs.ES6Claxx {
   }
 
   /**
-   * @memberof module:nodes/board~GameBoard
+   * @memberof module:n/board~GameBoard
    * @method unmakeMove
    * @param {SnapShot} snap
    * @param {Number} move
@@ -111,7 +111,7 @@ class GameBoard extends sjs.ES6Claxx {
   }
 
   /**
-   * @memberof module:nodes/board~GameBoard
+   * @memberof module:n/board~GameBoard
    * @method makeMove
    * @param {SnapShot} snap
    * @param {Number} move
@@ -125,7 +125,7 @@ class GameBoard extends sjs.ES6Claxx {
   }
 
   /**
-   * @memberof module:nodes/board~GameBoard
+   * @memberof module:n/board~GameBoard
    * @method switchPlayer
    * @param {SnapShot} snap
    */
@@ -136,7 +136,7 @@ class GameBoard extends sjs.ES6Claxx {
   }
 
   /**
-   * @memberof module:nodes/board~GameBoard
+   * @memberof module:n/board~GameBoard
    * @method getOtherPlayer
    * @param {Number} pv
    * @return {Number}
@@ -155,7 +155,7 @@ class GameBoard extends sjs.ES6Claxx {
   }
 
   /**
-   * @memberof module:nodes/board~GameBoard
+   * @memberof module:n/board~GameBoard
    * @method takeSnapshot
    * @return {SnapShot}
    */
@@ -169,7 +169,7 @@ class GameBoard extends sjs.ES6Claxx {
   }
 
   /**
-   * @memberof module:nodes/board~GameBoard
+   * @memberof module:n/board~GameBoard
    * @method evalScore
    * @param {SnapShot} snap
    * @return {Number}
@@ -181,7 +181,7 @@ class GameBoard extends sjs.ES6Claxx {
   }
 
   /**
-   * @memberof module:nodes/board~GameBoard
+   * @memberof module:n/board~GameBoard
    * @method isOver
    * @param {SnapShot} snap
    * @return {Boolean}
@@ -193,7 +193,7 @@ class GameBoard extends sjs.ES6Claxx {
   }
 
   /**
-   * @memberof module:nodes/board~GameBoard
+   * @memberof module:n/board~GameBoard
    * @method isStalemate
    * @param {Object} game
    * @return {Boolean}
@@ -206,7 +206,7 @@ class GameBoard extends sjs.ES6Claxx {
   }
 
   /**
-   * @memberof module:nodes/board~GameBoard
+   * @memberof module:n/board~GameBoard
    * @method isWinner
    * @param {Number} actor
    * @param {Array} gameVals
@@ -225,7 +225,7 @@ class GameBoard extends sjs.ES6Claxx {
 
 }
 
-/** @alias module:nodes/board */
+/** @alias module:n/board */
 const xbox= /** @lends xbox# */{
   /**
    * @property {GameBoard} GameBoard

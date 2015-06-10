@@ -11,16 +11,16 @@
 
 "use strict";/**
  * @requires zotohlab/asx/asterix
- * @requires nodes/cobjs
- * @requires nodes/board
- * @requires nodes/gnodes
+ * @requires n/cobjs
+ * @requires n/board
+ * @requires n/gnodes
  * @module s/factory
  */
 
 import sh from 'zotohlab/asx/asterix';
-import cobjs from 'nodes/cobjs';
-import gboard from 'nodes/board';
-import gnodes from 'nodes/gnodes';
+import cobjs from 'n/cobjs';
+import gboard from 'n/board';
+import gnodes from 'n/gnodes';
 
 //////////////////////////////////////////////////////////////////////////////
 let sjs= sh.skarojs,

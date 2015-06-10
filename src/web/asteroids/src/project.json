@@ -5,8 +5,8 @@
     "src/asteroids/p/config.js",
     "src/asteroids/i18n/l10n.js",
 
-"src/asteroids/nodes/cobjs.js",
-"src/asteroids/nodes/gnodes.js",
+"src/asteroids/n/cobjs.js",
+"src/asteroids/n/gnodes.js",
 
 "src/asteroids/s/utils.js",
     "src/asteroids/s/factory.js",

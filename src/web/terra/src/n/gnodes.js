@@ -11,14 +11,14 @@
 
 "use strict";/**
  * @requires zotohlab/asx/asterix
- * @requires nodes/cobjs
- * @module nodes/gnodes
+ * @requires n/cobjs
+ * @module n/gnodes
  */
 
 import sh from 'zotohlab/asx/asterix';
-import cobjs from 'nodes/cobjs';
+import cobjs from 'n/cobjs';
 
-/** @alias module:nodes/gnodes */
+/** @alias module:n/gnodes */
 let xbox = {},
 sjs=sh.skarojs,
 xcfg = sh.xcfg,
@@ -31,13 +31,13 @@ undef;
  */
 xbox.ShipMotionNode = sh.Ashley.nodeDef({
   /**
-   * @memberof module:nodes/gnodes~ShipMotionNode
+   * @memberof module:n/gnodes~ShipMotionNode
    * @property {Motion} motion
    */
   motion : cobjs.Motion,
 
   /**
-   * @memberof module:nodes/gnodes~ShipMotionNode
+   * @memberof module:n/gnodes~ShipMotionNode
    * @property {Ship} ship
    */
   ship  : cobjs.Ship

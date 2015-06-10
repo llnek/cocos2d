@@ -12,14 +12,14 @@
 "use strict";/**
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
- * @module nodes/cobjs
+ * @module n/cobjs
  */
 
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
 
 
-/** @alias module:nodes/cobjs */
+/** @alias module:n/cobjs */
 let xbox= {},
 sjs= sh.skarojs,
 xcfg = sh.xcfg,
@@ -33,7 +33,7 @@ undef;
 const AlienSquad = sh.Ashley.casDef({
 
   /**
-   * @memberof module:nodes/cobjs~AlienSquad
+   * @memberof module:n/cobjs~AlienSquad
    * @method constructor
    * @param {Array} aliens
    * @param {Number} step
@@ -55,7 +55,7 @@ xbox.AlienSquad = AlienSquad;
 const Alien = sh.Ashley.compDef({
 
   /**
-   * @memberof module:nodes/cobjs~Alien
+   * @memberof module:n/cobjs~Alien
    * @method constructor
    * @param {cc.Sprite} sprite
    * @param {Number} value
@@ -79,7 +79,7 @@ xbox.Alien = Alien;
 const Bomb = sh.Ashley.compDef({
 
   /**
-   * @memberof module:nodes/cobjs~Bomb
+   * @memberof module:n/cobjs~Bomb
    * @method constructor
    * @param {cc.Sprite}
    */
@@ -104,7 +104,7 @@ xbox.Bomb= Bomb;
 const Cannon = sh.Ashley.casDef({
 
   /**
-   * @memberof module:nodes/cobjs~Cannon
+   * @memberof module:n/cobjs~Cannon
    * @method constructor
    * @param {Number} coolDownWindow
    */
@@ -125,7 +125,7 @@ xbox.Cannon = Cannon;
 const Explosion = sh.Ashley.compDef({
 
   /**
-   * @memberof module:nodes/cobjs~Explosion
+   * @memberof module:n/cobjs~Explosion
    * @method constructor
    * @param {cc.Sprite}
    */
@@ -168,7 +168,7 @@ xbox.Explosion = Explosion;
 const Looper = sh.Ashley.casDef({
 
   /**
-   * @memberof module:nodes/cobjs~Looper
+   * @memberof module:n/cobjs~Looper
    * @method constructor
    * @param {Number} count
    */
@@ -188,7 +188,7 @@ xbox.Looper= Looper;
 const Missile = sh.Ashley.compDef({
 
   /**
-   * @memberof module:nodes/cobjs~Missile
+   * @memberof module:n/cobjs~Missile
    * @method constructor
    * @param {cc.Sprite} sprite
    */
@@ -213,7 +213,7 @@ xbox.Missile= Missile;
 const Motion = sh.Ashley.casDef({
 
   /**
-   * @memberof module:nodes/cobjs~Motion
+   * @memberof module:n/cobjs~Motion
    * @method constructor
    */
   constructor() {
@@ -233,7 +233,7 @@ xbox.Motion= Motion;
 const Ship = sh.Ashley.compDef({
 
   /**
-   * @memberof module:nodes/cobjs~Ship
+   * @memberof module:n/cobjs~Ship
    * @method constructor
    * @param {cc.Sprite} sprite
    * @param {Array} frames
@@ -255,7 +255,7 @@ xbox.Ship = Ship;
 const Velocity = sh.Ashley.casDef({
 
   /**
-   * @memberof module:nodes/cobjs~Velocity
+   * @memberof module:n/cobjs~Velocity
    * @method constructor
    * @param {Number} vx
    * @param {Number} vy

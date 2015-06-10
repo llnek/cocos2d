@@ -12,13 +12,13 @@
 "use strict";/**
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
- * @requires nodes/gnodes
+ * @requires n/gnodes
  * @module s/moveship
  */
 
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
-import gnodes from 'nodes/gnodes';
+import gnodes from 'n/gnodes';
 
 
 let xcfg = sh.xcfg,

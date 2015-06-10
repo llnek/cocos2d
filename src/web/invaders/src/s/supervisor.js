@@ -13,13 +13,13 @@
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/pool
- * @requires nodes/gnodes
- * @requires nodes/cobjs
+ * @requires n/gnodes
+ * @requires n/cobjs
  * @requires s/utils
  * @module s/supervisor
  */
-import gnodes from 'nodes/gnodes';
-import cobjs from 'nodes/cobjs';
+import gnodes from 'n/gnodes';
+import cobjs from 'n/cobjs';
 import utils from 's/utils';
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';

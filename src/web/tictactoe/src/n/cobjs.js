@@ -14,7 +14,7 @@
  * @requires zotohlab/asx/negamax
  * @requires zotohlab/asx/ccsx
  * @requires s/utils
- * @module nodes/cobjs
+ * @module n/cobjs
  */
 
 import negax from 'zotohlab/asx/negamax';
@@ -23,7 +23,7 @@ import ccsx from 'zotohlab/asx/ccsx';
 import utils from 's/utils';
 
 //////////////////////////////////////////////////////////////////////////////
-/** @alias module:nodes/cobjs */
+/** @alias module:n/cobjs */
 let xbox= {},
 sjs= sh.skarojs,
 xcfg = sh.xcfg,
@@ -36,7 +36,7 @@ undef;
  */
 const SmartAlgo = sh.Ashley.casDef({
   /**
-   * @memberof module:nodes/ccobjs~SmartAlgo
+   * @memberof module:n/ccobjs~SmartAlgo
    * @method constructor
    * @param {GameBoard} board
    */
@@ -55,7 +55,7 @@ xbox.SmartAlgo = SmartAlgo;
  */
 const Board = sh.Ashley.casDef({
   /**
-   * @memberof module:nodes/ccobjs~Board
+   * @memberof module:n/ccobjs~Board
    * @method constructor
    * @param {Number} size
    * @param {Array} goals
@@ -76,7 +76,7 @@ xbox.Board = Board;
  */
 const Grid = sh.Ashley.casDef({
   /**
-   * @memberof module:nodes/ccobjs~Grid
+   * @memberof module:n/ccobjs~Grid
    * @method constructor
    * @param {Number} size
    * @param {Array} seed
@@ -97,7 +97,7 @@ xbox.Grid = Grid;
  */
 const GridView = sh.Ashley.casDef({
   /**
-   * @memberof module:nodes/ccobjs~GridView
+   * @memberof module:n/ccobjs~GridView
    * @method constructor
    * @param {Number} size
    * @param {cc.Layer} layer
@@ -124,7 +124,7 @@ xbox.GridView = GridView;
  */
 const NetPlay = sh.Ashley.casDef({
   /**
-   * @memberof module:nodes/ccobjs~NetPlay
+   * @memberof module:n/ccobjs~NetPlay
    * @method constructor
    */
   constructor() {
@@ -142,7 +142,7 @@ xbox.NetPlay = NetPlay;
  */
 const Player = sh.Ashley.casDef({
   /**
-   * @memberof module:nodes/ccobjs~Player
+   * @memberof module:n/ccobjs~Player
    * @method constructor
    * @param {Number} category
    * @param {Number} value
@@ -168,7 +168,7 @@ xbox.Player = Player;
  */
 const UISelection = sh.Ashley.casDef({
   /**
-   * @memberof module:nodes/ccobjs~UISelection
+   * @memberof module:n/ccobjs~UISelection
    * @method constructor
    */
   constructor() {

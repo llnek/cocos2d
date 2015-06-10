@@ -6,8 +6,8 @@
   "src/breakout/p/config.js",
   "src/breakout/i18n/l10n.js",
 
-"src/breakout/nodes/cobjs.js",
-"src/breakout/nodes/gnodes.js",
+"src/breakout/n/cobjs.js",
+"src/breakout/n/gnodes.js",
 
 "src/breakout/s/factory.js",
 "src/breakout/s/motion.js",

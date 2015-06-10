@@ -12,14 +12,14 @@
 "use strict";/**
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
- * @module nodes/cobjs
+ * @module n/cobjs
  */
 
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
 
 
-/** @alias module:nodes/cobjs */
+/** @alias module:n/cobjs */
 let xbox= {},
 sjs= sh.skarojs,
 xcfg = sh.xcfg,
@@ -32,7 +32,7 @@ undef;
  */
 xbox.ShapeShell= sh.Ashley.casDef({
   /**
-   * @memberof module:nodes/cobjs~ShapeShell
+   * @memberof module:n/cobjs~ShapeShell
    * @method constructor
    */
   constructor() {
@@ -46,7 +46,7 @@ xbox.ShapeShell= sh.Ashley.casDef({
  */
 xbox.Shape= sh.Ashley.casDef({
   /**
-   * @memberof module:nodes/cobjs~Shape
+   * @memberof module:n/cobjs~Shape
    * @method constructor
    * @param {Number} x
    * @param {Number} y
@@ -68,7 +68,7 @@ xbox.Shape= sh.Ashley.casDef({
  */
 xbox.CtrlPad = sh.Ashley.casDef({
   /**
-   * @memberof module:nodes/cobjs~CtrlPad
+   * @memberof module:n/cobjs~CtrlPad
    * @method constructor
    */
   constructor() {
@@ -82,7 +82,7 @@ xbox.CtrlPad = sh.Ashley.casDef({
  */
 xbox.GridBox = sh.Ashley.casDef({
   /**
-   * @memberof module:nodes/cobjs~GridBox
+   * @memberof module:n/cobjs~GridBox
    * @method constructor
    */
   constructor() {
@@ -96,7 +96,7 @@ xbox.GridBox = sh.Ashley.casDef({
  */
 xbox.BlockGrid= sh.Ashley.casDef({
   /**
-   * @memberof module:nodes/cobjs~BlockGrid
+   * @memberof module:n/cobjs~BlockGrid
    * @method constructor
    */
   constructor() {
@@ -111,7 +111,7 @@ xbox.BlockGrid= sh.Ashley.casDef({
 xbox.BoxShape = {
 
   /**
-   * @memberof module:nodes/cobjs~BoxShape
+   * @memberof module:n/cobjs~BoxShape
    * @property {Array} layout
    */
   layout: [
@@ -126,7 +126,7 @@ xbox.BoxShape = {
   ],
 
   /**
-   * @memberof module:nodes/cobjs~BoxShape
+   * @memberof module:n/cobjs~BoxShape
    * @property {Number} dim
    */
   dim: 2
@@ -140,7 +140,7 @@ xbox.BoxShape = {
  */
 const Block = cc.Sprite.extend({
   /**
-   * @memberof module:nodes/cobjs~Block
+   * @memberof module:n/cobjs~Block
    * @method blink
    */
   blink() {
@@ -148,7 +148,7 @@ const Block = cc.Sprite.extend({
     this.setSpriteFrame(this.frame1);
   },
   /**
-   * @memberof module:nodes/cobjs~Block
+   * @memberof module:n/cobjs~Block
    * @method show
    */
   show() {
@@ -156,7 +156,7 @@ const Block = cc.Sprite.extend({
     this.setSpriteFrame(this.frame0);
   },
   /**
-   * @memberof module:nodes/cobjs~Block
+   * @memberof module:n/cobjs~Block
    * @method ctor
    * @param {Number} x
    * @param {Number} y
@@ -177,14 +177,14 @@ const Block = cc.Sprite.extend({
  */
 class Brick extends sjs.ES6Claxx {
   /**
-   * @memberof module:nodes/cobjs~Brick
+   * @memberof module:n/cobjs~Brick
    * @method blink
    */
   blink() {
     if ( !!this.sprite) { this.sprite.blink(); }
   }
   /**
-   * @memberof module:nodes/cobjs~Brick
+   * @memberof module:n/cobjs~Brick
    * @method dispose
    */
   dispose() {
@@ -194,14 +194,14 @@ class Brick extends sjs.ES6Claxx {
     }
   }
   /**
-   * @memberof module:nodes/cobjs~Brick
+   * @memberof module:n/cobjs~Brick
    * @method create
    */
   create() {
     return this.sprite = new Block(this.startPos.x, this.startPos.y, this.options);
   }
   /**
-   * @memberof module:nodes/cobjs~Brick
+   * @memberof module:n/cobjs~Brick
    * @method constructor
    * @param {Number} x
    * @param {Number} y
@@ -222,7 +222,7 @@ xbox.Brick = Brick;
  */
 xbox.Dropper= sh.Ashley.casDef({
   /**
-   * @memberof module:nodes/cobjs~Dropper
+   * @memberof module:n/cobjs~Dropper
    * @method constructor
    */
   constructor() {
@@ -239,7 +239,7 @@ xbox.Dropper= sh.Ashley.casDef({
 xbox.ElShape = {
 
   /**
-   * @memberof module:nodes/cobjs~ElShape
+   * @memberof module:n/cobjs~ElShape
    * @property {Array} layout
    */
   layout: [
@@ -258,7 +258,7 @@ xbox.ElShape = {
   ],
 
   /**
-   * @memberof module:nodes/cobjs~ElShape
+   * @memberof module:n/cobjs~ElShape
    * @property {Number} dim
    */
   dim: 3
@@ -272,7 +272,7 @@ xbox.ElShape = {
 xbox.ElxShape = {
 
   /**
-   * @memberof module:nodes/cobjs~ElxShape
+   * @memberof module:n/cobjs~ElxShape
    * @property {Array} layout
    */
   layout: [
@@ -291,7 +291,7 @@ xbox.ElxShape = {
   ],
 
   /**
-   * @memberof module:nodes/cobjs~ElxShape
+   * @memberof module:n/cobjs~ElxShape
    * @property {Number} dim
    */
   dim: 3
@@ -304,7 +304,7 @@ xbox.ElxShape = {
  */
 xbox.FilledLines= sh.Ashley.casDef({
   /**
-   * @memberof module:nodes/cobjs~FilledLines
+   * @memberof module:n/cobjs~FilledLines
    * @method constructor
    */
   constructor() {
@@ -319,7 +319,7 @@ xbox.FilledLines= sh.Ashley.casDef({
 xbox.LineShape = {
 
   /**
-   * @memberof module:nodes/cobjs~LineShape
+   * @memberof module:n/cobjs~LineShape
    * @property {Array} layout
    */
   layout: [
@@ -342,7 +342,7 @@ xbox.LineShape = {
   ],
 
   /**
-   * @memberof module:nodes/cobjs~LineShape
+   * @memberof module:n/cobjs~LineShape
    * @property {Number} dim
    */
   dim: 4
@@ -355,7 +355,7 @@ xbox.LineShape = {
  */
 xbox.Motion= sh.Ashley.casDef({
   /**
-   * @memberof module:nodes/cobjs~Motion
+   * @memberof module:n/cobjs~Motion
    * @method constructor
    */
   constructor() {
@@ -374,7 +374,7 @@ xbox.Motion= sh.Ashley.casDef({
 xbox.NubShape = {
 
   /**
-   * @memberof module:nodes/cobjs~NubShape
+   * @memberof module:n/cobjs~NubShape
    * @property {Array} layout
    */
   layout: [
@@ -393,7 +393,7 @@ xbox.NubShape = {
   ],
 
   /**
-   * @memberof module:nodes/cobjs~NubShape
+   * @memberof module:n/cobjs~NubShape
    * @property {Number} dim
    */
   dim: 3
@@ -407,7 +407,7 @@ xbox.NubShape = {
 xbox.Pauser= sh.Ashley.casDef({
 
   /**
-   * @memberof module:nodes/cobjs~Pauser
+   * @memberof module:n/cobjs~Pauser
    * @method constructor
    */
   constructor() {
@@ -423,7 +423,7 @@ xbox.Pauser= sh.Ashley.casDef({
 xbox.StShape = {
 
   /**
-   * @memberof module:nodes/cobjs~StShape
+   * @memberof module:n/cobjs~StShape
    * @property {Array} layout
    */
   layout: [
@@ -442,7 +442,7 @@ xbox.StShape = {
   ],
 
   /**
-   * @memberof module:nodes/cobjs~StShape
+   * @memberof module:n/cobjs~StShape
    * @property {Number} dim
    */
   dim: 3
@@ -456,7 +456,7 @@ xbox.StShape = {
 xbox.StxShape = {
 
   /**
-   * @memberof module:nodes/cobjs~StxShape
+   * @memberof module:n/cobjs~StxShape
    * @property {Array} layout
    */
   layout: [
@@ -475,7 +475,7 @@ xbox.StxShape = {
   ],
 
   /**
-   * @memberof module:nodes/cobjs~StxShape
+   * @memberof module:n/cobjs~StxShape
    * @property {Number} dim
    */
   dim: 3
@@ -488,7 +488,7 @@ xbox.StxShape = {
  */
 xbox.TileGrid= sh.Ashley.casDef({
   /**
-   * @memberof module:nodes/cobjs~TileGrid
+   * @memberof module:n/cobjs~TileGrid
    * @method constructor
    */
   constructor() {

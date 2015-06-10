@@ -15,7 +15,7 @@
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/odin
  * @requires p/hud
- * @requires nodes/cobjs
+ * @requires n/cobjs
  * @requires s/sysobjs
  * @module p/game
  */
@@ -25,7 +25,7 @@ import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
 import odin from 'zotohlab/asx/odin';
 import huds from 'p/hud';
-import cobjs from 'nodes/cobjs';
+import cobjs from 'n/cobjs';
 import sobjs from 's/sysobjs';
 
 

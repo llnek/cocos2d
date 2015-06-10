@@ -12,13 +12,13 @@
 "use strict";/**
  * @requires zotohlab/asx/asterix
  * @requires s/utils
- * @requires nodes/gnodes
+ * @requires n/gnodes
  * @module s/rendering
  */
 
 import sh from 'zotohlab/asx/asterix';
 import utils from "s/utils";
-import gnodes from 'nodes/gnodes';
+import gnodes from 'n/gnodes';
 
 
 let sjs= sh.skarojs,

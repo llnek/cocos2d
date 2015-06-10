@@ -12,13 +12,13 @@
 "use strict";/**
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
- * @requires nodes/cobjs
+ * @requires n/cobjs
  * @module s/factory
  */
 
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
-import cobjs from 'nodes/cobjs';
+import cobjs from 'n/cobjs';
 
 const BackTileMap= ["lvl1_map1.png", "lvl1_map2.png",
                     "lvl1_map3.png", "lvl1_map4.png"];

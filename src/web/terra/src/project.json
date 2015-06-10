@@ -5,8 +5,8 @@
     "src/terra/p/config.js",
     "src/terra/i18n/l10n.js",
 
-    "src/terra/nodes/cobjs.js",
-    "src/terra/nodes/gnodes.js",
+    "src/terra/n/cobjs.js",
+    "src/terra/n/gnodes.js",
 
     "src/terra/s/utils.js",
 

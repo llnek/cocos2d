@@ -46,8 +46,8 @@ document.ccConfig = {
     '/public/ig/lib/game/tetris/p/config.js',
     '/public/ig/lib/game/tetris/i18n/l10n.js',
 
-    '/public/ig/lib/game/tetris/nodes/cobjs.js',
-    '/public/ig/lib/game/tetris/nodes/gnodes.js',
+    '/public/ig/lib/game/tetris/n/cobjs.js',
+    '/public/ig/lib/game/tetris/n/gnodes.js',
 
     '/public/ig/lib/game/tetris/s/factory.js',
     '/public/ig/lib/game/tetris/s/utils.js',

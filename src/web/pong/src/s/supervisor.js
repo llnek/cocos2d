@@ -13,14 +13,14 @@
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/odin
- * @requires nodes/gnodes
+ * @requires n/gnodes
  * @module s/supervisor
  */
 
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
 import odin from 'zotohlab/asx/odin';
-import gnodes from 'nodes/gnodes';
+import gnodes from 'n/gnodes';
 
 let evts= odin.Events,
 sjs= sh.skarojs,

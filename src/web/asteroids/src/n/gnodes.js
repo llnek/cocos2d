@@ -12,16 +12,16 @@
 "use strict";/**
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
- * @requires nodes/cobjs
- * @module nodes/gnodes
+ * @requires n/cobjs
+ * @module n/gnodes
  */
 
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
-import cobjs from 'nodes/cobjs';
+import cobjs from 'n/cobjs';
 
 
-/** @alias module:nodes/gnodes */
+/** @alias module:n/gnodes */
 let xbox={},
 sjs= sh.skarojs,
 xcfg = sh.xcfg,
@@ -35,17 +35,17 @@ ast= {};
  */
 const CannonCtrlNode = sh.Ashley.nodeDef({
   /**
-   * @memberof module:nodes/gnodes~CannonCtrlNode
+   * @memberof module:n/gnodes~CannonCtrlNode
    * @property {Looper} looper
    */
   looper    : cobjs.Looper,
   /**
-   * @memberof module:nodes/gnodes~CannonCtrlNode
+   * @memberof module:n/gnodes~CannonCtrlNode
    * @property {Cannon} cannon
    */
   cannon    : cobjs.Cannon,
   /**
-   * @memberof module:nodes/gnodes~CannonCtrlNode
+   * @memberof module:n/gnodes~CannonCtrlNode
    * @property {Ship} ship
    */
   ship      : cobjs.Ship
@@ -61,27 +61,27 @@ xbox.CannonCtrlNode = CannonCtrlNode;
  */
 const ShipMotionNode = sh.Ashley.nodeDef({
   /**
-   * @memberof module:nodes/gnodes~ShipMotionNode
+   * @memberof module:n/gnodes~ShipMotionNode
    * @property {Velocity} velocity
    */
   velocity    : cobjs.Velocity,
   /**
-  * @memberof module:nodes/gnodes~ShipMotionNode
+  * @memberof module:n/gnodes~ShipMotionNode
   * @property {Rotation} rotation
   */
   rotation    : cobjs.Rotation,
   /**
-  * @memberof module:nodes/gnodes~ShipMotionNode
+  * @memberof module:n/gnodes~ShipMotionNode
   * @property {Thrust} thrust
   */
   thrust      : cobjs.Thrust,
   /**
-  * @memberof module:nodes/gnodes~ShipMotionNode
+  * @memberof module:n/gnodes~ShipMotionNode
   * @property {Motion} motion
   */
   motion      : cobjs.Motion,
   /**
-  * @memberof module:nodes/gnodes~ShipMotionNode
+  * @memberof module:n/gnodes~ShipMotionNode
   * @property {Ship} ship
   */
   ship        : cobjs.Ship

@@ -12,16 +12,16 @@
 "use strict";/**
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
- * @requires nodes/cobjs
- * @requires nodes/gnodes
+ * @requires n/cobjs
+ * @requires n/gnodes
  * @requires s/utils
  * @module s/generator
  */
 
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
-import cobjs from 'nodes/cobjs';
-import gnodes from 'nodes/gnodes';
+import cobjs from 'n/cobjs';
+import gnodes from 'n/gnodes';
 import utils from 's/utils';
 
 let sjs= sh.skarojs,

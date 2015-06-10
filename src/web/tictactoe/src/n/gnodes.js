@@ -11,15 +11,15 @@
 
 "use strict";/**
  * @requires zotohlab/asx/asterix
- * @requires nodes/cobjs
- * @module nodes/gnodes
+ * @requires n/cobjs
+ * @module n/gnodes
  */
 
 import sh from 'zotohlab/asx/asterix';
-import cobjs from 'nodes/cobjs';
+import cobjs from 'n/cobjs';
 
 //////////////////////////////////////////////////////////////////////////////
-/** @alias module:nodes/gnodes */
+/** @alias module:n/gnodes */
 let xbox= {},
 sjs=sh.skarojs,
 undef,
@@ -29,27 +29,27 @@ undef,
  */
 BoardNode = sh.Ashley.nodeDef({
   /**
-   * @memberof module:nodes/gnodes~BoardNode
+   * @memberof module:n/gnodes~BoardNode
    * @property {UISelection} selection
    */
   selection: cobjs.UISelection,
   /**
-   * @memberof module:nodes/gnodes~BoardNode
+   * @memberof module:n/gnodes~BoardNode
    * @property {Board} board
    */
   board: cobjs.Board,
   /**
-   * @memberof module:nodes/gnodes~BoardNode
+   * @memberof module:n/gnodes~BoardNode
    * @property {SmartAlgo} robot
    */
   robot: cobjs.SmartAlgo,
   /**
-   * @memberof module:nodes/gnodes~BoardNode
+   * @memberof module:n/gnodes~BoardNode
    * @property {Grid} grid
    */
   grid: cobjs.Grid,
   /**
-   * @memberof module:nodes/gnodes~BoardNode
+   * @memberof module:n/gnodes~BoardNode
    * @property {GridView} view
    */
   view: cobjs.GridView
@@ -65,12 +65,12 @@ xbox.BoardNode = BoardNode;
  */
 const GUINode = sh.Ashley.nodeDef({
   /**
-   * @memberof module:nodes/gnodes~GUINode
+   * @memberof module:n/gnodes~GUINode
    * @property {UISelection} selection
    */
   selection: cobjs.UISelection,
   /**
-   * @memberof module:nodes/gnodes~GUINode
+   * @memberof module:n/gnodes~GUINode
    * @property {GridView} view
    */
   view: cobjs.GridView
@@ -86,12 +86,12 @@ xbox.GUINode = GUINode;
  */
 const NetPlayNode = sh.Ashley.nodeDef({
   /**
-   * @memberof module:nodes/gnodes~NetPlayNode
+   * @memberof module:n/gnodes~NetPlayNode
    * @property {NetPlay} playcmd
    */
   playcmd: cobjs.NetPlay,
   /**
-   * @memberof module:nodes/gnodes~Grid
+   * @memberof module:n/gnodes~Grid
    * @property {Grid} grid
    */
   grid: cobjs.Grid

@@ -11,15 +11,15 @@
 
 "use strict";/**
  * @requires zotohlab/asx/asterix
- * @requires nodes/cobjs
- * @module nodes/gnodes
+ * @requires n/cobjs
+ * @module n/gnodes
  */
 
 import sh from 'zotohlab/asx/asterix';
-import cobjs from 'nodes/cobjs';
+import cobjs from 'n/cobjs';
 
 
-/** @alias module:nodes/gnodes */
+/** @alias module:n/gnodes */
 let xbox= {},
 sjs = sh.skarojs,
 xcfg = sh.xcfg,
@@ -32,12 +32,12 @@ undef;
  */
 const AlienMotionNode = sh.Ashley.nodeDef({
   /**
-   * @memberof module:nodes/gnodes~AlienMotionNode
+   * @memberof module:n/gnodes~AlienMotionNode
    * @property {AlienSquad} aliens
    */
   aliens  : cobjs.AlienSquad,
   /**
-   * @memberof module:nodes/gnodes~AlienMotionNode
+   * @memberof module:n/gnodes~AlienMotionNode
    * @property {Looper} looper
    */
   looper  : cobjs.Looper
@@ -53,17 +53,17 @@ xbox.AlienMotionNode = AlienMotionNode;
  */
 const CannonCtrlNode = sh.Ashley.nodeDef({
   /**
-   * @memberof module:nodes/gnodes~CannonCtrlNode
+   * @memberof module:n/gnodes~CannonCtrlNode
    * @property {Looper} looper
    */
   looper  : cobjs.Looper,
   /**
-   * @memberof module:nodes/gnodes~CannonCtrlNode
+   * @memberof module:n/gnodes~CannonCtrlNode
    * @property {Cannon} cannon
    */
   cannon  : cobjs.Cannon,
   /**
-   * @memberof module:nodes/gnodes~CannonCtrlNode
+   * @memberof module:n/gnodes~CannonCtrlNode
    * @property {Ship} ship
    */
   ship    : cobjs.Ship
@@ -79,17 +79,17 @@ xbox.CannonCtrlNode = CannonCtrlNode;
  */
 const ShipMotionNode = sh.Ashley.nodeDef({
   /**
-   * @memberof module:nodes/gnodes~ShipMotionNode
+   * @memberof module:n/gnodes~ShipMotionNode
    * @property {Velocity} velocity
    */
   velocity  : cobjs.Velocity,
   /**
-   * @memberof module:nodes/gnodes~ShipMotionNode
+   * @memberof module:n/gnodes~ShipMotionNode
    * @property {Motion} motion
    */
   motion    : cobjs.Motion,
   /**
-   * @memberof module:nodes/gnodes~ShipMotionNode
+   * @memberof module:n/gnodes~ShipMotionNode
    * @property {Ship} ship
    */
   ship      : cobjs.Ship

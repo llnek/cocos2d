@@ -13,14 +13,14 @@
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/scenes
- * @requires nodes/cobjs
+ * @requires n/cobjs
  * @module p/hud
  */
 
 import scenes from 'zotohlab/asx/scenes';
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
-import cobjs from 'nodes/cobjs';
+import cobjs from 'n/cobjs';
 
 
 let sjs= sh.skarojs,

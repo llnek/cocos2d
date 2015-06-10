@@ -49,9 +49,9 @@ document.ccConfig = {
     '/public/ig/lib/game/tictactoe/p/config.js',
     '/public/ig/lib/game/tictactoe/i18n/l10n.js',
 
-    '/public/ig/lib/game/tictactoe/nodes/board.js',
-    '/public/ig/lib/game/tictactoe/nodes/cobjs.js',
-    '/public/ig/lib/game/tictactoe/nodes/gnodes.js',
+    '/public/ig/lib/game/tictactoe/n/board.js',
+    '/public/ig/lib/game/tictactoe/n/cobjs.js',
+    '/public/ig/lib/game/tictactoe/n/gnodes.js',
 
     '/public/ig/lib/game/tictactoe/s/factory.js',
     '/public/ig/lib/game/tictactoe/s/utils.js',

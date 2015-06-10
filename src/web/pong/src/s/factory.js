@@ -12,12 +12,12 @@
 "use strict";/**
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
- * @requires nodes/cobjs
+ * @requires n/cobjs
  * @module s/factory
  */
 
 import sh from 'zotohlab/asx/asterix';
-import cobjs from 'nodes/cobjs';
+import cobjs from 'n/cobjs';
 import ccsx from 'zotohlab/asx/ccsx';
 
 

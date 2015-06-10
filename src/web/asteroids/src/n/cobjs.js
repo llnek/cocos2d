@@ -12,14 +12,14 @@
 "use strict";/**
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
- * @module nodes/cobjs
+ * @module n/cobjs
  */
 
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
 
 
-/** @alias module:nodes/cobjs */
+/** @alias module:n/cobjs */
 let xbox = {},
 sjs= sh.skarojs,
 xcfg = sh.xcfg,
@@ -31,7 +31,7 @@ ast= {};
 const Asteroid = sh.Ashley.compDef({
 
   /**
-   * @memberof module:nodes/cobjs~Asteroid
+   * @memberof module:n/cobjs~Asteroid
    * @method constructor
    * @param {cc.Sprite}
    * @param {Number} value
@@ -64,7 +64,7 @@ xbox.Asteroid = Asteroid;
 const Cannon = sh.Ashley.casDef({
 
   /**
-   * @memberof module:nodes/cobjs~Cannon
+   * @memberof module:n/cobjs~Cannon
    * @method constructor
    * @param {Number} coolDownWindow
    */
@@ -87,7 +87,7 @@ xbox.Cannon = Cannon;
 const Looper = sh.Ashley.casDef({
 
   /**
-   * @memberof module:nodes/cobjs~Looper
+   * @memberof module:n/cobjs~Looper
    * @method constructor
    * @param {Number} count
    */
@@ -108,7 +108,7 @@ xbox.Looper = Looper;
 const Missile = sh.Ashley.compDef({
 
   /**
-   * @memberof module:nodes/cobjs~Missile
+   * @memberof module:n/cobjs~Missile
    * @method constructor
    * @param {cc.Sprite} sprite
    * @param {Number} speed
@@ -137,7 +137,7 @@ xbox.Missile = Missile;
 const Motion = sh.Ashley.casDef({
 
   /**
-   * @memberof module:nodes/cobjs~Motion
+   * @memberof module:n/cobjs~Motion
    * @method constructor
    */
   constructor() {
@@ -161,7 +161,7 @@ xbox.Motion = Motion;
 const Ship = sh.Ashley.compDef({
 
   /**
-   * @memberof module:nodes/cobjs~Ship
+   * @memberof module:n/cobjs~Ship
    * @method constructor
    * @param {cc.Sprite} sprite
    * @param {Array} frames
@@ -221,7 +221,7 @@ xbox.Velocity = Velocity;
 const Rotation = sh.Ashley.casDef({
 
   /**
-   * @memberof module:nodes/cobjs~Rotation
+   * @memberof module:n/cobjs~Rotation
    * @param {Number} deg
    */
   constructor(deg) {
@@ -241,7 +241,7 @@ xbox.Rotation = Rotation;
 const Thrust = sh.Ashley.casDef({
 
   /**
-   * @memberof module:nodes/cobjs~Thrust
+   * @memberof module:n/cobjs~Thrust
    * @method constructor
    */
   constructor(t) {

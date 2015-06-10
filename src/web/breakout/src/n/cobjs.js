@@ -12,14 +12,14 @@
 "use strict";/**
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
- * @module nodes/cobjs
+ * @module n/cobjs
  */
 
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
 
 
-/** @alias module:nodes/cobjs */
+/** @alias module:n/cobjs */
 let xbox = {},
 sjs= sh.skarojs,
 xcfg = sh.xcfg,
@@ -33,7 +33,7 @@ undef;
 const Ball = sh.Ashley.compDef({
 
   /**
-   * @memberof module:nodes/cobjs~Ball
+   * @memberof module:n/cobjs~Ball
    * @method constructor
    * @param {cc.Sprite}
    */
@@ -53,7 +53,7 @@ xbox.Ball= Ball;
 const BrickFence = sh.Ashley.casDef({
 
   /**
-   * @memberof module:nodes/cobjs~BrickFence
+   * @memberof module:n/cobjs~BrickFence
    * @method constructor
    * @param {Array} bricks
    */
@@ -72,7 +72,7 @@ xbox.BrickFence = BrickFence;
 const Brick = sh.Ashley.compDef({
 
   /**
-   * @memberof module:nodes/cobjs~Brick
+   * @memberof module:n/cobjs~Brick
    * @method constructor
    * @param {cc.Sprite} sprite
    * @param {Number} value
@@ -96,7 +96,7 @@ xbox.Brick = Brick;
 const Motion = sh.Ashley.casDef({
 
   /**
-   * @memberof module:nodes/cobjs~Motion
+   * @memberof module:n/cobjs~Motion
    * @method constructor
    */
   constructor() {
@@ -116,7 +116,7 @@ xbox.Motion = Motion;
 const Paddle = sh.Ashley.compDef({
 
   /**
-   * @memberof module:nodes/cobjs~Paddle
+   * @memberof module:n/cobjs~Paddle
    * @method constructor
    * @param {cc.Sprite}
    */
@@ -136,7 +136,7 @@ xbox.Paddle = Paddle;
 const Velocity = sh.Ashley.casDef({
 
   /**
-   * @memberof module:nodes/cobjs~Velocity
+   * @memberof module:n/cobjs~Velocity
    * @method constructor
    * @param {Number} vx
    * @param {Number} vy

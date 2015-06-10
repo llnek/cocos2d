@@ -11,15 +11,15 @@
 
 "use strict";/**
  * @requires zotohlab/asx/asterix
- * @requires nodes/cobjs
- * @module nodes/gnodes
+ * @requires n/cobjs
+ * @module n/gnodes
  */
 
 import sh from 'zotohlab/asx/asterix';
-import cobjs from 'nodes/cobjs';
+import cobjs from 'n/cobjs';
 
 
-/** @alias module:nodes/gnodes */
+/** @alias module:n/gnodes */
 let xbox= {},
 sjs= sh.skarojs,
 undef;
@@ -30,12 +30,12 @@ undef;
  */
 const BallNode = sh.Ashley.nodeDef({
   /**
-   * @memberof module:nodes/gnodes~BallNode
+   * @memberof module:n/gnodes~BallNode
    * @property {Velocity} velocity
    */
   velocity    : cobjs.Velocity,
   /**
-   * @memberof module:nodes/gnodes~BallNode
+   * @memberof module:n/gnodes~BallNode
    * @property {Ball} ball
    */
   ball        : cobjs.Ball
@@ -51,22 +51,22 @@ xbox.BallNode = BallNode;
  */
 const FauxPaddleNode = sh.Ashley.nodeDef({
   /**
-   * @memberof module:nodes/gnodes~FauxPaddleNode
+   * @memberof module:n/gnodes~FauxPaddleNode
    * @property {Position} lastpos
    */
   lastpos   : cobjs.Position,
   /**
-   * @memberof module:nodes/gnodes~FauxPaddleNode
+   * @memberof module:n/gnodes~FauxPaddleNode
    * @property {Paddle} paddle
    */
   paddle    : cobjs.Paddle,
   /**
-   * @memberof module:nodes/gnodes~FauxPaddleNode
+   * @memberof module:n/gnodes~FauxPaddleNode
    * @property {Faux} faux
    */
   faux      : cobjs.Faux,
   /**
-   * @memberof module:nodes/gnodes~FauxPaddleNode
+   * @memberof module:n/gnodes~FauxPaddleNode
    * @property {Player} player
    */
   player    : cobjs.Player
@@ -81,22 +81,22 @@ xbox.FauxPaddleNode = FauxPaddleNode;
  */
 const PaddleNode = sh.Ashley.nodeDef({
   /**
-   * @memberof module:nodes/gnodes~PaddleNode
+   * @memberof module:n/gnodes~PaddleNode
    * @property {Position} lastpos
    */
   lastpos   : cobjs.Position,
   /**
-   * @memberof module:nodes/gnodes~PaddleNode
+   * @memberof module:n/gnodes~PaddleNode
    * @property {Motion} motion
    */
   motion    : cobjs.Motion,
   /**
-   * @memberof module:nodes/gnodes~PaddleNode
+   * @memberof module:n/gnodes~PaddleNode
    * @property {Paddle} paddle
    */
   paddle    : cobjs.Paddle,
   /**
-   * @memberof module:nodes/gnodes~PaddleNode
+   * @memberof module:n/gnodes~PaddleNode
    * @property {Player} player
    */
   player    : cobjs.Player

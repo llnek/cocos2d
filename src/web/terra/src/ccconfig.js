@@ -47,8 +47,8 @@ document.ccConfig = {
     '/public/ig/lib/game/terra/p/config.js',
     '/public/ig/lib/game/terra/i18n/l10n.js',
 
-'/public/ig/lib/game/terra/nodes/cobjs.js',
-'/public/ig/lib/game/terra/nodes/gnodes.js',
+'/public/ig/lib/game/terra/n/cobjs.js',
+'/public/ig/lib/game/terra/n/gnodes.js',
 
 '/public/ig/lib/game/terra/s/utils.js',
 

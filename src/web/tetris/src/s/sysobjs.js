@@ -10,8 +10,8 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 "use strict";/**
- * @requires nodes/cobjs
- * @requires nodes/gnodes
+ * @requires n/cobjs
+ * @requires n/gnodes
  * @requires s/utils
  * @requires s/factory
  * @requires s/clearance
@@ -25,8 +25,8 @@
  */
 
 import sjs from 'cherimoia/skaro';
-import cobjs from 'nodes/cobjs';
-import gnodes from 'nodes/gnodes';
+import cobjs from 'n/cobjs';
+import gnodes from 'n/gnodes';
 import utils from 's/utils';
 import f from 's/factory';
 import c from 's/clearance';

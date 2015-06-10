@@ -45,8 +45,8 @@ document.ccConfig = {
       '/public/ig/lib/game/pong/p/config.js',
       '/public/ig/lib/game/pong/i18n/l10n.js',
 
-      '/public/ig/lib/game/pong/nodes/cobjs.js',
-      '/public/ig/lib/game/pong/nodes/gnodes.js',
+      '/public/ig/lib/game/pong/n/cobjs.js',
+      '/public/ig/lib/game/pong/n/gnodes.js',
 
       '/public/ig/lib/game/pong/s/factory.js',
       '/public/ig/lib/game/pong/s/motion.js',

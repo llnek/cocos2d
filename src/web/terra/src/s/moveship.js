@@ -12,17 +12,17 @@
 "use strict";/**
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
- * @requires nodes/cobjs
+ * @requires n/cobjs
  * @requires s/utils
- * @requires nodes/gnodes
+ * @requires n/gnodes
  * @module s/moveship
  */
 
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
-import cobjs from 'nodes/cobjs';
+import cobjs from 'n/cobjs';
 import utils from 's/utils';
-import gnodes from 'nodes/gnodes';
+import gnodes from 'n/gnodes';
 
 
 let sjs=sh.skarojs,

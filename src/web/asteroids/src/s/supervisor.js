@@ -13,13 +13,13 @@
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/pool
- * @requires nodes/cobjs
+ * @requires n/cobjs
  * @module s/supervisor
  */
 
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
-import cobjs from 'nodes/cobjs';
+import cobjs from 'n/cobjs';
 import xpool from 'zotohlab/asx/pool';
 
 let xcfg = sh.xcfg,

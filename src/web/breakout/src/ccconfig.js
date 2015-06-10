@@ -46,8 +46,8 @@ document.ccConfig = {
   '/public/ig/lib/game/breakout/p/config.js',
   '/public/ig/lib/game/breakout/i18n/l10n.js',
 
-'/public/ig/lib/game/breakout/nodes/cobjs.js',
-'/public/ig/lib/game/breakout/nodes/gnodes.js',
+'/public/ig/lib/game/breakout/n/cobjs.js',
+'/public/ig/lib/game/breakout/n/gnodes.js',
 
 '/public/ig/lib/game/breakout/s/factory.js',
 '/public/ig/lib/game/breakout/s/motion.js',

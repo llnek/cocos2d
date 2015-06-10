@@ -11,15 +11,15 @@
 
 "use strict"/**
  * @requires zotohlab/asx/asterix
- * @requires nodes/cobjs
- * @module nodes/gnodes
+ * @requires n/cobjs
+ * @module n/gnodes
  */
 
 import sh from 'zotohlab/asx/asterix';
-import cobjs from 'nodes/cobjs';
+import cobjs from 'n/cobjs';
 
 
-/** @alias module:nodes/gnodes */
+/** @alias module:n/gnodes */
 let xbox = {},
 sjs= sh.skarojs,
 xcfg = sh.xcfg,
@@ -32,7 +32,7 @@ undef;
  */
 const BricksNode = sh.Ashley.nodeDef({
   /**
-   * @memberof module:nodes/gnodes~BricksNode
+   * @memberof module:n/gnodes~BricksNode
    * @property {BrickFence} fence
    */
   fence   : cobjs.BrickFence
@@ -48,19 +48,19 @@ xbox.BricksNode = BricksNode;
  */
 const PaddleMotionNode = sh.Ashley.nodeDef({
   /**
-   * @memberof module:nodes/gnodes~PaddleMotionNode
+   * @memberof module:n/gnodes~PaddleMotionNode
    * @property {Velocity} velocity
    * @static
    */
   velocity    : cobjs.Velocity,
   /**
-   * @memberof module:nodes/gnodes~PaddleMotionNode
+   * @memberof module:n/gnodes~PaddleMotionNode
    * @property {Motion} motion
    * @static
    */
   motion      : cobjs.Motion,
   /**
-   * @memberof module:nodes/gnodes~PaddleMotionNode
+   * @memberof module:n/gnodes~PaddleMotionNode
    * @property {Paddle} paddle
    * @static
    */
@@ -74,13 +74,13 @@ xbox.PaddleMotionNode = PaddleMotionNode;
 //////////////////////////////////////////////////////////////////////////////
 const BallMotionNode = sh.Ashley.nodeDef({
   /**
-   * @memberof module:nodes/gnodes~BallMotionNode
+   * @memberof module:n/gnodes~BallMotionNode
    * @property {Velocity} velocity
    * @static
    */
   velocity    : cobjs.Velocity,
   /**
-   * @memberof module:nodes/gnodes~BallMotionNode
+   * @memberof module:n/gnodes~BallMotionNode
    * @property {Ball} ball
    * @static
    */

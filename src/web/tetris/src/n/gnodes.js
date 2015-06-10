@@ -11,15 +11,15 @@
 
 "use strict";/**
  * @requires zotohlab/asx/asterix
- * @requires nodes/cobjs
- * @module nodes/gnodes
+ * @requires n/cobjs
+ * @module n/gnodes
  */
 
 import sh from 'zotohlab/asx/asterix';
-import cobjs from 'nodes/cobjs';
+import cobjs from 'n/cobjs';
 
 
-/** @alias module:nodes/gnodes */
+/** @alias module:n/gnodes */
 let xbox= {},
 sjs= sh.skarojs,
 undef;
@@ -31,47 +31,47 @@ undef;
 xbox.ArenaNode = sh.Ashley.nodeDef({
 
   /**
-   * @memberof module:nodes/gnodes~ArenaNode
+   * @memberof module:n/gnodes~ArenaNode
    * @property {TileGrid} collision
    */
   collision   : cobjs.TileGrid,
   /**
-   * @memberof module:nodes/gnodes~ArenaNode
+   * @memberof module:n/gnodes~ArenaNode
    * @property {GridBox} gbox
    */
   gbox        : cobjs.GridBox,
   /**
-   * @memberof module:nodes/gnodes~ArenaNode
+   * @memberof module:n/gnodes~ArenaNode
    * @property {BlockGrid} blocks
    */
   blocks      : cobjs.BlockGrid,
   /**
-   * @memberof module:nodes/gnodes~ArenaNode
+   * @memberof module:n/gnodes~ArenaNode
    * @property {Motion} motion
    */
   motion      : cobjs.Motion,
   /**
-   * @memberof module:nodes/gnodes~ArenaNode
+   * @memberof module:n/gnodes~ArenaNode
    * @property {Pauser} pauser
    */
   pauser      : cobjs.Pauser,
   /**
-   * @memberof module:nodes/gnodes~ArenaNode
+   * @memberof module:n/gnodes~ArenaNode
    * @property {Dropper} dropper
    */
   dropper     : cobjs.Dropper,
   /**
-   * @memberof module:nodes/gnodes~ArenaNode
+   * @memberof module:n/gnodes~ArenaNode
    * @property {ShapeShell} shell
    */
   shell       : cobjs.ShapeShell,
   /**
-   * @memberof module:nodes/gnodes~ArenaNode
+   * @memberof module:n/gnodes~ArenaNode
    * @property {FilledLines} flines
    */
   flines      : cobjs.FilledLines,
   /**
-   * @memberof module:nodes/gnodes~ArenaNode
+   * @memberof module:n/gnodes~ArenaNode
    * @property {CtrlPad} cpad
    */
   cpad        : cobjs.CtrlPad

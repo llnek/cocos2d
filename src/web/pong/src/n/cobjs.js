@@ -12,14 +12,14 @@
 "use strict";/**
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
- * @module nodes/cobjs
+ * @module n/cobjs
  */
 
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
 
 
-/** @alias module:nodes/cobjs */
+/** @alias module:n/cobjs */
 let xbox= {},
 sjs= sh.skarojs,
 xcfg = sh.xcfg,
@@ -32,7 +32,7 @@ undef;
  */
 const Ball = sh.Ashley.compDef({
   /**
-   * @memberof module:nodes/cobjs~Ball
+   * @memberof module:n/cobjs~Ball
    * @constructor
    * @param {cc.Sprite} sprite
    * @param {Number} speed
@@ -54,7 +54,7 @@ xbox.Ball = Ball;
 const Motion = sh.Ashley.casDef({
 
   /**
-   * @memberof module:nodes/cobjs~Motion
+   * @memberof module:n/cobjs~Motion
    * @method constructor
    */
   constructor() {
@@ -74,7 +74,7 @@ xbox.Motion= Motion;
 const Paddle = sh.Ashley.compDef({
 
   /**
-   * @memberof module:nodes/cobjs~Paddle
+   * @memberof module:n/cobjs~Paddle
    * @method p1Keys
    * @return {Array}
    */
@@ -84,7 +84,7 @@ const Paddle = sh.Ashley.compDef({
   },
 
   /**
-   * @memberof module:nodes/cobjs~Paddle
+   * @memberof module:n/cobjs~Paddle
    * @method p2Keys
    * @return {Array}
    */
@@ -94,7 +94,7 @@ const Paddle = sh.Ashley.compDef({
   },
 
   /**
-   * @memberof module:nodes/cobjs~Paddle
+   * @memberof module:n/cobjs~Paddle
    * @method onColor
    * @param {Array} keycodes
    * @param {String} snd
@@ -105,7 +105,7 @@ const Paddle = sh.Ashley.compDef({
   },
 
   /**
-   * @memberof module:nodes/cobjs~Paddle
+   * @memberof module:n/cobjs~Paddle
    * @method constructor
    * @param {cc.Sprite} sprite
    * @param {Number} color
@@ -137,7 +137,7 @@ xbox.Paddle= Paddle;
 const Player = sh.Ashley.casDef({
 
   /**
-   * @memberof module:nodes/cobjs~Player
+   * @memberof module:n/cobjs~Player
    * @method constructor
    * @param {Number} category
    * @param {Number} value
@@ -164,7 +164,7 @@ xbox.Player= Player;
 const Faux= sh.Ashley.casDef({
 
   /**
-   * @memberof module:nodes/cobjs~Faux
+   * @memberof module:n/cobjs~Faux
    * @method constructor
    */
   constructor() {
@@ -183,7 +183,7 @@ xbox.Faux = Faux;
 const Position = sh.Ashley.casDef({
 
   /**
-   * @memberof module:nodes/cobjs~Position
+   * @memberof module:n/cobjs~Position
    * @method constructor
    * @param {cc.Point} lp
    */
@@ -205,7 +205,7 @@ xbox.Position= Position;
 const Velocity = sh.Ashley.casDef({
 
   /**
-   * @memberof module:nodes/cobjs~Velocity
+   * @memberof module:n/cobjs~Velocity
    * @method constructor
    * @param {Number} vx
    * @param {Number} vy

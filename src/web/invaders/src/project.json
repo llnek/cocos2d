@@ -5,8 +5,8 @@
     "src/invaders/p/config.js",
     "src/invaders/i18n/l10n.js",
 
-    "src/invaders/nodes/cobjs.js",
-    "src/invaders/nodes/gnodes.js",
+    "src/invaders/n/cobjs.js",
+    "src/invaders/n/gnodes.js",
 
     "src/invaders/s/factory.js",
     "src/invaders/s/utils.js",

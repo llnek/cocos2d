@@ -4,8 +4,8 @@
       "src/tetris/p/config.js",
       "src/tetris/i18n/l10n.js",
 
-      "src/tetris/nodes/cobjs.js",
-      "src/tetris/nodes/gnodes.js",
+      "src/tetris/n/cobjs.js",
+      "src/tetris/n/gnodes.js",
 
       "src/tetris/s/utils.js",
       "src/tetris/s/factory.js",

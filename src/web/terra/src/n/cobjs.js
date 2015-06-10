@@ -12,14 +12,14 @@
 "use strict";/**
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
- * @module nodes/cobjs
+ * @module n/cobjs
 */
 
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
 
 
-/** @alias module:nodes/cobjs */
+/** @alias module:n/cobjs */
 let xbox = {},
 sjs=sh.skarojs,
 xcfg= sh.xcfg,
@@ -56,7 +56,7 @@ xbox.Missile = sh.Ashley.compDef({
 xbox.Bomb = sh.Ashley.compDef({
 
   /**
-   * @memberof module:nodes/cobjs~Bomb
+   * @memberof module:n/cobjs~Bomb
    * @method constructor
    * @param {cc.Sprite} sprite
    * @param {Number} attackNode
@@ -81,7 +81,7 @@ xbox.Bomb = sh.Ashley.compDef({
 xbox.Enemy = sh.Ashley.compDef({
 
   /**
-   * memberof module:nodes/cobjs~Enemy
+   * memberof module:n/cobjs~Enemy
    * @method constructor
    * @param {cc.Sprite} sprite
    * @param {Object} arg
@@ -107,7 +107,7 @@ xbox.Enemy = sh.Ashley.compDef({
 xbox.Ship = sh.Ashley.compDef({
 
   /**
-   * @memberof module:nodes/cobjs~Ship
+   * @memberof module:n/cobjs~Ship
    * @method constructor
    * @param {cc.Sprite} sprite
    * @param {cc.Sprite} spriteX
@@ -128,7 +128,7 @@ xbox.Ship = sh.Ashley.compDef({
 xbox.Motion = sh.Ashley.casDef({
 
   /**
-   * @memberof module:nodes/cobjs~Motion
+   * @memberof module:n/cobjs~Motion
    * @method constructor
    */
   constructor() {
@@ -147,7 +147,7 @@ xbox.Motion = sh.Ashley.casDef({
 xbox.Spark = sh.Ashley.compDef({
 
   /**
-   * @memberof module:nodes/cobjs~Spark
+   * @memberof module:n/cobjs~Spark
    * @method constructor
    * @param {cc.Sprite} sp1
    * @param {cc.Sprite} sp2
@@ -160,7 +160,7 @@ xbox.Spark = sh.Ashley.compDef({
   },
 
   /**
-   * @memberof module:nodes/cobjs~Spark
+   * @memberof module:n/cobjs~Spark
    * @method inflate
    * @param {Object} options
    */
@@ -200,7 +200,7 @@ xbox.Spark = sh.Ashley.compDef({
   },
 
   /**
-   * @memberof module:nodes/cobjs~Spark
+   * @memberof module:n/cobjs~Spark
    * @method deflate
    */
   deflate() {
@@ -220,7 +220,7 @@ xbox.Spark = sh.Ashley.compDef({
 xbox.Explosion = sh.Ashley.compDef({
 
   /**
-   * @memberof module:nodes/cobjs~Explosion
+   * @memberof module:n/cobjs~Explosion
    * @method constructor
    * @param {cc.Sprite} sprite
    */
@@ -230,7 +230,7 @@ xbox.Explosion = sh.Ashley.compDef({
   },
 
   /**
-   * @memberof module:nodes/cobjs~Explosion
+   * @memberof module:n/cobjs~Explosion
    * @method inflate
    * @param {Object} options
    */
@@ -253,7 +253,7 @@ xbox.Explosion = sh.Ashley.compDef({
 xbox.HitEffect = sh.Ashley.compDef({
 
   /**
-   * @memberof module:nodes/cobjs~HitEffect
+   * @memberof module:n/cobjs~HitEffect
    * @method constructor
    * @param {cc.Sprite} sprite
    */
@@ -263,7 +263,7 @@ xbox.HitEffect = sh.Ashley.compDef({
   },
 
   /**
-   * @memberof module:nodes/cobjs~HitEffect
+   * @memberof module:n/cobjs~HitEffect
    * @method inflate
    * @param {Object} options
    */
