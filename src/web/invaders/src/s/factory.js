@@ -154,7 +154,7 @@ EntityFactory = sh.Ashley.casDef({
   createAliens() {
     const stepx= this.state.alienSize.width /3,
     ent= sh.Ashley.newEntity(),
-    aliens= xpool.reify();
+    aliens= xpool.reify(),
     me=this;
 
     aliens.preSet((pool) => {

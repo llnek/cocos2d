@@ -68,7 +68,7 @@ HUDLayer = scenes.XGameHUDLayer.extend({
       totalLives: 3
     });
 
-    this.lives.reify();
+    this.lives.create();
   },
   /**
    * @method ctor

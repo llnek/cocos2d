@@ -14,7 +14,7 @@
  * @requires s/factory
  * @requires s/utils
  * @requires s/supervisor
- * @requires s/motions
+ * @requires s/motion
  * @requires s/movealiens
  * @requires s/movebombs
  * @requires s/movemissiles
@@ -29,7 +29,7 @@ import sjs from 'cherimoia/skaro';
 import f from 's/factory';
 import u from 's/utils';
 import v from 's/supervisor';
-import mo from 's/motions';
+import mo from 's/motion';
 import aliens from 's/movealiens';
 import bombs from 's/movebombs';
 import mi from 's/movemissiles';

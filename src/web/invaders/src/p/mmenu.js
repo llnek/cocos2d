@@ -71,7 +71,7 @@ MainMenuLayer = scenes.XMenuLayer.extend({
       { nnn: '#icon_back.png',
         color: color,
         cb() {
-          this.options.onBack();
+          this.options.onback();
         },
         target: this },
       { nnn: '#icon_quit.png',

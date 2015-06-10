@@ -13,11 +13,12 @@
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/pool
+ * @requires nodes/gnodes
  * @requires nodes/cobjs
  * @requires s/utils
  * @module s/supervisor
  */
-
+import gnodes from 'nodes/gnodes';
 import cobjs from 'nodes/cobjs';
 import utils from 's/utils';
 import sh from 'zotohlab/asx/asterix';
@@ -49,6 +50,7 @@ GameSupervisor = sh.Ashley.sysDef({
    * @param {Ash.Engine} engine
    */
   removeFromEngine(engine) {
+    this.shipMotions=null;
   },
   /**
    * @memberof module:s/supervisor~GameSupervisor
@@ -56,6 +58,7 @@ GameSupervisor = sh.Ashley.sysDef({
    * @param {Ash.Engine} engine
    */
   addToEngine(engine) {
+    this.ships = engine.getNodeList(gnodes.ShipMotionNode);
   },
   /**
    * @memberof module:s/supervisor~GameSupervisor
@@ -101,6 +104,31 @@ GameSupervisor = sh.Ashley.sysDef({
 
     sh.factory.createAliens();
     sh.factory.createShip();
+
+    ccsx.onTouchOne(this);
+    ccsx.onMouse(this);
+    sh.main.pkInput();
+  },
+  /**
+   * @method fire
+   * @private
+   */
+  fire(t, evt) {
+    if ('/touch/one/move' === t || '/mouse/move' === t) {} else {
+      return;
+    }
+    if (this.state.running &&
+        !!this.ships.head) {
+      let ship = this.ships.head.ship,
+      pos = ship.pos(),
+      x=pos.x,
+      y=pos.y,
+      wz= ccsx.vrect(),
+      cur= cc.pAdd(pos, cc.p(evt.delta.x, 0));
+      cur= cc.pClamp(cur, cc.p(0, 0),
+                     cc.p(wz.width, wz.height));
+      ship.setPos(cur.x, cur.y);
+    }
   }
 
 });

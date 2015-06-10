@@ -82,12 +82,6 @@ MotionCtrlSystem = sh.Ashley.sysDef({
         !cc.sys.isNative) {
       this.processKeys(node,dt);
     }
-    else
-    if (cc.sys.capabilities['mouse']) {
-    }
-    else
-    if (cc.sys.capabilities['touches']) {
-    }
   },
   /**
    * @method processAlienMotions
