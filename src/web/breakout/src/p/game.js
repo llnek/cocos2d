@@ -41,6 +41,15 @@ BackLayer = scenes.XLayer.extend({
 /** * @class GameLayer */
 GameLayer = scenes.XGameLayer.extend({
   /**
+   * @method pkInput
+   * @protected
+   */
+  pkInput() {
+    ccsx.onKeyPolls(this.keyboard);
+    //ccsx.onTouchOne(this.ebus);
+    //ccsx.onMouse(this.ebus);
+  },
+  /**
    * @method reset
    * @protected
    */
@@ -121,7 +130,7 @@ GameLayer = scenes.XGameLayer.extend({
     this.options.world= this.getEnclosureBox();
     this.options.running=true;
 
-    R.forEach((z) => {
+    R.forEach( z => {
       this.engine.addSystem(new (z)(this.options), z.Priority);
     },
     [ sobjs.Supervisor,

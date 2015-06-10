@@ -106,6 +106,30 @@ HUDLayer = scenes.XGameHUDLayer.extend({
    */
   drawScore() {
     this.scoreLabel.setString(Number(this.score).toString());
+  },
+  /**
+   * @method ctor
+   * @private
+   */
+  ctor(options) {
+    this._super(options);
+    this.options.i_replay= {
+      nnn: '#icon_replay.png',
+      where: ccsx.acs.Bottom,
+      visible: false,
+      cb() {
+        sh.fire('/hud/replay');
+      }
+    };
+
+    this.options.i_menu= {
+      nnn: '#icon_menu.png',
+      where: ccsx.acs.Bottom,
+      cb() {
+        sh.fire('/hud/showmenu');
+      }
+    };
+
   }
 
 });

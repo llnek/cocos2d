@@ -12,11 +12,14 @@
 "use strict";/**
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
+ * @requires nodes/gnodes
  * @module s/supervisor
  */
 
 import sh from 'zotohlab/asx/asterix';
+import gnodes from 'nodes/gnodes';
 import ccsx from 'zotohlab/asx/ccsx';
+
 
 let sjs= sh.skarojs,
 xcfg = sh.xcfg,
@@ -42,6 +45,7 @@ GameSupervisor = sh.Ashley.sysDef({
    * @param {Ash.Engine} engine
    */
   removeFromEngine(engine) {
+    this.paddleMotions=null;
   },
   /**
    * @memberof module:s/supervisor~GameSupervisor
@@ -49,6 +53,7 @@ GameSupervisor = sh.Ashley.sysDef({
    * @param {Ash.Engine} engine
    */
   addToEngine(engine) {
+    this.paddles = engine.getNodeList(gnodes.PaddleMotionNode);
   },
   /**
    * @memberof module:s/supervisor~GameSupervisor
@@ -85,6 +90,31 @@ GameSupervisor = sh.Ashley.sysDef({
     sh.factory.createBricks();
     sh.factory.createPaddle();
     sh.factory.createBall();
+
+    ccsx.onTouchOne(this);
+    ccsx.onMouse(this);
+    sh.main.pkInput();
+  },
+  /**
+   * @method fire
+   * @private
+   */
+  fire(t, evt) {
+    if ('/touch/one/move' === t || '/mouse/move' === t) {} else {
+      return;
+    }
+    if (this.state.running &&
+        !!this.paddles.head) {
+      let p = this.paddles.head.paddle,
+      pos = p.pos(),
+      x=pos.x,
+      y=pos.y,
+      wz= ccsx.vrect(),
+      cur= cc.pAdd(pos, cc.p(evt.delta.x,0));
+      cur= cc.pClamp(cur, cc.p(0, 0),
+                     cc.p(wz.width, wz.height));
+      p.setPos(cur.x, cur.y);
+    }
   }
 
 });

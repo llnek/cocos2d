@@ -18,8 +18,7 @@
 import sh from 'zotohlab/asx/asterix';
 import xcfg from 'zotohlab/asx/cfg';
 
-
-const sjs= sh.skarojs;
+const sjs= sh.skarojs,
 /** @alias module:p/config */
 xbox = sjs.merge( xcfg, {
 
@@ -56,14 +55,14 @@ xbox = sjs.merge( xcfg, {
 
   assets: {
     atlases: {
-      'game-pics' : 'res/{{appid}}/pics/sprites'
+      'game-pics' : 'res/{{appid}}/pics/sprites',
+      'lang-pics' : 'res/{{appid}}/l10n/{{lang}}/images'
     },
     tiles: {
     },
     images: {
-      'splash.play-btn' : 'res/cocos2d/btns/play_gray_x64.png',
+      'gui.mmenus.menu.bg' : 'res/{{appid}}/pics/bg.png',
       'game.bg' : 'res/{{appid}}/pics/bg.png',
-      'gui.mmenu.menu.bg' : 'res/{{appid}}/pics/bg.png'
     },
     sounds: {
       'game_end' : 'res/cocos2d/sfx/MineExplosion',
@@ -82,10 +81,8 @@ xbox = sjs.merge( xcfg, {
   levels: {
     "1" : {
       'tiles' : {
-        'arena' : 'game/{{appid}}/levels/arena.tmx'
       },
       'images' : {
-        'arena' : 'game/{{appid}}/levels/arena.png'
       },
       'sprites' : {
       }
@@ -99,6 +96,7 @@ xbox = sjs.merge( xcfg, {
 
   runOnce() {
     cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
+cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('lang-pics'));
   }
 
 });

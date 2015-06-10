@@ -61,16 +61,14 @@ MainMenuLayer = scenes.XMenuLayer.extend({
     this.centerImage(sh.getImagePath('gui.mmenus.menu.bg'));
     const cw = ccsx.center(),
     wb = ccsx.vbox(),
-    menu= ccsx.tmenu1({
-      fontPath: sh.getFontPath('font.OogieBoogie'),
-      text: sh.l10n('%1player'),
-      scale: 0.5,
-      pos: cw,
+    menu= ccsx.vmenu([{
+      nnn: '#play.png',
+      target: this,
       cb() {
-        this.onplay( { mode: sh.gtypes.P1_GAME });
-      },
-      target: this
-    });
+        this.onplay({ mode: sh.gtypes.P1_GAME });
+      }
+    }],
+    {pos: cw});
     this.addItem(menu);
 
     this.mkBackQuit(false, [
