@@ -91,7 +91,7 @@ HUDLayer = scenes.XGameHUDLayer.extend({
     wb= ccsx.vbox();
 
     this.title = ccsx.bmfLabel({
-      fontPath: sh.getFontPath('font.JellyBelly'),
+      fontPath: sh.getFont('font.JellyBelly'),
       text: '',
       color: c,
       anchor: ccsx.acs.Top,
@@ -101,7 +101,7 @@ HUDLayer = scenes.XGameHUDLayer.extend({
     this.addItem(this.title);
 
     this.score1= ccsx.bmfLabel({
-      fontPath: sh.getFontPath('font.SmallTypeWriting'),
+      fontPath: sh.getFont('font.SmallTypeWriting'),
       text: '0',
       scale: xcfg.game.scale,
       color: ccsx.white,
@@ -112,7 +112,7 @@ HUDLayer = scenes.XGameHUDLayer.extend({
     this.addItem(this.score1);
 
     this.score2= ccsx.bmfLabel({
-      fontPath: sh.getFontPath('font.SmallTypeWriting'),
+      fontPath: sh.getFont('font.SmallTypeWriting'),
       text: '0',
       scale: xcfg.game.scale,
       color: ccsx.white,
@@ -123,7 +123,7 @@ HUDLayer = scenes.XGameHUDLayer.extend({
     this.addItem(this.score2);
 
     this.status= ccsx.bmfLabel({
-      fontPath: sh.getFontPath('font.CoffeeBuzzed'),
+      fontPath: sh.getFont('font.CoffeeBuzzed'),
       text: '',
       color: ccsx.white,
       scale: xcfg.game.scale * 0.3,// 0.06,
@@ -132,7 +132,7 @@ HUDLayer = scenes.XGameHUDLayer.extend({
     this.addItem(this.status);
 
     this.result= ccsx.bmfLabel({
-      fontPath: sh.getFontPath('font.CoffeeBuzzed'),
+      fontPath: sh.getFont('font.CoffeeBuzzed'),
       color: ccsx.white,
       text: '',
       scale: xcfg.game.scale * 0.3,// 0.06,
@@ -156,7 +156,7 @@ HUDLayer = scenes.XGameHUDLayer.extend({
 
     if (! this.countDown) {
       this.countDown= ccsx.bmfLabel({
-        fontPath: sh.getFontPath('font.AutoMission'),
+        fontPath: sh.getFont('font.AutoMission'),
         text: '',
         scale: xcfg.game.scale * 0.5,
         color: ccsx.white,

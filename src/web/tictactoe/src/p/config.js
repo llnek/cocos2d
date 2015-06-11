@@ -94,8 +94,8 @@ xbox = sjs.merge( xcfg, {
   },
 
   runOnce() {
-    cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
-    cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('lang-pics'));
+    cc.spriteFrameCache.addSpriteFrames( sh.getPList('game-pics'));
+    cc.spriteFrameCache.addSpriteFrames( sh.getPList('lang-pics'));
   }
 
 });

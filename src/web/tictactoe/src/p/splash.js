@@ -20,8 +20,7 @@
 import scenes from 'zotohlab/asx/scenes';
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
-import utils from 's/utils';
-
+import uts from 's/utils';
 
 //////////////////////////////////////////////////////////////////////////////
 let sjs=sh.skarojs,
@@ -29,16 +28,16 @@ xcfg = sh.xcfg,
 csts= xcfg.csts,
 R = sjs.ramda,
 undef,
-/**
- * @class SplashLayer
- */
+/** * @class SplashLayer */
 SplashLayer = scenes.XLayer.extend({
   /**
    * @method setup
    * @protected
    */
   setup() {
-    this.centerImage(sh.getImagePath('game.bg'));
+    this.centerImage(sh.getImage('game.bg'));
+    this.incIndexZ();
+    this.regoAtlas('game-pics');
     this.title();
     this.demo();
     this.btns();
@@ -50,8 +49,9 @@ SplashLayer = scenes.XLayer.extend({
   title() {
     const cw = ccsx.center(),
     wb = ccsx.vbox();
-    this.addFrame('#title.png',
-                  cc.p(cw.x, wb.top * 0.9));
+    this.addAtlasFrame('#title.png',
+                       cc.p(cw.x, wb.top * 0.9),
+                       'game-pics');
   },
   /**
    * @method btns
@@ -65,7 +65,8 @@ SplashLayer = scenes.XLayer.extend({
       target: this,
       nnn: '#play.png'
     }],
-    { pos: cc.p(cw.x, wb.top * 0.1) });
+    { pos: cc.p(cw.x,
+                wb.top * 0.1) });
     this.addItem(menu);
   },
   /**
@@ -74,10 +75,9 @@ SplashLayer = scenes.XLayer.extend({
    */
   onplay() {
     const ss= sh.protos[sh.ptypes.start],
-    mm= sh.protos[sh.ptypes.mmenu],
-    dir= cc.director;
-    dir.runScene( mm.reify({
-      onback() { dir.runScene( ss.reify()); }
+    mm= sh.protos[sh.ptypes.mmenu];
+    ccsx.runScene( mm.reify({
+      onback() { ccsx.runScene(ss.reify()); }
     }));
   },
   /**
@@ -90,7 +90,7 @@ SplashLayer = scenes.XLayer.extend({
     fm, sp, bx;
 
     // we scale down the icons to make it look nicer
-    R.forEach((mp) => {
+    R.forEach( mp => {
       // set up the grid icons
       if (pos === 1 || pos===5 || pos===6 || pos===7) { fm= '#x.png'; }
       else if (pos===0 || pos===4) { fm= '#z.png'; }
@@ -102,10 +102,10 @@ SplashLayer = scenes.XLayer.extend({
         x: bx.x,
         y: bx.y
       });
-      this.addItem(sp);
+      this.addAtlasItem('game-pics',sp);
       ++pos;
     },
-    utils.mapGridPos(3,scale));
+    uts.mapGridPos(3,scale));
   }
 
 });

@@ -38,10 +38,7 @@ SEED= {
   mode: 0
 },
 //////////////////////////////////////////////////////////////////////////////
-/**
- * @extends module:zotohlab/asx/scenes.XMenuLayer
- * @class MainMenuLayer
- */
+/** * @class MainMenuLayer */
 MainMenuLayer = scenes.XMenuLayer.extend({
   /**
    * @method title
@@ -51,10 +48,10 @@ MainMenuLayer = scenes.XMenuLayer.extend({
     const wb=ccsx.vbox(),
     cw= ccsx.center(),
     tt=ccsx.bmfLabel({
-      fontPath: sh.getFontPath('font.JellyBelly'),
+      fontPath: sh.getFont('font.JellyBelly'),
       text: sh.l10n('%mmenu'),
       pos: cc.p(cw.x, wb.top * 0.9),
-      color: cc.color(246,177,127),
+      color: cc.color('#F6B17F'),
       scale: xcfg.game.scale
     });
     this.addItem(tt);
@@ -92,7 +89,7 @@ MainMenuLayer = scenes.XMenuLayer.extend({
    * @protected
    */
   setup() {
-    this.centerImage(sh.getImagePath('gui.mmenu.menu.bg'));
+    this.centerImage(sh.getImage('gui.mmenu.menu.bg'));
     this.title();
     const color= cc.color(94,49,120),
     cw = ccsx.center(),

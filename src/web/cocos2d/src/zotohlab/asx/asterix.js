@@ -518,8 +518,8 @@ let xbox = /** @lends xbox# */{
    * @param {String} key
    * @return {String} path
    */
-  getImagePath(key) {
-    //cc.log('getSpritePath for key : ' + key);
+  getImage(key) {
+    //cc.log('getSprite for key : ' + key);
     return this.fixUrl(this.xcfg.assets.images[key]);
   },
 
@@ -529,7 +529,7 @@ let xbox = /** @lends xbox# */{
    * @param {String} key
    * @return {String} path
    */
-  getPListPath(key) {
+  getPList(key) {
     return this.fixUrl(this.xcfg.assets.atlases[key]) + '.plist';
   },
 
@@ -539,7 +539,7 @@ let xbox = /** @lends xbox# */{
    * @param {String} key
    * @return {String} path
    */
-  getAtlasPath(key) {
+  getAtlas(key) {
     return this.fixUrl(this.xcfg.assets.atlases[key]) + '.png';
   },
 
@@ -549,7 +549,7 @@ let xbox = /** @lends xbox# */{
    * @param {String} key
    * @return {String} path
    */
-  getSfxPath(key) {
+  getSfx(key) {
     return [this.fixUrl(this.xcfg.assets.sounds[key]),
             '.',
             this.xcfg.game.sfx].join('');
@@ -561,8 +561,8 @@ let xbox = /** @lends xbox# */{
    * @param {String} key
    * @return {String} path
    */
-  getSpritePath(key) {
-    //cc.log('getSpritePath for key : ' + key);
+  getSprite(key) {
+    //cc.log('getSprite for key : ' + key);
     return this.fixUrl(this.xcfg.assets.sprites[key](0));
   },
 
@@ -572,7 +572,7 @@ let xbox = /** @lends xbox# */{
    * @param {String} key
    * @return {String} path
    */
-  getTilesPath(key) {
+  getTiles(key) {
     return this.fixUrl(this.xcfg.assets.tiles[key]);
   },
 
@@ -582,7 +582,7 @@ let xbox = /** @lends xbox# */{
    * @param {String} key
    * @return {String} path
    */
-  getFontPath(key) {
+  getFont(key) {
     const obj= this.xcfg.assets.fonts[key];
     return [this.fixUrl(obj[0]), '/' , obj[2]].join('');
   },
@@ -606,7 +606,7 @@ let xbox = /** @lends xbox# */{
     if (this.xcfg.sound.open) {
       options= options || {};
       this.sfxMusicVol(options.vol);
-      cc.audioEngine.playMusic(this.getSfxPath(key),
+      cc.audioEngine.playMusic(this.getSfx(key),
                                options.repeat===true);
     }
   },
@@ -621,7 +621,7 @@ let xbox = /** @lends xbox# */{
     if (this.xcfg.sound.open) {
       options = options || {};
       this.sfxMusicVol(options.vol);
-      cc.audioEngine.playEffect(this.getSfxPath(key),
+      cc.audioEngine.playEffect(this.getSfx(key),
                                 options.repeat===true);
     }
   },

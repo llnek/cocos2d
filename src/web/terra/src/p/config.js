@@ -158,11 +158,11 @@ const xbox = sjs.merge( xcfg, {
   },
 
   runOnce() {
-    cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('game-pics'));
-    cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('lang-pics'));
-    cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('op-pics'));
-    cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('explosions'));
-    cc.spriteFrameCache.addSpriteFrames( sh.getPListPath('back-tiles'));
+    cc.spriteFrameCache.addSpriteFrames( sh.getPList('game-pics'));
+    cc.spriteFrameCache.addSpriteFrames( sh.getPList('lang-pics'));
+    cc.spriteFrameCache.addSpriteFrames( sh.getPList('op-pics'));
+    cc.spriteFrameCache.addSpriteFrames( sh.getPList('explosions'));
+    cc.spriteFrameCache.addSpriteFrames( sh.getPList('back-tiles'));
   }
 
 });

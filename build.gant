@@ -489,7 +489,7 @@ def doCompileJS(wappid) {
   jsWalkTree(wappid, new Stack(),root)
   cleanLocalJs(wappid)
 
-  if (false) {
+  if (true) {
     ant.exec(executable: "jsdoc", dir: "${basedir}",spawn:true) {
       arg(value: "${basedir}/${bldDir}/${prj}/${wjs}/${wappid}")
       arg(value:"-c")

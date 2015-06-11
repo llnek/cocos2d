@@ -194,7 +194,7 @@ const XLayer = cc.Layer.extend({
    * @return {cc.SpriteBatchNode}
    */
   regoAtlas(name, z, tag) {
-    let a= new cc.SpriteBatchNode( cc.textureCache.addImage( sh.getAtlasPath(name)));
+    let a= new cc.SpriteBatchNode( cc.textureCache.addImage( sh.getAtlas(name)));
     if (! sjs.echt(tag)) {
       tag = ++this.lastTag;
     }
@@ -459,7 +459,14 @@ const XLayer = cc.Layer.extend({
 
     this.addChild(n, pzx, ptag);
   },
-
+  /**
+   * @memberof module:zotohlab/asx/scenes~XLayer
+   * @method incIndexZ
+   * @param {cc.Scene} par
+   */
+  incIndexZ() {
+    ++this.lastZix;
+  },
   /**
    * Remember the parent scene object.
    * @memberof module:zotohlab/asx/scenes~XLayer

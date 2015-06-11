@@ -81,7 +81,7 @@ HUDLayer = scenes.XGameHUDLayer.extend({
     const wz = ccsx.vrect();
 
     this.scoreLabel = ccsx.bmfLabel({
-      fontPath: sh.getFontPath('font.TinyBoxBB'),
+      fontPath: sh.getFont('font.TinyBoxBB'),
       text: '0',
       anchor: ccsx.acs.BottomRight,
       scale: 12/72

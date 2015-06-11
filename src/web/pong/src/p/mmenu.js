@@ -41,7 +41,7 @@ MainMenuLayer = scenes.XMenuLayer.extend({
     const wb=ccsx.vbox(),
     cw= ccsx.center(),
     tt=ccsx.bmfLabel({
-      fontPath: sh.getFontPath('font.JellyBelly'),
+      fontPath: sh.getFont('font.JellyBelly'),
       text: sh.l10n('%mmenu'),
       pos: cc.p(cw.x, wb.top * 0.9),
       color: cc.color('#EDFF90'),
@@ -81,7 +81,7 @@ MainMenuLayer = scenes.XMenuLayer.extend({
    * @protected
    */
   setup() {
-    this.centerImage(sh.getImagePath('gui.mmenu.menu.bg'));
+    this.centerImage(sh.getImage('gui.mmenu.menu.bg'));
     this.title();
     const color= cc.color('#32baf4'),
     cw= ccsx.center(),

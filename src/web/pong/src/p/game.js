@@ -39,7 +39,7 @@ undef,
 /** * @class BackLayer */
 BackLayer = scenes.XLayer.extend({
   setup() {
-    this.centerImage(sh.getImagePath('game.bg'));
+    this.centerImage(sh.getImage('game.bg'));
   },
   rtti() { return 'BackLayer'; }
 }),

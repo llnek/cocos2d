@@ -37,7 +37,7 @@ SplashLayer = scenes.XLayer.extend({
    * @private
    */
   setup() {
-    this.centerImage(sh.getImagePath('game.bg'));
+    this.centerImage(sh.getImage('game.bg'));
     this.btns();
   },
   /**

@@ -39,13 +39,13 @@ UILayer =  scenes.XLayer.extend({
    */
   setup() {
     let qn= new cc.LabelBMFont(sh.l10n('%quit?'),
-                               sh.getFontPath('font.OCR')),
+                               sh.getFont('font.OCR')),
     cw= ccsx.center(),
     wz= ccsx.vrect(),
     wb= ccsx.vbox(),
     menu;
 
-    this.centerImage(sh.getImagePath('game.bg'));
+    this.centerImage(sh.getImage('game.bg'));
     qn.setPosition(cw.x, wb.top * 0.75);
     qn.setScale(xcfg.game.scale * 0.25);
     qn.setOpacity(0.9*255);

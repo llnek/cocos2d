@@ -40,13 +40,13 @@ SplashLayer = scenes.XLayer.extend({
    * @protected
    */
   setup() {
-    this.centerImage(sh.getImagePath('bg'));
+    this.centerImage(sh.getImage('bg'));
     this.btns();
     this.misc();
   },
   misc() {
     const wz = ccsx.vrect();
-    this.flare = new cc.Sprite(sh.getImagePath('flare'));
+    this.flare = new cc.Sprite(sh.getImage('flare'));
     this.flare.visible = false;
     this.ship = new cc.Sprite("#ship03.png");
     this.ship.attr({

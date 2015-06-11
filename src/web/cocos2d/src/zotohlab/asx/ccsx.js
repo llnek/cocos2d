@@ -205,7 +205,15 @@ const xbox = /** @lends xbox# */{
       right: this.getRight(sprite)
     };
   },
-
+  /**
+   * @method runScene
+   * @param {cc.Scene}
+   * @param delay
+   */
+  runScene(ns,delay) {
+    delay= delay || 1.2;
+    cc.director.runScene(new cc.TransitionCrossFade(delay, ns));
+  },
   /**
    * Calculate halves of width and height of this sprite.
    * @method
