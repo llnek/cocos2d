@@ -279,7 +279,7 @@ const XLayer = cc.Layer.extend({
     dir = cc.director;
 
     dir.pushScene( yn.reify({
-      onBack() {
+      onback() {
         dir.popScene();
       },
       yes() {
@@ -1096,7 +1096,7 @@ const xbox= /** @lends xbox# */{
   showMenu() {
     const dir= cc.director;
     dir.pushScene(sh.protos[sh.ptypes.mmenu].reify({
-      onBack() { dir.popScene(); }
+      onback() { dir.popScene(); }
     }));
   }
 };

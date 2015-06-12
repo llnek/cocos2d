@@ -20,24 +20,20 @@ import scenes from 'zotohlab/asx/scenes';
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
 
-
 //////////////////////////////////////////////////////////////////////////
 let sjs= sh.skarojs,
 xcfg = sh.xcfg,
 csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @extends module:zotohlab/asx/scenes.XGameHUDLayer
- * @class HUDLayer
- */
+/** * @class HUDLayer */
 HUDLayer = scenes.XGameHUDLayer.extend({
   /**
    * @method ctor
-   * @constructs
+   * @private
    */
   ctor(options) {
-    let color= cc.color(94,49,120),
+    let color= cc.color("#5e3178"),
     scale= 1;
 
     this._super(options);

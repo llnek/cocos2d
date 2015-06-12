@@ -215,6 +215,14 @@ const xbox = /** @lends xbox# */{
     cc.director.runScene(new cc.TransitionCrossFade(delay, ns));
   },
   /**
+   * @method isTransitioning
+   * @return {Boolean}
+   */
+  isTransitioning() {
+    return cc.director.getRunningScene() instanceof
+    cc.TransitionScene;
+  },
+  /**
    * Calculate halves of width and height of this sprite.
    * @method
    * @param {cc.Sprite} sprite

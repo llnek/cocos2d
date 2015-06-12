@@ -63,9 +63,8 @@ MainMenuLayer = scenes.XMenuLayer.extend({
   onnetplay(msg) {
     const gl= sh.protos[sh.ptypes.game],
     ol= sh.protos[sh.ptypes.online],
-    mm= sh.protos[sh.ptypes.mmenu],
-    dir= cc.director;
-    msg.onback= () => { dir.runScene( mm.reify()); };
+    mm= sh.protos[sh.ptypes.mmenu];
+    msg.onback= () => { ccsx.runScene( mm.reify()); };
     msg.yes= (wss,pnum,startmsg) => {
       const m= sjs.mergeEx(R.omit(['yes',
                                    'onback'], msg), {
@@ -73,16 +72,16 @@ MainMenuLayer = scenes.XMenuLayer.extend({
         pnum: pnum
       });
       sjs.merge(m, startmsg);
-      dir.runScene( gl.reify(m));
+      ccsx.runScene( gl.reify(m));
     }
-    dir.runScene(ol.reify(msg));
+    ccsx.runScene(ol.reify(msg));
   },
   /**
    * @method onplay
    * @private
    */
   onplay(msg) {
-    cc.director.runScene(sh.protos[sh.ptypes.game].reify(msg));
+    ccsx.runScene(sh.protos[sh.ptypes.game].reify(msg));
   },
   /**
    * @method setup
@@ -90,8 +89,9 @@ MainMenuLayer = scenes.XMenuLayer.extend({
    */
   setup() {
     this.centerImage(sh.getImage('gui.mmenu.menu.bg'));
+    this.incIndexZ();
     this.title();
-    const color= cc.color(94,49,120),
+    const color= cc.color('#5E3178'),
     cw = ccsx.center(),
     wb= ccsx.vbox(),
     me=this,
@@ -143,6 +143,13 @@ MainMenuLayer = scenes.XMenuLayer.extend({
       color: color,
       anchor: ccsx.acs.BottomRight
     });
+  },
+  /**
+   * @method ctor
+   * @private
+   */
+  ctor(options) {
+    this._super(options);
   }
 });
 

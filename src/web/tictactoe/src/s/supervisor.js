@@ -69,6 +69,7 @@ GameSupervisor = sh.Ashley.sysDef({
    * @param {Number} dt
    */
   update(dt) {
+    if (ccsx.isTransitioning()) { return false; }
     const node= this.board.head;
     if (this.state.running &&
         !!node) {
