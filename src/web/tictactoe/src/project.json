@@ -12,7 +12,6 @@
 
     "src/tictactoe/s/factory.js",
     "src/tictactoe/s/utils.js",
-    "src/tictactoe/s/rendering.js",
     "src/tictactoe/s/resolution.js",
     "src/tictactoe/s/supervisor.js",
     "src/tictactoe/s/turnbase.js",

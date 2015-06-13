@@ -66,7 +66,53 @@ ResolutionSystem = sh.Ashley.sysDef({
     const node= this.board.head;
     if (this.state.running &&
         !!node) {
+      this.preprocess(node, dt);
       this.process(node, dt);
+    }
+  },
+  /**
+   * @method preprocess
+   * @private
+   */
+  preprocess(node) {
+    let values= node.grid.values,
+    view= node.view,
+    cs= view.cells,
+    z,c, offset;
+
+    R.forEachIndexed((v, pos) => {
+
+      if (v !== csts.CV_Z) {
+        c= this.xrefCell(pos, view.gridMap);
+        if (!!c) {
+          z=cs[pos];
+          if (!!z) {
+            z[0].removeFromParent();
+          }
+          cs[pos] = [utils.drawSymbol(view, c[0], c[1], v),
+                     c[0], c[1], v];
+        }
+      }
+
+    }, values);
+  },
+  /**
+   * Given a cell, find the screen co-ordinates for that cell.
+   * @method xrefCell
+   * @private
+   */
+  xrefCell(pos, map) {
+    let gg, x, y,
+    delta=0;
+
+    if (pos >= 0 && pos < csts.CELLS) {
+      gg = map[pos];
+      x = gg.left + (gg.right - gg.left  - delta) * 0.5;
+      y = gg.top - (gg.top - gg.bottom - delta ) * 0.5;
+      // the cell's center
+      return [x, y];
+    } else {
+      return null;
     }
   },
   /**

@@ -13,7 +13,6 @@
  * @requires zotohlab/asx/asterix
  * @requires s/utils
  * @requires s/factory
- * @requires s/rendering
  * @requires s/resolution
  * @requires s/supervisor
  * @requires s/turnbase
@@ -24,7 +23,6 @@
 import sh from 'zotohlab/asx/asterix';
 import utils from 's/utils';
 import fact from 's/factory';
-import render from 's/rendering';
 import res from 's/resolution';
 import visor from 's/supervisor';
 import turn from 's/turnbase';
@@ -37,7 +35,6 @@ xbox= /** @lends xbox# */{
   motion.Motions,
   turn.TurnBaseSystem,
   res.ResolutionSystem,
-  render.RenderSystem,
   utils],
   /**
    * @method entityFactory

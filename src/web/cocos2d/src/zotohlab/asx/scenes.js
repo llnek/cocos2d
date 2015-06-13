@@ -784,11 +784,17 @@ const XGameLayer = XLayer.extend({
     return this.keyboard[key];
   },
   /**
-   * @method addSystem
+   * @method addSystemComponents
    * @protected
    */
-  addSystem(sys) {
-    this.engine.addSystem(new (sys)(this.options), sys.Priority);
+  addSystemComponents(syss, fact) {
+    this.engine = this.newFlow();
+    if (sjs.isfunc(fact)) {
+      fact(this.engine);
+    }
+    R.forEach( z => {
+      this.engine.addSystem(new (z)(this.options), z.Priority);
+    }, syss);
   },
   /**
    * @memberof module:zotohlab/asx/scenes~XGameLayer
@@ -823,7 +829,7 @@ const XGameLayer = XLayer.extend({
    * @method newFlow
    */
   newFlow() {
-    this.engine= new Ash.Engine();
+    return this.engine= new Ash.Engine();
   },
 
   /**

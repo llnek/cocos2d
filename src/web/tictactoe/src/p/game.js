@@ -93,12 +93,9 @@ GameLayer = scenes.XGameLayer.extend({
     this.reset(newFlag);
     this.initPlayers();
 
-    sobjs.entityFactory(this);
-    R.forEach( z => {
-      this.addSystem(z);
-    },
-    R.filter(z => { sjs.isfunc(z); },
-             sobjs.systems));
+    this.addSystemComponents(R.filter(z => {
+      return sjs.isfunc(z);
+    }, sobjs.systems), sobjs.entityFactory);
 
     this.getHUD().regoPlayers(csts.P1_COLOR, p1ids,
                               csts.P2_COLOR, p2ids);
@@ -125,12 +122,12 @@ GameLayer = scenes.XGameLayer.extend({
       this.regoAtlas('game-pics');
       this.regoAtlas('lang-pics');
     }
+    this.options.lastWinner=undef;
     if (newFlag) {
       this.getHUD().resetAsNew();
     } else {
       this.getHUD().reset();
     }
-    this.newFlow();
   },
   /**
    * @method updateHUD
@@ -213,7 +210,6 @@ const xbox = /** @lends xbox# */{
       sh.main.play(false);
     }).
     onmsg('/net/stop', (t,msg) => {
-      sh.main.getHUD().killTimer();
       sh.main.getHUD().endGame(msg.status);
     }).
     onmsg('/hud/timer/hide', (t,msg) => {

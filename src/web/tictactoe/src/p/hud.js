@@ -222,6 +222,7 @@ HUDLayer = scenes.XGameHUDLayer.extend({
    * @private
    */
   endGame(winner) {
+    this.killTimer();
     this.replayBtn.setVisible(true);
     this.result.setVisible(true);
     this.status.setVisible(false);
