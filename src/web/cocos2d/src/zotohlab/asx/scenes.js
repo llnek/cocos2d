@@ -783,7 +783,13 @@ const XGameLayer = XLayer.extend({
   keyPoll(key){
     return this.keyboard[key];
   },
-
+  /**
+   * @method addSystem
+   * @protected
+   */
+  addSystem(sys) {
+    this.engine.addSystem(new (sys)(this.options), sys.Priority);
+  },
   /**
    * @memberof module:zotohlab/asx/scenes~XGameLayer
    * @method getEnclosureBox

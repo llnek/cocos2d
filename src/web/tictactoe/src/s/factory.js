@@ -52,9 +52,7 @@ mapGoalSpace = size => {
   return [dx, dy].concat(rows, cols);
 },
 //////////////////////////////////////////////////////////////////////////////
-/**
- * @class EntityFactory
- */
+/** * @class EntityFactory */
 EntityFactory = sh.Ashley.casDef({
   /**
    * @memberof module:s/factory~EntityFactory

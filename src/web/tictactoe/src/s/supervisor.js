@@ -91,7 +91,7 @@ GameSupervisor = sh.Ashley.sysDef({
     pos=0,
     sp;
 
-    R.forEach((mp) => {
+    R.forEach( mp => {
       sp= ccsx.createSpriteFrame('z.png');
       sp.setPosition(ccsx.vboxMID(mp));
       sh.main.addAtlasItem('game-pics',sp);

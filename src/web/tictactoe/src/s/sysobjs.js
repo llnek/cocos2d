@@ -41,11 +41,11 @@ xbox= /** @lends xbox# */{
   utils],
   /**
    * @method entityFactory
-   * @param {Ash.Engine}
+   * @param {XGameLayer}
    * @return {Ash.Factory}
    */
-  entityFactory(engine) {
-    sh.factory = new fact.EntityFactory(engine);
+  entityFactory(game) {
+    sh.factory = new fact.EntityFactory(game.engine);
     return sh.factory;
   }
 

@@ -40,6 +40,7 @@ Motions = sh.Ashley.sysDef({
    */
   constructor(options) {
     this.state= options;
+    this.inited=false;
   },
   /**
    * @memberof module:s/motion~Motions
@@ -60,6 +61,12 @@ Motions = sh.Ashley.sysDef({
   addToEngine(engine) {
     this.netplay = engine.getNodeList(gnodes.NetPlayNode);
     this.gui = engine.getNodeList(gnodes.GUINode);
+  },
+  /**
+   * @method onceOnly
+   * @private
+   */
+  onceOnly() {
     this.evQ=[];
     let ws;
     if (sjs.isobj(this.state.wsock)) {
@@ -97,6 +104,11 @@ Motions = sh.Ashley.sysDef({
    * @param {Number} dt
    */
   update(dt) {
+    if (!this.inited) {
+      this.onceOnly();
+      this.inited=true;
+    }
+    else
     if (this.evQ.length > 0) {
       const evt = this.evQ.shift(),
       n= this.netplay.head,

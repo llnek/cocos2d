@@ -79,7 +79,7 @@ ResolutionSystem = sh.Ashley.sysDef({
     rc,
     res;
 
-    if (R.find((p) => {
+    if (R.find( p => {
         if (!!p) {
           rc= this.checkWin(p,values);
           if (rc) {
@@ -197,12 +197,12 @@ ResolutionSystem = sh.Ashley.sysDef({
    */
   checkWin(actor, game) {
     //sjs.loggr.debug('checking win for ' + actor.color);
-    let combo, rc= R.any((r) => {
+    let combo, rc= R.any( r => {
       combo=r;
-      return R.all((n) => {
+      return R.all( n => {
         return actor.value === n;
       },
-      R.map((i) => { return game[i]; }, r));
+      R.map( i => { return game[i]; }, r));
     },
     this.state.GOALSPACE);
 
