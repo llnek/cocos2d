@@ -60,7 +60,7 @@ GameLayer = scenes.XGameLayer.extend({
    */
   replay() {
     sjs.loggr.debug('replay game called');
-    if (sjs.isObject(this.options.wsock)) {
+    if (sjs.isobj(this.options.wsock)) {
 
       // request server to restart a new game
       this.options.wsock.send({
@@ -88,7 +88,7 @@ GameLayer = scenes.XGameLayer.extend({
 
     // start with a clean slate
     this.reset(newFlag);
-    this.cleanSlate();
+    this.newFlow();
 
     sh.factory= new sobjs.Factory(this.engine);
     this.options.world = this.getEnclosureBox();
@@ -125,7 +125,7 @@ GameLayer = scenes.XGameLayer.extend({
    * @method reset
    */
   reset(newFlag) {
-    if (!sjs.isEmpty(this.atlases)) {
+    if (!sjs.isempty(this.atlases)) {
       sjs.eachObj( v => { v.removeAllChildren(); }, this.atlases);
     } else {
       this.regoAtlas('game-pics');

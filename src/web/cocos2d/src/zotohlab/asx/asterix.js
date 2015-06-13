@@ -37,7 +37,7 @@ ComObj = {
    * @param {Object} from
    */
   hurt(damage, from) {
-    this.HP -= sjs.isNumber(damage) ? damage : 1;
+    this.HP -= sjs.isnum(damage) ? damage : 1;
   },
 
   /**
@@ -299,7 +299,7 @@ let xbox = /** @lends xbox# */{
    */
   l10n(s,pms) {
     const t= s.toLocaleString();
-    return sjs.isObject(pms) ? Mustache.render(t,pms) : t;
+    return sjs.isobj(pms) ? Mustache.render(t,pms) : t;
   },
 
   /**
@@ -631,7 +631,7 @@ let xbox = /** @lends xbox# */{
    * @method sfxMusicVol
    */
   sfxMusicVol(v) {
-    if (this.xcfg.sound.open && sjs.isNumber(v)) {
+    if (this.xcfg.sound.open && sjs.isnum(v)) {
       cc.audioEngine.setMusicVolume(v);
     }
   },

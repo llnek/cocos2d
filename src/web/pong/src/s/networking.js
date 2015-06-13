@@ -160,7 +160,7 @@ NetworkSystem = sh.Ashley.sysDef({
    * @private
    */
   onsess(evt) {
-    if (!sjs.isObject(evt.source)) { return; }
+    if (!sjs.isobj(evt.source)) { return; }
     switch (evt.code) {
       case evts.POKE_MOVE:
         sjs.loggr.debug("activate arena, start to rumble!");
@@ -199,14 +199,14 @@ NetworkSystem = sh.Ashley.sysDef({
     node,
     ok= true;
 
-    if (sjs.isObject(evt.source.winner)) {
+    if (sjs.isobj(evt.source.winner)) {
       win= actors[evt.source.winner.pnum];
       sjs.loggr.debug("server sent us new winner ==> " + win.color);
       this.syncScores(evt.source.winner.scores);
       sh.fire('/hud/end', { winner: win.color });
     }
 
-    if (sjs.isObject(evt.source.scores)) {
+    if (sjs.isobj(evt.source.scores)) {
       sjs.loggr.debug("server sent us new scores !!!!");
       this.syncScores(evt.source.scores);
       // once we get a new score, we reposition the entities
@@ -217,7 +217,7 @@ NetworkSystem = sh.Ashley.sysDef({
       //this.state.poked=false;
     }
 
-    if (sjs.isObject(evt.source.ball)) {
+    if (sjs.isobj(evt.source.ball)) {
       sjs.loggr.debug("server says: Ball got SYNC'ED !!!");
       const c = evt.source.ball;
       node= this.balls.head;
@@ -283,13 +283,13 @@ NetworkSystem = sh.Ashley.sysDef({
 
     for (let node = nl.head; node; node=node.next) {
 
-      if (sjs.isObject(evt.source.p2) &&
+      if (sjs.isobj(evt.source.p2) &&
           node.player.pnum===2) {
         sjs.loggr.debug("server says: P2 got SYNC'ED !!!");
         this.syncOnePaddle(node, evt.source.p2);
       }
 
-      if (sjs.isObject(evt.source.p1) &&
+      if (sjs.isobj(evt.source.p1) &&
           node.player.pnum===1) {
         sjs.loggr.debug("server says: P1 got SYNC'ED !!!");
         this.syncOnePaddle(node, evt.source.p1);

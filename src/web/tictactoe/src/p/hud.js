@@ -33,11 +33,10 @@ HUDLayer = scenes.XGameHUDLayer.extend({
    * @private
    */
   ctor(options) {
-    let color= cc.color("#5e3178"),
+    const color= cc.color("#5e3178"),
     scale= 1;
 
     this._super(options);
-    this.mode= 0;
     this.p2Long= '';
     this.p1Long= '';
     this.p2ID= '';
@@ -59,6 +58,7 @@ HUDLayer = scenes.XGameHUDLayer.extend({
       visible: false
     };
     this.color= color;
+    this.initScores();
   },
   /**
    * @method initScores
@@ -68,14 +68,6 @@ HUDLayer = scenes.XGameHUDLayer.extend({
     this.scores= {};
     this.scores[csts.P2_COLOR] =  0;
     this.scores[csts.P1_COLOR] =  0;
-  },
-  /**
-   * @method setGameMode
-   * @private
-   */
-  setGameMode(mode) {
-    this.mode= mode;
-    this.initScores();
   },
   /**
    * @method initLabels
@@ -262,7 +254,7 @@ HUDLayer = scenes.XGameHUDLayer.extend({
   drawResult(pnum) {
     let msg = sh.l10n('%whodraw');
 
-    if (sjs.isNumber(pnum)) {
+    if (sjs.isnum(pnum)) {
       switch (pnum) {
         case 2: msg= sh.l10n('%whowin', { who: this.p2Long}); break;
         case 1: msg= sh.l10n('%whowin', { who: this.p1Long}); break;
@@ -276,7 +268,7 @@ HUDLayer = scenes.XGameHUDLayer.extend({
    * @private
    */
   drawStatus(pnum) {
-    if (sjs.isNumber(pnum)) {
+    if (sjs.isnum(pnum)) {
       const pfx = pnum === 1 ? this.p1Long : this.p2Long;
       this.drawStatusText(this.status,
                           sh.l10n('%whosturn', {

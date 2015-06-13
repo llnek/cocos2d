@@ -54,7 +54,7 @@ let handleMultiDevices = () => {
                  fsz.height  + "]");
 
   // if handler provided, call it and go.
-  if (sjs.isFunction(xcfg.handleDevices)) {
+  if (sjs.isfunc(xcfg.handleDevices)) {
     return xcfg.handleDevices();
   }
 
@@ -206,7 +206,7 @@ const MyLoaderScene = cc.Scene.extend(/** @lends MyLoaderScene# */{
     cc.loader.load(res,
                    (result, count, loadedCount) => {},
                    () => {
-                     if (sjs.isFunction(self.cb)) {
+                     if (sjs.isfunc(self.cb)) {
                        self.cb();
                      }
                    });

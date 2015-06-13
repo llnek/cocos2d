@@ -31,9 +31,7 @@ xcfg= sh.xcfg,
 csts = xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////////
-/**
- * @class Motions
- */
+/** * @class Motions */
 Motions = sh.Ashley.sysDef({
   /**
    * @memberof module:s/motion~Motions
@@ -64,10 +62,10 @@ Motions = sh.Ashley.sysDef({
     this.gui = engine.getNodeList(gnodes.GUINode);
     this.evQ=[];
     let ws;
-    if (this.state.wsock) {
-      this.state.wsock.unsubscribeAll();
+    if (sjs.isobj(this.state.wsock)) {
+      this.state.wsock.cancelAll();
       ws=Rx.Observable.create( obj => {
-        this.state.wsock.subscribeAll((t,e)=>{
+        this.state.wsock.listenAll((t,e)=>{
           obj.onNext({group:'net', event: e});
         });
       });
@@ -154,8 +152,8 @@ Motions = sh.Ashley.sysDef({
     grid=node.grid,
     vs=grid.values;
 
-    if (sjs.isObject(cmd) &&
-        sjs.isNumber(cmd.cell) &&
+    if (sjs.isobj(cmd) &&
+        sjs.isnum(cmd.cell) &&
         cmd.cell >= 0 &&
         cmd.cell < vs.length) {
 
@@ -168,7 +166,7 @@ Motions = sh.Ashley.sysDef({
       sh.sfxPlay(snd);
     }
 
-    pnum= sjs.isNumber(evt.source.pnum) ? evt.source.pnum : -1;
+    pnum= sjs.isnum(evt.source.pnum) ? evt.source.pnum : -1;
     if (pnum === 1 || pnum === 2) {} else { return; }
     switch (evt.code) {
       case evts.POKE_MOVE:

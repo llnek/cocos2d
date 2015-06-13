@@ -30,7 +30,7 @@ $= global.jQuery;
 //
 const toggleNavMenuItems = () => {
   const uid= $.cookie('__u982i');
-  if (sjs.isString(uid) && uid.length > 0) {
+  if (sjs.isstr(uid) && uid.length > 0) {
     $('#rego-mitem').parent().hide();
     $('#login-mitem').parent().hide();
     $('#logout-mitem').parent().show();

@@ -81,7 +81,7 @@ define("cherimoia/caesar", ["exports", "cherimoia/skaro"], function (exports, _c
      */
     encrypt: function encrypt(str, shiftpos) {
 
-      if (_sjs["default"].isString(str) && str.length > 0 && shiftpos !== 0) {} else {
+      if (_sjs["default"].isstr(str) && str.length > 0 && shiftpos !== 0) {} else {
         return "";
       }
       var delta = _sjs["default"].xmod(Math.abs(shiftpos), VISCHS_LEN),
@@ -109,7 +109,7 @@ define("cherimoia/caesar", ["exports", "cherimoia/skaro"], function (exports, _c
      */
     decrypt: function decrypt(cipher, shiftpos) {
 
-      if (_sjs["default"].isString(cipher) && cipher.length > 0 && shiftpos !== 0) {} else {
+      if (_sjs["default"].isstr(cipher) && cipher.length > 0 && shiftpos !== 0) {} else {
         return "";
       }
       var delta = _sjs["default"].xmod(Math.abs(shiftpos), VISCHS_LEN),

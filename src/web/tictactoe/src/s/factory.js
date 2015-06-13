@@ -30,9 +30,9 @@ undef,
 
 //////////////////////////////////////////////////////////////////////////////
 // returns array of winning combinations.
-mapGoalSpace = (size) => {
-  const ROWSPACE = [],
-  COLSPACE = [],
+mapGoalSpace = size => {
+  const rows = [],
+  cols = [],
   dx = [],
   dy = [];
   let h, v;
@@ -44,13 +44,12 @@ mapGoalSpace = (size) => {
       h.push(r * size + c);
       v.push(c * size + r);
     }
-    ROWSPACE.push(h);
-    COLSPACE.push(v);
+    rows.push(h);
+    cols.push(v);
     dx.push(r * size + r);
     dy.push((size - r - 1) * size + r);
   }
-  //var DAGSPACE = [dx, dy];
-  return [dx, dy].concat(ROWSPACE, COLSPACE);
+  return [dx, dy].concat(rows, cols);
 },
 //////////////////////////////////////////////////////////////////////////////
 /**

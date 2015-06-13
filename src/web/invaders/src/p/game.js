@@ -57,7 +57,7 @@ GameLayer = scenes.XGameLayer.extend({
    * @protected
    */
   reset(newFlag) {
-    if (!sjs.isEmpty(this.atlases)) {
+    if (!sjs.isempty(this.atlases)) {
       sjs.eachObj( v => { v.removeAllChildren(); }, this.atlases);
     } else {
       this.regoAtlas('game-pics');
@@ -84,7 +84,7 @@ GameLayer = scenes.XGameLayer.extend({
   play(newFlag) {
 
     this.reset(newFlag);
-    this.cleanSlate();
+    this.newFlow();
 
     sh.factory=new sobjs.Factory(this.engine,
                                  this.options);

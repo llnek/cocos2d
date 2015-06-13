@@ -45,10 +45,7 @@ BackLayer = scenes.XLayer.extend({
   rtti() { return 'BackLayer'; }
 }),
 //////////////////////////////////////////////////////////////////////////////
-/**
- * @extends module:zotohlab/asx/scenes.XGameLayer
- * @class GameLayer
- */
+/** * @class GameLayer */
 GameLayer = scenes.XGameLayer.extend({
   /**
    * @method pkInput
@@ -63,7 +60,7 @@ GameLayer = scenes.XGameLayer.extend({
    * @private
    */
   replay() {
-    if (sjs.isObject(this.options.wsock)) {
+    if (sjs.isobj(this.options.wsock)) {
       // request server to restart a new game
       this.options.wsock.send({
         type: evts.MSG_SESSION,
@@ -92,28 +89,22 @@ GameLayer = scenes.XGameLayer.extend({
       }
     }, this.options.ppids);
 
+
     // clean slate
     this.reset(newFlag);
-    this.cleanSlate();
-
-    sh.factory= new sobjs.Factory(this.engine);
-    this.options.running=true;
     this.initPlayers();
 
-    this.options.msgQ = [];
-
-    R.forEach((z) => {
-      this.engine.addSystem(new (z)(this.options), z.Priority);
+    sobjs.entityFactory(this.engine);
+    R.forEach( z => {
+      this.engine.addSystem(new (z)(this.options),
+                            z.Priority);
     },
-    [sobjs.GameSupervisor,
-     sobjs.Motions,
-     sobjs.TurnBaseSystem,
-     sobjs.ResolutionSystem,
-     sobjs.RenderSystem
-    ]);
+    R.filter(z => sjs.isfunc(z), sobjs.systems));
 
     this.getHUD().regoPlayers(csts.P1_COLOR, p1ids,
                               csts.P2_COLOR, p2ids);
+    this.options.running=true;
+    this.options.msgQ = [];
   },
   /**
    * @method onNewGame
@@ -129,8 +120,8 @@ GameLayer = scenes.XGameLayer.extend({
    * @private
    */
   reset(newFlag) {
-    if (!sjs.isEmpty(this.atlases)) {
-      sjs.eachObj((v) => { v.removeAllChildren(); }, this.atlases);
+    if (!sjs.isempty(this.atlases)) {
+      sjs.eachObj( v => { v.removeAllChildren(); }, this.atlases);
     } else {
       this.regoAtlas('game-pics');
       this.regoAtlas('lang-pics');
@@ -140,6 +131,7 @@ GameLayer = scenes.XGameLayer.extend({
     } else {
       this.getHUD().reset();
     }
+    this.newFlow();
   },
   /**
    * @method updateHUD
@@ -158,14 +150,6 @@ GameLayer = scenes.XGameLayer.extend({
    */
   playTimeExpired(msg) {
     this.options.msgQ.push("forfeit");
-  },
-  /**
-   * @method setGameMode
-   * @protected
-   */
-  setGameMode(mode) {
-    this._super(mode);
-    this.getHUD().setGameMode(mode);
   },
   /**
    * @method initPlayers

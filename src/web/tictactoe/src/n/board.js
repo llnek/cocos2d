@@ -176,7 +176,7 @@ class GameBoard extends sjs.ES6Claxx {
    */
   evalScore(snap) {
     // if we lose, return a nega value
-    return sjs.isNumber(this.isWinner(snap.other,
+    return sjs.isnum(this.isWinner(snap.other,
                                       snap.state )[0]) ? -100 : 0;
   }
 
@@ -187,8 +187,8 @@ class GameBoard extends sjs.ES6Claxx {
    * @return {Boolean}
    */
   isOver(snap) {
-    return sjs.isNumber(this.isWinner(snap.cur, snap.state)[0]) ||
-           sjs.isNumber(this.isWinner(snap.other, snap.state)[0]) ||
+    return sjs.isnum(this.isWinner(snap.cur, snap.state)[0]) ||
+           sjs.isnum(this.isWinner(snap.other, snap.state)[0]) ||
            this.isStalemate(snap.state);
   }
 

@@ -10,7 +10,7 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 "use strict";/**
- * @requires cherimoia/skaro
+ * @requires zotohlab/asx/asterix
  * @requires s/utils
  * @requires s/factory
  * @requires s/rendering
@@ -21,7 +21,7 @@
  * @module s/sysobjs
  */
 
-import sjs from 'cherimoia/skaro';
+import sh from 'zotohlab/asx/asterix';
 import utils from 's/utils';
 import fact from 's/factory';
 import render from 's/rendering';
@@ -30,36 +30,24 @@ import visor from 's/supervisor';
 import turn from 's/turnbase';
 import motion from 's/motion';
 
+const sjs = sh.skarojs,
 /** @alias module:s/sysobjs */
-const xbox= /** @lends xbox# */{
+xbox= /** @lends xbox# */{
+  systems: [visor.GameSupervisor,
+  motion.Motions,
+  turn.TurnBaseSystem,
+  res.ResolutionSystem,
+  render.RenderSystem,
+  utils],
   /**
-   * @property {EntityFactory} Factory
+   * @method entityFactory
+   * @param {Ash.Engine}
+   * @return {Ash.Factory}
    */
-  Factory: fact.EntityFactory,
-  /**
-   * @property {GameSupervisor} GameSupervisor
-   */
-  GameSupervisor: visor.GameSupervisor,
-  /**
-   * @property {Motions} Motions
-   */
-  Motions: motion.Motions,
-  /**
-   * @property {TurnBaseSystem} TurnBaseSystem
-   */
-  TurnBaseSystem: turn.TurnBaseSystem,
-  /**
-   * @property {ResolutionSystem} ResolutionSystem
-   */
-  ResolutionSystem: res.ResolutionSystem,
-  /**
-   * @property {RenderSystem} RenderSystem
-   */
-  RenderSystem: render.RenderSystem,
-  /**
-   * @property {SystemUtils} SystemUtils
-   */
-  SystemUtils: utils
+  entityFactory(engine) {
+    sh.factory = new fact.EntityFactory(engine);
+    return sh.factory;
+  }
 
 };
 

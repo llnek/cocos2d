@@ -99,7 +99,7 @@ let mkJoinRequest = (room,user,pwd) => {
 }
 
 //////////////////////////////////////////////////////////////////////////////
-let json_decode = (e) => {
+let json_decode = e => {
   let evt = {},
   src;
 
@@ -116,7 +116,7 @@ let json_decode = (e) => {
   }
 
   if (sjs.hasKey(evt, 'source') &&
-      sjs.isString(evt.source)) {
+      sjs.isstr(evt.source)) {
     evt.source = sjs.objectfy(evt.source);
   }
 
@@ -167,19 +167,19 @@ class Session extends sjs.ES6Claxx {
   }
 
   /**
-   * Subscribe to this message-type and event.
+   * Listen to this message-type and event.
    * @memberof module:zotohlab/asx/odin~Session
-   * @method subscribe
+   * @method listen
    * @param {Number} messageType
    * @param {Number} event
    * @param {Function} callback
    * @param {Object} target
    * @return {String} handler id
    */
-  subscribe(messageType, event, callback, target) {
+  listen(messageType, event, callback, target) {
     const h= this.ebus.on(["/", messageType, "/", event].join(''),
                           callback, target);
-    if (sjs.isArray(h) && h.length > 0) {
+    if (sjs.isarr(h) && h.length > 0) {
       // store the handle ids for clean up
       //this.handlers=this.handlers.concat(h);
       this.handlers.push(h[0]);
@@ -190,24 +190,24 @@ class Session extends sjs.ES6Claxx {
   }
 
   /**
-   * Subscribe to all message events.
+   * Listen to all message events.
    * @memberof module:zotohlab/asx/odin~Session
-   * @method subscribeAll
+   * @method listenAll
    * @param {Function} callback
    * @param {Object} target
    * @return {Array} [id1, id2]
    */
-  subscribeAll(callback,target) {
-    return [ this.subscribe(evts.MSG_NETWORK, '*', callback, target),
-             this.subscribe(evts.MSG_SESSION, '*', callback, target) ];
+  listenAll(callback,target) {
+    return [ this.listen(evts.MSG_NETWORK, '*', callback, target),
+             this.listen(evts.MSG_SESSION, '*', callback, target) ];
   }
 
   /**
    * Cancel and remove all subscribers.
    * @memberof module:zotohlab/asx/odin~Session
-   * @method unsubscribeAll
+   * @method cancelAll
    */
-  unsubscribeAll() {
+  cancelAll() {
     this.ebus.removeAll();
     this.handlers= [];
   }
@@ -215,10 +215,10 @@ class Session extends sjs.ES6Claxx {
   /**
    * Cancel this subscriber.
    * @memberof module:zotohlab/asx/odin~Session
-   * @method unsubscribe
+   * @method cancel
    * @param {String} subid
    */
-  unsubscribe(subid) {
+  cancel(subid) {
     sjs.removeFromArray(this.handlers, subid);
     this.ebus.off(subid);
   }

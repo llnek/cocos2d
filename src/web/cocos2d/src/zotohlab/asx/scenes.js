@@ -814,9 +814,9 @@ const XGameLayer = XLayer.extend({
    * Reset and create new Ash Engine.
    *
    * @memberof module:zotohlab/asx/scenes~XGameLayer
-   * @method cleanSlate
+   * @method newFlow
    */
-  cleanSlate() {
+  newFlow() {
     this.engine= new Ash.Engine();
   },
 
@@ -1032,7 +1032,7 @@ class XSceneFactory extends sjs.ES6Claxx {
     arr= this.layers,
     cfg;
     if (options && sjs.hasKey(options, itemKey ) &&
-        sjs.isArray(options.layers)) {
+        sjs.isarr(options.layers)) {
       arr= options.layers;
       cfg= R.omit(itemKey, options);
     } else {

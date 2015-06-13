@@ -527,7 +527,7 @@ define("cherimoia/skaro", ["exports", "global/window", "console/dbg", "ramda"], 
      * @param {Object} obj
      * @return {Boolean}
      */
-    isUndef: function isUndef(obj) {
+    isundef: function isundef(obj) {
       return obj === void 0;
     },
 
@@ -537,7 +537,7 @@ define("cherimoia/skaro", ["exports", "global/window", "console/dbg", "ramda"], 
      * @param {Object} obj
      * @return {Boolean}
      */
-    isNull: function isNull(obj) {
+    isnull: function isnull(obj) {
       return obj === null;
     },
 
@@ -547,7 +547,7 @@ define("cherimoia/skaro", ["exports", "global/window", "console/dbg", "ramda"], 
      * @param {Object} obj
      * @return {Boolean}
      */
-    isNumber: function isNumber(obj) {
+    isnum: function isnum(obj) {
       return toString.call(obj) === "[object Number]";
     },
 
@@ -557,7 +557,7 @@ define("cherimoia/skaro", ["exports", "global/window", "console/dbg", "ramda"], 
      * @param {Object} obj
      * @return {Boolean}
      */
-    isDate: function isDate(obj) {
+    isdate: function isdate(obj) {
       return toString.call(obj) === "[object Date]";
     },
 
@@ -567,7 +567,7 @@ define("cherimoia/skaro", ["exports", "global/window", "console/dbg", "ramda"], 
      * @param {Object} obj
      * @return {Boolean}
      */
-    isFunction: function isFunction(obj) {
+    isfunc: function isfunc(obj) {
       return toString.call(obj) === "[object Function]";
     },
 
@@ -577,7 +577,7 @@ define("cherimoia/skaro", ["exports", "global/window", "console/dbg", "ramda"], 
      * @param {Object} obj
      * @return {Boolean}
      */
-    isString: function isString(obj) {
+    isstr: function isstr(obj) {
       return toString.call(obj) === "[object String]";
     },
 
@@ -587,7 +587,7 @@ define("cherimoia/skaro", ["exports", "global/window", "console/dbg", "ramda"], 
      * @param {Object} obj
      * @return {Boolean}
      */
-    isArray: function isArray(obj) {
+    isarr: function isarr(obj) {
       return !!obj && toString.call(obj) === "[object Array]";
     },
 
@@ -597,7 +597,7 @@ define("cherimoia/skaro", ["exports", "global/window", "console/dbg", "ramda"], 
      * @param {Object} obj
      * @return {Boolean}
      */
-    isObject: function isObject(obj) {
+    isobj: function isobj(obj) {
       var type = typeof obj;
       return type === "function" || type === "object" && !!obj;
     },
@@ -609,8 +609,8 @@ define("cherimoia/skaro", ["exports", "global/window", "console/dbg", "ramda"], 
      * @param {Object} obj
      * @return {Boolean}
      */
-    isEmpty: function isEmpty(obj) {
-      if (this.isObject(obj)) {
+    isempty: function isempty(obj) {
+      if (this.isobj(obj)) {
         return Object.keys(obj).length === 0;
       }
 

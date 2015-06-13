@@ -57,7 +57,7 @@ GameLayer = scenes.XGameLayer.extend({
    * @method reset
    */
   reset(newFlag) {
-    if (! sjs.isEmpty(this.atlases)) {
+    if (! sjs.isempty(this.atlases)) {
       //sjs.eachObj(function(z) { z.removeAllChildren(); }, this.atlases);
     } else {
       R.forEach((info) => {
@@ -129,7 +129,7 @@ GameLayer = scenes.XGameLayer.extend({
   play(newFlag) {
 
     this.reset(newFlag);
-    this.cleanSlate();
+    this.newFlow();
 
     this.factory=new sobjs.EntityFactory(this.engine);
     sh.factory = this.factory;
