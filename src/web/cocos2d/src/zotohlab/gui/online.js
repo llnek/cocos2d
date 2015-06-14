@@ -49,14 +49,14 @@ UILayer =  scenes.XLayer.extend({
 
     this.wss= odin.reifySession({game: xcfg.appKey,
                                  user: user, passwd: pswd });
-    this.wss.subscribeAll(this.onOdinEvent, this);
+    this.wss.listenAll(this.onOdinEvent, this);
     this.wss.connect(wsurl);
   },
   /**
    * @method onOdinEvent
    * @private
    */
-  onOdinEvent(topic,evt) {
+  onOdinEvent(evt) {
     //sjs.loggr.debug(evt);
     switch (evt.type) {
       case evts.MSG_NETWORK: this.onNetworkEvent(evt); break;
@@ -75,7 +75,7 @@ UILayer =  scenes.XLayer.extend({
       break;
       case evts.START:
         sjs.loggr.info("play room is ready, game can start.");
-        this.wss.unsubscribeAll();
+        this.wss.cancelAll();
         // flip to game scene
         this.options.yes(this.wss, this.player, evt.source || {});
       break;

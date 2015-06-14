@@ -196,35 +196,35 @@ const xbox = /** @lends xbox# */{
       huds.HUDLayer
     ]).reify(options);
 
-    scene.onmsg('/hud/showmenu',(t,msg) => {
+    scene.onmsg('/hud/showmenu', msg => {
       scenes.showMenu();
     }).
-    onmsg('/hud/replay',(t,msg) => {
+    onmsg('/hud/replay', msg => {
       sh.main.replay();
     }).
-    onmsg('/hud/timer/show',(t,msg) => {
+    onmsg('/hud/timer/show', msg => {
       sh.main.getHUD().showTimer();
     }).
-    onmsg('/net/restart', (t,msg) => {
+    onmsg('/net/restart', msg => {
       sh.main.getHUD().killTimer();
       sh.main.play(false);
     }).
-    onmsg('/net/stop', (t,msg) => {
+    onmsg('/net/stop', msg => {
       sh.main.getHUD().endGame(msg.status);
     }).
-    onmsg('/hud/timer/hide', (t,msg) => {
+    onmsg('/hud/timer/hide', msg => {
       sh.main.getHUD().killTimer();
     }).
-    onmsg('/hud/score/update', (t,msg) => {
+    onmsg('/hud/score/update', msg => {
       sh.main.getHUD().updateScore(msg.color, msg.score);
     }).
-    onmsg('/hud/end', (t,msg) => {
+    onmsg('/hud/end', msg => {
       sh.main.getHUD().endGame(msg.winner);
     }).
-    onmsg('/hud/update', (t,msg) => {
+    onmsg('/hud/update', msg => {
       sh.main.getHUD().update(msg.running, msg.pnum);
     }).
-    onmsg('/player/timer/expired', (t,msg) => {
+    onmsg('/player/timer/expired', msg => {
       sh.main.playTimeExpired(msg);
     });
 

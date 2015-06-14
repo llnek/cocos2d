@@ -32,12 +32,10 @@ csts= xcfg.csts,
 R=sjs.ramda,
 undef,
 //////////////////////////////////////////////////////////////////////////////
-/**
- * @class GameSupervisor
- */
-GameSupervisor = sh.Ashley.sysDef({
+/** * @class Stager */
+Stager = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/supervisor~Stager
    * @method constructor
    * @param {Object} options
    */
@@ -46,7 +44,7 @@ GameSupervisor = sh.Ashley.sysDef({
     this.inited=false;
   },
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/supervisor~Stager
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -54,7 +52,7 @@ GameSupervisor = sh.Ashley.sysDef({
     this.board=null;
   },
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/supervisor~Stager
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -64,7 +62,7 @@ GameSupervisor = sh.Ashley.sysDef({
     this.board= engine.getNodeList(gnodes.BoardNode);
   },
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/supervisor~Stager
    * @method update
    * @param {Number} dt
    */
@@ -107,7 +105,7 @@ GameSupervisor = sh.Ashley.sysDef({
 
     this.showGrid(node);
 
-    if (this.state.wsock) {
+    if (sjs.isobj(this.state.wsock)) {
       // online play
       sjs.loggr.debug("reply to server: session started ok");
       this.state.wsock.send({
@@ -148,22 +146,23 @@ GameSupervisor = sh.Ashley.sysDef({
     });
   }
 
-});
-
+}, {
 /**
- * @memberof module:s/supervisor~GameSupervisor
+ * @memberof module:s/supervisor~Stager
  * @property {Number} Priority
  */
-GameSupervisor.Priority= xcfg.ftypes.PreUpdate;
+Priority: xcfg.ftypes.PreUpdate
+});
+
 
 /** @alias module:s/supervisor */
 const xbox = {
   /**
-   * @property {GameSupervisor} GameSupervisor
+   * @property {Stager} Stager
    */
-  GameSupervisor : GameSupervisor
+  Stager : Stager
 };
-
+sjs.merge(exports, xbox);
 /*@@
 return xbox;
 @@*/

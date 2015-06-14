@@ -146,7 +146,7 @@ define("cherimoia/ebus", ["exports", "cherimoia/skaro"], function (exports, _che
     R.forEach(function (z) {
       if (z.active && _sjs["default"].echt(z.action)) {
         // pass along any extra parameters, if any.
-        z.action.apply(z.target, [topic, msg].concat(z.args));
+        z.action.apply(z.target, [msg, topic].concat(z.args));
         // if once only, kill it.
         if (!z.repeat) {
           delete _this3.subs[z.id];

@@ -229,20 +229,30 @@ Ashley= {
    * @memberof module:zotohlab/asterix~Ashley
    * @method sysDef
    * @param {Object} proto
+   * @param {Object} cps
    * @return {Ash.System}
    */
-  sysDef(proto) {
-    return Ash.System.extend(proto);
+  sysDef(proto,cps) {
+    const rc= Ash.System.extend(proto);
+    sjs.eachObj((v,k) => {
+      rc[k] = v;
+    }, cps || {});
+    return rc;
   },
   /**
    * Enhance this object.
    * @memberof module:zotohlab/asterix~Ashley
    * @method casDef
    * @param {Object} proto
+   * @param {Object} cps
    * @return {Ash.Class}
    */
-  casDef(proto) {
-    return Ash.Class.extend(proto);
+  casDef(proto,cps) {
+    const rc= Ash.Class.extend(proto);
+    sjs.eachObj((v,k) => {
+      rc[k] = v;
+    }, cps || {});
+    return rc;
   },
   /**
    * Create a new Entity object.
@@ -366,7 +376,7 @@ let xbox = /** @lends xbox# */{
    * @param {String} topic
    * @param {Object} msg
    */
-  fire(topic, msg) {
+  fire(topic,msg) {
     const r= cc.director.getRunningScene();
     if (!!r) {
       r.ebus.fire(topic, msg || {});

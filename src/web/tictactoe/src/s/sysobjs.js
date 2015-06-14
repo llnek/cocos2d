@@ -13,9 +13,9 @@
  * @requires zotohlab/asx/asterix
  * @requires s/utils
  * @requires s/factory
- * @requires s/resolution
- * @requires s/supervisor
- * @requires s/turnbase
+ * @requires s/resolve
+ * @requires s/stager
+ * @requires s/logic
  * @requires s/motion
  * @module s/sysobjs
  */
@@ -23,26 +23,26 @@
 import sh from 'zotohlab/asx/asterix';
 import utils from 's/utils';
 import fact from 's/factory';
-import res from 's/resolution';
-import visor from 's/supervisor';
-import turn from 's/turnbase';
+import res from 's/resolve';
+import visor from 's/stager';
+import turn from 's/logic';
 import motion from 's/motion';
 
 const sjs = sh.skarojs,
 /** @alias module:s/sysobjs */
 xbox= /** @lends xbox# */{
-  systems: [visor.GameSupervisor,
+  systems: [visor.Stager,
   motion.Motions,
-  turn.TurnBaseSystem,
-  res.ResolutionSystem,
+  turn.Logic,
+  res.Resolve,
   utils],
   /**
    * @method entityFactory
-   * @param {XGameLayer}
-   * @return {Ash.Factory}
+   * @param {Ash.Engine}
+   * @return {EntityFactory}
    */
-  entityFactory(game) {
-    sh.factory = new fact.EntityFactory(game.engine);
+  entityFactory(engine) {
+    sh.factory = new fact.EntityFactory(engine);
     return sh.factory;
   }
 

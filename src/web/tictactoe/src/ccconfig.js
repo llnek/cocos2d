@@ -55,9 +55,9 @@ document.ccConfig = {
 
     '/public/ig/lib/game/tictactoe/s/factory.js',
     '/public/ig/lib/game/tictactoe/s/utils.js',
-    '/public/ig/lib/game/tictactoe/s/resolution.js',
-    '/public/ig/lib/game/tictactoe/s/supervisor.js',
-    '/public/ig/lib/game/tictactoe/s/turnbase.js',
+    '/public/ig/lib/game/tictactoe/s/resolve.js',
+    '/public/ig/lib/game/tictactoe/s/stager.js',
+    '/public/ig/lib/game/tictactoe/s/logic.js',
     '/public/ig/lib/game/tictactoe/s/motion.js',
     '/public/ig/lib/game/tictactoe/s/sysobjs.js',
 

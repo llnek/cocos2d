@@ -67,36 +67,34 @@ Motions = sh.Ashley.sysDef({
    * @private
    */
   onceOnly() {
-    this.evQ=[];
-    let ws;
-    if (sjs.isobj(this.state.wsock)) {
-      this.state.wsock.cancelAll();
-      ws=Rx.Observable.create( obj => {
-        this.state.wsock.listenAll((t,e)=>{
-          obj.onNext({group:'net', event: e});
+    let ws= this.state.wsock,
+    t, m, s;
+    if (sjs.isobj(ws)) {
+      ws.cancelAll();
+      s=Rx.Observable.create( obj => {
+        ws.listenAll( msg => {
+          obj.onNext({group:'net',
+                      event: msg});
         });
       });
     } else {
-      ws= Rx.Observable.never();
+      s= Rx.Observable.never();
     }
-    this.stream= Rx.Observable.merge(
-      Rx.Observable.create( obj => {
-        sh.main.signal('/touch/one/end', (t,m) => {
-          obj.onNext(m);
-        });
-      }),
-      ws,
-      Rx.Observable.create( obj => {
-        sh.main.signal('/mouse/up', (t,m) => {
-          obj.onNext(m);
-        });
-      })
-    );
+    t=Rx.Observable.create( obj => {
+      sh.main.signal('/touch/one/end',
+                     msg => obj.onNext(msg));
+    });
+    m=Rx.Observable.create( obj => {
+      sh.main.signal('/mouse/up',
+                     msg => obj.onNext(msg));
+    });
+    this.stream= Rx.Observable.merge(m,t,s);
     this.stream.subscribe( msg => {
       if (!!this.evQ) {
         this.evQ.push(msg);
       }
     });
+    this.evQ=[];
   },
   /**
    * @memberof module:s/motion~Motions
@@ -225,13 +223,13 @@ Motions = sh.Ashley.sysDef({
     }
   }
 
-});
-
+}, {
 /**
  * @memberof module:s/motion~Motions
  * @property {Number} Priority
  */
-Motions.Priority= xcfg.ftypes.Move;
+Priority: xcfg.ftypes.Motion
+});
 
 
 /** @alias module:s/motion */
@@ -241,8 +239,6 @@ const xbox = /** @lends xbox# */{
    */
   Motions: Motions
 };
-
-
 sjs.merge(exports, xbox);
 /*@@
 return xbox;

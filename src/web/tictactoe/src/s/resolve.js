@@ -14,7 +14,7 @@
  * @requires zotohlab/asx/ccsx
  * @requires s/utils
  * @requires n/gnodes
- * @module s/resolution
+ * @module s/resolve
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -29,12 +29,10 @@ csts= xcfg.csts,
 R = sjs.ramda,
 undef,
 //////////////////////////////////////////////////////////////////////////////
-/**
- * @class ResolutionSystem
- */
-ResolutionSystem = sh.Ashley.sysDef({
+/** * @class Resolve */
+Resolve = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/resolution~ResolutionSystem
+   * @memberof module:s/resolution~Resolve
    * @method constructor
    * @param {Object} options
    */
@@ -42,7 +40,7 @@ ResolutionSystem = sh.Ashley.sysDef({
     this.state= options;
   },
   /**
-   * @memberof module:s/resolution~ResolutionSystem
+   * @memberof module:s/resolution~Resolve
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -50,7 +48,7 @@ ResolutionSystem = sh.Ashley.sysDef({
     this.board=null;
   },
   /**
-   * @memberof module:s/resolution~ResolutionSystem
+   * @memberof module:s/resolution~Resolve
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -58,7 +56,7 @@ ResolutionSystem = sh.Ashley.sysDef({
     this.board = engine.getNodeList(gnodes.BoardNode);
   },
   /**
-   * @memberof module:s/resolution~ResolutionSystem
+   * @memberof module:s/resolution~Resolve
    * @method update
    * @param {Number} dt
    */
@@ -187,7 +185,7 @@ ResolutionSystem = sh.Ashley.sysDef({
     //gray out the losing icons
     R.forEachIndexed((z, n) => {
       if (!!z && z[4] === v2) {
-        layer.removeItem(z[0]);
+        z[0].removeFromParent();
         z[0] = utils.drawSymbol(node.view, z[1], z[2], z[3]+2);
       }
     }, cs);
@@ -207,7 +205,7 @@ ResolutionSystem = sh.Ashley.sysDef({
 
     R.forEachIndexed((z, n) => {
       if (! R.contains(n, combo)) { if (!!z && z[3] !== csts.CV_Z) {
-        layer.removeAtlasItem('markers', z[0]);
+        z[0].removeFromParent();
         z[0] = utils.drawSymbol(view, z[1], z[2], z[3], true);
       } }
     }, cs);
@@ -255,23 +253,23 @@ ResolutionSystem = sh.Ashley.sysDef({
     return rc ? combo : null;
   }
 
-});
-
+},{
 /**
- * @memberof module:s/resolution~ResolutionSystem
+ * @memberof module:s/resolution~Resolve
  * @property {Number} Priority
  */
-ResolutionSystem.Priority= xcfg.ftypes.Resolve;
+Priority: xcfg.ftypes.Resolve
+});
+
 
 
 /** @alias module:s/resolution */
 const xbox = {
   /**
-   * @property {ResolutionSystem} ResolutionSystem
+   * @property {Resolve} Resolve
    */
-  ResolutionSystem: ResolutionSystem
+  Resolve: Resolve
 };
-
 sjs.merge(exports, xbox);
 /*@@
 return xbox;

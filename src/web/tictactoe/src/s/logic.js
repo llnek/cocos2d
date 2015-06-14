@@ -14,7 +14,7 @@
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/odin
  * @requires n/gnodes
- * @module s/turnbase
+ * @module s/logic
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -29,12 +29,10 @@ xcfg= sh.xcfg,
 csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////////
-/**
- * @class TurnBaseSystem
- */
-TurnBaseSystem = sh.Ashley.sysDef({
+/** * @class Logic */
+Logic = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/turnbase~TurnBaseSystem
+   * @memberof module:s/turnbase~Logic
    * @method constructor
    * @param {Object} options
    */
@@ -43,7 +41,7 @@ TurnBaseSystem = sh.Ashley.sysDef({
     this.botTimer=null;
   },
   /**
-   * @memberof module:s/turnbase~TurnBaseSystem
+   * @memberof module:s/turnbase~Logic
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -51,7 +49,7 @@ TurnBaseSystem = sh.Ashley.sysDef({
     this.board=null;
   },
   /**
-   * @memberof module:s/turnbase~TurnBaseSystem
+   * @memberof module:s/turnbase~Logic
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -59,7 +57,7 @@ TurnBaseSystem = sh.Ashley.sysDef({
     this.board = engine.getNodeList(gnodes.BoardNode);
   },
   /**
-   * @memberof module:s/turnbase~TurnBaseSystem
+   * @memberof module:s/turnbase~Logic
    * @method update
    * @param {Number} dt
    */
@@ -75,7 +73,7 @@ TurnBaseSystem = sh.Ashley.sysDef({
    * @private
    */
   process(node, evt) {
-    let ps= this.state.players,
+    const ps= this.state.players,
     cp= ps[this.state.actor],
     board= node.board,
     grid= node.grid,
@@ -83,7 +81,7 @@ TurnBaseSystem = sh.Ashley.sysDef({
     sel= node.selection;
 
     //handle online play
-    if (this.state.wsock) {
+    if (sjs.isobj(this.state.wsock)) {
       //if the mouse click is from the valid user, handle it
       if (!!cp && (this.state.pnum === cp.pnum)) {
         this.enqueue(sel.cell,cp.value,grid);
@@ -127,7 +125,7 @@ TurnBaseSystem = sh.Ashley.sysDef({
 
       sh.fire('/hud/timer/hide');
 
-      if (this.state.wsock) {
+      if (sjs.isobj(this.state.wsock)) {
         this.onEnqueue(grid,this.state.actor,pos);
       } else {
         if (this.state.actor === 1) {
@@ -144,7 +142,6 @@ TurnBaseSystem = sh.Ashley.sysDef({
           sh.fire('/hud/timer/show');
         }
       }
-
     }
   },
   /**
@@ -168,24 +165,23 @@ TurnBaseSystem = sh.Ashley.sysDef({
     this.state.actor=0;
     sh.sfxPlay(snd);
   }
-
-});
-
+},{
 /**
- * @memberof module:s/turnbase~TurnBaseSystem
+ * @memberof module:s/turnbase~Logic
  * @property {Number} Priority
  */
-TurnBaseSystem.Priority = xcfg.ftypes.TurnBase;
+Priority : xcfg.ftypes.Logic
+});
 
 
 /** @alias module:s/turnbase */
 const xbox = /** @lends xbox# */{
   /**
-   * @property {TurnBaseSystem} TurnBaseSystem
+   * @property {Logic} Logic
    */
-  TurnBaseSystem : TurnBaseSystem
+  Logic : Logic
 };
-
+sjs.merge(exports, xbox);
 /*@@
 return xbox;
 @@*/
