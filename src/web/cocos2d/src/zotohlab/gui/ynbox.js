@@ -60,7 +60,7 @@ UILayer =  scenes.XLayer.extend({
 
       { nnn: '#cancel.png',
         cb() {
-          this.options.onBack();
+          this.options.onback();
         },
         target: this }
     ],

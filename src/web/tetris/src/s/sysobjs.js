@@ -10,68 +10,49 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 "use strict";/**
+ * @requires zotohlab/asx/asterix
  * @requires n/cobjs
  * @requires n/gnodes
  * @requires s/utils
  * @requires s/factory
- * @requires s/clearance
- * @requires s/generator
+ * @requires s/clear
+ * @requires s/generate
  * @requires s/motion
- * @requires s/movement
- * @requires s/rendering
- * @requires s/resolution
- * @requires s/supervisor
+ * @requires s/move
+ * @requires s/resolve
+ * @requires s/stager
  * @module s/sysobjs
  */
 
-import sjs from 'cherimoia/skaro';
+import sh from 'zotohlab/asx/asterix';
 import cobjs from 'n/cobjs';
 import gnodes from 'n/gnodes';
 import utils from 's/utils';
 import f from 's/factory';
-import c from 's/clearance';
-import g from 's/generator';
+import c from 's/clear';
+import g from 's/generate';
 import mo from 's/motion';
-import mv from 's/movement';
-import rd from 's/rendering';
-import rs from 's/resolution';
-import v from 's/supervisor';
+import mv from 's/move';
+import rs from 's/resolve';
+import v from 's/stager';
 
+const sjs= sh.skarojs,
 /** @alias module:s/sysobjs */
-const xbox= /** @lends xbox# */{
-
+xbox= /** @lends xbox# */{
   /**
-   * @property {Factory} EntityFactory
+   * @property {Array} systems
    */
-  Factory   : f.EntityFactory,
+  systems: [ c.Clear, g.Generate, mo.Motions, mv.Move,
+    rs.Resolve, v.Stager, utils],
   /**
-   * @property {RowClearance} RowClearance
+   * @method entityFactory
+   * @param {Ash.Engine}
+   * @return {EntityFactory}
    */
-  RowClearance    : c.RowClearance,
-  /**
-   * @property {Generator} Generator
-   */
-  Generator       : g.ShapeGenerator,
-  /**
-   * @property {MotionControl} MotionControl
-   */
-  MotionControl   : mo.MotionCtrlSystem,
-  /**
-   * @property {Movements} Movements
-   */
-  Movements       : mv.MovementSystem,
-  /**
-   * @property {Rendering} Rendering
-   */
-  Rendering       : rd.RenderSystem,
-  /**
-   * @property {Resolution} Resolution
-   */
-  Resolution      : rs.ResolutionSystem,
-  /**
-   * @property {Supervisor} Supervisor
-   */
-  Supervisor      : v.GameSupervisor
+  entityFactory(engine) {
+    sh.factory= new  f.EntityFactory(engine);
+    return sh.factory;
+  }
 };
 
 

@@ -29,10 +29,7 @@ csts= xcfg.csts,
 R = sjs.ramda,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @extends module:zotohlab/asx/scenes.XGameHUDLayer
- * @class HUDLayer
- */
+/** * @class HUDLayer */
 HUDLayer = scenes.XGameHUDLayer.extend({
   /**
    * @method initAtlases
@@ -57,16 +54,15 @@ HUDLayer = scenes.XGameHUDLayer.extend({
       scale: xcfg.game.scale// * 2
     });
     this.scoreLabel.setPosition(wb.right - (csts.TILE * wz.width/480),
-      wb.top - (wz.height/320 * csts.TILE));// - ccsx.getScaledHeight(this.scoreLabel));
+      wb.top - (wz.height/320 * csts.TILE));
 
     this.addItem(this.scoreLabel);
 
     this.status= ccsx.bmfLabel({
       fontPath: sh.getFont('font.CoffeeBuzzed'),
       text: '',
-      scale: xcfg.game.scale * 0.5,//12/72,
-      pos: cc.p(cw.x * 1.5, cw.y)//wb.top * 0.1)
-      //pos: cc.p(21 * csts.TILE, wz.height - csts.TILE * 4)
+      scale: xcfg.game.scale * 0.5,
+      pos: cc.p(cw.x * 1.5, cw.y)
     });
     this.addItem(this.status);
   },
@@ -116,7 +112,7 @@ HUDLayer = scenes.XGameHUDLayer.extend({
    * @protected
    */
   addReplayIcon(menu, where) {
-    let wall=ccsx.createSprite('gray.png').getContentSize().width,
+    let wall=ccsx.csize('gray.png').width,
     c= menu.getChildByTag(1),
     hh = ccsx.getScaledHeight(c) * 0.5,
     hw = ccsx.getScaledWidth(c) * 0.5,

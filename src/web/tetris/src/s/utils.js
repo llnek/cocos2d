@@ -25,6 +25,7 @@ sjs= sh.skarojs,
 csts= xcfg.csts,
 R = sjs.ramda,
 undef,
+//////////////////////////////////////////////////////////////////////////////
 /** @alias module:s/utils */
 xbox= /** @lends xbox# */{
   /**
@@ -92,7 +93,7 @@ xbox= /** @lends xbox# */{
    * @param {Array} bs
    */
   clearOldBricks(bs) {
-    R.forEach((z) => { z.dispose(); }, bs);
+    R.forEach( z => { z.dispose(); }, bs);
   },
   /**
    * @method reifyBricks
@@ -234,12 +235,11 @@ xbox= /** @lends xbox# */{
   postLock(node, cmap, emap) {
 
     // search bottom up until top.
-    let rows= cmap.length,
-    top= rows - 0,//csts.FIELD_TOP,
+    let top= cmap.length,
     rc=[];
 
-    //for (r = csts.FIELD_BOTTOM; r < top; ++r) {
-    for (let r = 0; r < top; ++r) {
+    // 0 is the bottom wall
+    for (let r = 1; r < top; ++r) {
       if (this.testFilledRow(cmap, r)) {
         rc.push(r);
       }

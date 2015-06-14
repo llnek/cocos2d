@@ -88,17 +88,6 @@ GameLayer = scenes.XGameLayer.extend({
     return this.options.running;
   },
   /**
-   * @method onclicked
-   * @protected
-   */
-  onclicked(mx,my) {
-    if (this.options.running &&
-        this.options.selQ.length === 0) {
-      sjs.loggr.debug("selection made at pos = " + mx + "," + my);
-      this.options.selQ.push({ x: mx, y: my, cell: -1 });
-    }
-  },
-  /**
    * @method replay
    */
   replay() {
@@ -108,24 +97,9 @@ GameLayer = scenes.XGameLayer.extend({
    * @method play
    */
   play(newFlag) {
-
+    this.initEngine( sobjs.systems, sobjs.entityFactory);
     this.reset(newFlag);
-    this.newFlow();
-
-    sh.factory = new sobjs.Factory(this.engine);
     this.options.running=true;
-    this.options.selQ=[];
-
-    R.forEach( z => {
-      this.engine.addSystem(new (z)(this.options), z.Priority);
-    },
-    [sobjs.Supervisor,
-     sobjs.RowClearance,
-     sobjs.Generator,
-     sobjs.Movements,
-     sobjs.MotionControl,
-     sobjs.Rendering,
-     sobjs.Resolution ]);
   },
   /**
    * @method endGame
@@ -164,16 +138,16 @@ const xbox = /** @lends xbox# */{
       GameLayer,
       huds.HUDLayer ]).reify(options);
 
-    scene.onmsg('/hud/end', (topic, msg) => {
+    scene.onmsg('/hud/end', msg => {
       sh.main.endGame();
     }).
-    onmsg('/hud/score/update', (topic, msg) => {
+    onmsg('/hud/score/update', msg => {
       sh.main.getHUD().updateScore(msg.score);
     }).
-    onmsg('/hud/showmenu', (t,msg) => {
+    onmsg('/hud/showmenu', msg => {
       scenes.showMenu();
     }).
-    onmsg('/hud/replay', (t,msg) => {
+    onmsg('/hud/replay', msg => {
       sh.main.replay();
     });
 

@@ -61,6 +61,7 @@ Motions = sh.Ashley.sysDef({
   addToEngine(engine) {
     this.netplay = engine.getNodeList(gnodes.NetPlayNode);
     this.gui = engine.getNodeList(gnodes.GUINode);
+    this.evQ=[];
   },
   /**
    * @method onceOnly
@@ -94,7 +95,6 @@ Motions = sh.Ashley.sysDef({
         this.evQ.push(msg);
       }
     });
-    this.evQ=[];
   },
   /**
    * @memberof module:s/motion~Motions
@@ -102,15 +102,15 @@ Motions = sh.Ashley.sysDef({
    * @param {Number} dt
    */
   update(dt) {
+    const evt= this.evQ.length > 0 ? this.evQ.shift() : undef,
+    n= this.netplay.head,
+    g= this.gui.head;
+
     if (!this.inited) {
       this.onceOnly();
       this.inited=true;
     }
-    else
-    if (this.evQ.length > 0) {
-      const evt = this.evQ.shift(),
-      n= this.netplay.head,
-      g= this.gui.head;
+    else if (!!evt) {
       if (evt.group === 'net') {
         if (!!n) { this.onnet(n, evt.event); }
       } else {

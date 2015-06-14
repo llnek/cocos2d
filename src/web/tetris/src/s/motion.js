@@ -61,6 +61,7 @@ Motions = sh.Ashley.sysDef({
   addToEngine(engine) {
     this.arena= engine.getNodeList(gnodes.ArenaNode);
     this.ops={};
+    this.evQ=[];
   },
   /**
    * @method onceOnly
@@ -87,7 +88,6 @@ Motions = sh.Ashley.sysDef({
     if (ccsx.hasKeyPad()) {
       this.initKeyOps();
     }
-    this.evQ=[];
   },
   /**
    * @memberof module:s/motion

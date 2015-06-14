@@ -185,10 +185,12 @@ Clear = sh.Ashley.sysDef({
    * @private
    */
   findLastEmpty(node,t) {
-    for (let r=t; r > 0; --r) {
+    for (let r=t; r >= 0; --r) {
       if (!this.isEmptyRow(node,r)) { return r+1; }
     }
-    return 0;
+    //should never get here
+    sjs.tne("findLastEmpty has error.");
+    return 1;
   },
   /**
    * @method isEmptyRow
@@ -212,6 +214,7 @@ Clear = sh.Ashley.sysDef({
   copyLine(node, from, to) {
     let line_f = node.collision.tiles[from],
     line_t = node.collision.tiles[to],
+    dlen= csts.TILE * (from - to),
     c, pos;
 
     for (c=0; c < line_f.length; ++c) {
@@ -228,7 +231,7 @@ Clear = sh.Ashley.sysDef({
     for (c=0; c < line_f.length; ++c) {
       if (line_f[c]) {
         pos = line_f[c].sprite.getPosition();
-        line_f[c].sprite.setPosition(pos.x, pos.y - csts.TILE);
+        line_f[c].sprite.setPosition(pos.x, pos.y - dlen);
       }
       line_t[c] = line_f[c];
       line_f[c] = undef;

@@ -65,14 +65,14 @@ Logic = sh.Ashley.sysDef({
     const node= this.board.head;
     if (this.state.running &&
         !!node) {
-      this.process(node, dt);
+      this.doit(node, dt);
     }
   },
   /**
-   * @method process
+   * @method doit
    * @private
    */
-  process(node, evt) {
+  doit(node, evt) {
     const ps= this.state.players,
     cp= ps[this.state.actor],
     board= node.board,

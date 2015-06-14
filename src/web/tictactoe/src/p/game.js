@@ -93,10 +93,7 @@ GameLayer = scenes.XGameLayer.extend({
     this.reset(newFlag);
     this.initPlayers();
 
-    this.addSystemComponents(R.filter(z => {
-      return sjs.isfunc(z);
-    }, sobjs.systems), sobjs.entityFactory);
-
+    this.initEngine( sobjs.systems, sobjs.entityFactory);
     this.getHUD().regoPlayers(csts.P1_COLOR, p1ids,
                               csts.P2_COLOR, p2ids);
     this.options.running=true;

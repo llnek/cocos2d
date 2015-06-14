@@ -64,15 +64,15 @@ Resolve = sh.Ashley.sysDef({
     const node= this.board.head;
     if (this.state.running &&
         !!node) {
-      this.preprocess(node, dt);
-      this.process(node, dt);
+      this.syncup(node, dt);
+      this.doit(node, dt);
     }
   },
   /**
-   * @method preprocess
+   * @method syncup
    * @private
    */
-  preprocess(node) {
+  syncup(node) {
     let values= node.grid.values,
     view= node.view,
     cs= view.cells,
@@ -114,10 +114,10 @@ Resolve = sh.Ashley.sysDef({
     }
   },
   /**
-   * @method process
+   * @method doit
    * @private
    */
-  process(node, dt) {
+  doit(node, dt) {
     let values= node.grid.values,
     msg,
     rc,

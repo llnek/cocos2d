@@ -75,7 +75,7 @@ Stager = sh.Ashley.sysDef({
         this.onceOnly(node, dt);
         this.inited=true;
       } else {
-        this.process(node,dt);
+        this.doit(node,dt);
       }
     }
   },
@@ -128,10 +128,10 @@ Stager = sh.Ashley.sysDef({
     sh.main.pkInput();
   },
   /**
-   * @method process
+   * @method doit
    * @private
    */
-  process(node,dt) {
+  doit(node,dt) {
 
     let active = this.state.running,
     actor = this.state.actor;

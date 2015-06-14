@@ -31,7 +31,7 @@ undef,
 /** * @class Stager */
 Stager = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/supervisor~Stager
+   * @memberof module:s/stager~Stager
    * @method constructor
    * @param {Object} options
    */
@@ -40,7 +40,7 @@ Stager = sh.Ashley.sysDef({
     this.inited=false;
   },
   /**
-   * @memberof module:s/supervisor~Stager
+   * @memberof module:s/stager~Stager
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -48,7 +48,7 @@ Stager = sh.Ashley.sysDef({
     this.arena=null;
   },
   /**
-   * @memberof module:s/supervisor~Stager
+   * @memberof module:s/stager~Stager
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -57,7 +57,7 @@ Stager = sh.Ashley.sysDef({
     this.arena= engine.getNodeList(gnodes.ArenaNode);
   },
   /**
-   * @memberof module:s/supervisor~Stager
+   * @memberof module:s/stager~Stager
    * @method update
    * @param {Number} dt
    */
@@ -255,6 +255,7 @@ Stager = sh.Ashley.sysDef({
 
 }, {
 /**
+ * @memberof module:s/stager~Stager
  * @property {Number} Priority
  */
 Priority: xcfg.ftypes.PreUpdate

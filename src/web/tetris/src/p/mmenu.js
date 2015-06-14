@@ -27,10 +27,7 @@ csts= xcfg.csts,
 R= sjs.ramda,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @extends module:zotohlab/asx/scenes.XMenuLayer
- * @class MainMenuLayer
- */
+/** * @class MainMenuLayer */
 MainMenuLayer = scenes.XMenuLayer.extend({
   /**
    * @method title
@@ -65,7 +62,7 @@ MainMenuLayer = scenes.XMenuLayer.extend({
    * @private
    */
   onplay(msg) {
-    cc.director.runScene( sh.protos[sh.ptypes.game].reify(msg));
+    ccsx.runScene( sh.protos[sh.ptypes.game].reify(msg));
   },
   /**
    * @method setup
