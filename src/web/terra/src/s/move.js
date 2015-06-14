@@ -15,7 +15,7 @@
  * @requires n/cobjs
  * @requires s/utils
  * @requires n/gnodes
- * @module s/movemissiles
+ * @module s/move
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -29,14 +29,14 @@ let sjs=sh.skarojs,
 xcfg = sh.xcfg,
 csts= xcfg.csts,
 R= sjs.ramda,
-undef,
 //////////////////////////////////////////////////////////////////////////
+undef,
 /**
- * @class MoveMissiles
+ * @class MoveXXX
  */
-MoveMissiles = sh.Ashley.sysDef({
+MoveXXX = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/movemissiles~MoveMissiles
+   * @memberof module:s/movebombs~MoveBombs
    * @method constructor
    * @param {Object} options
    */
@@ -44,47 +44,111 @@ MoveMissiles = sh.Ashley.sysDef({
     this.state= options;
   },
   /**
-   * @memberof module:s/movemissiles~MoveMissiles
+   * @memberof module:s/movebombs~MoveBombs
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
   removeFromEngine(engine) {
+    this.ships=null;
   },
   /**
-   * @memberof module:s/movemissiles~MoveMissiles
+   * @memberof module:s/movebombs~MoveBombs
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
   addToEngine(engine) {
+    this.ships = engine.getNodeList(gnodes.ShipMotionNode);
   },
   /**
-   * @memberof module:s/movemissiles~MoveMissiles
+   * @memberof module:s/movebombs~MoveBombs
    * @method update
    * @param {Number} dt
    */
   update(dt) {
-    if (this.state.running) {
-      this.processMovement(dt);
+    const node= this.ships.head;
+    if (this.state.running &&
+       !!node) {
+      this.moveMissiles(dt);
+      this.moveBombs(dt);
+      this.onKeys(node,dt);
     }
   },
   /**
-   * @method moveMissile
+   * @method onKeys
    * @private
    */
-  moveMissile(m, dt) {
+  onKeys(node,dt) {
+    let ship = node.ship,
+    wz= ccsx.vrect(),
+    mot= node.motion,
+    sp = ship.sprite,
+    ok = false,
+    pos = ship.pos(),
+    x = pos.x,
+    y = pos.y;
+
+    if (mot.up && pos.y <= wz.height) {
+      y = pos.y + dt * csts.SHIP_SPEED;
+      ok= true;
+    }
+    if (mot.down && pos.y >= 0) {
+      y = pos.y - dt * csts.SHIP_SPEED;
+      ok= true;
+    }
+    if (mot.left && pos.x >= 0) {
+      x = pos.x - dt * csts.SHIP_SPEED;
+      ok= true;
+    }
+    if (mot.right && pos.x <= wz.width) {
+      x = pos.x + dt * csts.SHIP_SPEED;
+      ok= true;
+    }
+
+    if (ok) { ship.setPos(x,y); }
+
+    mot.right= false;
+    mot.left=false;
+    mot.down=false;
+    mot.up=false;
+  },
+  /**
+   * @method moveOneBomb
+   * @private
+   */
+  moveOneBomb(m, dt) {
+    const pos = m.sprite.getPosition();
+    m.sprite.setPosition(pos.x + m.vel.x * dt,
+                         pos.y + m.vel.y * dt);
+  },
+  /**
+   * @method moveBombs
+   * @private
+   */
+  moveBombs(dt) {
+    sh.pools.Bombs.iter( b => {
+      if (b.status) {
+        this.moveOneBomb(b,dt);
+      }
+    });
+  },
+  /**
+   * @method moveOneMissile
+   * @private
+   */
+  moveOneMissile(m, dt) {
     const pos = m.sprite.getPosition();
     m.sprite.setPosition(pos.x + m.vel.x * dt,
                          pos.y + m.vel.y * dt);
   },
 
   /**
-   * @method processMovement
+   * @method moveMissiles
    * @private
    */
-  processMovement(dt) {
-    sh.pools.Missiles.iter((v) => {
+  moveMissiles(dt) {
+    sh.pools.Missiles.iter( v => {
       if (v.status) {
-        this.moveMissile(v,dt);
+        this.moveOneMissile(v,dt);
       }
     });
   }
@@ -92,18 +156,20 @@ MoveMissiles = sh.Ashley.sysDef({
 });
 
 /**
- * @memberof module:s/movemissiles~MoveMissiles
+ * @memberof module:s/movebombs~MoveBombs
  * @property {Number} Priority
  */
-MoveMissiles.Priority = xcfg.ftypes.Move;
+MoveBombs.Priority = xcfg.ftypes.Move;
 
-/** @alias module:s/movemissiles */
+
+/** @alias module:s/movebombs */
 const xbox = /** @lends xbox# */{
   /**
-   * @property {MoveMissiles} MoveMissiles
+   * @property {MoveBombs} MoveBombs
    */
-  MoveMissiles : MoveMissiles
+  MoveBombs : MoveBombs
 };
+
 
 sjs.merge(exports, xbox);
 /*@@
@@ -111,4 +177,5 @@ return xbox;
 @@*/
 //////////////////////////////////////////////////////////////////////////////
 //EOF
+
 
