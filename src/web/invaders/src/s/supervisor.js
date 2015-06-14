@@ -66,14 +66,14 @@ GameSupervisor = sh.Ashley.sysDef({
    */
   initAlienSize() {
     //pick purple since it is the largest
-    this.state.alienSize= ccsx.createSpriteFrame('purple_bug_0.png').getContentSize();
+    this.state.alienSize= ccsx.createSprite('purple_bug_0.png').getContentSize();
   },
   /**
    * @memberof module:s/supervisor~GameSupervisor
    * @method initShipSize
    */
   initShipSize() {
-    this.state.shipSize= ccsx.createSpriteFrame( 'ship_0.png').getContentSize();
+    this.state.shipSize= ccsx.createSprite( 'ship_0.png').getContentSize();
   },
   /**
    * @memberof module:s/supervisor~GameSupervisor

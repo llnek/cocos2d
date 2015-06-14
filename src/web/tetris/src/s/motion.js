@@ -31,11 +31,11 @@ csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////
 /**
- * @class MotionCtrlSystem
+ * @class Motions
  */
-MotionCtrlSystem = sh.Ashley.sysDef({
+Motions = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/motioncontrol
+   * @memberof module:s/motion
    * @method constructor
    * @param {Object} options
    */
@@ -44,7 +44,7 @@ MotionCtrlSystem = sh.Ashley.sysDef({
     this.state = options;
   },
   /**
-   * @memberof module:s/motioncontrol
+   * @memberof module:s/motion
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -54,23 +54,28 @@ MotionCtrlSystem = sh.Ashley.sysDef({
     this.evQ=null;
   },
   /**
-   * @memberof module:s/motioncontrol
+   * @memberof module:s/motion
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
   addToEngine(engine) {
     this.arena= engine.getNodeList(gnodes.ArenaNode);
     this.ops={};
-    this.evQ=[];
+  },
+  /**
+   * @method onceOnly
+   * @private
+   */
+  onceOnly() {
     this.stream= Rx.Observable.merge(
       Rx.Observable.create( obj => {
-        sh.main.signal('/touch/one/end', (t,m) => {
-          obj.onNext(m);
+        sh.main.signal('/touch/one/end', msg => {
+          obj.onNext(msg);
         });
       }),
       Rx.Observable.create( obj => {
-        sh.main.signal('/mouse/up', (t,m) => {
-          obj.onNext(m);
+        sh.main.signal('/mouse/up', msg => {
+          obj.onNext(msg);
         });
       })
     );
@@ -82,32 +87,35 @@ MotionCtrlSystem = sh.Ashley.sysDef({
     if (ccsx.hasKeyPad()) {
       this.initKeyOps();
     }
+    this.evQ=[];
   },
   /**
-   * @process
-   * @private
-   */
-  process(node, dt) {
-    let evt;
-    if (this.evQ.length > 0) {
-      evt = this.evQ.shift();
-    }
-    if (this.state.running &&
-       !!node) {
-      if (!!evt) {
-        this.ongui(node,evt,dt);
-      }
-      this.onkey(node, dt);
-    }
-  },
-  /**
-   * @memberof module:s/motioncontrol
+   * @memberof module:s/motion
    * @method update
    * @param {Number} dt
    */
   update(dt) {
-    const node= this.arena.head;
-    this.process(node, dt);
+    const evt = this.evQ.length > 0 ? this.evQ.shift() : undef,
+    node= this.arena.head;
+    if (this.state.running &&
+       !!node) {
+
+      if (!this.inited) {
+        this.onceOnly();
+        this.inited=true;
+      } else {
+        this.doit(node, evt, dt);
+      }
+
+    }
+  },
+  /**
+   * @method doit
+   * @private
+   */
+  doit(node, evt, dt) {
+    if (!!evt) { this.ongui(node,evt,dt); }
+    this.onkey(node, dt);
   },
   /**
    * @method obgui
@@ -227,22 +235,21 @@ MotionCtrlSystem = sh.Ashley.sysDef({
      'sftDown' : this.shiftDown.bind(this)} );
   }
 
-});
-
+}, {
 /**
- * @memberof module:s/motioncontrol~MotionCtrlSystem
+ * @memberof module:s/motion~Motions
  * @property {Number} Priority
  */
-MotionCtrlSystem.Priority= xcfg.ftypes.Motion;
+Priority: xcfg.ftypes.Motion
+});
 
-/** @alias module:s/motioncontrol */
+/** @alias module:s/motion */
 const xbox= /** @lends xbox# */{
   /**
-   * @property {MotionCtrlSystem}  MotionCtrlSystem
+   * @property {Motions}  Motions
    */
-  MotionCtrlSystem : MotionCtrlSystem
+  Motions : Motions
 };
-
 sjs.merge(exports, xbox);
 /*@@
 return xbox;

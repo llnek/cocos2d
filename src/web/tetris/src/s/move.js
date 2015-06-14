@@ -11,14 +11,18 @@
 
 "use strict";/**
  * @requires zotohlab/asx/asterix
- * @requires s/utils
+ * @requires zotohlab/asx/ccsx
+ * @requires n/cobjs
  * @requires n/gnodes
- * @module s/rendering
+ * @requires s/utils
+ * @module s/move
  */
 
 import sh from 'zotohlab/asx/asterix';
-import utils from "s/utils";
+import ccsx from 'zotohlab/asx/ccsx';
+import cobjs from 'n/cobjs';
 import gnodes from 'n/gnodes';
+import utils from 's/utils';
 
 
 let sjs= sh.skarojs,
@@ -27,11 +31,11 @@ csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////
 /**
- * @class RenderSystem
+ * @class Move
  */
-RenderSystem = sh.Ashley.sysDef({
+Move = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/rendering~RenderSystem
+   * @memberof module:s/move~Move
    * @method constructor
    * @param {Object} options
    */
@@ -39,7 +43,7 @@ RenderSystem = sh.Ashley.sysDef({
     this.state = options;
   },
   /**
-   * @memberof module:s/rendering~RenderSystem
+   * @memberof module:s/move~Move
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -47,37 +51,79 @@ RenderSystem = sh.Ashley.sysDef({
     this.arena=null;
   },
   /**
-   * @memberof module:s/rendering~RenderSystem
+   * @memberof module:s/move~Move
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
   addToEngine(engine) {
-    this.arena= engine.getNodeList(gnodes.ArenaNode);
+    this.arena = engine.getNodeList(gnodes.ArenaNode);
   },
   /**
-   * @memberof module:s/rendering~RenderSystem
+   * @memberof module:s/move~Move
    * @method update
    * @param {Number} dt
    */
   update(dt) {
+    const node= this.arena.head;
+    if (this.state.running &&
+       !!node) {
+
+      if (ccsx.timerDone(node.dropper.timer) &&
+          !!node.shell.shape) {
+        node.dropper.timer= ccsx.undoTimer(node.dropper.timer);
+        this.doFall(sh.main, node);
+      }
+
+    }
+  },
+  /**
+   * @method doFall
+   * @private
+   */
+  doFall(layer, node) {
+    const cmap= node.collision.tiles,
+    shape= node.shell.shape,
+    emap= node.blocks.grid,
+    pu= node.pauser,
+    dp= node.dropper;
+
+    if (!!shape) {
+      if (! utils.moveDown(layer, cmap, shape)) {
+
+        // lock shape in place
+        utils.lock(node, shape);
+
+        // what is this???
+        if (! pu.timer) {
+          node.shell.shape= null;
+          shape.bricks=[];
+        }
+
+        node.shell.shape= null;
+        shape.bricks=[];
+
+      } else {
+        utils.initDropper(layer, dp);
+      }
+    }
   }
 
-});
-
+}, {
 /**
- * @memberof module:s/rendering~RenderSystem
+ * @memberof module:s/move~Move
  * @property {Number} Priority
  */
-RenderSystem.Priority= xcfg.ftypes.Render;
+Priority: xcfg.ftypes.Move
+});
 
-/** @alias module:s/rendering */
-const xbox= /** @lends xbox# */{
+
+/** @alias module:s/move */
+const xbox = /** @lends xbox# */{
   /**
-   * @property {RenderSystem} RenderSystem
+   * @property {Move} Move
    */
-  RenderSystem  : RenderSystem
+  Move : Move
 };
-
 sjs.merge(exports, xbox);
 /*@@
 return xbox;

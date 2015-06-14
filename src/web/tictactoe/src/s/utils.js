@@ -39,7 +39,7 @@ xbox= /** @lends xbox# */{
     scale = scale || 1;
     // memorize the co-ordinates of each cell on the board, so
     // we know which cell the user has clicked on.
-    let sp = ccsx.createSpriteFrame('z.png'),
+    let sp = ccsx.createSprite('z.png'),
     csz = cc.size(sp.getContentSize().width * scale,
                   sp.getContentSize().height * scale),
     cells= gsz * gsz,
@@ -104,7 +104,7 @@ xbox= /** @lends xbox# */{
    */
   drawSymbol(view, x,y,value,flip) {
     const frame = this.pkFlip(this.xrefImg(value),flip),
-    s1= ccsx.createSpriteFrame(frame);
+    s1= ccsx.createSprite(frame);
     s1.setAnchorPoint(ccsx.acs.Center);
     s1.setPosition(x,y);
     view.layer.addAtlasItem('game-pics', s1);

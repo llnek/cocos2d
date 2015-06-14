@@ -49,7 +49,7 @@ EntityFactory = sh.Ashley.casDef({
    */
   createMissiles(count) {
     sh.pools.Missiles.preSet(() => {
-      const sp = ccsx.createSpriteFrame('missile.png');
+      const sp = ccsx.createSprite('missile.png');
       sp.setVisible(false);
       sh.main.addAtlasItem('game-pics', sp);
       return new cobjs.Missile(sp);
@@ -62,7 +62,7 @@ EntityFactory = sh.Ashley.casDef({
    */
   createExplosions(count) {
     sh.pools.Explosions.preSet(function() {
-      const sp = ccsx.createSpriteFrame('boom_0.png');
+      const sp = ccsx.createSprite('boom_0.png');
       sp.setVisible(false);
       sh.main.addAtlasItem('game-pics', sp);
       return new cobjs.Explosion(sp);
@@ -75,7 +75,7 @@ EntityFactory = sh.Ashley.casDef({
    */
   createBombs(count) {
     sh.pools.Bombs.preSet(function() {
-      const sp = ccsx.createSpriteFrame('bomb.png');
+      const sp = ccsx.createSprite('bomb.png');
       sp.setVisible(false);
       sh.main.addAtlasItem('game-pics', sp);
       return new cobjs.Bomb(sp);
@@ -87,7 +87,7 @@ EntityFactory = sh.Ashley.casDef({
    * @param {String} img
    */
   calcImgSize(img) {
-    return ccsx.createSpriteFrame(img).getContentSize();
+    return ccsx.createSprite(img).getContentSize();
   },
   /**
    * @memberof module:s/factory~EntityFactory
@@ -134,7 +134,7 @@ EntityFactory = sh.Ashley.casDef({
         info= this.getRankInfo(row);
         az= info[2];
       }
-      aa= ccsx.createSpriteFrame(info[1][0]);
+      aa= ccsx.createSprite(info[1][0]);
       aa.setPosition( x + sh.hw(az), y - sh.hh(az));
       aa.runAction(new cc.RepeatForever(
         new cc.Animate( new cc.Animation(
@@ -180,7 +180,7 @@ EntityFactory = sh.Ashley.casDef({
    * @method createShip
    */
   createShip() {
-    let s= ccsx.createSpriteFrame('ship_1.png'),
+    let s= ccsx.createSprite('ship_1.png'),
     ent= new sh.Ashley.newEntity(),
     wz= ccsx.vrect(),
     wb= ccsx.vbox(),

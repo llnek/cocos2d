@@ -47,7 +47,7 @@ EntityFactory = sh.Ashley.casDef({
    * @return {Object} a ship
    */
   createShip() {
-    let sp= ccsx.createSpriteFrame('ship01.png'),
+    let sp= ccsx.createSprite('ship01.png'),
     ent= sh.Ashley.newEntity(),
     sz= sp.getContentSize(),
     bs, player,
@@ -65,7 +65,7 @@ EntityFactory = sh.Ashley.casDef({
 
     sh.main.addAtlasItem('game-pics', sp, csts.SHIP_ZX);
 
-    bs = ccsx.createSpriteFrame("ship03.png");
+    bs = ccsx.createSprite("ship03.png");
     bs.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
     bs.setPosition(sz.width * 0.5, 12);
     bs.setVisible(false);
@@ -84,7 +84,7 @@ EntityFactory = sh.Ashley.casDef({
    */
   createMissiles(count) {
     sh.pools.Missiles.preSet(() => {
-      const sp= ccsx.createSpriteFrame('W1.png');
+      const sp= ccsx.createSprite('W1.png');
       sp.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
       sp.setVisible(false);
       sh.main.addAtlasItem('op-pics', sp, csts.SHIP_ZX);
@@ -98,7 +98,7 @@ EntityFactory = sh.Ashley.casDef({
    */
   createBombs(count) {
     sh.pools.Bombs.preSet(() => {
-      const sp= ccsx.createSpriteFrame('W2.png');
+      const sp= ccsx.createSprite('W2.png');
       sp.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
       sp.setVisible(false);
       sh.main.addAtlasItem('op-pics', sp, csts.SHIP_ZX);
@@ -112,7 +112,7 @@ EntityFactory = sh.Ashley.casDef({
    */
   createExplosions(count) {
     sh.pools.Explosions.preSet(() => {
-      const sp = ccsx.createSpriteFrame("explosion_01.png");
+      const sp = ccsx.createSprite("explosion_01.png");
       sp.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
       sp.setVisible(false);
       sh.main.addAtlasItem('explosions', sp);
@@ -126,7 +126,7 @@ EntityFactory = sh.Ashley.casDef({
    */
   createHitEffects(count) {
     sh.pools.HitEffects.preSet(() => {
-      const sp = ccsx.createSpriteFrame("hit.png");
+      const sp = ccsx.createSprite("hit.png");
       sp.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
       sp.setVisible(false);
       sh.main.addAtlasItem('op-pics', sp);
@@ -140,8 +140,8 @@ EntityFactory = sh.Ashley.casDef({
    */
   createSparks(count) {
     sh.pools.Sparks.preSet(() => {
-      const sp = [ccsx.createSpriteFrame("explode2.png"),
-                  ccsx.createSpriteFrame("explode3.png")];
+      const sp = [ccsx.createSprite("explode2.png"),
+                  ccsx.createSprite("explode3.png")];
       R.forEach((s) => {
         s.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
         s.setVisible(false);
@@ -157,7 +157,7 @@ EntityFactory = sh.Ashley.casDef({
    */
   createEnemies(count) {
     const cr= (arg) => {
-      const sp= ccsx.createSpriteFrame(arg.textureName);
+      const sp= ccsx.createSprite(arg.textureName);
       sp.setVisible(false);
       sh.main.addAtlasItem('game-pics', sp,
                            csts.SHIP_ZX - 1); // why?
@@ -178,7 +178,7 @@ EntityFactory = sh.Ashley.casDef({
   createBackSkies() {
     const layer= sh.main.getBackgd();
     sh.pools.BackSkies.preSet(() => {
-      const bg = ccsx.createSpriteFrame('bg01.png');
+      const bg = ccsx.createSprite('bg01.png');
       bg.setAnchorPoint(0,0);
       bg.setVisible(false);
       layer.addAtlasItem('game-pics', bg, -10);
@@ -194,7 +194,7 @@ EntityFactory = sh.Ashley.casDef({
     let layer= sh.main.getBackgd(),
     rc, sp,
     cr=(name) => {
-      sp = ccsx.createSpriteFrame(name);
+      sp = ccsx.createSprite(name);
       sp.setAnchorPoint(0.5,0);
       sp.setVisible(false);
       layer.addAtlasItem('back-tiles', sp, -9);

@@ -51,13 +51,12 @@ document.ccConfig = {
 
     '/public/ig/lib/game/tetris/s/factory.js',
     '/public/ig/lib/game/tetris/s/utils.js',
-    '/public/ig/lib/game/tetris/s/supervisor.js',
-    '/public/ig/lib/game/tetris/s/clearance.js',
-    '/public/ig/lib/game/tetris/s/generator.js',
+    '/public/ig/lib/game/tetris/s/stager.js',
+    '/public/ig/lib/game/tetris/s/clear.js',
+    '/public/ig/lib/game/tetris/s/generate.js',
     '/public/ig/lib/game/tetris/s/motion.js',
-    '/public/ig/lib/game/tetris/s/movement.js',
-    '/public/ig/lib/game/tetris/s/rendering.js',
-    '/public/ig/lib/game/tetris/s/resolution.js',
+    '/public/ig/lib/game/tetris/s/move.js',
+    '/public/ig/lib/game/tetris/s/resolve.js',
     '/public/ig/lib/game/tetris/s/sysobjs.js',
 
     '/public/ig/lib/game/tetris/p/splash.js',

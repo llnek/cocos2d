@@ -58,7 +58,7 @@ EntityFactory = sh.Ashley.casDef({
     for (let r=0; r < csts.ROWS; ++r) {
       x= csts.TILE + csts.LEFT_OFF + sh.hw(this.state.candySize);
       for (let c=0; c < csts.COLS; ++c) {
-        sp= ccsx.createSpriteFrame( candies[cs[r]] + ".png");
+        sp= ccsx.createSprite( candies[cs[r]] + ".png");
         sh.main.addAtlasItem('game-pics', sp);
         sp = new cobjs.Brick(sp,10);
         bks.push(sp);
@@ -96,7 +96,7 @@ EntityFactory = sh.Ashley.casDef({
     ent,
     sp;
 
-    sp = ccsx.createSpriteFrame('paddle.png');
+    sp = ccsx.createSprite('paddle.png');
     sh.main.addAtlasItem('game-pics',sp);
     sp= new cobjs.Paddle(sp);
     sp.inflate({ x: cw.x, y: 56});
@@ -117,7 +117,7 @@ EntityFactory = sh.Ashley.casDef({
     ent,
     sp;
 
-    sp = ccsx.createSpriteFrame('ball.png');
+    sp = ccsx.createSprite('ball.png');
     sh.main.addAtlasItem('game-pics', sp);
     sp= new cobjs.Ball(sp,200);
     sp.inflate({ x: cw.x, y: 250});

@@ -81,7 +81,7 @@ CannonControl = sh.Ashley.sysDef({
       if (ccsx.timerDone(t)) {
         ship.sprite.setSpriteFrame(ship.frames[0]);
         gun.hasAmmo=true;
-        lpr.timers[0]=ccsx.releaseTimer(t);
+        lpr.timers[0]=ccsx.undoTimer(t);
       }
     } else {
       this.scanInput(node,dt);

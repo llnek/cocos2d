@@ -80,7 +80,7 @@ MovementAliens = sh.Ashley.sysDef({
 
     if (ccsx.timerDone(lpr.timers[0])) {
       this.maybeShuffleAliens(sqad);
-      lpr.timers[0]=ccsx.releaseTimer(lpr.timers[0]);
+      lpr.timers[0]=ccsx.undoTimer(lpr.timers[0]);
     }
   },
   /**
@@ -93,7 +93,7 @@ MovementAliens = sh.Ashley.sysDef({
 
     if (ccsx.timerDone(lpr.timers[1])) {
       this.checkBomb(sqad);
-      lpr.timers[1]=ccsx.releaseTimer(lpr.timers[1]);
+      lpr.timers[1]=ccsx.undoTimer(lpr.timers[1]);
     }
   },
   /**

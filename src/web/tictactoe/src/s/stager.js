@@ -15,7 +15,7 @@
  * @requires zotohlab/asx/odin
  * @requires s/utils
  * @requires n/gnodes
- * @module s/supervisor
+ * @module s/stager
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -35,7 +35,7 @@ undef,
 /** * @class Stager */
 Stager = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/supervisor~Stager
+   * @memberof module:s/stager~Stager
    * @method constructor
    * @param {Object} options
    */
@@ -44,7 +44,7 @@ Stager = sh.Ashley.sysDef({
     this.inited=false;
   },
   /**
-   * @memberof module:s/supervisor~Stager
+   * @memberof module:s/stager~Stager
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -52,7 +52,7 @@ Stager = sh.Ashley.sysDef({
     this.board=null;
   },
   /**
-   * @memberof module:s/supervisor~Stager
+   * @memberof module:s/stager~Stager
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -62,7 +62,7 @@ Stager = sh.Ashley.sysDef({
     this.board= engine.getNodeList(gnodes.BoardNode);
   },
   /**
-   * @memberof module:s/supervisor~Stager
+   * @memberof module:s/stager~Stager
    * @method update
    * @param {Number} dt
    */
@@ -90,7 +90,7 @@ Stager = sh.Ashley.sysDef({
     sp;
 
     R.forEach( mp => {
-      sp= ccsx.createSpriteFrame('z.png');
+      sp= ccsx.createSprite('z.png');
       sp.setPosition(ccsx.vboxMID(mp));
       sh.main.addAtlasItem('game-pics',sp);
       cs[pos++]=[sp, sp.getPositionX(), sp.getPositionY(), csts.CV_Z];
@@ -148,14 +148,14 @@ Stager = sh.Ashley.sysDef({
 
 }, {
 /**
- * @memberof module:s/supervisor~Stager
+ * @memberof module:s/stager~Stager
  * @property {Number} Priority
  */
 Priority: xcfg.ftypes.PreUpdate
 });
 
 
-/** @alias module:s/supervisor */
+/** @alias module:s/stager */
 const xbox = {
   /**
    * @property {Stager} Stager

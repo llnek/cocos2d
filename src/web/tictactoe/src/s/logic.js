@@ -32,7 +32,7 @@ undef,
 /** * @class Logic */
 Logic = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/turnbase~Logic
+   * @memberof module:s/logic~Logic
    * @method constructor
    * @param {Object} options
    */
@@ -41,7 +41,7 @@ Logic = sh.Ashley.sysDef({
     this.botTimer=null;
   },
   /**
-   * @memberof module:s/turnbase~Logic
+   * @memberof module:s/logic~Logic
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -49,7 +49,7 @@ Logic = sh.Ashley.sysDef({
     this.board=null;
   },
   /**
-   * @memberof module:s/turnbase~Logic
+   * @memberof module:s/logic~Logic
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -57,7 +57,7 @@ Logic = sh.Ashley.sysDef({
     this.board = engine.getNodeList(gnodes.BoardNode);
   },
   /**
-   * @memberof module:s/turnbase~Logic
+   * @memberof module:s/logic~Logic
    * @method update
    * @param {Number} dt
    */
@@ -98,7 +98,7 @@ Logic = sh.Ashley.sysDef({
           rc= bd.getFirstMove();
           if (!sjs.echt(rc)) { rc = bot.algo.eval(); }
           this.enqueue(rc,cp.value,grid);
-          this.botTimer=ccsx.releaseTimer(this.botTimer);
+          this.botTimer=ccsx.undoTimer(this.botTimer);
         }
       } else {
         this.botTimer = ccsx.createTimer(sh.main, 0.6);
@@ -167,14 +167,14 @@ Logic = sh.Ashley.sysDef({
   }
 },{
 /**
- * @memberof module:s/turnbase~Logic
+ * @memberof module:s/logic~Logic
  * @property {Number} Priority
  */
 Priority : xcfg.ftypes.Logic
 });
 
 
-/** @alias module:s/turnbase */
+/** @alias module:s/logic */
 const xbox = /** @lends xbox# */{
   /**
    * @property {Logic} Logic

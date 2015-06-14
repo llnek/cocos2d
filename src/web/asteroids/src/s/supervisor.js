@@ -102,9 +102,9 @@ GameSupervisor = sh.Ashley.sysDef({
    * @private
    */
   initAsteroidSizes() {
-    this.state.astro3 = ccsx.createSpriteFrame('rock_small.png').getContentSize();
-    this.state.astro2 = ccsx.createSpriteFrame('rock_med.png').getContentSize();
-    this.state.astro1 = ccsx.createSpriteFrame('rock_large.png').getContentSize();
+    this.state.astro3 = ccsx.createSprite('rock_small.png').getContentSize();
+    this.state.astro2 = ccsx.createSprite('rock_med.png').getContentSize();
+    this.state.astro1 = ccsx.createSprite('rock_large.png').getContentSize();
   },
 
   /**
@@ -112,7 +112,7 @@ GameSupervisor = sh.Ashley.sysDef({
    * @private
    */
   initPlayerSize() {
-    this.state.playerSize = ccsx.createSpriteFrame('rship_0.png').getContentSize();
+    this.state.playerSize = ccsx.createSprite('rship_0.png').getContentSize();
   },
 
   /**
@@ -120,7 +120,7 @@ GameSupervisor = sh.Ashley.sysDef({
    * @private
    */
   initUfoSize() {
-    this.state.ufoSize = ccsx.createSpriteFrame('ufo.png').getContentSize();
+    this.state.ufoSize = ccsx.createSprite('ufo.png').getContentSize();
   }
 
 });

@@ -32,7 +32,7 @@ undef,
 /** * @class Resolve */
 Resolve = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/resolution~Resolve
+   * @memberof module:s/resolve~Resolve
    * @method constructor
    * @param {Object} options
    */
@@ -40,7 +40,7 @@ Resolve = sh.Ashley.sysDef({
     this.state= options;
   },
   /**
-   * @memberof module:s/resolution~Resolve
+   * @memberof module:s/resolve~Resolve
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -48,7 +48,7 @@ Resolve = sh.Ashley.sysDef({
     this.board=null;
   },
   /**
-   * @memberof module:s/resolution~Resolve
+   * @memberof module:s/resolve~Resolve
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -56,7 +56,7 @@ Resolve = sh.Ashley.sysDef({
     this.board = engine.getNodeList(gnodes.BoardNode);
   },
   /**
-   * @memberof module:s/resolution~Resolve
+   * @memberof module:s/resolve~Resolve
    * @method update
    * @param {Number} dt
    */
@@ -255,7 +255,7 @@ Resolve = sh.Ashley.sysDef({
 
 },{
 /**
- * @memberof module:s/resolution~Resolve
+ * @memberof module:s/resolve~Resolve
  * @property {Number} Priority
  */
 Priority: xcfg.ftypes.Resolve
@@ -263,7 +263,7 @@ Priority: xcfg.ftypes.Resolve
 
 
 
-/** @alias module:s/resolution */
+/** @alias module:s/resolve */
 const xbox = {
   /**
    * @property {Resolve} Resolve

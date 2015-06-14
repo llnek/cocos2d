@@ -116,7 +116,7 @@ HUDLayer = scenes.XGameHUDLayer.extend({
    * @protected
    */
   addReplayIcon(menu, where) {
-    let wall=ccsx.createSpriteFrame('gray.png').getContentSize().width,
+    let wall=ccsx.createSprite('gray.png').getContentSize().width,
     c= menu.getChildByTag(1),
     hh = ccsx.getScaledHeight(c) * 0.5,
     hw = ccsx.getScaledWidth(c) * 0.5,

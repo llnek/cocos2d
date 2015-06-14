@@ -71,14 +71,14 @@ GameSupervisor = sh.Ashley.sysDef({
    * @method initBrickSize
    */
   initBrickSize() {
-    this.state.candySize= ccsx.createSpriteFrame('red_candy.png').getContentSize();
+    this.state.candySize= ccsx.createSprite('red_candy.png').getContentSize();
   },
   /**
    * @memberof module:s/supervisor~GameSupervisor
    * @method initBallSize
    */
   initBallSize() {
-    this.state.ballSize= ccsx.createSpriteFrame('ball.png').getContentSize();
+    this.state.ballSize= ccsx.createSprite('ball.png').getContentSize();
   },
   /**
    * @method onceOnly

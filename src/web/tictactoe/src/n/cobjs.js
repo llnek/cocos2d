@@ -103,7 +103,7 @@ const GridView = sh.Ashley.casDef({
    * @param {cc.Layer} layer
    */
   constructor(size, layer) {
-    const sp = ccsx.createSpriteFrame('z.png'),
+    const sp = ccsx.createSprite('z.png'),
     sz= sp.getContentSize();
     this.cells= sjs.makeArray(size * size, null);
     this.layer= layer;

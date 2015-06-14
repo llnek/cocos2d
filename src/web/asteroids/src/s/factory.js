@@ -51,7 +51,7 @@ EntityFactory = sh.Ashley.casDef({
    */
   createMissiles(count) {
     sh.pools.Missiles.preSet(() => {
-      const sp = ccsx.createSpriteFrame('laserGreen.png');
+      const sp = ccsx.createSprite('laserGreen.png');
       sp.setVisible(false);
       sh.main.addAtlasItem('game-pics', sp);
       return new cobjs.Missile(sp);
@@ -65,7 +65,7 @@ EntityFactory = sh.Ashley.casDef({
    */
   createLasers(count) {
     sh.pools.Lasers.preSet(() => {
-      const sp = ccsx.createSpriteFrame('laserRed.png');
+      const sp = ccsx.createSprite('laserRed.png');
       sp.setVisible(false);
       sh.main.addAtlasItem('game-pics', sp);
       return new cobjs.Laser(sp);
@@ -79,7 +79,7 @@ EntityFactory = sh.Ashley.casDef({
   createShip() {
     let ent= sh.Ashley.newEntity(),
     deg = 90,//sjs.randPercent() * 360;
-    sp= ccsx.createSpriteFrame('rship_0.png');
+    sp= ccsx.createSprite('rship_0.png');
 
     sp.setRotation(deg);
     sh.main.addAtlasItem('game-pics', sp);
@@ -164,7 +164,7 @@ EntityFactory = sh.Ashley.casDef({
           deg = sjs.rand(360);
           x = r.left + wd/2;
           y = r.top - ht/2;
-          sp= ccsx.createSpriteFrame(cfg[rank][1]);
+          sp= ccsx.createSprite(cfg[rank][1]);
           sp.setRotation(deg);
           sh.main.addAtlasItem('game-pics', sp);
 

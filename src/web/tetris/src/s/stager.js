@@ -14,7 +14,7 @@
  * @requires zotohlab/asx/ccsx
  * @requires s/utils
  * @requires n/gnodes
- * @module s/supervisor
+ * @module s/stager
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -28,12 +28,10 @@ xcfg = sh.xcfg,
 csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @class GameSupervisor
- */
-GameSupervisor = sh.Ashley.sysDef({
+/** * @class Stager */
+Stager = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/supervisor~Stager
    * @method constructor
    * @param {Object} options
    */
@@ -42,7 +40,7 @@ GameSupervisor = sh.Ashley.sysDef({
     this.inited=false;
   },
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/supervisor~Stager
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -50,7 +48,7 @@ GameSupervisor = sh.Ashley.sysDef({
     this.arena=null;
   },
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/supervisor~Stager
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -59,7 +57,7 @@ GameSupervisor = sh.Ashley.sysDef({
     this.arena= engine.getNodeList(gnodes.ArenaNode);
   },
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/supervisor~Stager
    * @method update
    * @param {Number} dt
    */
@@ -81,8 +79,8 @@ GameSupervisor = sh.Ashley.sysDef({
     const cw = ccsx.center(),
     wb= ccsx.vbox(),
     wz= ccsx.vrect(),
-    fz= ccsx.createSpriteFrame('gray.png').getContentSize(),
-    bz= ccsx.createSpriteFrame('0.png').getContentSize(),
+    fz= ccsx.csize('gray.png'),
+    bz= ccsx.csize('0.png'),
     lf_boundary= cw.x - csts.FIELD_W * bz.width - fz.width,
     hfzh= fz.height * 0.5,
     hfzw= fz.width * 0.5;
@@ -112,8 +110,8 @@ GameSupervisor = sh.Ashley.sysDef({
     cw = ccsx.center(),
     wb= ccsx.vbox(),
     wz= ccsx.vrect(),
-    //sp= ccsx.createSpriteFrame('shadedLight09.png'),
-    sp= ccsx.createSpriteFrame('shadedDark09.png'),
+    //sp= ccsx.createSprite('shadedLight09.png'),
+    sp= ccsx.createSprite('shadedDark09.png'),
     cz= sp.getContentSize(),
     cbx,
     ch3= cz.height / 3,
@@ -128,6 +126,7 @@ GameSupervisor = sh.Ashley.sysDef({
     cbx= ccsx.bbox4(sp);
 
     //calc hotspots for touch & mouse
+    // rotate left right
     hsps.rr= { left: cbx.left + cw3,
           top: cbx.top,
           right: cbx.right - cw3,
@@ -138,6 +137,7 @@ GameSupervisor = sh.Ashley.sysDef({
           right: cbx.right - cw3,
           bottom: cbx.bottom };
 
+    // shifting left, right
     hsps.sl= { left: cbx.left,
           top: cbx.top - ch3,
           right: cbx.left + cw3,
@@ -148,6 +148,7 @@ GameSupervisor = sh.Ashley.sysDef({
           right: cbx.right,
           bottom: cbx.top - 2 * ch3 };
 
+    // fast drop down
     hsps.cd= { left: cbx.left + cw3,
           top: cbx.top - ch3,
           right: cbx.right - cw3,
@@ -168,7 +169,7 @@ GameSupervisor = sh.Ashley.sysDef({
     y = ypos;//wb.bottom + fz.height * 0.5;
     x = lf_bdy;
     while (x < rt_bdy){ //}cw.x) {
-      f=ccsx.createSpriteFrame('gray.png');
+      f=ccsx.createSprite('gray.png');
       f.setPosition(x, y);
       sh.main.addAtlasItem('game-pics',f);
       x += fz.width;
@@ -188,7 +189,7 @@ GameSupervisor = sh.Ashley.sysDef({
     y= wb.bottom;
     y += fz.height * 0.5;
     while (y < wb.top) {
-      f=ccsx.createSpriteFrame('gray.png');
+      f=ccsx.createSprite('gray.png');
       f.setPosition(x, y);
       sh.main.addAtlasItem('game-pics',f);
       y += fz.height;
@@ -238,6 +239,7 @@ GameSupervisor = sh.Ashley.sysDef({
     map=[],
     rc;
 
+    // use 1 to indicate wall
     for (let r = 0; r <= hlen; ++r) {
       if (r===0) {
         rc = sjs.makeArray(wlen+2, 1);
@@ -251,21 +253,22 @@ GameSupervisor = sh.Ashley.sysDef({
     return map;
   }
 
-});
-
+}, {
 /**
  * @property {Number} Priority
  */
-GameSupervisor.Priority= xcfg.ftypes.PreUpdate;
+Priority: xcfg.ftypes.PreUpdate
+});
 
-/** @alias module:s/supervisor */
+
+
+/** @alias module:s/stager */
 const xbox = {
   /**
-   * @property {GameSupervisor} GameSupervisor
+   * @property {Stager} Stager
    */
-  GameSupervisor : GameSupervisor
+  Stager : Stager
 };
-
 sjs.merge(exports, xbox);
 /*@@
 return xbox;

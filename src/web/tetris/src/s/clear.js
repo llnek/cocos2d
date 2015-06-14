@@ -14,7 +14,7 @@
  * @requires zotohlab/asx/ccsx
  * @requires s/utils
  * @requires n/gnodes
- * @module s/clearance
+ * @module s/clear
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -30,11 +30,11 @@ R = sjs.ramda,
 undef,
 //////////////////////////////////////////////////////////////////////////
 /**
- * @class RowClearance
+ * @class Clear
  */
-RowClearance = sh.Ashley.sysDef({
+Clear = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/clearance~RowClearance
+   * @memberof module:s/clear~Clear
    * @method constructor
    * @param {Object} options
    */
@@ -42,7 +42,7 @@ RowClearance = sh.Ashley.sysDef({
     this.state = options;
   },
   /**
-   * @memberof module:s/clearance~RowClearance
+   * @memberof module:s/clear~Clear
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -50,7 +50,7 @@ RowClearance = sh.Ashley.sysDef({
     this.arena=null;
   },
   /**
-   * @memberof module:s/clearance~RowClearance
+   * @memberof module:s/clear~Clear
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -58,7 +58,7 @@ RowClearance = sh.Ashley.sysDef({
     this.arena= engine.getNodeList(gnodes.ArenaNode);
   },
   /**
-   * @memberof module:s/clearance~RowClearance
+   * @memberof module:s/clear~Clear
    * @method update
    * @return {Number}
    */
@@ -72,7 +72,7 @@ RowClearance = sh.Ashley.sysDef({
       if (ps.pauseToClear) {
         if (ccsx.timerDone(ps.timer)) {
           this.clearFilled(node);
-          ps.timer=ccsx.releaseTimer(ps.timer);
+          ps.timer=ccsx.undoTimer(ps.timer);
           ps.pauseToClear=false;
         }
         //stop downstream processing
@@ -105,7 +105,7 @@ RowClearance = sh.Ashley.sysDef({
     const row= node.blocks.grid[r];
 
     for (let c=0; c < row.length; ++c) {
-      if (row[c]) {
+      if (!!row[c]) {
         row[c].dispose();
         row[c]=undef;
       }
@@ -131,19 +131,30 @@ RowClearance = sh.Ashley.sysDef({
    */
   shiftDownLines(node) {
     let top= utils.topLine(node),
-    f, e, d;
+    f0, f, e0, e, d,
+    s, t, r;
 
-    while (true) {
-      f= this.findFirstDirty(node);
-      // no lines are touched
-      if (f===0) { return; }
-      e= this.findLastEmpty(node);
-      if (e > f) { return; }
-      d=e+1;
-      for (let r=d; r < top; ++r) {
-        this.copyLine(node,r,e);
-        ++e;
-      }
+    // top down search
+
+    f0= this.findFirstDirty(node);
+    // no lines are touched
+    if (f0===0) { return; }
+    e0= this.findFirstEmpty(node,f0);
+    if (e0===0) { return; }
+    e= this.findLastEmpty(node, e0);
+    f = e0 + 1; // last dirty
+    if (f > f0) {
+      sjs.tne("error while shifting lines down");
+      return;
+    } // error!
+    r= (e0 - e) + 1;  // number of empty lines
+
+    s=f;  // last dirty
+    t=e;
+    while (s <= f0) {
+      this.copyLine(node, s, t);
+      ++t;
+      ++s;
     }
   },
   /**
@@ -160,16 +171,23 @@ RowClearance = sh.Ashley.sysDef({
     return 0;
   },
   /**
+   * @method findFirstEmpty
+   * @private
+   */
+  findFirstEmpty(node, t) {
+    for (let r=t; r > 0; --r) {
+      if (this.isEmptyRow(node,r)) { return r; }
+    }
+    return 0;
+  },
+  /**
    * @method findLastEmpty
    * @private
    */
-  findLastEmpty(node) {
-    const t = utils.topLine(node);
-
-    for (let r=1; r < t; ++r) {
-      if (this.isEmptyRow(node,r)) { return r; }
+  findLastEmpty(node,t) {
+    for (let r=t; r > 0; --r) {
+      if (!this.isEmptyRow(node,r)) { return r+1; }
     }
-
     return 0;
   },
   /**
@@ -217,20 +235,20 @@ RowClearance = sh.Ashley.sysDef({
     }
   }
 
-});
-
+}, {
 /**
- * @memberof module:s/clearance~RowClearance
+ * @memberof module:s/clear~Clear
  * @property {Number} Priority
  */
-RowClearance.Priority= xcfg.ftypes.Clear;
+Priority: xcfg.ftypes.Clear
+});
 
-/** @alias module:s/clearance */
+/** @alias module:s/clear */
 const xbox = /** @lends xbox# */{
   /**
-   * @property {RowClearance} RowClearance
+   * @property {Clear} Clear
    */
-  RowClearance : RowClearance
+  Clear : Clear
 };
 
 sjs.merge(exports, xbox);

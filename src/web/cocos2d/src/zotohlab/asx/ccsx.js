@@ -149,7 +149,7 @@ const xbox = /** @lends xbox# */{
    * @param {Object} tm
    * @return null
    */
-  releaseTimer(par, tm) {
+  undoTimer(par, tm) {
     if (cc.sys.isNative && !!tm) { tm.release(); }
     return null;
   },
@@ -185,7 +185,7 @@ const xbox = /** @lends xbox# */{
    * @param {String} name
    * @return {cc.Sprite}
    */
-  createSpriteFrame(name) {
+  createSprite(name) {
     const rc= new cc.Sprite();
     rc.initWithSpriteFrameName(name);
     return rc;
@@ -211,7 +211,7 @@ const xbox = /** @lends xbox# */{
    * @param delay
    */
   runScene(ns,delay) {
-    delay= delay || 1.2;
+    delay= delay || 0.6;
     cc.director.runScene(new cc.TransitionCrossFade(delay, ns));
   },
   /**
@@ -221,6 +221,15 @@ const xbox = /** @lends xbox# */{
   isTransitioning() {
     return cc.director.getRunningScene() instanceof
     cc.TransitionScene;
+  },
+  /**
+   * Find size of this sprite.
+   * @method csize
+   * @param {String} frame
+   * @return {cc.Size}
+   */
+  csize(frame) {
+    return this.createSprite(frame).getContentSize();
   },
   /**
    * Calculate halves of width and height of this sprite.

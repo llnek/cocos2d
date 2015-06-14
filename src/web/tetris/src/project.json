@@ -9,13 +9,12 @@
 
       "src/tetris/s/utils.js",
       "src/tetris/s/factory.js",
-      "src/tetris/s/supervisor.js",
-      "src/tetris/s/clearance.js",
-      "src/tetris/s/generator.js",
+      "src/tetris/s/stager.js",
+      "src/tetris/s/clear.js",
+      "src/tetris/s/generate.js",
       "src/tetris/s/motion.js",
-      "src/tetris/s/movement.js",
-      "src/tetris/s/rendering.js",
-      "src/tetris/s/resolution.js",
+      "src/tetris/s/move.js",
+      "src/tetris/s/resolve.js",
       "src/tetris/s/sysobjs.js",
 
       "src/tetris/p/hud.js",

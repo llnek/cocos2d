@@ -15,7 +15,7 @@
  * @requires n/cobjs
  * @requires n/gnodes
  * @requires s/utils
- * @module s/generator
+ * @module s/generate
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -31,11 +31,11 @@ R= sjs.ramda,
 undef,
 //////////////////////////////////////////////////////////////////////////
 /**
- * @class ShapeGenerator
+ * @class Generate
  */
-ShapeGenerator = sh.Ashley.sysDef({
+Generate = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/generator~ShapeGenerator
+   * @memberof module:s/generate~Generate
    * @method constructor
    * @param {Object} options
    */
@@ -43,7 +43,7 @@ ShapeGenerator = sh.Ashley.sysDef({
     this.state = options;
   },
   /**
-   * @memberof module:s/generator~ShapeGenerator
+   * @memberof module:s/generate~Generate
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -51,7 +51,7 @@ ShapeGenerator = sh.Ashley.sysDef({
     this.arena=null;
   },
   /**
-   * @memberof module:s/generator~ShapeGenerator
+   * @memberof module:s/generate~Generate
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -61,7 +61,7 @@ ShapeGenerator = sh.Ashley.sysDef({
     this.nextShape=null;
   },
   /**
-   * @memberof module:s/generator~ShapeGenerator
+   * @memberof module:s/generate~Generate
    * @method update
    * @param {Number} dt
    */
@@ -100,19 +100,8 @@ ShapeGenerator = sh.Ashley.sysDef({
                            this.nextShapeInfo);
     shape= utils.reifyShape(layer, node.collision.tiles, shape);
     if (!!shape) {} else {
-      //sh.main.removeAtlasAll('game-pics');
-      node.blocks.grid=[];
-      /*
-      R.forEach(function(g) {
-        R.forEach(function(z) {
-          if (!!z && !!z.sprite) {
-            sh.main.removeAtlasItem('game-pics',z.sprite);
-          }
-        },g);
-      },
-      node.blocks.grid);
-      */
       sjs.loggr.debug("game over.  you lose.");
+      node.blocks.grid=[];
       sh.fire('/hud/end');
     }
 
@@ -129,10 +118,8 @@ ShapeGenerator = sh.Ashley.sysDef({
     wb = ccsx.vbox(),
     shape,
     sz = (1 + info.model.dim) * csts.TILE,
-    //left = cw.x + 2 * csts.TILE,
-    //x = left + (wz.width - left - csts.TILE) * 0.5,
     x = cw.x + (wb.right - cw.x) * 0.5,
-    y = wb.top * 0.7;//cw.y;
+    y = wb.top * 0.7;
 
     x -= sz * 0.5;
     y += sz * 0.5;
@@ -158,22 +145,21 @@ ShapeGenerator = sh.Ashley.sysDef({
     };
   }
 
-});
-
+}, {
 /**
- * @memberof module:s/generator~ShapeGenerator
+ * @memberof module:s/generate~Generate
  * @property {Number} Priority
  */
-ShapeGenerator.Priority= xcfg.ftypes.Generate;
+Priority: xcfg.ftypes.Generate
+});
 
-/** @alias module:s/generator */
+/** @alias module:s/generate */
 const xbox = /** @lends xbox# */{
   /**
-   * @property {ShapeGenerator} ShapeGenerator
+   * @property {Generate} Generate
    */
-  ShapeGenerator: ShapeGenerator
+  Generate: Generate
 };
-
 sjs.merge(exports, xbox);
 /*@@
 return xbox;
