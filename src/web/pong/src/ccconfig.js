@@ -50,12 +50,12 @@ document.ccConfig = {
 
       '/public/ig/lib/game/pong/s/factory.js',
       '/public/ig/lib/game/pong/s/motion.js',
-      '/public/ig/lib/game/pong/s/supervisor.js',
-      '/public/ig/lib/game/pong/s/movement.js',
-      '/public/ig/lib/game/pong/s/networking.js',
-      '/public/ig/lib/game/pong/s/collision.js',
-      '/public/ig/lib/game/pong/s/resolution.js',
-      '/public/ig/lib/game/pong/s/rendering.js',
+      '/public/ig/lib/game/pong/s/stager.js',
+      '/public/ig/lib/game/pong/s/move.js',
+      '/public/ig/lib/game/pong/s/net.js',
+      '/public/ig/lib/game/pong/s/collide.js',
+      '/public/ig/lib/game/pong/s/resolve.js',
+      '/public/ig/lib/game/pong/s/render.js',
 
       '/public/ig/lib/game/pong/s/sysobjs.js',
 

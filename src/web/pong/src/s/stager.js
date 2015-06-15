@@ -14,7 +14,7 @@
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/odin
  * @requires n/gnodes
- * @module s/supervisor
+ * @module s/stager
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -29,21 +29,18 @@ csts= xcfg.csts,
 R = sjs.ramda,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @class GameSupervisor
- */
-GameSupervisor = sh.Ashley.sysDef({
+/** * @class Stager */
+Stager = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method constructor
    * @param {Object} options
    */
   constructor(options) {
     this.state= options;
-    this.inited=false;
   },
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -51,7 +48,7 @@ GameSupervisor = sh.Ashley.sysDef({
     this.nodeList=null;
   },
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -59,11 +56,12 @@ GameSupervisor = sh.Ashley.sysDef({
     this.nodeList= engine.getNodeList(gnodes.PaddleNode);
   },
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method update
    * @param {Number} dt
    */
   update(dt) {
+    if (ccsx.isTransitioning()) { return false; }
     if (! this.inited) {
       this.onceOnly();
       this.inited=true;
@@ -123,7 +121,8 @@ GameSupervisor = sh.Ashley.sysDef({
    * @private
    */
   fire(t, evt) {
-    if (('/touch/one/move' === t || '/mouse/move' === t) &&
+    if (('/touch/one/move' === t ||
+         '/mouse/move' === t) &&
         this.state.running) {}
     else
     { return; }
@@ -185,33 +184,33 @@ GameSupervisor = sh.Ashley.sysDef({
    * @private
    */
   initPaddleSize() {
-    return new cc.Sprite('#red_paddle.png').getContentSize();
+    return ccsx.csize('#red_paddle.png');
   },
   /**
    * @method initBallSize
    * @private
    */
   initBallSize() {
-    return new cc.Sprite('#pongball.png').getContentSize();
+    return ccsx.csize('#pongball.png');
   }
 
-});
-
+}, {
 /**
- * @memberof module:s/supervisor~GameSupervisor
+ * @memberof module:s/stager~Stager
  * @property {Number} Priority
  * @static
  */
-GameSupervisor.Priority = xcfg.ftypes.PreUpdate;
+Priority : xcfg.ftypes.PreUpdate
+});
 
 
-/** @alias module:s/supervisor */
+
+/** @alias module:s/stager */
 const xbox = /** @lends xbox# */{
-
   /**
-   * @property {GameSupervisor}  GameSupervisor
+   * @property {Stager}  Stager
    */
-  GameSupervisor : GameSupervisor
+  Stager : Stager
 };
 
 
