@@ -184,14 +184,14 @@ Stager = sh.Ashley.sysDef({
    * @private
    */
   initPaddleSize() {
-    return ccsx.csize('#red_paddle.png');
+    return ccsx.csize('red_paddle.png');
   },
   /**
    * @method initBallSize
    * @private
    */
   initBallSize() {
-    return ccsx.csize('#pongball.png');
+    return ccsx.csize('pongball.png');
   }
 
 }, {

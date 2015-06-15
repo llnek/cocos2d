@@ -14,7 +14,7 @@
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/odin
  * @requires n/gnodes
- * @module s/movement
+ * @module s/move
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -30,11 +30,11 @@ csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////
 /**
- * @class MovementSystem
+ * @class Move
  */
-MovementSystem = sh.Ashley.sysDef({
+Move = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/movements~MovementSystem
+   * @memberof module:s/moves~Move
    * @method constructor
    * @param {Object} options
    */
@@ -42,7 +42,7 @@ MovementSystem = sh.Ashley.sysDef({
     this.state = options;
   },
   /**
-   * @memberof module:s/movements~MovementSystem
+   * @memberof module:s/moves~Move
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -52,7 +52,7 @@ MovementSystem = sh.Ashley.sysDef({
     this.balls= null;
   },
   /**
-   * @memberof module:s/movements~MovementSystem
+   * @memberof module:s/moves~Move
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -62,7 +62,7 @@ MovementSystem = sh.Ashley.sysDef({
     this.balls= engine.getNodeList(gnodes.BallNode);
   },
   /**
-   * @memberof module:s/movements~MovementSystem
+   * @memberof module:s/moves~Move
    * @method update
    * @param {Number} dt
    */
@@ -74,7 +74,7 @@ MovementSystem = sh.Ashley.sysDef({
         !!bnode) {
 
       for (node= this.paddles.head; node; node=node.next) {
-        this.process(node, dt);
+        this.doit(node, dt);
       }
 
       for (node= this.fauxs.head; node; node=node.next) {
@@ -202,10 +202,10 @@ MovementSystem = sh.Ashley.sysDef({
     b.sprite.setPosition(rc.x, rc.y);
   },
   /**
-   * @method process
+   * @method doit
    * @private
    */
-  process(node, dt) {
+  doit(node, dt) {
     let p= node.paddle,
     s= p.speed * dt,
     m= node.motion,
@@ -329,21 +329,22 @@ MovementSystem = sh.Ashley.sysDef({
     }
   }
 
-});
+}, {
 
 /**
- * @memberof module:s/movement~MovementSystem
+ * @memberof module:s/move~Move
  * @property {Number} Priority
  */
-MovementSystem.Priority = xcfg.ftypes.Move;
+Priority : xcfg.ftypes.Move
+});
 
-/** @alias module:s/movement */
+
+/** @alias module:s/move */
 const xbox = /** @lends xbox# */{
-
   /**
-   * @property {MovementSystem}  MovementSystem
+   * @property {Move}  Move
    */
-  MovementSystem : MovementSystem
+  Move : Move
 };
 
 

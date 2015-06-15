@@ -15,7 +15,7 @@
  * @requires n/gnodes
  * @requires zotohlab/asx/odin
  * @requires Rx
- * @module s/networking
+ * @module s/net
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -31,21 +31,18 @@ csts= xcfg.csts,
 R=sjs.ramda,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @class NetworkSystem
- */
-NetworkSystem = sh.Ashley.sysDef({
+/** * @class Net */
+Net = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/networking~NetworkSystem
+   * @memberof module:s/net~Net
    * @method constructor
    * @param {Object} options
    */
   constructor(options) {
     this.state = options;
-    this.inited=false;
   },
   /**
-   * @memberof module:s/networking~NetworkSystem
+   * @memberof module:s/net~Net
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -57,7 +54,7 @@ NetworkSystem = sh.Ashley.sysDef({
     this.evQ=null;
   },
   /**
-   * @memberof module:s/networking~NetworkSystem
+   * @memberof module:s/net~Net
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -65,14 +62,38 @@ NetworkSystem = sh.Ashley.sysDef({
     this.paddles= engine.getNodeList(gnodes.PaddleNode);
     this.balls= engine.getNodeList(gnodes.BallNode);
     this.fauxs= engine.getNodeList(gnodes.FauxPaddleNode);
+    this.evQ=[];
+  },
+  /**
+   * @memberof module:s/net~Net
+   * @method update
+   * @param {Number} dt
+   */
+  update(dt) {
+    if (!this.inited) {
+      this.onceOnly();
+      this.inited=true;
+    }
+    else {
+      this.doit(dt);
+    }
+  },
+  /**
+   * @method doit
+   * @private
+   */
+  doit(dt) {
+    const evt = this.evQ.length > 0 ? this.evQ.shift() : undef;
+    if (!!evt) {
+      this.onevent(evt.event);
+    }
   },
   /**
    * @method onceOnly
    * @private
    */
   onceOnly() {
-    this.evQ=[];
-    if (this.state.wsock) {
+    if (sjs.isobj(this.state.wsock)) {
       sjs.loggr.debug("reply to server: session started ok");
       const src= R.pick(['framespersec',
                          'world',
@@ -82,14 +103,14 @@ NetworkSystem = sh.Ashley.sysDef({
                          'p1',
                          'p2',
                          'numpts'], this.state);
-      this.state.wsock.unsubscribeAll();
+      this.state.wsock.cancenlAll();
       this.state.wsock.send({
         source: sjs.jsonfy(src),
         type: evts.MSG_SESSION,
         code: evts.STARTED
       });
       this.stream=Rx.Observable.create( obj => {
-        this.state.wsock.subscribeAll((t,e)=>{
+        this.state.wsock.listenAll(e => {
           obj.onNext({group:'net', event: e});
         });
       });
@@ -101,22 +122,6 @@ NetworkSystem = sh.Ashley.sysDef({
         this.evQ.push(msg);
       }
     });
-  },
-  /**
-   * @memberof module:s/networking~NetworkSystem
-   * @method update
-   * @param {Number} dt
-   */
-  update(dt) {
-    if (!this.inited) {
-      this.onceOnly();
-      this.inited=true;
-    }
-    else
-    if (this.evQ.length > 0) {
-      const evt = this.evQ.shift();
-      this.onevent(evt.event);
-    }
   },
   /**
    * Get an odin event, first level callback
@@ -308,22 +313,22 @@ NetworkSystem = sh.Ashley.sysDef({
     node.lastpos.lastDir = dir;
   }
 
-});
+}, {
 
 /**
- * @memberof module:s/networking~NetworkSystem
+ * @memberof module:s/net~Net
  * @property {Number} Priority
  */
-NetworkSystem.Priority = xcfg.ftypes.NetPlay;
+Priority : xcfg.ftypes.NetPlay
+});
 
 
-/** @alias module:s/networking */
+/** @alias module:s/net */
 const xbox = /** @lends xbox# */ {
-
   /**
-   * @property {NetworkSystem} NetworkSystem
+   * @property {Net} Net
    */
-  NetworkSystem : NetworkSystem
+  Net : Net
 };
 
 

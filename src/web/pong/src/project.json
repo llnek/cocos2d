@@ -14,7 +14,6 @@
       "src/pong/s/net.js",
       "src/pong/s/collide.js",
       "src/pong/s/resolve.js",
-      "src/pong/s/render.js",
       "src/pong/s/sysobjs.js",
 
       "src/pong/p/hud.js",

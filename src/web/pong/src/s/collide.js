@@ -13,7 +13,7 @@
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
  * @requires n/gnodes
- * @module s/collision
+ * @module s/collide
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -26,11 +26,11 @@ csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////
 /**
- * @class CollisionSystem
+ * @class Collide
  */
-CollisionSystem = sh.Ashley.sysDef({
+Collide = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/collision~CollisionSystem
+   * @memberof module:s/collide~Collide
    * @method constructor
    * @param {Object} options
    */
@@ -38,7 +38,7 @@ CollisionSystem = sh.Ashley.sysDef({
     this.state = options;
   },
   /**
-   * @memberof module:s/collision~CollisionSystem
+   * @memberof module:s/collide~Collide
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -48,7 +48,7 @@ CollisionSystem = sh.Ashley.sysDef({
     this.balls=null;
   },
   /**
-   * @memberof module:s/collision~CollisionSystem
+   * @memberof module:s/collide~Collide
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -58,7 +58,7 @@ CollisionSystem = sh.Ashley.sysDef({
     this.balls= engine.getNodeList(gnodes.BallNode);
   },
   /**
-   * @memberof module:s/collision~CollisionSystem
+   * @memberof module:s/collide~Collide
    * @method update
    * @param {Number} dt
    */
@@ -120,22 +120,22 @@ CollisionSystem = sh.Ashley.sysDef({
     sh.sfxPlay(node.paddle.snd);
   }
 
-});
+}, {
 
 /**
- * @memberof module:s/collision~CollisionSystem
+ * @memberof module:s/collide~Collide
  * @property {Number} Priority
  */
-CollisionSystem.Priority = xcfg.ftypes.Collision;
+Priority : xcfg.ftypes.Collide
+});
 
 
-/** @alias module:s/collision */
+/** @alias module:s/collide */
 const xbox = /** @lends xbox# */{
-
   /**
-   * @property {CollisionSystem} CollisionSystem
+   * @property {Collide} Collide
    */
-  CollisionSystem : CollisionSystem
+  Collide : Collide
 };
 
 

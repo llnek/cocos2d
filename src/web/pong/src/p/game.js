@@ -52,8 +52,6 @@ GameLayer = scenes.XGameLayer.extend({
    */
   pkInput() {
     ccsx.onKeyPolls(this.keyboard);
-    //ccsx.onTouchOne(this.ebus);
-    //ccsx.onMouse(this.ebus);
   },
   /**
    * @method replay
@@ -86,31 +84,15 @@ GameLayer = scenes.XGameLayer.extend({
       }
     }, this.options.ppids);
 
-    // start with a clean slate
+    this.initEngine(sobjs.systems, sobjs.entityFactory);
     this.reset(newFlag);
-    this.newFlow();
-
-    sh.factory= new sobjs.Factory(this.engine);
-    this.options.world = this.getEnclosureBox();
-    this.options.running=true;
-    this.options.poked=false;
-
     this.initPlayers();
-
-    R.forEach( z => {
-      this.engine.addSystem(new (z)(this.options), z.Priority);
-    },
-    [ sobjs.Supervisor,
-      sobjs.Networking,
-      sobjs.Motions,
-      sobjs.Movements,
-      sobjs.Resolution,
-      sobjs.Collisions,
-      sobjs.Rendering] );
-
     this.getHUD().regoPlayers(csts.P1_COLOR,p1ids,
                               csts.P2_COLOR,p2ids);
 
+    this.options.world = this.getEnclosureBox();
+    this.options.running=true;
+    this.options.poked=false;
   },
   /**
    * @method onNewGame
@@ -209,14 +191,6 @@ GameLayer = scenes.XGameLayer.extend({
     this.options.running=false;
   },
   /**
-   * @method setGameMode
-   * @protected
-   */
-  setGameMode(mode) {
-    this._super(mode);
-    this.getHUD().setGameMode(mode);
-  },
-  /**
    * @method getEnclosureBox
    * @private
    */
@@ -244,24 +218,24 @@ const xbox = /** @lends xbox# */{
       huds.HUDLayer
     ]).reify(options);
 
-    scene.onmsg('/hud/showmenu', (t,msg) => {
+    scene.onmsg('/hud/showmenu', msg => {
       scenes.showMenu();
     }).
-    onmsg('/game/restart', (t,msg) => {
+    onmsg('/game/restart', msg => {
       sh.main.play(false);
     }).
-    onmsg('/game/stop', (t,msg) => {
+    onmsg('/game/stop', msg => {
     }).
-    onmsg('/hud/replay', (t,msg) => {
+    onmsg('/hud/replay', msg => {
       sh.main.replay();
     }).
-    onmsg('/hud/score/update', (t,msg) => {
+    onmsg('/hud/score/update', msg => {
       sh.main.onWinner(msg.color, msg.score);
     }).
-    onmsg('/hud/score/sync', (t,msg) => {
+    onmsg('/hud/score/sync', msg => {
       sh.main.updatePoints(msg.points);
     }).
-    onmsg('/hud/end', (t,msg) => {
+    onmsg('/hud/end', msg => {
       sh.main.doDone(msg.winner);
     });
 

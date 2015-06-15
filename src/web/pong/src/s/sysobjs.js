@@ -10,66 +10,46 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 "use strict";/**
- * @requires cherimoia/skaro
+ * @requires zotohlab/asx/asterix
  * @requires s/factory
- * @requires s/collision
- * @requires s/networking
- * @requires s/rendering
- * @requires s/resolution
- * @requires s/supervisor
+ * @requires s/collide
+ * @requires s/net
+ * @requires s/resolve
+ * @requires s/stager
  * @requires s/motion
- * @requires s/movement
+ * @requires s/move
  * @module s/sysobjs
  */
 
-import sjs from 'cherimoia/skaro';
+import sh from 'zotohlab/asx/asterix';
 import f from 's/factory';
-import co from 's/collision';
-import net from 's/networking';
-import rd from 's/rendering';
-import rs from 's/resolution';
-import v from 's/supervisor';
+import co from 's/collide';
+import net from 's/net';
+import rs from 's/resolve';
+import v from 's/stager';
 import mo from 's/motion';
-import mv from 's/movement';
+import mv from 's/move';
 
 
+const sjs= sh.skarojs,
 /** @alias module:s/sysobjs */
-const xbox= /** @lends xbox# */{
+xbox= /** @lends xbox# */{
 
   /**
-   * @property {Factory} Factory
+   * @property {Array} systems
    */
-  Factory     : f.EntityFactory,
+  systems: [ co.Collide, net.Net, rs.Resolve, v.Stager, mo.Motions, mv.Move],
+
   /**
-   * @property {Collisions} Collisions
+   * @method entityFactory
+   * @param {Ash.Engine}
+   * @return {EntityFactory}
    */
-  Collisions        : co.CollisionSystem,
-  /**
-   * @property {Networking} Networking
-   */
-  Networking        : net.NetworkSystem,
-  /**
-   * @property {Rendering} Rendering
-   */
-  Rendering         : rd.RenderSystem,
-  /**
-   * @property {Resolution} Resolution
-   */
-  Resolution        : rs.Resolution,
-  /**
-   * @property {Supervisor} Supervisor
-   */
-  Supervisor        : v.GameSupervisor,
-  /**
-   * @property {Motions} Motions
-   */
-  Motions           : mo.MotionCtrlSystem,
-  /**
-   * @property {Movements} Movements
-   */
-  Movements         : mv.MovementSystem
+  entityFactory(engine) {
+    sh.factory = new f.EntityFactory(engine);
+    return sh.factory;
+  }
 };
-
 
 
 sjs.merge(exports, xbox);

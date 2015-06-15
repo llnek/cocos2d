@@ -25,12 +25,10 @@ xcfg = sh.xcfg,
 csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @class MotionCtrlSystem
- */
-MotionCtrlSystem = sh.Ashley.sysDef({
+/** * @class Motions */
+Motions = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/motion~MotionCtrlSystem
+   * @memberof module:s/motion~Motions
    * @method constructor
    * @param {Object} options
    */
@@ -38,7 +36,7 @@ MotionCtrlSystem = sh.Ashley.sysDef({
     this.state = options;
   },
   /**
-   * @memberof module:s/motion~MotionCtrlSystem
+   * @memberof module:s/motion~Motions
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -47,7 +45,7 @@ MotionCtrlSystem = sh.Ashley.sysDef({
     this.evQ=null;
   },
   /**
-   * @memberof module:s/motion~MotionCtrlSystem
+   * @memberof module:s/motion~Motions
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -61,21 +59,19 @@ MotionCtrlSystem = sh.Ashley.sysDef({
    * @param {Number} dt
    */
   update(dt) {
-    for (let node= this.nodeList.head; node; node=node.next) {
-      this.process(node,dt);
+    const evt = this.evQ.length > 0 ? this.evQ.shift() : undef;
+    if (this.state.running) {
+      for (let node= this.nodeList.head; node; node=node.next) {
+        this.doit(node, evt, dt);
+      }
     }
   },
   /**
-   * @process
+   * @method doit
    * @private
    */
-  process(node, dt) {
-    let evt;
-    if (this.evQ.length > 0) {
-      evt = this.evQ.shift();
-    }
-    if (this.state.running &&
-       !!node) {
+  doit(node, evt, dt) {
+    if ( !!node) {
       if (!!evt) {
         this.ongui(node,evt,dt);
       }
@@ -109,23 +105,24 @@ MotionCtrlSystem = sh.Ashley.sysDef({
 
   }
 
-});
+}, {
 
 /**
- * @memberof module:s/motion~MotionCtrlSystem
+ * @memberof module:s/motion~Motions
  * @property {Number} Priority
  * @static
  */
-MotionCtrlSystem.Priority = xcfg.ftypes.Motion;
+Priority : xcfg.ftypes.Motion
+});
 
 
 /** @alias module:s/motion */
 const xbox = /** @lends xbox# */{
 
   /**
-   * @property {MotionCtrlSystem} MotionCtrlSystem
+   * @property {Motions} Motions
    */
-  MotionCtrlSystem : MotionCtrlSystem
+  Motions : Motions
 };
 
 sjs.merge(exports, xbox);

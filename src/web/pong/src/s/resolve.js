@@ -13,7 +13,7 @@
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
  * @requires n/gnodes
- * @module s/resolution
+ * @module s/resolve
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -25,12 +25,10 @@ xcfg = sh.xcfg,
 csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @class Resolution
- */
-Resolution = sh.Ashley.sysDef({
+/** * @class Resolve */
+Resolve = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/resolution~Resolution
+   * @memberof module:s/resolve~Resolve
    * @method constructor
    * @param {Object} options
    */
@@ -38,7 +36,7 @@ Resolution = sh.Ashley.sysDef({
     this.state = options;
   },
   /**
-   * @memberof module:s/resolution~Resolution
+   * @memberof module:s/resolve~Resolve
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -48,7 +46,7 @@ Resolution = sh.Ashley.sysDef({
     this.balls=null;
   },
   /**
-   * @memberof module:s/resolution~Resolution
+   * @memberof module:s/resolve~Resolve
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -59,7 +57,7 @@ Resolution = sh.Ashley.sysDef({
     this.engine=engine;
   },
   /**
-   * @memberof module:s/resolution~Resolution
+   * @memberof module:s/resolve~Resolve
    * @method update
    * @param {Number} dt
    */
@@ -143,22 +141,23 @@ Resolution = sh.Ashley.sysDef({
     }
   }
 
-});
+}, {
 
 /**
- * @memberof module:s/resolution~Resolution
+ * @memberof module:s/resolve~Resolve
  * @property {Number} Priority
  */
-Resolution.Priority = xcfg.ftypes.Resolve;
+Priority : xcfg.ftypes.Resolve
+});
 
 
-/** @alias module:s/resolution */
+
+/** @alias module:s/resolve */
 const xbox = /** @lends xbox# */{
-
   /**
-   * @property {Resolution}  Resolution
+   * @property {Resolve}  Resolve
    */
-  Resolution : Resolution
+  Resolve : Resolve
 };
 
 

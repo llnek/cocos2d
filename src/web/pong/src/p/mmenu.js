@@ -28,10 +28,7 @@ R=sjs.ramda,
 csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////////
-/**
- * @extends module:zotohlab/asx/scenes.XMenuLayer
- * @class MainMenuLayer
- */
+/** * @class MainMenuLayer */
 MainMenuLayer = scenes.XMenuLayer.extend({
   /**
    * @method title
@@ -56,25 +53,25 @@ MainMenuLayer = scenes.XMenuLayer.extend({
   onplaynet(msg) {
     const net = sh.protos[sh.ptypes.online],
     game = sh.protos[sh.ptypes.game],
-    mm = sh.protos[sh.ptypes.mmenu],
-    dir=cc.director;
+    mm = sh.protos[sh.ptypes.mmenu];
+
     msg.onback=() => {
-      dir.runScene( mm.reify());
+      ccsx.runScene( mm.reify());
     };
     msg.yes= (wss,pnum,startmsg) => {
       const m= sjs.mergeEx(R.omit(['yes','onback'], msg),
                            { wsock: wss, pnum: pnum });
       m.ppids = startmsg.ppids;
-      dir.runScene( game.reify(m));
+      ccsx.runScene( game.reify(m));
     }
-    dir.runScene(net.reify(msg));
+    ccsx.runScene(net.reify(msg));
   },
   /**
    * @method onplay
    * @private
    */
   onplay(msg) {
-    cc.director.runScene(sh.protos[sh.ptypes.game].reify(msg));
+    ccsx.runScene(sh.protos[sh.ptypes.game].reify(msg));
   },
   /**
    * @method setup

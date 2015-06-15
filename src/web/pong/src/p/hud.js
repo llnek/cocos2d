@@ -25,10 +25,7 @@ xcfg = sh.xcfg,
 csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @extends module:zotohlab/asx/scenes.XGameHUDLayer
- * @class HUDLayer
- */
+/** * @class HUDLayer */
 HUDLayer = scenes.XGameHUDLayer.extend({
   /**
    * @memberof module:p/hud~HUDLayer
@@ -41,7 +38,6 @@ HUDLayer = scenes.XGameHUDLayer.extend({
 
     this._super(options);
     this.scores=  {};
-    this.mode= 0;
     this.p2Long= '';
     this.p1Long= '';
     this.p2ID= '';
@@ -67,13 +63,6 @@ HUDLayer = scenes.XGameHUDLayer.extend({
         sh.fire('/hud/showmenu');
       }
     };
-  },
-  /**
-   * @method setGameMode
-   * @protected
-   */
-  setGameMode(mode) {
-    this.mode=mode;
   },
 
   initAtlases: sjs.NILFUNC,

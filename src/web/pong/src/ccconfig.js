@@ -55,7 +55,6 @@ document.ccConfig = {
       '/public/ig/lib/game/pong/s/net.js',
       '/public/ig/lib/game/pong/s/collide.js',
       '/public/ig/lib/game/pong/s/resolve.js',
-      '/public/ig/lib/game/pong/s/render.js',
 
       '/public/ig/lib/game/pong/s/sysobjs.js',
 
