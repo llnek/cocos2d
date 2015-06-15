@@ -25,12 +25,10 @@ xcfg = sh.xcfg,
 csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @class MotionControl
- */
-MotionControl = sh.Ashley.sysDef({
+/** * @class Motions */
+Motions = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/motion~MotionControl
+   * @memberof module:s/motion~Motions
    * @method constructor
    * @param {Object} options
    */
@@ -38,7 +36,7 @@ MotionControl = sh.Ashley.sysDef({
     this.state= options;
   },
   /**
-   * @memberof module:s/motion~MotionControl
+   * @memberof module:s/motion~Motions
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -46,7 +44,7 @@ MotionControl = sh.Ashley.sysDef({
     this.paddleMotions = undef;
   },
   /**
-   * @memberof module:s/motion~MotionControl
+   * @memberof module:s/motion~Motions
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -54,7 +52,7 @@ MotionControl = sh.Ashley.sysDef({
     this.paddleMotions = engine.getNodeList(gnodes.PaddleMotionNode);
   },
   /**
-   * @memberof module:s/motion~MotionControl
+   * @memberof module:s/motion~Motions
    * @method update
    * @param {Number} dt
    */
@@ -71,22 +69,6 @@ MotionControl = sh.Ashley.sysDef({
    * @private
    */
   scanInput(node, dt) {
-    if (cc.sys.capabilities['keyboard'] &&
-        !cc.sys.isNative) {
-      this.processKeys(node, dt);
-    }
-    else
-    if (cc.sys.capabilities['mouse']) {
-    }
-    else
-    if (cc.sys.capabilities['touches']) {
-    }
-  },
-  /**
-   * @method processKeys
-   * @private
-   */
-  processKeys(node, dt) {
     const s= node.paddle,
     m= node.motion;
 
@@ -98,20 +80,23 @@ MotionControl = sh.Ashley.sysDef({
     }
   }
 
-});
+}, {
 
 /**
- * @memberof module:s/motion~MotionControl
+ * @memberof module:s/motion~Motions
  * @property {Number} Priority
  */
-MotionControl.Priority = xcfg.ftypes.Motion;
+Priority : xcfg.ftypes.Motion
+
+});
+
 
 /** @alias module:s/motion */
 const xbox = /** @lends xbox# */{
   /**
-   * @property {MotionControl} MotionControl
+   * @property {Motions} Motions
    */
-  MotionControl : MotionControl
+  Motions : Motions
 };
 
 

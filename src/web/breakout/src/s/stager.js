@@ -13,7 +13,7 @@
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
  * @requires n/gnodes
- * @module s/supervisor
+ * @module s/stager
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -26,21 +26,18 @@ xcfg = sh.xcfg,
 csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @class GameSupervisor
- */
-GameSupervisor = sh.Ashley.sysDef({
+/** * @class Stager */
+Stager = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method constructor
    * @param {Object} options
    */
   constructor(options) {
     this.state= options;
-    this.inited=false;
   },
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -48,7 +45,7 @@ GameSupervisor = sh.Ashley.sysDef({
     this.paddleMotions=null;
   },
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -56,29 +53,30 @@ GameSupervisor = sh.Ashley.sysDef({
     this.paddles = engine.getNodeList(gnodes.PaddleMotionNode);
   },
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method update
    * @param {Number} dt
    */
   update(dt) {
+    if (ccsx.isTransitioning()) { return false; }
     if (! this.inited) {
       this.onceOnly();
       this.inited=true;
     }
   },
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method initBrickSize
    */
   initBrickSize() {
-    this.state.candySize= ccsx.createSprite('red_candy.png').getContentSize();
+    this.state.candySize= ccsx.csize('red_candy.png');
   },
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method initBallSize
    */
   initBallSize() {
-    this.state.ballSize= ccsx.createSprite('ball.png').getContentSize();
+    this.state.ballSize= ccsx.csize('ball.png');
   },
   /**
    * @method onceOnly
@@ -100,7 +98,8 @@ GameSupervisor = sh.Ashley.sysDef({
    * @private
    */
   fire(t, evt) {
-    if ('/touch/one/move' === t || '/mouse/move' === t) {} else {
+    if ('/touch/one/move' === t ||
+        '/mouse/move' === t) {} else {
       return;
     }
     if (this.state.running &&
@@ -117,21 +116,24 @@ GameSupervisor = sh.Ashley.sysDef({
     }
   }
 
-});
+}, {
+
 
 /**
- * @memberof module:s/supervisor~GameSupervisor
+ * @memberof module:s/stager~Stager
  * @property {Number} Priority
  */
-GameSupervisor.Priority= xcfg.ftypes.PreUpdate;
+Priority: xcfg.ftypes.PreUpdate
+});
 
-/** @alias module:s/supervisor */
+
+/** @alias module:s/stager */
 const xbox = /** @lends xbox# */{
 
   /**
-   * @property {GameSupervisor} GameSupervisor
+   * @property {Stager} Stager
    */
-  GameSupervisor : GameSupervisor
+  Stager : Stager
 };
 
 

@@ -751,7 +751,6 @@ const XGameHUDLayer = XLayer.extend({
  * @class XGameLayer
  */
 const XGameLayer = XLayer.extend({
-
   /**
    * @memberof module:zotohlab/asx/scenes~XGameLayer
    * @method pkInput
@@ -762,7 +761,15 @@ const XGameLayer = XLayer.extend({
     //ccsx.onTouchOne(this.ebus);
     //ccsx.onMouse(this.ebus);
   },
-
+  /**
+   * @memberof module:zotohlab/asx/scenes~XGameLayer
+   * @method getLCfg
+   * @return {Object}
+   */
+  getLCfg() {
+    const k= Number(this.level).toString();
+    return xcfg['levels'][k]['cfg'];
+  },
   /**
    * @memberof module:zotohlab/asx/scenes~XGameLayer
    * @method signal

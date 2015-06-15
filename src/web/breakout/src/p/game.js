@@ -46,8 +46,6 @@ GameLayer = scenes.XGameLayer.extend({
    */
   pkInput() {
     ccsx.onKeyPolls(this.keyboard);
-    //ccsx.onTouchOne(this.ebus);
-    //ccsx.onMouse(this.ebus);
   },
   /**
    * @method reset
@@ -84,8 +82,7 @@ GameLayer = scenes.XGameLayer.extend({
    * @private
    */
   getEnclosureBox() {
-    const csts= sh.xcfg.csts,
-    wz= ccsx.vrect();
+    const wz= ccsx.vrect();
     return { bottom: csts.TILE,
              top: wz.height - csts.TOP * csts.TILE,
              left: csts.TILE,
@@ -122,22 +119,11 @@ GameLayer = scenes.XGameLayer.extend({
    */
   play(newFlag) {
 
+    this.initEngine(sobjs.systems, sobjs.entityFactory);
     this.reset(newFlag);
-    this.newFlow();
 
-    sh.factory= new sobjs.Factory(this.engine,
-                                  this.options);
     this.options.world= this.getEnclosureBox();
     this.options.running=true;
-
-    R.forEach( z => {
-      this.engine.addSystem(new (z)(this.options), z.Priority);
-    },
-    [ sobjs.Supervisor,
-      sobjs.Motions,
-      sobjs.MovementPaddle,
-      sobjs.MovementBall,
-      sobjs.Collisions]);
   },
   /**
    * @method onEarnScore
@@ -176,19 +162,19 @@ const xbox = /** @lends xbox# */{
       huds.HUDLayer
     ]).reify(options);
 
-    scene.onmsg('/game/bricks/killed', (t, msg) => {
+    scene.onmsg('/game/bricks/killed', msg => {
       sh.main.onBrickKilled(msg);
     }).
-    onmsg('/game/players/killed', (t, msg) => {
+    onmsg('/game/players/killed', msg => {
       sh.main.onPlayerKilled(msg);
     }).
-    onmsg('/game/players/earnscore', (t, msg) => {
+    onmsg('/game/players/earnscore', msg => {
       sh.main.onEarnScore(msg);
     }).
-    onmsg('/hud/showmenu',(t,msg) => {
+    onmsg('/hud/showmenu', msg => {
       scenes.showMenu();
     }).
-    onmsg('/hud/replay',(t,msg) => {
+    onmsg('/hud/replay', msg => {
       sh.main.replay();
     });
 

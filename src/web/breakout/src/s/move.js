@@ -13,7 +13,7 @@
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
  * @requires n/gnodes
- * @module s/moveball
+ * @module s/move
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -25,12 +25,10 @@ xcfg = sh.xcfg,
 csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @class MovementBall
- */
-MovementBall = sh.Ashley.sysDef({
+/** * @class Move */
+Move = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/moveball~MovementBall
+   * @memberof module:s/move~Move
    * @method constructor
    * @param {Object} options
    */
@@ -38,32 +36,41 @@ MovementBall = sh.Ashley.sysDef({
     this.state= options;
   },
   /**
-   * @memberof module:s/moveball~MovementBall
+   * @memberof module:s/move~Move
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
   removeFromEngine(engine) {
-    this.ballMotions = undef;
+    this.paddleMotions = null;
+    this.ballMotions = null;
   },
   /**
-   * @memberof module:s/moveball~MovementBall
+   * @memberof module:s/move~Move
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
   addToEngine(engine) {
-    this.ballMotions = engine.getNodeList( gnodes.BallMotionNode)
+    this.ballMotions = engine.getNodeList( gnodes.BallMotionNode);
+    this.paddleMotions = engine.getNodeList(gnodes.PaddleMotionNode);
   },
   /**
-   * @memberof module:s/moveball~MovementBall
+   * @memberof module:s/move~Move
    * @method update
    * @param {Number} dt
    */
   update(dt) {
-    const node=this.ballMotions.head;
+    const balls=this.ballMotions.head,
+    pds = this.paddleMotions.head;
 
-    if (this.state.running &&
-       !!node) {
-      this.processBallMotions(node, dt);
+    if (this.state.running) {
+
+      if (!!balls) {
+        this.processBallMotions(balls, dt);
+      }
+
+      if (!!pds) {
+        this.processPaddleMotions(pds,dt);
+      }
     }
   },
   /**
@@ -86,25 +93,68 @@ MovementBall = sh.Ashley.sysDef({
     if (rc.hit) {
       v.vel.x = rc.vx;
       v.vel.y = rc.vy;
-    } else {
     }
     b.sprite.setPosition(rc.x,rc.y);
+  },
+  /**
+   * @method processPaddleMotions
+   * @private
+   */
+  processPaddleMotions(node,dt) {
+    let motion = node.motion,
+    sv = node.velocity,
+    pad= node.paddle,
+    pos = pad.sprite.getPosition(),
+    x= pos.x,
+    y= pos.y;
+
+    if (motion.right) {
+      x = pos.x + dt * sv.vel.x;
+    }
+
+    if (motion.left) {
+      x = pos.x - dt * sv.vel.x;
+    }
+
+    pad.sprite.setPosition(x,y);
+    this.clamp(pad);
+
+    motion.right=false;
+    motion.left=false;
+  },
+  /**
+   * @method clamp
+   * @private
+   */
+  clamp(pad) {
+    const sz= pad.sprite.getContentSize(),
+    pos= pad.sprite.getPosition(),
+    wz = ccsx.vrect();
+
+    if (ccsx.getRight(pad.sprite) > wz.width - csts.TILE) {
+      pad.sprite.setPosition(wz.width - csts.TILE - sh.hw(sz), pos.y);
+    }
+    if (ccsx.getLeft(pad.sprite) < csts.TILE) {
+      pad.sprite.setPosition( csts.TILE + sh.hw(sz), pos.y);
+    }
   }
 
-});
+}, {
 
 /**
- * @memberof module:s/moveball~MovementBall
+ * @memberof module:s/move~Move
  * @property {Number} Priority
  */
-MovementBall.Priority = xcfg.ftypes.Move;
+Priority : xcfg.ftypes.Move
+});
 
-/** @alias module:s/moveball */
+
+/** @alias module:s/move */
 const xbox = /** @lends xbox# */{
   /**
-   * @property {MovementBall} MovementBall
+   * @property {Move} Move
    */
-  MovementBall : MovementBall
+  Move : Move
 };
 
 

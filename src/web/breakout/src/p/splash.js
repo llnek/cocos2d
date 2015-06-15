@@ -25,10 +25,7 @@ xcfg = sh.xcfg,
 csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @extends module:zotohlab/asx/scenes.XLayer
- * @class SplashLayer
- */
+/** * @class SplashLayer */
 SplashLayer = scenes.XLayer.extend({
   /**
    * @method setup
@@ -61,10 +58,10 @@ SplashLayer = scenes.XLayer.extend({
    */
   onplay() {
     const ss= sh.protos[sh.ptypes.start],
-    mm= sh.protos[sh.ptypes.mmenu],
-    dir = cc.director;
-    dir.runScene( mm.reify({
-      onback() { dir.runScene( ss.reify() ); }
+    mm= sh.protos[sh.ptypes.mmenu];
+
+    ccsx.runScene( mm.reify({
+      onback() { ccsx.runScene( ss.reify() ); }
     }));
   }
 

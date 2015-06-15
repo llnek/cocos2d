@@ -10,54 +10,43 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 "use strict";/**
- * @requires cherimoia/skaro
- * @requires s/collision
+ * @requires zotohlab/asx/asterix
+ * @requires s/collide
  * @requires s/factory
  * @requires s/motion
- * @requires s/moveball
- * @requires s/movepaddle
- * @requires s/supervisor
+ * @requires s/move
+ * @requires s/stager
  * @module s/sysobjs
  */
 
-import sjs from 'cherimoia/skaro';
-import co from 's/collision';
+import sh from 'zotohlab/asx/asterix';
+import co from 's/collide';
 import f from 's/factory';
 import mo from 's/motion';
-import mb from 's/moveball';
-import mp from 's/movepaddle';
-import v from 's/supervisor';
+import mv from 's/move';
+import v from 's/stager';
 
 
+const sjs= sh.skarojs,
 /** @alias module:s/sysobjs */
-const xbox= /** @lends xbox# */{
+xbox= /** @lends xbox# */{
 
   /**
-   * @property {Collisions} Collisions
+   * @property {Array} systems
    */
-  Collisions        : co.CollisionSystem,
+  systems: [ co.Collide, mo.Motions, mv.Move, v.Stager],
+
   /**
-   * @property {EntityFactory} Factory
+   * @method entityFactory
+   * @param {Ash.Engine}
+   * @rerturn {EntityFactory}
    */
-  Factory     : f.EntityFactory,
-  /**
-   * @property {Motions} Motions
-   */
-  Motions           : mo.MotionControl,
-  /**
-   * @property {MovementBall} MovementBall
-   */
-  MovementBall      : mb.MovementBall,
-  /**
-   * @property {MovementPaddle} MovementPaddle
-   */
-  MovementPaddle    : mp.MovementPaddle,
-  /**
-   * @property {Supervisor} Supervisor
-   */
-  Supervisor        : v.GameSupervisor
+  entityFactory(engine,options) {
+    sh.factory = new f.EntityFactory(engine,options);
+    return sh.factory;
+  }
+
 };
-
 
 
 sjs.merge(exports, xbox);

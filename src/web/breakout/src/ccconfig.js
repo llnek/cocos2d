@@ -51,10 +51,9 @@ document.ccConfig = {
 
 '/public/ig/lib/game/breakout/s/factory.js',
 '/public/ig/lib/game/breakout/s/motion.js',
-'/public/ig/lib/game/breakout/s/movepaddle.js',
-'/public/ig/lib/game/breakout/s/moveball.js',
-'/public/ig/lib/game/breakout/s/collision.js',
-'/public/ig/lib/game/breakout/s/supervisor.js',
+'/public/ig/lib/game/breakout/s/move.js',
+'/public/ig/lib/game/breakout/s/collide.js',
+'/public/ig/lib/game/breakout/s/stager.js',
 '/public/ig/lib/game/breakout/s/sysobjs.js',
 
   '/public/ig/lib/game/breakout/p/hud.js',

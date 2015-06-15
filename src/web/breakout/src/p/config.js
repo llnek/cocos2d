@@ -39,10 +39,6 @@ xbox = sjs.merge( xcfg, {
     CANDIES: ['red_candy','amber_candy','white_candy','green_candy','yellow_candy','blue_candy',
               'purple_plus_candy', 'purple_minus_candy'],
 
-    LEVELS: {
-      "1": [ 0, 1, 5, 3, 4]
-    },
-
     ROWS: 5,
     COLS: 9,
     TOP: 6,
@@ -85,7 +81,8 @@ xbox = sjs.merge( xcfg, {
       'images' : {
       },
       'sprites' : {
-      }
+      },
+      'cfg' : [ 0, 1, 5, 3, 4]
     }
   },
 

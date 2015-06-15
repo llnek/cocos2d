@@ -42,15 +42,6 @@ Aliens = sh.Ashley.sysDef({
   },
   /**
    * @memberof module:s/aliens~Aliens
-   * @method getLCfg
-   * @return {Object}
-   */
-  getLCfg() {
-    const k= Number(sh.main.level).toString();
-    return xcfg['levels'][k]['cfg'];
-  },
-  /**
-   * @memberof module:s/aliens~Aliens
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -85,7 +76,7 @@ Aliens = sh.Ashley.sysDef({
    */
   doit(node, dt) {
     let enemies= sh.pools.Baddies,
-    cfg= this.getLCfg(),
+    cfg= sh.main.getLCfg(),
     fc;
 
     if (enemies.actives() < cfg.enemyMax) {

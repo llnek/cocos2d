@@ -26,10 +26,7 @@ xcfg = sh.xcfg,
 csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @extends module:zotohlab/asx/scenes.XGameHUDLayer
- * @class HUDLayer
- */
+/** * @class HUDLayer */
 HUDLayer = scenes.XGameHUDLayer.extend({
   /**
    * @method initAtlases

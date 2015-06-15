@@ -11,10 +11,9 @@
 
 "src/breakout/s/factory.js",
 "src/breakout/s/motion.js",
-"src/breakout/s/movepaddle.js",
-"src/breakout/s/moveball.js",
-"src/breakout/s/collision.js",
-"src/breakout/s/supervisor.js",
+"src/breakout/s/move.js",
+"src/breakout/s/collide.js",
+"src/breakout/s/stager.js",
 "src/breakout/s/sysobjs.js",
 
   "src/breakout/p/hud.js",

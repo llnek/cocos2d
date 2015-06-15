@@ -27,9 +27,7 @@ xcfg = sh.xcfg,
 csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @class EntityFactory
- */
+/** * @class EntityFactory */
 EntityFactory = sh.Ashley.casDef({
   /**
    * @memberof module:s/factory~EntityFactory
@@ -50,7 +48,7 @@ EntityFactory = sh.Ashley.casDef({
     cw= ccsx.center(),
     candies= csts.CANDIES,
     bks=[],
-    cs= csts.LEVELS["1"],
+    cs= sh.main.getLCfg(),
     ent, sp, b, w,
     x,
     y= wz.height - csts.TOP_ROW * csts.TILE ;

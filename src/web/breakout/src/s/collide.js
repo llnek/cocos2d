@@ -13,7 +13,7 @@
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
  * @requires n/gnodes
- * @module s/collision
+ * @module s/collide
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -26,12 +26,10 @@ xcfg = sh.xcfg,
 csts= xcfg.xcsts,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @class CollisionSystem
- */
-CollisionSystem = sh.Ashley.sysDef({
+/** * @class Collide */
+Collide = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/collision~CollisionSystem
+   * @memberof module:s/collide~Collide
    * @method constructor
    * @param {Object} options
    */
@@ -39,7 +37,7 @@ CollisionSystem = sh.Ashley.sysDef({
     this.state = options;
   },
   /**
-   * @memberof module:s/collision~CollisionSystem
+   * @memberof module:s/collide~Collide
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -49,7 +47,7 @@ CollisionSystem = sh.Ashley.sysDef({
     this.fences= undef;
   },
   /**
-   * @memberof module:s/collision~CollisionSystem
+   * @memberof module:s/collide~Collide
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -60,7 +58,7 @@ CollisionSystem = sh.Ashley.sysDef({
     this.engine=engine;
   },
   /**
-   * @memberof module:s/collision~CollisionSystem
+   * @memberof module:s/collide~Collide
    * @method update
    * @param {Number} dt
    */
@@ -171,7 +169,7 @@ CollisionSystem = sh.Ashley.sysDef({
       velo.vel.x = - velo.vel.x;
     }
     else {
-      sjs.loggr.error("Failed to determine the collision of ball and brick.");
+      sjs.loggr.error("Failed to determine the collide of ball and brick.");
       return;
     }
     sh.fire('/game/players/earnscore', {
@@ -181,20 +179,22 @@ CollisionSystem = sh.Ashley.sysDef({
     brick.status=false;
   }
 
-});
+}, {
 
 /**
- * @memberof module:s/collision~CollisionSystem
+ * @memberof module:s/collide~Collide
  * @property {Number} Priority
  */
-CollisionSystem.Priority = xcfg.ftypes.Collision;
+Priority : xcfg.ftypes.Collide
+});
 
-/** @alias module:s/collision */
+
+/** @alias module:s/collide */
 const xbox = /** @lends xbox# */{
   /**
-   * @property {CollisionSystem} CollisionSystem
+   * @property {Collide} Collide
    */
-  CollisionSystem : CollisionSystem
+  Collide : Collide
 };
 
 
