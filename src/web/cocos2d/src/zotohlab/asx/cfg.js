@@ -188,7 +188,7 @@ const xbox = /** @lends xbox# */{
     Motion:     400,
     Move:       500,
     Logic:   600,
-    Collision:  700,
+    Collide:  700,
     Resolve:    800,
     Render:     900
   },

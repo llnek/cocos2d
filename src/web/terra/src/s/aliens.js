@@ -15,7 +15,7 @@
  * @requires n/cobjs
  * @requires s/utils
  * @requires n/gnodes
- * @module s/levelmgr
+ * @module s/aliens
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -30,38 +30,27 @@ xcfg = sh.xcfg,
 csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @class LevelManager
- */
-LevelManager = sh.Ashley.sysDef({
+/** * @class Aliens */
+Aliens = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/levelmgr~LevelManager
+   * @memberof module:s/aliens~Aliens
    * @method constructor
    * @param {Object} options
    */
   constructor(options) {
     this.state= options;
-    this.setLevel(1);
   },
   /**
-   * @memberof module:s/levelmgr~LevelManager
-   * @method setLevel
-   * @param {Number} level
-   */
-  setLevel(level) {
-    this.curLevel = level;
-  },
-  /**
-   * @memberof module:s/levelmgr~LevelManager
+   * @memberof module:s/aliens~Aliens
    * @method getLCfg
    * @return {Object}
    */
   getLCfg() {
-    const k= Number(this.curLevel).toString();
+    const k= Number(sh.main.level).toString();
     return xcfg['levels'][k]['cfg'];
   },
   /**
-   * @memberof module:s/levelmgr~LevelManager
+   * @memberof module:s/aliens~Aliens
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -69,7 +58,7 @@ LevelManager = sh.Ashley.sysDef({
     this.ships=null;
   },
   /**
-   * @memberof module:s/levelmgr~LevelManager
+   * @memberof module:s/aliens~Aliens
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -77,7 +66,7 @@ LevelManager = sh.Ashley.sysDef({
     this.ships = engine.getNodeList(gnodes.ShipMotionNode);
   },
   /**
-   * @memberof module:s/levelmgr~LevelManager
+   * @memberof module:s/aliens~Aliens
    * @method update
    * @param {Number} dt
    */
@@ -85,22 +74,22 @@ LevelManager = sh.Ashley.sysDef({
     const node = this.ships.head;
     if (this.state.running &&
        !!node) {
-      this.loadLevelResource(node, this.state.secCount);
+      this.doit(node, this.state.secCount);
     }
   },
   /**
-   * @memberof module:s/levelmgr~LevelManager
-   * @method loadLevelResource
+   * @memberof module:s/aliens~Aliens
+   * @method doit
    * @param {Object} node
    * @param {Number} dt
    */
-  loadLevelResource(node, dt) {
+  doit(node, dt) {
     let enemies= sh.pools.Baddies,
     cfg= this.getLCfg(),
     fc;
 
     if (enemies.actives() < cfg.enemyMax) {
-      sjs.eachObj((v) => {
+      sjs.eachObj( v => {
         fc= () => {
           for (let t = 0; t < v.types.length; ++t) {
             this.addEnemyToGame(node, v.types[t]);
@@ -119,7 +108,7 @@ LevelManager = sh.Ashley.sysDef({
     }
   },
   /**
-   * @memberof module:s/levelmgr~LevelManager
+   * @memberof module:s/aliens~Aliens
    * @method dropBombs
    * @param {Object} enemy
    */
@@ -139,14 +128,14 @@ LevelManager = sh.Ashley.sysDef({
     b.attackMode=enemy.attackMode;
   },
   /**
-   * @memberof module:s/levelmgr~LevelManager
+   * @memberof module:s/aliens~Aliens
    * @method getB
    * @param {Object} arg
    */
   getB(arg) {
     let enemies = sh.pools.Baddies,
     en,
-    pred= (e) => {
+    pred= e => {
       return (e.enemyType === arg.type
               &&
               e.status === false);
@@ -168,7 +157,7 @@ LevelManager = sh.Ashley.sysDef({
     return en;
   },
   /**
-   * @memberof module:s/levelmgr~LevelManager
+   * @memberof module:s/aliens~Aliens
    * @method addEnemyToGame
    * @param {Object} node
    * @param {Number} enemyType
@@ -200,7 +189,7 @@ LevelManager = sh.Ashley.sysDef({
       case csts.ENEMY_MOVES.HORZ:
         a0 = cc.moveBy(0.5, cc.p(0, -100 - sjs.rand(200)));
         a1 = cc.moveBy(1, cc.p(-50 - sjs.rand(100), 0));
-        const onComplete = cc.callFunc((p) => {
+        const onComplete = cc.callFunc( p => {
           let a2 = cc.delayTime(1);
           let a3 = cc.moveBy(1, cc.p(100 + sjs.rand(100), 0));
           p.runAction(cc.sequence(a2, a3,
@@ -221,20 +210,22 @@ LevelManager = sh.Ashley.sysDef({
     en.sprite.runAction(act);
   }
 
-});
+}, {
 
 /**
- * @memberof module:s/levelmgr~LevelManager
+ * @memberof module:s/aliens~Aliens
  * @property {Number} Priority
  */
-LevelManager.Priority = xcfg.ftypes.Move;
+Priority : xcfg.ftypes.Motion
+});
 
-/** @alias module:s/levelmgr */
+
+/** @alias module:s/aliens */
 const xbox = /** @lends xbox# */{
   /**
-   * @property {LevelManager} LevelManager
+   * @property {Aliens} Aliens
    */
-  LevelManager : LevelManager
+  Aliens : Aliens
 };
 
 sjs.merge(exports, xbox);

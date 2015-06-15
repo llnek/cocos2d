@@ -283,9 +283,9 @@ const XLayer = cc.Layer.extend({
         dir.popScene();
       },
       yes() {
-        sh.sfxPlay('game_quit');
+        //sh.sfxPlay('game_quit');
         dir.popToRootScene();
-        dir.runScene(ss.reify());
+        ccsx.runScene(ss.reify());
       }
     }));
   },

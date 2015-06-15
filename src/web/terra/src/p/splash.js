@@ -29,10 +29,7 @@ xcfg = sh.xcfg,
 csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @extends module:zotohlab/asx/scenes.XLayer
- * @class SplashLayer
- */
+/** * @class SplashLayer */
 SplashLayer = scenes.XLayer.extend({
   /**
    * @module:p/splash~SplashLayer
@@ -40,10 +37,14 @@ SplashLayer = scenes.XLayer.extend({
    * @protected
    */
   setup() {
-    this.centerImage(sh.getImage('bg'));
+    this.centerImage(sh.getImage('game.bg'));
     this.btns();
     this.misc();
   },
+  /**
+   * @method misc
+   * @private
+   */
   misc() {
     const wz = ccsx.vrect();
     this.flare = new cc.Sprite(sh.getImage('flare'));
@@ -80,12 +81,11 @@ SplashLayer = scenes.XLayer.extend({
    */
   onplay() {
     const ss= sh.protos[sh.ptypes.start],
-    mm= sh.protos[sh.ptypes.mmenu],
-    dir= cc.director;
+    mm= sh.protos[sh.ptypes.mmenu];
     utils.btnEffect();
     utils.flareEffect(this.flare, () => {
-      dir.runScene( mm.reify({
-          onback() { dir.runScene( ss.reify() ); }
+      ccsx.runScene( mm.reify({
+          onback() { ccsx.runScene( ss.reify() ); }
       }));
     });
   },

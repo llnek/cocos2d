@@ -570,11 +570,11 @@ const xbox = /** @lends xbox# */{
   /**
    * Get the sprite from the frame cache using
    * its id (e.g. #ship).
-   * @method
+   * @method getSprite
    * @param {String} frameid
    * @return {cc.Sprite}
    */
-  getSpriteFrame(frameid) {
+  getSprite(frameid) {
     return cc.spriteFrameCache.getSpriteFrame(frameid);
   },
 

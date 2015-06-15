@@ -16,7 +16,7 @@
  * @requires s/utils
  * @requires n/gnodes
  * @requires zotohlab/asx/pool
- * @module s/supervisor
+ * @module s/stager
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -31,21 +31,18 @@ xcfg = sh.xcfg,
 csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * class GameSupervisor
- */
-GameSupervisor = sh.Ashley.sysDef({
+/** * class Stager */
+Stager = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method constructor
    * @param {Object} options
    */
   constructor(options) {
     this.state= options;
-    this.inited=false;
   },
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -53,7 +50,7 @@ GameSupervisor = sh.Ashley.sysDef({
     this.ships=null;
   },
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -61,12 +58,14 @@ GameSupervisor = sh.Ashley.sysDef({
     this.ships = engine.getNodeList(gnodes.ShipMotionNode);
   },
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method update
    * @param {Number} dt
    */
   update(dt) {
-    if (! this.inited) {
+    if (ccsx.isTransitioning()) { return false; }
+    if (this.state.running &&
+        !this.inited) {
       this.onceOnly();
       this.inited=true;
     }
@@ -93,7 +92,7 @@ GameSupervisor = sh.Ashley.sysDef({
 
     for (let n = 1; n < 35; ++n) {
       let str = "explosion_" + (n < 10 ? ("0" + n) : n) + ".png";
-      frame = cc.spriteFrameCache.getSpriteFrame(str);
+      frame = ccsx.getSprite(str);
       animFrames.push(frame);
     }
     animation = new cc.Animation(animFrames, 0.04);
@@ -147,7 +146,8 @@ GameSupervisor = sh.Ashley.sysDef({
    * @private
    */
   fire(t, evt) {
-    if ('/touch/one/move' === t || '/mouse/move' === t) {} else {
+    if ('/touch/one/move' === t ||
+        '/mouse/move' === t) {} else {
       return;
     }
     if (this.state.running &&
@@ -162,20 +162,22 @@ GameSupervisor = sh.Ashley.sysDef({
     }
   }
 
-});
+}, {
 
 /**
- * @memberof module:s/supervisor~GameSupervisor
+ * @memberof module:s/stager~Stager
  * @property {Number} Priority
  */
-GameSupervisor.Priority = xcfg.ftypes.PreUpdate;
+Priority : xcfg.ftypes.PreUpdate
+});
 
-/** @alias module:s/supervisor */
+
+/** @alias module:s/stager */
 const xbox = /** @lends xbox# */{
   /**
-   * @property {GameSupervisor}  GameSupervisor
+   * @property {Stager}  Stager
    */
-  GameSupervisor : GameSupervisor
+  Stager : Stager
 };
 
 sjs.merge(exports, xbox);

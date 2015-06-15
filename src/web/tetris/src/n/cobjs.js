@@ -164,8 +164,8 @@ const Block = cc.Sprite.extend({
    */
   ctor(x, y, options) {
     this.options = options;
-    this.frame0 = ccsx.getSpriteFrame(options.frames[0]);
-    this.frame1 = ccsx.getSpriteFrame(options.frames[1]);
+    this.frame0 = ccsx.getSprite(options.frames[0]);
+    this.frame1 = ccsx.getSprite(options.frames[1]);
     this._super();
     this.show();
     this.setPosition(x,y);

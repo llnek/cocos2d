@@ -10,81 +10,49 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 "use strict";/**
- * @requires cherimoia/skaro
+ * @requires zotohlab/asx/asterix
  * @requires s/utils
  * @requires s/factory
- * @requires s/supervisor
- * @requires s/levelmgr
+ * @requires s/stager
+ * @requires s/aliens
  * @requires s/motion
- * @requires s/movemissiles
- * @requires s/movebombs
- * @requires s/moveship
- * @requires s/collision
- * @requires s/resolution
- * @requires s/rendering
+ * @requires s/move
+ * @requires s/collide
+ * @requires s/resolve
+ * @requires s/render
  * @module s/sysobjs
  */
 
-import sjs from 'cherimoia/skaro';
+import sh from 'zotohlab/asx/asterix';
 import u from 's/utils';
 import f from 's/factory';
-import v from 's/supervisor';
-import lm from 's/levelmgr';
+import v from 's/stager';
+import lm from 's/aliens';
 import mo from 's/motion';
-import ms from 's/movemissiles';
-import bs from 's/movebombs';
-import sp from 's/moveship';
-import co from 's/collision';
-import rs from 's/resolution';
-import rd from 's/rendering';
+import ms from 's/move';
+import co from 's/collide';
+import rs from 's/resolve';
+import rd from 's/render';
 
+const sjs=sh.skarojs,
 /** @alias module:s/sysobjs */
-const xbox = /** @lends xbox# */{
+xbox = /** @lends xbox# */{
 
   /**
-   * @property {EntityFactory}  EntityFactory
+   * @property {Array} systems
    */
-  EntityFactory       : f.EntityFactory,
+  systems: [ v.Stager, lm.Aliens, mo.Motions, ms.MoveXXX,
+  co.Collide, rs.Resolve, rd.Render],
+
   /**
-   * @property {Utils}    Utils
+   * @method entityFactory
+   * @param {Ash.Engine}
+   * @return {EntityFactory}
    */
-  Utils               : u,
-  /**
-   * @property {Supervisor}   Supervisor
-   */
-  Supervisor          : v.GameSupervisor,
-  /**
-   * @property {LevelManager}   LevelManager
-   */
-  LevelManager        : lm.LevelManager,
-  /**
-   * @property {Motions}      Motions
-   */
-  Motions             : mo.Motions,
-  /**
-   * @property {MoveMissiles}     MoveMissiles
-   */
-  MoveMissiles        : ms.MoveMissiles,
-  /**
-   * @property {MoveBombs}      MoveBombs
-   */
-  MoveBombs           : bs.MoveBombs,
-  /**
-   * @property {MoveShip}     MoveShip
-   */
-  MoveShip            : sp.MoveShip,
-  /**
-   * @property {Collisions}     Collisions
-   */
-  Collisions       : co.Collisions,
-  /**
-   * @property {Resolution}     Resolution
-   */
-  Resolution       : rs.Resolution,
-  /**
-   * @property {Rendering}      Rendering
-   */
-  Rendering        : rd.Rendering
+  entityFactory(engine) {
+    sh.factory = new f.EntityFactory(engine);
+    return sh.factory;
+  }
 };
 
 sjs.merge(exports, xbox);

@@ -138,8 +138,8 @@ EntityFactory = sh.Ashley.casDef({
       aa.setPosition( x + sh.hw(az), y - sh.hh(az));
       aa.runAction(new cc.RepeatForever(
         new cc.Animate( new cc.Animation(
-            [ccsx.getSpriteFrame(info[1][0]),
-             ccsx.getSpriteFrame(info[1][1]) ], 1))));
+            [ccsx.getSprite(info[1][0]),
+             ccsx.getSprite(info[1][1]) ], 1))));
       sh.main.addAtlasItem('game-pics', aa);
       x += az.width + (8/320 * wz.width);
       aa= new cobjs.Alien(aa,info[0],row);

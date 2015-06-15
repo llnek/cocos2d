@@ -36,7 +36,7 @@ undef,
  */
 MoveXXX = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/movebombs~MoveBombs
+   * @memberof module:s/move~move
    * @method constructor
    * @param {Object} options
    */
@@ -44,7 +44,7 @@ MoveXXX = sh.Ashley.sysDef({
     this.state= options;
   },
   /**
-   * @memberof module:s/movebombs~MoveBombs
+   * @memberof module:s/move~move
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -52,7 +52,7 @@ MoveXXX = sh.Ashley.sysDef({
     this.ships=null;
   },
   /**
-   * @memberof module:s/movebombs~MoveBombs
+   * @memberof module:s/move~move
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -60,7 +60,7 @@ MoveXXX = sh.Ashley.sysDef({
     this.ships = engine.getNodeList(gnodes.ShipMotionNode);
   },
   /**
-   * @memberof module:s/movebombs~MoveBombs
+   * @memberof module:s/move~move
    * @method update
    * @param {Number} dt
    */
@@ -69,7 +69,7 @@ MoveXXX = sh.Ashley.sysDef({
     if (this.state.running &&
        !!node) {
       this.moveMissiles(dt);
-      this.moveBombs(dt);
+      this.move(dt);
       this.onKeys(node,dt);
     }
   },
@@ -121,10 +121,10 @@ MoveXXX = sh.Ashley.sysDef({
                          pos.y + m.vel.y * dt);
   },
   /**
-   * @method moveBombs
+   * @method move
    * @private
    */
-  moveBombs(dt) {
+  move(dt) {
     sh.pools.Bombs.iter( b => {
       if (b.status) {
         this.moveOneBomb(b,dt);
@@ -153,21 +153,22 @@ MoveXXX = sh.Ashley.sysDef({
     });
   }
 
-});
+}, {
 
 /**
- * @memberof module:s/movebombs~MoveBombs
+ * @memberof module:s/move~move
  * @property {Number} Priority
  */
-MoveBombs.Priority = xcfg.ftypes.Move;
+Priority : xcfg.ftypes.Move
+});
 
 
-/** @alias module:s/movebombs */
+/** @alias module:s/move */
 const xbox = /** @lends xbox# */{
   /**
-   * @property {MoveBombs} MoveBombs
+   * @property {MoveXXX} MoveXXX
    */
-  MoveBombs : MoveBombs
+  MoveXXX : MoveXXX
 };
 
 

@@ -28,32 +28,24 @@ xcfg = sh.xcfg,
 csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @class MainMenuLayer
- */
+/** * @class MainMenuLayer */
 MainMenuLayer = scenes.XMenuLayer.extend({
   /**
    * @method setup
    * @protected
    */
   setup() {
-    //this.centerImage(sh.getImage('gui.mmenus.menu.bg'));
-    this.centerImage(sh.getImage('bg'));
+    this.centerImage(sh.getImage('gui.mmenus.menu.bg'));
     const wb=ccsx.vbox(),
-    cw= ccsx.center();
-
-    // title
-    const tt=ccsx.bmfLabel({
+    cw= ccsx.center(),
+    tt=ccsx.bmfLabel({
       fontPath: sh.getFont('font.JellyBelly'),
       text: sh.l10n('%mmenu'),
       pos: cc.p(cw.x, wb.top * 0.9),
       color: ccsx.white,
       scale: xcfg.game.scale
-    });
-    this.addItem(tt);
-
-    // buttons
-    const menu= ccsx.vmenu([
+    }),
+    menu= ccsx.vmenu([
       { nnn: '#player1.png',
         target: this,
         cb() {
@@ -62,6 +54,7 @@ MainMenuLayer = scenes.XMenuLayer.extend({
     }],
     {pos: cw});
     this.addItem(menu);
+    this.addItem(tt);
 
     this.mkBackQuit(false, [{
         nnn: '#icon_back.png',
@@ -89,7 +82,7 @@ MainMenuLayer = scenes.XMenuLayer.extend({
    * @private
    */
   onplay(msg) {
-    cc.director.runScene( sh.protos[sh.ptypes.game].reify(msg));
+    ccsx.runScene( sh.protos[sh.ptypes.game].reify(msg));
   }
 
 });

@@ -138,10 +138,10 @@ const Explosion = sh.Ashley.compDef({
    * @protected
    */
   inflate(options) {
-    const frames = [ccsx.getSpriteFrame('boom_0.png'),
-                    ccsx.getSpriteFrame('boom_1.png'),
-                    ccsx.getSpriteFrame('boom_2.png'),
-                    ccsx.getSpriteFrame('boom_3.png') ],
+    const frames = [ccsx.getSprite('boom_0.png'),
+                    ccsx.getSprite('boom_1.png'),
+                    ccsx.getSprite('boom_2.png'),
+                    ccsx.getSprite('boom_3.png') ],
     anim= new cc.Animation(frames, this.frameTime);
 
     this.sprite.setPosition(options.x, options.y);

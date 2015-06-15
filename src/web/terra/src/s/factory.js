@@ -29,9 +29,7 @@ csts= xcfg.csts,
 R=sjs.ramda,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @class EntityFactory
- */
+/** * @class EntityFactory */
 EntityFactory = sh.Ashley.casDef({
   /**
    * @memberof module:s/factory~EntityFactory
@@ -56,8 +54,8 @@ EntityFactory = sh.Ashley.casDef({
     sp.setPosition(cw.x, sz.height);
 
     // set frame
-    let fr0 = cc.spriteFrameCache.getSpriteFrame("ship01.png"),
-    fr1 = cc.spriteFrameCache.getSpriteFrame("ship02.png"),
+    let fr0 = ccsx.getSprite("ship01.png"),
+    fr1 = ccsx.getSprite("ship02.png"),
     animFrames = [fr0, fr1],
     animation = new cc.Animation(animFrames, 0.1),
     animate = cc.animate(animation);
@@ -142,7 +140,7 @@ EntityFactory = sh.Ashley.casDef({
     sh.pools.Sparks.preSet(() => {
       const sp = [ccsx.createSprite("explode2.png"),
                   ccsx.createSprite("explode3.png")];
-      R.forEach((s) => {
+      R.forEach( s => {
         s.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
         s.setVisible(false);
         sh.main.addAtlasItem('op-pics', s);
@@ -156,7 +154,7 @@ EntityFactory = sh.Ashley.casDef({
    * @param {Number} count
    */
   createEnemies(count) {
-    const cr= (arg) => {
+    const cr= arg => {
       const sp= ccsx.createSprite(arg.textureName);
       sp.setVisible(false);
       sh.main.addAtlasItem('game-pics', sp,
@@ -165,7 +163,7 @@ EntityFactory = sh.Ashley.casDef({
     },
     ts = xcfg.EnemyTypes;
 
-    sh.pools.Baddies.preSet((pool) => {
+    sh.pools.Baddies.preSet( pool => {
       for (let j = 0; j < ts.length; ++j) {
         pool.push( cr( ts[j]));
       }
@@ -193,7 +191,7 @@ EntityFactory = sh.Ashley.casDef({
   createBackTiles(count) {
     let layer= sh.main.getBackgd(),
     rc, sp,
-    cr=(name) => {
+    cr= name => {
       sp = ccsx.createSprite(name);
       sp.setAnchorPoint(0.5,0);
       sp.setVisible(false);
@@ -205,7 +203,7 @@ EntityFactory = sh.Ashley.casDef({
     tn= tm.length,
     sz= count || 1;
 
-    sh.pools.BackTiles.preSet((pool) => {
+    sh.pools.BackTiles.preSet( pool => {
       for (let n=0; n < tn; ++n) {
         pool.push(cr(tm[sjs.rand(tn)]));
       }

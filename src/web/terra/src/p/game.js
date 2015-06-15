@@ -57,17 +57,21 @@ GameLayer = scenes.XGameLayer.extend({
    * @method reset
    */
   reset(newFlag) {
+    const arr= [['op-pics', true],
+      ['game-pics', false],
+      ['explosions', true]];
+
     if (! sjs.isempty(this.atlases)) {
-      //sjs.eachObj(function(z) { z.removeAllChildren(); }, this.atlases);
+      R.forEach( info => {
+        this.atlases[info[0]].removeAllChildren();
+      }, arr);
     } else {
-      R.forEach((info) => {
+      R.forEach( info => {
         const b= this.regoAtlas(info[0]);
         if (info[1]) {
           b.setBlendFunc(cc.SRC_ALPHA, cc.ONE);
         }
-      }, [ ['op-pics', true],
-           ['game-pics', false],
-           ['explosions', true]]);
+      }, arr);
     }
     if (newFlag) {
       this.getHUD().resetAsNew();
@@ -95,7 +99,7 @@ GameLayer = scenes.XGameLayer.extend({
     tm = ps.get();
 
     if (!tm) {
-      this.factory.createBackTiles();
+      sh.factory.createBackTiles();
       tm= ps.get();
     }
 
@@ -128,32 +132,17 @@ GameLayer = scenes.XGameLayer.extend({
    */
   play(newFlag) {
 
+    this.initEngine(sobjs.systems, sobjs.entityFactory);
     this.reset(newFlag);
-    this.newFlow();
-
-    this.factory=new sobjs.EntityFactory(this.engine);
-    sh.factory = this.factory;
-    this.options.secCount=0;
-    this.options.running = true;
-
-    R.forEach((z) => {
-      this.engine.addSystem(new (z)(this.options), z.Priority);
-    },
-    [ sobjs.Supervisor,
-      sobjs.Motions,
-      sobjs.LevelManager,
-      sobjs.MoveMissiles,
-      sobjs.MoveBombs,
-      sobjs.MoveShip,
-      sobjs.Collisions,
-      sobjs.Resolution,
-      sobjs.Rendering ]);
 
     sh.sfxPlayMusic('bgMusic', {repeat: true});
     this.schedule(() => {
       // counter used to spawn enemies
       ++this.options.secCount;
     },1);
+
+    this.options.secCount=0;
+    this.options.running = true;
   },
   /**
    * @method spawnPlayer
@@ -218,7 +207,6 @@ GameLayer = scenes.XGameLayer.extend({
    * @constructs
    */
   ctor(options) {
-    //this._levelManager = new LevelManager(this);
     this._super(options);
   }
 
@@ -242,19 +230,19 @@ const xbox =  /** @lends xbox# */{
       huds.HUDLayer
     ]).reify(options);
 
-    scene.onmsg('/game/players/earnscore', (t, msg) => {
+    scene.onmsg('/game/players/earnscore', msg => {
       sh.main.onEarnScore(msg);
     }).
-    onmsg('/game/backtiles',(t,msg) => {
+    onmsg('/game/backtiles', msg => {
       sh.main.initBackTiles();
     }).
-    onmsg('/hud/showmenu',(t,msg) => {
+    onmsg('/hud/showmenu', msg => {
       scenes.showMenu();
     }).
-    onmsg('/hud/replay',(t,msg) => {
+    onmsg('/hud/replay', msg => {
       sh.main.replay();
     }).
-    onmsg('/game/players/killed', (t, msg) => {
+    onmsg('/game/players/killed', msg => {
       sh.main.onPlayerKilled(msg);
     });
 

@@ -12,7 +12,7 @@
 "use strict";/**
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
- * @module s/rendering
+ * @module s/render
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -26,11 +26,11 @@ R= sjs.ramda,
 undef,
 //////////////////////////////////////////////////////////////////////////
 /**
- * @class Rendering
+ * @class Render
  */
-Rendering = sh.Ashley.sysDef({
+Render = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/rendering~Rendering
+   * @memberof module:s/render~Render
    * @method constructor
    * @param {Object} options
    */
@@ -38,21 +38,21 @@ Rendering = sh.Ashley.sysDef({
     this.state= options;
   },
   /**
-   * @memberof module:s/rendering~Rendering
+   * @memberof module:s/render~Render
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
   removeFromEngine(engine) {
   },
   /**
-   * @memberof module:s/rendering~Rendering
+   * @memberof module:s/render~Render
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
   addToEngine(engine) {
   },
   /**
-   * @memberof module:s/rendering~Rendering
+   * @memberof module:s/render~Render
    * @method update
    * @param {Number} dt
    */
@@ -104,21 +104,23 @@ Rendering = sh.Ashley.sysDef({
     }
   }
 
-});
+}, {
 
 /**
- * @memberof module:s/rendering~Rendering
+ * @memberof module:s/render~Render
  * @property {Number} Priority
  */
-Rendering.Priority = xcfg.ftypes.Render;
+Priority : xcfg.ftypes.Render
+});
 
-/** @alias module:s/rendering */
+
+/** @alias module:s/render */
 const xbox = /** @lends xbox# */{
 
   /**
-   * @property {Rendering} Rendering
+   * @property {Render} Render
    */
-  Rendering : Rendering
+  Render : Render
 };
 
 sjs.merge(exports, xbox);

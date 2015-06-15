@@ -15,7 +15,7 @@
  * @requires n/cobjs
  * @requires s/utils
  * @requires n/gnodes
- * @module s/collision
+ * @module s/collide
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -31,11 +31,11 @@ R= sjs.ramda,
 undef,
 //////////////////////////////////////////////////////////////////////////
 /**
- * @class Collisions
+ * @class Collide
  */
-Collisions = sh.Ashley.sysDef({
+Collide = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/collisions~Collisions
+   * @memberof module:s/collide~Collide
    * @method constructor
    * @param {Object} options
    */
@@ -43,7 +43,7 @@ Collisions = sh.Ashley.sysDef({
     this.state= options;
   },
   /**
-   * @memberof module:s/collisions~Collisions
+   * @memberof module:s/collide~Collide
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -51,7 +51,7 @@ Collisions = sh.Ashley.sysDef({
     this.ships=null;
   },
   /**
-   * @memberof module:s/collisions~Collisions
+   * @memberof module:s/collide~Collide
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -154,20 +154,22 @@ Collisions = sh.Ashley.sysDef({
     });
   }
 
-});
+}, {
 
 /**
- * @memberof module:s/collisions~Collisions
+ * @memberof module:s/collide~Collide
  * @property {Number} Priority
  */
-Collisions.Priority = xcfg.ftypes.Collision;
+Priority : xcfg.ftypes.Collide
+});
 
-/** @alias module:s/collisions */
+
+/** @alias module:s/collide */
 const xbox = /** @lends xbox# */{
   /**
-   * @property {Collisions} Collisions
+   * @property {Collide} Collide
    */
-  Collisions : Collisions
+  Collide : Collide
 };
 
 sjs.merge(exports, xbox);

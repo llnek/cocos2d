@@ -62,8 +62,9 @@ const xbox = sjs.merge( xcfg, {
     tiles: {
     },
     images: {
+      'gui.mmenus.menu.bg' : 'res/{{appid}}/pics/bg.png',
       'flare': 'res/{{appid}}/pics/flare.jpg',
-      'bg' : 'res/{{appid}}/pics/bg.png'
+      'game.bg' : 'res/{{appid}}/pics/bg.png'
     },
     sounds: {
       'bgMusic' : 'res/{{appid}}/sfx/bgMusic',

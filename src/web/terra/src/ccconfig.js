@@ -53,15 +53,13 @@ document.ccConfig = {
 '/public/ig/lib/game/terra/s/utils.js',
 
 '/public/ig/lib/game/terra/s/factory.js',
-'/public/ig/lib/game/terra/s/supervisor.js',
+'/public/ig/lib/game/terra/s/stager.js',
 '/public/ig/lib/game/terra/s/motion.js',
-'/public/ig/lib/game/terra/s/movemissiles.js',
-'/public/ig/lib/game/terra/s/movebombs.js',
-'/public/ig/lib/game/terra/s/moveship.js',
-'/public/ig/lib/game/terra/s/levelmgr.js',
-'/public/ig/lib/game/terra/s/collision.js',
-'/public/ig/lib/game/terra/s/resolution.js',
-'/public/ig/lib/game/terra/s/rendering.js',
+'/public/ig/lib/game/terra/s/move.js',
+'/public/ig/lib/game/terra/s/aliens.js',
+'/public/ig/lib/game/terra/s/collide.js',
+'/public/ig/lib/game/terra/s/resolve.js',
+'/public/ig/lib/game/terra/s/render.js',
 '/public/ig/lib/game/terra/s/sysobjs.js',
 
 

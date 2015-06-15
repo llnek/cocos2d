@@ -36,7 +36,7 @@ xcfg = sh.xcfg,
 R = sjs.ramda,
 undef;
 
-R.forEach((obj) => {
+R.forEach( obj => {
   protos[obj.rtti] = obj;
 }, ps);
 

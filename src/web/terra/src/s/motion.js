@@ -62,26 +62,24 @@ Motions = sh.Ashley.sysDef({
    * @param {Number} dt
    */
   update(dt) {
-    const node = this.ships.head;
-    this.process(node,dt);
-  },
-  /**
-   * @process
-   * @private
-   */
-  process(node, dt) {
-    let evt;
-    if (this.evQ.length > 0) {
-      evt = this.evQ.shift();
-    }
+    const evt = this.evQ.length > 0 ? this.evQ.shift() : undef,
+    node = this.ships.head;
+
     if (this.state.running &&
        !!node) {
-      if (!!evt) {
-        this.ongui(node,evt,dt);
-      }
-      if (ccsx.hasKeyPad()) {
-        this.onkey(node, dt);
-      }
+      this.doit(node, evt, dt);
+    }
+  },
+  /**
+   * @method doit
+   * @private
+   */
+  doit(node, evt, dt) {
+    if (!!evt) {
+      this.ongui(node,evt,dt);
+    }
+    if (ccsx.hasKeyPad()) {
+      this.onkey(node, dt);
     }
   },
   /**
@@ -117,13 +115,13 @@ Motions = sh.Ashley.sysDef({
     }
   }
 
-});
-
+}, {
 /**
    * @memberof module:s/motions~Motions
    * @property {Number} Priority
    */
-Motions.Priority = xcfg.ftypes.Motion;
+Priority : xcfg.ftypes.Motion
+});
 
 
 /** @alias module:s/motions */
