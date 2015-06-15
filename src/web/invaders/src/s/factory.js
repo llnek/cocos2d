@@ -28,9 +28,7 @@ xcfg = sh.xcfg,
 csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @class EntityFactory
- */
+/** * @class EntityFactory */
 EntityFactory = sh.Ashley.casDef({
   /**
    * @memberof module:s/factory~EntityFactory
@@ -61,7 +59,7 @@ EntityFactory = sh.Ashley.casDef({
    * @param {Number} count
    */
   createExplosions(count) {
-    sh.pools.Explosions.preSet(function() {
+    sh.pools.Explosions.preSet(()  => {
       const sp = ccsx.createSprite('boom_0.png');
       sp.setVisible(false);
       sh.main.addAtlasItem('game-pics', sp);
@@ -74,7 +72,7 @@ EntityFactory = sh.Ashley.casDef({
    * @param {Number} count
    */
   createBombs(count) {
-    sh.pools.Bombs.preSet(function() {
+    sh.pools.Bombs.preSet(()  => {
       const sp = ccsx.createSprite('bomb.png');
       sp.setVisible(false);
       sh.main.addAtlasItem('game-pics', sp);
@@ -87,7 +85,7 @@ EntityFactory = sh.Ashley.casDef({
    * @param {String} img
    */
   calcImgSize(img) {
-    return ccsx.createSprite(img).getContentSize();
+    return ccsx.csize(img);
   },
   /**
    * @memberof module:s/factory~EntityFactory
@@ -157,7 +155,7 @@ EntityFactory = sh.Ashley.casDef({
     aliens= xpool.reify(),
     me=this;
 
-    aliens.preSet((pool) => {
+    aliens.preSet( pool => {
       me.fillSquad(pool);
     },1);
 

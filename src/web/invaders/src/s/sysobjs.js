@@ -10,82 +10,46 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 "use strict";/**
- * @requires cherimoia/skaro
+ * @requires zotohlab/asx/asterix
  * @requires s/factory
- * @requires s/utils
- * @requires s/supervisor
+ * @requires s/stager
  * @requires s/motion
- * @requires s/movealiens
- * @requires s/movebombs
- * @requires s/movemissiles
- * @requires s/moveship
- * @requires s/cannon
- * @requires s/collision
- * @requires s/resolution
+ * @requires s/aliens
+ * @requires s/move
+ * @requires s/collide
+ * @requires s/resolve
  * @module s/sysobjs
  */
 
-import sjs from 'cherimoia/skaro';
+import sh from 'zotohlab/asx/asterix';
 import f from 's/factory';
-import u from 's/utils';
-import v from 's/supervisor';
+import v from 's/stager';
 import mo from 's/motion';
-import aliens from 's/movealiens';
-import bombs from 's/movebombs';
-import mi from 's/movemissiles';
-import ship from 's/moveship';
-import cn from 's/cannon';
-import co from 's/collision';
-import rs from 's/resolution';
+import a from 's/aliens';
+import mv from 's/move';
+import co from 's/collide';
+import rs from 's/resolve';
 
 
+const sjs = sh.skarojs,
 /** @alias module:s/sysobjs */
-const xbox = /** @lends xbox# */{
+xbox = /** @lends xbox# */{
 
   /**
-   * @property {EntityFactory} EntityFactory
+   * @property {Array} systems
    */
-  Factory       : f.EntityFactory,
+  systems : [ v.Stager, mo.Motions, a.Aliens, mv.Move,
+  co.Collide, rs.Resolve ],
+
   /**
-   * @property {SystemUtils} SystemUtils
+   * @method entityFactory
+   * @param {Ash.Engine}
+   * @return {EntityFactory}
    */
-  SystemUtils         : u,
-  /**
-   * @property {Supervisor} Supervisor
-   */
-  Supervisor          : v.GameSupervisor,
-  /**
-   * @property {Motions} Motions
-   */
-  Motions             : mo.MotionCtrlSystem,
-  /**
-   * @property {MovementAliens} MovementAliens
-   */
-  MovementAliens      : aliens.MovementAliens,
-  /**
-   * @property {MovementBombs} MovementBombs
-   */
-  MovementBombs       : bombs.MovementBombs,
-  /**
-   * @property {MovementMissiles} MovementMissiles
-   */
-  MovementMissiles    : mi.MovementMissiles,
-  /**
-   * @property {MovemenyShip} MovemenyShip
-   */
-  MovementShip        : ship.MovementShip,
-  /**
-   * @property {CannonControl} CannonControl
-   */
-  CannonControl       : cn.CannonControl,
-  /**
-   * @property {CollisionSystem} CollisionSystem
-   */
-  CollisionSystem     : co.CollisionSystem,
-  /**
-   * @property {Resolution} Resolution
-   */
-  Resolution          : rs.Resolution
+  entityFactory(engine) {
+    sh.factory = f.EntityFactory(engine);
+    return sh.factory;
+  }
 };
 
 

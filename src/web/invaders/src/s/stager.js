@@ -15,12 +15,10 @@
  * @requires zotohlab/asx/pool
  * @requires n/gnodes
  * @requires n/cobjs
- * @requires s/utils
- * @module s/supervisor
+ * @module s/stager
  */
 import gnodes from 'n/gnodes';
 import cobjs from 'n/cobjs';
-import utils from 's/utils';
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
 import xpool from 'zotohlab/asx/pool';
@@ -31,21 +29,18 @@ xcfg = sh.xcfg,
 csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @class GameSupervisor
- */
-GameSupervisor = sh.Ashley.sysDef({
+/** * @class Stager */
+Stager = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method constructor
    * @param {Object} options
    */
   constructor(options) {
     this.state= options;
-    this.inited=false;
   },
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -53,7 +48,7 @@ GameSupervisor = sh.Ashley.sysDef({
     this.shipMotions=null;
   },
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -61,26 +56,27 @@ GameSupervisor = sh.Ashley.sysDef({
     this.ships = engine.getNodeList(gnodes.ShipMotionNode);
   },
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method initAlienSize
    */
   initAlienSize() {
     //pick purple since it is the largest
-    this.state.alienSize= ccsx.createSprite('purple_bug_0.png').getContentSize();
+    this.state.alienSize= ccsx.csize('purple_bug_0.png');
   },
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method initShipSize
    */
   initShipSize() {
-    this.state.shipSize= ccsx.createSprite( 'ship_0.png').getContentSize();
+    this.state.shipSize= ccsx.csize( 'ship_0.png');
   },
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method update
    * @param {Number} dt
    */
   update(dt) {
+    if (ccsx.isTransitioning()) { return false; }
     if (! this.inited) {
       this.onceOnly();
       this.inited=true;
@@ -114,7 +110,8 @@ GameSupervisor = sh.Ashley.sysDef({
    * @private
    */
   fire(t, evt) {
-    if ('/touch/one/move' === t || '/mouse/move' === t) {} else {
+    if ('/touch/one/move' === t ||
+        '/mouse/move' === t) {} else {
       return;
     }
     if (this.state.running &&
@@ -131,20 +128,22 @@ GameSupervisor = sh.Ashley.sysDef({
     }
   }
 
-});
+}, {
 
 /**
- * @memberof module:s/supervisor~GameSupervisor
+ * @memberof module:s/stager~Stager
  * @property {Number} Priority
  */
-GameSupervisor.Priority= xcfg.ftypes.PreUpdate;
+Priority: xcfg.ftypes.PreUpdate
+});
 
-/** @alias module:s/supervisor */
+
+/** @alias module:s/stager */
 const xbox = /** @lends xbox# */{
   /**
-   * @property {GameSupervisor} GameSupervisor
+   * @property {Stager} Stager
    */
-  GameSupervisor : GameSupervisor
+  Stager : Stager
 };
 
 
