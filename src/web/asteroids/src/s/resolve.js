@@ -15,7 +15,7 @@
  * @requires n/cobjs
  * @requires n/gnodes
  * @requires ash-js
- * @module s/Resolution
+ * @module s/Resolve
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -28,14 +28,12 @@ sjs=sh.skarojs,
 csts= xcfg.csts,
 R = sjs.ramda,
 undef,
-
-/**
- * @class Resolution
- */
-Resolution = sh.Ashley.sysDef({
+//////////////////////////////////////////////////////////////////////////////
+/** * @class Resolve */
+Resolve = sh.Ashley.sysDef({
 
   /**
-   * @memberof module:s/resolution~Resolution
+   * @memberof module:s/resolve~Resolve
    * @method constructor
    * @param {Object} options
    */
@@ -44,7 +42,7 @@ Resolution = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/resolution~Resolution
+   * @memberof module:s/resolve~Resolve
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -54,7 +52,7 @@ Resolution = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/resolution~Resolution
+   * @memberof module:s/resolve~Resolve
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -64,7 +62,7 @@ Resolution = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/resolution~Resolution
+   * @memberof module:s/resolve~Resolve
    * @method update
    * @param {Number} dt
    */
@@ -85,7 +83,7 @@ Resolution = sh.Ashley.sysDef({
    */
   checkMissiles() {
     const world = this.state.world;
-    sh.pools.Missiles.iter((m) => {
+    sh.pools.Missiles.iter( m => {
       if (m.status) {
         if (m.HP <= 0 ||
             sh.outOfBound(ccsx.bbox4(m.sprite), world)) {
@@ -100,7 +98,7 @@ Resolution = sh.Ashley.sysDef({
    */
   checkLasers() {
     const world = this.state.world;
-    sh.pools.Lasers.iter((b) => {
+    sh.pools.Lasers.iter( b => {
       if (b.status) {
         if (b.HP <= 0 ||
             sh.outOfBound(ccsx.bbox4(b.sprite), world)) {
@@ -114,7 +112,7 @@ Resolution = sh.Ashley.sysDef({
    * @private
    */
   checkAstros() {
-    sh.pools.Astros1.iter((a) => {
+    sh.pools.Astros1.iter( a => {
       if (a.status &&
           a.HP <= 0) {
           sh.fire('/game/players/earnscore', {score: a.value});
@@ -122,7 +120,7 @@ Resolution = sh.Ashley.sysDef({
           a.deflate();
         }
     });
-    sh.pools.Astros2.iter((a) => {
+    sh.pools.Astros2.iter( a => {
       if (a.status &&
           a.HP <= 0) {
           sh.fire('/game/players/earnscore', {score: a.value});
@@ -130,7 +128,7 @@ Resolution = sh.Ashley.sysDef({
           a.deflate();
         }
     });
-    sh.pools.Astros3.iter((a) => {
+    sh.pools.Astros3.iter( a => {
       if (a.status &&
           a.HP <= 0) {
           sh.fire('/game/players/earnscore', {score: a.value});
@@ -152,21 +150,23 @@ Resolution = sh.Ashley.sysDef({
     }
   }
 
-});
+}, {
 
 /**
- * @memberof module:s/resolution~Resolution
+ * @memberof module:s/resolve~Resolve
  * @property {Number} Priority
  */
-Resolution.Priority = xcfg.ftypes.Resolve;
+Priority : xcfg.ftypes.Resolve
+});
 
-/** @alias module:s/resolution */
+
+/** @alias module:s/resolve */
 const xbox = /** @lends xbox# */{
 
   /**
-   * @property {Resolution} Resolution
+   * @property {Resolve} Resolve
    */
-  Resolution : Resolution
+  Resolve : Resolve
 };
 
 

@@ -767,8 +767,7 @@ const XGameLayer = XLayer.extend({
    * @return {Object}
    */
   getLCfg() {
-    const k= Number(this.level).toString();
-    return xcfg['levels'][k]['cfg'];
+    return sh.getLevelCfg(this.level);
   },
   /**
    * @memberof module:zotohlab/asx/scenes~XGameLayer

@@ -10,81 +10,43 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 "use strict";/**
- * @requires cherimoia/skaro
- * @requires s/utils
+ * @requires zotohlab/asx/asterix
  * @requires s/factory
- * @requires s/collision
- * @requires s/missiles
+ * @requires s/collide
  * @requires s/motion
- * @requires s/moveastros
- * @requires s/movelasers
- * @requires s/movemissiles
- * @requires s/moveship
- * @requires s/supervisor
- * @requires s/resolution
+ * @requires s/move
+ * @requires s/stager
+ * @requires s/resolve
  * @module s/sysobjs
  */
 
-import sjs from 'cherimoia/skaro';
-import u from 's/utils';
+import sh from 'zotohlab/asx/asterix';
 import f from 's/factory';
-import co from 's/collision';
-import mc from 's/missiles';
+import co from 's/collide';
 import mo from 's/motion';
-import ma from 's/moveastros';
-import ml from 's/movelasers';
-import ms from 's/movemissiles';
-import mp from 's/moveship';
-import v from 's/supervisor';
-import rs from 's/resolution';
+import mp from 's/move';
+import v from 's/stager';
+import rs from 's/resolve';
 
-
+const sjs= sh.skarojs,
 /** @alias module:s/sysobjs */
-const xbox = /** @lends xbox# */{
+xbox = /** @lends xbox# */{
   /**
-   * @property {SystemUtils}   SystemUtils
+   * @property {Array} Collide
    */
-  SystemUtils     : u,
+  systems: [co.Collide, mo.Motions, mp.Move, v.Stager, rs.Resolve],
+
   /**
-   * @property {EntityFactory} Factory
+   * @method entityFactory
+   * @param {Ash.Engine}
+   * @param {Object}
+   * @return {EntityFactory}
    */
-  Factory   : f.EntityFactory,
-  /**
-   * @property {Collisions} Collisions
-   */
-  Collisions      : co.CollisionSystem,
-  /**
-   * @property {MissileControl}  MissileControl
-   */
-  MissileControl  : mc.MissileControl,
-  /**
-   * @property {Motions}  Motions
-   */
-  Motions         : mo.MotionControls,
-  /**
-   * @property {MoveAsteroids}  MoveAsteroids
-   */
-  MoveAsteroids   : ma.MoveAsteroids,
-  /**
-   * @property {MoveLasers}   MoveLasers
-   */
-  MoveLasers      : ml.MoveBombs,
-  /**
-   * @property {MoveMissiles}   MoveMissiles
-   */
-  MoveMissiles    : ms.MoveMissiles,
-  /**
-   * @property {MovementShip}   MovementShip
-   */
-  MovementShip    : mp.MovementShip,
-  /**
-   * @property {Supervisor}   Supervisor
-   */
-  Supervisor      : v.GameSupervisor,
-  /**
-   * @property {Resolution}   Resolution
-   */
-  Resolution      : rs.Resolution
+  entityFactory(engine,options) {
+    sh.factory = new f.EntityFactory(engine,options);
+    return sh.factory;
+  }
+
 };
 
 

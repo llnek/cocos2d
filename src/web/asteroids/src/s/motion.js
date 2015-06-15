@@ -25,14 +25,11 @@ let xcfg = sh.xcfg,
 sjs=sh.skarojs,
 csts= xcfg.csts,
 undef,
-
-/**
- * @class MotionControls
- */
-MotionControls = sh.Ashley.sysDef({
-
+//////////////////////////////////////////////////////////////////////////////
+/** * @class Motions */
+Motions = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/motion~MotionControls
+   * @memberof module:s/motion~Motions
    * @method constructor
    * @param {Object} options
    */
@@ -42,61 +39,104 @@ MotionControls = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/motion~MotionControls
+   * @memberof module:s/motion~Motions
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
   removeFromEngine(engine) {
+    this.cannons=null;
     this.ships=null;
   },
 
   /**
-   * @memberof module:s/motion~MotionControls
+   * @memberof module:s/motion~Motions
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
   addToEngine(engine) {
+    this.cannons = engine.getNodeList(gnodes.CannonCtrlNode);
     this.ships= engine.getNodeList(gnodes.ShipMotionNode);
+
     this.ops={};
     this.initKeyOps();
   },
 
   /**
-   * @memberof module:s/motion~MotionControls
+   * @memberof module:s/motion~Motions
    * @method update
    * @param {Number} dt
    */
   update(dt) {
-    const node= this.ships.head;
+    const ships= this.ships.head,
+    cns = this.cannons.head;
 
-    if (this.state.running &&
-       !!node) {
-      this.scanInput(node, dt);
+    if (this.state.running) {
+      if (!!ships) {
+        this.scanInput(ships, dt);
+      }
+      if (!!cns) {
+        this.controlCannon(cns,dt);
+      }
     }
   },
+  /**
+   * @method controlCannon
+   * @private
+   */
+  controlCannon(node,dt) {
+    const gun = node.cannon,
+    ship=node.ship,
+    lpr= node.looper,
+    t= lpr.timers[0];
 
+    if (! gun.hasAmmo) {
+      if (ccsx.timerDone(t)) {
+        gun.hasAmmo=true;
+        lpr.timers[0]=null;
+      }
+      return;
+    }
+    else
+    if ( sh.main.keyPoll(cc.KEY.space)) {
+      this.fireMissile(node,dt);
+    }
+  },
+  /**
+   * @method fireMissile
+   * @private
+   */
+  fireMissile(node,dt) {
+    let p= sh.pools.Missiles,
+    lpr= node.looper,
+    ship= node.ship,
+    gun= node.cannon,
+    sz= ship.sprite.getContentSize(),
+    pos= ship.sprite.getPosition(),
+    top= ccsx.getTop(ship.sprite),
+    deg= ship.sprite.getRotation(),
+    tag,
+    ent= p.get();
+
+    if (!ent) {
+      sh.factory.createMissiles(30);
+      ent= p.get();
+    }
+
+    let rc= sh.calcXY(deg, sz.height * 0.5);
+    ent.vel.x = rc[0];
+    ent.vel.y = rc[1];
+    ent.inflate({ x: pos.x + rc[0], y: pos.y + rc[1]});
+    ent.sprite.setRotation(deg);
+
+    lpr.timers[0] = ccsx.createTimer(sh.main, gun.coolDownWindow);
+    gun.hasAmmo=false;
+    //sh.sfxPlay('ship-missile');
+  },
   /**
    * @method scanInput
    * @private
    */
   scanInput(node, dt) {
-    if (cc.sys.capabilities['keyboard'] &&
-        !cc.sys.isNative) {
-      this.processKeys(node,dt);
-    }
-    else
-    if (cc.sys.capabilities['mouse']) {
-    }
-    else
-    if (cc.sys.capabilities['touches']) {
-    }
-  },
-
-  /**
-   * @method processKeys
-   * @private
-   */
-  processKeys(node,dt) {
     if (sh.main.keyPoll(cc.KEY.right)) {
       this.ops.rotRight(node, dt);
     }
@@ -154,20 +194,22 @@ MotionControls = sh.Ashley.sysDef({
     this.ops.sftUp= sh.throttle(this.shiftUp.bind(this), this.throttleWait, {trailing:false});
   }
 
-});
+}, {
 
 /**
- * @memberof module:s/motion~MotionControls
+ * @memberof module:s/motion~Motions
  * @property {Number} Priority
  */
-MotionControls.Priority = xcfg.ftypes.Motion;
+Priority : xcfg.ftypes.Motion
+});
+
 
 /** @alias module:s/motion */
 const xbox = /** @lends xbox# */{
   /**
-   * @property {MotionControls} MotionControls
+   * @property {Motions} Motions
    */
-  MotionControls : MotionControls
+  Motions : Motions
 };
 
 

@@ -49,18 +49,13 @@ document.ccConfig = {
 '/public/ig/lib/game/asteroids/n/cobjs.js',
 '/public/ig/lib/game/asteroids/n/gnodes.js',
 
-'/public/ig/lib/game/asteroids/s/utils.js',
     '/public/ig/lib/game/asteroids/s/factory.js',
 
 '/public/ig/lib/game/asteroids/s/motion.js',
-'/public/ig/lib/game/asteroids/s/missiles.js',
-'/public/ig/lib/game/asteroids/s/moveastros.js',
-'/public/ig/lib/game/asteroids/s/movemissiles.js',
-'/public/ig/lib/game/asteroids/s/movelasers.js',
-'/public/ig/lib/game/asteroids/s/moveship.js',
-'/public/ig/lib/game/asteroids/s/collision.js',
-'/public/ig/lib/game/asteroids/s/supervisor.js',
-'/public/ig/lib/game/asteroids/s/resolution.js',
+'/public/ig/lib/game/asteroids/s/move.js',
+'/public/ig/lib/game/asteroids/s/collide.js',
+'/public/ig/lib/game/asteroids/s/stager.js',
+'/public/ig/lib/game/asteroids/s/resolve.js',
 '/public/ig/lib/game/asteroids/s/sysobjs.js',
 
       '/public/ig/lib/game/asteroids/p/hud.js',

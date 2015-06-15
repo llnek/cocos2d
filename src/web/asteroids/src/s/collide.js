@@ -12,14 +12,12 @@
 "use strict";/**
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
- * @requires s/utils
  * @requires n/gnodes
- * @module s/collision
+ * @module s/collide
  */
 
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
-import utils from 's/utils';
 import gnodes from 'n/gnodes';
 
 
@@ -28,14 +26,12 @@ sjs=sh.skarojs,
 csts= xcfg.csts,
 R = sjs.ramda,
 undef,
-
-/**
- * @class CollisionSystem
- */
-CollisionSystem = sh.Ashley.sysDef({
+//////////////////////////////////////////////////////////////////////////////
+/** * @class Collide */
+Collide = sh.Ashley.sysDef({
 
   /**
-   * @memberof module:s/collision~CollisionSystem
+   * @memberof module:s/collide~Collide
    * @method constructor
    * @param {Object} options
    */
@@ -44,7 +40,7 @@ CollisionSystem = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/collision~CollisionSystem
+   * @memberof module:s/collide~Collide
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -54,7 +50,7 @@ CollisionSystem = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/collision~CollisionSystem
+   * @memberof module:s/collide~Collide
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -64,7 +60,7 @@ CollisionSystem = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/collision~CollisionSystem
+   * @memberof module:s/collide~Collide
    * @method update
    * @param {Number} dt
    */
@@ -97,7 +93,7 @@ CollisionSystem = sh.Ashley.sysDef({
    */
   checkMissilesRocks() {
     const me=this;
-    sh.pools.Missiles.iter((m) => {
+    sh.pools.Missiles.iter( m => {
       if (m.status && m.HP > 0) {
         sh.pools.Astros3.iter((a) => {
           if (a.status && me.collide(m,a)) {
@@ -132,7 +128,7 @@ CollisionSystem = sh.Ashley.sysDef({
   checkShipBombs(node) {
     const ship = node.ship,
     me=this;
-    sh.pools.Lasers.iter((b) => {
+    sh.pools.Lasers.iter( b => {
       if (b.status &&
           ship.status &&
           me.collide(b,ship)) {
@@ -151,7 +147,7 @@ CollisionSystem = sh.Ashley.sysDef({
     me=this;
 
     if (ship.status && ship.HP > 0) {
-      sh.pools.Astros3.iter((a) => {
+      sh.pools.Astros3.iter( a => {
         if (a.status && me.collide(ship,a)) {
           ship.hurt();
           a.hurt();
@@ -159,7 +155,7 @@ CollisionSystem = sh.Ashley.sysDef({
       });
     }
     if (ship.status && ship.HP > 0) {
-      sh.pools.Astros2.iter((a) => {
+      sh.pools.Astros2.iter( a => {
         if (a.status && me.collide(ship,a)) {
           ship.hurt();
           a.hurt();
@@ -167,7 +163,7 @@ CollisionSystem = sh.Ashley.sysDef({
       });
     }
     if (ship.status && ship.HP > 0) {
-      sh.pools.Astros1.iter((a) => {
+      sh.pools.Astros1.iter( a => {
         if (a.status && me.collide(ship,a)) {
           ship.hurt();
           a.hurt();
@@ -176,20 +172,22 @@ CollisionSystem = sh.Ashley.sysDef({
     }
   }
 
-});
+}, {
 
 /**
- * @memberof module:s/collision~CollisionSystem
+ * @memberof module:s/collide~Collide
  * @property {Number} Priority
  */
-CollisionSystem.Priority = xcfg.ftypes.Collision;
+Priority : xcfg.ftypes.Collide
+});
 
-/** @alias module:s/collision */
+
+/** @alias module:s/collide */
 const xbox = /** @lends xbox# */{
   /**
-   * @property {CollisionSystem} CollisionSystem
+   * @property {Collide} Collide
    */
-  CollisionSystem : CollisionSystem
+  Collide : Collide
 };
 
 

@@ -14,7 +14,7 @@
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/pool
  * @requires n/cobjs
- * @module s/supervisor
+ * @module s/stager
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -26,24 +26,20 @@ let xcfg = sh.xcfg,
 sjs=sh.skarojs,
 csts= xcfg.csts,
 undef,
-
-/**
- * @class GameSupervisor
- */
-GameSupervisor = sh.Ashley.sysDef({
-
+//////////////////////////////////////////////////////////////////////////////
+/** * @class Stager */
+Stager = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method constructor
    * @param {Object} options
    */
   constructor(options) {
     this.state= options;
-    this.inited=false;
   },
 
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -51,7 +47,7 @@ GameSupervisor = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -59,18 +55,17 @@ GameSupervisor = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/stager~Stager
    * @method update
    * @param {Number} dt
    */
   update(dt) {
+    if (ccsx.isTransitioning()) { return false; }
     if (! this.inited) {
       this.onceOnly();
       this.inited=true;
-    } else {
     }
   },
-
   /**
    * @method onceOnly
    * @private
@@ -91,53 +86,51 @@ GameSupervisor = sh.Ashley.sysDef({
     sh.factory.createAsteroids(csts.P_AS1);
     sh.factory.createShip();
 
-
     //ccsx.onTouchOne(this.ebus);
     //ccsx.onMouse(this.ebus);
     sh.main.pkInput();
   },
-
   /**
    * @method initAsteroidSizes
    * @private
    */
   initAsteroidSizes() {
-    this.state.astro3 = ccsx.createSprite('rock_small.png').getContentSize();
-    this.state.astro2 = ccsx.createSprite('rock_med.png').getContentSize();
-    this.state.astro1 = ccsx.createSprite('rock_large.png').getContentSize();
+    this.state.astro3 = ccsx.csize('rock_small.png');
+    this.state.astro2 = ccsx.csize('rock_med.png');
+    this.state.astro1 = ccsx.csize('rock_large.png');
   },
-
   /**
    * @method initPlayerSize
    * @private
    */
   initPlayerSize() {
-    this.state.playerSize = ccsx.createSprite('rship_0.png').getContentSize();
+    this.state.playerSize = ccsx.csize('rship_0.png');
   },
-
   /**
    * @method initUfoSize
    * @private
    */
   initUfoSize() {
-    this.state.ufoSize = ccsx.createSprite('ufo.png').getContentSize();
+    this.state.ufoSize = ccsx.csize('ufo.png');
   }
 
-});
+}, {
 
 /**
- * @memberof module:s/supervisor~GameSupervisor
+ * @memberof module:s/stager~Stager
  * @property {Number} Priority
  */
-GameSupervisor.Priority = xcfg.ftypes.PreUpdate;
+Priority : xcfg.ftypes.PreUpdate
+});
 
-/** @alias module:s/supervisor */
+
+/** @alias module:s/stager */
 const xbox = /** @lends xbox# */{
 
   /**
-   * @property {GameSupervisor} GameSupervisor
+   * @property {Stager} Stager
    */
-  GameSupervisor : GameSupervisor
+  Stager : Stager
 };
 
 

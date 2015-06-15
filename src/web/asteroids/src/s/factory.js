@@ -28,12 +28,9 @@ sjs=sh.skarojs,
 csts= xcfg.csts,
 R = sjs.ramda,
 undef,
-
-/**
- * @class EntityFactory
- */
+//////////////////////////////////////////////////////////////////////////////
+/** * @class EntityFactory */
 EntityFactory = sh.Ashley.casDef({
-
   /**
    * @memberof module:s/factory~EntityFactory
    * @method constructor
@@ -43,7 +40,6 @@ EntityFactory = sh.Ashley.casDef({
     this.state = options;
     this.engine=engine;
   },
-
   /**
    * @memberof module:s/factory~EntityFactory
    * @method createMissiles
@@ -57,7 +53,6 @@ EntityFactory = sh.Ashley.casDef({
       return new cobjs.Missile(sp);
     }, count || 36);
   },
-
   /**
    * @memberof module:s/factory~EntityFactory
    * @method createLasers
@@ -71,7 +66,6 @@ EntityFactory = sh.Ashley.casDef({
       return new cobjs.Laser(sp);
     }, count || 36);
   },
-
   /**
    * @memberof module:s/factory~EntityFactory
    * @method createShip
@@ -98,7 +92,6 @@ EntityFactory = sh.Ashley.casDef({
     ent.add(new cobjs.Rotation(deg));
     this.engine.addEntity(ent);
   },
-
   /**
    * @memberof module:s/factory~EntityFactory
    * @method bornShip
@@ -127,14 +120,13 @@ EntityFactory = sh.Ashley.casDef({
 
     this.state.ship.inflate({ x: x, y: y });
   },
-
   /**
    * @memberof module:s/factory~EntityFactory
    * @method createAsteroids
    * @param {Number} rank
    */
   createAsteroids(rank) {
-    let cfg = sh.getLevelCfg(this.state.level),
+    let cfg = sh.main.getLCfg(),
     B= this.state.world,
     pool,
     ht = this.state.astro1.height,
@@ -150,7 +142,7 @@ EntityFactory = sh.Ashley.casDef({
 
     sjs.loggr.debug('about to create more asteroids - ' + rank);
 
-    pool.preSet((pl) => {
+    pool.preSet( pl => {
       let wz = ccsx.vrect(),
       cw = ccsx.center(),
       sp, x, y,
@@ -181,22 +173,21 @@ EntityFactory = sh.Ashley.casDef({
 
     sjs.loggr.debug('CREATED more asteroids - ' + rank);
   },
-
   /**
    * @private
    */
   maybeOverlap(ship) {
-    let rc= R.any((z) => {
+    let rc= R.any( z => {
       return z.status ? sh.isIntersect(ship, ccsx.bbox4(z.sprite)) : false;
     }, sh.pools.Astros1.pool);
     if (rc) { return true; }
 
-    rc= R.any((z) => {
+    rc= R.any( z => {
       return z.status ? sh.isIntersect(ship, ccsx.bbox4(z.sprite)) : false;
     }, sh.pools.Astros2.pool);
     if (rc) { return true; }
 
-    rc= R.any((z) => {
+    rc= R.any( z => {
       return z.status ? sh.isIntersect(ship, ccsx.bbox4(z.sprite)) : false;
     }, sh.pools.Astros3.pool);
     if (rc) { return true; }

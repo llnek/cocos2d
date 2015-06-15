@@ -46,8 +46,6 @@ GameLayer = scenes.XGameLayer.extend({
    */
   pkInput() {
     ccsx.onKeyPolls(this.keyboard);
-    //ccsx.onTouchOne(this.ebus);
-    //ccsx.onMouse(this.ebus);
   },
   /**
    * @method replay
@@ -60,25 +58,12 @@ GameLayer = scenes.XGameLayer.extend({
    */
   play(newFlag) {
 
+    this.initEngine(sobjs.systems, sobjs.entityFactory);
     this.reset(newFlag);
-    this.newFlow();
 
-    sh.factory=new sobjs.Factory(this.engine, this.options);
     this.options.world= this.getEnclosureBox();
     this.options.level=1;
     this.options.running=true;
-
-    R.forEach( z => {
-      this.engine.addSystem(new (z)(this.options), z.Priority);
-    },
-    [ sobjs.Supervisor,
-      sobjs.Motions,
-      sobjs.MissileControl,
-      sobjs.MoveAsteroids,
-      sobjs.MovementShip,
-      sobjs.MoveMissiles,
-      sobjs.Collisions,
-      sobjs.Resolution ]);
   },
   /**
    * @method reset
@@ -166,34 +151,34 @@ const xbox= /** @lends xbox# */{
       huds.HUDLayer
     ]).reify(options);
 
-    scene.onmsg('/game/missiles/killed', (t, msg) => {
+    scene.onmsg('/game/missiles/killed', msg => {
       sh.main.onMissileKilled(msg);
     }).
-    onmsg('/game/ufos/killed', (t, msg) => {
+    onmsg('/game/ufos/killed', msg => {
       sh.main.onUfoKilled(msg);
     }).
-    onmsg('/game/players/shoot',(t,msg) => {
+    onmsg('/game/players/shoot', msg => {
       sh.main.onFireMissile(msg);
     }).
-    onmsg('/game/players/killed',(t,msg) => {
+    onmsg('/game/players/killed', msg => {
       sh.main.onPlayerKilled(msg);
     }).
-    onmsg('/game/ufos/shoot',(t,msg) => {
+    onmsg('/game/ufos/shoot', msg => {
       sh.main.onFireLaser(msg);
     }).
-    onmsg('/game/stones/create',(t,msg) => {
+    onmsg('/game/stones/create', msg => {
       sh.main.onCreateStones(msg);
     }).
-    onmsg('/game/rocks/create',(t,msg) => {
+    onmsg('/game/rocks/create', msg => {
       sh.main.onCreateRocks(msg);
     }).
-    onmsg('/game/players/earnscore', (t, msg) => {
+    onmsg('/game/players/earnscore', msg => {
       sh.main.onEarnScore(msg);
     }).
-    onmsg('/hud/showmenu',(t,msg) => {
+    onmsg('/hud/showmenu', msg => {
       scenes.showMenu();
     }).
-    onmsg('/hud/replay',(t,msg) => {
+    onmsg('/hud/replay', msg => {
       sh.main.replay();
     });
 
