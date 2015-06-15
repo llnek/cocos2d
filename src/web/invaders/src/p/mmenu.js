@@ -26,10 +26,7 @@ xcfg = sh.xcfg,
 csts= xcfg.csts,
 undef,
 //////////////////////////////////////////////////////////////////////////////
-/**
- * @extends module:zotohlab/asx/scenes.XMenuLayer
- * @MainMenuLayer
- */
+/** * @MainMenuLayer */
 MainMenuLayer = scenes.XMenuLayer.extend({
   /**
    * @method title
@@ -96,7 +93,7 @@ MainMenuLayer = scenes.XMenuLayer.extend({
    * @private
    */
   onplay(msg) {
-    cc.director.runScene( sh.protos[sh.ptypes.game].reify(msg));
+    ccsx.runScene( sh.protos[sh.ptypes.game].reify(msg));
   }
 
 });

@@ -46,8 +46,8 @@ xbox = /** @lends xbox# */{
    * @param {Ash.Engine}
    * @return {EntityFactory}
    */
-  entityFactory(engine) {
-    sh.factory = f.EntityFactory(engine);
+  entityFactory(engine, options) {
+    sh.factory = new f.EntityFactory(engine, options);
     return sh.factory;
   }
 };

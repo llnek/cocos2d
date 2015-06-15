@@ -14,7 +14,7 @@
  * @requires zotohlab/asx/ccsx
  * @requires n/cobjs
  * @requires n/gnodes
- * @module s/resolution
+ * @module s/resolve
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -29,12 +29,10 @@ csts= xcfg.csts,
 R = sjs.ramda,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @class Resolution
- */
-Resolution = sh.Ashley.sysDef({
+/** * @class Resolve */
+Resolve = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/resolution~Resolution
+   * @memberof module:s/resolve~Resolve
    * @method constructor
    * @param {Object} options
    */
@@ -42,7 +40,7 @@ Resolution = sh.Ashley.sysDef({
     this.state= options;
   },
   /**
-   * @memberof module:s/resolution~Resolution
+   * @memberof module:s/resolve~Resolve
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -52,7 +50,7 @@ Resolution = sh.Ashley.sysDef({
     this.engine=undef;
   },
   /**
-   * @memberof module:s/resolution~Resolution
+   * @memberof module:s/resolve~Resolve
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -62,7 +60,7 @@ Resolution = sh.Ashley.sysDef({
     this.engine=engine;
   },
   /**
-   * @memberof module:s/resolution~Resolution
+   * @memberof module:s/resolve~Resolve
    * @method update
    * @param {Number} dt
    */
@@ -83,7 +81,7 @@ Resolution = sh.Ashley.sysDef({
     const mss = sh.pools.Missiles,
     ht = ccsx.vrect().height;
 
-    mss.iter((m) => {
+    mss.iter( m => {
       if (m.status) {
         if (m.pos().y >= ht ||
             m.HP <= 0) {
@@ -100,7 +98,7 @@ Resolution = sh.Ashley.sysDef({
     const bbs = sh.pools.Bombs,
     bt = 0;
 
-    bbs.iter((b) => {
+    bbs.iter( b => {
       if (b.status) {
         if (b.pos().y <= bt ||
             b.HP <= 0) {
@@ -116,7 +114,7 @@ Resolution = sh.Ashley.sysDef({
   checkAliens(node) {
     const sqad= node.aliens;
 
-    R.forEach((en) => {
+    R.forEach( en => {
       if (en.status) {
         if (en.HP <= 0) {
           sh.fire('/game/players/earnscore', {
@@ -140,20 +138,22 @@ Resolution = sh.Ashley.sysDef({
     }
   }
 
-});
+}, {
 
 /**
- * @memberof module:s/resolution~Resolution
+ * @memberof module:s/resolve~Resolve
  * @property {Number} Priority
  */
-Resolution.Priority= xcfg.ftypes.Resolve;
+Priority: xcfg.ftypes.Resolve
+});
 
-/** @alias module:s/resolution */
+
+/** @alias module:s/resolve */
 const xbox = /** @lends xbox# */{
   /**
-   * @property {Resolution}  Resolution
+   * @property {Resolve}  Resolve
    */
-  Resolution : Resolution
+  Resolve : Resolve
 }
 
 

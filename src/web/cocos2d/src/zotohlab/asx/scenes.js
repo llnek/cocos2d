@@ -790,7 +790,7 @@ const XGameLayer = XLayer.extend({
   initEngine(syss, fact) {
     this.engine = this.newFlow();
     if (sjs.isfunc(fact)) {
-      fact(this.engine);
+      fact(this.engine, this.options);
     }
     R.forEach( z => {
       this.engine.addSystem(new (z)(this.options), z.Priority);

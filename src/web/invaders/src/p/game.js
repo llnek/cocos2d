@@ -13,7 +13,6 @@
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/scenes
- * @requires s/utils
  * @requires s/sysobjs
  * @requires p/hud
  * @module p/game
@@ -22,7 +21,6 @@
 import scenes from 'zotohlab/asx/scenes';
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
-import utils from 's/utils';
 import sobjs from 's/sysobjs';
 import huds from 'p/hud';
 
@@ -49,8 +47,6 @@ GameLayer = scenes.XGameLayer.extend({
    */
   pkInput() {
     ccsx.onKeyPolls(this.keyboard);
-    //ccsx.onTouchOne(this.ebus);
-    //ccsx.onMouse(this.ebus);
   },
   /**
    * @method reset
@@ -83,25 +79,10 @@ GameLayer = scenes.XGameLayer.extend({
    */
   play(newFlag) {
 
+    this.initEngine(sobjs.systems, sobjs.entityFactory);
     this.reset(newFlag);
-    this.newFlow();
 
-    sh.factory=new sobjs.Factory(this.engine,
-                                 this.options);
     this.options.running = true;
-
-    R.forEach( z => {
-      this.engine.addSystem(new (z)(this.options), z.Priority);
-    },
-    [ sobjs.Supervisor,
-      sobjs.Motions,
-      sobjs.CannonControl,
-      sobjs.MovementAliens,
-      sobjs.MovementBombs,
-      sobjs.MovementShip,
-      sobjs.MovementMissiles,
-      sobjs.CollisionSystem,
-      sobjs.Resolution ]);
   },
   /**
    * @method spawnPlayer
@@ -167,16 +148,16 @@ const xbox= /** @lends xbox# */{
       GameLayer,
       huds.HUDLayer ]).reify(options);
 
-    scene.onmsg('/game/players/earnscore', (topic, msg) => {
+    scene.onmsg('/game/players/earnscore',  msg => {
       sh.main.onEarnScore(msg);
     }).
-    onmsg('/hud/showmenu', (t,msg) => {
+    onmsg('/hud/showmenu', msg => {
       scenes.showMenu();
     }).
-    onmsg('/hud/replay', (t,msg) => {
+    onmsg('/hud/replay', msg => {
       sh.main.replay();
     }).
-    onmsg('/game/players/killed', (topic, msg) => {
+    onmsg('/game/players/killed',  msg => {
       sh.main.onPlayerKilled(msg);
     });
 

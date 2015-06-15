@@ -14,12 +14,11 @@
  * @requires zotohlab/asx/ccsx
  * @requires s/utils
  * @requires n/gnodes
- * @module s/movealiens
+ * @module s/aliens
  */
 
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
-import utils from 's/utils';
 import gnodes from 'n/gnodes';
 
 let sjs= sh.skarojs,
@@ -28,12 +27,10 @@ csts= xcfg.csts,
 R = sjs.ramda,
 undef,
 //////////////////////////////////////////////////////////////////////////
-/**
- * @class MovementAiens
- */
-MovementAliens = sh.Ashley.sysDef({
+/** * @class Aliens */
+Aliens = sh.Ashley.sysDef({
   /**
-   * @memberof module:s/movealiens~MovementAliens
+   * @memberof module:s/aliens~Aliens
    * @method constructor
    * @param {Object} options
    */
@@ -41,7 +38,7 @@ MovementAliens = sh.Ashley.sysDef({
     this.state= options;
   },
   /**
-   * @memberof module:s/movealiens~MovementAliens
+   * @memberof module:s/aliens~Aliens
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -49,7 +46,7 @@ MovementAliens = sh.Ashley.sysDef({
     this.alienMotions= undef;
   },
   /**
-   * @memberof module:s/movealiens~MovementAliens
+   * @memberof module:s/aliens~Aliens
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -57,7 +54,7 @@ MovementAliens = sh.Ashley.sysDef({
     this.alienMotions = engine.getNodeList(gnodes.AlienMotionNode);
   },
   /**
-   * @memberof module:s/movealiens~MovementAliens
+   * @memberof module:s/aliens~Aliens
    * @method update
    * @param {Number} dt
    */
@@ -76,11 +73,12 @@ MovementAliens = sh.Ashley.sysDef({
    */
   processMovement(node,dt) {
     const lpr = node.looper,
-    sqad= node.aliens;
+    sqad= node.aliens,
+    tm= lpr.timers[0];
 
-    if (ccsx.timerDone(lpr.timers[0])) {
+    if (ccsx.timerDone(tm)) {
       this.maybeShuffleAliens(sqad);
-      lpr.timers[0]=ccsx.undoTimer(lpr.timers[0]);
+      lpr.timers[0]=ccsx.undoTimer(tm);
     }
   },
   /**
@@ -89,11 +87,12 @@ MovementAliens = sh.Ashley.sysDef({
    */
   processBombs(node,dt) {
     const lpr = node.looper,
-    sqad= node.aliens;
+    sqad= node.aliens,
+    tm= lpr.timers[1];
 
-    if (ccsx.timerDone(lpr.timers[1])) {
+    if (ccsx.timerDone(tm)) {
       this.checkBomb(sqad);
-      lpr.timers[1]=ccsx.undoTimer(lpr.timers[1]);
+      lpr.timers[1]=ccsx.undoTimer(tm);
     }
   },
   /**
@@ -178,16 +177,15 @@ MovementAliens = sh.Ashley.sysDef({
     wz= ccsx.vrect(),
     wb= ccsx.vbox();
     a.sprite.setPosition(pos.x,  pos.y - delta);
-                         //pos.y - ccsx.getHeight(a.sprite) - (2/480 * wz.height));
   },
   /**
    * @method doShuffle
    * @private
    */
   doShuffle(sqad) {
-    const rc = R.filter((a) => {
+    const rc = R.filter( a => {
       return a.status; }, sqad.aliens.pool);
-    R.forEach((a) => {
+    R.forEach( a => {
       this.shuffleOneAlien(a,sqad.stepx); }, rc);
     return rc.length > 0;
   },
@@ -196,10 +194,10 @@ MovementAliens = sh.Ashley.sysDef({
    * @private
    */
   doForward(sqad) {
-    const rc = R.filter((a) => {
+    const rc = R.filter( a => {
       return a.status; }, sqad.aliens.pool),
     delta= Math.abs(sqad.stepx);
-    R.forEach((a) => {
+    R.forEach( a => {
       this.forwardOneAlien(a, delta); }, rc);
     sqad.stepx = - sqad.stepx;
     return rc.length > 0;
@@ -209,7 +207,7 @@ MovementAliens = sh.Ashley.sysDef({
    * @private
    */
   findMinX(sqad) {
-    return R.minBy((a) => {
+    return R.minBy( a => {
       if (a.status) {
         return ccsx.getLeft(a.sprite);
       } else {
@@ -222,7 +220,7 @@ MovementAliens = sh.Ashley.sysDef({
    * @private
    */
   findMaxX(sqad) {
-    return R.maxBy((a) => {
+    return R.maxBy( a => {
       if (a.status) {
         return ccsx.getRight(a.sprite);
       } else {
@@ -231,22 +229,23 @@ MovementAliens = sh.Ashley.sysDef({
     }, sqad.aliens.pool);
   }
 
-});
+}, {
 
 /**
- * @memberof module:s/movealiens~MovementAliens
+ * @memberof module:s/aliens~Aliens
  * @property {Number} Priority
  */
-MovementAliens.Priority= xcfg.ftypes.Move;
+Priority: xcfg.ftypes.Motion
+});
 
 
-/** @alias module:s/movealiens */
+
+/** @alias module:s/aliens */
 const xbox = /** @lends xbox# */{
-
   /**
-   * @property {MovementAliens} MovementAliens
+   * @property {Aliens} Aliens
    */
-  MovementAliens : MovementAliens
+  Aliens : Aliens
 };
 
 
