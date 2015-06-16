@@ -173,6 +173,13 @@ GameLayer = scenes.XGameLayer.extend({
     this.options.colors[csts.P1_COLOR] = p1;
     this.options.colors[csts.P2_COLOR] = p2;
   },
+  /**
+   * @method overAndDone
+   * @private
+   */
+  overAndDone(winner) {
+    this.getHUD().endGame(winner);
+  }
 
 });
 
@@ -207,7 +214,7 @@ const xbox = /** @lends xbox# */{
       sh.main.play(false);
     }).
     onmsg('/net/stop', msg => {
-      sh.main.getHUD().endGame(msg.status);
+      sh.main.overAndDone(msg.status);
     }).
     onmsg('/hud/timer/hide', msg => {
       sh.main.getHUD().killTimer();
@@ -216,7 +223,7 @@ const xbox = /** @lends xbox# */{
       sh.main.getHUD().updateScore(msg.color, msg.score);
     }).
     onmsg('/hud/end', msg => {
-      sh.main.getHUD().endGame(msg.winner);
+      sh.main.overAndDone(msg.winner);
     }).
     onmsg('/hud/update', msg => {
       sh.main.getHUD().update(msg.running, msg.pnum);
