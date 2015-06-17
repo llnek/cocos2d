@@ -27,7 +27,7 @@
   (:import  [org.apache.commons.io FileUtils]
             [com.zotohlab.frwk.io IO]
             [java.io File]
-            [java.util Date ArrayList List HashMap Map]))
+            [java.util Date]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)

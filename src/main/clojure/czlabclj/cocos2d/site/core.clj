@@ -9,7 +9,6 @@
 ;; this software.
 ;; Copyright (c) 2013, Ken Leung. All rights reserved.
 
-
 (ns  ^{:doc ""
        :author "kenl" }
 
@@ -34,8 +33,7 @@
              WorkFlow Job PTask]
             [com.zotohlab.skaro.io HTTPEvent HTTPResult]
             [com.zotohlab.frwk.io IO XData]
-            [java.io File]
-            [java.util Date ArrayList List HashMap Map]))
+            [java.io File]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -96,48 +94,40 @@
 ;;
 (defn GetDftModel "Return a default object for Freemarker processing."
 
-  ^Map
   [^HTTPEvent evt]
 
-  (let [tags (HashMap.)
-        dm (HashMap.)
-        pf (HashMap.) ]
-    (doto dm
-      (.put "title" "ZotohLab | Fun &amp; Games.")
-      (.put "encoding" "UTF-8")
-      (.put "description" "Hello World!")
-      (.put "stylesheets" (ArrayList.))
-      (.put "scripts" (ArrayList.))
-      (.put "metatags" tags)
-      (.put "appkey" (GetAppKeyFromEvent evt))
-      (.put "profile" pf)
-      (.put "body" (HashMap.)))
-    (doto tags
-      (.put "keywords" "content=\"web browser games mobile ios android windows phone\"")
-      (.put "description" "content=\"Hello World!\"")
-      (.put "viewport" "content=\"width=device-width, initial-scale=1.0\""))
-    (.put pf "user" "Guest")
-    (when-let [ck (.getCookie evt (name *USER-FLAG*)) ]
-      (let [s (strim (.getValue ck)) ]
-        (.put pf "user" s)))
-    dm
+  (let [ck (.getCookie evt (name *USER-FLAG*))
+        uid (if (nil? ck)
+              "Guest"
+              (strim (.getValue ck)))]
+    {
+      :title "ZotohLab | Fun &amp; Games."
+      :encoding "UTF-8"
+      :description "Hello World!"
+      :stylesheets []
+      :scripts []
+      :metatags {
+        :keywords "content=\"web browser games mobile ios android windows phone\""
+        :description "content=\"Hello World!\""
+        :viewport "content=\"width=device-width, initial-scale=1.0\""
+      }
+      :appkey (GetAppKeyFromEvent evt)
+      :profile { :user uid }
+      :body {}
+    }
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- interpolateIndexPage ""
 
-  ^Map
   [^HTTPEvent evt]
 
   (let [dm (GetDftModel evt)
-        {bd "body"
-         jss "scripts"
-         css "stylesheets"} dm]
-    (doto ^Map bd
-      (.put "doors" @DOORS)
-      (.put "content" "/main/index.ftl"))
-    dm
+        bd (:body dm)]
+    (assoc dm :body (merge bd
+                           {:doors @DOORS
+                            :content "/main/index.ftl"}))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

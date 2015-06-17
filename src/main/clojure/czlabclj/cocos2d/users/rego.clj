@@ -30,8 +30,7 @@
             [com.zotohlab.skaro.io HTTPEvent HTTPResult]
             [com.zotohlab.frwk.io XData]
             [com.zotohlab.frwk.server Emitter]
-            [java.io File]
-            [java.util Date ArrayList List HashMap Map]))
+            [java.io File]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -41,57 +40,42 @@
 ;;
 (defn- interpolateRegisterPage ""
 
-  ^Map
   [^HTTPEvent evt ^String csrf]
 
   (let [^czlabclj.tardis.io.webss.WebSS
         mvs (.getSession evt)
         dm (GetDftModel evt)
-        {bd "body"
-         jss "scripts"
-         css "stylesheets"} dm]
-    (doto ^Map bd
-      (.put "content" "/main/users/register.ftl")
-      (.put "csrf" csrf))
-    dm
+        bd (:body dm)]
+    (assoc dm :body (merge bd {:content "/main/users/register.ftl"
+                               :csrf csrf}))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- interpolateLoginPage ""
 
-  ^Map
   [^HTTPEvent evt ^String csrf]
 
   (let [^czlabclj.tardis.io.webss.WebSS
         mvs (.getSession evt)
         dm (GetDftModel evt)
-        {bd "body"
-         jss "scripts"
-         css "stylesheets"} dm]
-    (doto ^Map bd
-      (.put "content" "/main/users/login.ftl")
-      (.put "csrf" csrf))
-    dm
+        bd (:body dm) ]
+    (assoc dm :body (merge bd {:content "/main/users/login.ftl"
+                               :csrf csrf}))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- interpolateForgotPage ""
 
-  ^Map
   [^HTTPEvent evt ^String csrf]
 
   (let [^czlabclj.tardis.io.webss.WebSS
         mvs (.getSession evt)
         dm (GetDftModel evt)
-        {bd "body"
-         jss "scripts"
-         css "stylesheets"} dm]
-    (doto ^Map bd
-      (.put "content" "/main/users/forgot.ftl")
-      (.put "csrf" csrf))
-    dm
+        bd (:body dm) ]
+    (assoc dm :body (merge bd {:content "/main/users/forgot.ftl" 
+                               :csrf csrf}))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

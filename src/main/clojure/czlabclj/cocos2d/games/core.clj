@@ -28,8 +28,7 @@
             [com.zotohlab.wflow Activity
              WorkFlow Job PTask]
             [com.zotohlab.frwk.server Emitter]
-            [com.zotohlab.skaro.io HTTPEvent HTTPResult]
-            [java.util Date ArrayList List HashMap Map]))
+            [com.zotohlab.skaro.io HTTPEvent HTTPResult]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -39,69 +38,60 @@
 ;;
 (defn- interpolateBrowsePage ""
 
-  ^Map
   [^HTTPEvent evt]
 
   (let [dm (GetDftModel evt)
-        {css "stylesheets"
-         bd "body"
-         jss "scripts"} dm]
-    (doto ^Map bd
-      (.put "games" (GetGamesAsListForUI))
-      (.put "content" "/main/games/games.ftl"))
-    dm
+        bd (:body dm) ]
+    (assoc dm :body (merge bd {:games (GetGamesAsListForUI)
+                               :content "/main/games/games.ftl"}))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- interpolateArenaPage ""
 
-  ^Map
   [^HTTPEvent evt]
 
   (let [mf ((GetGamesAsHash) (.getUri evt))
         dm (GetDftModel evt)
-        {tags "metatags"
-         bd  "body"
-         jss "scripts"
-         css "stylesheets"} dm]
-    (doto ^Map tags
-      (.put "viewport" "content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\"")
-      (.put "full-screen" "content=\"yes\"")
-      (.put "x5-fullscreen" "content=\"true\"")
-      (.put "360-fullscreen" "content=\"true\"")
-      (.put "apple-mobile-web-app-capable" "content=\"yes\""))
-    (doto ^Map bd
-      (.put "games" (GetGamesAsListForUI))
-      (.put "content" "/main/games/arena.ftl"))
-    (when-not (nil? mf)
-      (.put ^Map tags
-            "screen-orientation"
-            (str "content=\"" (:layout mf) "\""))
-      (.put ^Map bd "gameid" (:uuid mf)))
-    dm
+        {tags :metatags bd :body} dm]
+
+    (-> dm
+        (assoc :metatags
+               (merge tags {:viewport "content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\""
+                            :full-screen "content=\"yes\""
+                            :x5-fullscreen "content=\"true\""
+                            :360-fullscreen "content=\"true\""
+                            :apple-mobile-web-app-capable "content=\"yes\"" }
+                           (if-not (nil? mf)
+                             {:screen-orientation
+                              (str "content=\"" (:layout mf) "\"") }
+                             {})))
+        (assoc :body
+               (merge bd {:games (GetGamesAsListForUI)
+                          :content "/main/games/arena.ftl" }
+                      (if-not (nil? mf)
+                        {:gameid (:uuid mf)}
+                        {}))))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- interpolatePicksPage ""
 
-  ^Map
   [^HTTPEvent evt]
 
   (let [dm (GetDftModel evt)
-        {bd "body"
-         jss "scripts"
-         css "stylesheets"} dm]
-    (doto ^List css
-      (.add "/public/vendors/owl-carousel/owl.carousel.css")
-      (.add "/public/vendors/owl-carousel/owl.theme.css"))
-    (doto ^List jss
-      (.add "/public/vendors/owl-carousel/owl.carousel.min.js"))
-    (doto ^Map bd
-      (.put "picks" (GetGamesAsListForUI))
-      (.put "content" "/main/games/picks.ftl"))
-    dm
+        {bd :body jss :scripts css :stylesheets} dm]
+    (-> dm
+        (assoc :stylesheets (-> css
+                                (conj "/public/vendors/owl-carousel/owl.carousel.css")
+                                (conj "/public/vendors/owl-carousel/owl.theme.css")))
+        (assoc :scripts (-> jss
+                            (conj "/public/vendors/owl-carousel/owl.carousel.min.js")))
+        (assoc :body (-> bd
+                         (assoc :picks (GetGamesAsListForUI))
+                         (assoc :content "/main/games/picks.ftl"))))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
