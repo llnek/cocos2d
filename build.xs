@@ -1,5 +1,5 @@
 skaroHome=/wdrive/myspace/skaro/a.out/0/pack
-bldDir=a.out
+bldDir=b.out
 prj=0
 wjs=webscripts
 wcs=webstyles
