@@ -766,113 +766,113 @@ import java.util.UUID
         (ant/ExecTarget))
   ))
 
-def cocos_new(appid) {
-  ant.mkdir (dir: "${basedir}/cocos")
-  ant.exec (executable: 'cocos') {
-    arg (value: 'new')
-    arg (value: '-l')
-    arg (value: 'js')
-    arg (value: '-t')
-    arg (value: 'runtime')
-    arg (value: '--ios-bundleid')
-    arg (value: "com.zotohlab.p.${appid}")
-    arg (value: '-d')
-    arg (value: "${basedir}/cocos")
-    arg (value: "${appid}")
-  }
-}
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(deftask cocos+new ""
+  [appid]
+  (let [pj (ant/AntProject)
+        t1 (ant/AntMkdir pj {:dir (str @basedir "/cocos")})
+        t2 (->> [[:argvalues ["new"
+                              "-l"
+                              "js"
+                              "-t"
+                              "runtime"
+                              "--ios-bundleid"
+                              (str "com.zotohlab.p." appid)
+                              "-d"
+                              (str @basedir "/cocos")
+                              appid]]]
+                (ant/AntExec pj {:executable "cocos"} )) ]
+    (-> (ant/ProjAntTasks pj "cocos+new" t1 t2)
+        (ant/ExecTarget))
+  ))
 
-target (deployapp: '') {
-  ant.input (message: "Enter app-name: ", addproperty: 'appid')
-  final vendors= "${basedir}/public/vendors"
-  final despath= "${basedir}/cocos/${appid}"
-  final srcpath= "${webDir}/${appid}"
-  final des= new File("${despath}")
-  final src= new File("${srcpath}")
-  final dd2 = new File(des, "res")
-  final dd1 = new File(des, "src")
-  final dd2path= dd2.getCanonicalPath()
-  final dd1path= dd1.getCanonicalPath()
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(deftask deployapp ""
+  []
+  (let [srcpath (str @webDir "/" appid)
+        src (io/file srcpath)]
+    (if-not (.exists src)
+      (format "Invalid game: %s" appid)
+      (deploy->app appid))
+  ))
 
-  if ( ! src.exists()) {
-    println "Invalid game: ${appid}"
-    return
-  }
-  if ( ! des.exists()) {
-    cocos_new("${appid}")
-  }
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- deploy->app ""
 
-  println "Deploying game: ${appid}"
-  dd2.deleteDir()
-  dd1.deleteDir()
-  dd2.mkdirs()
-  dd1.mkdirs()
-  // resources
-  ['hdr','hds','sd','sfx'].each { s ->
-    ant.copy (todir: dd2path+"/${s}/cocos2d") {
-      fileset (dir: "${webDir}/cocos2d/res/${s}", erroronmissingdir: false)
-    }
-    ant.copy (todir: dd2path+"/${s}/${appid}") {
-      fileset (dir: "${srcpath}/res/${s}", erroronmissingdir: false)
-    }
-  }
-  // js code
-  ant.copy (todir: "${dd1path}/zotohlab") {
-    fileset (dir: "${webDir}/cocos2d/src/zotohlab")
-  }
-  ant.copy (todir: "${dd1path}/${appid}") {
-    fileset (dir: "${srcpath}/src")
-  }
-  ant.copy (todir: "${dd1path}/helpers") {
-    fileset (dir: "${vendors}/helpers") {
-      include (name: 'dbg.js')
-    }
-  }
-  ['almond','js-signals','ash-js','rxjs','ramda','cherimoia', 'l10njs', 'cookies','mustache'].each { d ->
-    ant.copy (todir: "${dd1path}/${d}") {
-      fileset (dir: "${vendors}/${d}")
-    }
-  }
-  // boot stuff
-  ant.copy (todir: "${despath}", overwrite: true) {
-    fileset (dir: "${srcDir}/resources") {
-      include (name: 'project.json')
-      include (name: 'main.js')
-      include (name: 'index.html')
-    }
-  }
-  final j1= new JsonParser().parse(FileUtils.readFileToString(
-    new File("${srcDir}/resources/project.json"),"utf-8"))
-  final j2= new JsonParser().parse(FileUtils.readFileToString(
-    new File("${srcpath}/src/project.json"),"utf-8"))
-  j1.getAsJsonArray('jsList').addAll( j2.getAsJsonArray('jsList'))
-  FileUtils.writeStringToFile(new File("${despath}/project.json"),
-  new GsonBuilder().setPrettyPrinting().create().toJson(j1), "utf-8")
-  doJiggleTheIndexFile(appid,"${basedir}/cocos/${appid}",true)
+  [appid]
 
-}
+  (let [vendors (str @basedir "/public/vendors")
+        despath (str @basedir "/cocos/" appid)
+        srcpath (str @webDir "/" appid)
+        des (io/file despath)
+        src (io/file srcpath)
+        dd2 (io/file des "res")
+        dd1 (io/file des "src")
+        dd2path (.getCanonicalPath dd2)
+        dd1path (.getCanonicalPath dd1) ]
 
-//////////////////////////////////////////////////////////////////////////////
-//
-target (android: '') {
-input (message: "Enter app-name: ", addproperty: 'appid')
-final despath= "${basedir}/cocos/${appid}"
-final des= new File("${despath}")
-if ( ! des.exists()) {
-  println "Invalid game: ${appid}"
-} else {
-  ant.exec (executable: 'cocos') {
-    arg (value: 'deploy')
-    arg (value: '-s')
-    arg (value: "${despath}")
-    arg (value: '-p')
-    arg (value: 'android')
-    arg (value: '-m')
-    arg (value: 'release')
-  }
-  }
-}
+    (when-not (.exists des) (cocos+new appid))
+    (format "Deploying game: %s" appid)
+    (ant/CleanDir dd2)
+    (ant/CleanDir dd1)
+    ;; resources
+    (doseq [s ["hdr" "hds" "sd" "sfx"]]
+      (->> [[:fileset {:dir (str @webDir "/cocos2d/res/" s)
+                       :errorOnMissingDir false} []]]
+           (ant/AntCopy pj {:todir (str dd2path "/" s "/cocos2d") } [])
+           (conj @ts)
+           (reset! ts))
+      (->> [[:fileset {:dir (str @srcpath "/res/" s)
+                       :errorOnMissingDir false} []]]
+           (ant/AntCopy pj {:todir (str dd2path "/" s "/" appid)} [])
+           (conj @ts)
+           (reset! ts)))
+    ;; js code
+    (->> [[:fileset {:dir (str @webDir "/cocos2d/src/zotohlab")} []]]
+      (ant/AntCopy pj {:todir (str dd1path "/zotohlab")} )
+      (conj @ts)
+      (reset! ts))
+    (->> [[:fileset {:dir (str srcpath "/src")} []]]
+      (ant/AntCopy pj {:todir (str dd1path "/" appid)} )
+      (conj @ts)
+      (reset! ts))
+    (->> [[:fileset {:dir (str vendors "/helpers")}
+                    [[:include "dbg.js"]]]]
+      (ant/AntCopy pj {:todir (str dd1path "/helpers")})
+      (conj @ts)
+      (reset! ts))
 
+    (doseq [s ["almond" "js-signals" "ash-js"
+               "rxjs" "ramda" "cherimoia"
+               "l10njs" "cookies" "mustache"]]
+      (->> [[:fileset {:dir (str vendors "/" s)} []]]
+        (ant/AntCopy pf {:todir (str dd1path "/" s)})
+        (conj @ts)
+        (reset! ts)))
+    ;; boot stuff
+    (->> [[:fileset {:dir (str @srcDir "/resources")}
+                    [[:include "project.json"]
+                     [:include "main.js"]
+                     [:include "index.html"]]]]
+      (ant/AntCopy pf {:todir despath
+                       :overwrite true})
+      (conj @ts)
+      (reset! ts))
+
+    (let [j1 (-> (slurp (str @srcDir "/resources/project.json") :encoding "utf-8")
+                        (js/read-str :key-fn keyword))
+          j2 (-> (slurp (str srcpath "/src/project.json") :encoding "utf-8")
+                        (js-read-str :key-fn keyword)) ]
+      (->> (update-in j1
+                      [:jsList]
+                      #(concat % (:jsList j2)))
+           (js/write-str )
+           (spit (str despath "/project.json"))))
+    (jiggleTheIndexFile appid (str @basedir "/cocos/" appid) true)
+  ))
 
 //////////////////////////////////////////////////////////////////////////////
 // EOF
