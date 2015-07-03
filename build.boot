@@ -70,6 +70,14 @@ import java.util.UUID
                     CZPATH))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- cleanLocalJs ""
+
+  [wappid]
+
+  (ant/DeleteDir (io/file @webDir wappid "src" @bldDir)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; (called by skaro)
 (defn buildr ""
   []
@@ -188,6 +196,33 @@ import java.util.UUID
   (runTesTCode)
   (println "Test called - OK"))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- cleanPublic ""
+  []
+
+  (let [pj (ant/AntProject)
+        t1 (->> [[:fileset {:errorOnMissingDir false
+                            :dir (str @basedir "/public/scripts")
+                            :includes "**/*"} []]
+                 [:fileset {:errorOnMissingDir false
+                            :dir (str @basedir "/public/styles")
+                            :includes "**/*"} []]
+                 [:fileset {:errorOnMissingDir false
+                            :dir (str @basedir "/public/pages")
+                            :includes "**/*"} []]
+                 [:fileset {:errorOnMissingDir false
+                            :dir (str @basedir "/public/ig")
+                            :includes "**/*"} []]]
+                (ant/AntDelete pj
+                               {:includeEmptyDirs true}))
+        t2 (ant/AntMkdir {:dir (str @basedir "/public/ig")}) ]
+    (-> (ant/ProjAntTasks pj "clean-public!" t1 t2)
+        (ant/ExecTarget))
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 (defn- clean ""
   []
   (let [pj  (ant/AntProject)
@@ -206,572 +241,530 @@ import java.util.UUID
     (cleanPublic)
   ))
 
-//////////////////////////////////////////////////////////////////////////////
-//
-def doCleanPublic() {
-  ant.delete (includeemptydirs: true) {
-    fileset (erroronmissingdir: false, dir: "${basedir}/public/scripts", includes: '**/*')
-    fileset (erroronmissingdir: false, dir: "${basedir}/public/styles", includes: '**/*')
-    fileset (erroronmissingdir: false, dir: "${basedir}/public/pages", includes: '**/*')
-    fileset (erroronmissingdir: false, dir: "${basedir}/public/ig", includes: '**/*')
-  }
-  ant.mkdir (dir: "${basedir}/public/ig")
-}
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- buildWebApps ""
+  []
+  (let [isDir? #(.isDirectory %)
+        dirs (->> (.listFiles (io/file @webDir))
+                  (filter dir?))]
+    (map #(buildOneWebApp %) dirs)
+  ))
 
-//////////////////////////////////////////////////////////////////////////////
-//
-def doBuildWebApps() {
-  new File("${webDir}").eachDir( { f ->
-    doBuildOneWebApp(f)
-  });
-  //doBuildForCC2DX()
-}
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- compileJS ""
 
-//////////////////////////////////////////////////////////////////////////////
-//
-def doBuildOneWebApp (dir) {
-  final wappid= dir.getName()
+  [wappid]
 
-  ant.mkdir (dir: "${websrc}/${wappid}")
-  ant.mkdir (dir: "${webcss}/${wappid}")
+  (let [root (io/file @webDir wappid "src")
+        pj (ant/AntProject)
+        tks (atom []) ]
 
-  if ("clojurescript" == "${jslang}") {
-    doCompileCljScript(wappid)
-  }
-  if ("typescript" == "${jslang}") {
-    doCompileTypeScript(wappid)
-  }
-  doCompileJS(wappid)
-  if ("less" == "${csslang}") {
-    doCompileLESS(wappid)
-  }
-  if ("scss" == "${csslang}") {
-    doCompileSCSS(wappid)
-  }
-  doCompileMedia(wappid)
-  doCompileInfo(wappid)
-  doCompilePages(wappid)
-  doFinzApp(wappid)
-}
+    (cleanLocalJs wappid)
+    (jsWalkTree wappid
+                (Stack.) root)
+    (cleanLocalJs wappid)
 
-//////////////////////////////////////////////////////////////////////////////
-//
-def doCompileCljScript(wappid) {
-  final sdir= "${webDir}/${wappid}/src"
-  ant.copy (todir: "${websrc}/${wappid}") {
-    fileset (dir: "${sdir}") {
-      include (name: '**/*.cljs')
-    }
-  }
-  ant.java (
-        classname: 'clojure.main',
-        fork: true,
-        failonerror: true,
-        maxmemory: '2048m',
-        classpathref: 'compile.path.id') {
-    arg (value: "${basedir}/conf/cljsc.clj")
-    arg (value: "${sdir}")
-    arg (value: true)
-    // advanced none whitespace simple
-    arg (value: 'none')
-    arg (value: "${websrc}/${wappid}")
-  }
-}
+    (when true
+      (->> [[:argvalues [(str @basedir "/"
+                              @bldDir "/"
+                              @prj "/"
+                              @wjs "/" wappid)
+                         "-c"
+                         (str @basedir "/jsdoc.json")
+                         "-d"
+                         (str @docs "/" wappid)]]]
+           (ant/AntExec pj {:executable "jsdoc"
+                            :dir @basedir
+                            :spawn true})
+           (ant/ProjAntTasks pj "")
+           (ant/ExecTarget)))
 
-//////////////////////////////////////////////////////////////////////////////
-//
-def doFinzBuild() {
-    /*
-      <fileset file="${basedir}/public/vendors/fsm/state-machine.min.js"/>
-      <fileset file="${basedir}/public/vendors/zepto/zepto.min.js"/>
-      <fileset file="${basedir}/public/vendors/modernizr/modernizr.custom.js"/>
-      */
-  ant.delete (file: "${basedir}/public/c/webcommon.js", quiet: true)
-  concat (destfile: "${basedir}/public/c/webcommon.js", append: true) {
-    //fileset (file: "${basedir}/public/vendors/jquery/jquery-2.1.1.min.js")
-    fileset (file: "${basedir}/public/vendors/almond/almond.js")
-    fileset (file: "${basedir}/public/vendors/ramda/ramda.js")
-    fileset (file: "${basedir}/public/vendors/l10njs/l10n.js")
-    fileset (file: "${basedir}/public/vendors/mustache/mustache.js")
-    fileset (file: "${basedir}/public/vendors/helpers/dbg.js")
-    fileset (file: "${basedir}/public/vendors/js-signals/signals.js")
-    fileset (file: "${basedir}/public/vendors/ash-js/ash.js")
-    fileset (file: "${basedir}/public/vendors/jquery-plugins/detectmobilebrowser.js")
-    //fileset (file: "${basedir}/public/vendors/jquery-plugins/jquery.cookie.js")
-    fileset (file: "${basedir}/public/vendors/crypto-js/components/core-min.js")
-    fileset (file: "${basedir}/public/vendors/crypto-js/components/enc-utf16-min.js")
-    fileset (file: "${basedir}/public/vendors/crypto-js/components/enc-base64-min.js")
-    fileset (file: "${basedir}/public/vendors/cherimoia/skaro.js")
-    fileset (file: "${basedir}/public/vendors/cherimoia/caesar.js")
-  }
-}
+    (.mkdirs (io/file @basedir "public" "ig" "lib" "game"))
+    (.mkdirs (io/file @basedir "public" "scripts"))
 
-//////////////////////////////////////////////////////////////////////////////
-//
-def doBuildForCC2DX() {
-  ant.delete (file: "${basedir}/public/c/ztlcommon.js", quiet: true)
-  concat (destfile: "${basedir}/public/c/ztlcommon.js", append: true) {
-    fileset (file: "${basedir}/public/vendors/underscore/underscore-min.js")
-    fileset (file: "${basedir}/public/vendors/l10njs/l10n.min.js")
-    fileset (file: "${basedir}/public/vendors/mustache/mustache.js")
-    fileset (file: "${basedir}/public/vendors/helpers/dbg.js")
-    fileset (file: "${basedir}/public/vendors/cherimoia/skaro.js")
-    fileset (file: "${basedir}/public/vendors/cherimoia/caesar.js")
-    fileset (file: "${basedir}/public/vendors/cherimoia/zlab.js")
-    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/asterix.js")
-    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/bus.js")
-    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/xcfg.js")
-    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/cs2dx.js")
-    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/odin.js")
-    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/xscene.js")
-    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/xlayer.js")
-    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/xentity.js")
-    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/xlives.js")
-    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/xhud.js")
-    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/xigg.js")
-    fileset (file: "${webDir}/cocos2d/src/zotohlab/ext/xloader.js")
-    fileset (file: "${webDir}/cocos2d/src/zotohlab/gui/startscreen.js")
-    fileset (file: "${webDir}/cocos2d/src/zotohlab/gui/msgbox.js")
-    fileset (file: "${webDir}/cocos2d/src/zotohlab/gui/ynbox.js")
-    fileset (file: "${webDir}/cocos2d/src/zotohlab/gui/online.js")
-    fileset (file: "${webDir}/cocos2d/src/zotohlab/gui/mainmenu.js")
+    (case wappid
+      "cocos2d"
+      (->> [[:fileset {:dir (str @websrc "/" wappid)} []]]
+           (ant/AntCopy pj {:todir (str @basedir "/public/ig/lib") })
+           (conj @tks)
+           (reset! tks))
+      "main"
+      (->> [[:fileset {:dir (str @websrc "/" wappid) } []]]
+           (ant/AntCopy pj {:todir (str @basedir "/public/scripts") })
+           (conj @tks)
+           (reset! tks))
+      (do
+        (->> (ant/AntCopy pj
+                          {:file (str @srcDir
+                                      "/resources/main.js")
+                           :todir (str @basedir
+                                       "/public/ig/lib/game/" wappid)} [])
+             (conj @tks)
+             (reset! tks))
+        (->> [[:fileset {:dir (str @websrc "/" wappid)} []]]
+             (ant/AntCopy pj
+                          {:todir (str @basedir
+                                       "/public/ig/lib/game/" wappid)})
+             (conj @tks)
+             (reset! tks))))
+    (-> (apply ant/ProjAntTasks pj "" (reverse @tks))
+        (ant/ExecTarget))
+  ))
 
-  }
-}
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- buildOneWebApp ""
 
+  [^File dir]
 
-//////////////////////////////////////////////////////////////////////////////
-//
-def doCompileTypeScript(wappid) {
-  ant.copy (todir: "${websrc}/${wappid}") {
-    fileset (dir: "${webDir}/${wappid}/src") {
-      include (name: '**/*.ts')
-    }
-  }
-  ant.exec (executable: 'tsc', dir: "${websrc}/${wappid}") {
-    arg (value: '--outDir')
-    arg (value: '--output')
-    arg (value: "${websrc}/${wappid}")
-    arg (value: '**/*.ts')
-  }
-}
+  (let [wappid (.getName dir)
+        pj (ant/AntProject)]
+    (.mkdirs (io/file (str @websrc "/" wappid)))
+    (.mkdirs (io/file (str @webcss "/" wappid)))
+    (compileJS wappid)
+    (when (= "scss" @csslang)
+      (compileSCSS wappid))
+    (compileMedia wappid)
+    (compileInfo wappid)
+    (compilePages wappid)
+    (finzApp wappid)
+  ))
 
-//////////////////////////////////////////////////////////////////////////////
-//
-def doCompileCoffeeScript(wappid) {
-  ant.copy (todir: "${websrc}/${wappid}") {
-    fileset (dir: "${webDir}/${wappid}/src") {
-      include (name: '**/*.coffee')
-    }
-  }
-  ant.exec (executable: 'coffee') {
-    arg (value: '--bare')
-    arg (value: '--output')
-    arg (value: "${websrc}/${wappid}")
-    arg (value: '--compile')
-    arg (value: "${websrc}/${wappid}")
-  }
-}
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- finzBuild ""
 
-target (poo: '') {
-  doCompileJS('main')
-}
+  []
 
-//////////////////////////////////////////////////////////////////////////////
-//
-def jsWalkTree(wappid, stk,seed) {
-  top=null;if (seed != null) { top=seed } else { top=stk.peek() }
-  skip="${bldDir}";path=null;fid="";mid="";
-  top.eachFile { f ->
-    if (skip == f.getName()) {}
-    else
-    if (f.isDirectory()) {
-      stk.push(f)
-      jsWalkTree(wappid, stk,null)
-    } else {
-      if (stk.empty()) { path="" } else {
-        path = stk.collect({ c -> c.getName() }).toArray(new ArrayList()).join('/')
-      }
-      mid= fid= f.getName()
-      if (path.length() > 0) {
-        mid=path + "/" + fid
-      }
-      babelFile(wappid,mid)
-      //println "f = " + f.getName()
-      //println "path = " + path + "/" + fid
-    }
-  }
-  if (!stk.empty()) { stk.pop(); }
-}
+  (let [pj (ant/AntProject)
+        ps (str @basedir "/public/vendors/")
+        t1 (ant/AntDelete pj {:file (str @basedir
+                                         "/public/c/webcommon.js")} [])
+        t2 (->> [[:fileset {:file (str ps "almond/almond.js")} []]
+                 [:fileset {:file (str ps "ramda/ramda.js") } []]
+                 [:fileset {:file (str ps "l10njs/l10n.js")} []]
+                 [:fileset {:file (str ps "mustache/mustache.js")} []]
+                 [:fileset {:file (str ps "helpers/dbg.js") } []]
+                 [:fileset {:file (str ps "js-signals/signals.js") } []]
+                 [:fileset {:file (str ps "ash-js/ash.js")} []]
+                 [:fileset {:file (str ps "jquery-plugins/detectmobilebrowser.js")} []]
+                 [:fileset {:file (str ps "crypto-js/components/core-min.js")} []]
+                 [:fileset {:file (str ps "crypto-js/components/enc-utf16-min.js")} []]
+                 [:fileset {:file (str ps "crypto-js/components/enc-base64-min.js")} []]
+                 [:fileset {:file (str ps "cherimoia/skaro.js")} []]
+                 [:fileset {:file (str ps "cherimoia/caesar.js")} []]]
+                (ant/AntConcat pj {:destFile (str @basedir "/public/c/webcommon.js")
+                                   :append true})) ]
+    (-> (ant/ProjAntTasks pj "finz-build" t1 t2)
+        (ant/ExecTarget))
+  ))
 
-//////////////////////////////////////////////////////////////////////////////
-//
-def babelFile(wappid, mid) {
-  dir="${webDir}/${wappid}/src"
-  out="${websrc}/${wappid}"
-  if (mid.endsWith(".js") && !mid.startsWith("cc")) {
-    ant.exec (executable: 'babel', dir: "${dir}") {
-      arg(value: '--modules')
-      arg(value: 'amd')
-      arg(value: '--module-ids')
-      arg(value: "${mid}")
-      arg(value: '--out-dir')
-      arg(value: "${bldDir}")
-    }
-    ant.replace(file: "${dir}/${bldDir}/${mid}",token:"/*@@",value:"")
-    ant.replace(file: "${dir}/${bldDir}/${mid}",token:"@@*/",value:"")
-  } else {
-    des=new File(dir, "${bldDir}/${mid}").getParentFile()
-    des2=des.toString()
-    ant.copy(file:"${dir}/${mid}", todir: "${des2}")
-  }
-  des=new File(out, mid).getParentFile()
-  des.mkdirs()
-  des2=des.toString()
-  ant.move(file: "${dir}/${bldDir}/${mid}",todir: "${des2}")
-}
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- jsWalkTree ""
 
-//////////////////////////////////////////////////////////////////////////////
-//
-def cleanLocalJs(wappid) {
-  ant.delete ( dir: "${webDir}/${wappid}/src/${bldDir}", quiet: true)
-}
+  [^Stack stk ^String wappid seed]
 
-//////////////////////////////////////////////////////////////////////////////
-//
-def doCompileJS(wappid) {
+  (let [^File top (if-not (nil? seed) seed (.peek stk))]
+    (doseq [f (.listFiles top)]
+      (cond
+        (= @bldDir (.getName f))
+        nil
+        (.isDirectory f)
+        (do
+          (.push stk f)
+          (jsWalkTree stk wappid nil))
+        :else
+        (let [path (if (.empty stk)
+                       ""
+                       (cstr/join "/" (for [x (.toArray stk)] (.getName x))))
+              fid (.getName f)
+              mid (if (> (.length path) 0)
+                    (str path "/" fid)
+                    fid)]
+          (babelFile wappid mid))))
+    (when-not (.empty stk) (.pop stk))
+  ))
 
-  root=new File("${webDir}/${wappid}/src")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- babelFile ""
 
-  cleanLocalJs(wappid)
-  jsWalkTree(wappid, new Stack(),root)
-  cleanLocalJs(wappid)
+  [wappid mid]
 
-  if (true) {
-    ant.exec(executable: "jsdoc", dir: "${basedir}",spawn:true) {
-      arg(value: "${basedir}/${bldDir}/${prj}/${wjs}/${wappid}")
-      arg(value:"-c")
-      arg(value:"${basedir}/jsdoc.json")
-      arg(value:"-d")
-      arg(value:"${docs}/${wappid}")
-    }
-  }
+  (let [dir (str @webDir "/" wappid "/src")
+        out (str @websrc "/" wappid)
+        pj (ant/AntProject) ]
 
-  ant.mkdir (dir: "${basedir}/public/ig/lib/game")
-  ant.mkdir (dir: "${basedir}/public/scripts")
-  switch (wappid) {
-    case "cocos2d":
-      ant.copy (todir: "${basedir}/public/ig/lib") {
-        fileset (dir: "${websrc}/${wappid}")
-      }
-    break
-    case "main":
-      ant.copy (todir: "${basedir}/public/scripts") {
-        fileset (dir: "${websrc}/${wappid}")
-      }
-    break
-    default:
-      ant.copy (file: "${srcDir}/resources/main.js", todir: "${basedir}/public/ig/lib/game/${wappid}")
-      ant.copy (todir: "${basedir}/public/ig/lib/game/${wappid}") {
-        fileset (dir: "${websrc}/${wappid}")
-      }
-    break
-  }
-}
+    (if (and (not (.startsWith mid "cc"))
+             (.endsWith mid ".js"))
+      (let [t1 (->> [[:args ["--modules" "amd" "--module-ids"
+                             mid "--out-dir" @bldDir]]]
+                    (ant/AntExec pj {:executable "babel"
+                                     :dir dir}))
+            t2 (ant/AntReplace {:file (str dir "/" @bldDir "/" mid)
+                                :token "/*@@"
+                                :value ""} [])
+            t3 (ant/AntReplace {:file (str dir "/" @bldDir "/" mid)
+                                :token "@@*/"
+                                :value ""} []) ]
+        (-> (ant/ProjAntTasks pj "babel" t1 t2 t3)
+            (ant/ExecTarget)))
+      (let [des2 (-> (io/file dir @bldDir mid)
+                     (.getParentFile)) ]
+        (->> (ant/AntCopy {:file (str dir "/" mid)
+                           :todir des2} [])
+             (ant/ProjAntTasks pj "")
+             (ant/ExecTarget))))
+    (let [des2 (doto (-> (io/file out mid)
+                         (.getParentFile))
+                     (.mkdirs))]
+      (->> (ant/AntMove {:file (str dir "/" @bldDir "/" mid)
+                         :todir des2} [])
+           (ant/ProjAntTasks pj "")
+           (ant/ExecTarget)))
+  ))
 
-//////////////////////////////////////////////////////////////////////////////
-//
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- compileSCSS ""
 
-//////////////////////////////////////////////////////////////////////////////
-//
-def doCompileLESS(wappid) {
-  ant.copy (todir: "${webcss}/${wappid}") {
-    fileset (dir: "${webDir}/${wappid}/styles", erroronmissingdir: false) {
-      include (name: '**/*.less')
-    }
-  }
-  ant.apply (executable: "lessc", parallel: false) {
-    fileset (dir: "${webcss}/${wappid}") {
-      include (name: '**/*.less')
-    }
-    srcfile ()
-    chainedmapper () {
-      mapper (type: 'glob', from: '*.less', to: '*.css')
-      globmapper (from: '*', to: "${webcss}/${wappid}/*")
-    }
-    targetfile ()
-  }
-  ant.copy (todir: "${webcss}/${wappid}") {
-    fileset (dir: "${webDir}/${wappid}/styles", erroronmissingdir: false) {
-      include (name: '**/*.css')
-    }
-  }
-  ant.mkdir (dir: "${basedir}/public/styles/${wappid}")
-  ant.copy (todir: "${basedir}/public/styles/${wappid}") {
-    fileset (dir: "${webcss}/${wappid}") {
-      include (name: '**/*.css')
-    }
-  }
-}
+  [wappid]
 
-//////////////////////////////////////////////////////////////////////////////
-//
-def doCompileSCSS(wappid) {
-  ant.copy (todir: "${webcss}/${wappid}") {
-    fileset (dir: "${webDir}/${wappid}/styles", erroronmissingdir: false){
-      include (name: '**/*.scss')
-    }
-  }
-  ant.apply (executable: 'sass', parallel: false) {
-    fileset (dir: "${webcss}/${wappid}") {
-      include (name: '**/*.scss')
-    }
-    arg (value: '--sourcemap=none')
-    srcfile ()
-    chainedmapper() {
-      mapper (type: 'glob', from: '*.scss', to: '*.css')
-      globmapper (from: '*', to: "${webcss}/${wappid}/*")
-    }
-    targetfile ()
-  }
-  ant.copy (todir: "${webcss}/${wappid}") {
-    fileset (dir: "${webDir}/${wappid}/styles", erroronmissingdir: false) {
-      include (name: '**/*.css')
-    }
-  }
-  ant.mkdir (dir: "${basedir}/public/styles/${wappid}")
-  ant.copy (todir: "${basedir}/public/styles/${wappid}") {
-    fileset (dir: "${webcss}/${wappid}") {
-      include (name: '**/*.css')
-    }
-  }
-}
+  (let [pj (ant/AntProject)
+        t1 (->> [[:fileset {:dir (str @webDir "/" wappid "/styles")
+                            :errorOnMissingDir false}
+                           [[:include "**/*.scss"]]]]
+             (ant/AntCopy pj {:todir (str @webcss "/" wappid)}))
+        t2 (->> [[:fileset {:dir (str @webcss "/" wappid)}
+                           [[:include "**/*.scss"]]]
+                 [:arglines ["--sourcemap=none"]]
+                 [:srcfile {}]
+                 [:chainedmapper
+                  [[:glob {:from "*.scss" :to "*.css"}
+                   [:glob {:from "*" :to (str @webcss"/" wappid "/*")}]]]]
+                 [:targetfile {}]]
+             (ant/AntApply pj {:executable "sass"
+                               :parallel false}))
+        t3 (->> [[:fileset {:dir (str @webDir "/" wappid "/styles")
+                            :errorOnMissingDir false}
+                           [[:include "**/*.css"]]]]
+             (ant/AntCopy pj {:todir (str @webcss "/" wappid)}))
+        t4 (ant/AntMkdir pj {:dir (str @basedir "/public/styles/" wappid)})
+        t5 (->> [[:fileset {:dir (str @webcss "/" wappid)}
+                           [[:include "**/*.css"]]]]
+                 (ant/AntCopy pj {:todir (str @basedir
+                                              "/public/styles/" wappid)})) ]
+    (-> (ant/ProjAntTasks pj "compile-scss" t1 t2 t3 t4 t5)
+        (ant/ExecTarget))
+  ))
 
-//////////////////////////////////////////////////////////////////////////////
-//
-def doCompileMedia(wappid) {
-  ant.mkdir (dir: "${basedir}/public/ig/res/${wappid}")
-  ant.copy (todir: "${basedir}/public/ig/res/${wappid}") {
-    fileset (dir: "${webDir}/${wappid}/res/sd") {
-      include (name: '**/*')
-    }
-    fileset (dir: "${webDir}/${wappid}/res") {
-      include (name: 'sfx/**/*')
-    }
-  }
-}
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- compileMedia ""
 
-//////////////////////////////////////////////////////////////////////////////
-//
-def doCompileInfo(wappid) {
-  switch (wappid) {
-    case "cocos2d":
-    break
-    case "main":
-    break
-    default:
-      ant.mkdir (dir: "${basedir}/public/ig/info/${wappid}")
-      ant.copy (todir: "${basedir}/public/ig/info/${wappid}") {
-        fileset (dir: "${webDir}/${wappid}/info") {
-          include (name: '**/*')
-        }
-      }
-    break
-  }
-}
+  [wappid]
 
-//////////////////////////////////////////////////////////////////////////////
-//
-def doCompilePages(wappid) {
+  (let [pj (ant/AntProject)
+        t1 (ant/AntMkdir pj {:dir (str @basedir
+                                       "/public/ig/res/" wappid)})
+        t2 (->> [[:fileset {:dir (str @webDir "/" wappid "/res/sd")}
+                           [[:include "**/*"]]]
+                 [:fileset {:dir (str @webDir "/" wappid "/res")}
+                           [[:include "sfx/**/*"]]]]
+                (ant/AntCopy pj {:todir (str @basedir
+                                             "/public/ig/res/" wappid)})) ]
+    (-> (ant/ProjAntTasks pj "compile-media" t1 t2)
+        (ant/ExecTarget))
+  ))
 
-  if ("main" == wappid || "cocos2d" == wappid) {
-    ant.copy (todir: "${basedir}/public/pages/${wappid}") {
-      fileset (dir: "${webDir}/${wappid}/pages") {
-        include (name: '**/*')
-      }
-    }
-    return;
-  }
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- compileInfo ""
 
-  doJiggleTheIndexFile(wappid, "${basedir}/public/pages/${wappid}", false)
-}
+  [wappid]
 
-//////////////////////////////////////////////////////////////////////////////
-//
-def doJiggleTheIndexFile(wappid,des,cocos) {
-  ant.copy (file: "${srcDir}/resources/index.html", todir: "${des}")
-  final json= new JsonParser().parse(FileUtils.readFileToString(
-      new File("${webDir}/${wappid}/info/game.json"),"utf-8"))
-  def html= FileUtils.readFileToString(new File("${des}/index.html"), "utf-8")
-  html= StringUtils.replace(html, "@@DESCRIPTION@@", json.get("description").getAsString())
-  html= StringUtils.replace(html, "@@KEYWORDS@@", json.get("keywords").getAsString())
-  html= StringUtils.replace(html, "@@TITLE@@", json.get("name").getAsString())
-  html= StringUtils.replace(html, "@@LAYOUT@@", json.get("layout").getAsString())
-  html= StringUtils.replace(html, "@@HEIGHT@@", json.get("height").getAsString())
-  html= StringUtils.replace(html, "@@WIDTH@@", json.get("width").getAsString())
-  html= StringUtils.replace(html, "@@UUID@@", json.get("uuid").getAsString())
+  (case wappid
+    "cocos2d" nil
+    "main" nil
+    (let [pj (ant/AntProject)
+          t1 (ant/AntMkdir {:dir (str @basedir
+                                      "/public/ig/info/" wappid)})
+          t2 (->> [[:fileset {:dir (str @webDir "/" wappid "/info")}
+                             [[:include "**/*"]]]]
+                  (ant/AntCopy pj {:todir (str @basedir
+                                               "/public/ig/info/"
+                                               wappid)})) ]
+      (-> (ant/ProjAntTasks pj "compile-info" t1 t2)
+          (ant/ExecTarget)))
+  ))
 
-  def bdir= "/public/ig/lib/game/${wappid}/"
-  def ccdir= "/public/extlibs/"
-  def almond= "<script src=\"/public/vendors/almond/almond.js\"></script>"
-  def cfg= ""
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- compilePages ""
 
-  if (cocos || "${pmode}" == "release") {
-    ccdir= "frameworks/"
-    bdir= ""
-    almond=""
-    cfg= FileUtils.readFileToString(new File("${srcDir}/resources/cocos2d.js"), "utf-8")
-  } else {
-    cfg= FileUtils.readFileToString(new File("${webDir}/${wappid}/src/ccconfig.js"), "utf-8")
-  }
+  [wappid]
 
-  html= StringUtils.replace(html, "@@AMDREF@@", almond)
-  html= StringUtils.replace(html, "@@BOOTDIR@@", bdir)
-  html= StringUtils.replace(html, "@@CCDIR@@", ccdir)
-  html= StringUtils.replace(html, "@@CCCONFIG@@", cfg)
+  (case wappid
+    ("main" "cocos2d")
+    (let [pj (ant/AntProject)]
+      (->> [[:fileset {:dir (str @webDir "/" wappid "/pages")}
+                      [[:include "**/*"]]]]
+           (ant/AntCopy pj {:todir (str @basedir
+                                        "/public/pages/" wappid)})
+           (ant/ProjAntTasks pj "")
+           (ant/ExecTarget)))
+    (do
+      (jiggleTheIndexFile wappid
+                          (str @basedir
+                               "/public/pages/" wappid)
+                          false))
+  ))
 
-  FileUtils.writeStringToFile(new File("${des}/index.html"), html, "utf-8")
-}
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- doJiggleTheIndexFile
 
-//////////////////////////////////////////////////////////////////////////////
-//
-def doFinzApp(wappid) {
-  def des= "${basedir}/public/ig/lib/game/${wappid}"
-  if ("${pmode}" == "release") {
-  } else {
-    ant.copy (todir: "${des}", file: "${srcDir}/resources/project.json")
-    ant.copy (todir: "${des}", file: "${srcDir}/resources/main.js")
-  }
+  [wappid des cocos]
 
-}
+  (let [pj (ant/AntProject)]
+    (->> (ant/AntCopy {:file (str @srcDir
+                                  "/resources/index.html")
+                       :todir des} [])
+         (ant/ProjAntTasks pj "")
+         (ant/ExecTarget))
+    (let [json (-> (slurp (str @webDir "/"
+                               wappid "/info/game.json") :encoding "utf-8")
+                   (js-read-str :key-fn keyword))
+          html (-> (slurp (str des "/index.html") :encoding "utf-8")
+                   (cstr/replace "@@DESCRIPTION@@" (:description json))
+                   (cstr/replace "@@KEYWORDS@@" (:keywords json))
+                   (cstr/replace "@@TITLE@@" (:name json))
+                   (cstr/replace "@@LAYOUT@@" (:layout json))
+                   (cstr/replace "@@HEIGHT@@" (:height json))
+                   (cstr/replace "@@WIDTH@@" (:width json))
+                   (cstr/replace "@@UUID@@" (:uuid json)))
+          bdir (atom (str "/public/ig/lib/game/" wappid))
+          ccdir (atom "/public/extlibs/")
+          almond (atom "<script src=\"/public/vendors/almond/almond.js\"></script>")
+          cfg (atom "")]
+      (if (or (= @pmode "release")
+              cocos)
+        (do
+          (reset! ccdir "frameworks/")
+          (reset! bdir "")
+          (reset! almond "")
+          (reset! cfg (slurp (str @srcDir "/resources/cocos2d.js") :encoding "utf-8")))
+        (do
+          (reset! cfg (slurp (str @webDir wappid "/src/ccconfig.js") :encoding "utf-8"))))
 
-//////////////////////////////////////////////////////////////////////////////
-//
-def doYuiCSS() {
-  ant.apply (executable: 'java', parallel: false) {
-    fileset (dir: "${basedir}/public/styles") {
-      exclude (name: '**/*.min.css')
-      include (name: '**/*.css')
-    }
-    arg (line: '-jar')
-    arg (path: "${skaroHome}/lib/yuicompressor-2.4.8.jar")
-    srcfile ()
-    arg (line: '-o')
-    chainedmapper () {
-      mapper (type: 'glob', from: '*.css', to: '*.min.css')
-      globmapper (from: '*', to: "${basedir}/public/styles/*")
-    }
-    targetfile ()
-  }
-}
+      (spit (str des "/index.html")
+            (-> html
+                (cstr/replace "@@AMDREF@@" almond)
+                (cstr/replace "@@BOOTDIR@@" bdir)
+                (cstr/replace "@@CCDIR@@" ccdir)
+                (cstr/replace "@@CCCONFIG@@" cfg))
+            :encoding "utf-8"))
+  ))
 
-//////////////////////////////////////////////////////////////////////////////
-//
-def doYuiJS() {
-  ant.apply (executable: 'java', parallel: false) {
-    fileset (dir: "${basedir}/public/scripts") {
-      exclude (name: '**/*.min.js')
-      include (name: '**/*.js')
-    }
-    arg (line: '-jar')
-    arg (path: "${skaroHome}/lib/yuicompressor-2.4.8.jar")
-    srcfile ()
-    arg (line: '-o')
-    chainedmapper () {
-      mapper (type: 'glob', from: '*.js', to: '*.min.js')
-      globmapper (from: '*', to: "${basedir}/public/scripts/*")
-    }
-    targetfile ()
-  }
-}
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- finzApp ""
 
-//////////////////////////////////////////////////////////////////////////////
-//
-  /*
-       public TARGETS
-       */
+  [wappid]
 
-target (game: '') {
-  property( name: 'pmode' , value: 'release')
-  input(message:'Enter game: ', addproperty: 'gamename')
-  new File("${webDir}").eachDir { f ->
-    if (f.getName() == "${gamename}") {
-      doBuildOneWebApp(f);
-    }
-  }
-}
+  (when (not= @pmode "release")
+    (let [des (str @basedir "/public/ig/lib/game/" wappid)
+          pj (ant/AntProject)
+          t1 (ant/AntCopy pj {:todir des
+                              :file (str @srcDir "/resources/project.json")} [])
+          t2 (ant/AntCopy pj {:todir des
+                              :file (str @srcDir "/resources/main.js")} []) ]
+      (-> (ant/ProjAntTasks pj "finz-app" t1 t2)
+          (ant/ExecTarget)))
+  ))
 
-target (fast: '') {
-  property( name: 'pmode' , value: 'release')
-  //depends (buildr)
-  doBuildWebApps()
-  doYuiCSS()
-  doYuiJS()
-  doFinzBuild()
-}
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- yuiCSS ""
+  []
+  (let [pj (ant/AntProject)
+        t1 (->> [[:fileset {:dir (str @basedir "/public/styles") }
+                           [[:exclude "**/*.min.css"]
+                            [:include "**/*.css"]]]
+                 [:arglines ["-jar"]]
+                 [:argpaths [(str @skaroHome "/lib/yuicompressor-2.4.8.jar")]]
+                 [:srcfile {}]
+                 [:arglines ["-o"]]
+                 [:chainedmapper
+                  [[:type glob {:from "*.css"
+                                :to "*.min.css"}]
+                   [:type glob {:from "*"
+                                :to (str @basedir "/public/styles/*")}]]]
+                 [:targetfile {}]]
+                (ant/AntApply pj {:executable "java"
+                                  :parallel false})) ]
+    (-> (ant/ProjAntTasks pj "yui-css" t1)
+        (ant/ExecTarget))
+  ))
 
-target (release: '') {
-  property( name: 'pmode' , value: 'release')
-  depends (buildr)
-  doYuiCSS()
-  doYuiJS()
-  doFinzBuild()
-}
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- yuiJS ""
+  []
+  (let [pj (ant/AntProject)
+        t1 (->> [[:fileset {:dir (str @basedir "/public/scripts") }
+                           [[:exclude "**/*.min.js"]
+                            [:include "**/*.js"]]]
+                 [:arglines ["-jar"]]
+                 [:argpaths [(str @skaroHome "/lib/yuicompressor-2.4.8.jar")]]
+                 [:srcfile {}]
+                 [:arglines ["-o"]]
+                 [:chainedmapper
+                  [[:type glob {:from "*.js"
+                                :to "*.min.js"}]
+                   [:type glob {:from "*"
+                                :to (str @basedir "/public/scripts/*")}]]]
+                 [:targetfile {}]]
+                (ant/AntApply pj {:executable "java"
+                                  :parallel false})) ]
+    (-> (ant/ProjAntTasks pj "yui-css" t1)
+        (ant/ExecTarget))
+  ))
 
-target (devmode: '') {
-  property( name: 'pmode' , value: 'dev')
-  depends (buildr)
-  doFinzBuild()
-}
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(deftask fast ""
+  []
+  (set-env! :pmode "release")
+  (buildWebApps)
+  (yuiCSS)
+  (yuiJS)
+  (finzBuild))
 
-target (test: '') {
-  depends(testBuild)
-}
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(deftask release ""
+  []
+  (set-env! :pmode "release")
+  (buildr)
+  (yuiCSS)
+  (yuiJS)
+  (finzBuild))
 
-target (newapp: '') {
-  ant.input (message: "Enter app-name: ", addproperty: 'appid')
-  println "Creating new game: ${appid}"
-  ant.mkdir (dir: "${webDir}/${appid}")
-  [ "src/nodes", "src/s",
-   "src/i18n", "src/p", "res/sfx"].each { s ->
-    ant.mkdir (dir: "${webDir}/${appid}/${s}")
-  }
-  ["hdr", "hds", "sd"].each { s ->
-    ant.mkdir (dir: "${webDir}/${appid}/res/${s}/pics")
-    ant.mkdir (dir: "${webDir}/${appid}/res/${s}/fon")
-  }
-  ["info" , "pages" , "styles"].each { s ->
-    ant.mkdir (dir: "${webDir}/${appid}/${s}")
-  }
-  ant.copy (file: "${srcDir}/resources/game.json", todir: "${webDir}/${appid}/info")
-  ant.copy (file: "${srcDir}/resources/game.mf", todir: "${webDir}/${appid}/info")
-  final appkey= UUID.randomUUID()
-  tstamp () {
-    format (property: "pubtime", pattern: "yyyy-MM-dd")
-  }
-  ant.replace (file: "${webDir}/${appid}/info/game.mf", token: "@@PUBDATE@@", value: "${pubtime}")
-  ant.replace (file: "${webDir}/${appid}/info/game.mf", token: "@@APPID@@", value: "${appid}")
-  ant.replace (file: "${webDir}/${appid}/info/game.json", token: "@@UUID@@", value: "${appkey}")
-  ["game.js", "splash.js", "mmenu.js", "hud.js","config.js","protos.js"].each { s ->
-    ant.copy (file: "${srcDir}/resources/${s}", todir: "${webDir}/${appid}/src/p")
-  }
-  ant.copy (file: "${srcDir}/resources/gnodes.js", todir: "${webDir}/${appid}/src/nodes")
-  ant.copy (file: "${srcDir}/resources/cobjs.js", todir: "${webDir}/${appid}/src/nodes")
-  ["supervisor.js", "factory.js", "motion.js",
-   "resolution.js", "utils.js", "sysobjs.js"].each { s ->
-    ant.copy (file: "${srcDir}/resources/${s}", todir: "${webDir}/${appid}/src/s")
-  }
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(deftask devmode ""
+  []
+  (set-env! :pmode "dev")
+  (buildr)
+  (finzBuild))
 
-  ant.replace (file: "${webDir}/${appid}/src/p/config.js", token: "@@UUID@@", value: "${appkey}")
-  ant.copy (file: "${srcDir}/resources/l10n.js", tofile: "${webDir}/${appid}/src/i18n/l10n.js")
-  ant.copy (file: "${srcDir}/resources/ccconfig.js", todir: "${webDir}/${appid}/src")
-  ant.copy (file: "${srcDir}/resources/proj.json", tofile: "${webDir}/${appid}/src/project.json")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(deftask test ""
+  []
+  (testBuild))
 
-  ant.replace (file: "${webDir}/${appid}/src/project.json", token: "@@APPID@@", value: "${appid}")
-  ant.replace (file: "${webDir}/${appid}/src/ccconfig.js", token: "@@APPID@@", value: "${appid}")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(deftask newapp ""
+  []
 
-  //cocos_new("${appid}");
-}
+  (let [pubtime (-> (SimpleDateFormat. "yyyy-MM-dd")
+                    (.format (-> (GregorianCalendar.)
+                                 (.getTimeInMillis)
+                                 (Date.))))
+        appkey (UUID/randomUUID)
+        pj (ant/AntProject)
+        ts (atom [])]
+
+    ;;(format "Creating new game: %s" appid)
+    (.mkdirs (io/file @webDir appid))
+
+    (doseq [s ["src/n" "src/s" "src/i18n" "src/p" "res/sfx"]]
+      (.mkdirs (io/file @webDir appid s)))
+
+    (doseq [s ["hdr" "hds" "sd"]]
+      (.mkdirs (io/file @webDir appid "res" s "pics"))
+      (.mkdirs (io/file @webDir appid "res" s "fon")))
+
+    (doseq [s ["info" "pages" "styles"]]
+      (.mkdirs (io/file @webDir appid s)))
+
+    (-> (ant/ProjAntTasks
+          pj
+          "new-app"
+          (ant/AntCopy pj {:file (str @srcDir "/resources/game.json")
+                           :todir (str @webDir "/" appid "/info")} [])
+          (ant/AntCopy pj {:file (str @srcDir "/resources/game.mf")
+                           :todir (str @webDir "/" appid "/info")} [])
+          (ant/AntReplace pj {:file (str @webDir "/" appid "/info/game.mf")
+                              :token "@@PUBDATE@@"
+                              :value pubtime} [])
+          (ant/AntReplace pj {:file (str @webDir "/" appid "/info/game.mf")
+                              :token "@@APPID@@"
+                              :value appid} [])
+          (ant/AntReplace pj {:file (str @webDir "/" appid "/info/game.json")
+                              :token "@@UUID@@"
+                              :value appkey} []))
+        (ant/ExecTarget))
+
+    (doseq [s ["game.js" "splash.js" "mmenu.js" "hud.js" "config.js" "protos.js"]]
+      (->> (ant/AntCopy pj {:file (str @srcDir "/resources/" s)
+                            :todir (str @webDir "/" appid "/src/p")} [])
+           (conj @ts)
+           (reset! ts)))
+
+    (->> (ant/AntCopy pj {:file (str @srcDir "/resources/gnodes.js")
+                          :todir (str @webDir "/" appid "/src/n")} [])
+         (conj @ts)
+         (reset! ts))
+    (->> (ant/AntCopy pj {:file (str @srcDir "/resources/cobjs.js")
+                          :todir (str @webDir "/" appid "/src/n")} [])
+         (conj @ts)
+         (reset! ts))
+
+    (doseq [s ["stager.js" "factory.js"
+               "motion.js" "resolve.js" "sysobjs.js"]]
+      (->> (ant/AntCopy pj {:file (str @srcDir "/resources/" s)
+                            :todir (str @webDir "/" appid "/src/s") } [])
+           (conj @ts)
+           (reset! ts)))
+
+    (->> (ant/AntReplace pj {:file (str @webDir "/" appid "/src/p/config.js")
+                             :token "@@UUID@@"
+                             :value appkey} [])
+         (conj @ts)
+         (reset! ts))
+    (->> (ant/AntCopy pj {:file (str @srcDir "/resources/l10n.js")
+                          :tofile (str @webDir "/" appid "/src/i18n/l10n.js")} [])
+         (conj @ts)
+         (reset! ts))
+    (->> (ant/AntCopy pj {:file (str @srcDir "/resources/ccconfig.js")
+                          :todir (str @webDir "/" appid "/src")} [])
+         (conj @ts)
+         (reset! ts))
+    (->> (ant/AntCopy pj {:file (str @srcDir "/resources/proj.json")
+                          :tofile (str @webDir "/" appid "/src/project.json")} [])
+         (conj @ts)
+         (reset! ts))
+    (->> (ant/AntReplace pj {:file (str @webDir "/" appid "/src/project.json")
+                             :token "@@APPID@@"
+                             :value appid} [])
+         (conj @ts)
+         (reset! ts))
+    (->> (ant/AntReplace pj {:file (str @webDir "/" appid "/src/ccconfig.js")
+                             :token "@@APPID@@"
+                             :value appid} [])
+         (conj @ts)
+         (reset! ts))
+
+    (-> (apply ant/ProjAntTasks pj "new-app" (reverse @ts))
+        (ant/ExecTarget))
+  ))
 
 def cocos_new(appid) {
   ant.mkdir (dir: "${basedir}/cocos")
