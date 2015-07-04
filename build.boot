@@ -9,16 +9,11 @@
 // this software.
 // Copyright (c) 2013, Ken Leung. All rights reserved.
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; external tools
-import org.apache.commons.lang3.StringUtils
-import org.apache.commons.io.FileUtils
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonParser
-import com.google.gson.JsonObject
-import com.google.gson.JsonArray
-import com.google.gson.Gson
-import java.util.UUID
+(require '[clojure.data.json :as js]
+         '[clojure.string :as cstr]
+         '[czlabclj.tpcl.antlib :as ant])
+
+(import '[java.util UUID])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; global properties
@@ -78,17 +73,41 @@ import java.util.UUID
   (ant/DeleteDir (io/file @webDir wappid "src" @bldDir)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (called by skaro)
-(defn buildr ""
+;;
+(defn- cleanPublic ""
   []
-  (clean)
-  (preBuild)
-  (println "##############################################################################")
-  (format  "# building: %s\n" @PID)
-  (format  "# type: %s\n" @buildType)
-  (println "##############################################################################")
-  (compileAndJar)
-  (buildWebApps))
+  (let [pj (ant/AntProject)
+        t1 (->> [[:fileset {:dir (str @basedir "/public/scripts")
+                            :includes "**/*"} []]
+                 [:fileset {:dir (str @basedir "/public/styles")
+                            :includes "**/*"} []]
+                 [:fileset {:dir (str @basedir "/public/pages")
+                            :includes "**/*"} []]
+                 [:fileset {:dir (str @basedir "/public/ig")
+                            :includes "**/*"} []]]
+                (ant/AntDelete pj
+                               {:includeEmptyDirs true}))
+        t2 (ant/AntMkdir {:dir (str @basedir "/public/ig")}) ]
+    (-> (ant/ProjAntTasks pj "clean-public!" t1 t2)
+        (ant/ExecTarget))
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- clean ""
+  []
+  (let [pj  (ant/AntProject)
+        t1  (->> [[:fileset {:dir @outJarDir
+                             :includes "**/*"} []]
+                  [:fileset {:dir @buildDir
+                             :includes "**/*"} []]
+                  [:fileset {:dir @libDir
+                             :includes "**/*.jar"} []]]
+                 (ant/AntDelete pj {:includeEmptyDirs true})) ]
+    (-> (ant/ProjAntTasks pj "clean!" t1)
+        (ant/ExecTarget))
+    (cleanPublic)
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -198,57 +217,48 @@ import java.util.UUID
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- cleanPublic ""
-  []
-
-  (let [pj (ant/AntProject)
-        t1 (->> [[:fileset {:errorOnMissingDir false
-                            :dir (str @basedir "/public/scripts")
-                            :includes "**/*"} []]
-                 [:fileset {:errorOnMissingDir false
-                            :dir (str @basedir "/public/styles")
-                            :includes "**/*"} []]
-                 [:fileset {:errorOnMissingDir false
-                            :dir (str @basedir "/public/pages")
-                            :includes "**/*"} []]
-                 [:fileset {:errorOnMissingDir false
-                            :dir (str @basedir "/public/ig")
-                            :includes "**/*"} []]]
-                (ant/AntDelete pj
-                               {:includeEmptyDirs true}))
-        t2 (ant/AntMkdir {:dir (str @basedir "/public/ig")}) ]
-    (-> (ant/ProjAntTasks pj "clean-public!" t1 t2)
-        (ant/ExecTarget))
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- clean ""
-  []
-  (let [pj  (ant/AntProject)
-        t1  (->> [[:fileset {:errorOnMissingDir false
-                             :dir @outJarDir
-                             :includes "**/*"} []]
-                  [:fileset {:errorOnMissingDir false
-                             :dir @buildDir
-                             :includes "**/*"} []]
-                  [:fileset {:errorOnMissingDir false
-                             :dir @libDir
-                             :includes "**/*.jar"} []]]
-                 (ant/AntDelete pj {:includeEmptyDirs true})) ]
-    (-> (ant/ProjAntTasks pj "clean!" t1)
-        (ant/ExecTarget))
-    (cleanPublic)
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 (defn- buildWebApps ""
   []
   (let [isDir? #(.isDirectory %)
         dirs (->> (.listFiles (io/file @webDir))
                   (filter dir?))]
     (map #(buildOneWebApp %) dirs)
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- babel ""
+
+  [wappid ok f paths]
+
+  (let [dir (str @webDir "/" wappid "/src")
+        out (str @websrc "/" wappid)
+        mid (cstr/join "/" paths)
+        pj (ant/AntProject) ]
+
+    (if ok
+      (let [t2 (ant/AntReplace {:file (str dir "/" @bldDir "/" mid)
+                                :token "/*@@"
+                                :value ""} [])
+            t3 (ant/AntReplace {:file (str dir "/" @bldDir "/" mid)
+                                :token "@@*/"
+                                :value ""} []) ]
+        (-> (ant/ProjAntTasks pj "babel-post" t2 t3)
+            (ant/ExecTarget)))
+      (let [des2 (-> (io/file dir @bldDir mid)
+                     (.getParentFile)) ]
+        (->> (ant/AntCopy {:file (str dir "/" mid)
+                           :todir des2} [])
+             (ant/ProjAntTasks pj "")
+             (ant/ExecTarget))))
+
+    (let [des2 (doto (-> (io/file out mid)
+                         (.getParentFile))
+                     (.mkdirs))]
+      (->> (ant/AntMove {:file (str dir "/" @bldDir "/" mid)
+                         :todir des2} [])
+           (ant/ProjAntTasks pj "")
+           (ant/ExecTarget)))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -262,6 +272,23 @@ import java.util.UUID
         tks (atom []) ]
 
     (cleanLocalJs wappid)
+    (bt/BabelTree root
+                  (fn [f paths]
+                    (cond
+                      (or (.startsWith (last paths) "cc")
+                          (= @bldDir (.getName)))
+                      nil
+                      (.isDirectory f)
+                      {}
+                      :else
+                      {:post (partial babel wappid)
+                       :work-dir root
+                       :args ["--modules"
+                              "amd"
+                              "--module-ids"
+                              (cstr/join "/" paths)
+                              "--out-dir"
+                              @bldDir]})))
     (jsWalkTree wappid
                 (Stack.) root)
     (cleanLocalJs wappid)
@@ -359,72 +386,6 @@ import java.util.UUID
                                    :append true})) ]
     (-> (ant/ProjAntTasks pj "finz-build" t1 t2)
         (ant/ExecTarget))
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- jsWalkTree ""
-
-  [^Stack stk ^String wappid seed]
-
-  (let [^File top (if-not (nil? seed) seed (.peek stk))]
-    (doseq [f (.listFiles top)]
-      (cond
-        (= @bldDir (.getName f))
-        nil
-        (.isDirectory f)
-        (do
-          (.push stk f)
-          (jsWalkTree stk wappid nil))
-        :else
-        (let [path (if (.empty stk)
-                       ""
-                       (cstr/join "/" (for [x (.toArray stk)] (.getName x))))
-              fid (.getName f)
-              mid (if (> (.length path) 0)
-                    (str path "/" fid)
-                    fid)]
-          (babelFile wappid mid))))
-    (when-not (.empty stk) (.pop stk))
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- babelFile ""
-
-  [wappid mid]
-
-  (let [dir (str @webDir "/" wappid "/src")
-        out (str @websrc "/" wappid)
-        pj (ant/AntProject) ]
-
-    (if (and (not (.startsWith mid "cc"))
-             (.endsWith mid ".js"))
-      (let [t1 (->> [[:args ["--modules" "amd" "--module-ids"
-                             mid "--out-dir" @bldDir]]]
-                    (ant/AntExec pj {:executable "babel"
-                                     :dir dir}))
-            t2 (ant/AntReplace {:file (str dir "/" @bldDir "/" mid)
-                                :token "/*@@"
-                                :value ""} [])
-            t3 (ant/AntReplace {:file (str dir "/" @bldDir "/" mid)
-                                :token "@@*/"
-                                :value ""} []) ]
-        (-> (ant/ProjAntTasks pj "babel" t1 t2 t3)
-            (ant/ExecTarget)))
-      (let [des2 (-> (io/file dir @bldDir mid)
-                     (.getParentFile)) ]
-        (->> (ant/AntCopy {:file (str dir "/" mid)
-                           :todir des2} [])
-             (ant/ProjAntTasks pj "")
-             (ant/ExecTarget))))
-    (let [des2 (doto (-> (io/file out mid)
-                         (.getParentFile))
-                     (.mkdirs))]
-      (->> (ant/AntMove {:file (str dir "/" @bldDir "/" mid)
-                         :todir des2} [])
-           (ant/ProjAntTasks pj "")
-           (ant/ExecTarget)))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -633,6 +594,19 @@ import java.util.UUID
     (-> (ant/ProjAntTasks pj "yui-css" t1)
         (ant/ExecTarget))
   ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (called by skaro)
+(defn- buildr ""
+  []
+  (clean)
+  (preBuild)
+  (println "##############################################################################")
+  (format  "# building: %s\n" @PID)
+  (format  "# type: %s\n" @buildType)
+  (println "##############################################################################")
+  (compileAndJar)
+  (buildWebApps))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -874,5 +848,5 @@ import java.util.UUID
     (jiggleTheIndexFile appid (str @basedir "/cocos/" appid) true)
   ))
 
-//////////////////////////////////////////////////////////////////////////////
-// EOF
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;EOF
