@@ -227,38 +227,47 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- babel ""
+(defn- babel->cb ""
 
-  [wappid ok f paths]
+  [wappid f & {:keys [postgen dir paths]
+               :or {:postgen false
+                    :dir false
+                    :paths []}
+               :as args }]
 
-  (let [dir (str @webDir "/" wappid "/src")
-        out (str @websrc "/" wappid)
+  (let [dir (io/file @webDir wappid "src")
+        out (io/file @websrc wappid)
         mid (cstr/join "/" paths)
-        pj (ant/AntProject) ]
+        des (-> (io/file out mid)
+                (.getParentFile)) ]
+    (cond
+      postgen
+      (let [bf (io/file dir @bldDir mid)]
+        (spit bf
+              (-> (slurp bf)
+                  (.replaceAll "\\/\\*@@" "")
+                  (.replaceAll "@@\\*\\/" "")))
+        (ant/MoveFile bf (doto des (.mkdirs))))
 
-    (if ok
-      (let [t2 (ant/AntReplace {:file (str dir "/" @bldDir "/" mid)
-                                :token "/*@@"
-                                :value ""} [])
-            t3 (ant/AntReplace {:file (str dir "/" @bldDir "/" mid)
-                                :token "@@*/"
-                                :value ""} []) ]
-        (-> (ant/ProjAntTasks pj "babel-post" t2 t3)
-            (ant/ExecTarget)))
-      (let [des2 (-> (io/file dir @bldDir mid)
-                     (.getParentFile)) ]
-        (->> (ant/AntCopy {:file (str dir "/" mid)
-                           :todir des2} [])
-             (ant/ProjAntTasks pj "")
-             (ant/ExecTarget))))
+      (.isDirectory f)
+      (if (= @bldDir (.getName f))
+        nil
+        {})
 
-    (let [des2 (doto (-> (io/file out mid)
-                         (.getParentFile))
-                     (.mkdirs))]
-      (->> (ant/AntMove {:file (str dir "/" @bldDir "/" mid)
-                         :todir des2} [])
-           (ant/ProjAntTasks pj "")
-           (ant/ExecTarget)))
+      :else
+      (if (and (not (.startsWith mid "cc"))
+               (.endsWith mid ".js"))
+        {:work-dir dir
+         :args ["--modules"
+                "amd"
+                "--module-ids"
+                mid
+                "--out-dir"
+                @bldDir] }
+        (do
+          (ant/CopyFile (io/file dir mid)
+                        (doto des (.mkdirs)))
+          nil)))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -272,25 +281,7 @@
         tks (atom []) ]
 
     (cleanLocalJs wappid)
-    (bt/BabelTree root
-                  (fn [f paths]
-                    (cond
-                      (or (.startsWith (last paths) "cc")
-                          (= @bldDir (.getName)))
-                      nil
-                      (.isDirectory f)
-                      {}
-                      :else
-                      {:post (partial babel wappid)
-                       :work-dir root
-                       :args ["--modules"
-                              "amd"
-                              "--module-ids"
-                              (cstr/join "/" paths)
-                              "--out-dir"
-                              @bldDir]})))
-    (jsWalkTree wappid
-                (Stack.) root)
+    (bt/BabelTree root (partial babel->cb wappid))
     (cleanLocalJs wappid)
 
     (when true
