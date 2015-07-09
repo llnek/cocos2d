@@ -7,15 +7,22 @@
 ;; By using this software in any  fashion, you are agreeing to be bound by the
 ;; terms of this license. You  must not remove this notice, or any other, from
 ;; this software.
-;; Copyright (c) 2013, Ken Leung. All rights reserved.
+;; Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 (set-env!
-  :dependencies '[]
 
-  :source-paths #{"src/main/java" "src/main/clojure"}
+  :skaroHome "/wdrive/myspace/skaro/b.out/pack"
+  :PID "cocos2d"
+  :source-paths #{"src/main/clojure"
+                  "src/main/java"}
+
   :buildVersion "0.9.0-SNAPSHOT"
+  :buildType "web"
   :buildDebug true
-  :basedir (System/getProperty "user.dir"))
+  :bldDir "b.out"
+  :basedir (System/getProperty "user.dir")
+
+  :dependencies '[])
 
 (require '[clojure.data.json :as js]
          '[clojure.string :as cstr]
@@ -24,40 +31,24 @@
          '[czlabclj.tpcl.antlib :as ant])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; global properties
-(def skaroHome (atom "/wdrive/myspace/skaro/b.out/0/pack"))
-(def bldDir (atom "b.out"))
-(def prj (atom "0"))
+;;
+
 (def wjs (atom "webscripts"))
 (def wcs (atom "webstyles"))
-(def basedir (atom (get-env :basedir)))
 
-(def buildDir (atom (b/fp! @basedir @bldDir @prj)))
-(def reportDir (atom (b/fp! @buildDir "reports")))
+(set-env! :buildDir (b/fp! (ge :basedir) (ge :bldDir)))
+
 (def podDir (atom (b/fp! @basedir "POD-INF")))
 (def libDir (atom (b/fp! @podDir "lib")))
-
-(def buildVersion (atom "0.9.0"))
-(def PID (atom "cocos2d"))
-
-(def buildDebug (atom true))
-(def buildType (atom "web"))
-
 (def testDir (atom (b/fp! @basedir "src/test")))
 (def srcDir (atom (b/fp! @basedir "src/main")))
 (def webDir (atom (b/fp! @basedir "src/web")))
-
 (def outTestDir (atom (b/fp! @podDir "test-classes")))
 (def outJarDir (atom (b/fp! @podDir "classes")))
-
-(def csslang (atom "scss"))
-(def jslang (atom "js"))
 
 (def websrc (atom (b/fp! @buildDir @wjs)))
 (def webcss (atom (b/fp! @buildDir @wcs)))
 (def docs (atom (b/fp! @buildDir "docs")))
-
-(def pj (atom (ant/AntProject)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; language compilers
