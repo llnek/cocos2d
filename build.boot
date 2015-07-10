@@ -499,8 +499,9 @@
        [:arglines ["--sourcemap=none"]]
        [:srcfile {}]
        [:chainedmapper
-        [[:type :glob {:from "*.scss" :to "*.css"}]
-         [:type :glob {:from "*" :to (fp! (ge :webcss) wappid "*")}]]]
+        {}
+        [{:type :glob :from "*.scss" :to "*.css"}
+         {:type :glob :from "*" :to (fp! (ge :webcss) wappid "*")}]]
        [:targetfile {}]])
     (ant/AntCopy
       {:todir (fp! (ge :webcss) wappid)}
@@ -593,12 +594,12 @@
   (let [wappid (.getName dir)]
     (.mkdirs (io/file (fp! (ge :websrc) wappid)))
     (.mkdirs (io/file (fp! (ge :webcss) wappid)))
-    ;;(compileJS wappid)
+    (compileJS wappid)
     (compileSCSS wappid)
-    ;;(compileMedia wappid)
-    ;;(compileInfo wappid)
-    ;;(compilePages wappid)
-    ;;(finzApp wappid)
+    (compileMedia wappid)
+    (compileInfo wappid)
+    (compilePages wappid)
+    (finzApp wappid)
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -620,7 +621,7 @@
   (let [ps (fp! (ge :basedir) "public" "vendors/")
         t1 (ant/AntDelete
              {:file (fp! (ge :basedir)
-                           "public/c/webcommon.js")} )
+                         "public/c/webcommon.js")} )
         t2 (->> [[:fileset {:file (fp! ps "almond/almond.js")} ]
                  [:fileset {:file (fp! ps "ramda/ramda.js") } ]
                  [:fileset {:file (fp! ps "l10njs/l10n.js")} ]
@@ -635,10 +636,10 @@
                  [:fileset {:file (fp! ps "cherimoia/skaro.js")} ]
                  [:fileset {:file (fp! ps "cherimoia/caesar.js")} ]]
                 (ant/AntConcat
-                  {:destFile (fp! (ge :basedir)
-                                    "public/c/webcommon.js")
+                  {:destfile (fp! (ge :basedir)
+                                  "public/c/webcommon.js")
                    :append true})) ]
-    (ant/RunTasks* "finz/build" t1 t2)
+    (ant/RunTarget* "finz/build" t1 t2)
   ))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -656,11 +657,11 @@
                         "/lib/yuicompressor-2.4.8.jar")]]
        [:srcfile {}]
        [:arglines ["-o"]]
-       [:chainedmapper
-        [[:type :glob {:from "*.css"
-                      :to "*.min.css"}]
-         [:type :glob {:from "*"
-                      :to (fp! (ge :basedir) "public/styles/*")}]]]
+       [:chainedmapper {}
+        [{:type :glob :from "*.css"
+                      :to "*.min.css"}
+         {:type :glob :from "*"
+                      :to (fp! (ge :basedir) "public/styles/*")}]]
        [:targetfile {}]])))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -679,11 +680,11 @@
                         "/lib/yuicompressor-2.4.8.jar")]]
        [:srcfile {}]
        [:arglines ["-o"]]
-       [:chainedmapper
-        [[:type :glob {:from "*.js"
-                      :to "*.min.js"}]
-         [:type :glob {:from "*"
-                      :to (fp! (ge :basedir) "public/scripts/*")}]]]
+       [:chainedmapper {}
+        [{:type :glob :from "*.js"
+                      :to "*.min.js"}
+         {:type :glob :from "*"
+                      :to (fp! (ge :basedir) "public/scripts/*")}]]
        [:targetfile {}]])))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -732,7 +733,7 @@
     (print (format  "# type: %s\n" (ge :buildType)))
     (println "##############################################################################")
     (set-env! :pmode "release")
-    ;;(buildr)
+    (buildr)
     (jar!)
     (buildWebApps)
     (yuiCSS)
