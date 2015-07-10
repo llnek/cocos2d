@@ -17,9 +17,17 @@
                   "src/main/java"}
 
   :buildVersion "0.9.0-SNAPSHOT"
-  :buildType "web"
   :buildDebug true
-  :bldDir "b.out"
+
+  :pod "POD-INF"
+  :pmode "dev"
+  :bld "b.out"
+
+  ;; local additions
+  :buildType "web"
+  :wjs "scripts"
+  :wcs "styles"
+
   :basedir (System/getProperty "user.dir")
 
   :dependencies '[])
@@ -27,199 +35,297 @@
 (require '[clojure.data.json :as js]
          '[clojure.string :as cstr]
          '[boot.core :as bcore]
-         '[czlabclj.tpcl.boot :as b]
+         '[czlabclj.tpcl.boot
+           :as b
+           :refer [minitask ge fp!]]
          '[czlabclj.tpcl.antlib :as ant])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+(set-env! :bootBuildDir (fp! (ge :basedir) (ge :bld)))
+(set-env! :podDir (fp! (ge :basedir) (ge :pod)))
+(set-env! :libDir (fp! (ge :basedir)
+                         (ge :target-path)))
 
-(def wjs (atom "webscripts"))
-(def wcs (atom "webstyles"))
+(set-env! :srcDir (fp! (ge :basedir) "src" "main"))
+(set-env! :tstDir (fp! (ge :basedir) "src" "test"))
+(set-env! :webDir (fp! (ge :basedir) "src" "web"))
 
-(set-env! :buildDir (b/fp! (ge :basedir) (ge :bldDir)))
+(set-env! :buildDir (fp! (ge :bootBuildDir) "classes"))
+(set-env! :qaDir (fp! (ge :bootBuildDir) "test"))
 
-(def podDir (atom (b/fp! @basedir "POD-INF")))
-(def libDir (atom (b/fp! @podDir "lib")))
-(def testDir (atom (b/fp! @basedir "src/test")))
-(def srcDir (atom (b/fp! @basedir "src/main")))
-(def webDir (atom (b/fp! @basedir "src/web")))
-(def outTestDir (atom (b/fp! @podDir "test-classes")))
-(def outJarDir (atom (b/fp! @podDir "classes")))
+(set-env! :reportTestDir (fp! (ge :qaDir) "reports"))
+(set-env! :buildTestDir (fp! (ge :qaDir) "classes"))
 
-(def websrc (atom (b/fp! @buildDir @wjs)))
-(def webcss (atom (b/fp! @buildDir @wcs)))
-(def docs (atom (b/fp! @buildDir "docs")))
+(set-env! :websrc (fp! (ge :bootBuildDir) (ge :wjs)))
+(set-env! :webcss (fp! (ge :bootBuildDir) (ge :wcs)))
+(set-env! :docs (fp! (ge :bootBuildDir) "docs"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; language compilers
-(def CZPATH [[:location (b/fp! @srcDir "clojure")]
-             [:location @outJarDir]
-             [:location @buildDir]
-             [:fileset {:dir @libDir} []]
-             [:fileset {:dir (b/fp! @skaroHome "dist")} []]
-             [:fileset {:dir (b/fp! @skaroHome "lib")} []]] )
+;;
+(set-env! :COMPILER_ARGS {:line "-Xlint:deprecation -Xlint:unchecked"})
 
-(def TZPATH (concat [[:location (b/fp! @testDir "clojure")]
-                     [:location @outTestDir]]
-                    CZPATH))
+(set-env! :COMPILE_OPTS {:debug (ge :buildDebug)
+                         :includeantruntime false
+                         :fork true})
+
+(set-env! :CPATH [[:location (ge :buildDir)]
+                  [:fileset {:dir (ge :libDir)
+                             :includes "**/*.jar"}]
+                  [:fileset {:dir (fp! (ge :skaroHome) "dist")
+                             :includes "**/*.jar"} ]
+                  [:fileset {:dir (fp! (ge :skaroHome) "lib")
+                             :includes "**/*.jar"} ]] )
+
+(set-env! :TPATH (->> (ge :CPATH)
+                      (cons [:location (ge :buildTestDir)])
+                      (into [])))
+
+(set-env! :JAVAC_OPTS (merge {:srcdir (fp! (ge :srcDir) "java")
+                              :destdir (ge :buildDir)
+                              :target "1.8"
+                              :debugLevel "lines,vars,source"}
+                              (ge :COMPILE_OPTS)))
+
+(set-env! :CJPATH (->> (ge :CPATH)
+                       (cons [:location (fp! (ge :srcDir) "clojure")])
+                       (into [])))
+
+(set-env! :TJPATH (->> (ge :CJPATH)
+                       (concat [[:location (fp! (ge :tstDir) "clojure")]
+                                [:location (ge :buildTestDir)]])
+                       (into [])))
+
+(set-env! :CLJC_OPTS {:classname "clojure.lang.Compile"
+                      :fork true
+                      :failonerror true
+                      :maxmemory "2048m"})
+
+(set-env! :CLJC_SYSPROPS {:clojure.compile.warn-on-reflection true
+                          :clojure.compile.path (ge :buildDir) })
+
+(set-env! :CJNESTED [[:sysprops (ge :CLJC_SYSPROPS)]
+                     [:classpath (ge :CJPATH)]])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- cleanLocalJs ""
-
   [wappid]
-
-  (ant/DeleteDir (io/file @webDir wappid "src" @bldDir)))
+  (ant/DeleteDir (io/file (ge :webDir)
+                          wappid "src" (ge :bld))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- cleanPublic ""
-
   []
-
-  (ant/RunAntTasks*
-    @pj
-    "clean-public"
-    (ant/AntDelete
-      @pj {}
-      [[:fileset {:dir (b/fp! @basedir "public/scripts")
-                  :includes "**/*"} ]
-       [:fileset {:dir (b/fp! @basedir "public/styles")
-                  :includes "**/*"} ]
-       [:fileset {:dir (b/fp! @basedir "public/pages")
-                  :includes "**/*"} ]
-       [:fileset {:dir (b/fp! @basedir "public/ig")
-                  :includes "**/*"} ]])
-    (ant/AntMkdir {:dir (b/fp! @basedir "public/ig")})))
+  (ant/RunTarget*
+    "clean/public"
+    (ant/AntDelete {}
+      [[:fileset {:dir (fp! (ge :basedir) "public")
+                  :includes "scripts/**,styles/**,pages/**,ig/**"}]])))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- clean ""
+(defn- clean4Build ""
   []
-  (let [pj (ant/AntProject)]
-    (ant/RunAntTasks*
-      pj
-      "clean"
-      (ant/AntDelete pj {}
-        [[:fileset {:dir @outJarDir
-                    :includes "**/*"} ]
-         [:fileset {:dir @buildDir
-                    :includes "**/*"} ]
-         [:fileset {:dir @libDir
-                    :includes "**/*.jar"} ]]))
-    (cleanPublic)
+  (minitask
+    "clean/build"
+    (do
+      (ant/CleanDir (io/file (ge :basedir)
+                             (ge :target-path)))
+      (ant/RunTasks*
+        (ant/AntDelete {}
+          [[:fileset {:dir (fp! (ge :podDir) "lib")} ]
+           [:fileset {:dir (ge :libDir)}]
+           [:fileset {:dir (ge :bootBuildDir)}
+                     [[:include "**/*"]
+                      [:exclude "classes/clojure/**"]]]])))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- preBuild ""
   []
-  (doseq [s [(b/fp! @basedir "POD-INF/classes")
-             (b/fp! @basedir "POD-INF/lib")
-             (b/fp! @basedir "POD-INF/patch")
-             @buildDir
-             (b/fp! @buildDir "webscripts")
-             (b/fp! @buildDir "webstyles")]]
+  (doseq [s [(fp! (ge :basedir) (ge :pod) "patch")
+             (fp! (ge :basedir) (ge :pod) "lib")
+             (ge :buildDir)
+             (ge :websrc)
+             (ge :webcss)]]
     (.mkdirs (io/file s))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- compileClj ""
+(defn- compClj ""
 
-  [pj & paths]
+  [& paths]
 
   (ant/AntJava
-    pj
-    {:classname "clojure.lang.Compile"
-     :fork true
-     :failonerror true
-     :maxmemory "2048m"}
-    [[:sysprops {:clojure.compile.warn-on-reflection true
-                 :clojure.compile.path @buildDir} ]
-     [:classpath CZPATH]
-     [:argvalues (apply b/FmtCljNsps
-                        (io/file @srcDir "clojure") paths)]]))
+    (ge :CLJC_OPTS)
+    (concat [[:argvalues(apply b/FmtCljNsps
+                                (io/file (ge :srcDir) "clojure") paths)]]
+            (ge :CJNESTED))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- compileAndJar ""
+(defn- compileJava ""
   []
-  (let [pj (ant/AntProject)]
-    (ant/RunAntTasks*
-      pj
-      "compile+jar"
-      (ant/AntJavac
-        pj
-        {:srcdir (b/fp! @srcDir "java")
-         :destdir @outJarDir
-         :includeantruntime false
-         :target "1.8"
-         :debug @buildDebug
-         :debugLevel "lines,vars,source"}
-        [[:compilerarg {:line "-Xlint:deprecation -Xlint:unchecked"}]
-         [:include "**/*.java"]
-         [:classpath CZPATH]])
-
-      (compileClj pj "czlabclj.odin.event"
-                     "czlabclj.odin.system"
-                     "czlabclj.odin.game")
-
-      (compileClj pj "czlabclj.frigga.core"
-                     "czlabclj.frigga.tttoe"
-                     "czlabclj.frigga.pong")
-
-      (compileClj pj "czlabclj.cocos2d.games"
-                     "czlabclj.cocos2d.site"
-                     "czlabclj.cocos2d.users"
-                     "czlabclj.cocos2d.util")
-
-      (ant/AntCopy pj
-                   {:todir @outJarDir}
-                   [[:fileset {:dir @buildDir} ]])
-
-        ;;-- copy over other resources
-
-      (ant/AntCopy pj
-                   {:todir @outJarDir}
-                   [[:fileset {:dir (b/fp! @srcDir "clojure") }
-                              [[:exclude "**/*.clj"]]]
-                    [:fileset {:dir (b/fp! @srcDir "java") }
-                              [[:exclude "**/*.java"]]]])
-
-      (ant/AntJar pj
-                  {:destFile (b/fp! @libDir
-                                    (str @PID
-                                         "-" @buildVersion ".jar"))}
-                  [[:fileset {:dir @outJarDir} ]]))
-  ))
+  (ant/RunTarget*
+    "compile/java"
+    (ant/AntJavac
+      (ge :JAVAC_OPTS)
+      [[:compilerarg (ge :COMPILER_ARGS)]
+       [:include "**/*.java"]
+       [:classpath (ge :CPATH)]])
+    (ant/AntCopy
+      {:todir (ge :buildDir)}
+      [[:fileset {:dir (fp! (ge :srcDir) "java")
+                  :excludes "**/*.java"}]])))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- compileTestCode ""
+(defn- compileClj ""
   []
-  (.mkdirs (io/file @outTestDir))
-  (.mkdirs (io/file @reportDir)))
+  (ant/RunTarget*
+    "compile/clj"
+    (compClj "czlabclj.odin.event"
+             "czlabclj.odin.system"
+             "czlabclj.odin.game")
+
+    (compClj "czlabclj.frigga.core"
+             "czlabclj.frigga.tttoe"
+             "czlabclj.frigga.pong")
+
+    (compClj "czlabclj.cocos2d.games"
+             "czlabclj.cocos2d.site"
+             "czlabclj.cocos2d.users"
+             "czlabclj.cocos2d.util")
+
+    (ant/AntCopy
+      {:todir (ge :buildDir)}
+      [[:fileset {:dir (fp! (ge :srcDir) "clojure")
+                  :excludes "**/*.clj"}]])))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- runTestCode "" [])
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn testBuild ""
+(defn- jar! ""
   []
-  (buildr)
-  (compileTestCode)
-  (runTesTCode)
-  (println "Test called - OK"))
+  (ant/RunTarget*
+    "jar!"
+    (ant/AntJar
+      {:destFile (fp! (ge :podDir) "lib"
+                        (str (ge :PID)
+                             "-" (ge :buildVersion) ".jar"))}
+      [[:fileset {:dir (ge :buildDir)} ]])))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- preTest ""
+  []
+  (.mkdirs (io/file (ge :buildTestDir)))
+  (.mkdirs (io/file (ge :reportTestDir))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- compileFrwkTest ""
+  []
+  (ant/RunTarget*
+    "compile/java#test"
+    (ant/AntJavac (merge (ge :JAVAC_OPTS)
+                         {:srcdir (fp! (ge :tstDir) "java")
+                          :destdir (ge :buildTestDir)})
+                  [[:include "**/*.java"]
+                   [:classpath (ge :TPATH)]
+                   [:compilerarg (ge :COMPILER_ARGS)]])
+
+    (ant/AntCopy {:todir (ge :buildTestDir)}
+                 [[:fileset {:dir (fp! (ge :tstDir) "java")
+                             :excludes "**/*.java"}]])))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- compileCljTest ""
+  []
+  (ant/RunTarget*
+    "compile/clj#test"
+    (ant/AntJava
+      (ge :CLJC_OPTS)
+      [[:sysprops (assoc (ge :CLJC_SYSPROPS)
+                         :clojure.compile.path (ge :buildTestDir))]
+       [:classpath (ge :TJPATH)]
+       [:argvalues (b/FmtCljNsps (fp! (ge :tstDir) "clojure")
+                                 "testcljc/dummy")]])
+    (ant/AntCopy
+      {:todir (ge :buildTestDir)}
+      [[:fileset {:dir (fp! (ge :tstDir) "clojure")
+                  :excludes "**/*.clj"}]])))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- runCljTest ""
+  []
+  (ant/RunTarget*
+    "run/clj#test"
+    (ant/AntJunit
+      {:logFailedTests true
+       :showOutput false
+       :printsummary true
+       :fork true
+       :haltonfailure true}
+      [[:classpath (ge :TJPATH)]
+       [:formatter {:type "plain"
+                    :useFile false}]
+       [:test {:name "czlab.frwk.util.ClojureJUnit"
+               :todir (ge :reportTestDir)}
+              [[:formatter {:type "xml"}]]]])))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- runJavaTest ""
+  []
+  (ant/RunTarget*
+    "run/java#test"
+    (ant/AntJunit
+      {:logFailedTests true
+       :showOutput false
+       :printsummary true
+       :fork true
+       :haltonfailure true}
+      [[:classpath (ge :TPATH)]
+       [:formatter {:type "plain"
+                    :useFile false}]
+       [:batchtest {:todir (ge :reportTestDir)}
+                   [[:fileset {:dir (ge :buildTestDir)}
+                              [[:include "**/JUTest.*"]]]
+                    [:formatter {:type "xml"}]]]])))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- buildCljTest ""
+  []
+  (minitask
+    "preTest"
+    (ant/DeleteDir (io/file (ge :buildTestDir) "czlab"))
+    (preTest))
+  (compileFrwkTest)
+  (compileCljTest))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- buildJavaTest ""
+  []
+  (minitask
+    "preTest"
+    (ant/DeleteDir (io/file (ge :buildTestDir) "czlab"))
+    (preTest))
+  (compileFrwkTest))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- buildWebApps ""
   []
   (let [isDir? #(.isDirectory %)
-        dirs (->> (.listFiles (io/file @webDir))
+        dirs (->> (.listFiles (io/file (ge :webDir)))
                   (filter dir?))]
     (map #(buildOneWebApp %) dirs)
   ))
@@ -234,14 +340,14 @@
                     :paths []}
                :as args }]
 
-  (let [dir (io/file @webDir wappid "src")
-        out (io/file @websrc wappid)
+  (let [dir (io/file (ge :webDir) wappid "src")
+        out (io/file (ge :websrc) wappid)
         mid (cstr/join "/" paths)
         des (-> (io/file out mid)
                 (.getParentFile)) ]
     (cond
       postgen
-      (let [bf (io/file dir @bldDir mid)]
+      (let [bf (io/file dir (ge :bld) mid)]
         (spit bf
               (-> (slurp bf)
                   (.replaceAll "\\/\\*@@" "")
@@ -249,7 +355,7 @@
         (ant/MoveFile bf (doto des (.mkdirs))))
 
       (.isDirectory f)
-      (if (= @bldDir (.getName f))
+      (if (= (get :bld) (.getName f))
         nil
         {})
 
@@ -257,12 +363,9 @@
       (if (and (not (.startsWith mid "cc"))
                (.endsWith mid ".js"))
         {:work-dir dir
-         :args ["--modules"
-                "amd"
-                "--module-ids"
-                mid
-                "--out-dir"
-                @bldDir] }
+         :args ["--modules" "amd"
+                "--module-ids" mid
+                "--out-dir" (ge :bld) ]}
         (do
           (ant/CopyFile (io/file dir mid)
                         (doto des (.mkdirs)))
@@ -275,8 +378,7 @@
 
   [wappid]
 
-  (let [root (io/file @webDir wappid "src")
-        pj (ant/AntProject)
+  (let [root (io/file (ge :webDir) wappid "src")
         tks (atom []) ]
 
     (cleanLocalJs wappid)
@@ -286,52 +388,55 @@
       (cleanLocalJs wappid)))
 
     (when true
-      (ant/RunAntTasks* pj ""
+      (ant/RunTasks*
         (ant/AntExec
-          pj
           {:executable "jsdoc"
-           :dir @basedir
+           :dir (ge :basedir)
            :spawn true}
-          [[:argvalues [(b/fp! @basedir
-                               @bldDir @prj @wjs wappid)
+          [[:argvalues [(fp! (ge :basedir)
+                               (ge :bld)
+                               (ge :wjs) wappid)
                          "-c"
-                         (b/fp! @basedir "jsdoc.json")
+                         (fp! (ge :basedir) "jsdoc.json")
                          "-d"
-                         (b/fp! @docs wappid)]]])))
+                         (fp! (ge :docs) wappid)]]])))
 
-    (.mkdirs (io/file @basedir "public" "ig" "lib" "game"))
-    (.mkdirs (io/file @basedir "public" "scripts"))
+    (.mkdirs (io/file (ge :basedir) "public" "ig" "lib" "game"))
+    (.mkdirs (io/file (ge :basedir) "public" "scripts"))
 
     (case wappid
 
       "cocos2d"
-      (->> [[:fileset {:dir (b/fp! @websrc wappid)}]]
-           (ant/AntCopy pj {:todir (b/fp! @basedir "public/ig/lib") })
+      (->> [[:fileset {:dir (fp! (ge :websrc) wappid)}]]
+           (ant/AntCopy
+             {:todir (fp! (ge :basedir)
+                            "public/ig/lib") })
            (conj @tks)
            (reset! tks))
 
       "main"
-      (->> [[:fileset {:dir (b/fp! @websrc wappid) } ]]
-           (ant/AntCopy pj {:todir (b/fp! @basedir "public/scripts") })
+      (->> [[:fileset {:dir (fp! (ge :websrc) wappid) } ]]
+           (ant/AntCopy
+             {:todir (fp! (ge :basedir)
+                            "public/scripts") })
            (conj @tks)
            (reset! tks))
       ;;else
       (do
         (->> (ant/AntCopy
-               pj
-               {:file (b/fp! @srcDir "resources/main.js")
-                :todir (b/fp! @basedir
-                              "public/ig/lib/game/" wappid)} )
+               {:file (fp! (ge :srcDir) "resources/main.js")
+                :todir (fp! (ge :basedir)
+                              "public/ig/lib/game" wappid)} )
              (conj @tks)
              (reset! tks))
-        (->> [[:fileset {:dir (b/fp! @websrc wappid)} ]]
-             (ant/AntCopy pj
-                          {:todir (b/fp! @basedir
-                                         "public/ig/lib/game/" wappid)})
+        (->> [[:fileset {:dir (fp! (ge :websrc) wappid)} ]]
+             (ant/AntCopy
+               {:todir (fp! (ge :basedir)
+                              "public/ig/lib/game" wappid)})
              (conj @tks)
              (reset! tks))))
 
-    (apply ant/RunAntTasks pj "" (reverse @tks))
+    (apply ant/RunTasks (reverse @tks))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -340,13 +445,11 @@
 
   [^File dir]
 
-  (let [wappid (.getName dir)
-        pj (ant/AntProject)]
-    (.mkdirs (io/file (b/fp! @websrc  wappid)))
-    (.mkdirs (io/file (b/fp! @webcss  wappid)))
+  (let [wappid (.getName dir)]
+    (.mkdirs (io/file (fp! (ge :websrc) wappid)))
+    (.mkdirs (io/file (fp! (ge :webcss) wappid)))
     (compileJS wappid)
-    (when (= "scss" @csslang)
-      (compileSCSS wappid))
+    (compileSCSS wappid)
     (compileMedia wappid)
     (compileInfo wappid)
     (compilePages wappid)
@@ -359,27 +462,28 @@
 
   []
 
-  (let [pj (ant/AntProject)
-        ps (b/fp! @basedir "public/vendors/")
-        t1 (ant/AntDelete pj
-                          {:file (b/fp! @basedir
-                                        "public/c/webcommon.js")} )
-        t2 (->> [[:fileset {:file (b/fp! ps "almond/almond.js")} ]
-                 [:fileset {:file (b/fp! ps "ramda/ramda.js") } ]
-                 [:fileset {:file (b/fp! ps "l10njs/l10n.js")} ]
-                 [:fileset {:file (b/fp! ps "mustache/mustache.js")} ]
-                 [:fileset {:file (b/fp! ps "helpers/dbg.js") } ]
-                 [:fileset {:file (b/fp! ps "js-signals/signals.js") } ]
-                 [:fileset {:file (b/fp! ps "ash-js/ash.js")} ]
-                 [:fileset {:file (b/fp! ps "jquery-plugins/detectmobilebrowser.js")} ]
-                 [:fileset {:file (b/fp! ps "crypto-js/components/core-min.js")} ]
-                 [:fileset {:file (b/fp! ps "crypto-js/components/enc-utf16-min.js")} ]
-                 [:fileset {:file (b/fp! ps "crypto-js/components/enc-base64-min.js")} ]
-                 [:fileset {:file (b/fp! ps "cherimoia/skaro.js")} ]
-                 [:fileset {:file (b/fp! ps "cherimoia/caesar.js")} ]]
-                (ant/AntConcat pj {:destFile (b/fp! @basedir "public/c/webcommon.js")
-                                   :append true})) ]
-    (ant/RunAntTasks* pj "finz-build" t1 t2)
+  (let [ps (fp! (ge :basedir) "public" "vendors/")
+        t1 (ant/AntDelete
+             {:file (fp! (ge :basedir)
+                           "public/c/webcommon.js")} )
+        t2 (->> [[:fileset {:file (fp! ps "almond/almond.js")} ]
+                 [:fileset {:file (fp! ps "ramda/ramda.js") } ]
+                 [:fileset {:file (fp! ps "l10njs/l10n.js")} ]
+                 [:fileset {:file (fp! ps "mustache/mustache.js")} ]
+                 [:fileset {:file (fp! ps "helpers/dbg.js") } ]
+                 [:fileset {:file (fp! ps "js-signals/signals.js") } ]
+                 [:fileset {:file (fp! ps "ash-js/ash.js")} ]
+                 [:fileset {:file (fp! ps "jquery-plugins/detectmobilebrowser.js")} ]
+                 [:fileset {:file (fp! ps "crypto-js/components/core-min.js")} ]
+                 [:fileset {:file (fp! ps "crypto-js/components/enc-utf16-min.js")} ]
+                 [:fileset {:file (fp! ps "crypto-js/components/enc-base64-min.js")} ]
+                 [:fileset {:file (fp! ps "cherimoia/skaro.js")} ]
+                 [:fileset {:file (fp! ps "cherimoia/caesar.js")} ]]
+                (ant/AntConcat
+                  {:destFile (fp! (ge :basedir)
+                                    "public/c/webcommon.js")
+                   :append true})) ]
+    (ant/RunTasks* "finz/build" t1 t2)
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -388,42 +492,33 @@
 
   [wappid]
 
-  (let [pj (ant/AntProject)]
-    (ant/RunAntTasks*
-      pj
-      "compile->scss"
-      (ant/AntCopy
-        pj
-        {:todir (b/fp! @webcss wappid)}
-        [[:fileset {:dir (b/fp! @webDir wappid "styles")}
-                   [[:include "**/*.scss"]]]])
-
-      (ant/AntApply
-        pj
-        {:executable "sass" :parallel false}
-        [[:fileset {:dir (b/fp! @webcss wappid)}
-                   [[:include "**/*.scss"]]]
-         [:arglines ["--sourcemap=none"]]
-         [:srcfile {}]
-         [:chainedmapper
-          [[:glob {:from "*.scss" :to "*.css"}
-           [:glob {:from "*" :to (b/fp! @webcss wappid "*")}]]]]
-         [:targetfile {}]])
-
-      (ant/AntCopy
-        pj
-        {:todir (b/fp! @webcss wappid)}
-        [[:fileset {:dir (b/fp! @webDir wappid "styles")}
-                   [[:include "**/*.css"]]]])
-
-      (ant/AntMkdir pj {:dir (b/fp! @basedir "public/styles" wappid)})
-
-      (ant/AntCopy
-        pj
-        {:todir (b/fp! @basedir "public/styles" wappid)}
-        [[:fileset {:dir (b/fp! @webcss wappid)}
-                   [[:include "**/*.css"]]]]))
-  ))
+  (ant/RunTarget*
+    "compile/scss"
+    (ant/AntCopy
+      {:todir (fp! (ge :webcss) wappid)}
+      [[:fileset {:dir (fp! (ge :webDir) wappid "styles")
+                  :includes "**/*.scss"}]])
+    (ant/AntApply
+      {:executable "sass" :parallel false}
+      [[:fileset {:dir (fp! (ge :webcss) wappid)
+                  :includes "**/*.scss"}]
+       [:arglines ["--sourcemap=none"]]
+       [:srcfile {}]
+       [:chainedmapper
+        [[:glob {:from "*.scss" :to "*.css"}
+         [:glob {:from "*" :to (fp! (ge :webcss) wappid "*")}]]]]
+       [:targetfile {}]])
+    (ant/AntCopy
+      {:todir (fp! (ge :webcss) wappid)}
+      [[:fileset {:dir (fp! (ge :webDir) wappid "styles")
+                  :includes "**/*.css"}]])
+    (ant/AntMkdir {:dir (fp! (ge :basedir)
+                               "public/styles" wappid)})
+    (ant/AntCopy
+      {:todir (fp! (ge :basedir)
+                     "public/styles" wappid)}
+      [[:fileset {:dir (fp! (ge :webcss) wappid)
+                  :includes "**/*.css"}]])))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -431,19 +526,16 @@
 
   [wappid]
 
-  (let [pj (ant/AntProject)]
-    (ant/RunAntTasks*
-      pj
-      "compile->media"
-      (ant/AntMkdir pj {:dir (b/fp! @basedir "public/ig/res" wappid)})
-      (ant/AntCopy
-        pj
-        {:todir (b/fp! @basedir "public/ig/res" wappid)}
-        [[:fileset {:dir (b/fp! @webDir wappid "res/sd")}
-                   [[:include "**/*"]]]
-         [:fileset {:dir (b/fp! @webDir wappid "res")}
-                   [[:include "sfx/**/*"]]]]))
-  ))
+  (ant/RunTarget*
+    "compile/media"
+    (ant/AntMkdir {:dir (fp! (ge :basedir)
+                               "public/ig/res" wappid)})
+    (ant/AntCopy
+      {:todir (fp! (ge :basedir)
+                     "public/ig/res" wappid)}
+      [[:fileset {:dir (fp! (ge :webDir) wappid "res/sd")}]
+       [:fileset {:dir (fp! (ge :webDir) wappid "res")
+                  :includes "sfx/**/*"}]])))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -453,18 +545,13 @@
 
   (when-not (or (= "cocos2d" wappid)
                 (= "main" wappid))
-    (let [pj (ant/AntProject)]
-      (ant/RunAntTasks*
-        pj
-        "compile->info"
-        (ant/AntMkdir pj {:dir (b/fp! @basedir
-                                      "public/ig/info" wappid)})
-        (ant/AntCopy
-          pj
-          {:todir (b/fp! @basedir "public/ig/info" wappid)}
-          [[:fileset {:dir (b/fp! @webDir wappid "info")}
-                     [[:include "**/*"]]]])))
-  ))
+    (ant/RunTarget*
+      "compile/info"
+      (ant/AntMkdir {:dir (fp! (ge :basedir)
+                                 "public/ig/info" wappid)})
+      (ant/AntCopy
+        {:todir (fp! (ge :basedir) "public/ig/info" wappid)}
+        [[:fileset {:dir (fp! (ge :webDir) wappid "info")}]]))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -475,19 +562,13 @@
 
   (case wappid
     ("main" "cocos2d")
-    (let [pj (ant/AntProject)]
-      (ant/RunAntTasks*
-        pj
-        ""
-        (ant/AntCopy
-          pj
-          {:todir (b/fp! @basedir "public/pages" wappid)}
-          [[:fileset {:dir (b/fp! @webDir wappid "pages")}
-                     [[:include "**/*"]]]])))
-
+    (ant/RunTasks*
+      (ant/AntCopy
+        {:todir (fp! (ge :basedir) "public/pages" wappid)}
+        [[:fileset {:dir (fp! (ge :webDir) wappid "pages")}]]))
     ;;else
     (jiggleTheIndexFile wappid
-                        (b/fp! @basedir
+                        (fp! (ge :basedir)
                                "public/pages" wappid)
                         false)
   ))
@@ -498,15 +579,18 @@
 
   [wappid des cocos]
 
-  (ant/CopyFile (io/file @srcDir "resources" "index.html") (io/file des))
+  (ant/CopyFile (io/file (ge :srcDir) "resources" "index.html")
+                (io/file des))
   (let [almond (atom "<script src=\"/public/vendors/almond/almond.js\"></script>")
         bdir (atom (str "/public/ig/lib/game/" wappid))
         ccdir (atom "/public/extlibs/")
         cfg (atom "")
-        json (-> (slurp (b/fp! @webDir
-                               wappid "info/game.json") :encoding "utf-8")
+        json (-> (slurp (fp! (ge :webDir)
+                               wappid
+                               "info/game.json")
+                        :encoding "utf-8")
                  (js/read-str :key-fn keyword))
-        html (-> (slurp (b/fp! des "index.html") :encoding "utf-8")
+        html (-> (slurp (fp! des "index.html") :encoding "utf-8")
                  (cstr/replace "@@DESCRIPTION@@" (:description json))
                  (cstr/replace "@@KEYWORDS@@" (:keywords json))
                  (cstr/replace "@@TITLE@@" (:name json))
@@ -514,16 +598,19 @@
                  (cstr/replace "@@HEIGHT@@" (:height json))
                  (cstr/replace "@@WIDTH@@" (:width json))
                  (cstr/replace "@@UUID@@" (:uuid json))) ]
-    (if (or (= @pmode "release")
+    (if (or (= (ge :pmode) "release")
             cocos)
       (do
         (reset! ccdir "frameworks/")
         (reset! bdir "")
         (reset! almond "")
-        (reset! cfg (slurp (b/fp! @srcDir "resources/cocos2d.js") :encoding "utf-8")))
+        (reset! cfg (slurp (fp! (ge :srcDir)
+                                  "resources" "cocos2d.js")
+                           :encoding "utf-8")))
       (do
-        (reset! cfg (slurp (b/fp! @webDir wappid "src/ccconfig.js") :encoding "utf-8"))))
-
+        (reset! cfg (slurp (fp! (ge :webDir)
+                                  wappid "src" "ccconfig.js")
+                           :encoding "utf-8"))))
     (spit (str des "/index.html")
           (-> html
               (cstr/replace "@@AMDREF@@" almond)
@@ -539,12 +626,14 @@
 
   [wappid]
 
-  (when (not= @pmode "release")
-    (let [des (b/fp! @basedir "public/ig/lib/game" wappid)]
-      (ant/CopyFile (io/file @srcDir "resources" "project.json")
+  (when (not= (ge :pmode) "release")
+    (let [des (fp! (ge :basedir)
+                     "public/ig/lib/game" wappid)]
+      (ant/CopyFile (io/file (ge :srcDir)
+                             "resources" "project.json")
                     (io/file des))
-
-      (ant/CopyFile (io/file @srcDir "resources" "main.js")
+      (ant/CopyFile (io/file (ge :srcDir)
+                             "resources" "main.js")
                     (io/file des)))
   ))
 
@@ -552,202 +641,236 @@
 ;;
 (defn- yuiCSS ""
   []
-  (let [pj (ant/AntProject)]
-    (ant/RunAntTasks*
-      pj
-      "yui->css"
-      (ant/AntApply
-        pj
-        {:executable "java" :parallel false}
-        [[:fileset {:dir (b/fp! @basedir "public/styles") }
-                   [[:exclude "**/*.min.css"]
-                    [:include "**/*.css"]]]
-         [:arglines ["-jar"]]
-         [:argpaths [(str @skaroHome "/lib/yuicompressor-2.4.8.jar")]]
-         [:srcfile {}]
-         [:arglines ["-o"]]
-         [:chainedmapper
-          [[:type glob {:from "*.css"
-                        :to "*.min.css"}]
-           [:type glob {:from "*"
-                        :to (b/fp! @basedir "public/styles/*")}]]]
-         [:targetfile {}]]))
-  ))
+  (ant/RunTarget*
+    "yui/css"
+    (ant/AntApply
+      {:executable "java" :parallel false}
+      [[:fileset {:dir (fp! (ge :basedir) "public/styles")
+                  :excludes "**/*.min.css"
+                  :includes "**/*.css"}]
+       [:arglines ["-jar"]]
+       [:argpaths [(str (ge :skaroHome)
+                        "/lib/yuicompressor-2.4.8.jar")]]
+       [:srcfile {}]
+       [:arglines ["-o"]]
+       [:chainedmapper
+        [[:type glob {:from "*.css"
+                      :to "*.min.css"}]
+         [:type glob {:from "*"
+                      :to (fp! (ge :basedir) "public/styles/*")}]]]
+       [:targetfile {}]])))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- yuiJS ""
   []
-  (let [pj (ant/AntProject)]
-    (ant/RunAntTasks*
-      pj
-      "yui->js"
-      (ant/AntApply
-        pj
-        {:executable "java" :parallel false}
-        [[:fileset {:dir (b/fp! @basedir "public/scripts") }
-                   [[:exclude "**/*.min.js"]
-                    [:include "**/*.js"]]]
-         [:arglines ["-jar"]]
-         [:argpaths [(str @skaroHome "/lib/yuicompressor-2.4.8.jar")]]
-         [:srcfile {}]
-         [:arglines ["-o"]]
-         [:chainedmapper
-          [[:type glob {:from "*.js"
-                        :to "*.min.js"}]
-           [:type glob {:from "*"
-                        :to (b/fp! @basedir "public/scripts/*")}]]]
-         [:targetfile {}]]))
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (called by skaro)
-(defn- buildr ""
-  []
-  (clean)
-  (preBuild)
-  (println "##############################################################################")
-  (format  "# building: %s\n" @PID)
-  (format  "# type: %s\n" @buildType)
-  (println "##############################################################################")
-  (compileAndJar)
-  (buildWebApps))
+  (ant/RunTarget*
+    "yui/js"
+    (ant/AntApply
+      {:executable "java" :parallel false}
+      [[:fileset {:dir (fp! (ge :basedir) "public/scripts")
+                  :excludes "**/*.min.js"
+                  :includes "**/*.js"}]
+       [:arglines ["-jar"]]
+       [:argpaths [(str (ge :skaroHome)
+                        "/lib/yuicompressor-2.4.8.jar")]]
+       [:srcfile {}]
+       [:arglines ["-o"]]
+       [:chainedmapper
+        [[:type glob {:from "*.js"
+                      :to "*.min.js"}]
+         [:type glob {:from "*"
+                      :to (fp! (ge :basedir) "public/scripts/*")}]]]
+       [:targetfile {}]])))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftask fast ""
+(defn- buildr "" []
+  (clean4Build)
+  (cleanPublic)
+  (preBuild)
+  (compileJava)
+  (compileClj))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; task definitions ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(deftask dev ""
   []
-  (set-env! :pmode "release")
-  (buildWebApps)
-  (yuiCSS)
-  (yuiJS)
-  (finzBuild))
+  (bcore/with-pre-wrap fileset
+    (println "##############################################################################")
+    (print (format  "# building: %s\n" (ge :PID)))
+    (print (format  "# type: %s\n" (ge :buildType)))
+    (println "##############################################################################")
+    (buildr)
+    fileset))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(deftask games ""
+  []
+  (bcore/with-pre-wrap fileset
+    (cleanPublic)
+    (buildWebApps)
+    fileset))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (deftask release ""
   []
-  (set-env! :pmode "release")
-  (buildr)
-  (yuiCSS)
-  (yuiJS)
-  (finzBuild))
+  (bcore/with-pre-wrap fileset
+    (set-env! :pmode "release")
+    (buildr)
+    (jar!)
+    (buildWebApps)
+    (yuiCSS)
+    (yuiJS)
+    (finzBuild)
+    filset))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftask devmode ""
+(deftask testclj
+
+  "test clj frwk"
   []
-  (set-env! :pmode "dev")
-  (buildr)
-  (finzBuild))
+
+  (bcore/with-pre-wrap fileset
+    (buildCljTest)
+    (runCljTest)
+    fileset
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftask test ""
+(deftask testjava
+
+  "test java frwk"
   []
-  (testBuild))
+
+  (bcore/with-pre-wrap fileset
+    (buildJavaTest)
+    (runJavaTest)
+    fileset
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftask newapp ""
+(defn- mkGame ""
   []
   (let [pubtime (b/FmtTime "yyyy-MM-dd")
         appkey (b/RandUUID)]
 
     ;;(format "Creating new game: %s" appid)
-    (.mkdirs (io/file @webDir appid))
 
-    (doseq [s ["src/n" "src/s" "src/i18n" "src/p" "res/sfx"]]
-      (.mkdirs (io/file (b/fp! @webDir appid s))))
+    (doseq [s ["src/n" "src/s" "src/p"
+               "src/i18n" "res/sfx"]]
+      (.mkdirs (io/file (fp! (ge :webDir) appid s))))
 
     (doseq [s ["hdr" "hds" "sd"]]
-      (.mkdirs (io/file @webDir appid "res" s "pics"))
-      (.mkdirs (io/file @webDir appid "res" s "fon")))
+      (.mkdirs (io/file (ge :webDir) appid "res" s "pics"))
+      (.mkdirs (io/file (ge :webDir) appid "res" s "fon")))
 
     (doseq [s ["info" "pages" "styles"]]
-      (.mkdirs (io/file @webDir appid s)))
+      (.mkdirs (io/file (ge :webDir) appid s)))
 
-    (ant/CopyFile (io/file @srcDir "resources" "game.json")
-                  (io/file @webDir appid "info"))
-    (ant/CopyFile (io/file @srcDir "resources" "game.mf")
-                  (io/file @webDir appid "info"))
+    (ant/CopyFile (io/file (ge :srcDir) "resources" "game.json")
+                  (io/file (ge :webDir) appid "info"))
+    (ant/CopyFile (io/file (ge :srcDir) "resources" "game.mf")
+                  (io/file (ge :webDir) appid "info"))
 
-    (b/ReplaceFile (b/fp! @webDir appid "info" "game.mf")
+    (b/ReplaceFile (fp! (ge :webDir) appid "info" "game.mf")
                    #(-> %
                         (cstr/replace "@@PUBDATE@@" pubtime)
                         (cstr/replace "@@APPID@@" appid)))
 
-    (b/ReplaceFile (b/fp! @webDir appid "info" "game.json")
+    (b/ReplaceFile (fp! (ge :webDir) appid "info" "game.json")
                    #(cstr/replace % "@@UUID@@" appkey))
 
     (doseq [s ["game.js" "splash.js" "mmenu.js"
                "hud.js" "config.js" "protos.js"]]
-      (ant/CopyFile (io/file @srcDir "resources" s)
-                    (io/file @webDir appid "src" "p")))
+      (ant/CopyFile (io/file (ge :srcDir) "resources" s)
+                    (io/file (ge :webDir) appid "src" "p")))
 
-    (ant/CopyFile (io/file @srcDir "resources" "gnodes.js")
-                  (io/file @webDir appid "src" "n"))
+    (ant/CopyFile (io/file (ge :srcDir) "resources" "gnodes.js")
+                  (io/file (ge :webDir) appid "src" "n"))
 
-    (ant/CopyFile (io/file @srcDir "resources" "cobjs.js")
-                  (io/file @webDir appid "src" "n"))
+    (ant/CopyFile (io/file (ge :srcDir) "resources" "cobjs.js")
+                  (io/file (ge :webDir) appid "src" "n"))
 
     (doseq [s ["stager.js" "factory.js"
                "motion.js" "resolve.js" "sysobjs.js"]]
-      (ant/CopyFile (io/file @srcDir "resources" s)
-                    (io/file @webDir appid "src" "s")))
+      (ant/CopyFile (io/file (ge :srcDir) "resources" s)
+                    (io/file (ge :webDir) appid "src" "s")))
 
-    (b/ReplaceFile (b/fp! @webDir appid "src" "p" "config.js")
+    (b/ReplaceFile (fp! (ge :webDir)
+                          appid "src" "p" "config.js")
                    #(cstr/replace % "@@UUID@@" appkey))
 
-    (ant/CopyFile (io/file @srcDir "resources" "l10n.js")
-                  (io/file @webDir appid "src" "i18n""l10n.js"))
+    (ant/CopyFile (io/file (ge :srcDir)
+                           "resources" "l10n.js")
+                  (io/file (ge :webDir)
+                           appid "src" "i18n""l10n.js"))
 
-    (ant/CopyFile (io/file @srcDir "resources" "ccconfig.js")
-                  (io/file @webDir appid "src"))
+    (ant/CopyFile (io/file (ge :srcDir)
+                           "resources" "ccconfig.js")
+                  (io/file (ge :webDir) appid "src"))
 
-    (ant/CopyFile (io/file @srcDir "resources" "proj.json")
-                  (io/file @webDir appid "src" "project.json"))
+    (ant/CopyFile (io/file (ge :srcDir)
+                           "resources" "proj.json")
+                  (io/file (ge :webDir)
+                           appid "src" "project.json"))
 
-    (b/ReplaceFile (b/fp! @webDir appid "src" "project.json")
+    (b/ReplaceFile (fp! (ge :webDir)
+                          appid "src" "project.json")
                    #(cstr/replace % "@@APPID@@" appid))
 
-    (b/ReplaceFile (b/fp! @webDir appid "src" "ccconfig.js")
+    (b/ReplaceFile (fp! (ge :webDir)
+                          appid "src" "ccconfig.js")
                    #(cstr/replace % "@@APPID@@" appid))
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(deftask newgame
+
+  ""
+  []
+
+  (bcore/with-pre-wrap fileset
+    (mkGame)
+    fileset
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- cocos->new ""
   []
-  (let [pj (ant/AntProject)]
-    (ant/RunAntTasks*
-      pj
-      "cocos+new"
-      (ant/AntMkdir pj {:dir (b/fp! @basedir "cocos")})
-      (ant/AntExec
-        pj
-        {:executable "cocos"}
-        [[:argvalues ["new" "-l" "js" "-t"
-                      "runtime" "--ios-bundleid"
-                      (str "com.zotohlab.p." appid)
-                      "-d" (str @basedir "/cocos") appid]]]))
-  ))
+  (ant/RunTarget*
+    "cocos/new"
+    (ant/AntMkdir {:dir (fp! (ge :basedir) "cocos")})
+    (ant/AntExec
+      {:executable "cocos"}
+      [[:argvalues ["new" "-l" "js" "-t"
+                    "runtime" "--ios-bundleid"
+                    (str "com.zotohlab.p." appid)
+                    "-d" (fp! (ge :basedir) "cocos") appid]]])))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftask cocos+new ""
-  [appid]
-  (cocos->new))
+(deftask cocos+new
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(deftask deployapp ""
+  ""
   []
-  (let [srcpath (b/fp! @webDir appid)
-        src (io/file srcpath)]
-    (if-not (.exists src)
-      (format "Invalid game: %s" appid)
-      (deploy->app appid))
+
+  (bcore/with-pre-wrap fileset
+    (cocos->new)
+    fileset
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -756,72 +879,60 @@
 
   [appid]
 
-  (let [vendors (b/fp! @basedir "public/vendors")
-        despath (b/fp! @basedir "cocos" appid)
-        srcpath (b/fp! @webDir appid)
+  (let [vendors (fp! (ge :basedir) "public/vendors")
+        despath (fp! (ge :basedir) "cocos" appid)
+        srcpath (fp! (ge :webDir) appid)
         des (io/file despath)
         src (io/file srcpath)
         dd2 (io/file des "res")
-        dd1 (io/file des "src")
-        pj (ant/AntProject)
-        dd2path (.getCanonicalPath dd2)
-        dd1path (.getCanonicalPath dd1) ]
+        dd1 (io/file des "src") ]
 
     (when-not (.exists des) (cocos->new appid))
-    (format "Deploying game: %s" appid)
+    ;;(print (format "Deploying game: %s\n" appid))
     (ant/CleanDir dd2)
     (ant/CleanDir dd1)
     ;; resources
     (doseq [s ["hdr" "hds" "sd" "sfx"]]
-      (ant/RunAntTasks*
-        pj
-        ""
-        (ant/AntCopy pj
-                     {:todir (io/file dd2 s "cocos2d") }
-                     [[:fileset {:dir (io/file @webDir "cocos2d" "res" s)} ]])
-        (ant/AntCopy pj
-                     {:todir (io/file dd2 s appid)}
-                     [[:fileset {:dir (io/file @srcpath "res" s)} ]])))
+      (ant/RunTasks*
+        (ant/AntCopy
+          {:todir (io/file dd2 s "cocos2d") }
+          [[:fileset {:dir (io/file (ge :webDir)
+                                    "cocos2d" "res" s)} ]])
+        (ant/AntCopy
+          {:todir (io/file dd2 s appid)}
+          [[:fileset {:dir (io/file (ge :srcpath) "res" s)} ]])))
     ;; js code
-    (ant/RunAntTasks*
-      pj
-      ""
-      (ant/AntCopy pj
-                   {:todir (io/file dd1 "zotohlab")}
-                   [[:fileset {:dir (io/file @webDir
-                                             "cocos2d"
-                                             "src" "zotohlab")} ]])
-      (ant/AntCopy pj
-                   {:todir (io/file dd1 appid)}
-                   [[:fileset {:dir (io/file srcpath "src")} ]])
-      (ant/AntCopy pj
-                   {:todir (io/file dd1 "helpers")}
-                   [[:fileset {:dir (io/file vendors "helpers")}
-                    [[:include "dbg.js"]]]]))
+    (ant/RunTasks*
+      (ant/AntCopy
+        {:todir (io/file dd1 "zotohlab")}
+        [[:fileset {:dir (io/file (ge :webDir)
+                                  "cocos2d"
+                                  "src" "zotohlab")} ]])
+      (ant/AntCopy
+        {:todir (io/file dd1 appid)}
+        [[:fileset {:dir (io/file srcpath "src")} ]])
+      (ant/AntCopy
+        {:todir (io/file dd1 "helpers")}
+        [[:fileset {:dir (io/file vendors "helpers")
+                    :includes "dbg.js"}]]))
 
     (doseq [s ["almond" "js-signals" "ash-js"
                "rxjs" "ramda" "cherimoia"
                "l10njs" "cookies" "mustache"]]
-      (ant/RunAntTasks*
-        pj
-        ""
-        (ant/AntCopy pf
-                     {:todir (io/file dd1  s)}
-                     [[:fileset {:dir (io/file vendors s)} ]])))
+      (ant/RunTasks*
+        (ant/AntCopy
+          {:todir (io/file dd1  s)}
+          [[:fileset {:dir (io/file vendors s)} ]])))
 
     ;; boot stuff
-    (ant/RunAntTasks*
-      pj
-      ""
-      (ant/AntCopy pf
-                   {:todir despath
-                    :overwrite true}
-                   [[:fileset {:dir (io/file @srcDir "resources")}
-                              [[:include "project.json"]
-                               [:include "main.js"]
-                               [:include "index.html"]]]]))
+    (ant/RunTasks*
+      (ant/AntCopy
+        {:todir despath
+         :overwrite true}
+        [[:fileset {:dir (io/file (ge :srcDir) "resources")
+                    :includes "project.json,main.js,index.html"}]]))
 
-    (let [j1 (-> (slurp (io/file @srcDir
+    (let [j1 (-> (slurp (io/file (ge :srcDir)
                                  "resources" "project.json")
                         :encoding "utf-8")
                  (js/read-str :key-fn keyword))
@@ -834,8 +945,24 @@
            (js/write-str )
            (spit (io/file despath "project.json"))))
 
-    (jiggleTheIndexFile appid (io/file @basedir "cocos" appid) true)
+    (jiggleTheIndexFile appid
+                        (io/file (ge :basedir) "cocos" appid) true)
   ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(deftask deployapp
+
+  ""
+  []
+
+  (bcore/with-pre-wrap fileset
+    (let [srcpath (fp! (ge :webDir) appid)
+          src (io/file srcpath)]
+      (if-not (.exists src)
+        (print (format "Invalid game: %s\n" appid))
+        (deploy->app appid)))
+    fileset))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF
