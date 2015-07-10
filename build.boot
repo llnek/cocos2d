@@ -340,7 +340,7 @@
         des (-> (io/file out mid)
                 (.getParentFile)) ]
     (cond
-      postgen
+      (true? postgen)
       (let [bf (io/file dir (ge :bld) mid)]
         (spit bf
               (-> (slurp bf)
@@ -349,7 +349,7 @@
         (ant/MoveFile bf (doto des (.mkdirs))))
 
       (.isDirectory f)
-      (if (= (get :bld) (.getName f))
+      (if (= (ge :bld) (.getName f))
         nil
         {})
 
@@ -430,7 +430,7 @@
              (conj @tks)
              (reset! tks))))
 
-    (apply ant/RunTasks (reverse @tks))
+    (apply ant/RunTasks* (reverse @tks))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -455,8 +455,8 @@
                  (cstr/replace "@@KEYWORDS@@" (:keywords json))
                  (cstr/replace "@@TITLE@@" (:name json))
                  (cstr/replace "@@LAYOUT@@" (:layout json))
-                 (cstr/replace "@@HEIGHT@@" (:height json))
-                 (cstr/replace "@@WIDTH@@" (:width json))
+                 (cstr/replace "@@HEIGHT@@" (str (:height json)))
+                 (cstr/replace "@@WIDTH@@" (str (:width json)))
                  (cstr/replace "@@UUID@@" (:uuid json))) ]
     (if (or (= (ge :pmode) "release")
             cocos)
@@ -473,10 +473,10 @@
                            :encoding "utf-8"))))
     (spit (str des "/index.html")
           (-> html
-              (cstr/replace "@@AMDREF@@" almond)
-              (cstr/replace "@@BOOTDIR@@" bdir)
-              (cstr/replace "@@CCDIR@@" ccdir)
-              (cstr/replace "@@CCCONFIG@@" cfg))
+              (cstr/replace "@@AMDREF@@" @almond)
+              (cstr/replace "@@BOOTDIR@@" @bdir)
+              (cstr/replace "@@CCDIR@@" @ccdir)
+              (cstr/replace "@@CCCONFIG@@" @cfg))
             :encoding "utf-8")
   ))
 
@@ -499,8 +499,8 @@
        [:arglines ["--sourcemap=none"]]
        [:srcfile {}]
        [:chainedmapper
-        [[:type :glob {:from "*.scss" :to "*.css"}
-         [:type :glob {:from "*" :to (fp! (ge :webcss) wappid "*")}]]]]
+        [[:type :glob {:from "*.scss" :to "*.css"}]
+         [:type :glob {:from "*" :to (fp! (ge :webcss) wappid "*")}]]]
        [:targetfile {}]])
     (ant/AntCopy
       {:todir (fp! (ge :webcss) wappid)}
@@ -593,12 +593,12 @@
   (let [wappid (.getName dir)]
     (.mkdirs (io/file (fp! (ge :websrc) wappid)))
     (.mkdirs (io/file (fp! (ge :webcss) wappid)))
-    (compileJS wappid)
+    ;;(compileJS wappid)
     (compileSCSS wappid)
-    (compileMedia wappid)
-    (compileInfo wappid)
-    (compilePages wappid)
-    (finzApp wappid)
+    ;;(compileMedia wappid)
+    ;;(compileInfo wappid)
+    ;;(compilePages wappid)
+    ;;(finzApp wappid)
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -608,7 +608,7 @@
   (let [isDir? #(.isDirectory %)
         dirs (->> (.listFiles (io/file (ge :webDir)))
                   (filter isDir?))]
-    (map #(buildOneWebApp %) dirs)
+    (doall (map #(buildOneWebApp %) dirs))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -727,8 +727,12 @@
 (deftask release ""
   []
   (bcore/with-pre-wrap fileset
+    (println "##############################################################################")
+    (print (format  "# releasing: %s\n" (ge :PID)))
+    (print (format  "# type: %s\n" (ge :buildType)))
+    (println "##############################################################################")
     (set-env! :pmode "release")
-    (buildr)
+    ;;(buildr)
     (jar!)
     (buildWebApps)
     (yuiCSS)
