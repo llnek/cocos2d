@@ -33,12 +33,16 @@
   :dependencies '[])
 
 (require '[clojure.data.json :as js]
+         '[clojure.java.io :as io]
          '[clojure.string :as cstr]
          '[boot.core :as bcore]
          '[czlabclj.tpcl.boot
            :as b
            :refer [minitask ge fp!]]
          '[czlabclj.tpcl.antlib :as ant])
+
+(import '[java.io File])
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -188,18 +192,18 @@
   []
   (ant/RunTarget*
     "compile/clj"
-    (compClj "czlabclj.odin.event"
-             "czlabclj.odin.system"
-             "czlabclj.odin.game")
+    (compClj "czlabclj/odin/event"
+             "czlabclj/odin/system"
+             "czlabclj/odin/game")
 
-    (compClj "czlabclj.frigga.core"
-             "czlabclj.frigga.tttoe"
-             "czlabclj.frigga.pong")
+    (compClj "czlabclj/frigga/core"
+             "czlabclj/frigga/tttoe"
+             "czlabclj/frigga/pong")
 
-    (compClj "czlabclj.cocos2d.games"
-             "czlabclj.cocos2d.site"
-             "czlabclj.cocos2d.users"
-             "czlabclj.cocos2d.util")
+    (compClj "czlabclj/cocos2d/games"
+             "czlabclj/cocos2d/site"
+             "czlabclj/cocos2d/users"
+             "czlabclj/cocos2d/util")
 
     (ant/AntCopy
       {:todir (ge :buildDir)}
@@ -322,16 +326,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- buildWebApps ""
-  []
-  (let [isDir? #(.isDirectory %)
-        dirs (->> (.listFiles (io/file (ge :webDir)))
-                  (filter dir?))]
-    (map #(buildOneWebApp %) dirs)
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 (defn- babel->cb ""
 
   [wappid f & {:keys [postgen dir paths]
@@ -383,7 +377,7 @@
 
     (cleanLocalJs wappid)
     (try
-      (bt/BabelTree root (partial babel->cb wappid))
+      (b/BabelTree root (partial babel->cb wappid))
     (finally
       (cleanLocalJs wappid)))
 
@@ -441,49 +435,49 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- buildOneWebApp ""
+(defn- jiggleTheIndexFile
 
-  [^File dir]
+  [wappid des cocos]
 
-  (let [wappid (.getName dir)]
-    (.mkdirs (io/file (fp! (ge :websrc) wappid)))
-    (.mkdirs (io/file (fp! (ge :webcss) wappid)))
-    (compileJS wappid)
-    (compileSCSS wappid)
-    (compileMedia wappid)
-    (compileInfo wappid)
-    (compilePages wappid)
-    (finzApp wappid)
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- finzBuild ""
-
-  []
-
-  (let [ps (fp! (ge :basedir) "public" "vendors/")
-        t1 (ant/AntDelete
-             {:file (fp! (ge :basedir)
-                           "public/c/webcommon.js")} )
-        t2 (->> [[:fileset {:file (fp! ps "almond/almond.js")} ]
-                 [:fileset {:file (fp! ps "ramda/ramda.js") } ]
-                 [:fileset {:file (fp! ps "l10njs/l10n.js")} ]
-                 [:fileset {:file (fp! ps "mustache/mustache.js")} ]
-                 [:fileset {:file (fp! ps "helpers/dbg.js") } ]
-                 [:fileset {:file (fp! ps "js-signals/signals.js") } ]
-                 [:fileset {:file (fp! ps "ash-js/ash.js")} ]
-                 [:fileset {:file (fp! ps "jquery-plugins/detectmobilebrowser.js")} ]
-                 [:fileset {:file (fp! ps "crypto-js/components/core-min.js")} ]
-                 [:fileset {:file (fp! ps "crypto-js/components/enc-utf16-min.js")} ]
-                 [:fileset {:file (fp! ps "crypto-js/components/enc-base64-min.js")} ]
-                 [:fileset {:file (fp! ps "cherimoia/skaro.js")} ]
-                 [:fileset {:file (fp! ps "cherimoia/caesar.js")} ]]
-                (ant/AntConcat
-                  {:destFile (fp! (ge :basedir)
-                                    "public/c/webcommon.js")
-                   :append true})) ]
-    (ant/RunTasks* "finz/build" t1 t2)
+  (ant/CopyFile (io/file (ge :srcDir) "resources" "index.html")
+                (io/file des))
+  (let [almond (atom "<script src=\"/public/vendors/almond/almond.js\"></script>")
+        bdir (atom (str "/public/ig/lib/game/" wappid))
+        ccdir (atom "/public/extlibs/")
+        cfg (atom "")
+        json (-> (slurp (fp! (ge :webDir)
+                               wappid
+                               "info/game.json")
+                        :encoding "utf-8")
+                 (js/read-str :key-fn keyword))
+        html (-> (slurp (fp! des "index.html") :encoding "utf-8")
+                 (cstr/replace "@@DESCRIPTION@@" (:description json))
+                 (cstr/replace "@@KEYWORDS@@" (:keywords json))
+                 (cstr/replace "@@TITLE@@" (:name json))
+                 (cstr/replace "@@LAYOUT@@" (:layout json))
+                 (cstr/replace "@@HEIGHT@@" (:height json))
+                 (cstr/replace "@@WIDTH@@" (:width json))
+                 (cstr/replace "@@UUID@@" (:uuid json))) ]
+    (if (or (= (ge :pmode) "release")
+            cocos)
+      (do
+        (reset! ccdir "frameworks/")
+        (reset! bdir "")
+        (reset! almond "")
+        (reset! cfg (slurp (fp! (ge :srcDir)
+                                  "resources" "cocos2d.js")
+                           :encoding "utf-8")))
+      (do
+        (reset! cfg (slurp (fp! (ge :webDir)
+                                  wappid "src" "ccconfig.js")
+                           :encoding "utf-8"))))
+    (spit (str des "/index.html")
+          (-> html
+              (cstr/replace "@@AMDREF@@" almond)
+              (cstr/replace "@@BOOTDIR@@" bdir)
+              (cstr/replace "@@CCDIR@@" ccdir)
+              (cstr/replace "@@CCCONFIG@@" cfg))
+            :encoding "utf-8")
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -505,8 +499,8 @@
        [:arglines ["--sourcemap=none"]]
        [:srcfile {}]
        [:chainedmapper
-        [[:glob {:from "*.scss" :to "*.css"}
-         [:glob {:from "*" :to (fp! (ge :webcss) wappid "*")}]]]]
+        [[:type :glob {:from "*.scss" :to "*.css"}
+         [:type :glob {:from "*" :to (fp! (ge :webcss) wappid "*")}]]]]
        [:targetfile {}]])
     (ant/AntCopy
       {:todir (fp! (ge :webcss) wappid)}
@@ -555,7 +549,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(declare jiggleTheIndexFile)
+
 (defn- compilePages ""
 
   [wappid]
@@ -572,54 +566,6 @@
                                "public/pages" wappid)
                         false)
   ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- doJiggleTheIndexFile
-
-  [wappid des cocos]
-
-  (ant/CopyFile (io/file (ge :srcDir) "resources" "index.html")
-                (io/file des))
-  (let [almond (atom "<script src=\"/public/vendors/almond/almond.js\"></script>")
-        bdir (atom (str "/public/ig/lib/game/" wappid))
-        ccdir (atom "/public/extlibs/")
-        cfg (atom "")
-        json (-> (slurp (fp! (ge :webDir)
-                               wappid
-                               "info/game.json")
-                        :encoding "utf-8")
-                 (js/read-str :key-fn keyword))
-        html (-> (slurp (fp! des "index.html") :encoding "utf-8")
-                 (cstr/replace "@@DESCRIPTION@@" (:description json))
-                 (cstr/replace "@@KEYWORDS@@" (:keywords json))
-                 (cstr/replace "@@TITLE@@" (:name json))
-                 (cstr/replace "@@LAYOUT@@" (:layout json))
-                 (cstr/replace "@@HEIGHT@@" (:height json))
-                 (cstr/replace "@@WIDTH@@" (:width json))
-                 (cstr/replace "@@UUID@@" (:uuid json))) ]
-    (if (or (= (ge :pmode) "release")
-            cocos)
-      (do
-        (reset! ccdir "frameworks/")
-        (reset! bdir "")
-        (reset! almond "")
-        (reset! cfg (slurp (fp! (ge :srcDir)
-                                  "resources" "cocos2d.js")
-                           :encoding "utf-8")))
-      (do
-        (reset! cfg (slurp (fp! (ge :webDir)
-                                  wappid "src" "ccconfig.js")
-                           :encoding "utf-8"))))
-    (spit (str des "/index.html")
-          (-> html
-              (cstr/replace "@@AMDREF@@" almond)
-              (cstr/replace "@@BOOTDIR@@" bdir)
-              (cstr/replace "@@CCDIR@@" ccdir)
-              (cstr/replace "@@CCCONFIG@@" cfg))
-            :encoding "utf-8")
-  ))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- finzApp ""
@@ -637,6 +583,63 @@
                     (io/file des)))
   ))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- buildOneWebApp ""
+
+  [^File dir]
+
+  (let [wappid (.getName dir)]
+    (.mkdirs (io/file (fp! (ge :websrc) wappid)))
+    (.mkdirs (io/file (fp! (ge :webcss) wappid)))
+    (compileJS wappid)
+    (compileSCSS wappid)
+    (compileMedia wappid)
+    (compileInfo wappid)
+    (compilePages wappid)
+    (finzApp wappid)
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- buildWebApps ""
+  []
+  (let [isDir? #(.isDirectory %)
+        dirs (->> (.listFiles (io/file (ge :webDir)))
+                  (filter isDir?))]
+    (map #(buildOneWebApp %) dirs)
+  ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- finzBuild ""
+
+  []
+
+  (let [ps (fp! (ge :basedir) "public" "vendors/")
+        t1 (ant/AntDelete
+             {:file (fp! (ge :basedir)
+                           "public/c/webcommon.js")} )
+        t2 (->> [[:fileset {:file (fp! ps "almond/almond.js")} ]
+                 [:fileset {:file (fp! ps "ramda/ramda.js") } ]
+                 [:fileset {:file (fp! ps "l10njs/l10n.js")} ]
+                 [:fileset {:file (fp! ps "mustache/mustache.js")} ]
+                 [:fileset {:file (fp! ps "helpers/dbg.js") } ]
+                 [:fileset {:file (fp! ps "js-signals/signals.js") } ]
+                 [:fileset {:file (fp! ps "ash-js/ash.js")} ]
+                 [:fileset {:file (fp! ps "jquery-plugins/detectmobilebrowser.js")} ]
+                 [:fileset {:file (fp! ps "crypto-js/components/core-min.js")} ]
+                 [:fileset {:file (fp! ps "crypto-js/components/enc-utf16-min.js")} ]
+                 [:fileset {:file (fp! ps "crypto-js/components/enc-base64-min.js")} ]
+                 [:fileset {:file (fp! ps "cherimoia/skaro.js")} ]
+                 [:fileset {:file (fp! ps "cherimoia/caesar.js")} ]]
+                (ant/AntConcat
+                  {:destFile (fp! (ge :basedir)
+                                    "public/c/webcommon.js")
+                   :append true})) ]
+    (ant/RunTasks* "finz/build" t1 t2)
+  ))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- yuiCSS ""
@@ -654,9 +657,9 @@
        [:srcfile {}]
        [:arglines ["-o"]]
        [:chainedmapper
-        [[:type glob {:from "*.css"
+        [[:type :glob {:from "*.css"
                       :to "*.min.css"}]
-         [:type glob {:from "*"
+         [:type :glob {:from "*"
                       :to (fp! (ge :basedir) "public/styles/*")}]]]
        [:targetfile {}]])))
 
@@ -677,9 +680,9 @@
        [:srcfile {}]
        [:arglines ["-o"]]
        [:chainedmapper
-        [[:type glob {:from "*.js"
+        [[:type :glob {:from "*.js"
                       :to "*.min.js"}]
-         [:type glob {:from "*"
+         [:type :glob {:from "*"
                       :to (fp! (ge :basedir) "public/scripts/*")}]]]
        [:targetfile {}]])))
 
@@ -731,7 +734,7 @@
     (yuiCSS)
     (yuiJS)
     (finzBuild)
-    filset))
+    fileset))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -762,7 +765,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- mkGame ""
-  []
+  [appid]
   (let [pubtime (b/FmtTime "yyyy-MM-dd")
         appkey (b/RandUUID)]
 
@@ -840,17 +843,17 @@
 (deftask newgame
 
   ""
-  []
+  [n id VAL str "game id"]
 
   (bcore/with-pre-wrap fileset
-    (mkGame)
+    (mkGame id)
     fileset
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- cocos->new ""
-  []
+  [appid]
   (ant/RunTarget*
     "cocos/new"
     (ant/AntMkdir {:dir (fp! (ge :basedir) "cocos")})
@@ -866,10 +869,10 @@
 (deftask cocos+new
 
   ""
-  []
+  [n id VAL str "game id"]
 
   (bcore/with-pre-wrap fileset
-    (cocos->new)
+    (cocos->new id)
     fileset
   ))
 
@@ -954,15 +957,17 @@
 (deftask deployapp
 
   ""
-  []
+  [n id VAL str "game id"]
 
   (bcore/with-pre-wrap fileset
-    (let [srcpath (fp! (ge :webDir) appid)
+    (let [srcpath (fp! (ge :webDir) id)
           src (io/file srcpath)]
       (if-not (.exists src)
-        (print (format "Invalid game: %s\n" appid))
-        (deploy->app appid)))
+        (print (format "Invalid game: %s\n" id))
+        (deploy->app id)))
     fileset))
 
+
+(deftask hihi "" [] (println (get-env)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF

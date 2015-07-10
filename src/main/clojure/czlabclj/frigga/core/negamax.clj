@@ -20,7 +20,8 @@
         [czlabclj.xlib.util.str :only [strim nsb hgl?]])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom
-             Player PlayerSession Session]))
+             Board Player PlayerSession]
+            [com.zotohlab.odin.core Session]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -51,8 +52,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn NegaMax "The Nega-Max algo implementation."
-
-  [board game maxDepth depth alpha beta]
+  [^czlabclj.frigga.core.negamax.NegaSnapshotAPI
+   game
+   ^Board board
+   maxDepth depth alpha beta]
 
   (if
     (or (== depth 0)
@@ -74,14 +77,14 @@
             (doto board
               (.makeMove game move)
               (.switchPlayer game))
-            (var-set rc (- (NegaMax board game maxDepth
+            (var-set rc (- (NegaMax game board maxDepth
                                     (dec depth)
                                     (- beta)
                                     (- @localAlpha))))
             (doto board
               (.switchPlayer game)
               (.unmakeMove game move))
-            (var-set bestValue (Math/max @bestValue @rc))
+            (var-set bestValue (Math/max (long @bestValue) (long @rc)))
             (when (< @localAlpha @rc)
               (var-set localAlpha @rc)
               (var-set bestMove move)
@@ -98,13 +101,14 @@
 (defn ReifyNegaMaxAlgo  "Create an implementation of nega-max."
 
   ^czlabclj.frigga.core.negamax.NegaAlgoAPI
-  [board]
+  [^Board board]
 
   (reify NegaAlgoAPI
     (evaluate [_]
-      (let [snapshot (.takeSnapshot board) ]
+      (let [^czlabclj.frigga.core.negamax.NegaSnapshotAPI
+            snapshot (.takeSnapshot board) ]
         ;;(require 'czlabclj.frigga.core.negamax)
-        (NegaMax board snapshot 10 10 (- PINF) PINF)
+        (NegaMax snapshot board 10 10 (- PINF) PINF)
         (.lastBestMove snapshot)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
