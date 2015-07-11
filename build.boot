@@ -55,8 +55,8 @@
 (set-env! :tstDir (fp! (ge :basedir) "src" "test"))
 (set-env! :webDir (fp! (ge :basedir) "src" "web"))
 
-(set-env! :buildDir (fp! (ge :bootBuildDir) "classes"))
-(set-env! :qaDir (fp! (ge :bootBuildDir) "test"))
+(set-env! :buildDir (fp! (ge :podDir) "classes"))
+(set-env! :qaDir (fp! (ge :podDir) "test"))
 
 (set-env! :reportTestDir (fp! (ge :qaDir) "reports"))
 (set-env! :buildTestDir (fp! (ge :qaDir) "classes"))
@@ -139,7 +139,8 @@
                              (ge :target-path)))
       (ant/RunTasks*
         (ant/AntDelete {}
-          [[:fileset {:dir (fp! (ge :podDir) "lib")} ]
+          [[:fileset {:dir (fp! (ge :podDir) "classes")} ]
+           [:fileset {:dir (fp! (ge :podDir) "lib")} ]
            [:fileset {:dir (ge :libDir)}]
            [:fileset {:dir (ge :bootBuildDir)}
                      [[:include "**/*"]
