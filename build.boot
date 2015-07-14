@@ -11,26 +11,22 @@
 
 (set-env!
 
-  :skaroHome "/wdrive/myspace/skaro/build/pack"
+  :skaroHome (System/getProperty "skaro.home.dir")
   :PID "cocos2d"
   :source-paths #{"src/main/clojure"
                   "src/main/java"}
 
   :buildVersion "0.9.0-SNAPSHOT"
   :buildDebug true
+  :buildType "web"
 
   :pod "POD-INF"
   :pmode "dev"
   :bld "build"
 
-  ;; local additions
-  :buildType "web"
-  :wjs "scripts"
-  :wcs "styles"
+  :basedir (System/getProperty "skaro.app.dir")
 
-  :basedir (System/getProperty "user.dir")
-
-  :dependencies '[])
+  :dependencies '[[org.flatland/useful "0.11.3"]])
 
 (require '[clojure.data.json :as js]
          '[clojure.java.io :as io]
@@ -38,78 +34,26 @@
          '[boot.core :as bcore]
          '[czlabclj.tpcl.boot
            :as b
-           :refer [minitask ge fp!]]
+           :refer [libjars minitask ge fp!]]
          '[czlabclj.tpcl.antlib :as ant])
 
 (import '[java.io File])
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(set-env! :bootBuildDir (fp! (ge :basedir) (ge :bld)))
-(set-env! :podDir (fp! (ge :basedir) (ge :pod)))
-(set-env! :libDir (fp! (ge :basedir)
-                         (ge :target-path)))
+(b/BootEnvVars)
 
-(set-env! :srcDir (fp! (ge :basedir) "src" "main"))
-(set-env! :tstDir (fp! (ge :basedir) "src" "test"))
-(set-env! :webDir (fp! (ge :basedir) "src" "web"))
-
-(set-env! :buildDir (fp! (ge :podDir) "classes"))
-(set-env! :qaDir (fp! (ge :podDir) "test"))
-
-(set-env! :reportTestDir (fp! (ge :qaDir) "reports"))
-(set-env! :buildTestDir (fp! (ge :qaDir) "classes"))
+;; local stuff
+(set-env! :wjs "scripts"
+          :wcs "styles")
 
 (set-env! :websrc (fp! (ge :bootBuildDir) (ge :wjs)))
 (set-env! :webcss (fp! (ge :bootBuildDir) (ge :wcs)))
-(set-env! :docs (fp! (ge :bootBuildDir) "docs"))
+(set-env! :webDir (fp! (ge :basedir) "src" "web"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(set-env! :COMPILER_ARGS {:line "-Xlint:deprecation -Xlint:unchecked"})
-
-(set-env! :COMPILE_OPTS {:debug (ge :buildDebug)
-                         :includeantruntime false
-                         :fork true})
-
-(set-env! :CPATH [[:location (ge :buildDir)]
-                  [:fileset {:dir (ge :libDir)
-                             :includes "**/*.jar"}]
-                  [:fileset {:dir (fp! (ge :skaroHome) "dist")
-                             :includes "**/*.jar"} ]
-                  [:fileset {:dir (fp! (ge :skaroHome) "lib")
-                             :includes "**/*.jar"} ]] )
-
-(set-env! :TPATH (->> (ge :CPATH)
-                      (cons [:location (ge :buildTestDir)])
-                      (into [])))
-
-(set-env! :JAVAC_OPTS (merge {:srcdir (fp! (ge :srcDir) "java")
-                              :destdir (ge :buildDir)
-                              :target "1.8"
-                              :debugLevel "lines,vars,source"}
-                              (ge :COMPILE_OPTS)))
-
-(set-env! :CJPATH (->> (ge :CPATH)
-                       (cons [:location (fp! (ge :srcDir) "clojure")])
-                       (into [])))
-
-(set-env! :TJPATH (->> (ge :CJPATH)
-                       (concat [[:location (fp! (ge :tstDir) "clojure")]
-                                [:location (ge :buildTestDir)]])
-                       (into [])))
-
-(set-env! :CLJC_OPTS {:classname "clojure.lang.Compile"
-                      :fork true
-                      :failonerror true
-                      :maxmemory "2048m"})
-
-(set-env! :CLJC_SYSPROPS {:clojure.compile.warn-on-reflection true
-                          :clojure.compile.path (ge :buildDir) })
-
-(set-env! :CJNESTED [[:sysprops (ge :CLJC_SYSPROPS)]
-                     [:classpath (ge :CJPATH)]])
+(b/BootEnvPaths)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -705,7 +649,16 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftask dev ""
+(deftask games ""
+  []
+  (bcore/with-pre-wrap fileset
+    (cleanPublic)
+    (buildWebApps)
+    fileset))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(deftask bldr ""
   []
   (bcore/with-pre-wrap fileset
     (println "##############################################################################")
@@ -717,30 +670,32 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftask games ""
+(deftask dev ""
   []
-  (bcore/with-pre-wrap fileset
-    (cleanPublic)
-    (buildWebApps)
-    fileset))
+  (comp (libjars)
+        (bldr)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftask release ""
+(deftask rel ""
+
   []
+
   (bcore/with-pre-wrap fileset
-    (println "##############################################################################")
-    (print (format  "# releasing: %s\n" (ge :PID)))
-    (print (format  "# type: %s\n" (ge :buildType)))
-    (println "##############################################################################")
-    (set-env! :pmode "release")
-    (buildr)
     (jar!)
     (buildWebApps)
     (yuiCSS)
     (yuiJS)
     (finzBuild)
     fileset))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(deftask release ""
+  []
+
+  (set-env! :pmode "release")
+  (comp (dev) (rel)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
