@@ -11,7 +11,7 @@
 
 (set-env!
 
-  :skaroHome "/wdrive/myspace/skaro/b.out/pack"
+  :skaroHome "/wdrive/myspace/skaro/build/pack"
   :PID "cocos2d"
   :source-paths #{"src/main/clojure"
                   "src/main/java"}
@@ -21,7 +21,7 @@
 
   :pod "POD-INF"
   :pmode "dev"
-  :bld "b.out"
+  :bld "build"
 
   ;; local additions
   :buildType "web"

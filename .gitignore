@@ -1,9 +1,7 @@
-build.output.folder/
-alchemy.dir/
-b.out/
 targets/
 target/
 modules/
+build/
 #lib/
 classes/
 checkouts/
