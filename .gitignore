@@ -2,15 +2,15 @@ targets/
 target/
 modules/
 build/
-#lib/
+patch/
+lib/
 classes/
 checkouts/
 dbs/
+logs/
 docs/
 cocos/
 
-POD-INF/classes/
-POD-INF/lib/
 public/scripts/
 public/ig/
 public/styles/
