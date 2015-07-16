@@ -15,7 +15,7 @@
   :buildDebug true
   :buildType "web"
 
-  :DOMAIN "czlab.cocos2d"
+  :DOMAIN "czlabclj.cocos2d"
   :PID "cocos2d"
 
   :source-paths #{"src/main/clojure"
@@ -52,21 +52,21 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- cleanLocalJs ""
+
   [wappid]
+
   (a/DeleteDir (io/file (ge :webDir)
                         wappid "src" (ge :bld))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- cleanPublic ""
+
   []
-  (a/RunTasks*
-    (a/AntDelete {}
-      [[:fileset {:dir (fp! (ge :basedir) "public")
-                  :includes "ig/**"}]]))
-  (doseq [s [(ge :websrc) (ge :webcss)]]
-    (.mkdirs (io/file s))
-  ))
+
+  (a/CleanDir (io/file (ge :basedir) "public" "ig"))
+  (a/CleanDir (io/file (ge :websrc)))
+  (a/CleanDir (io/file (ge :webcss))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -88,9 +88,9 @@
       (let [bf (io/file dir (ge :bld) mid)]
         (spit bf
               (-> (slurp bf)
-                  (cs/replace "\\/\\*@@" "")
-                  (cs/replace "@@\\*\\/" "")))
-        (a/MoveFile bf (doto des (.mkdirs))))
+                  (cs/replace "/*@@" "")
+                  (cs/replace "@@*/" "")))
+        (a/MoveFile bf des))
 
       (.isDirectory f)
       (if (= (ge :bld) (.getName f)) nil {})
@@ -103,8 +103,7 @@
                 "--module-ids" mid
                 "--out-dir" (ge :bld) ]}
         (do
-          (a/CopyFile (io/file dir mid)
-                      (doto des (.mkdirs)))
+          (a/CopyFile (io/file dir mid) des)
           nil)))
   ))
 
@@ -123,7 +122,7 @@
     (finally
       (cleanLocalJs wappid)))
 
-    (when true
+    (when false
       (a/RunTasks*
         (a/AntExec
           {:executable "jsdoc"
@@ -143,18 +142,16 @@
     (case wappid
 
       "cocos2d"
-      (->> [[:fileset {:dir (fp! (ge :websrc) wappid)}]]
-           (a/AntCopy
-             {:todir (fp! (ge :basedir)
-                          "public/ig/lib") })
+      (->> (a/AntCopy
+             {:todir (io/file (ge :basedir) "public" "ig" "lib") }
+             [[:fileset {:dir (io/file (ge :websrc) wappid)}]])
            (conj @tks)
            (reset! tks))
 
       "main"
-      (->> [[:fileset {:dir (fp! (ge :websrc) wappid) } ]]
-           (a/AntCopy
-             {:todir (fp! (ge :basedir)
-                          "public/scripts") })
+      (->> (a/AntCopy
+             {:todir (io/file (ge :basedir) "public" "scripts") }
+             [[:fileset {:dir (io/file (ge :websrc) wappid) } ]])
            (conj @tks)
            (reset! tks))
       ;;else
@@ -165,10 +162,10 @@
                             "public/ig/lib/game" wappid)} )
              (conj @tks)
              (reset! tks))
-        (->> [[:fileset {:dir (fp! (ge :websrc) wappid)} ]]
-             (a/AntCopy
+        (->> (a/AntCopy
                {:todir (fp! (ge :basedir)
-                            "public/ig/lib/game" wappid)})
+                            "public/ig/lib/game" wappid)}
+               [[:fileset {:dir (fp! (ge :websrc) wappid)} ]])
              (conj @tks)
              (reset! tks))))
 
@@ -182,7 +179,7 @@
   [wappid des cocos]
 
   (a/CopyFile (io/file (ge :srcDir) "resources" "index.html")
-                (io/file des))
+              (io/file des))
   (let [almond (atom "<script src=\"/public/vendors/almond/almond.js\"></script>")
         bdir (atom (str "/public/ig/lib/game/" wappid))
         ccdir (atom "/public/extlibs/")
@@ -213,7 +210,7 @@
         (reset! cfg (slurp (fp! (ge :webDir)
                                 wappid "src" "ccconfig.js")
                            :encoding "utf-8"))))
-    (spit (str des "/index.html")
+    (spit (fp! des "index.html")
           (-> html
               (cs/replace "@@AMDREF@@" @almond)
               (cs/replace "@@BOOTDIR@@" @bdir)
@@ -230,12 +227,12 @@
 
   (a/RunTasks*
     (a/AntCopy
-      {:todir (fp! (ge :webcss) wappid)}
-      [[:fileset {:dir (fp! (ge :webDir) wappid "styles")
+      {:todir (io/file (ge :webcss) wappid)}
+      [[:fileset {:dir (io/file (ge :webDir) wappid "styles")
                   :includes "**/*.scss"}]])
     (a/AntApply
       {:executable "sass" :parallel false}
-      [[:fileset {:dir (fp! (ge :webcss) wappid)
+      [[:fileset {:dir (io/file (ge :webcss) wappid)
                   :includes "**/*.scss"}]
        [:arglines ["--sourcemap=none"]]
        [:srcfile {}]
@@ -245,14 +242,14 @@
          {:type :glob :from "*" :to (fp! (ge :webcss) wappid "*")}]]
        [:targetfile {}]])
     (a/AntCopy
-      {:todir (fp! (ge :webcss) wappid)}
-      [[:fileset {:dir (fp! (ge :webDir) wappid "styles")
+      {:todir (io/file (ge :webcss) wappid)}
+      [[:fileset {:dir (io/file (ge :webDir) wappid "styles")
                   :includes "**/*.css"}]])
     (a/AntMkdir {:dir (fp! (ge :basedir)
-                               "public/styles" wappid)})
+                           "public/styles" wappid)})
     (a/AntCopy
       {:todir (fp! (ge :basedir)
-                     "public/styles" wappid)}
+                   "public/styles" wappid)}
       [[:fileset {:dir (fp! (ge :webcss) wappid)
                   :includes "**/*.css"}]])))
 
@@ -264,7 +261,7 @@
 
   (a/RunTasks*
     (a/AntMkdir {:dir (fp! (ge :basedir)
-                             "public/ig/res" wappid)})
+                           "public/ig/res" wappid)})
     (a/AntCopy
       {:todir (fp! (ge :basedir)
                    "public/ig/res" wappid)}
@@ -282,7 +279,7 @@
                 (= "main" wappid))
     (a/RunTasks*
       (a/AntMkdir {:dir (fp! (ge :basedir)
-                               "public/ig/info" wappid)})
+                             "public/ig/info" wappid)})
       (a/AntCopy
         {:todir (fp! (ge :basedir) "public/ig/info" wappid)}
         [[:fileset {:dir (fp! (ge :webDir) wappid "info")}]]))))
@@ -314,13 +311,13 @@
 
   (when (not= (ge :pmode) "release")
     (let [des (fp! (ge :basedir)
-                     "public/ig/lib/game" wappid)]
+                   "public/ig/lib/game" wappid)]
       (a/CopyFile (io/file (ge :srcDir)
-                             "resources" "project.json")
-                    (io/file des))
+                           "resources" "project.json")
+                  (io/file des))
       (a/CopyFile (io/file (ge :srcDir)
-                             "resources" "main.js")
-                    (io/file des)))
+                           "resources" "main.js")
+                  (io/file des)))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -343,7 +340,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- buildWebApps ""
+
   []
+
   (let [isDir? #(.isDirectory %)
         dirs (->> (.listFiles (io/file (ge :webDir)))
                   (filter isDir?))]
@@ -383,7 +382,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- yuiCSS ""
+
   []
+
   (a/RunTasks*
     (a/AntApply
       {:executable "java" :parallel false}
@@ -437,14 +438,15 @@
 
   (bc/with-pre-wrap fileset
     ()
-
   fileset))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (deftask games ""
+
   []
+
   (bc/with-pre-wrap fileset
     (CleanPublic)
     (cleanPublic)
@@ -474,28 +476,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftask testclj
-
-  "test clj frwk"
-  []
-
-  (bc/with-pre-wrap fileset
-    fileset
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(deftask testjava
-
-  "test java frwk"
-  []
-
-  (bc/with-pre-wrap fileset
-    fileset
-  ))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 (defn- mkGame ""
 
   [appid]
@@ -517,9 +497,9 @@
       (.mkdirs (io/file (ge :webDir) appid s)))
 
     (a/CopyFile (io/file (ge :srcDir) "resources" "game.json")
-                  (io/file (ge :webDir) appid "info"))
+                (io/file (ge :webDir) appid "info"))
     (a/CopyFile (io/file (ge :srcDir) "resources" "game.mf")
-                  (io/file (ge :webDir) appid "info"))
+                (io/file (ge :webDir) appid "info"))
 
     (b/ReplaceFile (fp! (ge :webDir) appid "info" "game.mf")
                    #(-> %
@@ -532,43 +512,43 @@
     (doseq [s ["game.js" "splash.js" "mmenu.js"
                "hud.js" "config.js" "protos.js"]]
       (a/CopyFile (io/file (ge :srcDir) "resources" s)
-                    (io/file (ge :webDir) appid "src" "p")))
+                  (io/file (ge :webDir) appid "src" "p")))
 
     (a/CopyFile (io/file (ge :srcDir) "resources" "gnodes.js")
-                  (io/file (ge :webDir) appid "src" "n"))
+                (io/file (ge :webDir) appid "src" "n"))
 
     (a/CopyFile (io/file (ge :srcDir) "resources" "cobjs.js")
-                  (io/file (ge :webDir) appid "src" "n"))
+                (io/file (ge :webDir) appid "src" "n"))
 
     (doseq [s ["stager.js" "factory.js"
                "motion.js" "resolve.js" "sysobjs.js"]]
       (a/CopyFile (io/file (ge :srcDir) "resources" s)
-                    (io/file (ge :webDir) appid "src" "s")))
+                  (io/file (ge :webDir) appid "src" "s")))
 
     (b/ReplaceFile (fp! (ge :webDir)
-                          appid "src" "p" "config.js")
+                        appid "src" "p" "config.js")
                    #(cs/replace % "@@UUID@@" appkey))
 
     (a/CopyFile (io/file (ge :srcDir)
-                           "resources" "l10n.js")
+                         "resources" "l10n.js")
                   (io/file (ge :webDir)
                            appid "src" "i18n""l10n.js"))
 
     (a/CopyFile (io/file (ge :srcDir)
-                           "resources" "ccconfig.js")
+                         "resources" "ccconfig.js")
                   (io/file (ge :webDir) appid "src"))
 
     (a/CopyFile (io/file (ge :srcDir)
-                           "resources" "proj.json")
+                         "resources" "proj.json")
                   (io/file (ge :webDir)
                            appid "src" "project.json"))
 
     (b/ReplaceFile (fp! (ge :webDir)
-                          appid "src" "project.json")
+                        appid "src" "project.json")
                    #(cs/replace % "@@APPID@@" appid))
 
     (b/ReplaceFile (fp! (ge :webDir)
-                          appid "src" "ccconfig.js")
+                        appid "src" "ccconfig.js")
                    #(cs/replace % "@@APPID@@" appid))
   ))
 
@@ -703,7 +683,6 @@
     fileset))
 
 
-(deftask hihi "" [] (println (get-env)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF
 
