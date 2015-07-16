@@ -4,6 +4,7 @@ modules/
 build/
 patch/
 lib/
+bin/
 classes/
 checkouts/
 dbs/
