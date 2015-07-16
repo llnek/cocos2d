@@ -34,5 +34,5 @@ public/extlibs/
 .DS_Store
 .svn
 .sass-cache
-
+.nrepl*
 
