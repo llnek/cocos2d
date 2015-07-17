@@ -40,8 +40,7 @@
    :wcs "styles"
    :websrc #(set-env! %2 (fp! (ge :bootBuildDir) (ge :wjs)))
    :webcss #(set-env! %2 (fp! (ge :bootBuildDir) (ge :wcs)))
-   :webDir #(set-env! %2 (fp! (ge :basedir) "src" "web"))}
-  [:wjs :wcs :websrc :webcss :webDir])
+   :webDir #(set-env! %2 (fp! (ge :basedir) "src" "web"))})
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -61,7 +60,7 @@
 
   []
 
-  (a/CleanDir (fp! (ge :basedir) "public" "ig"))
+  (a/CleanDir (fp! (ge :basedir) "public/ig"))
   (a/CleanDir (fp! (ge :websrc)))
   (a/CleanDir (fp! (ge :webcss))))
 
@@ -199,11 +198,11 @@
         (reset! bdir "")
         (reset! almond "")
         (reset! cfg (slurp (fp! (ge :srcDir)
-                                "resources" "cocos2d.js")
+                                "resources/cocos2d.js")
                            :encoding "utf-8")))
       (do
         (reset! cfg (slurp (fp! (ge :webDir)
-                                wappid "src" "ccconfig.js")
+                                wappid "src/ccconfig.js")
                            :encoding "utf-8"))))
     (spit (fp! des "index.html")
           (-> html
