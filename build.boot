@@ -38,9 +38,9 @@
 (b/BootEnvVars
   {:wjs "scripts"
    :wcs "styles"
-   :websrc #(set-env! %2 (fp! (ge :bootBuildDir) (ge :wjs)))
-   :webcss #(set-env! %2 (fp! (ge :bootBuildDir) (ge :wcs)))
-   :webDir #(set-env! %2 (fp! (ge :basedir) "src" "web"))})
+   :websrc #(set-env! %2 (fp! (ge :wzzDir) (ge :wjs)))
+   :webcss #(set-env! %2 (fp! (ge :wzzDir) (ge :wcs)))
+   :webDir #(set-env! %2 (fp! (ge :basedir) "src/web"))})
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -110,9 +110,8 @@
 
   (let [root (io/file (ge :webDir) wappid "src")
         tks (atom []) ]
-
-    (cleanLocalJs wappid)
     (try
+      (cleanLocalJs wappid)
       (b/BabelTree root (partial onbabel wappid))
     (finally
       (cleanLocalJs wappid)))
@@ -123,11 +122,10 @@
           {:executable "jsdoc"
            :dir (ge :basedir)
            :spawn true}
-          [[:argvalues [(fp! (ge :basedir)
-                             (ge :bld)
-                             (ge :wjs) wappid)
+          [[:argvalues [(fp! (ge :websrc) wappid)
                          "-c"
-                         (fp! (ge :basedir) "jsdoc.json")
+                         (fp! (ge :basedir)
+                              "jsdoc.json")
                          "-d"
                          (fp! (ge :docs) wappid)]]])))
 
@@ -174,43 +172,38 @@
   [wappid des cocos]
 
   (a/CopyFile (fp! (ge :srcDir) "resources/index.html") des)
-  (let [almond (atom "<script src=\"/public/vendors/almond/almond.js\"></script>")
-        bdir (atom (str "/public/ig/lib/game/" wappid))
-        ccdir (atom "/public/extlibs/")
-        cfg (atom "")
-        json (-> (slurp (fp! (ge :webDir)
-                             wappid
-                             "info/game.json")
-                        :encoding "utf-8")
-                 (js/read-str :key-fn keyword))
-        html (-> (slurp (fp! des "index.html") :encoding "utf-8")
-                 (cs/replace "@@DESCRIPTION@@" (:description json))
-                 (cs/replace "@@KEYWORDS@@" (:keywords json))
-                 (cs/replace "@@TITLE@@" (:name json))
-                 (cs/replace "@@LAYOUT@@" (:layout json))
-                 (cs/replace "@@HEIGHT@@" (str (:height json)))
-                 (cs/replace "@@WIDTH@@" (str (:width json)))
-                 (cs/replace "@@UUID@@" (:uuid json))) ]
-    (if (or (= (ge :pmode) "release")
-            cocos)
+  (with-local-vars
+    [almond "<script src=\"/public/vendors/almond/almond.js\"></script>"
+     bdir (str "/public/ig/lib/game/" wappid)
+     cfg ""
+     ccdir "/public/extlibs/"
+     json (b/BootSlurpJson (fp! (ge :webDir)
+                                wappid
+                                "info/game.json")) ]
+    (if (or (= (ge :pmode) "release") cocos)
       (do
-        (reset! ccdir "frameworks/")
-        (reset! bdir "")
-        (reset! almond "")
-        (reset! cfg (slurp (fp! (ge :srcDir)
-                                "resources/cocos2d.js")
-                           :encoding "utf-8")))
+        (var-set ccdir "frameworks/")
+        (var-set bdir "")
+        (var-set almond "")
+        (var-set cfg (b/BootSlurp (fp! (ge :srcDir)
+                                       "resources/cocos2d.js"))))
       (do
-        (reset! cfg (slurp (fp! (ge :webDir)
-                                wappid "src/ccconfig.js")
-                           :encoding "utf-8"))))
-    (spit (fp! des "index.html")
-          (-> html
-              (cs/replace "@@AMDREF@@" @almond)
-              (cs/replace "@@BOOTDIR@@" @bdir)
-              (cs/replace "@@CCDIR@@" @ccdir)
-              (cs/replace "@@CCCONFIG@@" @cfg))
-            :encoding "utf-8")
+        (var-set cfg (b/BootSlurp (fp! (ge :webDir)
+                                       wappid
+                                       "src/ccconfig.js")))))
+    (b/ReplaceFile
+      (fp! des "index.html")
+      #(-> (cs/replace % "@@DESCRIPTION@@" (:description @json))
+           (cs/replace "@@KEYWORDS@@" (:keywords @json))
+           (cs/replace "@@TITLE@@" (:name @json))
+           (cs/replace "@@LAYOUT@@" (:layout @json))
+           (cs/replace "@@HEIGHT@@" (str (:height @json)))
+           (cs/replace "@@WIDTH@@" (str (:width @json)))
+           (cs/replace "@@UUID@@" (:uuid @json))
+           (cs/replace "@@AMDREF@@" @almond)
+           (cs/replace "@@BOOTDIR@@" @bdir)
+           (cs/replace "@@CCDIR@@" @ccdir)
+           (cs/replace "@@CCCONFIG@@" @cfg)))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -319,12 +312,13 @@
   (let [wappid (.getName dir)]
     (.mkdirs (io/file (fp! (ge :websrc) wappid)))
     (.mkdirs (io/file (fp! (ge :webcss) wappid)))
-    (compileJS wappid)
-    (compileSCSS wappid)
-    (compileMedia wappid)
-    (compileInfo wappid)
-    (compilePages wappid)
-    (finzApp wappid)
+    (doto wappid
+      (compileJS)
+      (compileSCSS)
+      (compileMedia)
+      (compileInfo)
+      (compilePages)
+      (finzApp))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -345,7 +339,7 @@
 
   []
 
-  (let [ps (fp! (ge :basedir) "public" "vendors/")
+  (let [ps (fp! (ge :basedir) "public/vendors/")
         t1 (a/AntDelete
              {:file (fp! (ge :basedir)
                          "public/c/webcommon.js")} )
