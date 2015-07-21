@@ -7,20 +7,21 @@
 ;; By using this software in any  fashion, you are agreeing to be bound by the
 ;; terms of this license. You  must not remove this notice, or any other, from
 ;; this software.
-;; Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+;; Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 (ns ^{:doc ""
       :author "kenl"}
 
   czlabclj.frigga.tttoe.arena
 
+  (:require [czlabclj.xlib.util.str :refer [hgl? strim]]
+            [czlabclj.xlib.util.core
+             :refer
+             [notnil? MakeMMap RandomSign]])
+
   (:require [clojure.tools.logging :as log])
 
-  (:use [czlabclj.xlib.util.str :only [hgl? strim]]
-        [czlabclj.xlib.util.format]
-        [czlabclj.xlib.util.core
-         :only
-         [notnil? MakeMMap RandomSign]]
+  (:use [czlabclj.xlib.util.format]
         [czlabclj.cocos2d.games.meta]
         [czlabclj.odin.event.core])
 
@@ -245,6 +246,5 @@
   )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(def ^:private arena-eof nil)
+;;EOF
 

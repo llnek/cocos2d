@@ -7,20 +7,21 @@
 ;; By using this software in any  fashion, you are agreeing to be bound by the
 ;; terms of this license. You  must not remove this notice, or any other, from
 ;; this software.
-;; Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+;; Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 (ns ^{:doc ""
       :author "kenl" }
 
   czlabclj.odin.game.room
 
+  (:require [czlabclj.xlib.util.core :refer [MakeMMap notnil? ]]
+            [czlabclj.xlib.util.guids :refer [NewUUid]]
+            [czlabclj.xlib.util.meta :refer [MakeObjArgN]]
+            [czlabclj.xlib.util.str :refer [strim nsb hgl?]])
+
   (:require [clojure.tools.logging :as log])
 
-  (:use [czlabclj.xlib.util.core :only [MakeMMap notnil? ]]
-        [czlabclj.xlib.util.guids :only [NewUUid]]
-        [czlabclj.xlib.util.format]
-        [czlabclj.xlib.util.meta :only [MakeObjArgN]]
-        [czlabclj.xlib.util.str :only [strim nsb hgl?]]
+  (:use [czlabclj.xlib.util.format]
         [czlabclj.odin.system.util]
         [czlabclj.odin.event.core]
         [czlabclj.odin.event.disp]
@@ -444,6 +445,5 @@
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(def ^:private room-eof nil)
+;;EOF
 

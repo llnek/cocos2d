@@ -7,19 +7,20 @@
 ;; By using this software in any  fashion, you are agreeing to be bound by the
 ;; terms of this license. You  must not remove this notice, or any other, from
 ;; this software.
-;; Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+;; Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 (ns ^{:doc ""
       :author "kenl"}
 
   czlabclj.odin.game.session
 
+  (:require [czlabclj.xlib.util.core :refer [MakeMMap notnil? ]]
+            [czlabclj.xlib.util.str :refer [strim nsb hgl?]])
+
   (:require [clojure.tools.logging :as log])
 
-  (:use [czlabclj.xlib.util.core :only [MakeMMap notnil? ]]
-        [czlabclj.xlib.util.process]
+  (:use [czlabclj.xlib.util.process]
         [czlabclj.xlib.util.guids]
-        [czlabclj.xlib.util.str :only [strim nsb hgl?]]
         [czlabclj.odin.system.util]
         [czlabclj.odin.event.core]
         [czlabclj.odin.event.disp])
@@ -117,6 +118,5 @@
   )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(def ^:private session-eof nil)
+;;EOF
 

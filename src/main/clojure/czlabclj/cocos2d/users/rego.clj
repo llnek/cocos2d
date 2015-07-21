@@ -7,21 +7,22 @@
 ;; By using this software in any  fashion, you are agreeing to be bound by the
 ;; terms of this license. You  must not remove this notice, or any other, from
 ;; this software.
-;; Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+;; Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 (ns  ^{:doc ""
        :author "kenl" }
 
   czlabclj.cocos2d.users.rego
 
+  (:require [czlabclj.xlib.util.dates :refer [ParseDate] ]
+            [czlabclj.xlib.util.str :refer [nsb hgl? strim] ]
+            [czlabclj.tardis.impl.ext :refer [GetAppKeyFromEvent] ])
+
   (:require [clojure.tools.logging :as log])
 
-  (:use [czlabclj.xlib.util.dates :only [ParseDate] ]
-        [czlabclj.xlib.util.str :only [nsb hgl? strim] ]
-        [czlabclj.tardis.core.consts]
+  (:use [czlabclj.tardis.core.consts]
         [czlabclj.xlib.util.consts]
         [czlabclj.xlib.util.wfs]
-        [czlabclj.tardis.impl.ext :only [GetAppKeyFromEvent] ]
         [czlabclj.cocos2d.site.core ])
 
   (:import  [com.zotohlab.skaro.core Container ConfigError]
@@ -43,11 +44,11 @@
   [^HTTPEvent evt ^String csrf]
 
   (let [^czlabclj.tardis.io.webss.WebSS
-        mvs (.getSession evt)
-        dm (GetDftModel evt)
-        bd (:body dm)]
-    (assoc dm :body (merge bd {:content "/main/users/register.ftl"
-                               :csrf csrf}))
+        mvs (.getSession evt)]
+    (-> (GetDftModel evt)
+        (update-in [:body]
+                   #(merge % {:content "/main/users/register.ftl"
+                              :csrf csrf})))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -57,11 +58,11 @@
   [^HTTPEvent evt ^String csrf]
 
   (let [^czlabclj.tardis.io.webss.WebSS
-        mvs (.getSession evt)
-        dm (GetDftModel evt)
-        bd (:body dm) ]
-    (assoc dm :body (merge bd {:content "/main/users/login.ftl"
-                               :csrf csrf}))
+        mvs (.getSession evt)]
+    (-> (GetDftModel evt)
+        (update-in [:body]
+                   #(merge % {:content "/main/users/login.ftl"
+                              :csrf csrf})))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -71,11 +72,11 @@
   [^HTTPEvent evt ^String csrf]
 
   (let [^czlabclj.tardis.io.webss.WebSS
-        mvs (.getSession evt)
-        dm (GetDftModel evt)
-        bd (:body dm) ]
-    (assoc dm :body (merge bd {:content "/main/users/forgot.ftl" 
-                               :csrf csrf}))
+        mvs (.getSession evt)]
+    (-> (GetDftModel evt)
+        (update-in [:body]
+                   #(merge % {:content "/main/users/forgot.ftl"
+                              :csrf csrf})))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -96,8 +97,7 @@
             ^czlabclj.tardis.io.webss.WebSS
             mvs (.getSession evt)
             csrf (-> ^czlabclj.tardis.impl.ext.ContainerAPI
-                     co
-                     (.generateCsrf))
+                     co (.generateCsrf))
             est (:sessionAgeSecs cfg)
             [rdata ct] (.loadTemplate co tpl
                                       (interpolateFunc evt csrf))
@@ -121,7 +121,6 @@
     (doShowPage interpolateRegisterPage)))
 
 (ns-unmap *ns* '->RegisterPage)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (deftype LoginPage [] WorkFlow
@@ -131,7 +130,6 @@
     (doShowPage interpolateLoginPage)))
 
 (ns-unmap *ns* '->LoginPage)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (deftype ForgotPage [] WorkFlow
@@ -141,9 +139,7 @@
     (doShowPage interpolateForgotPage)))
 
 (ns-unmap *ns* '->ForgotPage)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(def ^:private rego-eof nil)
+;;EOF
 
 

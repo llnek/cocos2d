@@ -7,21 +7,22 @@
 ;; By using this software in any  fashion, you are agreeing to be bound by the
 ;; terms of this license. You  must not remove this notice, or any other, from
 ;; this software.
-;; Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+;; Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 (ns ^{:doc ""
       :author "kenl" }
 
   czlabclj.odin.system.core
 
+  (:require [czlabclj.xlib.util.core :refer [MakeMMap notnil?]]
+            [czlabclj.xlib.util.files :refer [ReadOneFile]]
+            [czlabclj.xlib.util.str :refer [strim nsb hgl?]]
+            [czlabclj.xlib.util.wfs :refer [SimPTask]])
+
   (:require [clojure.tools.logging :as log]
             [clojure.java.io :as io])
 
-  (:use [czlabclj.xlib.util.core :only [MakeMMap notnil?]]
-        [czlabclj.xlib.util.files :only [ReadOneFile]]
-        [czlabclj.xlib.util.format]
-        [czlabclj.xlib.util.str :only [strim nsb hgl?]]
-        [czlabclj.xlib.util.wfs :only [SimPTask]]
+  (:use [czlabclj.xlib.util.format]
         [czlabclj.odin.event.core]
         [czlabclj.odin.game.msgreq])
 
@@ -82,6 +83,5 @@
     (SimPTask (fn [^Job j] (odinOnEvent (.event j))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(def ^:private core-eof nil)
+;;EOF
 

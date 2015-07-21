@@ -7,22 +7,24 @@
 ;; By using this software in any  fashion, you are agreeing to be bound by the
 ;; terms of this license. You  must not remove this notice, or any other, from
 ;; this software.
-;; Copyright (c) 2013, Ken Leung. All rights reserved.
+;; Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 (ns  ^{:doc ""
        :author "kenl" }
 
   czlabclj.cocos2d.games.meta
 
+  (:require [czlabclj.xlib.util.format
+             :refer [ReadJsonKW ReadJson
+                     ReadEdn WriteJson]]
+            [czlabclj.xlib.util.str :refer [nsb hgl? strim] ]
+            [czlabclj.xlib.util.dates :refer [ParseDate] ]
+            [czlabclj.xlib.util.files :refer [ReadOneFile] ])
+
   (:require [clojure.tools.logging :as log]
             [clojure.java.io :as io])
 
-  (:use [czlabclj.xlib.util.format :only [ReadJsonKW ReadJson
-                                          ReadEdn WriteJson]]
-        [czlabclj.xlib.util.str :only [nsb hgl? strim] ]
-        [czlabclj.xlib.util.dates :only [ParseDate] ]
-        [czlabclj.xlib.util.files :only [ReadOneFile] ]
-        [czlabclj.tardis.core.consts])
+  (:use [czlabclj.tardis.core.consts])
 
   (:import  [org.apache.commons.io FileUtils]
             [com.zotohlab.frwk.io IO]
@@ -32,14 +34,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (def ^:private GAMES-MNFS (atom []))
 (def ^:private GAMES-LIST (atom []))
 (def ^:private GAMES-HASH (atom {}))
 (def ^:private GAMES-UUID (atom {}))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -54,7 +54,7 @@
                     tmp nil
                     gc (transient [])
                     rc (transient []) ]
-    (let [fds (IO/listDirs (io/file appDir "public" "ig" "info")) ]
+    (let [fds (IO/listDirs (io/file appDir "public/ig/info")) ]
       (doseq [^File fd (seq fds) ]
         (let [info (merge (assoc (ReadEdn (io/file fd "game.mf"))
                                  :gamedir (.getName fd))
@@ -129,6 +129,5 @@
   @GAMES-UUID)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(def ^:private meta-eof nil)
+;;EOF
 

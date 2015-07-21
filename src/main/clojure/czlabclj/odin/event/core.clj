@@ -7,20 +7,21 @@
 ;; By using this software in any  fashion, you are agreeing to be bound by the
 ;; terms of this license. You  must not remove this notice, or any other, from
 ;; this software.
-;; Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+;; Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 (ns ^{:doc ""
       :author "kenl" }
 
   czlabclj.odin.event.core
 
+  (:require [czlabclj.xlib.util.str :refer [strim nsb hgl?]]
+            [czlabclj.xlib.util.core
+             :refer
+             [TryCR]])
+
   (:require [clojure.tools.logging :as log])
 
-  (:use [czlabclj.xlib.util.str :only [strim nsb hgl?]]
-        [czlabclj.xlib.util.format]
-        [czlabclj.xlib.util.core
-         :only
-         [TryCR]])
+  (:use [czlabclj.xlib.util.format])
 
   (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
             [com.zotohlab.odin.event Msgs Events EventError]))
@@ -124,6 +125,5 @@
    (ReifyEvent Msgs/SESSION ecode source ctx)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(def ^:private core-eof nil)
+;;EOF
 

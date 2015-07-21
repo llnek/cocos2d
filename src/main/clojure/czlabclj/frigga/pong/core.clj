@@ -7,18 +7,19 @@
 ;; By using this software in any  fashion, you are agreeing to be bound by the
 ;; terms of this license. You  must not remove this notice, or any other, from
 ;; this software.
-;; Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+;; Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 (ns ^{:doc ""
       :author "kenl"}
 
   czlabclj.frigga.pong.core
 
+  (:require [czlabclj.xlib.util.core :refer [MakeMMap notnil? ]]
+            [czlabclj.xlib.util.str :refer [strim nsb hgl?]])
+
   (:require [clojure.tools.logging :as log])
 
-  (:use [czlabclj.xlib.util.core :only [MakeMMap notnil? ]]
-        [czlabclj.xlib.util.str :only [strim nsb hgl?]]
-        [czlabclj.xlib.util.format]
+  (:use [czlabclj.xlib.util.format]
         [czlabclj.cocos2d.games.meta]
         [czlabclj.odin.event.core]
         [czlabclj.frigga.core.util]
@@ -150,9 +151,9 @@
     (require 'czlabclj.frigga.pong.core)
     (reifyEngine stateAtom stateRef)))
 
-(ns-unmap *ns* '->Pong)
 
+
+(ns-unmap *ns* '->Pong)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(def ^:private core-eof nil)
+;;EOF
 

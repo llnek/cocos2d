@@ -7,21 +7,22 @@
 ;; By using this software in any  fashion, you are agreeing to be bound by the
 ;; terms of this license. You  must not remove this notice, or any other, from
 ;; this software.
-;; Copyright (c) 2013, Ken Leung. All rights reserved.
+;; Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 (ns  ^{:doc ""
        :author "kenl" }
 
   czlabclj.cocos2d.site.core
 
+  (:require [czlabclj.xlib.util.dates :refer [ParseDate]]
+            [czlabclj.xlib.util.str :refer [nsb hgl? strim]]
+            [czlabclj.tardis.impl.ext :refer [GetAppKeyFromEvent]])
+
   (:require [clojure.tools.logging :as log]
             [clojure.java.io :as io])
 
-  (:use [czlabclj.xlib.util.dates :only [ParseDate]]
-        [czlabclj.xlib.util.str :only [nsb hgl? strim]]
-        [czlabclj.tardis.core.consts]
+  (:use [czlabclj.tardis.core.consts]
         [czlabclj.xlib.util.wfs]
-        [czlabclj.tardis.impl.ext :only [GetAppKeyFromEvent]]
         [czlabclj.cocos2d.games.meta]
         [czlabclj.xlib.util.consts]
         [czlabclj.odin.system.core])
@@ -38,7 +39,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (def ^:dynamic *USER-FLAG* :__u982i) ;; user id
@@ -51,8 +51,7 @@
   [^File appDir]
 
   (with-local-vars [rc (transient [])]
-    (let [fds (IO/listFiles (io/file appDir "public" "ig"
-                                     "res" "main" "doors")
+    (let [fds (IO/listFiles (io/file appDir "public/ig/res/main/doors")
                             "png" false) ]
       (doseq [^File fd fds]
         (var-set rc (conj! @rc (.getName fd)))))
@@ -123,11 +122,11 @@
 
   [^HTTPEvent evt]
 
-  (let [dm (GetDftModel evt)
-        bd (:body dm)]
-    (assoc dm :body (merge bd
-                           {:doors @DOORS
-                            :content "/main/index.ftl"}))
+  (-> (GetDftModel evt)
+      (update-in [:body]
+                 #(merge %
+                         {:doors @DOORS
+                          :content "/main/index.ftl"}))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -138,12 +137,14 @@
 
   (SimPTask
     (fn [^Job j]
-      (let [tpl (nsb (:template (.getv j EV_OPTS)))
+      (let [tpl (:template (.getv j EV_OPTS))
             ^HTTPEvent evt (.event j)
             ^Emitter src (.emitter evt)
-            ^Container co (.container src)
+            ^Container
+            co (.container src)
             [rdata ct]
-            (.loadTemplate co tpl
+            (.loadTemplate co
+                           (nsb tpl)
                            (interpolateIndexPage evt))
             ^HTTPResult res (.getResultObj evt) ]
         (doto res
@@ -159,10 +160,10 @@
     (require 'czlabclj.cocos2d.site.core)
     (doShowPage)))
 
-(ns-unmap *ns* '->IndexPage)
 
+
+(ns-unmap *ns* '->IndexPage)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(def ^:private core-eof nil)
+;;EOF
 
 

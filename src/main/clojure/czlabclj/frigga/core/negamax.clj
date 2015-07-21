@@ -7,17 +7,17 @@
 ;; By using this software in any  fashion, you are agreeing to be bound by the
 ;; terms of this license. You  must not remove this notice, or any other, from
 ;; this software.
-;; Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+;; Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 (ns ^{:doc ""
       :author "kenl"}
 
   czlabclj.frigga.core.negamax
 
-  (:require [clojure.tools.logging :as log])
+  (:require [czlabclj.xlib.util.core :refer [MakeMMap notnil? ]]
+            [czlabclj.xlib.util.str :refer [strim nsb hgl?]])
 
-  (:use [czlabclj.xlib.util.core :only [MakeMMap notnil? ]]
-        [czlabclj.xlib.util.str :only [strim nsb hgl?]])
+  (:require [clojure.tools.logging :as log])
 
   (:import  [com.zotohlab.odin.game Game PlayRoom
              Board Player PlayerSession]
@@ -57,9 +57,8 @@
    ^Board board
    maxDepth depth alpha beta]
 
-  (if
-    (or (== depth 0)
-        (.isOver board game))
+  (if (or (== depth 0)
+          (.isOver board game))
     (.evalScore board game)
     ;;:else
     (with-local-vars [openMoves (.getNextMoves board game)
@@ -131,6 +130,5 @@
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(def ^:private negamax-eof nil)
+;;EOF
 

@@ -7,21 +7,22 @@
 ;; By using this software in any  fashion, you are agreeing to be bound by the
 ;; terms of this license. You  must not remove this notice, or any other, from
 ;; this software.
-;; Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+;; Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 (ns ^{:doc ""
       :author "kenl" }
 
   czlabclj.odin.game.msgreq
 
+  (:require [czlabclj.xlib.util.core :refer [MakeMMap notnil?]]
+            [czlabclj.xlib.util.files :refer [ReadOneFile]]
+            [czlabclj.xlib.util.str :refer [strim nsb hgl?]]
+            [czlabclj.xlib.util.wfs :refer [SimPTask]]
+            [czlabclj.xlib.i18n.resources :refer [RStr]])
+
   (:require [clojure.tools.logging :as log])
 
-  (:use [czlabclj.xlib.util.core :only [MakeMMap notnil?]]
-        [czlabclj.xlib.util.files :only [ReadOneFile]]
-        [czlabclj.xlib.util.format]
-        [czlabclj.xlib.util.str :only [strim nsb hgl?]]
-        [czlabclj.xlib.util.wfs :only [SimPTask]]
-        [czlabclj.xlib.i18n.resources :only [RStr]]
+  (:use [czlabclj.xlib.util.format]
         [czlabclj.odin.event.core]
         [czlabclj.odin.game.room]
         [czlabclj.odin.game.player])
@@ -151,6 +152,5 @@
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(def ^:private msgreq-eof nil)
+;;EOF
 

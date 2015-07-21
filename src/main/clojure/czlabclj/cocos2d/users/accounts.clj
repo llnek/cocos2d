@@ -7,23 +7,24 @@
 ;; By using this software in any  fashion, you are agreeing to be bound by the
 ;; terms of this license. You  must not remove this notice, or any other, from
 ;; this software.
-;; Copyright (c) 2013, Ken Leung. All rights reserved.
+;; Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 (ns  ^{:doc ""
        :author "kenl" }
 
   czlabclj.cocos2d.users.accounts
 
+  (:require [czlabclj.xlib.util.core :refer [test-nonil ]]
+            [czlabclj.xlib.util.str :refer [nsb strim  hgl?]]
+            [czlabclj.xlib.util.wfs :refer [SimPTask]]
+            [czlabclj.tardis.auth.plugin :refer [MaybeSignupTest
+                                                MaybeLoginTest]]
+            [czlabclj.xlib.util.format :refer [WriteJson]]
+            [czlabclj.xlib.i18n.resources :refer [RStr]])
+
   (:require [clojure.tools.logging :as log])
 
-  (:use [czlabclj.xlib.util.core :only [test-nonil ]]
-        [czlabclj.xlib.util.str :only [nsb strim  hgl?]]
-        [czlabclj.xlib.util.wfs :only [SimPTask]]
-        [czlabclj.tardis.auth.plugin :only [MaybeSignupTest
-                                            MaybeLoginTest]]
-        [czlabclj.tardis.io.basicauth]
-        [czlabclj.xlib.util.format :only [WriteJson]]
-        [czlabclj.xlib.i18n.resources :only [RStr]]
+  (:use [czlabclj.tardis.io.basicauth]
         [czlabclj.tardis.core.consts]
         [czlabclj.cocos2d.site.core ])
 
@@ -41,7 +42,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -65,7 +65,6 @@
             (doto res
               (.setStatus 409)
               (.setContent (XData. (WriteJson json)))))
-
           :else
           (.setStatus res 400))
         (.replyResult evt)))
@@ -101,7 +100,6 @@
     (If. (MaybeSignupTest "32") (doSignupOK) (doSignupFail))))
 
 (ns-unmap *ns* '->SignupHandler)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- doLoginFail ""
@@ -162,7 +160,6 @@
     (If. (MaybeLoginTest) (doLoginOK) (doLoginFail))))
 
 (ns-unmap *ns* '->LoginHandler)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- doLookupEmail ""
@@ -226,7 +223,6 @@
         (.chain (doLookupEmail)))))
 
 (ns-unmap *ns* '->ForgotHandler)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- doLogout ""
@@ -268,9 +264,9 @@
     (log/debug "logout pipe-line - called.")
     (doLogout)))
 
-(ns-unmap *ns* '->LogoutHandler)
 
+
+(ns-unmap *ns* '->LogoutHandler)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(def ^:private accounts-eof nil)
+;;EOF
 

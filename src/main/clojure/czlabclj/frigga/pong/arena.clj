@@ -7,20 +7,21 @@
 ;; By using this software in any  fashion, you are agreeing to be bound by the
 ;; terms of this license. You  must not remove this notice, or any other, from
 ;; this software.
-;; Copyright (c) 2013-2014, Ken Leung. All rights reserved.
+;; Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 (ns ^{:doc ""
       :author "kenl"}
 
   czlabclj.frigga.pong.arena
 
+  (:require [czlabclj.xlib.util.core
+             :refer [MakeMMap notnil? RandomSign TryC]]
+            [czlabclj.xlib.util.process :refer [Coroutine]]
+            [czlabclj.xlib.util.str :refer [strim nsb hgl?]])
+
   (:require [clojure.tools.logging :as log])
 
-  (:use [czlabclj.xlib.util.core
-         :only [MakeMMap notnil? RandomSign TryC]]
-        [czlabclj.xlib.util.process :only [Coroutine]]
-        [czlabclj.xlib.util.format]
-        [czlabclj.xlib.util.str :only [strim nsb hgl?]]
+  (:use [czlabclj.xlib.util.format]
         [czlabclj.cocos2d.games.meta]
         [czlabclj.frigga.core.util]
         [czlabclj.odin.event.core])
@@ -577,6 +578,5 @@
     )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(def ^:private arena-eof nil)
+;;EOF
 

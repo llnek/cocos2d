@@ -7,7 +7,7 @@
 ;; By using this software in any  fashion, you are agreeing to be bound by the
 ;; terms of this license. You  must not remove this notice, or any other, from
 ;; this software.
-;; Copyright (c) 2013, Ken Leung. All rights reserved.
+;; Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 (ns ^{:doc ""
       :author "kenl" }
@@ -16,13 +16,14 @@
 
   (:gen-class)
 
+  (:require [czlabclj.xlib.util.core :refer [test-cond]]
+            [czlabclj.xlib.util.str :refer [MakeString]]
+            [czlabclj.xlib.util.files :refer [DirRead?]])
+
   (:require [clojure.tools.logging :as log]
             [clojure.java.io :as io])
 
-  (:use [czlabclj.xlib.util.core :only [test-cond]]
-        [czlabclj.xlib.util.str :only [MakeString]]
-        [czlabclj.xlib.util.files :only [DirRead?]]
-        [czlabclj.cocos2d.games.meta])
+  (:use [czlabclj.cocos2d.games.meta])
 
   (:import  [java.util List Locale]
             [java.io File]))
@@ -47,6 +48,5 @@
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(def ^:private core-eof nil)
+;;EOF
 
