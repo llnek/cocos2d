@@ -10,29 +10,25 @@
 // Copyright (c) 2013-2015, Ken Leung. All rights reserved.
 
 "use strict";/**
- * @requires cherimoia/skaro
  * @requires s/factory
- * @requires s/utils
  * @requires s/supervisor
  * @requires s/motions
- * @requires s/resolution
+ * @requires s/resolve
  * @module s/sysobjs
  */
 
 import fact from 's/factory';
-import u from 's/utils';
 import v from 's/supervisor';
 import m from 's/motions';
-import res from 's/resolution';
+import res from 's/resolve';
 
 /** @alias module:s/sysobjs */
 const xbox = /** @lends xbox# */{
 
   Factory       : fact.EntityFactory,
-  SystemUtils   : u.SystemUtils,
-  Supervisor    : v.GameSupervisor,
+  Supervisor    : v.Supervisor,
   Motions       : m.Motions,
-  Resolution    : res.Resolution
+  Resolve    : res.Resolve
 
 };
 

@@ -12,15 +12,15 @@
 "use strict";/**
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
- * @requires nodes/cobjs
- * @requires nodes/gnodes
- * @module s/resolution
+ * @requires n/cobjs
+ * @requires n/gnodes
+ * @module s/resolve
  */
 
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
-import cobjs from 'nodes/cobjs';
-import gnodes from 'nodes/gnodes';
+import cobjs from 'n/cobjs';
+import gnodes from 'n/gnodes';
 
 let sjs= sh.skarojs,
 xcfg = sh.xcfg,
@@ -29,12 +29,12 @@ R = sjs.ramda,
 undef,
 
 /**
- * @class Resolution
+ * @class Resolve
  */
-Resolution = sh.Ashley.sysDef({
+Resolve = sh.Ashley.sysDef({
 
   /**
-   * @memberof module:s/resolution~Resolution
+   * @memberof module:s/resolution~Resolve
    * @method constructor
    * @param {Object} options
    */
@@ -44,7 +44,7 @@ Resolution = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/resolution~Resolution
+   * @memberof module:s/resolution~Resolve
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -52,7 +52,7 @@ Resolution = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/resolution~Resolution
+   * @memberof module:s/resolution~Resolve
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -61,7 +61,7 @@ Resolution = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/resolution~Resolution
+   * @memberof module:s/resolution~Resolve
    * @method update
    * @param {Number} dt
    */
@@ -73,9 +73,9 @@ Resolution = sh.Ashley.sysDef({
 /** @alias module:s/resolution */
 const xbox = /** @lends xbox# */{
   /**
-   * @property {Resolution} Resolution
+   * @property {Resolve} Resolve
    */
-  Resolution : Resolution
+  Resolve : Resolve
 };
 
 sjs.merge(exports, xbox);

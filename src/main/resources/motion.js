@@ -18,7 +18,7 @@
 
 import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
-import gnodes from 'nodes/gnodes';
+import gnodes from 'n/gnodes';
 
 let sjs= sh.skarojs,
 xcfg = sh.xcfg,

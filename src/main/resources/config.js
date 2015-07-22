@@ -18,10 +18,9 @@
 import sh from 'zotohlab/asx/asterix';
 import xcfg from 'zotohlab/asx/cfg';
 
-let sjs= sh.skarojs;
-
+const sjs= sh.skarojs,
 /** @alias module:p/config */
-const xbox = sjs.merge( xcfg, {
+xbox = sjs.merge( xcfg, {
 
   appKey: '@@UUID@@',
 

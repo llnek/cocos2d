@@ -12,7 +12,7 @@
 "use strict";/**
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
- * @module nodes/cobjs
+ * @module n/cobjs
  */
 
 import sh from 'zotohlab/asx/asterix';
@@ -24,7 +24,7 @@ csts= xcfg.csts,
 undef;
 
 //////////////////////////////////////////////////////////////////////////
-/** @alias module:nodes/cobjs */
+/** @alias module:n/cobjs */
 const xbox = /** @lends xbox# */{
 
 };

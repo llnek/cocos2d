@@ -13,8 +13,7 @@
  * @requires zotohlab/asx/asterix
  * @requires zotohlab/asx/ccsx
  * @requires zotohlab/asx/pool
- * @requires nodes/cobjs
- * @requires s/utils
+ * @requires n/cobjs
  * @module s/supervisor
  */
 
@@ -22,7 +21,6 @@ import sh from 'zotohlab/asx/asterix';
 import ccsx from 'zotohlab/asx/ccsx';
 import xpool from 'zotohlab/asx/pool';
 import cobjs from 'nodes/cobjs';
-import utils from 's/utils';
 
 let sjs= sh.skarojs,
 xcfg = sh.xcfg,
@@ -30,12 +28,12 @@ csts= xcfg.csts,
 undef,
 
 /**
- * @class GameSupervisor
+ * @class Supervisor
  */
-GameSupervisor = sh.Ashley.sysDef({
+Supervisor = sh.Ashley.sysDef({
 
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/supervisor~Supervisor
    * @method constructor
    * @param {Object} options
    */
@@ -45,7 +43,7 @@ GameSupervisor = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/supervisor~Supervisor
    * @method removeFromEngine
    * @param {Ash.Engine} engine
    */
@@ -53,7 +51,7 @@ GameSupervisor = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/supervisor~Supervisor
    * @method addToEngine
    * @param {Ash.Engine} engine
    */
@@ -61,7 +59,7 @@ GameSupervisor = sh.Ashley.sysDef({
   },
 
   /**
-   * @memberof module:s/supervisor~GameSupervisor
+   * @memberof module:s/supervisor~Supervisor
    * @method update
    * @param {Number} dt
    */
@@ -84,9 +82,9 @@ GameSupervisor = sh.Ashley.sysDef({
 /** @alias module:s/supervisor */
 const xbox = /** @lends xbox# */{
   /**
-   * @property {GameSupervisor} GameSupervisor
+   * @property {Supervisor} Supervisor
    */
-  GameSupervisor : GameSupervisor
+  Supervisor : Supervisor
 };
 
 sjs.merge(exports, xbox);
