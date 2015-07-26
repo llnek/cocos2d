@@ -15,6 +15,7 @@
   czlabclj.odin.system.util
 
   (:require [czlabclj.xlib.util.str :refer [strim nsb hgl?]]
+            [czlabclj.xlib.netty.filters :refer [DbgPipelineHandlers]]
             [czlabclj.xlib.util.core
              :refer
              [MakeMMap notnil? juid]])
@@ -32,7 +33,9 @@
                               ChannelHandlerContext]
             [com.zotohlab.frwk.server Emitter]
             [com.zotohlab.skaro.core Container]
-            [com.zotohlab.frwk.netty NettyFW SimpleInboundFilter]
+            [com.zotohlab.frwk.netty
+             ErrorSinkFilter
+             SimpleInboundFilter]
             [com.zotohlab.odin.event EventError Msgs Events]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -91,9 +94,9 @@
     (.remove pipe "WS403Responder")
     (.remove pipe "WSOCKDispatcher")
     (.addBefore pipe
-                "ErrorSinkFilter"
+                (ErrorSinkFilter/getName)
                 "OdinProtocolHandler" (protocolHandler ps))
-    (NettyFW/dbgPipelineHandlers pipe)
+    (DbgPipelineHandlers pipe)
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

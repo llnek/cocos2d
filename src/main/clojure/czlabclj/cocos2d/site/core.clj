@@ -15,6 +15,7 @@
   czlabclj.cocos2d.site.core
 
   (:require [czlabclj.xlib.util.dates :refer [ParseDate]]
+            [czlabclj.xlib.util.files :refer [ListFiles]]
             [czlabclj.xlib.util.str :refer [nsb hgl? strim]]
             [czlabclj.tardis.impl.ext :refer [GetAppKeyFromEvent]])
 
@@ -33,7 +34,7 @@
             [com.zotohlab.wflow Activity
              WorkFlow Job PTask]
             [com.zotohlab.skaro.io HTTPEvent HTTPResult]
-            [com.zotohlab.frwk.io IO XData]
+            [com.zotohlab.frwk.io XData]
             [java.io File]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -51,7 +52,7 @@
   [^File appDir]
 
   (with-local-vars [rc (transient [])]
-    (let [fds (IO/listFiles (io/file appDir "public/ig/res/main/doors")
+    (let [fds (ListFiles (io/file appDir "public/ig/res/main/doors")
                             "png" false) ]
       (doseq [^File fd fds]
         (var-set rc (conj! @rc (.getName fd)))))

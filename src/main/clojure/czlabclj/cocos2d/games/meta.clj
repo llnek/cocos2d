@@ -19,7 +19,7 @@
                      ReadEdn WriteJson]]
             [czlabclj.xlib.util.str :refer [nsb hgl? strim] ]
             [czlabclj.xlib.util.dates :refer [ParseDate] ]
-            [czlabclj.xlib.util.files :refer [ReadOneFile] ])
+            [czlabclj.xlib.util.files :refer [ReadOneFile ListDirs] ])
 
   (:require [clojure.tools.logging :as log]
             [clojure.java.io :as io])
@@ -27,7 +27,6 @@
   (:use [czlabclj.tardis.core.consts])
 
   (:import  [org.apache.commons.io FileUtils]
-            [com.zotohlab.frwk.io IO]
             [java.io File]
             [java.util Date]))
 
@@ -54,7 +53,7 @@
                     tmp nil
                     gc (transient [])
                     rc (transient []) ]
-    (let [fds (IO/listDirs (io/file appDir "public/ig/info")) ]
+    (let [fds (ListDirs (io/file appDir "public/ig/info")) ]
       (doseq [^File fd (seq fds) ]
         (let [info (merge (assoc (ReadEdn (io/file fd "game.mf"))
                                  :gamedir (.getName fd))
@@ -129,5 +128,6 @@
   @GAMES-UUID)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;EOF
+;;
+(def ^:private meta-eof nil)
 
