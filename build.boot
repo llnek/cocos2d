@@ -24,7 +24,9 @@
   :dependencies '[[org.flatland/useful "0.11.3"
                    :exclusions [org.clojure/clojure]]] )
 
-(require '[czlabclj.tpcl.boot :as b :refer :all]
+(require '[czlabclj.tpcl.boot :as b
+           :refer :all
+           :exclude [clean4build dev]]
          '[clojure.data.json :as js]
          '[clojure.java.io :as io]
          '[clojure.string :as cs]
@@ -413,6 +415,27 @@
 ;; task definitions ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(deftask clean4build "clean,pre-build"
+
+  []
+
+  (bc/with-pre-wrap fileset
+    (Clean4Build)
+    (PreBuild)
+    fileset))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(deftask dev "clean,resolve,build"
+
+  []
+
+  (comp (clean4build)
+        (libjars)
+        (buildr)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
