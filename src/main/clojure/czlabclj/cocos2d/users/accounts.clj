@@ -37,7 +37,7 @@
             [java.net HttpCookie]
             [com.zotohlab.frwk.server Emitter]
             [com.zotohlab.frwk.core Identifiable]
-            [com.zotohlab.frwk.util CrappyDataError]
+            [com.zotohlab.frwk.util BadDataError]
             [com.zotohlab.frwk.io XData]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -177,7 +177,7 @@
             ^czlabclj.tardis.auth.plugin.AuthPlugin
             pa (:auth (.getAttr ctr K_PLUGINS))
             si (try (MaybeGetAuthInfo evt)
-                    (catch CrappyDataError e#  { :e e# }))
+                    (catch BadDataError e#  { :e e# }))
             info (or si {} )
             email (nsb (:email info)) ]
         (test-nonil "AuthPlugin" pa)
