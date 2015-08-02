@@ -1,4 +1,4 @@
-package czlabclj.cocos2d;
+package czlab.cocos2d;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import junit.framework.JUnit4TestAdapter;

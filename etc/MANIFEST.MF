@@ -1,4 +1,4 @@
 Implementation-Vendor-Id: 106d4ec1-99a0-4216-b278-7fbd69cfb083
 Implementation-Version: 0.0.1-SNAPSHOT
-Main-Class: czlabclj.cocos2d.site.core.MyAppMain
+Main-Class: czlab.cocos2d.site.core.MyAppMain
 

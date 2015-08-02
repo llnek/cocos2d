@@ -1,6 +1,6 @@
 (ns
 
-  czlabclj.cocos2d.test
+  czlab.cocos2d.test
 
   (:use [clojure.test]))
 
@@ -12,5 +12,5 @@
 
 )
 
-;;(clojure.test/run-tests 'czlabclj.cocos2d.tcase1)
+;;(clojure.test/run-tests 'czlab.cocos2d.tcase1)
 

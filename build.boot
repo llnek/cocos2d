@@ -15,7 +15,7 @@
   :buildDebug true
   :buildType "web"
 
-  :DOMAIN "czlabclj.cocos2d"
+  :DOMAIN "czlab.cocos2d"
   :PID "cocos2d"
 
   :source-paths #{"src/main/clojure"
@@ -24,14 +24,14 @@
   :dependencies '[[org.flatland/useful "0.11.3"
                    :exclusions [org.clojure/clojure]]] )
 
-(require '[czlabclj.tpcl.boot :as b
+(require '[czlab.tpcl.boot :as b
            :refer :all
            :exclude [clean4build dev]]
          '[clojure.data.json :as js]
          '[clojure.java.io :as io]
          '[clojure.string :as cs]
          '[boot.core :as bc]
-         '[czlabclj.tpcl.antlib :as a])
+         '[czlab.tpcl.antlib :as a])
 
 (import '[java.io File])
 

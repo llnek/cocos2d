@@ -1,4 +1,4 @@
-package czlabclj.cocos2d;
+package czlab.cocos2d;
 
 import mikera.cljunit.ClojureTest;
 import java.util.Arrays;
@@ -8,7 +8,7 @@ public class ClojureJUnit extends ClojureTest {
     @Override
     public List<String> namespaces() {
         return Arrays.asList(new String[]{
-                "czlabclj.cocos2d.test"
+                "czlab.cocos2d.test"
         });
     }
 }
