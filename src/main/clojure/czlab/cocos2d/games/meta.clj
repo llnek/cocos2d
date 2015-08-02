@@ -24,7 +24,7 @@
   (:require [clojure.tools.logging :as log]
             [clojure.java.io :as io])
 
-  (:use [czlab.tardis.core.consts])
+  (:use [czlab.skaro.core.consts])
 
   (:import  [org.apache.commons.io FileUtils]
             [java.io File]

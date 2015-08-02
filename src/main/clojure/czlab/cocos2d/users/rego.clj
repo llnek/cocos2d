@@ -16,11 +16,11 @@
 
   (:require [czlab.xlib.util.dates :refer [ParseDate] ]
             [czlab.xlib.util.str :refer [nsb hgl? strim] ]
-            [czlab.tardis.impl.ext :refer [GetAppKeyFromEvent] ])
+            [czlab.skaro.impl.ext :refer [GetAppKeyFromEvent] ])
 
   (:require [clojure.tools.logging :as log])
 
-  (:use [czlab.tardis.core.consts]
+  (:use [czlab.skaro.core.consts]
         [czlab.xlib.util.consts]
         [czlab.xlib.util.wfs]
         [czlab.cocos2d.site.core ])
@@ -43,7 +43,7 @@
 
   [^HTTPEvent evt ^String csrf]
 
-  (let [^czlab.tardis.io.webss.WebSS
+  (let [^czlab.skaro.io.webss.WebSS
         mvs (.getSession evt)]
     (-> (GetDftModel evt)
         (update-in [:body]
@@ -57,7 +57,7 @@
 
   [^HTTPEvent evt ^String csrf]
 
-  (let [^czlab.tardis.io.webss.WebSS
+  (let [^czlab.skaro.io.webss.WebSS
         mvs (.getSession evt)]
     (-> (GetDftModel evt)
         (update-in [:body]
@@ -71,7 +71,7 @@
 
   [^HTTPEvent evt ^String csrf]
 
-  (let [^czlab.tardis.io.webss.WebSS
+  (let [^czlab.skaro.io.webss.WebSS
         mvs (.getSession evt)]
     (-> (GetDftModel evt)
         (update-in [:body]
@@ -90,13 +90,13 @@
     (fn [^Job j]
       (let [tpl (nsb (:template (.getv j EV_OPTS)))
             ^HTTPEvent evt (.event j)
-            ^czlab.tardis.core.sys.Elmt
+            ^czlab.skaro.core.sys.Elmt
             src (.emitter evt)
             cfg (.getAttr src :emcfg)
             ^Container co (.container ^Emitter src)
-            ^czlab.tardis.io.webss.WebSS
+            ^czlab.skaro.io.webss.WebSS
             mvs (.getSession evt)
-            csrf (-> ^czlab.tardis.impl.ext.ContainerAPI
+            csrf (-> ^czlab.skaro.impl.ext.ContainerAPI
                      co (.generateCsrf))
             est (:sessionAgeSecs cfg)
             [rdata ct] (.loadTemplate co tpl

@@ -17,15 +17,15 @@
   (:require [czlab.xlib.util.core :refer [test-nonil ]]
             [czlab.xlib.util.str :refer [nsb strim  hgl?]]
             [czlab.xlib.util.wfs :refer [SimPTask]]
-            [czlab.tardis.auth.plugin :refer [MaybeSignupTest
+            [czlab.skaro.auth.plugin :refer [MaybeSignupTest
                                                 MaybeLoginTest]]
             [czlab.xlib.util.format :refer [WriteJson]]
             [czlab.xlib.i18n.resources :refer [RStr]])
 
   (:require [clojure.tools.logging :as log])
 
-  (:use [czlab.tardis.io.basicauth]
-        [czlab.tardis.core.consts]
+  (:use [czlab.skaro.io.basicauth]
+        [czlab.skaro.core.consts]
         [czlab.cocos2d.site.core ])
 
   (:import  [com.zotohlab.skaro.runtime DuplicateUser]
@@ -125,9 +125,9 @@
   (SimPTask
     (fn [^Job j]
       (let [^HTTPEvent evt (.event j)
-            ^czlab.tardis.io.webss.WebSS
+            ^czlab.skaro.io.webss.WebSS
             mvs (.getSession evt)
-            ^czlab.tardis.core.sys.Elmt
+            ^czlab.skaro.core.sys.Elmt
             src (.emitter evt)
             cfg (.getAttr src :emcfg)
             acct (:account (.getLastResult j))
@@ -170,11 +170,11 @@
   (SimPTask
     (fn [^Job j]
       (let [^HTTPEvent evt (.event j)
-            ^czlab.tardis.core.sys.Elmt
+            ^czlab.skaro.core.sys.Elmt
             ctr
             (-> ^Emitter
                 (.emitter evt) (.container))
-            ^czlab.tardis.auth.plugin.AuthPlugin
+            ^czlab.skaro.auth.plugin.AuthPlugin
             pa (:auth (.getAttr ctr K_PLUGINS))
             si (try (MaybeGetAuthInfo evt)
                     (catch BadDataError e#  { :e e# }))
@@ -233,9 +233,9 @@
   (SimPTask
     (fn [^Job j]
       (let [^HTTPEvent evt (.event j)
-            ^czlab.tardis.io.webss.WebSS
+            ^czlab.skaro.io.webss.WebSS
             mvs (.getSession evt)
-            ^czlab.tardis.core.sys.Elmt
+            ^czlab.skaro.core.sys.Elmt
             src (.emitter evt)
             cfg (.getAttr src :emcfg)
             json { :status { :code 200 } }

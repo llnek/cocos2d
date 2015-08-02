@@ -17,12 +17,12 @@
   (:require [czlab.xlib.util.dates :refer [ParseDate]]
             [czlab.xlib.util.files :refer [ListFiles]]
             [czlab.xlib.util.str :refer [nsb hgl? strim]]
-            [czlab.tardis.impl.ext :refer [GetAppKeyFromEvent]])
+            [czlab.skaro.impl.ext :refer [GetAppKeyFromEvent]])
 
   (:require [clojure.tools.logging :as log]
             [clojure.java.io :as io])
 
-  (:use [czlab.tardis.core.consts]
+  (:use [czlab.skaro.core.consts]
         [czlab.xlib.util.wfs]
         [czlab.cocos2d.games.meta]
         [czlab.xlib.util.consts]
@@ -62,7 +62,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype MyAppMain [] czlab.tardis.core.sys.CljAppMain
+(deftype MyAppMain [] czlab.skaro.core.sys.CljAppMain
 
   (contextualize [_ ctr]
     (require 'czlab.cocos2d.games.meta)

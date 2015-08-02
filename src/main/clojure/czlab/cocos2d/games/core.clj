@@ -19,7 +19,7 @@
 
   (:require [clojure.tools.logging :as log])
 
-  (:use [czlab.tardis.core.consts]
+  (:use [czlab.skaro.core.consts]
         [czlab.xlib.util.consts]
         [czlab.cocos2d.games.meta]
         [czlab.cocos2d.site.core ])
