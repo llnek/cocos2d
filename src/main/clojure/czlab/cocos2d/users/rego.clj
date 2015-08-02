@@ -90,9 +90,9 @@
     (fn [^Job j]
       (let [tpl (nsb (:template (.getv j EV_OPTS)))
             ^HTTPEvent evt (.event j)
-            ^czlab.skaro.core.sys.Elmt
+            ^czlab.xlib.util.core.Muble
             src (.emitter evt)
-            cfg (.getAttr src :emcfg)
+            cfg (.getf src :emcfg)
             ^Container co (.container ^Emitter src)
             ^czlab.skaro.io.webss.WebSS
             mvs (.getSession evt)

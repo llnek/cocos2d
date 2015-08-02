@@ -127,9 +127,9 @@
       (let [^HTTPEvent evt (.event j)
             ^czlab.skaro.io.webss.WebSS
             mvs (.getSession evt)
-            ^czlab.skaro.core.sys.Elmt
+            ^czlab.xlib.util.core.Muble
             src (.emitter evt)
-            cfg (.getAttr src :emcfg)
+            cfg (.getf src :emcfg)
             acct (:account (.getLastResult j))
             json { :status { :code 200 } }
             est (:sessionAgeSecs cfg)
@@ -170,12 +170,12 @@
   (SimPTask
     (fn [^Job j]
       (let [^HTTPEvent evt (.event j)
-            ^czlab.skaro.core.sys.Elmt
+            ^czlab.xlib.util.core.Muble
             ctr
             (-> ^Emitter
                 (.emitter evt) (.container))
             ^czlab.skaro.auth.plugin.AuthPlugin
-            pa (:auth (.getAttr ctr K_PLUGINS))
+            pa (:auth (.getf ctr K_PLUGINS))
             si (try (MaybeGetAuthInfo evt)
                     (catch BadDataError e#  { :e e# }))
             info (or si {} )
@@ -235,9 +235,9 @@
       (let [^HTTPEvent evt (.event j)
             ^czlab.skaro.io.webss.WebSS
             mvs (.getSession evt)
-            ^czlab.skaro.core.sys.Elmt
+            ^czlab.xlib.util.core.Muble
             src (.emitter evt)
-            cfg (.getAttr src :emcfg)
+            cfg (.getf src :emcfg)
             json { :status { :code 200 } }
             ck (HttpCookie. (name *USER-FLAG*) "")
             ^HTTPResult res (.getResultObj evt) ]
