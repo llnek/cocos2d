@@ -29,6 +29,7 @@
         [czlab.odin.system.core])
 
   (:import  [com.zotohlab.skaro.core Container ConfigError]
+            [com.zotohlab.skaro.runtime AppMain]
             [org.apache.commons.io FileUtils]
             [com.zotohlab.frwk.server Emitter]
             [com.zotohlab.wflow Activity
@@ -62,7 +63,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype MyAppMain [] czlab.skaro.core.sys.CljAppMain
+(deftype MyAppMain [] AppMain
 
   (contextualize [_ ctr]
     (require 'czlab.cocos2d.games.meta)
