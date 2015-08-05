@@ -19,7 +19,7 @@ public interface Board {
 
   public boolean isOver(Object game);
   public int evalScore(Object game);
-  public Iterable getNextMoves(Object game);
+  public Iterable<?>  getNextMoves(Object game);
 
   public void unmakeMove(Object game, Object move);
   public void makeMove(Object game, Object move);

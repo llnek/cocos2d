@@ -27,6 +27,7 @@
 
   (:import  [com.zotohlab.odin.game Game PlayRoom GameEngine
                                     Player PlayerSession]
+            [com.zotohlab.skaro.core Muble]
             [com.zotohlab.odin.event Msgs Events]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -63,8 +64,9 @@
                      (persistent! @colsp)))
   ))
 
-;;(doseq [v (mapGoalSpace 3)]
-;;(println (seq v)))
+(comment
+  (doseq [v (mapGoalSpace 3)]
+  (println (seq v))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -118,7 +120,7 @@
     (reify BoardAPI
 
       (getCur [_] (aget #^"[Ljava.lang.Object;" actors 0))
-      (isActive [_] (.getf impl :gameon))
+      (isActive [_] (.getv impl :gameon))
 
       (engine [_] theEngine)
 
@@ -127,7 +129,7 @@
           (aset #^"[Ljava.lang.Object;" actors 0 which)
           (aset #^"[Ljava.lang.Object;" actors 2 p2)
           (aset #^"[Ljava.lang.Object;" actors 1 p1)
-          (.setf! impl :gameon true)))
+          (.setv impl :gameon true)))
 
       (getPlayer2 [_] (aget #^"[Ljava.lang.Object;" actors 2))
       (getPlayer1 [_] (aget #^"[Ljava.lang.Object;" actors 1))
@@ -215,7 +217,7 @@
       (finz [this] (.onStopReset this))
 
       (onStopReset [this]
-        (.setf! impl :gameon false))
+        (.setv impl :gameon false))
 
       (isStalemate [_]
         (not (some #(== CV_Z %) (seq grid))))
@@ -247,4 +249,3 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF
-

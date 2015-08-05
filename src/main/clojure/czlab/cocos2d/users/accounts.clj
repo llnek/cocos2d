@@ -32,6 +32,7 @@
             [com.zotohlab.wflow If Activity
              WorkFlow Job BoolExpr PTask Work]
             [com.zotohlab.skaro.io HTTPEvent HTTPResult]
+            [com.zotohlab.skaro.core Muble]
             [org.apache.commons.codec.net URLCodec]
             [com.zotohlab.frwk.i18n I18N]
             [java.net HttpCookie]
@@ -127,9 +128,9 @@
       (let [^HTTPEvent evt (.event j)
             ^czlab.skaro.io.webss.WebSS
             mvs (.getSession evt)
-            ^czlab.xlib.util.core.Muble
+            ^Muble
             src (.emitter evt)
-            cfg (.getf src :emcfg)
+            cfg (.getv src :emcfg)
             acct (:account (.getLastResult j))
             json { :status { :code 200 } }
             est (:sessionAgeSecs cfg)
@@ -170,16 +171,16 @@
   (SimPTask
     (fn [^Job j]
       (let [^HTTPEvent evt (.event j)
-            ^czlab.xlib.util.core.Muble
+            ^Muble
             ctr
             (-> ^Emitter
                 (.emitter evt) (.container))
             ^czlab.skaro.auth.plugin.AuthPlugin
-            pa (:auth (.getf ctr K_PLUGINS))
+            pa (:auth (.getv ctr K_PLUGINS))
             si (try (MaybeGetAuthInfo evt)
                     (catch BadDataError e#  { :e e# }))
             info (or si {} )
-            email (nsb (:email info)) ]
+            email (str (:email info)) ]
         (test-nonil "AuthPlugin" pa)
         (cond
           (and (= "18" (:captcha info))
@@ -235,9 +236,9 @@
       (let [^HTTPEvent evt (.event j)
             ^czlab.skaro.io.webss.WebSS
             mvs (.getSession evt)
-            ^czlab.xlib.util.core.Muble
+            ^Muble
             src (.emitter evt)
-            cfg (.getf src :emcfg)
+            cfg (.getv src :emcfg)
             json { :status { :code 200 } }
             ck (HttpCookie. (name *USER-FLAG*) "")
             ^HTTPResult res (.getResultObj evt) ]

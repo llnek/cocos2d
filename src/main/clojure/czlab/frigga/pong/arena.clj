@@ -28,6 +28,7 @@
 
   (:import  [com.zotohlab.odin.game GameEngine Game
              PlayRoom Player PlayerSession]
+           [com.zotohlab.skaro.core Muble]
             [com.zotohlab.odin.event Msgs Events]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -109,11 +110,11 @@
 ;;
 (defn- rect "Make a rect with all 4 corners."
 
-  ([^czlab.xlib.util.core.Muble obj]
-   (rect (.getf obj :x)
-         (.getf obj :y)
-         (.getf obj :width)
-         (.getf obj :height)))
+  ([^Muble obj]
+   (rect (.getv obj :x)
+         (.getv obj :y)
+         (.getv obj :width)
+         (.getv obj :height)))
 
   ([x y w h]
    (let [h2 (halve h)
@@ -127,39 +128,39 @@
 ;;
 (defn- clamp "Ensure paddle does not go out of bound."
 
-  [^czlab.xlib.util.core.Muble
+  [^Muble
    paddle bbox port?]
 
   (let [fx (fn [op kw o1 o2] (op (kw o1) (kw o2)))
-        h2 (halve (.getf paddle :height))
-        w2 (halve (.getf paddle :width))
+        h2 (halve (.getv paddle :height))
+        w2 (halve (.getv paddle :width))
         rc (rect paddle)]
     (if port?
       (do
         (when (fx < :left rc bbox)
-          (.setf! paddle :x (+ (:left bbox) w2)))
+          (.setv paddle :x (+ (:left bbox) w2)))
         (when (fx > :right rc bbox)
-          (.setf! paddle :x (- (:right bbox) w2))))
+          (.setv paddle :x (- (:right bbox) w2))))
       (do
         (when (fx < :bottom rc bbox)
-          (.setf! paddle :y (+ (:bottom bbox) h2)))
+          (.setv paddle :y (+ (:bottom bbox) h2)))
         (when (fx > :top rc bbox)
-          (.setf! paddle :y (- (:top bbox) h2)))))
+          (.setv paddle :y (- (:top bbox) h2)))))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; The *enclosure* is the bounding box => the world.
 (defn- traceEnclosure "Check if the ball has just hit a wall."
 
-  [^czlab.xlib.util.core.Muble ball
+  [^Muble ball
    dt
    bbox port?]
 
-  (with-local-vars [y (+ (.getf ball :y) (* dt (.getf ball :vy)))
-                    x (+ (.getf ball :x) (* dt (.getf ball :vx)))
+  (with-local-vars [y (+ (.getv ball :y) (* dt (.getv ball :vy)))
+                    x (+ (.getv ball :x) (* dt (.getv ball :vx)))
                     hit false]
-    (let [sz (halve (.getf ball :height))
-          sw (halve (.getf ball :width))]
+    (let [sz (halve (.getv ball :height))
+          sw (halve (.getv ball :width))]
       (if port?
         (do
           ;;check left and right walls
@@ -171,7 +172,7 @@
                   (do (var-set x (+ (:left bbox) sw))
                       true)
                   :else false)
-            (.setf! ball :vx (- (.getf ball :vx)))
+            (.setv ball :vx (- (.getv ball :vx)))
             (var-set hit true)))
         (do
           ;;check top and bottom walls
@@ -184,10 +185,10 @@
                   (do (var-set y (- (:top bbox) sz))
                       true)
                   :else false)
-            (.setf! ball :vy (- (.getf ball :vy)))
+            (.setv ball :vy (- (.getv ball :vy)))
             (var-set hit true))))
-      (.setf! ball :x @x)
-      (.setf! ball :y @y))
+      (.setv ball :x @x)
+      (.setv ball :y @y))
     @hit
   ))
 
@@ -195,35 +196,35 @@
 ;;
 (defn- collide? "Check if the ball has collided with a paddle."
 
-  [^czlab.xlib.util.core.Muble p1
-   ^czlab.xlib.util.core.Muble p2
-   ^czlab.xlib.util.core.Muble ball
+  [^Muble p1
+   ^Muble p2
+   ^Muble ball
    bbox port?]
 
   (with-local-vars [winner 0]
-    (let [hh (halve (.getf ball :height))
-          hw (halve (.getf ball :width))
+    (let [hh (halve (.getv ball :height))
+          hw (halve (.getv ball :width))
           br (rect ball)]
       (let [r (rect p2)]
         (if (rectXrect br r)
           (if port?
             (do
-              (.setf! ball :vy (- (.getf ball :vy)))
-              (.setf! ball :y (- (:bottom r) hh)))
+              (.setv ball :vy (- (.getv ball :vy)))
+              (.setv ball :y (- (:bottom r) hh)))
             (do
-              (.setf! ball :vx (- (.getf ball :vx)))
-              (.setf! ball :x (- (:left r) hw))))
+              (.setv ball :vx (- (.getv ball :vx)))
+              (.setv ball :x (- (:left r) hw))))
           (when (> (:bottom br)(:top r))
             (var-set winner 1))))
       (let [r (rect p1)]
         (if (rectXrect br r)
           (if port?
             (do
-              (.setf! ball :vy (- (.getf ball :vy)))
-              (.setf! ball :y (+ (:top r) hh)))
+              (.setv ball :vy (- (.getv ball :vy)))
+              (.setv ball :y (+ (:top r) hh)))
             (do
-              (.setf! ball :vx (- (.getf ball :vx)))
-              (.setf! ball :x (+ (:right r) hw))))
+              (.setv ball :vx (- (.getv ball :vx)))
+              (.setv ball :x (+ (:right r) hw))))
           (when (< (:top br)(:bottom r))
             (var-set winner 2)))))
     @winner
@@ -236,17 +237,16 @@
 
   [^czlab.frigga.pong.arena.ArenaAPI arena winner]
 
-  (let [^czlab.xlib.util.core.Muble impl
-        (.innards arena)
-        s2 (.getf impl :score2)
-        s1 (.getf impl :score1)
+  (let [^Muble impl (.innards arena)
+        s2 (.getv impl :score2)
+        s1 (.getv impl :score1)
         src {:scores {:p2 s2 :p1 s1 }}]
     (BCastAll (-> ^GameEngine
                   (.engine arena)
                   (.container)) Events/SYNC_ARENA src)
     ;; toggle flag to skip game loop logic until new
     ;; point starts
-    (.setf! impl :resetting-point true)
+    (.setv impl :resetting-point true)
     (.resetPoint arena)
   ))
 
@@ -257,12 +257,11 @@
   [^czlab.frigga.pong.arena.ArenaAPI arena winner]
 
   (let [^PlayRoom room (.container ^GameEngine (.engine arena))
-        ^czlab.xlib.util.core.Muble impl
-        (.innards arena)
-        ^PlayerSession ps2 (:session (.getf impl :p2))
-        ^PlayerSession ps1 (:session (.getf impl :p1))
-        s2 (.getf impl :score2)
-        s1 (.getf impl :score1)
+        ^Muble impl (.innards arena)
+        ^PlayerSession ps2 (:session (.getv impl :p2))
+        ^PlayerSession ps1 (:session (.getv impl :p1))
+        s2 (.getv impl :score2)
+        s1 (.getv impl :score1)
         pwin (if (> s2 s1) ps2 ps1)
         src {:winner {:pnum (.number pwin)
                       :scores {:p2 s2 :p1 s1 }}}]
@@ -280,20 +279,19 @@
 
   [^czlab.frigga.pong.arena.ArenaAPI arena winner]
 
-  (let [^czlab.xlib.util.core.Muble impl
-        (.innards arena)
-        nps (.getf impl :numpts)
-        s2 (.getf impl :score2)
-        s1 (.getf impl :score1)
+  (let [^Muble impl (.innards arena)
+        nps (.getv impl :numpts)
+        s2 (.getv impl :score2)
+        s1 (.getv impl :score1)
         sx (if (= winner 2)
              (inc s2)
              (inc s1))]
     (log/debug "increment score by 1, "
                "someone lost a point. " s1  " , " s2)
-    (.setf! impl :sync false)
+    (.setv impl :sync false)
     (if (= winner 2)
-      (.setf! impl :score2 sx)
-      (.setf! impl :score1 sx))
+      (.setv impl :score2 sx)
+      (.setv impl :score1 sx))
     (maybeStartNewPoint arena winner)
     (when (>= sx nps)
       (gameOver arena winner))
@@ -306,27 +304,23 @@
   [^czlab.frigga.pong.arena.ArenaAPI arena
    dt bbox]
 
-  (let [^czlab.xlib.util.core.Muble impl
-        (.innards arena)
-        ^czlab.xlib.util.core.Muble
-        pad2 (.getf impl :paddle2)
-        ^czlab.xlib.util.core.Muble
-        pad1 (.getf impl :paddle1)
-        ^czlab.xlib.util.core.Muble
-        ball (.getf impl :ball)
-        port? (.getf impl :portrait)]
+  (let [^Muble impl (.innards arena)
+        ^Muble pad2 (.getv impl :paddle2)
+        ^Muble pad1 (.getv impl :paddle1)
+        ^Muble ball (.getv impl :ball)
+        port? (.getv impl :portrait)]
 
     (if port?
       (do
-        (.setf! pad2 :x (+ (* dt (.getf pad2 :vx))
-                           (.getf pad2 :x)))
-        (.setf! pad1 :x (+ (* dt (.getf pad1 :vx))
-                           (.getf pad1 :x))))
+        (.setv pad2 :x (+ (* dt (.getv pad2 :vx))
+                           (.getv pad2 :x)))
+        (.setv pad1 :x (+ (* dt (.getv pad1 :vx))
+                           (.getv pad1 :x))))
       (do
-        (.setf! pad2 :y (+ (* dt (.getf pad2 :vy))
-                           (.getf pad2 :y)))
-        (.setf! pad1 :y (+ (* dt (.getf pad1 :vy))
-                           (.getf pad1 :y)))))
+        (.setv pad2 :y (+ (* dt (.getv pad2 :vy))
+                           (.getv pad2 :y)))
+        (.setv pad1 :y (+ (* dt (.getv pad1 :vy))
+                           (.getv pad1 :y)))))
 
     (clamp pad2 bbox port?)
     (clamp pad1 bbox port?)
@@ -344,29 +338,28 @@
   [^czlab.frigga.pong.arena.ArenaAPI arena]
 
   (let [^PlayRoom room (.container ^GameEngine (.engine arena))
-        ^czlab.xlib.util.core.Muble impl
-        (.innards arena)
-        port? (.getf impl :portrait)
-        ^czlab.xlib.util.core.Muble
-        pad2 (.getf impl :paddle2)
-        ^czlab.xlib.util.core.Muble
-        pad1 (.getf impl :paddle1)
-        ^czlab.xlib.util.core.Muble
-        ball (.getf impl :ball)
-        src {:p2 {:y (.getf pad2 :y)
-                  :x (.getf pad2 :x)
+        ^Muble impl (.innards arena)
+        port? (.getv impl :portrait)
+        ^Muble
+        pad2 (.getv impl :paddle2)
+        ^Muble
+        pad1 (.getv impl :paddle1)
+        ^Muble
+        ball (.getv impl :ball)
+        src {:p2 {:y (.getv pad2 :y)
+                  :x (.getv pad2 :x)
                   :pv (if port?
-                        (.getf pad2 :vx)
-                        (.getf pad2 :vy))}
-             :p1 {:y (.getf pad1 :y)
-                  :x (.getf pad1 :x)
+                        (.getv pad2 :vx)
+                        (.getv pad2 :vy))}
+             :p1 {:y (.getv pad1 :y)
+                  :x (.getv pad1 :x)
                   :pv (if port?
-                        (.getf pad1 :vx)
-                        (.getf pad1 :vy))}
-             :ball {:y (.getf ball :y)
-                    :x (.getf ball :x)
-                    :vy (.getf ball :vy)
-                    :vx (.getf ball :vx) }} ]
+                        (.getv pad1 :vx)
+                        (.getv pad1 :vy))}
+             :ball {:y (.getv ball :y)
+                    :x (.getv ball :x)
+                    :vy (.getv ball :vy)
+                    :vx (.getv ball :vx) }} ]
     (log/debug "sync new BALL values " (:ball src))
     (BCastAll room Events/SYNC_ARENA src)
   ))
@@ -377,14 +370,13 @@
 
   [^czlab.frigga.pong.arena.ArenaAPI arena options]
 
-  (let [^czlab.xlib.util.core.Muble impl
-        (.innards arena)]
-    (if-not (true? (.getf impl :resetting-point))
+  (let [^Muble impl (.innards arena)]
+    (if-not (true? (.getv impl :resetting-point))
       (let [waitIntv (:syncMillis options)
             maxpts (:numpts options)
             world (:world options)
-            lastTick (.getf impl :lastTick)
-            lastSync (.getf impl :lastSync)
+            lastTick (.getv impl :lastTick)
+            lastSync (.getv impl :lastSync)
             now (System/currentTimeMillis)]
         ;; --- update the game with the difference
         ;;in ms since the
@@ -392,13 +384,13 @@
         (let [diff (- now lastTick)
               lastSync2 (+ lastSync diff)]
           (updateEntities arena (/ diff 1000) world)
-          (.setf! impl :lastSync lastSync2)
-          (.setf! impl :lastTick now)
+          (.setv impl :lastSync lastSync2)
+          (.setv impl :lastTick now)
           ;; --- check if time to send a ball update
           (when (> lastSync waitIntv)
-            (when (.getf impl :sync)
+            (when (.getv impl :sync)
               (syncClients arena))
-            (.setf! impl :lastSync 0)))))
+            (.setv impl :lastSync 0)))))
     ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -410,14 +402,13 @@
   [^czlab.frigga.pong.arena.ArenaAPI arena
    options]
 
-  (let [^czlab.xlib.util.core.Muble impl
-        (.innards arena)
+  (let [^Muble impl (.innards arena)
         ^GameEngine eng (.engine arena)
         fps (/ 1000 (:framespersec options))
         nps (:numpts options)
-        s2 (.getf impl :score2)
-        s1 (.getf impl :score1)]
-    (if (and (not (true? (.getf impl :resetting-point)))
+        s2 (.getv impl :score2)
+        s1 (.getv impl :score1)]
+    (if (and (not (true? (.getv impl :resetting-point)))
              (or (>= s2 nps)
                  (>= s1 nps)))
       (do
@@ -436,16 +427,15 @@
 
   [^czlab.frigga.pong.arena.ArenaAPI arena options new?]
 
-  (let [^czlab.xlib.util.core.Muble impl
-        (.innards arena)]
-    (.setf! impl :lastTick (System/currentTimeMillis))
-    (.setf! impl :lastSync 0)
-    (.setf! impl :sync true)
-    (.setf! impl :resetting-point false)
+  (let [^Muble impl (.innards arena)]
+    (.setv impl :lastTick (System/currentTimeMillis))
+    (.setv impl :lastSync 0)
+    (.setv impl :sync true)
+    (.setv impl :resetting-point false)
     (when new?
-      (.setf! impl :numpts (:numpts options))
-      (.setf! impl :score2 0)
-      (.setf! impl :score1 0)
+      (.setv impl :numpts (:numpts options))
+      (.setv impl :score2 0)
+      (.setv impl :score1 0)
       (Coroutine #(while true
                     (tryc (updateArena arena options))
                     (postUpdateArena arena options))
@@ -460,25 +450,24 @@
    pp1 pp2
    pd ba]
 
-  (let [^czlab.xlib.util.core.Muble impl
-        (.innards arena)]
+  (let [^Muble impl (.innards arena)]
     (log/debug "resetting all entities back to default positions.")
-    (.setf! impl :paddle2 (reifyPaddle (:x pp2)
+    (.setv impl :paddle2 (reifyPaddle (:x pp2)
                                         (:y pp2)
                                         (:width pd)
                                         (:height pd)))
-    (.setf! impl :paddle1 (reifyPaddle (:x pp1)
+    (.setv impl :paddle1 (reifyPaddle (:x pp1)
                                         (:y pp1)
                                         (:width pd)
                                         (:height pd)))
-    (let [^czlab.xlib.util.core.Muble
+    (let [^Muble
           b (reifyBall (:x ba)
                        (:y ba)
                        (:width ba)
                        (:height ba))]
-      (.setf! b :vx (* (RandomSign) (:speed ba)))
-      (.setf! b :vy (* (RandomSign) (:speed ba)))
-      (.setf! impl :ball b))
+      (.setv b :vx (* (RandomSign) (:speed ba)))
+      (.setv b :vy (* (RandomSign) (:speed ba)))
+      (.setv impl :ball b))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -488,16 +477,15 @@
   [^czlab.frigga.pong.arena.ArenaAPI arena options]
 
   (let [^PlayRoom room (.container ^GameEngine (.engine arena))
-        ^czlab.xlib.util.core.Muble impl
-        (.innards arena)
-        ^PlayerSession p2 (:session (.getf impl :p2))
-        ^PlayerSession p1 (:session (.getf impl :p1))
-        ^czlab.xlib.util.core.Muble
-        ball (.getf impl :ball)
-        src {:ball {:vx (.getf ball :vx)
-                    :vy (.getf ball :vy)
-                    :x (.getf ball :x)
-                    :y (.getf ball :y)} }]
+        ^Muble impl (.innards arena)
+        ^PlayerSession p2 (:session (.getv impl :p2))
+        ^PlayerSession p1 (:session (.getv impl :p1))
+        ^Muble
+        ball (.getv impl :ball)
+        src {:ball {:vx (.getv ball :vx)
+                    :vy (.getv ball :vy)
+                    :x (.getv ball :x)
+                    :y (.getv ball :y)} }]
     (->> (ReifySSEvent Events/POKE_MOVE
                        {:pnum (.number p2)} p2)
          (.sendMsg room))
@@ -522,28 +510,28 @@
         pp2 (:p2 options)
         pp1 (:p1 options)
         impl (MakeMMap) ]
-    (.setf! impl
-            :portrait
-            (> (- (:top world)(:bottom world))
-               (- (:right world)(:left world))))
+    (.setv impl
+           :portrait
+           (> (- (:top world)(:bottom world))
+              (- (:right world)(:left world))))
     (reify ArenaAPI
       (registerPlayers [this p1Wrap p2Wrap]
-        (.setf! impl :p2 p2Wrap)
-        (.setf! impl :p1 p1Wrap)
+        (.setv impl :p2 p2Wrap)
+        (.setv impl :p1 p1Wrap)
         (initEntities this pp1 pp2 pd ba))
 
-      (getPlayer2 [_] (-> (.getf impl :p2)
+      (getPlayer2 [_] (-> (.getv impl :p2)
                           (:player)))
-      (getPlayer1 [_] (-> (.getf impl :p1)
+      (getPlayer1 [_] (-> (.getv impl :p1)
                           (:player)))
 
       (engine [_] theEngine)
       (innards [_] impl)
 
       (restart [_]
-        (.setf! impl :resetting-point false)
-        (.setf! impl :score2 0)
-        (.setf! impl :score1 0))
+        (.setv impl :resetting-point false)
+        (.setv impl :score2 0)
+        (.setv impl :score1 0))
 
       (resetPoint [this]
         (initEntities this pp1 pp2 pd ba)
@@ -555,8 +543,8 @@
                      (true? (:new cmd))))
 
       (enqueue [_ evt]
-        (let [^PlayerSession p2 (:session (.getf impl :p2))
-              ^PlayerSession p1 (:session (.getf impl :p1))
+        (let [^PlayerSession p2 (:session (.getv impl :p2))
+              ^PlayerSession p1 (:session (.getv impl :p1))
               ^PlayerSession pss (:context evt)
               ^PlayRoom room (.container theEngine)
               pnum (.number pss)
@@ -566,13 +554,13 @@
               cmd (ReadJsonKW src)
               ;;pv (* (:dir (kw cmd)) (:speed pd))
               pv (:pv (kw cmd))
-              ^czlab.xlib.util.core.Muble
+              ^Muble
               other (if (= pnum 2)
-                      (.getf impl :paddle2)
-                      (.getf impl :paddle1))]
-          (if (.getf impl :portrait)
-            (.setf! other :vx pv)
-            (.setf! other :vy pv))
+                      (.getv impl :paddle2)
+                      (.getv impl :paddle1))]
+          (if (.getv impl :portrait)
+            (.setv other :vx pv)
+            (.setv other :vy pv))
           (->> (ReifySSEvent Events/SYNC_ARENA cmd pt)
                (.sendMsg room))))
     )))

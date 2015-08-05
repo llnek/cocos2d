@@ -31,7 +31,7 @@
             [com.zotohlab.frwk.core Hierarchial]
             [com.zotohlab.odin.core Session]
             [io.netty.channel Channel]
-            [com.zotohlab.skaro.core Container]
+            [com.zotohlab.skaro.core Muble Container]
             [com.zotohlab.odin.net MessageSender]
             [com.zotohlab.odin.event Events Msgs Sender Receiver]))
 
@@ -58,7 +58,7 @@
 
       Hierarchial
 
-      (parent [_] (.getf impl :parent))
+      (parent [_] (.getv impl :parent))
 
       Sender
 
@@ -67,7 +67,7 @@
         (when (and (not (.isShuttingDown this))
                    (.isConnected this))
           (-> ^MessageSender
-              (.getf impl :tcp)
+              (.getv impl :tcp)
               (.sendMsg msg))))
 
       Receiver
@@ -80,28 +80,28 @@
 
       (isConnected [this] (= Events/S_CONNECTED (.status this)))
 
-      (isShuttingDown [_] (.getf impl :shutting-down))
+      (isShuttingDown [_] (.getv impl :shutting-down))
 
       (bind [this options]
-        (.setf! impl :tcp (ReifyReliableSender (:socket options)))
-        (.setf! impl :parent (:emitter options))
+        (.setv impl :tcp (ReifyReliableSender (:socket options)))
+        (.setv impl :parent (:emitter options))
         (.setStatus this Events/S_CONNECTED))
 
       (id [_] sid)
 
-      (setStatus [_ s] (.setf! impl :status s))
-      (status [_] (.getf impl :status))
+      (setStatus [_ s] (.setv impl :status s))
+      (status [_] (.getv impl :status))
 
       (close [this]
         (locking this
           (when (.isConnected this)
-            (.setf! impl :shutting-down true)
+            (.setv impl :shutting-down true)
             (when-let [^MessageSender
-                       s (.getf impl :tcp)]
+                       s (.getv impl :tcp)]
               (.shutdown s))
-            (.clrf! impl :tcp)
-            (.setf! impl :shutting-down false)
-            (.setf! impl :status Events/S_NOT_CONNECTED))))
+            (.unsetv impl :tcp)
+            (.setv impl :shutting-down false)
+            (.setv impl :status Events/S_NOT_CONNECTED))))
 
       Object
 

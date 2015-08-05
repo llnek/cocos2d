@@ -25,7 +25,7 @@
         [czlab.xlib.util.wfs]
         [czlab.cocos2d.site.core ])
 
-  (:import  [com.zotohlab.skaro.core Container ConfigError]
+  (:import  [com.zotohlab.skaro.core Muble Container ConfigError]
             [org.apache.commons.io FileUtils]
             [com.zotohlab.wflow WorkFlow Job Activity PTask]
             [com.zotohlab.skaro.io HTTPEvent HTTPResult]
@@ -90,9 +90,9 @@
     (fn [^Job j]
       (let [tpl (nsb (:template (.getv j EV_OPTS)))
             ^HTTPEvent evt (.event j)
-            ^czlab.xlib.util.core.Muble
+            ^Muble
             src (.emitter evt)
-            cfg (.getf src :emcfg)
+            cfg (.getv src :emcfg)
             ^Container co (.container ^Emitter src)
             ^czlab.skaro.io.webss.WebSS
             mvs (.getSession evt)

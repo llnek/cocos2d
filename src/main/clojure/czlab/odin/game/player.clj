@@ -21,6 +21,7 @@
 
   (:import  [com.zotohlab.odin.game Game PlayRoom
                                     Player PlayerSession]
+           [com.zotohlab.skaro.core Muble]
             [com.zotohlab.odin.core Session]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -44,11 +45,11 @@
   (let [impl (MakeMMap) ]
     (reify Player
 
-      (setEmailId [_ email] (.setf! impl :email email))
-      (emailId [_] (.getf impl :email))
+      (setEmailId [_ email] (.setv impl :email email))
+      (emailId [_] (.getv impl :email))
 
-      (setName [_ n] (.setf! impl :name n))
-      (getName [_] (.getf impl :name))
+      (setName [_ n] (.setv impl :name n))
+      (getName [_] (.getv impl :name))
       (id [_] user)
 
       (removeSession [_ ps]

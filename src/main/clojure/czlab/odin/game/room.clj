@@ -35,7 +35,7 @@
             [com.zotohlab.odin.core Session]
             [java.util.concurrent.atomic AtomicLong]
             [io.netty.channel Channel]
-            [com.zotohlab.skaro.core Container]
+            [com.zotohlab.skaro.core Muble Container]
             [com.zotohlab.odin.event Events Eventee PubSub
              Msgs Sender Receiver Dispatchable]))
 
@@ -262,7 +262,7 @@
         pcount (AtomicLong.)
         impl (MakeMMap)
         rid (NewUUid)]
-    (.setf! impl :shutting false)
+    (.setv impl :shutting false)
     (reify PlayRoom
 
       (disconnect [_ ps]
@@ -289,7 +289,7 @@
           (.addSession py ps)
           ps))
 
-      (isShuttingDown [_] (.getf impl :shutting))
+      (isShuttingDown [_] (.getv impl :shutting))
 
       (canActivate [this]
         (and (not (.isActive this))
@@ -312,13 +312,13 @@
             (.close v))
           (ref-set sessions {})))
 
-      (isActive [_] (true? (.getf impl :active)))
+      (isActive [_] (true? (.getv impl :active)))
 
       (activate [this]
         (let [^GameEngine eng (.engine this)
               sss (seq @pssArr)]
           (log/debug "activating room " rid)
-          (.setf! impl :active true)
+          (.setv impl :active true)
           (doseq [s sss]
             (.addHandler this (mkNetworkSubr s)))
           (doto eng

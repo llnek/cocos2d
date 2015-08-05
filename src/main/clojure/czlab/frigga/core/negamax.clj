@@ -21,6 +21,7 @@
 
   (:import  [com.zotohlab.odin.game Game PlayRoom
              Board Player PlayerSession]
+           [com.zotohlab.skaro.core Muble]
             [com.zotohlab.odin.core Session]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -119,14 +120,14 @@
 
   (let [impl (MakeMMap)]
     (reify NegaSnapshotAPI
-      (setLastBestMove [_ m] (.setf! impl :lastbestmove m))
-      (setOther [_ o] (.setf! impl :other o))
-      (setCur [_ c] (.setf! impl :cur c))
-      (setState [_ s] (.setf! impl :state s))
-      (lastBestMove [_] (.getf impl :lastbestmove))
-      (other [_] (.getf impl :other))
-      (cur [_] (.getf impl :cur))
-      (state [_] (.getf impl :state)))
+      (setLastBestMove [_ m] (.setv impl :lastbestmove m))
+      (setOther [_ o] (.setv impl :other o))
+      (setCur [_ c] (.setv impl :cur c))
+      (setState [_ s] (.setv impl :state s))
+      (lastBestMove [_] (.getv impl :lastbestmove))
+      (other [_] (.getv impl :other))
+      (cur [_] (.getv impl :cur))
+      (state [_] (.getv impl :state)))
   ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

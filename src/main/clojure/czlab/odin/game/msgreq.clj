@@ -37,7 +37,7 @@
             [com.zotohlab.frwk.i18n I18N]
             [java.util ResourceBundle]
             [io.netty.channel Channel]
-            [com.zotohlab.skaro.core Container]
+            [com.zotohlab.skaro.core Muble Container]
             [com.zotohlab.odin.event Msgs Events]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -75,7 +75,7 @@
                         room nil]
         ;; maybe get the requested game?
         (let [g (LookupGame (first arr))]
-          (if (and (notnil? g)
+          (if (and (some? g)
                    (.supportMultiPlayers g))
             (var-set gm g)
             (rError ch
@@ -89,8 +89,8 @@
                   Events/USER_NOK
                   (RStr rcb "login.error")))
         ;; maybe try to find or create a game room?
-        (when (and (notnil? @plyr)
-                   (notnil? @gm))
+        (when (and (some? @plyr)
+                   (some? @gm))
           (if-let [ps (OpenRoom @gm @plyr evt)]
             (do
               (var-set room (.room ps))
