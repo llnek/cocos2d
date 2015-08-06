@@ -99,12 +99,12 @@
             csrf (-> ^czlab.skaro.impl.ext.ContainerAPI
                      co (.generateCsrf))
             est (:sessionAgeSecs cfg)
-            [rdata ct] (.loadTemplate co tpl
-                                      (interpolateFunc evt csrf))
+            {:keys [data ctype]}
+            (.loadTemplate co tpl (interpolateFunc evt csrf))
             ^HTTPResult res (.getResultObj evt) ]
         (doto res
-          (.setHeader "content-type" ct)
-          (.setContent rdata)
+          (.setHeader "content-type" ctype)
+          (.setContent data)
           (.setStatus 200))
         (doto mvs
           (.setNew! true est)

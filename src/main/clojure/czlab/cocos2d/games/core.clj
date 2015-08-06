@@ -110,14 +110,14 @@
             src (.emitter evt)
             ^Container
             co (.container src)
-            [rdata ct]
+            {:keys [data ctype]}
             (.loadTemplate co
-                           (nsb tpl)
+                           (str tpl)
                            (interpolateFunc evt))
             ^HTTPResult res (.getResultObj evt) ]
         (doto res
-          (.setHeader "content-type" ct)
-          (.setContent rdata)
+          (.setHeader "content-type" ctype)
+          (.setContent data)
           (.setStatus 200))
         (.replyResult evt)))
   ))
