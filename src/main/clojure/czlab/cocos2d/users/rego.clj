@@ -114,31 +114,40 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype RegisterPage [] WorkFlow
+(defn RegisterPage ""
 
-  (startWith [_]
-    (require 'czlab.cocos2d.users.rego)
-    (doShowPage interpolateRegisterPage)))
+  ^WorkFlow
+  []
 
-(ns-unmap *ns* '->RegisterPage)
+  (reify WorkFlow
+    (startWith [_]
+      (doShowPage interpolateRegisterPage))))
+
+;;(ns-unmap *ns* '->RegisterPage)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype LoginPage [] WorkFlow
+(defn LoginPage ""
 
-  (startWith [_]
-    (require 'czlab.cocos2d.users.rego)
-    (doShowPage interpolateLoginPage)))
+  ^WorkFlow
+  []
 
-(ns-unmap *ns* '->LoginPage)
+  (reify WorkFlow
+    (startWith [_]
+      (doShowPage interpolateLoginPage))))
+
+;;(ns-unmap *ns* '->LoginPage)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype ForgotPage [] WorkFlow
+(defn ForgotPage ""
 
-  (startWith [_]
-    (require 'czlab.cocos2d.users.rego)
-    (doShowPage interpolateForgotPage)))
+  ^WorkFlow
+  []
 
-(ns-unmap *ns* '->ForgotPage)
+  (reify WorkFlow
+    (startWith [_]
+      (doShowPage interpolateForgotPage))))
+
+;;(ns-unmap *ns* '->ForgotPage)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF
 

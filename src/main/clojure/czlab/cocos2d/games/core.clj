@@ -124,33 +124,42 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype AllGamesPage [] WorkFlow
+(defn AllGamesPage ""
 
-  (startWith [_]
-    (require 'czlab.cocos2d.games.core)
-    (doShowPage interpolateBrowsePage)))
+  ^WorkFlow
+  []
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(deftype TopPicksPage [] WorkFlow
-
-  (startWith [_]
-    (require 'czlab.cocos2d.games.core)
-    (doShowPage interpolatePicksPage)))
+  (reify WorkFlow
+    (startWith [_]
+      (doShowPage interpolateBrowsePage))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype GameArenaPage [] WorkFlow
+(defn TopPicksPage ""
 
-  (startWith [_]
-    (require 'czlab.cocos2d.games.core)
-    (doShowPage interpolateArenaPage)))
+  ^WorkFlow
+  []
+
+  (reify WorkFlow
+    (startWith [_]
+      (doShowPage interpolatePicksPage))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn GameArenaPage ""
+
+  ^WorkFlow
+  []
+
+  (reify WorkFlow
+    (startWith [_]
+      (doShowPage interpolateArenaPage))))
 
 
 
-(ns-unmap *ns* '->AllGamesPage)
-(ns-unmap *ns* '->TopPicksPage)
-(ns-unmap *ns* '->GameArenaPage)
+;;(ns-unmap *ns* '->AllGamesPage)
+;;(ns-unmap *ns* '->TopPicksPage)
+;;(ns-unmap *ns* '->GameArenaPage)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF
 

@@ -157,14 +157,17 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype IndexPage [] WorkFlow
-  (startWith [_]
-    (require 'czlab.cocos2d.site.core)
-    (doShowPage)))
+(defn IndexPage ""
+
+  ^WorkFlow
+  []
+
+  (reify WorkFlow
+    (startWith [_]
+      (doShowPage))))
 
 
-
-(ns-unmap *ns* '->IndexPage)
+;;(ns-unmap *ns* '->IndexPage)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF
 

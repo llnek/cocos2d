@@ -93,14 +93,17 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype SignupHandler [] WorkFlow
+(defn SignupHandler ""
 
-  (startWith [_]
-    (require 'czlab.cocos2d.users.accounts)
-    (log/debug "signup pipe-line - called.")
-    (If. (MaybeSignupTest "32") (doSignupOK) (doSignupFail))))
+  ^WorkFlow
+  []
 
-(ns-unmap *ns* '->SignupHandler)
+  (reify WorkFlow
+    (startWith [_]
+      (log/debug "signup pipe-line - called.")
+      (If. (MaybeSignupTest "32") (doSignupOK) (doSignupFail)))))
+
+;;(ns-unmap *ns* '->SignupHandler)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- doLoginFail ""
@@ -153,14 +156,17 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype LoginHandler [] WorkFlow
+(defn LoginHandler ""
 
-  (startWith [_]
-    (require 'czlab.cocos2d.users.accounts)
-    (log/debug "login pipe-line - called.")
-    (If. (MaybeLoginTest) (doLoginOK) (doLoginFail))))
+  ^WorkFlow
+  []
 
-(ns-unmap *ns* '->LoginHandler)
+  (reify WorkFlow
+    (startWith [_]
+      (log/debug "login pipe-line - called.")
+      (If. (MaybeLoginTest) (doLoginOK) (doLoginFail)))))
+
+;;(ns-unmap *ns* '->LoginHandler)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- doLookupEmail ""
@@ -215,15 +221,18 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype ForgotHandler [] WorkFlow
+(defn ForgotHandler ""
 
-  (startWith [_]
-    (require 'czlab.cocos2d.users.accounts)
-    (log/debug "Forgot-login pipe-line - called.")
-    (-> (doAckReply)
-        (.chain (doLookupEmail)))))
+  ^WorkFlow
+  []
 
-(ns-unmap *ns* '->ForgotHandler)
+  (reify WorkFlow
+    (startWith [_]
+      (log/debug "Forgot-login pipe-line - called.")
+      (-> (doAckReply)
+          (.chain (doLookupEmail))))))
+
+;;(ns-unmap *ns* '->ForgotHandler)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- doLogout ""
@@ -258,16 +267,19 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype LogoutHandler [] WorkFlow
+(defn LogoutHandler ""
 
-  (startWith [_]
-    (require 'czlab.cocos2d.users.accounts)
-    (log/debug "logout pipe-line - called.")
-    (doLogout)))
+  ^WorkFlow
+  []
+
+  (reify WorkFlow
+    (startWith [_]
+      (log/debug "logout pipe-line - called")
+      (doLogout))))
 
 
 
-(ns-unmap *ns* '->LogoutHandler)
+;;(ns-unmap *ns* '->LogoutHandler)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF
 
