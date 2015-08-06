@@ -63,34 +63,35 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftype MyAppMain [] AppMain
+(defn MyAppMain ""
 
-  (contextualize [_ ctr]
-    (require 'czlab.cocos2d.games.meta)
-    (require 'czlab.cocos2d.site.core)
-    (let [d (.getAppDir ^Container ctr)]
-      (ScanGameManifests d)
-      (maybeCheckDoors d))
-    (require 'czlab.odin.system.core)
-    (OdinInit ctr)
-    (log/info "My AppMain contextualized by container " ctr))
+  ^AppMain
+  []
 
-  (configure [_ options]
-    (log/info "My AppMain configured with options " options))
+  (reify AppMain
+    (contextualize [_ ctr]
+      (let [d (.getAppDir ^Container ctr)]
+        (ScanGameManifests d)
+        (maybeCheckDoors d))
+      (OdinInit ctr)
+      (log/info "My AppMain contextualized by container " ctr))
 
-  (initialize [_]
-    (log/info "My AppMain initialized!"))
+    (configure [_ options]
+      (log/info "My AppMain configured with options " options))
 
-  (start [_]
-    (log/info "My AppMain started"))
+    (initialize [_]
+      (log/info "My AppMain initialized!"))
 
-  (stop [_]
-    (log/info "My AppMain stopped"))
+    (start [_]
+      (log/info "My AppMain started"))
 
-  (dispose [_]
-    (log/info "My AppMain finz'ed")))
+    (stop [_]
+      (log/info "My AppMain stopped"))
 
-(ns-unmap *ns* '->MyAppMain)
+    (dispose [_]
+      (log/info "My AppMain finz'ed"))))
+
+;;(ns-unmap *ns* '->MyAppMain)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn GetDftModel "Return a default object for Freemarker processing."
