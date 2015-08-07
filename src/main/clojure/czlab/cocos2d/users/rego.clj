@@ -28,7 +28,7 @@
   (:import  [com.zotohlab.skaro.core Muble Container ConfigError]
             [org.apache.commons.io FileUtils]
             [com.zotohlab.wflow WorkFlow Job Activity PTask]
-            [com.zotohlab.skaro.io HTTPEvent HTTPResult]
+            [com.zotohlab.skaro.io WebSS HTTPEvent HTTPResult]
             [com.zotohlab.frwk.io XData]
             [com.zotohlab.frwk.server Emitter]
             [java.io File]))
@@ -43,7 +43,7 @@
 
   [^HTTPEvent evt ^String csrf]
 
-  (let [^czlab.skaro.io.webss.WebSS
+  (let [^WebSS
         mvs (.getSession evt)]
     (-> (GetDftModel evt)
         (update-in [:body]
@@ -57,7 +57,7 @@
 
   [^HTTPEvent evt ^String csrf]
 
-  (let [^czlab.skaro.io.webss.WebSS
+  (let [^WebSS
         mvs (.getSession evt)]
     (-> (GetDftModel evt)
         (update-in [:body]
@@ -71,7 +71,7 @@
 
   [^HTTPEvent evt ^String csrf]
 
-  (let [^czlab.skaro.io.webss.WebSS
+  (let [^WebSS
         mvs (.getSession evt)]
     (-> (GetDftModel evt)
         (update-in [:body]
@@ -94,7 +94,7 @@
             src (.emitter evt)
             cfg (.getv src :emcfg)
             ^Container co (.container ^Emitter src)
-            ^czlab.skaro.io.webss.WebSS
+            ^WebSS
             mvs (.getSession evt)
             csrf (-> ^czlab.skaro.impl.ext.ContainerAPI
                      co (.generateCsrf))
@@ -107,7 +107,7 @@
           (.setContent data)
           (.setStatus 200))
         (doto mvs
-          (.setNew! true est)
+          (.setNew true est)
           (.setXref csrf))
         (.replyResult evt)))
   ))

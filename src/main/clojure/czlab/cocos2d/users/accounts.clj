@@ -29,9 +29,10 @@
         [czlab.cocos2d.site.core ])
 
   (:import  [com.zotohlab.skaro.runtime DuplicateUser]
+           [com.zotohlab.skaro.etc AuthPlugin]
             [com.zotohlab.wflow If Activity
              WorkFlow Job BoolExpr PTask Work]
-            [com.zotohlab.skaro.io HTTPEvent HTTPResult]
+            [com.zotohlab.skaro.io WebSS HTTPEvent HTTPResult]
             [com.zotohlab.skaro.core Muble]
             [org.apache.commons.codec.net URLCodec]
             [com.zotohlab.frwk.i18n I18N]
@@ -129,7 +130,7 @@
   (SimPTask
     (fn [^Job j]
       (let [^HTTPEvent evt (.event j)
-            ^czlab.skaro.io.webss.WebSS
+            ^WebSS
             mvs (.getSession evt)
             ^Muble
             src (.emitter evt)
@@ -143,14 +144,14 @@
         (doto ck
           (.setMaxAge est)
           (.setHttpOnly false)
-          (.setSecure (.isSSL? mvs))
+          (.setSecure (.isSSL mvs))
           (.setPath (:domainPath cfg))
           (.setDomain (:domain cfg)))
         (doto res
           (.setContent (XData. (WriteJson json)))
           (.addCookie ck)
           (.setStatus 200))
-        (.setNew! mvs true est)
+        (.setNew mvs true est)
         (.replyResult evt)))
   ))
 
@@ -181,7 +182,7 @@
             ctr
             (-> ^Emitter
                 (.emitter evt) (.container))
-            ^czlab.skaro.auth.plugin.AuthPlugin
+            ^AuthPlugin
             pa (:auth (.getv ctr K_PLUGINS))
             si (try (MaybeGetAuthInfo evt)
                     (catch BadDataError e#  { :e e# }))
@@ -243,7 +244,7 @@
   (SimPTask
     (fn [^Job j]
       (let [^HTTPEvent evt (.event j)
-            ^czlab.skaro.io.webss.WebSS
+            ^WebSS
             mvs (.getSession evt)
             ^Muble
             src (.emitter evt)
@@ -254,14 +255,14 @@
         (doto ck
           (.setMaxAge 0)
           (.setHttpOnly false)
-          (.setSecure (.isSSL? mvs))
+          (.setSecure (.isSSL mvs))
           (.setPath (:domainPath cfg))
           (.setDomain (:domain cfg)))
         (doto res
           (.setContent (XData. (WriteJson json)))
           (.setStatus 200)
           (.addCookie ck))
-        (.invalidate! mvs)
+        (.invalidate mvs)
         (.replyResult evt)))
   ))
 
