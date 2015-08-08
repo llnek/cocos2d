@@ -96,7 +96,7 @@
         (locking this
           (when (.isConnected this)
             (.setv impl :shutting-down true)
-            (when-let [^MessageSender
+            (when-some [^MessageSender
                        s (.getv impl :tcp)]
               (.shutdown s))
             (.unsetv impl :tcp)
@@ -105,7 +105,7 @@
 
       Object
 
-      (hashCode [me] (if-let [n (.id me)] (.hashCode n) 31))
+      (hashCode [me] (if-some [n (.id me)] (.hashCode n) 31))
 
       (equals [this obj]
         (if (nil? obj)

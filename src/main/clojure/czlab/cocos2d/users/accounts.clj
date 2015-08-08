@@ -192,7 +192,7 @@
         (cond
           (and (= "18" (:captcha info))
                (hgl? email))
-          (if-let [ acct (.getAccount pa { :email email }) ]
+          (if-some [ acct (.getAccount pa { :email email }) ]
             (do
               (log/debug "Found account with email " email))
             (do

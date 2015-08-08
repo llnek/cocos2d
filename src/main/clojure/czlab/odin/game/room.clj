@@ -59,7 +59,7 @@
   [^String gameid]
 
   (log/debug "Looking for game with uuid = " gameid)
-  (when-let [g (get (GetGamesAsUUID) gameid) ]
+  (when-some [g (get (GetGamesAsUUID) gameid) ]
     (let [{flag :enabled minp :minp maxp :maxp eng :engine
            :or {flag false minp 1 maxp 1 eng ""}}
           (:network g)]
@@ -87,8 +87,8 @@
   [^String game ^String room]
 
   (dosync
-    (when-let [gm (@GAME-ROOMS game) ]
-      (when-let [r (get gm room)]
+    (when-some [gm (@GAME-ROOMS game) ]
+      (when-some [r (get gm room)]
         (log/debug "Remove room(A): " room ", game: " game)
         (alter GAME-ROOMS
                assoc
@@ -104,8 +104,8 @@
   [^String game ^String room]
 
   (dosync
-    (when-let [gm (@FREE-ROOMS game) ]
-      (when-let [r (get gm room)]
+    (when-some [gm (@FREE-ROOMS game) ]
+      (when-some [r (get gm room)]
         (log/debug "Remove room(F): " room ", game: " game)
         (alter FREE-ROOMS
                assoc
@@ -167,7 +167,7 @@
   (dosync
     (let [gid (.id game)
           gm (@FREE-ROOMS gid) ]
-      (when-let [^PlayRoom r (if (not-empty gm)
+      (when-some [^PlayRoom r (if (not-empty gm)
                                (first (vals gm))) ]
         (let [rid (.roomId r)]
           (log/debug "Found a room(F): " rid ", game: " gid)
@@ -185,8 +185,8 @@
   [^String game ^String room]
 
   (dosync
-    (when-let [gm (@FREE-ROOMS game) ]
-      (when-let [r (get gm room)]
+    (when-some [gm (@FREE-ROOMS game) ]
+      (when-some [r (get gm room)]
         (log/debug "Found a room(F): " room ", game: " game)
         (alter FREE-ROOMS
                assoc
@@ -203,7 +203,7 @@
   [^String game ^String room]
 
   (dosync
-    (when-let [gm (@GAME-ROOMS game) ]
+    (when-some [gm (@GAME-ROOMS game) ]
       (log/debug "Looking for room: " room ", game: " game)
       (get gm room))
   ))
@@ -230,7 +230,7 @@
 
   [^PlayRoom room evt]
 
-  (when-let [^Sender s (:context evt)]
+  (when-some [^Sender s (:context evt)]
     (.sendMsg s evt)
   ))
 
@@ -351,7 +351,7 @@
       Object
 
       (hashCode [this]
-        (if-let [ n (.roomId this) ]
+        (if-some [ n (.roomId this) ]
           (.hashCode n)
           31))
 
@@ -385,7 +385,7 @@
   [^Game game ^Player plyr options]
 
   (with-local-vars [pss nil]
-    (when-let [room (LookupFreeRoom game) ]
+    (when-some [room (LookupFreeRoom game) ]
       (var-set pss (.connect room plyr))
       (if (.canActivate room)
         (do
@@ -395,7 +395,7 @@
     (when (nil? @pss)
       (var-set pss (NewFreeRoom game plyr))
       (AddFreeRoom (.room ^PlayerSession @pss)))
-    (when-let [^PlayerSession ps @pss]
+    (when-some [^PlayerSession ps @pss]
       (let [^Channel ch (:socket options)
             room (.room ps)
             src {:room (.roomId room)

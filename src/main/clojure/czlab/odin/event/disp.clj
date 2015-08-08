@@ -58,7 +58,7 @@
 
       (unsubscribeIfSession [this s]
         (doseq [^Eventee cb (keys @handlers)]
-          (when-let [ps (.session cb)]
+          (when-some [ps (.session cb)]
             (when (identical? ps s)
               (.unsubscribe this cb)))))
 
@@ -68,7 +68,7 @@
           (cas/go (cas/>! c msg))))
 
       (unsubscribe [_ cb]
-        (when-let [c (@handlers cb)]
+        (when-some [c (@handlers cb)]
           (cas/close! c)
           (dosync (alter handlers dissoc cb))))
 
@@ -76,7 +76,7 @@
         (let [c (cas/chan 4)]
           (dosync (alter handlers assoc cb c))
           (cas/go-loop []
-            (if-let [msg (cas/<! c)]
+            (if-some [msg (cas/<! c)]
               (let [^Eventee ee cb]
                 (when (= (.eventType ee)
                          (int (:type msg)))

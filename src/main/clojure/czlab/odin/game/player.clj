@@ -54,7 +54,7 @@
 
       (removeSession [_ ps]
         (dosync
-          (when-let [m (@PLAYER-SESS user) ]
+          (when-some [m (@PLAYER-SESS user) ]
             (alter PLAYER-SESS
                    assoc
                    user
@@ -62,7 +62,7 @@
 
       (countSessions [_]
         (dosync
-          (if-let [m (@PLAYER-SESS user)]
+          (if-some [m (@PLAYER-SESS user)]
             (int (count m))
             (int 0))))
 
@@ -76,7 +76,7 @@
 
       (logout [_ ps]
         (dosync
-          (when-let [m (@PLAYER-SESS user)]
+          (when-some [m (@PLAYER-SESS user)]
             (doseq [^PlayerSession
                     pss (vals m)]
               (.close pss))
@@ -91,9 +91,9 @@
   [^String user]
 
   (dosync
-    (when-let [p (@PLAYER-REGO user) ]
+    (when-some [p (@PLAYER-REGO user) ]
       (alter PLAYER-REGO dissoc user)
-      (when-let [m (@PLAYER-SESS user)]
+      (when-some [m (@PLAYER-SESS user)]
         (doseq [^Session v (vals m)]
           (.close v)))
       (alter PLAYER-SESS dissoc user)
@@ -108,7 +108,7 @@
   [^String user ^String pwd]
 
   (dosync
-    (if-let [p (@PLAYER-REGO user)]
+    (if-some [p (@PLAYER-REGO user)]
       p
       (let [p2 (ReifyPlayer user pwd)]
         (alter PLAYER-REGO assoc user p2)

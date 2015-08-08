@@ -180,7 +180,7 @@
         (log/debug "checking for win " (:color cmd)
                    ", pos = " (:cell cmd))
         (log/debug "current grid = " (vec grid))
-        (if-let [combo (.isWinner this (.getCur this)) ]
+        (if-some [combo (.isWinner this (.getCur this)) ]
           (.endGame this cmd combo)
           (if (.isStalemate this)
             (.drawGame this cmd)

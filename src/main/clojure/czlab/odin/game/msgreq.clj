@@ -82,7 +82,7 @@
                     Events/GAME_NOK
                     (RStr rcb "game.notok"))))
         ;; maybe get the player?
-        (if-let [p (LookupPlayer (nth arr 1)
+        (if-some [p (LookupPlayer (nth arr 1)
                                  (nth arr 2)) ]
           (var-set plyr p)
           (rError ch
@@ -91,7 +91,7 @@
         ;; maybe try to find or create a game room?
         (when (and (some? @plyr)
                    (some? @gm))
-          (if-let [ps (OpenRoom @gm @plyr evt)]
+          (if-some [ps (OpenRoom @gm @plyr evt)]
             (do
               (var-set room (.room ps))
               (var-set pss ps))
@@ -124,7 +124,7 @@
                         gm nil
                         room nil]
         ;; maybe get the player?
-        (if-let [p (LookupPlayer (nth arr 2)
+        (if-some [p (LookupPlayer (nth arr 2)
                                  (nth arr 3)) ]
           (var-set plyr p)
           (rError ch
