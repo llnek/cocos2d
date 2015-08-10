@@ -14,7 +14,7 @@
 
   czlab.odin.system.core
 
-  (:require [czlab.xlib.util.core :refer [MakeMMap notnil?]]
+  (:require [czlab.xlib.util.core :refer [MubleObj notnil?]]
             [czlab.xlib.util.files :refer [ReadOneFile]]
             [czlab.xlib.util.str :refer [strim nsb hgl?]]
             [czlab.xlib.util.wfs :refer [SimPTask]])

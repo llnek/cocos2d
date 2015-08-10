@@ -17,7 +17,7 @@
   (:require [czlab.xlib.util.str :refer [hgl? strim]]
             [czlab.xlib.util.core
              :refer
-             [notnil? MakeMMap RandomSign]])
+             [notnil? MubleObj RandomSign]])
 
   (:require [clojure.tools.logging :as log])
 
@@ -116,7 +116,7 @@
         goalspace (mapGoalSpace bsize)
         actors (object-array 3)
         numcells (alength grid)
-        impl (MakeMMap {:gameon false}) ]
+        impl (MubleObj {:gameon false}) ]
     (reify BoardAPI
 
       (getCur [_] (aget #^"[Ljava.lang.Object;" actors 0))

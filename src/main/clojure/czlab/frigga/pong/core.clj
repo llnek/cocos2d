@@ -14,7 +14,7 @@
 
   czlab.frigga.pong.core
 
-  (:require [czlab.xlib.util.core :refer [MakeMMap notnil? ]]
+  (:require [czlab.xlib.util.core :refer [MubleObj notnil? ]]
             [czlab.xlib.util.str :refer [strim nsb hgl?]])
 
   (:require [clojure.tools.logging :as log])

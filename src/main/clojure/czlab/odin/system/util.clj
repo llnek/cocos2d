@@ -18,7 +18,7 @@
             [czlab.xlib.netty.filters :refer [DbgPipelineHandlers]]
             [czlab.xlib.util.core
              :refer
-             [MakeMMap notnil? juid]])
+             [MubleObj notnil? juid]])
 
   (:require [clojure.tools.logging :as log])
 

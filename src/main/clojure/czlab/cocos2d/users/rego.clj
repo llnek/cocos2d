@@ -16,6 +16,7 @@
 
   (:require [czlab.xlib.util.dates :refer [ParseDate] ]
             [czlab.xlib.util.str :refer [nsb hgl? strim] ]
+            [czlab.xlib.net.comms :refer [GenerateCsrf]]
             [czlab.skaro.impl.ext :refer [GetAppKeyFromEvent] ])
 
   (:require [clojure.tools.logging :as log])
@@ -96,8 +97,7 @@
             ^Container co (.container ^Emitter src)
             ^WebSS
             mvs (.getSession evt)
-            csrf (-> ^czlab.skaro.impl.ext.ContainerAPI
-                     co (.generateCsrf))
+            csrf (GenerateCsrf)
             est (:sessionAgeSecs cfg)
             {:keys [data ctype]}
             (.loadTemplate co tpl (interpolateFunc evt csrf))
