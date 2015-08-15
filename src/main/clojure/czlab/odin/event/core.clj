@@ -17,7 +17,7 @@
   (:require [czlab.xlib.util.str :refer [strim nsb hgl?]]
             [czlab.xlib.util.core
              :refer
-             [trycr]])
+             [trap! trycr]])
 
   (:require [clojure.tools.logging :as log])
 
@@ -68,7 +68,7 @@
     {:type -1}
     (let [evt (ReadJsonKW data) ]
       (when-not (number? (:type evt))
-        (throw (EventError. "Event has no type info.")))
+        (trap! EventError "Event has no type info."))
       (merge evt extraBits))
   ))
 

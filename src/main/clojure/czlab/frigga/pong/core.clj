@@ -14,7 +14,7 @@
 
   czlab.frigga.pong.core
 
-  (:require [czlab.xlib.util.core :refer [MubleObj notnil? ]]
+  (:require [czlab.xlib.util.core :refer [MubleObj trap! notnil? ]]
             [czlab.xlib.util.str :refer [strim nsb hgl?]])
 
   (:require [clojure.tools.logging :as log])
@@ -103,7 +103,7 @@
         (log/debug "game engine got an update " evt)
         (condp = (:type evt)
           Msgs/NETWORK
-          (throw (EventError. "Unexpected network event."))
+          (trap! EventError "Unexpected network event.")
 
           Msgs/SESSION
           (onSessionMsg this evt stateRef)

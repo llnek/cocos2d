@@ -14,7 +14,7 @@
 
   czlab.odin.game.session
 
-  (:require [czlab.xlib.util.core :refer [MubleObj notnil? ]]
+  (:require [czlab.xlib.util.core :refer [trap! MubleObj notnil? ]]
             [czlab.xlib.util.str :refer [strim nsb hgl?]])
 
   (:require [clojure.tools.logging :as log])
@@ -73,7 +73,7 @@
       Receiver
 
       (onMsg [this evt]
-        (throw (Exception. "Unexpected onmsg called in PlayerSession.")))
+        (trap! Exception "Unexpected onmsg called in PlayerSession."))
         ;;(log/debug "player session " sid " , onmsg called: " evt))
 
       Session

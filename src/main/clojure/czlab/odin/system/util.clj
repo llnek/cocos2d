@@ -94,7 +94,7 @@
     (.remove pipe "WS403Responder")
     (.remove pipe "WSOCKDispatcher")
     (.addBefore pipe
-                (ErrorSinkFilter/getName)
+                ErrorSinkFilter/NAME
                 "OdinProtocolHandler" (protocolHandler ps))
     (DbgPipelineHandlers pipe)
   ))

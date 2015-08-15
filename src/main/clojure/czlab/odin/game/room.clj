@@ -16,7 +16,7 @@
 
   (:require [czlab.xlib.util.core :refer [MubleObj notnil? ]]
             [czlab.xlib.util.guids :refer [NewUUid]]
-            [czlab.xlib.util.meta :refer [MakeObjArgN]]
+            [czlab.xlib.util.meta :refer [NewObjArgN]]
             [czlab.xlib.util.str :refer [strim nsb hgl?]])
 
   (:require [clojure.tools.logging :as log])
@@ -251,7 +251,7 @@
   ^PlayRoom
   [^Game gameObj]
 
-  (let [engObj (-> ^Morphable (MakeObjArgN (.engineClass gameObj)
+  (let [engObj (-> ^Morphable (NewObjArgN (.engineClass gameObj)
                                            (atom {})
                                            (ref {}))
                    (.morph))

@@ -15,7 +15,7 @@
   czlab.frigga.pong.arena
 
   (:require [czlab.xlib.util.core
-             :refer [MubleObj notnil? RandomSign tryc]]
+             :refer [MubleObj trap! notnil? RandomSign tryc]]
             [czlab.xlib.util.process :refer [Coroutine]]
             [czlab.xlib.util.str :refer [strim nsb hgl?]])
 
@@ -417,7 +417,7 @@
                    " :-------------------> game over.")
         (.endRound eng nil)
         ;; use this to get out of the while loop
-        (throw (Exception. "game over.")))
+        (trap! Exception "game over."))
       (tryc (Thread/sleep fps)))
   ))
 
