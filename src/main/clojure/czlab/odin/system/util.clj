@@ -14,37 +14,39 @@
 
   czlab.odin.system.util
 
-  (:require [czlab.xlib.util.str :refer [strim nsb hgl?]]
-            [czlab.xlib.netty.filters :refer [DbgPipelineHandlers]]
-            [czlab.xlib.util.core
-             :refer
-             [MubleObj notnil? juid]])
-
-  (:require [clojure.tools.logging :as log])
+  (:require
+    [czlab.xlib.netty.filters :refer [DbgPipelineHandlers]]
+    [czlab.xlib.util.str :refer [strim hgl?]]
+    [czlab.xlib.util.logging :as log]
+    [czlab.xlib.util.core
+    :refer
+    [MubleObj juid]])
 
   (:use [czlab.odin.event.core])
 
-  (:import  [com.zotohlab.odin.game Game PlayRoom
-                                    Player PlayerSession]
-            [io.netty.handler.codec.http.websocketx
-             TextWebSocketFrame PingWebSocketFrame
-             PongWebSocketFrame CloseWebSocketFrame]
-            [io.netty.channel Channel ChannelHandler
-                              ChannelHandlerContext]
-            [com.zotohlab.frwk.server Emitter]
-            [com.zotohlab.skaro.core Container]
-            [com.zotohlab.frwk.netty
-             ErrorSinkFilter
-             SimpleInboundFilter]
-            [com.zotohlab.odin.event EventError Msgs Events]))
+  (:import
+    [com.zotohlab.odin.game Game PlayRoom
+    Player PlayerSession]
+    [io.netty.handler.codec.http.websocketx
+    TextWebSocketFrame PingWebSocketFrame
+    PongWebSocketFrame CloseWebSocketFrame]
+    [io.netty.channel Channel ChannelHandler
+    ChannelHandlerContext]
+    [com.zotohlab.frwk.server Emitter]
+    [com.zotohlab.skaro.core Container]
+    [com.zotohlab.frwk.netty
+    ErrorSinkFilter
+    SimpleInboundFilter]
+    [com.zotohlab.odin.event EventError Msgs Events]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- protocolHandler "Odin event handler."
+(defn- odin
+
+  "Odin event handler"
 
   ^ChannelHandler
   [^PlayerSession ps]
@@ -75,15 +77,16 @@
             (.writeAndFlush ch (PongWebSocketFrame. ct)))
 
           PongWebSocketFrame
-          (log/debug "got a pong reply back.")
+          (log/debug "got a pong reply back")
 
-          nil)))
-  ))
+          nil)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ApplyGameHandler "Jiggle the pipeline, replace standard websocket
-                       handlers with Odin."
+(defn ApplyGameHandler
+
+  "Jiggle the pipeline, replace standard websocket
+   handlers with Odin"
 
   [^PlayerSession ps ^Emitter em
    ^Channel ch]
@@ -95,9 +98,8 @@
     (.remove pipe "WSOCKDispatcher")
     (.addBefore pipe
                 ErrorSinkFilter/NAME
-                "OdinProtocolHandler" (protocolHandler ps))
-    (DbgPipelineHandlers pipe)
-  ))
+                "OdinProtocolHandler" (odin ps))
+    (DbgPipelineHandlers pipe)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -109,8 +111,7 @@
   (let [id (juid) ]
     (if (nil? cz)
       id
-      (str (.getSimpleName cz) "-" id))
-  ))
+      (str (.getSimpleName cz) "-" id))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF

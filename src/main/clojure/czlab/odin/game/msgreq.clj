@@ -14,31 +14,32 @@
 
   czlab.odin.game.msgreq
 
-  (:require [czlab.xlib.util.core :refer [MubleObj notnil?]]
-            [czlab.xlib.util.files :refer [ReadOneFile]]
-            [czlab.xlib.util.str :refer [strim nsb hgl?]]
-            [czlab.xlib.util.wfs :refer [SimPTask]]
-            [czlab.xlib.i18n.resources :refer [RStr]])
-
-  (:require [clojure.tools.logging :as log])
+  (:require
+    [czlab.xlib.util.files :refer [ReadOneFile]]
+    [czlab.xlib.util.core :refer [MubleObj ]]
+    [czlab.xlib.util.str :refer [strim hgl?]]
+    [czlab.xlib.util.logging :as log]
+    [czlab.xlib.util.wfs :refer [SimPTask]]
+    [czlab.xlib.i18n.resources :refer [RStr]])
 
   (:use [czlab.xlib.util.format]
         [czlab.odin.event.core]
         [czlab.odin.game.room]
         [czlab.odin.game.player])
 
-  (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
-            [com.zotohlab.odin.game Game PlayRoom
-                                    Player PlayerSession]
-            [com.zotohlab.skaro.io WebSockEvent]
-            [com.zotohlab.frwk.io XData]
-            [com.zotohlab.frwk.server Emitter]
-            [com.zotohlab.frwk.core Identifiable]
-            [com.zotohlab.frwk.i18n I18N]
-            [java.util ResourceBundle]
-            [io.netty.channel Channel]
-            [com.zotohlab.skaro.core Muble Container]
-            [com.zotohlab.odin.event Msgs Events]))
+  (:import
+    [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
+    [com.zotohlab.odin.game Game PlayRoom
+    Player PlayerSession]
+    [com.zotohlab.skaro.io WebSockEvent]
+    [com.zotohlab.frwk.io XData]
+    [com.zotohlab.frwk.server Emitter]
+    [com.zotohlab.frwk.core Identifiable]
+    [com.zotohlab.frwk.i18n I18N]
+    [java.util ResourceBundle]
+    [io.netty.channel Channel]
+    [com.zotohlab.skaro.core Muble Container]
+    [com.zotohlab.odin.event Msgs Events]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -46,15 +47,16 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- rError "Reply back an error."
+(defn- rError
+
+  "Reply back an error"
 
   [^Channel ch error msg]
 
-  (log/debug "replying back an error code: " error)
-  (->> (ReifySSEvent error {:message (nsb msg)})
+  (log/debug "replying back an error code: %s" error)
+  (->> (ReifySSEvent error {:message (str msg)})
        (EventToFrame)
-       (.writeAndFlush ch)
-  ))
+       (.writeAndFlush ch)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; source json = [gameid, userid, password]
@@ -62,8 +64,9 @@
 
   [evt]
 
-  (let [^Identifiable ctr (.container ^Emitter (:emitter evt))
-        rcb (I18N/getBundle (.id ctr))
+  (let [ctr (.container ^Emitter (:emitter evt))
+        rcb (-> ^Identifiable ctr (.id )
+                (I18N/getBundle ))
         ^Channel ch (:socket evt)
         arr (:source evt) ]
     (if
