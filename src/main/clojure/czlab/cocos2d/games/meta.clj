@@ -14,21 +14,22 @@
 
   czlab.cocos2d.games.meta
 
-  (:require [czlab.xlib.util.format
-             :refer [ReadJsonKW ReadJson
-                     ReadEdn WriteJson]]
-            [czlab.xlib.util.str :refer [nsb hgl? strim] ]
-            [czlab.xlib.util.dates :refer [ParseDate] ]
-            [czlab.xlib.util.files :refer [ReadOneFile ListDirs] ])
-
-  (:require [clojure.tools.logging :as log]
-            [clojure.java.io :as io])
+  (:require
+    [czlab.xlib.util.files :refer [ReadOneFile ListDirs] ]
+    [czlab.xlib.util.format
+    :refer [ReadJsonKW ReadJson
+    ReadEdn WriteJson]]
+    [czlab.xlib.util.logging :as log]
+    [clojure.java.io :as io]
+    [czlab.xlib.util.str :refer [hgl? strim] ]
+    [czlab.xlib.util.dates :refer [ParseDate] ])
 
   (:use [czlab.skaro.core.consts])
 
-  (:import  [org.apache.commons.io FileUtils]
-            [java.io File]
-            [java.util Date]))
+  (:import
+    [org.apache.commons.io FileUtils]
+    [java.io File]
+    [java.util Date]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -42,35 +43,38 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ScanGameManifests "Fetch game manifests and build an internal
-                        model of each game.  These models are then
-                        consumed by the GUI and game-engines."
+(defn ScanGameManifests
+
+  "Fetch game manifests and build an internal
+   model of each game.  These models are then
+   consumed by the GUI and game-engines"
 
   [^File appDir]
 
-  (with-local-vars [uc (transient {})
-                    mc (transient {})
-                    tmp nil
-                    gc (transient [])
-                    rc (transient []) ]
-    (let [fds (ListDirs (io/file appDir "public/ig/info")) ]
-      (doseq [^File fd (seq fds) ]
-        (let [info (merge (assoc (ReadEdn (io/file fd "game.mf"))
-                                 :gamedir (.getName fd))
-                          (-> (io/file fd "game.json")
-                              (ReadOneFile)
-                              (ReadJsonKW)))
-              {:keys [network uuid uri]} info
-              online (true? (:enabled network))]
-          ;; create a UI friendly version for freemarker
-          (var-set tmp (transient{}))
-          (doseq [[k v] (seq info)]
-            (var-set tmp (assoc! @tmp (name k) v)))
-          (var-set tmp (assoc! @tmp "network" online))
-          (var-set gc (conj! @gc (persistent! @tmp)))
-          (var-set uc (assoc! @uc uuid info))
-          (var-set mc (assoc! @mc uri info))
-          (var-set rc (conj! @rc info)))))
+  (with-local-vars
+    [uc (transient {})
+     mc (transient {})
+     tmp nil
+     gc (transient [])
+     rc (transient []) ]
+    (doseq [^File fd (->> (io/file appDir "public/ig/info")
+                          (ListDirs))
+           :let [info (merge (-> (ReadEdn (io/file fd "game.mf"))
+                                 (assoc :gamedir (.getName fd)))
+                             (-> (io/file fd "game.json")
+                                 (ReadOneFile)
+                                 (ReadJsonKW)))
+                 {:keys [network uuid uri]} info
+                 online (true? (:enabled network))]]
+      ;; create a UI friendly version for freemarker
+      (var-set tmp (transient{}))
+      (doseq [[k v] info]
+        (var-set tmp (assoc! @tmp (name k) v)))
+      (var-set tmp (assoc! @tmp "network" online))
+      (var-set gc (conj! @gc (persistent! @tmp)))
+      (var-set uc (assoc! @uc uuid info))
+      (var-set mc (assoc! @mc uri info))
+      (var-set rc (conj! @rc info)))
     (reset! GAMES-MNFS (vec (sort #(compare (.getTime ^Date (%1 :pubdate))
                                             (.getTime ^Date (%2 :pubdate)))
                                   (persistent! @rc))))
@@ -89,8 +93,7 @@
       (log/debug (keys @GAMES-UUID))
       ;;(log/debug "############ game SimpleList ##########################")
       ;;(log/debug @GAMES-LIST)
-      (log/debug ""))
-  ))
+      (log/debug ""))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -128,6 +131,5 @@
   @GAMES-UUID)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(def ^:private meta-eof nil)
+;;EOF
 

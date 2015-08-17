@@ -14,21 +14,22 @@
 
   czlab.cocos2d.games.core
 
-  (:require [czlab.xlib.util.str :refer [nsb hgl? strim] ]
-            [czlab.xlib.util.wfs :refer [SimPTask]])
-
-  (:require [clojure.tools.logging :as log])
+  (:require
+    [czlab.xlib.util.str :refer [hgl? strim] ]
+    [clojure.tools.logging :as log]
+    [czlab.xlib.util.wfs :refer [SimPTask]])
 
   (:use [czlab.skaro.core.consts]
         [czlab.xlib.util.consts]
         [czlab.cocos2d.games.meta]
         [czlab.cocos2d.site.core ])
 
-  (:import  [com.zotohlab.skaro.core Container]
-            [com.zotohlab.wflow Activity
-             WorkFlow Job PTask]
-            [com.zotohlab.frwk.server Emitter]
-            [com.zotohlab.skaro.io HTTPEvent HTTPResult]))
+  (:import
+    [com.zotohlab.skaro.core Container]
+    [com.zotohlab.wflow Activity
+    WorkFlow Job PTask]
+    [com.zotohlab.frwk.server Emitter]
+    [com.zotohlab.skaro.io HTTPEvent HTTPResult]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -41,9 +42,10 @@
 
   (let [dm (GetDftModel evt)
         bd (:body dm) ]
-    (assoc dm :body (merge bd {:games (GetGamesAsListForUI)
-                               :content "/main/games/games.ftl"}))
-  ))
+    (->> {:games (GetGamesAsListForUI)
+          :content "/main/games/games.ftl"}
+         (merge bd )
+         (assoc dm :body ))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -53,31 +55,32 @@
 
   (let [mf ((GetGamesAsHash) (.getUri evt))]
     (-> (GetDftModel evt)
-        (update-in [:metatags]
-                   #(merge
-                      %
-                      (if-not (nil? mf)
-                        {:screen-orientation (->> (:layout mf)
-                                                  (format "content=\"%s\"")) }
-                        {})
-                      {:viewport (format "content=\"%s%s%s%s\""
-                                         "width=device-width, "
-                                         "initial-scale=1.0, "
-                                         "maximum-scale=1.0,"
-                                         "user-scalable=no")
-                       :full-screen "content=\"yes\""
-                       :x5-fullscreen "content=\"true\""
-                       :360-fullscreen "content=\"true\""
-                       :apple-mobile-web-app-capable "content=\"yes\"" }))
-        (update-in [:body]
-                   #(merge
-                      %
-                      {:games (GetGamesAsListForUI)
-                       :content "/main/games/arena.ftl" }
-                      (if-not (nil? mf)
-                        {:gameid (:uuid mf)}
-                        {}))))
-  ))
+        (update-in
+          [:metatags]
+          #(merge
+             %
+             (if (some? mf)
+               {:screen-orientation (->> (:layout mf)
+                                         (format "content=\"%s\"")) }
+               {})
+             {:viewport (format "content=\"%s%s%s%s\""
+                                "width=device-width, "
+                                "initial-scale=1.0, "
+                                "maximum-scale=1.0,"
+                                "user-scalable=no")
+              :full-screen "content=\"yes\""
+              :x5-fullscreen "content=\"true\""
+              :360-fullscreen "content=\"true\""
+              :apple-mobile-web-app-capable "content=\"yes\"" }))
+        (update-in
+          [:body]
+          #(merge
+             %
+             {:games (GetGamesAsListForUI)
+              :content "/main/games/arena.ftl" }
+             (if (some? mf)
+               {:gameid (:uuid mf)}
+               {}))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -93,8 +96,7 @@
                  #(conj % "/public/vendors/owl-carousel/owl.carousel.min.js"))
       (update-in [:body]
                  #(-> (assoc % :picks (GetGamesAsListForUI))
-                      (assoc :content "/main/games/picks.ftl")))
-  ))
+                      (assoc :content "/main/games/picks.ftl")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -108,19 +110,17 @@
       (let [tpl (:template (.getv j EV_OPTS))
             ^HTTPEvent evt (.event j)
             src (.emitter evt)
-            ^Container
             co (.container src)
             {:keys [data ctype]}
-            (.loadTemplate co
-                           (str tpl)
-                           (interpolateFunc evt))
+            (-> ^Container co
+                (.loadTemplate (str tpl)
+                               (interpolateFunc evt)))
             ^HTTPResult res (.getResultObj evt) ]
         (doto res
           (.setHeader "content-type" ctype)
           (.setContent data)
           (.setStatus 200))
-        (.replyResult evt)))
-  ))
+        (.replyResult evt)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -154,7 +154,6 @@
   (reify WorkFlow
     (startWith [_]
       (doShowPage interpolateArenaPage))))
-
 
 
 ;;(ns-unmap *ns* '->AllGamesPage)
