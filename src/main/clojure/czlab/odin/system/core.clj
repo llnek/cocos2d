@@ -16,7 +16,7 @@
 
   (:require
     [czlab.xlib.util.files :refer [ReadOneFile]]
-    [czlab.xlib.util.core :refer [MubleObj ]]
+    [czlab.xlib.util.core :refer [MubleObj! ]]
     [czlab.xlib.util.logging :as log]
     [clojure.java.io :as io]
     [czlab.xlib.util.str :refer [strim hgl?]]

@@ -14,7 +14,7 @@
 
   czlab.odin.game.room
 
-  (:require [czlab.xlib.util.core :refer [MubleObj notnil? ]]
+  (:require [czlab.xlib.util.core :refer [MubleObj! notnil? ]]
             [czlab.xlib.util.guids :refer [NewUUid]]
             [czlab.xlib.util.meta :refer [NewObjArgN]]
             [czlab.xlib.util.str :refer [strim nsb hgl?]])
@@ -260,7 +260,7 @@
         sessions (ref {})
         pssArr (ref [])
         pcount (AtomicLong.)
-        impl (MubleObj)
+        impl (MubleObj!)
         rid (NewUUid)]
     (.setv impl :shutting false)
     (reify PlayRoom

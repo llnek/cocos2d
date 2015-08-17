@@ -14,7 +14,7 @@
 
   czlab.frigga.core.negamax
 
-  (:require [czlab.xlib.util.core :refer [MubleObj notnil? ]]
+  (:require [czlab.xlib.util.core :refer [MubleObj! notnil? ]]
             [czlab.xlib.util.str :refer [strim nsb hgl?]])
 
   (:require [clojure.tools.logging :as log])
@@ -118,7 +118,7 @@
   ^czlab.frigga.core.negamax.NegaSnapshotAPI
   []
 
-  (let [impl (MubleObj)]
+  (let [impl (MubleObj!)]
     (reify NegaSnapshotAPI
       (setLastBestMove [_ m] (.setv impl :lastbestmove m))
       (setOther [_ o] (.setv impl :other o))

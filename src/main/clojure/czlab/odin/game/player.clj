@@ -14,7 +14,7 @@
 
   czlab.odin.game.player
 
-  (:require [czlab.xlib.util.core :refer [MubleObj notnil? ]]
+  (:require [czlab.xlib.util.core :refer [MubleObj! notnil? ]]
             [czlab.xlib.util.str :refer [strim nsb hgl?]])
 
   (:require [clojure.tools.logging :as log])
@@ -42,7 +42,7 @@
   ^Player
   [^String user ^String pwd]
 
-  (let [impl (MubleObj) ]
+  (let [impl (MubleObj!) ]
     (reify Player
 
       (setEmailId [_ email] (.setv impl :email email))

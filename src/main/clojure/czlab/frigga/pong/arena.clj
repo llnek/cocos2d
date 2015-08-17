@@ -15,7 +15,7 @@
   czlab.frigga.pong.arena
 
   (:require [czlab.xlib.util.core
-             :refer [MubleObj trap! notnil? RandomSign tryc]]
+             :refer [MubleObj! trap! notnil? RandomSign tryc]]
             [czlab.xlib.util.process :refer [Coroutine]]
             [czlab.xlib.util.str :refer [strim nsb hgl?]])
 
@@ -75,7 +75,7 @@
 
   [x y w h]
 
-  (MubleObj {:x x :y y
+  (MubleObj! {:x x :y y
              :vx 0 :vy 0
              :height h :width w}))
 
@@ -509,7 +509,7 @@
         ba (:ball options)
         pp2 (:p2 options)
         pp1 (:p1 options)
-        impl (MubleObj) ]
+        impl (MubleObj!) ]
     (.setv impl
            :portrait
            (> (- (:top world)(:bottom world))

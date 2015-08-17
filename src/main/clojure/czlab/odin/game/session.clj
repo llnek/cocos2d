@@ -14,7 +14,7 @@
 
   czlab.odin.game.session
 
-  (:require [czlab.xlib.util.core :refer [trap! MubleObj notnil? ]]
+  (:require [czlab.xlib.util.core :refer [trap! MubleObj! notnil? ]]
             [czlab.xlib.util.str :refer [strim nsb hgl?]])
 
   (:require [clojure.tools.logging :as log])
@@ -48,7 +48,7 @@
 
   (let [created (System/currentTimeMillis)
         sid (GenerateUID (class Session))
-        impl (MubleObj {:status Events/S_NOT_CONNECTED
+        impl (MubleObj! {:status Events/S_NOT_CONNECTED
                         :shutting-down false}) ]
     (reify PlayerSession
 

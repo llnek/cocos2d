@@ -20,7 +20,7 @@
     [czlab.xlib.util.logging :as log]
     [czlab.xlib.util.core
     :refer
-    [MubleObj juid]])
+    [MubleObj! juid]])
 
   (:use [czlab.odin.event.core])
 
