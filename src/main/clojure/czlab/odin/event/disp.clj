@@ -14,19 +14,20 @@
 
   czlab.odin.event.disp
 
-  (:require [czlab.xlib.util.core :refer [tryc]]
-            [czlab.xlib.util.str :refer [strim nsb hgl?]])
-
-  (:require [clojure.tools.logging :as log]
-            [clojure.core.async :as cas
-             :refer
-             [close! go go-loop chan >! <! ]])
+  (:require
+    [czlab.xlib.util.str :refer [strim hgl?]]
+    [clojure.core.async :as cas
+    :refer
+    [close! go go-loop chan >! <! ]]
+    [czlab.xlib.util.logging :as log]
+    [czlab.xlib.util.core :refer [tryc]])
 
   (:use [czlab.odin.event.core])
 
-  (:import  [com.zotohlab.odin.event Eventee PubSub]
-            [com.zotohlab.odin.net TCPSender]
-            [io.netty.channel Channel]))
+  (:import
+    [com.zotohlab.odin.event Eventee PubSub]
+    [com.zotohlab.odin.net TCPSender]
+    [io.netty.channel Channel]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -42,9 +43,8 @@
     (sendMsg [_ msg] (.writeAndFlush ch (EventToFrame msg)))
     (isReliable [_] true)
     (shutdown [_]
-      (log/debug "going to close tcp connection " ch)
-      (tryc (.close ch)))
-  ))
+      (log/debug "going to close tcp connection %s" ch)
+      (tryc (.close ch)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -63,7 +63,7 @@
               (.unsubscribe this cb)))))
 
       (publish [_ msg]
-        (log/debug "pub message ==== " msg)
+        (log/debug "pub message ==== %s" msg)
         (doseq [c (vals @handlers)]
           (cas/go (cas/>! c msg))))
 
@@ -86,8 +86,7 @@
       (shutdown [_]
         (doseq [c (vals @handlers)]
           (cas/close! c))
-        (dosync (ref-set handlers {}))))
-  ))
+        (dosync (ref-set handlers {}))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF

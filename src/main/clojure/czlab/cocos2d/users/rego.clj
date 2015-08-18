@@ -14,25 +14,25 @@
 
   czlab.cocos2d.users.rego
 
-  (:require [czlab.xlib.util.dates :refer [ParseDate] ]
-            [czlab.xlib.util.str :refer [nsb hgl? strim] ]
-            [czlab.xlib.net.comms :refer [GenerateCsrf]]
-            [czlab.skaro.impl.ext :refer [GetAppKeyFromEvent] ])
-
-  (:require [clojure.tools.logging :as log])
+  (:require
+    [czlab.skaro.impl.ext :refer [GetAppKeyFromEvent] ]
+    [czlab.xlib.util.dates :refer [ParseDate] ]
+    [czlab.xlib.util.str :refer [hgl? strim] ]
+    [czlab.xlib.util.logging :as log]
+    [czlab.xlib.net.comms :refer [GenerateCsrf]])
 
   (:use [czlab.skaro.core.consts]
         [czlab.xlib.util.consts]
         [czlab.xlib.util.wfs]
         [czlab.cocos2d.site.core ])
 
-  (:import  [com.zotohlab.skaro.core Muble Container ConfigError]
-            [org.apache.commons.io FileUtils]
-            [com.zotohlab.wflow WorkFlow Job Activity PTask]
-            [com.zotohlab.skaro.io WebSS HTTPEvent HTTPResult]
-            [com.zotohlab.frwk.io XData]
-            [com.zotohlab.frwk.server Emitter]
-            [java.io File]))
+  (:import
+    [com.zotohlab.skaro.core Muble Container ConfigError]
+    [com.zotohlab.wflow WorkFlow Job Activity PTask]
+    [com.zotohlab.skaro.io WebSS HTTPEvent HTTPResult]
+    [com.zotohlab.frwk.io XData]
+    [com.zotohlab.frwk.server Emitter]
+    [java.io File]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -49,8 +49,7 @@
     (-> (GetDftModel evt)
         (update-in [:body]
                    #(merge % {:content "/main/users/register.ftl"
-                              :csrf csrf})))
-  ))
+                              :csrf csrf})))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -58,13 +57,10 @@
 
   [^HTTPEvent evt ^String csrf]
 
-  (let [^WebSS
-        mvs (.getSession evt)]
-    (-> (GetDftModel evt)
-        (update-in [:body]
-                   #(merge % {:content "/main/users/login.ftl"
-                              :csrf csrf})))
-  ))
+  (-> (GetDftModel evt)
+      (update-in [:body]
+                 #(merge % {:content "/main/users/login.ftl"
+                            :csrf csrf}))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -72,13 +68,10 @@
 
   [^HTTPEvent evt ^String csrf]
 
-  (let [^WebSS
-        mvs (.getSession evt)]
-    (-> (GetDftModel evt)
-        (update-in [:body]
-                   #(merge % {:content "/main/users/forgot.ftl"
-                              :csrf csrf})))
-  ))
+  (-> (GetDftModel evt)
+      (update-in [:body]
+                 #(merge % {:content "/main/users/forgot.ftl"
+                            :csrf csrf}))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -89,19 +82,21 @@
 
   (SimPTask
     (fn [^Job j]
-      (let [tpl (nsb (:template (.getv j EV_OPTS)))
+      (let [tpl (str (:template (.getv j EV_OPTS)))
             ^HTTPEvent evt (.event j)
-            ^Muble
             src (.emitter evt)
-            cfg (.getv src :emcfg)
-            ^Container co (.container ^Emitter src)
+            cfg (-> ^Muble src (.getv :emcfg))
+            ^Container co (.container src)
             ^WebSS
             mvs (.getSession evt)
             csrf (GenerateCsrf)
             est (:sessionAgeSecs cfg)
             {:keys [data ctype]}
-            (.loadTemplate co tpl (interpolateFunc evt csrf))
-            ^HTTPResult res (.getResultObj evt) ]
+            (.loadTemplate co
+                           tpl
+                           (interpolateFunc evt csrf))
+            ^HTTPResult
+            res (.getResultObj evt) ]
         (doto res
           (.setHeader "content-type" ctype)
           (.setContent data)
@@ -109,8 +104,7 @@
         (doto mvs
           (.setNew true est)
           (.setXref csrf))
-        (.replyResult evt)))
-  ))
+        (.replyResult evt)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -150,5 +144,4 @@
 ;;(ns-unmap *ns* '->ForgotPage)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF
-
 

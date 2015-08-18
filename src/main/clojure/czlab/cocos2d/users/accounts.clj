@@ -14,33 +14,33 @@
 
   czlab.cocos2d.users.accounts
 
-  (:require [czlab.xlib.util.core :refer [test-nonil ]]
-            [czlab.xlib.util.str :refer [nsb strim  hgl?]]
-            [czlab.xlib.util.wfs :refer [SimPTask]]
-            [czlab.skaro.auth.plugin :refer [MaybeSignupTest
-                                                MaybeLoginTest]]
-            [czlab.xlib.util.format :refer [WriteJson]]
-            [czlab.xlib.i18n.resources :refer [RStr]])
-
-  (:require [clojure.tools.logging :as log])
+  (:require [czlab.skaro.auth.plugin :refer [MaybeSignupTest
+    MaybeLoginTest]]
+    [czlab.xlib.util.core :refer [test-nonil ]]
+    [czlab.xlib.util.str :refer [strim  hgl?]]
+    [czlab.xlib.util.wfs :refer [SimPTask]]
+    [clojure.tools.logging :as log]
+    [czlab.xlib.util.format :refer [WriteJson]]
+    [czlab.xlib.i18n.resources :refer [RStr]])
 
   (:use [czlab.skaro.io.basicauth]
         [czlab.skaro.core.consts]
         [czlab.cocos2d.site.core ])
 
-  (:import  [com.zotohlab.skaro.runtime DuplicateUser]
-           [com.zotohlab.skaro.etc AuthPlugin]
-            [com.zotohlab.wflow If Activity
-             WorkFlow Job BoolExpr PTask Work]
-            [com.zotohlab.skaro.io WebSS HTTPEvent HTTPResult]
-            [com.zotohlab.skaro.core Muble]
-            [org.apache.commons.codec.net URLCodec]
-            [com.zotohlab.frwk.i18n I18N]
-            [java.net HttpCookie]
-            [com.zotohlab.frwk.server Emitter]
-            [com.zotohlab.frwk.core Identifiable]
-            [com.zotohlab.frwk.util BadDataError]
-            [com.zotohlab.frwk.io XData]))
+  (:import
+    [com.zotohlab.skaro.io WebSS HTTPEvent HTTPResult]
+    [com.zotohlab.skaro.runtime DuplicateUser]
+    [com.zotohlab.skaro.etc AuthPlugin]
+    [com.zotohlab.wflow If Activity
+    WorkFlow Job BoolExpr PTask Work]
+    [com.zotohlab.skaro.core Muble]
+    [org.apache.commons.codec.net URLCodec]
+    [com.zotohlab.frwk.i18n I18N]
+    [java.net HttpCookie]
+    [com.zotohlab.frwk.server Emitter]
+    [com.zotohlab.frwk.core Identifiable]
+    [com.zotohlab.frwk.util BadDataError]
+    [com.zotohlab.frwk.io XData]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -54,23 +54,25 @@
 
   (SimPTask
     (fn [^Job j]
-      (let [^HTTPEvent evt (.event j)
-            ctr (-> ^Emitter
-                    (.emitter evt) (.container))
-            ^HTTPResult res (.getResultObj evt)
-            err (:error (.getLastResult j)) ]
-        (cond
+      (let [err (:error (.getLastResult j))
+            ^HTTPEvent evt (.event j)
+            ctr (-> evt
+                    (.emitter )
+                    (.container))
+            ^HTTPResult
+            res (.getResultObj evt)]
+        (if
           (instance? DuplicateUser err)
-          (let [rcb (I18N/getBundle (.id ^Identifiable ctr))
+          (let [rcb (-> (.id ^Identifiable ctr)
+                        (I18N/getBundle ))
                 json {:error
                       {:msg (RStr rcb "acct.dup.user") }} ]
             (doto res
               (.setStatus 409)
               (.setContent (XData. (WriteJson json)))))
-          :else
+          ;else
           (.setStatus res 400))
-        (.replyResult evt)))
-  ))
+        (.replyResult evt)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -81,16 +83,16 @@
 
   (SimPTask
     (fn [^Job j]
-      (let [^HTTPEvent evt (.event j)
-            ^HTTPResult res (.getResultObj evt)
-            json { :status { :code 200 } }
-            acct (:account (.getLastResult j)) ]
-        (log/debug "successfully signed up new account " acct)
+      (let [acct (:account (.getLastResult j))
+            ^HTTPEvent evt (.event j)
+            ^HTTPResult
+            res (.getResultObj evt)
+            json {:status {:code 200 } } ]
+        (log/debug "successfully signed up new account %s" acct)
         (doto res
           (.setStatus 200)
           (.setContent (XData. (WriteJson json))))
-        (.replyResult evt)))
-  ))
+        (.replyResult evt)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -101,7 +103,7 @@
 
   (reify WorkFlow
     (startWith [_]
-      (log/debug "signup pipe-line - called.")
+      (log/debug "signup pipe-line - called")
       (If. (MaybeSignupTest "32") (doSignupOK) (doSignupFail)))))
 
 ;;(ns-unmap *ns* '->SignupHandler)
@@ -117,8 +119,7 @@
       (let [^HTTPEvent evt (.event j)
             ^HTTPResult res (.getResultObj evt) ]
         (.setStatus res 403)
-        (.replyResult evt)))
-  ))
+        (.replyResult evt)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -129,18 +130,19 @@
 
   (SimPTask
     (fn [^Job j]
-      (let [^HTTPEvent evt (.event j)
+      (let [acct (:account (.getLastResult j))
+            json {:status {:code 200 } }
+            ^HTTPEvent evt (.event j)
             ^WebSS
             mvs (.getSession evt)
             ^Muble
             src (.emitter evt)
             cfg (.getv src :emcfg)
-            acct (:account (.getLastResult j))
-            json { :status { :code 200 } }
             est (:sessionAgeSecs cfg)
             ck (HttpCookie. (name *USER-FLAG*)
-                            (nsb (:acctid acct)))
-            ^HTTPResult res (.getResultObj evt) ]
+                            (str (:acctid acct)))
+            ^HTTPResult
+            res (.getResultObj evt) ]
         (doto ck
           (.setMaxAge est)
           (.setHttpOnly false)
@@ -152,8 +154,7 @@
           (.addCookie ck)
           (.setStatus 200))
         (.setNew mvs true est)
-        (.replyResult evt)))
-  ))
+        (.replyResult evt)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -164,7 +165,7 @@
 
   (reify WorkFlow
     (startWith [_]
-      (log/debug "login pipe-line - called.")
+      (log/debug "login pipe-line - called")
       (If. (MaybeLoginTest) (doLoginOK) (doLoginFail)))))
 
 ;;(ns-unmap *ns* '->LoginHandler)
@@ -178,29 +179,25 @@
   (SimPTask
     (fn [^Job j]
       (let [^HTTPEvent evt (.event j)
-            ^Muble
-            ctr
-            (-> ^Emitter
-                (.emitter evt) (.container))
+            ctr (-> (.emitter evt)
+                    (.container))
             ^AuthPlugin
-            pa (:auth (.getv ctr K_PLUGINS))
+            pa (:auth (-> ^Muble
+                          ctr (.getv K_PLUGINS)))
             si (try (MaybeGetAuthInfo evt)
-                    (catch BadDataError e#  { :e e# }))
+                    (catch BadDataError e#  {:e e# }))
             info (or si {} )
             email (str (:email info)) ]
         (test-nonil "AuthPlugin" pa)
-        (cond
+        (if
           (and (= "18" (:captcha info))
                (hgl? email))
-          (if-some [ acct (.getAccount pa { :email email }) ]
+          (if-some [acct (.getAccount pa { :email email })]
             (do
-              (log/debug "Found account with email " email))
+              (log/debug "found account with email %s" email))
             (do
-              (log/debug "Failed to look up account with email " email)))
-
-          :else nil)
-      ))
-  ))
+              (log/debug "failed to look up account with email %s" email)))
+          nil)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -213,12 +210,11 @@
     (fn [^Job j]
       (let [^HTTPEvent evt (.event j)
             ^HTTPResult res (.getResultObj evt)
-            json { :status { :code 200 } } ]
+            json {:status {:code 200 } } ]
         (doto res
           (.setStatus 200)
           (.setContent (XData. (WriteJson json))))
-        (.replyResult evt)))
-  ))
+        (.replyResult evt)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -229,7 +225,7 @@
 
   (reify WorkFlow
     (startWith [_]
-      (log/debug "Forgot-login pipe-line - called.")
+      (log/debug "forgot-login pipe-line - called")
       (-> (doAckReply)
           (.chain (doLookupEmail))))))
 
@@ -243,15 +239,16 @@
 
   (SimPTask
     (fn [^Job j]
-      (let [^HTTPEvent evt (.event j)
+      (let [ck (HttpCookie. (name *USER-FLAG*) "")
+            json {:status {:code 200 } }
+            ^HTTPEvent evt (.event j)
             ^WebSS
             mvs (.getSession evt)
-            ^Muble
             src (.emitter evt)
-            cfg (.getv src :emcfg)
-            json { :status { :code 200 } }
-            ck (HttpCookie. (name *USER-FLAG*) "")
-            ^HTTPResult res (.getResultObj evt) ]
+            cfg (-> ^Muble src
+                    (.getv :emcfg))
+            ^HTTPResult
+            res (.getResultObj evt) ]
         (doto ck
           (.setMaxAge 0)
           (.setHttpOnly false)
@@ -263,8 +260,7 @@
           (.setStatus 200)
           (.addCookie ck))
         (.invalidate mvs)
-        (.replyResult evt)))
-  ))
+        (.replyResult evt)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -277,8 +273,6 @@
     (startWith [_]
       (log/debug "logout pipe-line - called")
       (doLogout))))
-
-
 
 ;;(ns-unmap *ns* '->LogoutHandler)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

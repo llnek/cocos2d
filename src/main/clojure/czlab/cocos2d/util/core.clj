@@ -16,17 +16,18 @@
 
   (:gen-class)
 
-  (:require [czlab.xlib.util.core :refer [test-cond]]
-            [czlab.xlib.util.str :refer [MakeString]]
-            [czlab.xlib.util.files :refer [DirRead?]])
-
-  (:require [clojure.tools.logging :as log]
-            [clojure.java.io :as io])
+  (:require
+    [czlab.xlib.util.core :refer [test-cond]]
+    [czlab.xlib.util.str :refer [MakeString]]
+    [czlab.xlib.util.logging :as log]
+    [clojure.java.io :as io]
+    [czlab.xlib.util.files :refer [DirRead?]])
 
   (:use [czlab.cocos2d.games.meta])
 
-  (:import  [java.util List Locale]
-            [java.io File]))
+  (:import
+    [java.io File]
+    [java.util List Locale]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* false)
@@ -44,8 +45,7 @@
                     ScanGameManifests)
               appDir) ]
     (doseq [a apps]
-      (log/debug "app = " (:gamedir a)))
-  ))
+      (log/debug "app = %s" (:gamedir a)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF

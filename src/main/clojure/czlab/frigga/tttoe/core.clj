@@ -14,10 +14,10 @@
 
   czlab.frigga.tttoe.core
 
-  (:require [czlab.xlib.util.core :refer [MubleObj! trap! notnil? ]]
-            [czlab.xlib.util.str :refer [strim nsb hgl?]])
-
-  (:require [clojure.tools.logging :as log])
+  (:require
+    [czlab.xlib.util.core :refer [MubleObj! trap! ]]
+    [czlab.xlib.util.logging :as log]
+    [czlab.xlib.util.str :refer [strim hgl?]])
 
   (:use [czlab.xlib.util.format]
         [czlab.cocos2d.games.meta]
@@ -25,10 +25,11 @@
         [czlab.frigga.core.util]
         [czlab.frigga.tttoe.arena])
 
-  (:import  [com.zotohlab.odin.game Game PlayRoom GameEngine
-                                    Player PlayerSession]
-            [com.zotohlab.frwk.core Morphable]
-            [com.zotohlab.odin.event EventError Msgs Events]))
+  (:import
+    [com.zotohlab.odin.game Game PlayRoom GameEngine
+    Player PlayerSession]
+    [com.zotohlab.frwk.core Morphable]
+    [com.zotohlab.odin.event EventError Msgs Events]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -49,12 +50,12 @@
           pss (:context evt)
           src (:source evt)
           cmd (ReadJsonKW src)]
-      (log/debug "TicTacToe rec'ved cmd " src " from session " pss)
-      (-> ^czlab.frigga.tttoe.arena.BoardAPI bd (.enqueue cmd)))
+      (log/debug "rec'ved cmd %s from session %s" src pss)
+      (Enqueue bd cmd))
 
     Events/STARTED
     (do
-      (log/debug "TicTacToe received started event " evt)
+      (log/debug "received started event %s" evt)
       (let [^PlayerSession ps (:context evt) ]
       (dosync
         (let [m (dissoc @stateRef (.id ps)) ]
@@ -64,80 +65,68 @@
               (.start eng {}))
             (ref-set stateRef m))))))
 
-    (log/warn "game engine: unhandled session msg " evt)
-  ))
+    (log/warn "game engine: unhandled session msg %s" evt)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn reifyEngine ""
+(defn TicTacToe ""
 
+  ^GameEngine
   [stateAtom stateRef]
 
-  (let []
-    (reify GameEngine
+  (reify
 
-      (initialize [this players]
-        (dosync
-          (ref-set stateRef (MapPlayers players))
-          (reset! stateAtom {:players players})))
+    GameEngine
 
-      (start [this options]
-        (let [[ps1 ps2] (:players @stateAtom)
-              p1 (ReifyPlayer (long \X) \X ps1)
-              p2 (ReifyPlayer (long \O) \O ps2)
-              bd (ReifyArena this {}) ]
-          (swap! stateAtom assoc :arena bd)
-          (.registerPlayers bd p1 p2)
-          (.dequeue bd nil)))
+    (initialize [this players]
+      (dosync
+        (ref-set stateRef (MapPlayers players))
+        (reset! stateAtom {:players players})))
 
-      (update [this evt]
-        (log/debug "game engine got an update " evt)
-        (condp = (:type evt)
-          Msgs/NETWORK
-          (trap! EventError "Unexpected network event.")
+    (start [this options]
+      (let [[ps1 ps2] (:players @stateAtom)
+            p1 (ReifyPlayer (long \X) \X ps1)
+            p2 (ReifyPlayer (long \O) \O ps2)
+            bd (ReifyArena this {}) ]
+        (swap! stateAtom assoc :arena bd)
+        (RegisterPlayers bd p1 p2)
+        (Dequeue bd nil)))
 
-          Msgs/SESSION
-          (onSessionMsg this evt stateRef)
+    (update [this evt]
+      (log/debug "game engine got an update %s" evt)
+      (condp = (:type evt)
+        Msgs/NETWORK
+        (trap! EventError "Unexpected network event.")
 
-          (log/warn "game engine: unhandled msg " evt)))
+        Msgs/SESSION
+        (onSessionMsg this evt stateRef)
 
-      (restart [this options]
-        (log/debug "restarting tictactoe game one more time...")
-        (let [parr (:players @stateAtom)
-              m (MapPlayers parr)]
-          (dosync (ref-set stateRef m))
-          (BCastAll (.container this)
-                    Events/RESTART (MapPlayersEx parr))))
+        (log/warn "game engine: unhandled msg %s" evt)))
 
-      (ready [this room]
-        (swap! stateAtom assoc :room room)
+    (restart [this options]
+      (log/debug "restarting tictactoe game one more time...")
+      (let [parr (:players @stateAtom)
+            m (MapPlayers parr)]
+        (dosync (ref-set stateRef m))
         (BCastAll (.container this)
-                  Events/START
-                  (MapPlayersEx (:players @stateAtom))))
+                  Events/RESTART (MapPlayersEx parr))))
 
-      (container [_] (:room @stateAtom))
+    (ready [this room]
+      (swap! stateAtom assoc :room room)
+      (BCastAll (.container this)
+                Events/START
+                (MapPlayersEx (:players @stateAtom))))
 
-      (startRound [_ obj])
-      (endRound [_ obj])
+    (container [_] (:room @stateAtom))
 
-      (stop [_] )
-      (finz [_] )
+    (startRound [_ obj])
+    (endRound [_ obj])
 
-      (state [_] @stateAtom))
-  ))
+    (stop [_] )
+    (finz [_] )
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(deftype TicTacToe [stateAtom stateRef]
+    (state [_] @stateAtom)))
 
-  Morphable
-
-  (morph [_]
-    (require 'czlab.frigga.tttoe.core)
-    (reifyEngine stateAtom stateRef)))
-
-
-(ns-unmap *ns* '->TicTacToe)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF
 

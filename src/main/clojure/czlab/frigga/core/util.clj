@@ -14,34 +14,38 @@
 
   czlab.frigga.core.util
 
-  (:require [czlab.xlib.util.core :refer [notnil? ]]
-            [czlab.xlib.util.str :refer [strim nsb hgl?]])
-
-  (:require [clojure.tools.logging :as log])
+  (:require
+    [czlab.xlib.util.core :refer :all]
+    [czlab.xlib.util.logging :as log]
+    [czlab.xlib.util.str :refer [strim hgl?]])
 
   (:use [czlab.xlib.util.format]
         [czlab.odin.event.core])
 
-  (:import  [com.zotohlab.odin.game PlayRoom GameEngine PlayerSession]))
+  (:import
+    [com.zotohlab.odin.game PlayRoom GameEngine PlayerSession]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn MapPlayers "Map ids to player sessions."
+(defn MapPlayers
+
+  "Map ids to player sessions"
 
   ;; outputs map {id -> player-session}
   [players]
 
   (reduce #(assoc %1 (.id ^PlayerSession %2) %2)
           {}
-          players
-  ))
+          players))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn MapPlayersEx "Map ids to player [number + id]."
+(defn MapPlayersEx
+
+  "Map ids to player [number + id]"
 
   ;; outputs map {id -> [player-number, player-id]}
   [players]
@@ -55,13 +59,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn BCastAll "Broadcast message to all player sessions."
+(defn BCastAll
+
+  "Broadcast message to all player sessions"
 
   [^PlayRoom room code body]
 
   (->> (ReifyNWEvent code body)
-       (.sendMsg room)
-  ))
+       (.sendMsg room)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF

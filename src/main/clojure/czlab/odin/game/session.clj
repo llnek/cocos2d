@@ -14,10 +14,10 @@
 
   czlab.odin.game.session
 
-  (:require [czlab.xlib.util.core :refer [trap! MubleObj! notnil? ]]
-            [czlab.xlib.util.str :refer [strim nsb hgl?]])
-
-  (:require [clojure.tools.logging :as log])
+  (:require
+    [czlab.xlib.util.core :refer [trap! MubleObj! ]]
+    [clojure.tools.logging :as log]
+    [czlab.xlib.util.str :refer [strim hgl?]])
 
   (:use [czlab.xlib.util.process]
         [czlab.xlib.util.guids]
@@ -25,15 +25,16 @@
         [czlab.odin.event.core]
         [czlab.odin.event.disp])
 
-  (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
-            [com.zotohlab.odin.game Game PlayRoom
-                                    Player PlayerSession]
-            [com.zotohlab.frwk.core Hierarchial]
-            [com.zotohlab.odin.core Session]
-            [io.netty.channel Channel]
-            [com.zotohlab.skaro.core Muble Container]
-            [com.zotohlab.odin.net MessageSender]
-            [com.zotohlab.odin.event Events Msgs Sender Receiver]))
+  (:import
+    [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
+    [com.zotohlab.odin.game Game PlayRoom
+    Player PlayerSession]
+    [com.zotohlab.frwk.core Hierarchial]
+    [com.zotohlab.odin.core Session]
+    [io.netty.channel Channel]
+    [com.zotohlab.skaro.core Muble Container]
+    [com.zotohlab.odin.net MessageSender]
+    [com.zotohlab.odin.event Events Msgs Sender Receiver]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -114,8 +115,7 @@
               (and (== (.getClass this)
                        (.getClass obj))
                    (== (.id ^Session obj)
-                       (.id this))))))
-  )))
+                       (.id this)))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF

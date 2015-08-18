@@ -14,15 +14,16 @@
 
   czlab.odin.game.player
 
-  (:require [czlab.xlib.util.core :refer [MubleObj! notnil? ]]
-            [czlab.xlib.util.str :refer [strim nsb hgl?]])
+  (:require
+    [czlab.xlib.util.core :refer [MubleObj! ]]
+    [czlab.xlib.util.logging :as log]
+    [czlab.xlib.util.str :refer [strim hgl?]])
 
-  (:require [clojure.tools.logging :as log])
-
-  (:import  [com.zotohlab.odin.game Game PlayRoom
-                                    Player PlayerSession]
-           [com.zotohlab.skaro.core Muble]
-            [com.zotohlab.odin.core Session]))
+  (:import
+    [com.zotohlab.odin.game Game PlayRoom
+    Player PlayerSession]
+    [com.zotohlab.skaro.core Muble]
+    [com.zotohlab.odin.core Session]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -80,8 +81,7 @@
             (doseq [^PlayerSession
                     pss (vals m)]
               (.close pss))
-            (alter PLAYER-SESS dissoc user)))))
-  ))
+            (alter PLAYER-SESS dissoc user)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -97,8 +97,7 @@
         (doseq [^Session v (vals m)]
           (.close v)))
       (alter PLAYER-SESS dissoc user)
-      p)
-  ))
+      p)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -113,8 +112,7 @@
       (let [p2 (ReifyPlayer user pwd)]
         (alter PLAYER-REGO assoc user p2)
         (alter PLAYER-SESS assoc user {})
-        p2))
-  ))
+        p2))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

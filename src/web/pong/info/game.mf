@@ -6,7 +6,7 @@
     :enabled true
     :minp 2
     :maxp 2
-    :engine  "czlab.frigga.pong.core.Pong" }
+    :engine  "czlab.frigga.pong.core/Pong" }
 
   :status true
   :uri "/arena/pong"

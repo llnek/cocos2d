@@ -14,22 +14,23 @@
 
   czlab.frigga.pong.arena
 
-  (:require [czlab.xlib.util.core
-             :refer [MubleObj! trap! notnil? RandomSign tryc]]
-            [czlab.xlib.util.process :refer [Coroutine]]
-            [czlab.xlib.util.str :refer [strim nsb hgl?]])
-
-  (:require [clojure.tools.logging :as log])
+  (:require
+    [czlab.xlib.util.process :refer [Coroutine]]
+    [czlab.xlib.util.core
+    :refer [MubleObj! trap! RandomSign tryc]]
+    [czlab.xlib.util.logging :as log]
+    [czlab.xlib.util.str :refer [strim hgl?]])
 
   (:use [czlab.xlib.util.format]
         [czlab.cocos2d.games.meta]
         [czlab.frigga.core.util]
         [czlab.odin.event.core])
 
-  (:import  [com.zotohlab.odin.game GameEngine Game
-             PlayRoom Player PlayerSession]
-           [com.zotohlab.skaro.core Muble]
-            [com.zotohlab.odin.event Msgs Events]))
+  (:import
+    [com.zotohlab.odin.game GameEngine Game
+    PlayRoom Player PlayerSession]
+    [com.zotohlab.skaro.core Muble]
+    [com.zotohlab.odin.event Msgs Events]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -49,15 +50,15 @@
 ;;
 (defprotocol ArenaAPI ""
 
-  (registerPlayers [_ p1 p2])
-  (startPoint [_ cmd])
-  (innards [_] )
-  (engine [_])
-  (resetPoint [_])
-  (restart [_])
-  (getPlayer2 [_])
-  (getPlayer1 [_])
-  (enqueue [_ cmd]))
+  (RegisterPlayers [_ p1 p2])
+  (StartPoint [_ cmd])
+  (Innards [_] )
+  (Engine [_])
+  (ResetPoint [_])
+  (Restart [_])
+  (GetPlayer2 [_])
+  (GetPlayer1 [_])
+  (Enqueue [_ cmd]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -76,8 +77,8 @@
   [x y w h]
 
   (MubleObj! {:x x :y y
-             :vx 0 :vy 0
-             :height h :width w}))
+              :vx 0 :vy 0
+              :height h :width w}))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -97,7 +98,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- rectXrect "If 2 rects intersect."
+(defn- rectXrect
+
+  "If 2 rects intersect"
 
   [ra rb]
 
@@ -108,7 +111,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- rect "Make a rect with all 4 corners."
+(defn- rect
+
+  "Make a rect with all 4 corners"
 
   ([^Muble obj]
    (rect (.getv obj :x)
@@ -120,16 +125,17 @@
    (let [h2 (halve h)
          w2 (halve w) ]
      {:left (- x w2)
-     :right (+ x w2)
-     :top (+ y h2)
-     :bottom (- y h2) })))
+      :right (+ x w2)
+      :top (+ y h2)
+      :bottom (- y h2) })))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- clamp "Ensure paddle does not go out of bound."
+(defn- clamp
 
-  [^Muble
-   paddle bbox port?]
+  "Ensure paddle does not go out of bound"
+
+  [^Muble paddle bbox port?]
 
   (let [fx (fn [op kw o1 o2] (op (kw o1) (kw o2)))
         h2 (halve (.getv paddle :height))
@@ -145,20 +151,22 @@
         (when (fx < :bottom rc bbox)
           (.setv paddle :y (+ (:bottom bbox) h2)))
         (when (fx > :top rc bbox)
-          (.setv paddle :y (- (:top bbox) h2)))))
-  ))
+          (.setv paddle :y (- (:top bbox) h2)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; The *enclosure* is the bounding box => the world.
-(defn- traceEnclosure "Check if the ball has just hit a wall."
+(defn- traceEnclosure
 
-  [^Muble ball
-   dt
-   bbox port?]
+  "Check if the ball has just hit a wall"
 
-  (with-local-vars [y (+ (.getv ball :y) (* dt (.getv ball :vy)))
-                    x (+ (.getv ball :x) (* dt (.getv ball :vx)))
-                    hit false]
+  [^Muble ball dt bbox port?]
+
+  (with-local-vars
+    [y (+ (* dt (.getv ball :vy))
+          (.getv ball :y))
+     x (+ (* dt (.getv ball :vx))
+          (.getv ball :x))
+     hit false]
     (let [sz (halve (.getv ball :height))
           sw (halve (.getv ball :width))]
       (if port?
@@ -189,17 +197,16 @@
             (var-set hit true))))
       (.setv ball :x @x)
       (.setv ball :y @y))
-    @hit
-  ))
+    @hit))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- collide? "Check if the ball has collided with a paddle."
+(defn- collide?
 
-  [^Muble p1
-   ^Muble p2
-   ^Muble ball
-   bbox port?]
+  "Check if the ball has collided with a paddle"
+
+  [^Muble p1 ^Muble p2
+   ^Muble ball bbox port?]
 
   (with-local-vars [winner 0]
     (let [hh (halve (.getv ball :height))
@@ -227,37 +234,41 @@
               (.setv ball :x (+ (:right r) hw))))
           (when (< (:top br)(:bottom r))
             (var-set winner 2)))))
-    @winner
-  ))
+    @winner))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- maybeStartNewPoint "A point has been won.
-                          Let the UI know, and reset local entities."
+(defn- maybeStartNewPoint
 
-  [^czlab.frigga.pong.arena.ArenaAPI arena winner]
+  "A point has been won
+   Let the UI know, and reset local entities"
 
-  (let [^Muble impl (.innards arena)
+  [arena winner]
+
+  (let [^Muble impl (Innards arena)
         s2 (.getv impl :score2)
         s1 (.getv impl :score1)
         src {:scores {:p2 s2 :p1 s1 }}]
     (BCastAll (-> ^GameEngine
-                  (.engine arena)
+                  (Engine arena)
                   (.container)) Events/SYNC_ARENA src)
     ;; toggle flag to skip game loop logic until new
     ;; point starts
     (.setv impl :resetting-point true)
-    (.resetPoint arena)
-  ))
+    (ResetPoint arena)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- gameOver "Game over.  Let the UI know."
+(defn- gameOver
 
-  [^czlab.frigga.pong.arena.ArenaAPI arena winner]
+  "Game over.  Let the UI know"
 
-  (let [^PlayRoom room (.container ^GameEngine (.engine arena))
-        ^Muble impl (.innards arena)
+  [arena winner]
+
+  (let [^PlayRoom room (-> ^GameEngine
+                           (Engine arena)
+                           (.container))
+        ^Muble impl (Innards arena)
         ^PlayerSession ps2 (:session (.getv impl :p2))
         ^PlayerSession ps1 (:session (.getv impl :p1))
         s2 (.getv impl :score2)
@@ -266,45 +277,46 @@
         src {:winner {:pnum (.number pwin)
                       :scores {:p2 s2 :p1 s1 }}}]
     ;; end game
-    (log/debug "game over: winner of this game is " src)
+    (log/debug "game over: winner of this game is %s" src)
     (doto room
       (BCastAll Events/SYNC_ARENA src)
-      (BCastAll Events/STOP nil))
-  ))
+      (BCastAll Events/STOP nil))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- updatePoint "A point has been won. Update the score,
-                    and maybe trigger game-over."
+(defn- updatePoint
 
-  [^czlab.frigga.pong.arena.ArenaAPI arena winner]
+  "A point has been won. Update the score,
+   and maybe trigger game-over"
 
-  (let [^Muble impl (.innards arena)
+  [arena winner]
+
+  (let [^Muble impl (Innards arena)
         nps (.getv impl :numpts)
         s2 (.getv impl :score2)
         s1 (.getv impl :score1)
         sx (if (= winner 2)
              (inc s2)
              (inc s1))]
-    (log/debug "increment score by 1, "
-               "someone lost a point. " s1  " , " s2)
+    (log/debug "increment score by 1, %s%s,%s"
+               "someone lost a point" s1  s2)
     (.setv impl :sync false)
     (if (= winner 2)
       (.setv impl :score2 sx)
       (.setv impl :score1 sx))
     (maybeStartNewPoint arena winner)
     (when (>= sx nps)
-      (gameOver arena winner))
-  ))
+      (gameOver arena winner))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- updateEntities "Move local entities per game loop."
+(defn- updateEntities
 
-  [^czlab.frigga.pong.arena.ArenaAPI arena
-   dt bbox]
+  "Move local entities per game loop"
 
-  (let [^Muble impl (.innards arena)
+  [arena dt bbox]
+
+  (let [^Muble impl (Innards arena)
         ^Muble pad2 (.getv impl :paddle2)
         ^Muble pad1 (.getv impl :paddle1)
         ^Muble ball (.getv impl :ball)
@@ -328,17 +340,20 @@
 
     (let [winner (collide? pad1 pad2 ball bbox port?) ]
       (when (> winner 0)
-        (updatePoint arena winner)))
-  ))
+        (updatePoint arena winner)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- syncClients "Update UI with states of local entities."
+(defn- syncClients
 
-  [^czlab.frigga.pong.arena.ArenaAPI arena]
+  "Update UI with states of local entities"
 
-  (let [^PlayRoom room (.container ^GameEngine (.engine arena))
-        ^Muble impl (.innards arena)
+  [arena]
+
+  (let [^PlayRoom room (-> ^GameEngine
+                           (Engine arena)
+                           (.container))
+        ^Muble impl (Innards arena)
         port? (.getv impl :portrait)
         ^Muble
         pad2 (.getv impl :paddle2)
@@ -360,21 +375,21 @@
                     :x (.getv ball :x)
                     :vy (.getv ball :vy)
                     :vx (.getv ball :vx) }} ]
-    (log/debug "sync new BALL values " (:ball src))
-    (BCastAll room Events/SYNC_ARENA src)
-  ))
+    (log/debug "sync new BALL values %s" (:ball src))
+    (BCastAll room Events/SYNC_ARENA src)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- updateArena "Update the state of the Arena per game loop."
+(defn- updateArena
 
-  [^czlab.frigga.pong.arena.ArenaAPI arena options]
+  "Update the state of the Arena per game loop"
 
-  (let [^Muble impl (.innards arena)]
+  [arena options]
+
+  (let [^Muble impl (Innards arena)]
     (if-not (true? (.getv impl :resetting-point))
-      (let [waitIntv (:syncMillis options)
-            maxpts (:numpts options)
-            world (:world options)
+      (let [{:keys[syncMillis numpts world]}
+            options
             lastTick (.getv impl :lastTick)
             lastSync (.getv impl :lastSync)
             now (System/currentTimeMillis)]
@@ -387,47 +402,49 @@
           (.setv impl :lastSync lastSync2)
           (.setv impl :lastTick now)
           ;; --- check if time to send a ball update
-          (when (> lastSync waitIntv)
+          (when (> lastSync syncMillis)
             (when (.getv impl :sync)
               (syncClients arena))
-            (.setv impl :lastSync 0)))))
-    ))
+            (.setv impl :lastSync 0)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- postUpdateArena "After update, check if either one of the
-                       score has reached the target value, and if
-                       so, end the game else pause and loop again."
+(defn- postUpdateArena
 
-  [^czlab.frigga.pong.arena.ArenaAPI arena
-   options]
+  "After update, check if either one of the
+   score has reached the target value, and if
+   so, end the game else pause and loop again"
 
-  (let [^Muble impl (.innards arena)
-        ^GameEngine eng (.engine arena)
-        fps (/ 1000 (:framespersec options))
-        nps (:numpts options)
+  [arena options]
+
+  (let [fps (/ 1000 (:framespersec options))
+        ^GameEngine eng (Engine arena)
+        ^Muble impl (Innards arena)
+        {:keys [numpts]}
+        options
         s2 (.getv impl :score2)
         s1 (.getv impl :score1)]
     (if (and (not (true? (.getv impl :resetting-point)))
-             (or (>= s2 nps)
-                 (>= s1 nps)))
+             (or (>= s2 numpts)
+                 (>= s1 numpts)))
       (do
-        (log/debug "haha score " s2
-                   " vs " s1
-                   " :-------------------> game over.")
+        (log/debug "haha score %s vs %s%s"
+                   s2 s1
+                   " :-------------------> game over")
         (.endRound eng nil)
         ;; use this to get out of the while loop
         (trap! Exception "game over."))
-      (tryc (Thread/sleep fps)))
-  ))
+      (tryc (Thread/sleep fps)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- runGameLoop "Spawn a game loop in a separate thread."
+(defn- runGameLoop
 
-  [^czlab.frigga.pong.arena.ArenaAPI arena options new?]
+  "Spawn a game loop in a separate thread"
 
-  (let [^Muble impl (.innards arena)]
+  [arena options new?]
+
+  (let [^Muble impl (Innards arena)]
     (.setv impl :lastTick (System/currentTimeMillis))
     (.setv impl :lastSync 0)
     (.setv impl :sync true)
@@ -439,27 +456,26 @@
       (Coroutine #(while true
                     (tryc (updateArena arena options))
                     (postUpdateArena arena options))
-                 {:daemon true}))
-  ))
+                 {:daemon true}))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- initEntities "Initialize all local entities."
+(defn- initEntities
 
-  [^czlab.frigga.pong.arena.ArenaAPI arena
-   pp1 pp2
-   pd ba]
+  "Initialize all local entities"
 
-  (let [^Muble impl (.innards arena)]
-    (log/debug "resetting all entities back to default positions.")
+  [arena pp1 pp2 pd ba]
+
+  (let [^Muble impl (Innards arena)]
+    (log/debug "resetting all entities back to default positions")
     (.setv impl :paddle2 (reifyPaddle (:x pp2)
-                                        (:y pp2)
-                                        (:width pd)
-                                        (:height pd)))
+                                      (:y pp2)
+                                      (:width pd)
+                                      (:height pd)))
     (.setv impl :paddle1 (reifyPaddle (:x pp1)
-                                        (:y pp1)
-                                        (:width pd)
-                                        (:height pd)))
+                                      (:y pp1)
+                                      (:width pd)
+                                      (:height pd)))
     (let [^Muble
           b (reifyBall (:x ba)
                        (:y ba)
@@ -467,17 +483,17 @@
                        (:height ba))]
       (.setv b :vx (* (RandomSign) (:speed ba)))
       (.setv b :vy (* (RandomSign) (:speed ba)))
-      (.setv impl :ball b))
-  ))
+      (.setv impl :ball b))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- pokeAndStartUI ""
 
-  [^czlab.frigga.pong.arena.ArenaAPI arena options]
+  [arena options]
 
-  (let [^PlayRoom room (.container ^GameEngine (.engine arena))
-        ^Muble impl (.innards arena)
+  (let [^PlayRoom room (-> ^GameEngine
+                           (Engine arena)(.container))
+        ^Muble impl (Innards arena)
         ^PlayerSession p2 (:session (.getv impl :p2))
         ^PlayerSession p1 (:session (.getv impl :p1))
         ^Muble
@@ -493,56 +509,57 @@
                        {:pnum (.number p1)} p1)
          (.sendMsg room))
     (BCastAll room Events/SYNC_ARENA src)
-    (log/debug "setting default ball values " src)
-  ))
+    (log/debug "setting default ball values %s" src)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ReifyArena "The local game arena."
+(defn ReifyArena
 
-  ^czlab.frigga.pong.arena.ArenaAPI
+  "The local game arena"
+
   [^GameEngine theEngine options]
 
-  (let [maxpts (:numpts options)
-        world (:world options)
-        pd (:paddle options)
-        ba (:ball options)
-        pp2 (:p2 options)
-        pp1 (:p1 options)
+  (let [{:keys [numpts world
+                paddle ball p2 p1]}
+        options
         impl (MubleObj!) ]
     (.setv impl
            :portrait
            (> (- (:top world)(:bottom world))
               (- (:right world)(:left world))))
-    (reify ArenaAPI
-      (registerPlayers [this p1Wrap p2Wrap]
+    (reify
+
+      ArenaAPI
+
+      (RegisterPlayers [this p1Wrap p2Wrap]
         (.setv impl :p2 p2Wrap)
         (.setv impl :p1 p1Wrap)
-        (initEntities this pp1 pp2 pd ba))
+        (initEntities this p1 p2 paddle ball))
 
-      (getPlayer2 [_] (-> (.getv impl :p2)
-                          (:player)))
-      (getPlayer1 [_] (-> (.getv impl :p1)
+      (GetPlayer2 [_] (-> (.getv impl :p2)
                           (:player)))
 
-      (engine [_] theEngine)
-      (innards [_] impl)
+      (GetPlayer1 [_] (-> (.getv impl :p1)
+                          (:player)))
 
-      (restart [_]
+      (Engine [_] theEngine)
+      (Innards [_] impl)
+
+      (Restart [_]
         (.setv impl :resetting-point false)
         (.setv impl :score2 0)
         (.setv impl :score1 0))
 
-      (resetPoint [this]
-        (initEntities this pp1 pp2 pd ba)
-        (.startPoint this {}))
+      (ResetPoint [this]
+        (initEntities this p1 p2 paddle ball)
+        (.StartPoint this {}))
 
-      (startPoint [this cmd]
+      (StartPoint [this cmd]
         (pokeAndStartUI this options)
         (runGameLoop this options
                      (true? (:new cmd))))
 
-      (enqueue [_ evt]
+      (Enqueue [_ evt]
         (let [^PlayerSession p2 (:session (.getv impl :p2))
               ^PlayerSession p1 (:session (.getv impl :p1))
               ^PlayerSession pss (:context evt)
@@ -552,7 +569,7 @@
               pt (if (= pnum 1) p2 p1)
               src (:source evt)
               cmd (ReadJsonKW src)
-              ;;pv (* (:dir (kw cmd)) (:speed pd))
+              ;;pv (* (:dir (kw cmd)) (:speed paddle))
               pv (:pv (kw cmd))
               ^Muble
               other (if (= pnum 2)
@@ -562,8 +579,7 @@
             (.setv other :vx pv)
             (.setv other :vy pv))
           (->> (ReifySSEvent Events/SYNC_ARENA cmd pt)
-               (.sendMsg room))))
-    )))
+               (.sendMsg room)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF

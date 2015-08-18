@@ -86,11 +86,11 @@
     ;;set true for debugging
     (when true
       (log/debug "############ game manifests ##########################")
-      (log/debug @GAMES-MNFS)
+      (log/debug "%s" @GAMES-MNFS)
       (log/debug "############ game UriHash ##########################")
-      (log/debug (keys @GAMES-HASH))
+      (log/debug "%s" (keys @GAMES-HASH))
       (log/debug "############ game UUID ##########################")
-      (log/debug (keys @GAMES-UUID))
+      (log/debug "%s" (keys @GAMES-UUID))
       ;;(log/debug "############ game SimpleList ##########################")
       ;;(log/debug @GAMES-LIST)
       (log/debug ""))))

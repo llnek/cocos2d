@@ -14,13 +14,13 @@
 
   czlab.cocos2d.site.core
 
-  (:require [czlab.xlib.util.dates :refer [ParseDate]]
-            [czlab.xlib.util.files :refer [ListFiles]]
-            [czlab.xlib.util.str :refer [nsb hgl? strim]]
-            [czlab.skaro.impl.ext :refer [GetAppKeyFromEvent]])
-
-  (:require [clojure.tools.logging :as log]
-            [clojure.java.io :as io])
+  (:require
+    [czlab.skaro.impl.ext :refer [GetAppKeyFromEvent]]
+    [czlab.xlib.util.dates :refer [ParseDate]]
+    [czlab.xlib.util.files :refer [ListFiles]]
+    [czlab.xlib.util.str :refer [hgl? strim]]
+    [clojure.tools.logging :as log]
+    [clojure.java.io :as io])
 
   (:use [czlab.skaro.core.consts]
         [czlab.xlib.util.wfs]
@@ -28,15 +28,15 @@
         [czlab.xlib.util.consts]
         [czlab.odin.system.core])
 
-  (:import  [com.zotohlab.skaro.core Container ConfigError]
-            [com.zotohlab.skaro.runtime AppMain]
-            [org.apache.commons.io FileUtils]
-            [com.zotohlab.frwk.server Emitter]
-            [com.zotohlab.wflow Activity
-             WorkFlow Job PTask]
-            [com.zotohlab.skaro.io HTTPEvent HTTPResult]
-            [com.zotohlab.frwk.io XData]
-            [java.io File]))
+  (:import
+    [com.zotohlab.skaro.core Container ConfigError]
+    [com.zotohlab.skaro.runtime AppMain]
+    [com.zotohlab.frwk.server Emitter]
+    [com.zotohlab.wflow Activity
+    WorkFlow Job PTask]
+    [com.zotohlab.skaro.io HTTPEvent HTTPResult]
+    [com.zotohlab.frwk.io XData]
+    [java.io File]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -53,13 +53,12 @@
   [^File appDir]
 
   (with-local-vars [rc (transient [])]
-    (let [fds (ListFiles (io/file appDir "public/ig/res/main/doors")
-                            "png" false) ]
+    (let [fds (-> (io/file appDir "public/ig/res/main/doors")
+                  (ListFiles  "png")) ]
       (doseq [^File fd fds]
         (var-set rc (conj! @rc (.getName fd)))))
     (reset! DOORS (persistent! @rc))
-    (log/debug "How many doors ? " (count @DOORS))
-  ))
+    (log/debug "how many doors ? %s" (count @DOORS))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -70,31 +69,33 @@
 
   (reify AppMain
     (contextualize [_ ctr]
-      (let [d (.getAppDir ^Container ctr)]
-        (ScanGameManifests d)
-        (maybeCheckDoors d))
+      (doto (.getAppDir ^Container ctr)
+        (ScanGameManifests )
+        (maybeCheckDoors ))
       (OdinInit ctr)
-      (log/info "My AppMain contextualized by container " ctr))
+      (log/info "app-main contextualized by container %s" ctr))
 
     (configure [_ options]
-      (log/info "My AppMain configured with options " options))
+      (log/info "app-main configured with options %s" options))
 
     (initialize [_]
-      (log/info "My AppMain initialized!"))
+      (log/info "app-main initialized!"))
 
     (start [_]
-      (log/info "My AppMain started"))
+      (log/info "app-main started"))
 
     (stop [_]
-      (log/info "My AppMain stopped"))
+      (log/info "app-main stopped"))
 
     (dispose [_]
-      (log/info "My AppMain finz'ed"))))
+      (log/info "app-main finz'ed"))))
 
 ;;(ns-unmap *ns* '->MyAppMain)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn GetDftModel "Return a default object for Freemarker processing."
+(defn GetDftModel
+
+  "Return a default object for Freemarker processing."
 
   [^HTTPEvent evt]
 
@@ -102,22 +103,18 @@
         uid (if (nil? ck)
               "Guest"
               (strim (.getValue ck)))]
-    {
-      :title "ZotohLab | Fun &amp; Games."
-      :encoding "UTF-8"
-      :description "Hello World!"
-      :stylesheets []
-      :scripts []
-      :metatags {
-        :keywords "content=\"web browser games mobile ios android windows phone\""
-        :description "content=\"Hello World!\""
-        :viewport "content=\"width=device-width, initial-scale=1.0\""
-      }
-      :appkey (GetAppKeyFromEvent evt)
-      :profile { :user uid }
-      :body {}
-    }
-  ))
+    {:title "ZotohLab | Fun &amp; Games."
+     :encoding "utf-8"
+     :description "Bonjour!"
+     :stylesheets []
+     :scripts []
+     :metatags
+     {:keywords "content=\"web browser games mobile ios android windows phone\""
+      :description "content=\"Hello World!\""
+      :viewport "content=\"width=device-width, initial-scale=1.0\"" }
+     :appkey (GetAppKeyFromEvent evt)
+     :profile {:user uid }
+     :body {} }))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -129,8 +126,7 @@
       (update-in [:body]
                  #(merge %
                          {:doors @DOORS
-                          :content "/main/index.ftl"}))
-  ))
+                          :content "/main/index.ftl"}))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -142,12 +138,12 @@
     (fn [^Job j]
       (let [tpl (:template (.getv j EV_OPTS))
             ^HTTPEvent evt (.event j)
-            ^Emitter src (.emitter evt)
+            src (.emitter evt)
             ^Container
             co (.container src)
             {:keys [data ctype]}
             (.loadTemplate co
-                           (str tpl)
+                           tpl
                            (interpolateIndexPage evt))
             ^HTTPResult res (.getResultObj evt) ]
         (doto res
@@ -167,9 +163,7 @@
     (startWith [_]
       (doShowPage))))
 
-
 ;;(ns-unmap *ns* '->IndexPage)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF
-
 

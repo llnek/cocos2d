@@ -14,17 +14,18 @@
 
   czlab.odin.event.core
 
-  (:require [czlab.xlib.util.str :refer [strim nsb hgl?]]
-            [czlab.xlib.util.core
-             :refer
-             [trap! trycr]])
-
-  (:require [clojure.tools.logging :as log])
+  (:require
+    [czlab.xlib.util.str :refer [strim hgl?]]
+    [czlab.xlib.util.logging :as log]
+    [czlab.xlib.util.core
+    :refer
+    [trap! trycr]])
 
   (:use [czlab.xlib.util.format])
 
-  (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
-            [com.zotohlab.odin.event Msgs Events EventError]))
+  (:import
+    [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
+    [com.zotohlab.odin.event Msgs Events EventError]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -32,7 +33,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn EventToFrame "Turn data into websocket frames."
+(defn EventToFrame
+
+  "Turn data into websocket frames"
 
   (^TextWebSocketFrame
     [etype body]
@@ -63,14 +66,13 @@
 
   [^String data extraBits]
 
-  (log/debug "decoding json: " data)
+  (log/debug "decoding json: %s" data)
   (trycr
     {:type -1}
     (let [evt (ReadJsonKW data) ]
       (when-not (number? (:type evt))
         (trap! EventError "Event has no type info."))
-      (merge evt extraBits))
-  ))
+      (merge evt extraBits))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -105,7 +107,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ReifyNWEvent "Make a Network Event."
+(defn ReifyNWEvent
+
+  "Make a Network Event"
 
   ([ecode source]
    (ReifyNWEvent ecode source true))
@@ -116,7 +120,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ReifySSEvent "Make a Session Event."
+(defn ReifySSEvent
+
+  "Make a Session Event"
 
   ([ecode source]
    (ReifySSEvent ecode source nil))

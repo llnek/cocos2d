@@ -14,15 +14,16 @@
 
   czlab.frigga.core.negamax
 
-  (:require [czlab.xlib.util.core :refer [MubleObj! notnil? ]]
-            [czlab.xlib.util.str :refer [strim nsb hgl?]])
+  (:require
+    [czlab.xlib.util.core :refer [MubleObj! ]]
+    [czlab.xlib.util.logging :as log]
+    [czlab.xlib.util.str :refer [strim hgl?]])
 
-  (:require [clojure.tools.logging :as log])
-
-  (:import  [com.zotohlab.odin.game Game PlayRoom
-             Board Player PlayerSession]
-           [com.zotohlab.skaro.core Muble]
-            [com.zotohlab.odin.core Session]))
+  (:import
+    [com.zotohlab.odin.game Game PlayRoom
+    Board Player PlayerSession]
+    [com.zotohlab.skaro.core Muble]
+    [com.zotohlab.odin.core Session]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -33,7 +34,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defprotocol NegaAlgoAPI "" (evaluate [_]))
+(defprotocol NegaAlgoAPI "" (Evaluate [_]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -41,35 +42,37 @@
 
   ""
 
-  (setLastBestMove [_ m] )
-  (setOther [_ o] )
-  (setCur [_ c] )
-  (setState [_ s] )
-  (lastBestMove [_] )
-  (other [_] )
-  (cur [_] )
-  (state [_] ))
+  (SetLastBestMove [_ m] )
+  (SetOther [_ o] )
+  (SetCur [_ c] )
+  (SetState [_ s] )
+  (LastBestMove [_] )
+  (Other [_] )
+  (Cur [_] )
+  (State [_] ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn NegaMax "The Nega-Max algo implementation."
-  [^czlab.frigga.core.negamax.NegaSnapshotAPI
-   game
-   ^Board board
+(defn NegaMax
+
+  "The Nega-Max algo implementation"
+
+  [^Board board game
    maxDepth depth alpha beta]
 
   (if (or (== depth 0)
           (.isOver board game))
     (.evalScore board game)
     ;;:else
-    (with-local-vars [openMoves (.getNextMoves board game)
-                      bestValue (- PINF)
-                      localAlpha alpha
-                      halt false
-                      rc 0
-                      bestMove (nth openMoves 0) ]
+    (with-local-vars
+      [openMoves (.getNextMoves board game)
+       bestValue (- PINF)
+       localAlpha alpha
+       halt false
+       rc 0
+       bestMove (nth openMoves 0) ]
       (when (== depth maxDepth)
-        (.setLastBestMove game (nth @openMoves 0))) ;; this will change overtime, most likely
+        (SetLastBestMove game (nth @openMoves 0))) ;; this will change overtime, most likely
       (loop [n 0]
         (when-not (or (> n (count @openMoves))
                       (true? @halt))
@@ -77,10 +80,11 @@
             (doto board
               (.makeMove game move)
               (.switchPlayer game))
-            (var-set rc (- (NegaMax game board maxDepth
+            (var-set rc (- (NegaMax board
+                                    game
+                                    maxDepth
                                     (dec depth)
-                                    (- beta)
-                                    (- @localAlpha))))
+                                    (- beta) (- @localAlpha))))
             (doto board
               (.switchPlayer game)
               (.unmakeMove game move))
@@ -89,46 +93,46 @@
               (var-set localAlpha @rc)
               (var-set bestMove move)
               (when (== depth maxDepth)
-                (.setLastBestMove game move))
+                (SetLastBestMove game move))
               (when (>= @localAlpha beta)
                 (var-set halt true)))
             (recur (inc n) ))))
-      @bestValue)
-  ))
+      @bestValue)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ReifyNegaMaxAlgo  "Create an implementation of nega-max."
+(defn ReifyNegaMaxAlgo
 
-  ^czlab.frigga.core.negamax.NegaAlgoAPI
+  "Create an implementation of nega-max"
+
   [^Board board]
 
-  (reify NegaAlgoAPI
-    (evaluate [_]
-      (let [^czlab.frigga.core.negamax.NegaSnapshotAPI
-            snapshot (.takeSnapshot board) ]
-        ;;(require 'czlab.frigga.core.negamax)
-        (NegaMax snapshot board 10 10 (- PINF) PINF)
-        (.lastBestMove snapshot)))))
+  (reify
+    NegaAlgoAPI
+    (Evaluate [_]
+      (let [snapshot (.takeSnapshot board) ]
+        (NegaMax board snapshot 10 10 (- PINF) PINF)
+        (LastBestMove snapshot)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ReifySnapshot "Create a snapshot."
+(defn ReifySnapshot
 
-  ^czlab.frigga.core.negamax.NegaSnapshotAPI
+  "Create a snapshot"
+
   []
 
   (let [impl (MubleObj!)]
-    (reify NegaSnapshotAPI
-      (setLastBestMove [_ m] (.setv impl :lastbestmove m))
-      (setOther [_ o] (.setv impl :other o))
-      (setCur [_ c] (.setv impl :cur c))
-      (setState [_ s] (.setv impl :state s))
-      (lastBestMove [_] (.getv impl :lastbestmove))
-      (other [_] (.getv impl :other))
-      (cur [_] (.getv impl :cur))
-      (state [_] (.getv impl :state)))
-  ))
+    (reify
+      NegaSnapshotAPI
+      (SetLastBestMove [_ m] (.setv impl :lastbestmove m))
+      (SetOther [_ o] (.setv impl :other o))
+      (SetCur [_ c] (.setv impl :cur c))
+      (SetState [_ s] (.setv impl :state s))
+      (LastBestMove [_] (.getv impl :lastbestmove))
+      (Other [_] (.getv impl :other))
+      (Cur [_] (.getv impl :cur))
+      (State [_] (.getv impl :state)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF

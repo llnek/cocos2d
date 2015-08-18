@@ -14,12 +14,12 @@
 
   czlab.odin.game.room
 
-  (:require [czlab.xlib.util.core :refer [MubleObj! notnil? ]]
-            [czlab.xlib.util.guids :refer [NewUUid]]
-            [czlab.xlib.util.meta :refer [NewObjArgN]]
-            [czlab.xlib.util.str :refer [strim nsb hgl?]])
-
-  (:require [clojure.tools.logging :as log])
+  (:require
+    [czlab.xlib.util.core :refer [MubleObj! ]]
+    [czlab.xlib.util.guids :refer [NewUUid]]
+    [czlab.xlib.util.logging :as log]
+    [czlab.xlib.util.meta :refer [NewObjArgN]]
+    [czlab.xlib.util.str :refer [strim hgl?]])
 
   (:use [czlab.xlib.util.format]
         [czlab.odin.system.util]
@@ -28,16 +28,17 @@
         [czlab.odin.game.session]
         [czlab.cocos2d.games.meta])
 
-  (:import  [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
-            [com.zotohlab.odin.game Game PlayRoom PlayerSession
-                                    Player GameEngine]
-            [com.zotohlab.frwk.core Morphable]
-            [com.zotohlab.odin.core Session]
-            [java.util.concurrent.atomic AtomicLong]
-            [io.netty.channel Channel]
-            [com.zotohlab.skaro.core Muble Container]
-            [com.zotohlab.odin.event Events Eventee PubSub
-             Msgs Sender Receiver Dispatchable]))
+  (:import
+    [io.netty.handler.codec.http.websocketx TextWebSocketFrame]
+    [com.zotohlab.odin.game Game PlayRoom PlayerSession
+    Player GameEngine]
+    [com.zotohlab.odin.core Session]
+    [java.util.concurrent.atomic AtomicLong]
+    [io.netty.channel Channel]
+    [com.zotohlab.frwk.server Emitter]
+    [com.zotohlab.skaro.core CLJShim Muble Container]
+    [com.zotohlab.odin.event Events Eventee PubSub
+    Msgs Sender Receiver Dispatchable]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -53,19 +54,23 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn LookupGame "Find a game from the registry."
+(defn LookupGame
+
+  "Find a game from the registry"
 
   ^Game
   [^String gameid]
 
-  (log/debug "Looking for game with uuid = " gameid)
+  (log/debug "looking for game with uuid = %s" gameid)
   (when-some [g (get (GetGamesAsUUID) gameid) ]
-    (let [{flag :enabled minp :minp maxp :maxp eng :engine
-           :or {flag false minp 1 maxp 1 eng ""}}
+    (let [{:keys [enabled minp maxp engine]
+           :or {enabled false
+                minp 1
+                maxp 1 engine ""}}
           (:network g)]
-      (log/debug "Found game with uuid = " gameid)
+      (log/debug "found game with uuid = %s" gameid)
       (reify Game
-        (supportMultiPlayers [_] (true? flag))
+        (supportMultiPlayers [_] (true? enabled))
         (maxPlayers [_] (if (> maxp 0)
                           (int maxp)
                           Integer/MAX_VALUE))
@@ -73,15 +78,16 @@
                           (int minp)
                           (int 1)))
         (getName [_] (:name g))
-        (engineClass [_] eng)
+        (engineClass [_] engine)
         (info [_] g)
         (id [_] (:uuid g))
-        (unload [_] nil)))
-  ))
+        (unload [_] nil)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn RemoveGameRoom "Remove an active room."
+(defn RemoveGameRoom
+
+  "Remove an active room"
 
   ^PlayRoom
   [^String game ^String room]
@@ -89,16 +95,17 @@
   (dosync
     (when-some [gm (@GAME-ROOMS game) ]
       (when-some [r (get gm room)]
-        (log/debug "Remove room(A): " room ", game: " game)
+        (log/debug "remove room(A): %s, game: %s" room game)
         (alter GAME-ROOMS
                assoc
                game (dissoc gm room))
-      r))
-  ))
+      r))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn RemoveFreeRoom "Remove a waiting room."
+(defn RemoveFreeRoom
+
+  "Remove a waiting room"
 
   ^PlayRoom
   [^String game ^String room]
@@ -106,17 +113,18 @@
   (dosync
     (when-some [gm (@FREE-ROOMS game) ]
       (when-some [r (get gm room)]
-        (log/debug "Remove room(F): " room ", game: " game)
+        (log/debug "remove room(F): %s, game: %s" room game)
         (alter FREE-ROOMS
                assoc
                game (dissoc gm room))
-      r))
-  ))
+      r))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn AddFreeRoom "Add a new partially filled room
-                   into the pending set."
+(defn AddFreeRoom
+
+  "Add a new partially filled room
+   into the pending set"
 
   ^PlayRoom
   [^PlayRoom room]
@@ -126,17 +134,18 @@
           g (.game room)
           gid (.id g)
           m (or (@FREE-ROOMS gid) {}) ]
-      (log/debug "Add a room(F): " rid ", game: " gid)
+      (log/debug "add a room(F): %s, game: %s" rid gid)
       (alter FREE-ROOMS
              assoc
              gid
              (assoc m rid room))
-      room)
-  ))
+      room)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn AddGameRoom "Move room into the active set."
+(defn AddGameRoom
+
+  "Move room into the active set"
 
   ^PlayRoom
   [^PlayRoom room]
@@ -146,13 +155,12 @@
           g (.game room)
           gid (.id g)
           m (or (@GAME-ROOMS gid) {}) ]
-      (log/debug "Add a room(A): " rid ", game: " gid)
+      (log/debug "add a room(A): %s, game: %s" rid gid)
       (alter GAME-ROOMS
              assoc
              gid
              (assoc m rid room))
-      room)
-  ))
+      room)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Returns a free room which is detached from the pending set.
@@ -170,13 +178,12 @@
       (when-some [^PlayRoom r (if (not-empty gm)
                                (first (vals gm))) ]
         (let [rid (.roomId r)]
-          (log/debug "Found a room(F): " rid ", game: " gid)
+          (log/debug "found a room(F): %s, game: %s" rid gid)
           (alter FREE-ROOMS
                  assoc
                  gid
                  (dissoc gm rid)))
-        r))
-  ))
+        r))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -187,13 +194,12 @@
   (dosync
     (when-some [gm (@FREE-ROOMS game) ]
       (when-some [r (get gm room)]
-        (log/debug "Found a room(F): " room ", game: " game)
+        (log/debug "found a room(F): %s, game: %s" room game)
         (alter FREE-ROOMS
                assoc
                game
                (dissoc gm room))
-        r))
-  ))
+        r))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -204,9 +210,8 @@
 
   (dosync
     (when-some [gm (@GAME-ROOMS game) ]
-      (log/debug "Looking for room: " room ", game: " game)
-      (get gm room))
-  ))
+      (log/debug "looking for room: %s, game: %s" room game)
+      (get gm room))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -221,8 +226,7 @@
     (session [_] ps)
 
     Receiver
-    (onMsg [_ evt] (.sendMsg ps evt))
-  ))
+    (onMsg [_ evt] (.sendMsg ps evt))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -231,8 +235,7 @@
   [^PlayRoom room evt]
 
   (when-some [^Sender s (:context evt)]
-    (.sendMsg s evt)
-  ))
+    (.sendMsg s evt)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -246,15 +249,18 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ReifyPlayRoom ""
+(defn- reifyPlayRoom ""
 
   ^PlayRoom
-  [^Game gameObj]
+  [^Game gameObj options]
 
-  (let [engObj (-> ^Morphable (NewObjArgN (.engineClass gameObj)
-                                           (atom {})
-                                           (ref {}))
-                   (.morph))
+  (let [^Container
+        ctr (-> ^Emitter
+                (:emitter options)
+                (.container))
+        crt (.getCljRt ctr)
+        engObj (.callEx crt (.engineClass gameObj)
+                            (object-array [(atom {}) (ref {})]))
         created (System/currentTimeMillis)
         disp (ReifyDispatcher)
         sessions (ref {})
@@ -317,7 +323,7 @@
       (activate [this]
         (let [^GameEngine eng (.engine this)
               sss (seq @pssArr)]
-          (log/debug "activating room " rid)
+          (log/debug "activating room %s" rid)
           (.setv impl :active true)
           (doseq [s sss]
             (.addHandler this (mkNetworkSubr s)))
@@ -336,17 +342,17 @@
         (condp = (:type msg)
           Msgs/NETWORK (onNetworkMsg this msg)
           Msgs/SESSION (onSessionMsg this msg)
-          (log/warn "room.sendmsg: unhandled event " msg)))
+          (log/warn "room.sendmsg: unhandled event %s" msg)))
 
       Receiver
 
       (onMsg [this evt]
         (let [^GameEngine eng (.engine this) ]
-          (log/debug "room got an event " evt)
+          (log/debug "room got an event %s" evt)
           (condp = (:type evt)
             Msgs/NETWORK (onNetworkMsg this evt)
             Msgs/SESSION (.update eng evt)
-            (log/warn "room.onmsg: unhandled event " evt))))
+            (log/warn "room.onmsg: unhandled event %s" evt))))
 
       Object
 
@@ -362,20 +368,18 @@
               (and (== (.getClass this)
                        (.getClass obj))
                    (== (.roomId ^PlayRoom obj)
-                       (.roomId this))))))
-  )))
+                       (.roomId this)))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn NewFreeRoom ""
 
   ^PlayerSession
-  [^Game game ^Player py]
+  [^Game game ^Player py options]
 
-  (let [room (ReifyPlayRoom game) ]
-    (log/debug "created a new play room: " (.roomId room))
-    (.connect room py)
-  ))
+  (let [room (reifyPlayRoom game options) ]
+    (log/debug "created a new play room: %s" (.roomId room))
+    (.connect room py)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -393,7 +397,7 @@
           (AddGameRoom room))
         (AddFreeRoom room)))
     (when (nil? @pss)
-      (var-set pss (NewFreeRoom game plyr))
+      (var-set pss (NewFreeRoom game plyr options))
       (AddFreeRoom (.room ^PlayerSession @pss)))
     (when-some [^PlayerSession ps @pss]
       (let [^Channel ch (:socket options)
@@ -403,7 +407,7 @@
                  :pnum (.number ps)}
             evt (ReifySSEvent Events/PLAYREQ_OK src) ]
         (ApplyGameHandler ps (:emitter options) ch)
-        (log/debug "replying back to user: " evt)
+        (log/debug "replying back to user: %s" evt)
         (.writeAndFlush ch (EventToFrame evt))
         (->> (ReifyNWEvent Events/PLAYER_JOINED
                            {:pnum (.number ps)
@@ -412,8 +416,7 @@
         (when (.canActivate room)
           (log/debug "room.canActivate = true")
           (.activate room))))
-    @pss
-  ))
+    @pss))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -433,7 +436,7 @@
             evt (ReifySSEvent Events/JOINREQ_OK src) ]
         (ApplyGameHandler pss (:emitter options) ch)
         (.writeAndFlush ch (EventToFrame evt))
-        (log/debug "replying back to user: " evt)
+        (log/debug "replying back to user: %s" evt)
         (when-not (.isActive room)
           (if (.canActivate room)
             (do
@@ -441,8 +444,7 @@
               (.activate room)
               (AddGameRoom room))
             (AddFreeRoom room)))
-        pss))
-  ))
+        pss))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF

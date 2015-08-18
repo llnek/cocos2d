@@ -64,7 +64,8 @@
 
   [evt]
 
-  (let [ctr (.container ^Emitter (:emitter evt))
+  (let [ctr (-> ^Emitter
+                (:emitter evt)(.container))
         rcb (-> ^Identifiable ctr (.id )
                 (I18N/getBundle ))
         ^Channel ch (:socket evt)
@@ -72,10 +73,11 @@
     (if
       (and (vector? arr)
            (= (count arr) 3))
-      (with-local-vars [plyr nil
-                        gm nil
-                        pss nil
-                        room nil]
+      (with-local-vars
+        [plyr nil
+         gm nil
+         pss nil
+         room nil]
         ;; maybe get the requested game?
         (let [g (LookupGame (first arr))]
           (if (and (some? g)
@@ -86,7 +88,7 @@
                     (RStr rcb "game.notok"))))
         ;; maybe get the player?
         (if-some [p (LookupPlayer (nth arr 1)
-                                 (nth arr 2)) ]
+                                  (nth arr 2)) ]
           (var-set plyr p)
           (rError ch
                   Events/USER_NOK
@@ -105,8 +107,7 @@
       ;;else
       (rError ch
               Events/PLAYREQ_NOK
-              (RStr rcb "bad.req")))
-  ))
+              (RStr rcb "bad.req")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Request to join a specific game room.  Not used now.
@@ -115,20 +116,22 @@
 
   [evt]
 
-  (let [^Identifiable ctr (.container ^Emitter (:emitter evt))
+  (let [^Identifiable ctr (-> ^Emitter
+                              (:emitter evt)(.container))
         rcb (I18N/getBundle (.id ctr))
         ^Channel ch (:socket evt)
         arr (:source evt) ]
     (if
       (and (vector? arr)
            (= (count arr) 4))
-      (with-local-vars [plyr nil
-                        pss nil
-                        gm nil
-                        room nil]
+      (with-local-vars
+        [plyr nil
+         pss nil
+         gm nil
+         room nil]
         ;; maybe get the player?
         (if-some [p (LookupPlayer (nth arr 2)
-                                 (nth arr 3)) ]
+                                  (nth arr 3)) ]
           (var-set plyr p)
           (rError ch
                   Events/USER_NOK
@@ -138,7 +141,7 @@
           (let [gid (nth arr 0)
                 rid (nth arr 1)
                 r (or (LookupGameRoom gid rid)
-                           (LookupFreeRoom gid rid)) ]
+                      (LookupFreeRoom gid rid)) ]
             (if (nil? r)
               (rError ch Events/ROOM_NOK (RStr rcb "room.bad"))
               (do
@@ -151,8 +154,7 @@
       ;;else
       (rError ch
               Events/JOINREQ_NOK
-              (RStr rcb "bad.req")))
-  ))
+              (RStr rcb "bad.req")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF
