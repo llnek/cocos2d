@@ -56,16 +56,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- cleanPublic ""
-
-  []
-
-  (a/CleanDir (fp! (ge :basedir) "public/ig"))
-  (a/CleanDir (fp! (ge :websrc)))
-  (a/CleanDir (fp! (ge :webcss))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
 (defn- onbabel ""
 
   [wappid f & {:keys [postgen dir paths]
@@ -437,7 +427,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftask games ""
+(deftask rel ""
 
   []
 
@@ -447,16 +437,6 @@
       (a/CleanDir (fp! (ge :basedir) "public/ig"))
       (a/CleanDir (fp! (ge :websrc)))
       (a/CleanDir (fp! (ge :webcss))))
-    (buildWebApps)
-    fileset))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(deftask rel ""
-
-  []
-
-  (bc/with-pre-wrap fileset
     (buildWebApps)
     (yuiCSS)
     (yuiJS)
@@ -538,8 +518,7 @@
                    #(cs/replace % "@@APPID@@" appid))
 
     (b/ReplaceFile (fp! (ge :webDir) appid "src/ccconfig.js")
-                   #(cs/replace % "@@APPID@@" appid))
-  ))
+                   #(cs/replace % "@@APPID@@" appid))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -550,8 +529,7 @@
 
   (bc/with-pre-wrap fileset
     (mkGame id)
-    fileset
-  ))
+    fileset))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -577,8 +555,7 @@
 
   (bc/with-pre-wrap fileset
     (cocos->new id)
-    fileset
-  ))
+    fileset))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -649,8 +626,7 @@
            (spit (io/file despath "project.json"))))
 
     (jiggleTheIndexFile appid
-                        (io/file (ge :basedir) "cocos" appid) true)
-  ))
+                        (io/file (ge :basedir) "cocos" appid) true)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
