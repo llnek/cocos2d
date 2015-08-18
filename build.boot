@@ -425,6 +425,22 @@
         (b/libjars)
         (b/buildr)))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(deftask games ""
+
+  []
+
+  (bc/with-pre-wrap fileset
+    (b/CleanPublic)
+    (fn [& args]
+      (a/CleanDir (fp! (ge :basedir) "public/ig"))
+      (a/CleanDir (fp! (ge :websrc)))
+      (a/CleanDir (fp! (ge :webcss))))
+    (buildWebApps)
+    fileset))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (deftask rel ""
