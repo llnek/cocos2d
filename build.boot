@@ -24,9 +24,7 @@
   :dependencies '[[org.flatland/useful "0.11.3"
                    :exclusions [org.clojure/clojure]]] )
 
-(require '[czlab.tpcl.boot :as b
-           :refer :all
-           :exclude [clean4build dev]]
+(require '[czlab.tpcl.boot :as b :refer [fp! ge]]
          '[clojure.data.json :as js]
          '[clojure.java.io :as io]
          '[clojure.string :as cs]
@@ -423,8 +421,8 @@
   []
 
   (bc/with-pre-wrap fileset
-    (Clean4Build)
-    (PreBuild)
+    (b/Clean4Build)
+    (b/PreBuild)
     fileset))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -434,8 +432,8 @@
   []
 
   (comp (clean4build)
-        (libjars)
-        (buildr)))
+        (b/libjars)
+        (b/buildr)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -444,8 +442,11 @@
   []
 
   (bc/with-pre-wrap fileset
-    (CleanPublic)
-    (cleanPublic)
+    (b/CleanPublic)
+    (fn [& args]
+      (a/CleanDir (fp! (ge :basedir) "public/ig"))
+      (a/CleanDir (fp! (ge :websrc)))
+      (a/CleanDir (fp! (ge :webcss))))
     (buildWebApps)
     fileset))
 
