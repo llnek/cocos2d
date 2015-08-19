@@ -19,7 +19,7 @@
     [czlab.xlib.util.dates :refer [ParseDate]]
     [czlab.xlib.util.files :refer [ListFiles]]
     [czlab.xlib.util.str :refer [hgl? strim]]
-    [clojure.tools.logging :as log]
+    [czlab.xlib.util.logging :as log]
     [clojure.java.io :as io])
 
   (:use [czlab.skaro.core.consts]
@@ -67,7 +67,10 @@
   ^AppMain
   []
 
-  (reify AppMain
+  (reify
+
+    AppMain
+
     (contextualize [_ ctr]
       (doto (.getAppDir ^Container ctr)
         (ScanGameManifests )
@@ -75,20 +78,11 @@
       (OdinInit ctr)
       (log/info "app-main contextualized by container %s" ctr))
 
-    (configure [_ options]
-      (log/info "app-main configured with options %s" options))
-
-    (initialize [_]
-      (log/info "app-main initialized!"))
-
-    (start [_]
-      (log/info "app-main started"))
-
-    (stop [_]
-      (log/info "app-main stopped"))
-
-    (dispose [_]
-      (log/info "app-main finz'ed"))))
+    (configure [_ options])
+    (initialize [_])
+    (start [_])
+    (stop [_])
+    (dispose [_])))
 
 ;;(ns-unmap *ns* '->MyAppMain)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

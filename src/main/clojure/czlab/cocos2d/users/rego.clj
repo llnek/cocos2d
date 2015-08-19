@@ -44,12 +44,10 @@
 
   [^HTTPEvent evt ^String csrf]
 
-  (let [^WebSS
-        mvs (.getSession evt)]
-    (-> (GetDftModel evt)
-        (update-in [:body]
-                   #(merge % {:content "/main/users/register.ftl"
-                              :csrf csrf})))))
+  (-> (GetDftModel evt)
+      (update-in [:body]
+                 #(merge % {:content "/main/users/register.ftl"
+                            :csrf csrf}))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -78,30 +76,32 @@
 (defn- doShowPage ""
 
   ^Activity
-  [interpolateFunc]
+  [func]
 
   (SimPTask
     (fn [^Job j]
-      (let [tpl (str (:template (.getv j EV_OPTS)))
-            ^HTTPEvent evt (.event j)
-            src (.emitter evt)
-            cfg (-> ^Muble src (.getv :emcfg))
-            ^Container co (.container src)
-            ^WebSS
-            mvs (.getSession evt)
-            csrf (GenerateCsrf)
-            est (:sessionAgeSecs cfg)
-            {:keys [data ctype]}
-            (.loadTemplate co
-                           tpl
-                           (interpolateFunc evt csrf))
-            ^HTTPResult
-            res (.getResultObj evt) ]
-        (doto res
+      (let
+        [tpl (:template (.getv j EV_OPTS))
+         ^HTTPEvent evt (.event j)
+         src (.emitter evt)
+         cfg (-> ^Muble
+                 src (.getv :emcfg))
+         ^Container co (.container src)
+         mvs (.getSession evt)
+         csrf (GenerateCsrf)
+         est (:sessionAgeSecs cfg)
+         {:keys [data ctype]}
+         (.loadTemplate co
+                        tpl
+                        (func evt csrf))
+         res (.getResultObj evt) ]
+        (doto ^HTTPResult
+          res
           (.setHeader "content-type" ctype)
           (.setContent data)
           (.setStatus 200))
-        (doto mvs
+        (doto ^WebSS
+          mvs
           (.setNew true est)
           (.setXref csrf))
         (.replyResult evt)))))

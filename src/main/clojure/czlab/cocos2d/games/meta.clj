@@ -22,12 +22,11 @@
     [czlab.xlib.util.logging :as log]
     [clojure.java.io :as io]
     [czlab.xlib.util.str :refer [hgl? strim] ]
-    [czlab.xlib.util.dates :refer [ParseDate] ])
+    [czlab.xlib.util.dates :refer [DTime ParseDate] ])
 
   (:use [czlab.skaro.core.consts])
 
   (:import
-    [org.apache.commons.io FileUtils]
     [java.io File]
     [java.util Date]))
 
@@ -64,7 +63,8 @@
                              (-> (io/file fd "game.json")
                                  (ReadOneFile)
                                  (ReadJsonKW)))
-                 {:keys [network uuid uri]} info
+                 {:keys [network uuid uri]}
+                 info
                  online (true? (:enabled network))]]
       ;; create a UI friendly version for freemarker
       (var-set tmp (transient{}))
@@ -75,13 +75,13 @@
       (var-set uc (assoc! @uc uuid info))
       (var-set mc (assoc! @mc uri info))
       (var-set rc (conj! @rc info)))
-    (reset! GAMES-MNFS (vec (sort #(compare (.getTime ^Date (%1 :pubdate))
-                                            (.getTime ^Date (%2 :pubdate)))
+    (reset! GAMES-MNFS (vec (sort #(compare (DTime (%1 :pubdate))
+                                            (DTime (%2 :pubdate)))
                                   (persistent! @rc))))
     (reset! GAMES-HASH (persistent! @mc))
     (reset! GAMES-UUID (persistent! @uc))
-    (reset! GAMES-LIST (vec (sort #(compare (.getTime ^Date (%1 "pubdate"))
-                                            (.getTime ^Date (%2 "pubdate")))
+    (reset! GAMES-LIST (vec (sort #(compare (DTime (%1 "pubdate"))
+                                            (DTime (%2 "pubdate")))
                                   (persistent! @gc))))
     ;;set true for debugging
     (when true
@@ -97,8 +97,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn GetGamesAsListForUI "Return the game models as a list
-                          for the UI."
+(defn GetGamesAsListForUI
+
+  "Return the game models as a list for the UI"
 
   []
 
@@ -106,7 +107,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn GetGamesAsList "Return the list of manifests."
+(defn GetGamesAsList
+
+  "Return the list of manifests"
 
   []
 
@@ -114,8 +117,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn GetGamesAsHash "Return the manifests keyed by the
-                     game uri."
+(defn GetGamesAsHash
+
+  "Return the manifests keyed by the game uri"
 
   []
 
@@ -123,8 +127,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn GetGamesAsUUID "Return the manifests keyed by the
-                     game uuid."
+(defn GetGamesAsUUID
+
+  "Return the manifests keyed by the game uuid"
 
   []
 

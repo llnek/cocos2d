@@ -16,7 +16,7 @@
 
   (:require
     [czlab.xlib.util.str :refer [hgl? strim] ]
-    [clojure.tools.logging :as log]
+    [czlab.xlib.util.logging :as log]
     [czlab.xlib.util.wfs :refer [SimPTask]])
 
   (:use [czlab.skaro.core.consts]
@@ -103,7 +103,7 @@
 (defn- doShowPage ""
 
   ^Activity
-  [interpolateFunc]
+  [func]
 
   (SimPTask
     (fn [^Job j]
@@ -113,10 +113,10 @@
             co (.container src)
             {:keys [data ctype]}
             (-> ^Container co
-                (.loadTemplate (str tpl)
-                               (interpolateFunc evt)))
-            ^HTTPResult res (.getResultObj evt) ]
-        (doto res
+                (.loadTemplate tpl
+                               (func evt)))
+            res (.getResultObj evt) ]
+        (doto ^HTTPResult res
           (.setHeader "content-type" ctype)
           (.setContent data)
           (.setStatus 200))

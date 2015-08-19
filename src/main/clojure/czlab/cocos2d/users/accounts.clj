@@ -14,12 +14,13 @@
 
   czlab.cocos2d.users.accounts
 
-  (:require [czlab.skaro.auth.plugin :refer [MaybeSignupTest
+  (:require
+    [czlab.skaro.auth.plugin :refer [MaybeSignupTest
     MaybeLoginTest]]
     [czlab.xlib.util.core :refer [test-nonil ]]
     [czlab.xlib.util.str :refer [strim  hgl?]]
     [czlab.xlib.util.wfs :refer [SimPTask]]
-    [clojure.tools.logging :as log]
+    [czlab.xlib.util.logging :as log]
     [czlab.xlib.util.format :refer [WriteJson]]
     [czlab.xlib.i18n.resources :refer [RStr]])
 
@@ -65,8 +66,7 @@
           (instance? DuplicateUser err)
           (let [rcb (-> (.id ^Identifiable ctr)
                         (I18N/getBundle ))
-                json {:error
-                      {:msg (RStr rcb "acct.dup.user") }} ]
+                json {:error {:msg (RStr rcb "acct.dup.user") }} ]
             (doto res
               (.setStatus 409)
               (.setContent (XData. (WriteJson json)))))
@@ -130,19 +130,19 @@
 
   (SimPTask
     (fn [^Job j]
-      (let [acct (:account (.getLastResult j))
-            json {:status {:code 200 } }
-            ^HTTPEvent evt (.event j)
-            ^WebSS
-            mvs (.getSession evt)
-            ^Muble
-            src (.emitter evt)
-            cfg (.getv src :emcfg)
-            est (:sessionAgeSecs cfg)
-            ck (HttpCookie. (name *USER-FLAG*)
-                            (str (:acctid acct)))
-            ^HTTPResult
-            res (.getResultObj evt) ]
+      (let
+        [acct (:account (.getLastResult j))
+         json {:status {:code 200 } }
+         ^HTTPEvent evt (.event j)
+         ^WebSS mvs (.getSession evt)
+         ^Muble
+         src (.emitter evt)
+         cfg (.getv src :emcfg)
+         est (:sessionAgeSecs cfg)
+         ck (HttpCookie. (name *USER-FLAG*)
+                         (str (:acctid acct)))
+         ^HTTPResult
+         res (.getResultObj evt) ]
         (doto ck
           (.setMaxAge est)
           (.setHttpOnly false)
@@ -181,7 +181,6 @@
       (let [^HTTPEvent evt (.event j)
             ctr (-> (.emitter evt)
                     (.container))
-            ^AuthPlugin
             pa (:auth (-> ^Muble
                           ctr (.getv K_PLUGINS)))
             si (try (MaybeGetAuthInfo evt)
@@ -192,11 +191,11 @@
         (if
           (and (= "18" (:captcha info))
                (hgl? email))
-          (if-some [acct (.getAccount pa { :email email })]
-            (do
-              (log/debug "found account with email %s" email))
-            (do
-              (log/debug "failed to look up account with email %s" email)))
+          (if-some [acct (-> ^AuthPlugin
+                             pa
+                             (.getAccount {:email email }))]
+            (do (log/debug "found account, email=%s" email) acct)
+            (log/debug "failed to find account with email=%s" email))
           nil)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -209,9 +208,11 @@
   (SimPTask
     (fn [^Job j]
       (let [^HTTPEvent evt (.event j)
-            ^HTTPResult res (.getResultObj evt)
+            res (.getResultObj evt)
             json {:status {:code 200 } } ]
-        (doto res
+        (doto
+          ^HTTPResult
+          res
           (.setStatus 200)
           (.setContent (XData. (WriteJson json))))
         (.replyResult evt)))))
@@ -239,16 +240,17 @@
 
   (SimPTask
     (fn [^Job j]
-      (let [ck (HttpCookie. (name *USER-FLAG*) "")
-            json {:status {:code 200 } }
-            ^HTTPEvent evt (.event j)
-            ^WebSS
-            mvs (.getSession evt)
-            src (.emitter evt)
-            cfg (-> ^Muble src
-                    (.getv :emcfg))
-            ^HTTPResult
-            res (.getResultObj evt) ]
+      (let
+        [ck (HttpCookie. (name *USER-FLAG*) "")
+         json {:status {:code 200 } }
+         ^HTTPEvent evt (.event j)
+         ^WebSS
+         mvs (.getSession evt)
+         src (.emitter evt)
+         cfg (-> ^Muble src
+                 (.getv :emcfg))
+         ^HTTPResult
+         res (.getResultObj evt) ]
         (doto ck
           (.setMaxAge 0)
           (.setHttpOnly false)
