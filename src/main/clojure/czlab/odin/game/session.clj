@@ -16,7 +16,7 @@
 
   (:require
     [czlab.xlib.util.core :refer [trap! MubleObj! ]]
-    [clojure.tools.logging :as log]
+    [czlab.xlib.util.logging :as log]
     [czlab.xlib.util.str :refer [strim hgl?]])
 
   (:use [czlab.xlib.util.process]
@@ -47,10 +47,10 @@
   ^PlayerSession
   [^PlayRoom room ^Player plyr pnumber]
 
-  (let [created (System/currentTimeMillis)
-        sid (GenerateUID (class Session))
-        impl (MubleObj! {:status Events/S_NOT_CONNECTED
-                        :shutting-down false}) ]
+  (let [impl (MubleObj! {:status Events/S_NOT_CONNECTED
+                        :shutting-down false})
+        created (System/currentTimeMillis)
+        sid (GenerateUID (class Session)) ]
     (reify PlayerSession
 
       (number [_] pnumber)

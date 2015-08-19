@@ -47,10 +47,11 @@
 
   [^WebSockEvent ws]
 
-  (let [data (.getData ws)
-        req (->> {:socket (.getSocket ws)
+  (let [req (->> {:socket (.getSocket ws)
                   :emitter (.emitter ws) }
-                 (DecodeEvent (.stringify data))) ]
+                 (DecodeEvent (.. ws
+                                  getData
+                                  stringify))) ]
     (condp = (:type req)
       Events/PLAYGAME_REQ
       (DoPlayReq req)
@@ -67,8 +68,8 @@
   [^Container ctr]
 
   ;;TODO: loading in Odin config file. do something with it?
-  (let [s  (-> (.getAppDir ctr)
-               (io/file  "conf" "odin.conf")
+  (let [s  (->> (io/file (.getAppDir ctr)
+                         "conf/odin.conf")
                (ReadOneFile ))
         json (ReadJsonKW s) ]
     (log/info "Odin config= " s)))
@@ -77,6 +78,7 @@
 ;;
 (defn Handler ""
 
+  ^WorkFlow
   []
 
   (reify WorkFlow

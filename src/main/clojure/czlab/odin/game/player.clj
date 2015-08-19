@@ -44,7 +44,9 @@
   [^String user ^String pwd]
 
   (let [impl (MubleObj!) ]
-    (reify Player
+    (reify
+
+      Player
 
       (setEmailId [_ email] (.setv impl :email email))
       (emailId [_] (.getv impl :email))

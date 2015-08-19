@@ -116,9 +116,11 @@
 
   [evt]
 
-  (let [^Identifiable ctr (-> ^Emitter
-                              (:emitter evt)(.container))
-        rcb (I18N/getBundle (.id ctr))
+  (let [ctr (-> ^Emitter
+                (:emitter evt)(.container))
+        rcb (->> ^Identifiable ctr
+                 (.id)
+                 (I18N/getBundle ))
         ^Channel ch (:socket evt)
         arr (:source evt) ]
     (if
@@ -143,7 +145,9 @@
                 r (or (LookupGameRoom gid rid)
                       (LookupFreeRoom gid rid)) ]
             (if (nil? r)
-              (rError ch Events/ROOM_NOK (RStr rcb "room.bad"))
+              (rError ch
+                      Events/ROOM_NOK
+                      (RStr rcb "room.bad"))
               (do
                 (var-set pss (JoinRoom r @plyr evt))
                 (when (nil? @pss)
