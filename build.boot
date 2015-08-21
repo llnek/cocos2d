@@ -24,7 +24,7 @@
   :dependencies '[[org.flatland/useful "0.11.3"
                    :exclusions [org.clojure/clojure]]] )
 
-(require '[czlab.tpcl.boot :as b :refer [fp! ge]]
+(require '[czlab.tpcl.boot :as b :refer [fp! ge testjava testclj]]
          '[clojure.data.json :as js]
          '[clojure.java.io :as io]
          '[clojure.string :as cs]
