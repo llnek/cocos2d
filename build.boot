@@ -627,14 +627,23 @@
         {:todir despath
          :overwrite true}
         [[:fileset {:dir (io/file (ge :srcDir) "resources")
-                    :includes "project.json,main.js,index.html"}]]))
+                    :includes (str "manifest.webapp,project.json,"
+                                   "main.js,index.html")}]]))
 
-    (let [j1 (-> (slurp (fp! (ge :srcDir) "resources/project.json")
+    (let [j1 (-> (slurp (fp! (ge :srcDir)
+                             "resources/project.json")
                         :encoding "utf-8")
                  (js/read-str :key-fn keyword))
+          jm (-> (slurp (io/file despath "manifest.webapp")
+                        :encoding "utf-8"))
           j2 (-> (slurp (fp! srcpath "src/project.json")
                         :encoding "utf-8")
                  (js/read-str :key-fn keyword)) ]
+      (->> (-> jm
+              (cs/replace "@@APP@@" appid)
+              (cs/replace "@@USER@@" (System/getProperty "user.name")))
+           (spit (io/file despath "manifest.webapp")))
+
       (->> (update-in j1
                       [:jsList]
                       #(concat % (:jsList j2)))

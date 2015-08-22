@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "name": "@@APP@@",
+  "description": "",
+  "launch_path": "/index.html",
+  "icons": {
+    "128": "/res/icon.png"
+  },
+  "developer": {
+    "name": "@@USER@@",
+    "url": "http://zotohlab.com"
+  },
+  "default_locale": "en",
+  "installs_allowed_from": [
+    "*"
+  ],
+  "orientation": "portrait-primary",
+  "fullscreen": "true"
+}
