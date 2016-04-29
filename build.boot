@@ -22,7 +22,7 @@
                   "src/main/java"}
 
   :dependencies '[[org.flatland/useful "0.11.3"
-                   :exclusions [org.clojure/clojure]]] )
+                   :exclusions [org.clojure/clojure]]])
 
 (require '[czlab.tpcl.boot :as b :refer [fp! ge testjava testclj]]
          '[clojure.data.json :as js]
@@ -85,6 +85,7 @@
                (.endsWith mid ".js"))
         {:work-dir dir
          :args ["--modules" "amd"
+                "--presets" "es2015"
                 "--module-ids" mid
                 "--out-dir" (ge :bld) ]}
         (do
