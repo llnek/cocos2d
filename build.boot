@@ -383,21 +383,29 @@
   []
   (a/RunTasks*
     (a/AntApply
-      {:executable "java" :parallel false}
-      [[:fileset {:dir (fp! (ge :basedir) "public/scripts")
+      {:executable "uglifyjs" :parallel false :verbose true}
+      [[:srcfile {}]
+[:arglines ["-v"]]
+       [:arglines ["-c"]]
+       [:arglines ["-m"]]
+       [:arglines ["-o"]]
+       [:targetfile {}]
+       [:fileset {:dir (fp! (ge :basedir) "public/scripts")
                   :excludes "**/*.min.js"
                   :includes "**/*.js"}]
-       [:arglines ["-jar"]]
-       [:argpaths [(str (ge :skaroHome)
-                        "/lib/yuicompressor-2.4.8.jar")]]
-       [:srcfile {}]
-       [:arglines ["-o"]]
        [:chainedmapper {}
         [{:type :glob :from "*.js"
                       :to "*.min.js"}
-         {:type :glob :from "*"
-                      :to (fp! (ge :basedir) "public/scripts/*")}]]
-       [:targetfile {}]])))
+         {:type :glob :from "*" :to (fp! (ge :basedir) "public/scripts/*")} ]]
+       ])))
+
+(deftask POO ""
+
+  []
+
+  (bc/with-pre-wrap fileset
+    (yuiJS)
+    fileset))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
