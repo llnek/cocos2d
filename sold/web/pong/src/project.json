@@ -1,0 +1,27 @@
+ {
+
+    "jsList"        : [
+     "src/pong/p/config.js",
+      "src/pong/i18n/l10n.js",
+
+      "src/pong/n/cobjs.js",
+      "src/pong/n/gnodes.js",
+
+      "src/pong/s/factory.js",
+      "src/pong/s/motion.js",
+      "src/pong/s/stager.js",
+      "src/pong/s/move.js",
+      "src/pong/s/net.js",
+      "src/pong/s/collide.js",
+      "src/pong/s/resolve.js",
+      "src/pong/s/sysobjs.js",
+
+      "src/pong/p/hud.js",
+      "src/pong/p/game.js",
+      "src/pong/p/mmenu.js",
+      "src/pong/p/splash.js",
+      "src/pong/p/protos.js",
+
+      "src/zotohlab/p/boot.js"
+    ]
+}

@@ -6,11 +6,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(deftest tcase1
+(deftest czlabcocos2dtest-tcase1
 
-(is (= 1 1))
+  (is (= 1 1))
 
-)
+  (is (string? "That's all folks!")))
 
-;;(clojure.test/run-tests 'czlab.cocos2d.tcase1)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;EOF
 

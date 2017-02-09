@@ -1,0 +1,8 @@
+{
+  :pubdate #inst "2014-06-03"
+  :author "llnek"
+  :status true
+  :uri "/arena/invaders"
+  :image "ui/catalog.png"
+}
+

@@ -1,0 +1,28 @@
+ {
+    "jsList"        : [
+
+      "src/tetris/p/config.js",
+      "src/tetris/i18n/l10n.js",
+
+      "src/tetris/n/cobjs.js",
+      "src/tetris/n/gnodes.js",
+
+      "src/tetris/s/utils.js",
+      "src/tetris/s/factory.js",
+      "src/tetris/s/stager.js",
+      "src/tetris/s/clear.js",
+      "src/tetris/s/generate.js",
+      "src/tetris/s/motion.js",
+      "src/tetris/s/move.js",
+      "src/tetris/s/resolve.js",
+      "src/tetris/s/sysobjs.js",
+
+      "src/tetris/p/hud.js",
+      "src/tetris/p/game.js",
+      "src/tetris/p/mmenu.js",
+      "src/tetris/p/splash.js",
+      "src/tetris/p/protos.js",
+
+      "src/zotohlab/p/boot.js"
+    ]
+}

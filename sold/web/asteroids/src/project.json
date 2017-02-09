@@ -1,0 +1,29 @@
+ {
+
+    "jsList"        : [
+
+    "src/asteroids/p/config.js",
+    "src/asteroids/i18n/l10n.js",
+
+"src/asteroids/n/cobjs.js",
+"src/asteroids/n/gnodes.js",
+
+    "src/asteroids/s/factory.js",
+
+"src/asteroids/s/motion.js",
+"src/asteroids/s/move.js",
+"src/asteroids/s/collide.js",
+"src/asteroids/s/stager.js",
+"src/asteroids/s/resolve.js",
+"src/asteroids/s/sysobjs.js",
+
+      "src/asteroids/p/hud.js",
+      "src/asteroids/p/game.js",
+      "src/asteroids/p/mmenu.js",
+      "src/asteroids/p/splash.js",
+"src/asteroids/p/protos.js",
+
+
+"src/zotohlab/p/boot.js"
+    ]
+}

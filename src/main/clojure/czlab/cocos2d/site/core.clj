@@ -1,103 +1,68 @@
-;; Licensed under the Apache License, Version 2.0 (the "License");
-;; you may not use this file except in compliance with the License.
-;; You may obtain a copy of the License at
-;;
-;;     http://www.apache.org/licenses/LICENSE-2.0
-;;
-;; Unless required by applicable law or agreed to in writing, software
-;; distributed under the License is distributed on an "AS IS" BASIS,
-;; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-;; See the License for the specific language governing permissions and
-;; limitations under the License.
-;;
-;; Copyright (c) 2013-2016, Kenneth Leung. All rights reserved.
-
+;; Copyright (c) 2013-2017, Kenneth Leung. All rights reserved.
+;; The use and distribution terms for this software are covered by the
+;; Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
+;; which can be found in the file epl-v10.html at the root of this distribution.
+;; By using this software in any fashion, you are agreeing to be bound by
+;; the terms of this license.
+;; You must not remove this notice, or any other, from this software.
 
 (ns  ^{:doc ""
-       :author "kenl" }
+       :author "Kenneth Leung"}
 
   czlab.cocos2d.site.core
 
-  (:require
-    [czlab.skaro.impl.ext :refer [GetAppKeyFromEvent]]
-    [czlab.xlib.util.dates :refer [ParseDate]]
-    [czlab.xlib.util.files :refer [ListFiles]]
-    [czlab.xlib.util.str :refer [hgl? strim]]
-    [czlab.xlib.util.logging :as log]
-    [clojure.java.io :as io])
+  (:require [czlab.basal.dates :refer [parseDate]]
+            [czlab.basal.io :refer [listFiles]]
+            [czlab.basal.logging :as log]
+            [clojure.string :as cs]
+            [clojure.java.io :as io])
 
-  (:use [czlab.skaro.core.consts]
-        [czlab.xlib.util.wfs]
-        [czlab.cocos2d.games.meta]
-        [czlab.xlib.util.consts]
-        [czlab.odin.system.core])
+  (:use [czlab.cocos2d.games.meta]
+        [czlab.wabbit.base.core])
 
-  (:import
-    [com.zotohlab.skaro.core Container ConfigError]
-    [com.zotohlab.skaro.runtime AppMain]
-    [com.zotohlab.frwk.server Emitter]
-    [com.zotohlab.wflow Activity
-    WorkFlow Job PTask]
-    [com.zotohlab.skaro.io HTTPEvent HTTPResult]
-    [com.zotohlab.frwk.io XData]
-    [java.io File]))
+  (:import [czlab.wabbit.plugs.io HttpMsg]
+           [czlab.convoy.net HttpResult]
+           [czlab.jasal XData]
+           [java.io File]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(def ^:dynamic *USER-FLAG* :__u982i) ;; user id
-(def ^:private DOORS (atom []))
+(def ^:dynamic *user-flag* :__u982i) ;; user id
+(def ^:private doors (atom []))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- maybeCheckDoors  ""
-
-  [^File appDir]
+(defn- maybeCheckDoors  "" [^File appDir]
 
   (with-local-vars [rc (transient [])]
     (let [fds (-> (io/file appDir "public/ig/res/main/doors")
-                  (ListFiles  "png")) ]
+                  (listFiles  "png"))]
       (doseq [^File fd fds]
         (var-set rc (conj! @rc (.getName fd)))))
-    (reset! DOORS (persistent! @rc))
-    (log/debug "how many doors ? %s" (count @DOORS))))
+    (reset! doors (persistent! @rc))
+    (log/debug "how many doors ? %s" (count @doors))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn MyAppMain ""
+(defn myAppMain "" [^Container co]
 
-  ^AppMain
-  []
+  (doto (.getAppDir co)
+    (scanGameManifests )
+    (maybeCheckDoors ))
+  ;;(OdinInit ctr)
+  (log/info "app-main contextualized by container %s" co))
 
-  (reify
-
-    AppMain
-
-    (contextualize [_ ctr]
-      (doto (.getAppDir ^Container ctr)
-        (ScanGameManifests )
-        (maybeCheckDoors ))
-      (OdinInit ctr)
-      (log/info "app-main contextualized by container %s" ctr))
-
-    (configure [_ options])
-    (initialize [_])
-    (start [_])
-    (stop [_])
-    (dispose [_])))
-
-;;(ns-unmap *ns* '->MyAppMain)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn GetDftModel
+(defn getDftModel
 
   "Return a default object for Freemarker processing."
+  [^HttpMsg evt]
 
-  [^HTTPEvent evt]
-
-  (let [ck (.getCookie evt (name *USER-FLAG*))
+  (let [ck (. evt cookie (name *user-flag*))
         uid (if (nil? ck)
               "Guest"
               (strim (.getValue ck)))]
@@ -110,58 +75,46 @@
      {:keywords "content=\"web browser games mobile ios android windows phone\""
       :description "content=\"Hello World!\""
       :viewport "content=\"width=device-width, initial-scale=1.0\"" }
-     :appkey (GetAppKeyFromEvent evt)
+     :appkey (getAppKeyFromEvent evt)
      :profile {:user uid }
      :body {} }))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- interpolateIndexPage ""
+(defn- interpolateIndexPage "" [^HttpMsg evt]
 
-  [^HTTPEvent evt]
-
-  (-> (GetDftModel evt)
+  (-> (getDftModel evt)
       (update-in [:body]
                  #(merge %
-                         {:doors @DOORS
+                         {:doors @doors
                           :content "/main/index.ftl"}))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- doShowPage ""
+(defn- doShowPage "" []
 
-  []
-
-  (SimPTask
-    (fn [^Job j]
-      (let [tpl (:template (.getv j EV_OPTS))
-            ^HTTPEvent evt (.event j)
-            src (.emitter evt)
-            ^Container
-            co (.container src)
-            {:keys [data ctype]}
-            (.loadTemplate co
-                           tpl
-                           (interpolateIndexPage evt))
-            ^HTTPResult res (.getResultObj evt) ]
-        (doto res
-          (.setHeader "content-type" ctype)
-          (.setContent data)
-          (.setStatus 200))
-        (.replyResult evt)))))
+  (script<>
+    #(do->nil
+       (let
+         [^HttpMsg evt (.origin ^Job %2)
+          ri (get-in (.msgGist evt)
+                     [:route :info])
+          tpl (some-> ^RouteInfo
+                      ri .template)
+          {:keys [data ctype]}
+          (loadTemplate nil
+                        tpl
+                        (interpolateIndexPage evt))
+          res (httpResult<> nil)]
+         (doto res
+           (.setHeader "content-type" ctype)
+           (.setContent data))
+         (replyResult res)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn IndexPage ""
+(defn indexPage "" ^WorkStream [] (workStream<> (doShowPage)))
 
-  ^WorkFlow
-  []
-
-  (reify WorkFlow
-    (startWith [_]
-      (doShowPage))))
-
-;;(ns-unmap *ns* '->IndexPage)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF
 

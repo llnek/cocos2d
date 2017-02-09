@@ -1,286 +1,210 @@
-;; Licensed under the Apache License, Version 2.0 (the "License");
-;; you may not use this file except in compliance with the License.
-;; You may obtain a copy of the License at
-;;
-;;     http://www.apache.org/licenses/LICENSE-2.0
-;;
-;; Unless required by applicable law or agreed to in writing, software
-;; distributed under the License is distributed on an "AS IS" BASIS,
-;; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-;; See the License for the specific language governing permissions and
-;; limitations under the License.
-;;
-;; Copyright (c) 2013-2016, Kenneth Leung. All rights reserved.
-
+;; Copyright (c) 2013-2017, Kenneth Leung. All rights reserved.
+;; The use and distribution terms for this software are covered by the
+;; Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
+;; which can be found in the file epl-v10.html at the root of this distribution.
+;; By using this software in any fashion, you are agreeing to be bound by
+;; the terms of this license.
+;; You must not remove this notice, or any other, from this software.
 
 (ns  ^{:doc ""
-       :author "kenl" }
+       :author "Kenneth Leung"}
 
   czlab.cocos2d.users.accounts
 
-  (:require
-    [czlab.skaro.auth.plugin :refer [MaybeSignupTest
-    MaybeLoginTest]]
-    [czlab.xlib.util.core :refer [test-nonil ]]
-    [czlab.xlib.util.str :refer [strim  hgl?]]
-    [czlab.xlib.util.wfs :refer [SimPTask]]
-    [czlab.xlib.util.logging :as log]
-    [czlab.xlib.util.format :refer [WriteJson]]
-    [czlab.xlib.i18n.resources :refer [RStr]])
+  (:require [czlab.basal.format :refer [writeJsonStr]]
+            [czlab.wabbit.plugs.auth
+             :refer [maybeSignupTest
+                     maybeLoginTest]]
+            [czlab.basal.logging :as log]
+            [czlab.basal.resources :refer [rstr]])
 
-  (:use [czlab.skaro.io.basicauth]
-        [czlab.skaro.core.consts]
-        [czlab.cocos2d.site.core ])
+  (:use [czlab.wabbit.plugs.auth]
+        [czlab.basal.core]
+        [czlab.basal.str]
+        [czlab.cocos2d.site.core])
 
-  (:import
-    [com.zotohlab.skaro.io WebSS HTTPEvent HTTPResult]
-    [com.zotohlab.skaro.runtime DuplicateUser]
-    [com.zotohlab.skaro.etc AuthPlugin]
-    [com.zotohlab.wflow If Activity
-    WorkFlow Job BoolExpr PTask Work]
-    [com.zotohlab.skaro.core Muble]
-    [org.apache.commons.codec.net URLCodec]
-    [com.zotohlab.frwk.i18n I18N]
-    [java.net HttpCookie]
-    [com.zotohlab.frwk.server Emitter]
-    [com.zotohlab.frwk.core Identifiable]
-    [com.zotohlab.frwk.util BadDataError]
-    [com.zotohlab.frwk.io XData]))
+  (:import [czlab.wabbit.plugs.auth AuthPluglet DuplicateUser]
+           [czlab.jasal XData BadDataError Identifiable I18N]
+           [org.apache.commons.codec.net URLCodec]
+           [czlab.wabbit.plugs.io HttpMsg]
+           [czlab.convoy.net HttpResult]
+           [java.net HttpCookie]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- doSignupFail ""
+(defn- doSignupFail "" []
 
-  ^Activity
-  []
-
-  (SimPTask
-    (fn [^Job j]
-      (let [err (:error (.getLastResult j))
-            ^HTTPEvent evt (.event j)
-            ctr (-> evt
-                    (.emitter )
-                    (.container))
-            ^HTTPResult
-            res (.getResultObj evt)]
-        (if
-          (instance? DuplicateUser err)
-          (let [rcb (-> (.id ^Identifiable ctr)
-                        (I18N/getBundle ))
-                json {:error {:msg (RStr rcb "acct.dup.user") }} ]
-            (doto res
-              (.setStatus 409)
-              (.setContent (XData. (WriteJson json)))))
-          ;else
-          (.setStatus res 400))
-        (.replyResult evt)))))
+  (script<>
+    #(do->nil
+       (let
+         [err (:error (.lastResult ^Job %2))
+          ^HttpMsg evt (.origin ^Job %2)
+          co (.. evt source server)
+          res (httpResult<> )]
+         (if (inst? DuplicateUser err)
+           (let [rcb (-> (.id co)
+                         I18N/getBundle)
+                 json {:error {:msg (rstr rcb "acct.dup.user")}}]
+             (doto res
+               (.setStatus 409)
+               (.setContent (XData. (writeJsonStr json)))))
+           ;else
+           (.setStatus res 400))
+         (replyResult<> evt)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- doSignupOK ""
+(defn- doSignupOK "" []
 
-  ^Activity
-  []
+  (script<>
+    #(do->nil
+       (let
+         [acct (:account (.lastResult ^Job %2))
+          ^HttpMsg evt (.origin ^JOb %2)
+          res (httpResult<> )
+          json {:status {:code 200}}]
+         (log/debug "successfully signed up new account %s" acct)
+         (doto res
+           (.setContent (XData. (writeJsonStr json))))
+         (replyResult evt)))))
 
-  (SimPTask
-    (fn [^Job j]
-      (let [acct (:account (.getLastResult j))
-            ^HTTPEvent evt (.event j)
-            ^HTTPResult
-            res (.getResultObj evt)
-            json {:status {:code 200 } } ]
-        (log/debug "successfully signed up new account %s" acct)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn signupHandler "" []
+
+  (log/debug "signup pipe-line - called")
+  (workStream<>
+    (ternery<>
+      (maybeSignupTest "32") (doSignupOK) (doSignupFail))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- doLoginFail "" []
+
+  (script<>
+    #(do->nil
+       (let
+         [^HttpMsg evt (.origin ^Job %2)
+          res (httpResult<> 403)]
+         (replyResult evt)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- doLoginOK "" []
+
+  (script<>
+    #(do->nil
+       (let
+         [acct (:account (.lastResult ^Job %2))
+          json {:status {:code 200 } }
+          ^HttpMsg evt (.origin ^JOb %2)
+          mvs (.session evt)
+          {:keys [sessionAgeSecs]}
+          (.. evt source config)
+          ck (HttpCookie. (name *user-flag*)
+                          (str (:acctid acct)))
+          res (httpResult<> )]
+         (doto ck
+           (.setMaxAge est)
+           (.setHttpOnly false)
+           (.setSecure (if mvs (.isSSL mvs) false))
+           (.setPath (:domainPath cfg))
+           (.setDomain (:domain cfg)))
+         (doto res
+           (.setContent (XData. (writeJsonStr json)))
+           (.addCookie ck))
+         (some-> mvs (.setNew true sessionAgeSecs))
+         (replyResult evt)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn loginHandler "" []
+
+  (log/debug "login pipe-line - called")
+  (workStream<>
+    (ternery<>
+      (maybeLoginTest) (doLoginOK) (doLoginFail))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- doLookupEmail "" []
+
+  (script<>
+    #(do->nil
+       (let
+         [^HttpMsg evt (.origin ^Job %2)
+          co (.. evt source server)
+          pa (. co child :auth)
+          si (try (maybeGetAuthInfo evt)
+                  (catch BadDataError e#  {:e e# }))
+          info (or si {})
+          email (str (:email info))]
+         (test-nonil "AuthPlugin" pa)
+         (if
+           (and (= "18" (:captcha info))
+                (hgl? email))
+           (if-some [acct (-> ^AuthPluglet
+                              pa
+                              (.getAccount {:email email }))]
+             (do (log/debug "found account, email=%s" email) acct)
+             (log/debug "failed to find account with email=%s" email)))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- doAckReply "" []
+
+  (script<>
+    #(do->nil
+       (let
+         [^HttpMsg evt (.origin ^Job %2)
+          res (httpResult<> )
+          json {:status {:code 200}}]
+         (doto res
+           (.setContent (XData. (writeJsonStr json))))
+         (replyResult evt)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn forgotHandler "" []
+
+  (log/debug "forgot-login pipe-line - called")
+  (workStream<>
+    (group<> (doAckReply) (doLookupEmail))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- doLogout "" []
+
+  (script<>
+    #(do->nil
+       (let
+         [ck (HttpCookie. (name *user-flag*) "")
+          json {:status {:code 200 } }
+          ^HttpMsg evt (.origin ^Job %2)
+          mvs (.session evt)
+          res (httpResult<> )]
+         (doto ck
+           (.setMaxAge 0)
+           (.setHttpOnly false)
+           (.setSecure (if mvs (.isSSL mvs) false))
+           (.setPath (:domainPath cfg))
+           (.setDomain (:domain cfg)))
         (doto res
-          (.setStatus 200)
-          (.setContent (XData. (WriteJson json))))
-        (.replyResult evt)))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn SignupHandler ""
-
-  ^WorkFlow
-  []
-
-  (reify WorkFlow
-    (startWith [_]
-      (log/debug "signup pipe-line - called")
-      (If. (MaybeSignupTest "32") (doSignupOK) (doSignupFail)))))
-
-;;(ns-unmap *ns* '->SignupHandler)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- doLoginFail ""
-
-  ^Activity
-  []
-
-  (SimPTask
-    (fn [^Job j]
-      (let [^HTTPEvent evt (.event j)
-            ^HTTPResult res (.getResultObj evt) ]
-        (.setStatus res 403)
-        (.replyResult evt)))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- doLoginOK ""
-
-  ^Activity
-  []
-
-  (SimPTask
-    (fn [^Job j]
-      (let
-        [acct (:account (.getLastResult j))
-         json {:status {:code 200 } }
-         ^HTTPEvent evt (.event j)
-         ^WebSS mvs (.getSession evt)
-         ^Muble
-         src (.emitter evt)
-         cfg (.getv src :emcfg)
-         est (:sessionAgeSecs cfg)
-         ck (HttpCookie. (name *USER-FLAG*)
-                         (str (:acctid acct)))
-         ^HTTPResult
-         res (.getResultObj evt) ]
-        (doto ck
-          (.setMaxAge est)
-          (.setHttpOnly false)
-          (.setSecure (.isSSL mvs))
-          (.setPath (:domainPath cfg))
-          (.setDomain (:domain cfg)))
-        (doto res
-          (.setContent (XData. (WriteJson json)))
-          (.addCookie ck)
-          (.setStatus 200))
-        (.setNew mvs true est)
-        (.replyResult evt)))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn LoginHandler ""
-
-  ^WorkFlow
-  []
-
-  (reify WorkFlow
-    (startWith [_]
-      (log/debug "login pipe-line - called")
-      (If. (MaybeLoginTest) (doLoginOK) (doLoginFail)))))
-
-;;(ns-unmap *ns* '->LoginHandler)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- doLookupEmail ""
-
-  ^Activity
-  []
-
-  (SimPTask
-    (fn [^Job j]
-      (let [^HTTPEvent evt (.event j)
-            ctr (-> (.emitter evt)
-                    (.container))
-            pa (:auth (-> ^Muble
-                          ctr (.getv K_PLUGINS)))
-            si (try (MaybeGetAuthInfo evt)
-                    (catch BadDataError e#  {:e e# }))
-            info (or si {} )
-            email (str (:email info)) ]
-        (test-nonil "AuthPlugin" pa)
-        (if
-          (and (= "18" (:captcha info))
-               (hgl? email))
-          (if-some [acct (-> ^AuthPlugin
-                             pa
-                             (.getAccount {:email email }))]
-            (do (log/debug "found account, email=%s" email) acct)
-            (log/debug "failed to find account with email=%s" email))
-          nil)))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- doAckReply ""
-
-  ^Activity
-  []
-
-  (SimPTask
-    (fn [^Job j]
-      (let [^HTTPEvent evt (.event j)
-            res (.getResultObj evt)
-            json {:status {:code 200 } } ]
-        (doto
-          ^HTTPResult
-          res
-          (.setStatus 200)
-          (.setContent (XData. (WriteJson json))))
-        (.replyResult evt)))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn ForgotHandler ""
-
-  ^WorkFlow
-  []
-
-  (reify WorkFlow
-    (startWith [_]
-      (log/debug "forgot-login pipe-line - called")
-      (-> (doAckReply)
-          (.chain (doLookupEmail))))))
-
-;;(ns-unmap *ns* '->ForgotHandler)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- doLogout ""
-
-  ^Activity
-  []
-
-  (SimPTask
-    (fn [^Job j]
-      (let
-        [ck (HttpCookie. (name *USER-FLAG*) "")
-         json {:status {:code 200 } }
-         ^HTTPEvent evt (.event j)
-         ^WebSS
-         mvs (.getSession evt)
-         src (.emitter evt)
-         cfg (-> ^Muble src
-                 (.getv :emcfg))
-         ^HTTPResult
-         res (.getResultObj evt) ]
-        (doto ck
-          (.setMaxAge 0)
-          (.setHttpOnly false)
-          (.setSecure (.isSSL mvs))
-          (.setPath (:domainPath cfg))
-          (.setDomain (:domain cfg)))
-        (doto res
-          (.setContent (XData. (WriteJson json)))
-          (.setStatus 200)
+          (.setContent (XData. (writeJsonStr json)))
           (.addCookie ck))
-        (.invalidate mvs)
-        (.replyResult evt)))))
+        (some-> mvs .invalidate)
+        (replyResult evt)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn LogoutHandler ""
+(defn logoutHandler "" []
 
-  ^WorkFlow
-  []
+  (log/debug "logout pipe-line - called")
+  (workStream<> (doLogout)))
 
-  (reify WorkFlow
-    (startWith [_]
-      (log/debug "logout pipe-line - called")
-      (doLogout))))
-
-;;(ns-unmap *ns* '->LogoutHandler)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF
 

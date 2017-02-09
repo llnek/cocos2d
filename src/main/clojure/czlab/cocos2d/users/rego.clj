@@ -1,151 +1,115 @@
-;; Licensed under the Apache License, Version 2.0 (the "License");
-;; you may not use this file except in compliance with the License.
-;; You may obtain a copy of the License at
-;;
-;;     http://www.apache.org/licenses/LICENSE-2.0
-;;
-;; Unless required by applicable law or agreed to in writing, software
-;; distributed under the License is distributed on an "AS IS" BASIS,
-;; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-;; See the License for the specific language governing permissions and
-;; limitations under the License.
-;;
-;; Copyright (c) 2013-2016, Kenneth Leung. All rights reserved.
-
+;; Copyright (c) 2013-2017, Kenneth Leung. All rights reserved.
+;; The use and distribution terms for this software are covered by the
+;; Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
+;; which can be found in the file epl-v10.html at the root of this distribution.
+;; By using this software in any fashion, you are agreeing to be bound by
+;; the terms of this license.
+;; You must not remove this notice, or any other, from this software.
 
 (ns  ^{:doc ""
-       :author "kenl" }
+       :author "Kenneth Leung"}
 
   czlab.cocos2d.users.rego
 
-  (:require
-    [czlab.skaro.impl.ext :refer [GetAppKeyFromEvent] ]
-    [czlab.xlib.util.dates :refer [ParseDate] ]
-    [czlab.xlib.util.str :refer [hgl? strim] ]
-    [czlab.xlib.util.logging :as log]
-    [czlab.xlib.net.comms :refer [GenerateCsrf]])
+  (:require [czlab.basal.dates :refer [parseDate]]
+            [czlab.basal.logging :as log]
+            [czlab.convoy.net.util :refer [generateCsrf]])
 
-  (:use [czlab.skaro.core.consts]
-        [czlab.xlib.util.consts]
-        [czlab.xlib.util.wfs]
-        [czlab.cocos2d.site.core ])
+  (:use [czlab.wabbit.plugs.io.http]
+        [czlab.basal.consts]
+        [czlab.basal.core]
+        [czlab.basal.str]
+        [czlab.cocos2d.site.core])
 
-  (:import
-    [com.zotohlab.skaro.core Muble Container ConfigError]
-    [com.zotohlab.wflow WorkFlow Job Activity PTask]
-    [com.zotohlab.skaro.io WebSS HTTPEvent HTTPResult]
-    [com.zotohlab.frwk.io XData]
-    [com.zotohlab.frwk.server Emitter]
-    [java.io File]))
+  (:import [czlab.flux.wflow WorkStream Job]
+           [czlab.wabbit.plugs.io HttpMsg]
+           [czlab.convoy.net HttpResult]
+           [czlab.jasal XData]
+           [java.io File]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- interpolateRegisterPage ""
+(defn- interpolateRegisterPage
+  ""
+  [^HttpMsg evt ^String csrf]
 
-  [^HTTPEvent evt ^String csrf]
-
-  (-> (GetDftModel evt)
+  (-> (getDftModel evt)
       (update-in [:body]
                  #(merge % {:content "/main/users/register.ftl"
                             :csrf csrf}))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- interpolateLoginPage ""
+(defn- interpolateLoginPage
+  ""
+  [^HttpMsg evt ^String csrf]
 
-  [^HTTPEvent evt ^String csrf]
-
-  (-> (GetDftModel evt)
+  (-> (getDftModel evt)
       (update-in [:body]
                  #(merge % {:content "/main/users/login.ftl"
                             :csrf csrf}))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- interpolateForgotPage ""
+(defn- interpolateForgotPage
+  ""
+  [^HttpMsg evt ^String csrf]
 
-  [^HTTPEvent evt ^String csrf]
-
-  (-> (GetDftModel evt)
+  (-> (getDftModel evt)
       (update-in [:body]
                  #(merge % {:content "/main/users/forgot.ftl"
                             :csrf csrf}))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- doShowPage ""
+(defn- doShowPage "" [func]
 
-  ^Activity
-  [func]
-
-  (SimPTask
-    (fn [^Job j]
-      (let
-        [tpl (:template (.getv j EV_OPTS))
-         ^HTTPEvent evt (.event j)
-         src (.emitter evt)
-         cfg (-> ^Muble
-                 src (.getv :emcfg))
-         ^Container co (.container src)
-         mvs (.getSession evt)
-         csrf (GenerateCsrf)
-         est (:sessionAgeSecs cfg)
-         {:keys [data ctype]}
-         (.loadTemplate co
-                        tpl
-                        (func evt csrf))
-         res (.getResultObj evt) ]
-        (doto ^HTTPResult
-          res
-          (.setHeader "content-type" ctype)
-          (.setContent data)
-          (.setStatus 200))
-        (doto ^WebSS
-          mvs
-          (.setNew true est)
-          (.setXref csrf))
-        (.replyResult evt)))))
+  (script<>
+    #(do->nil
+       (let
+         [^HttpMsg evt (.origin ^Job %2)
+          ri (get-in (.msgGist evt)
+                     [:route :info])
+          tpl (some-> ^RouteInfo
+                      ri .template)
+          csrf (generateCsrf)
+          mvs (.session evt)
+          {:keys [sessionAgeSecs]}
+          (.. evt source config)
+          {:keys [data ctype]}
+          (loadTemplate nil
+                        tpl (func evt csrf))
+          res (httpResult<> )]
+         (doto res
+           (.setHeader "content-type" ctype)
+           (.setContent data))
+         (doto mvs
+           (.setNew true sessionAgeSecs)
+           (.setXref csrf))
+         (replyResult res)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn RegisterPage ""
+(defn registerPage "" ^WorkStream []
+  (workStream<>
+    (doShowPage interpolateRegisterPage)))
 
-  ^WorkFlow
-  []
-
-  (reify WorkFlow
-    (startWith [_]
-      (doShowPage interpolateRegisterPage))))
-
-;;(ns-unmap *ns* '->RegisterPage)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn LoginPage ""
+(defn loginPage "" ^WorkStream []
+  (workStream<>
+    (doShowPage interpolateLoginPage)))
 
-  ^WorkFlow
-  []
-
-  (reify WorkFlow
-    (startWith [_]
-      (doShowPage interpolateLoginPage))))
-
-;;(ns-unmap *ns* '->LoginPage)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn ForgotPage ""
+(defn forgotPage "" ^WorkStream []
 
-  ^WorkFlow
-  []
+  (workStream<>
+    (doShowPage interpolateForgotPage)))
 
-  (reify WorkFlow
-    (startWith [_]
-      (doShowPage interpolateForgotPage))))
-
-;;(ns-unmap *ns* '->ForgotPage)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF
 

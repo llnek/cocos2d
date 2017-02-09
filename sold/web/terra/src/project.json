@@ -1,0 +1,32 @@
+ {
+
+    "jsList"        : [
+
+    "src/terra/p/config.js",
+    "src/terra/i18n/l10n.js",
+
+    "src/terra/n/cobjs.js",
+    "src/terra/n/gnodes.js",
+
+    "src/terra/s/utils.js",
+
+    "src/terra/s/factory.js",
+    "src/terra/s/stager.js",
+    "src/terra/s/motion.js",
+    "src/terra/s/move.js",
+    "src/terra/s/aliens.js",
+    "src/terra/s/collide.js",
+    "src/terra/s/resolve.js",
+    "src/terra/s/render.js",
+    "src/terra/s/sysobjs.js",
+
+    "src/terra/p/splash.js",
+    "src/terra/p/hud.js",
+    "src/terra/p/mmenu.js",
+    "src/terra/p/game.js",
+    "src/terra/p/protos.js",
+
+
+    "src/zotohlab/p/boot.js"
+    ]
+}

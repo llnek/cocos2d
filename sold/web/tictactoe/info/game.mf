@@ -1,0 +1,15 @@
+{
+  :pubdate #inst "2014-06-03"
+  :author "llnek"
+  :status true
+
+  :network {
+    :enabled true
+    :minp 2
+    :maxp 2
+    :engine  "czlab.frigga.tttoe.core/TicTacToe" }
+
+  :uri "/arena/tictactoe"
+  :image "ui/catalog.png"
+}
+
