@@ -21,6 +21,8 @@ public/media/
 public/pages/
 public/extlibs/
 
+pom.xml.asc
+pom.xml
 
 *.class
 *.asc
