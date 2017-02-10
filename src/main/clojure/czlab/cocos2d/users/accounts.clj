@@ -12,20 +12,22 @@
   czlab.cocos2d.users.accounts
 
   (:require [czlab.basal.format :refer [writeJsonStr]]
-            [czlab.wabbit.plugs.auth
-             :refer [maybeSignupTest
-                     maybeLoginTest]]
             [czlab.basal.logging :as log]
             [czlab.basal.resources :refer [rstr]])
 
-  (:use [czlab.wabbit.plugs.auth]
+  (:use [czlab.wabbit.plugs.auth.core]
+        [czlab.convoy.nettio.resp]
+        [czlab.convoy.net.core]
+        [czlab.flux.wflow.core]
         [czlab.basal.core]
+        [czlab.basal.io]
         [czlab.basal.str]
         [czlab.cocos2d.site.core])
 
   (:import [czlab.wabbit.plugs.auth AuthPluglet DuplicateUser]
            [czlab.jasal XData BadDataError Identifiable I18N]
            [org.apache.commons.codec.net URLCodec]
+           [czlab.flux.wflow Job WorkStream]
            [czlab.wabbit.plugs.io HttpMsg]
            [czlab.convoy.net HttpResult]
            [java.net HttpCookie]))
@@ -42,18 +44,19 @@
        (let
          [err (:error (.lastResult ^Job %2))
           ^HttpMsg evt (.origin ^Job %2)
-          co (.. evt source server)
-          res (httpResult<> )]
+          gs (.msgGist evt)
+          res (httpResult<> (.socket evt) gs)]
          (if (inst? DuplicateUser err)
-           (let [rcb (-> (.id co)
-                         I18N/getBundle)
-                 json {:error {:msg (rstr rcb "acct.dup.user")}}]
+           (let [rcb (-> (.. evt source server id)
+                         I18N/bundle)
+                 json {:error {:msg
+                               (rstr rcb
+                                     "acct.dup.user")}}]
              (doto res
                (.setStatus 409)
-               (.setContent (XData. (writeJsonStr json)))))
-           ;else
+               (.setContent (xdata<> (writeJsonStr json)))))
            (.setStatus res 400))
-         (replyResult<> evt)))))
+         (replyResult res)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -63,13 +66,14 @@
     #(do->nil
        (let
          [acct (:account (.lastResult ^Job %2))
-          ^HttpMsg evt (.origin ^JOb %2)
-          res (httpResult<> )
+          ^HttpMsg evt (.origin ^Job %2)
+          gs (.msgGist evt)
+          res (httpResult<> (.socket evt) gs)
           json {:status {:code 200}}]
-         (log/debug "successfully signed up new account %s" acct)
+         (log/debug "success: signed up new acct %s" acct)
          (doto res
-           (.setContent (XData. (writeJsonStr json))))
-         (replyResult evt)))))
+           (.setContent (xdata<> (writeJsonStr json)))
+           (replyResult ))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -77,8 +81,8 @@
 
   (log/debug "signup pipe-line - called")
   (workStream<>
-    (ternery<>
-      (maybeSignupTest "32") (doSignupOK) (doSignupFail))))
+    (ternary<>
+      (signupTestExpr<> "32") (doSignupOK) (doSignupFail))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -88,8 +92,9 @@
     #(do->nil
        (let
          [^HttpMsg evt (.origin ^Job %2)
-          res (httpResult<> 403)]
-         (replyResult evt)))))
+          gs (.msgGist evt)
+          res (httpResult<> (.socket evt) gs 403)]
+         (replyResult res)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -99,34 +104,35 @@
     #(do->nil
        (let
          [acct (:account (.lastResult ^Job %2))
-          json {:status {:code 200 } }
-          ^HttpMsg evt (.origin ^JOb %2)
+          json {:status {:code 200}}
+          ^HttpMsg evt (.origin ^Job %2)
           mvs (.session evt)
-          {:keys [sessionAgeSecs]}
+          gs (.msgGist evt)
+          {:keys [domainPath domain sessionAgeSecs]}
           (.. evt source config)
           ck (HttpCookie. (name *user-flag*)
                           (str (:acctid acct)))
-          res (httpResult<> )]
+          res (httpResult<> (.socket evt) gs)]
          (doto ck
-           (.setMaxAge est)
+           (.setMaxAge sessionAgeSecs)
            (.setHttpOnly false)
-           (.setSecure (if mvs (.isSSL mvs) false))
-           (.setPath (:domainPath cfg))
-           (.setDomain (:domain cfg)))
+           (.setPath domainPath)
+           (.setDomain domain)
+           (.setSecure (if mvs (:ssl? gs) false)))
          (doto res
-           (.setContent (XData. (writeJsonStr json)))
+           (.setContent (xdata<> (writeJsonStr json)))
            (.addCookie ck))
          (some-> mvs (.setNew true sessionAgeSecs))
-         (replyResult evt)))))
+         (replyResult res)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn loginHandler "" []
+(defn loginHandler "" ^WorkStream []
 
   (log/debug "login pipe-line - called")
   (workStream<>
-    (ternery<>
-      (maybeLoginTest) (doLoginOK) (doLoginFail))))
+    (ternary<>
+      (loginTestExpr<>) (doLoginOK) (doLoginFail))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -139,16 +145,14 @@
           co (.. evt source server)
           pa (. co child :auth)
           si (try (maybeGetAuthInfo evt)
-                  (catch BadDataError e#  {:e e# }))
+                  (catch BadDataError _  {:e _ }))
           info (or si {})
           email (str (:email info))]
-         (test-nonil "AuthPlugin" pa)
-         (if
-           (and (= "18" (:captcha info))
-                (hgl? email))
-           (if-some [acct (-> ^AuthPluglet
-                              pa
-                              (.getAccount {:email email }))]
+         (test-some "AuthPlugin" pa)
+         (if (and (= "18" (:captcha info))
+                  (hgl? email))
+           (if-some [acct (. ^AuthPluglet
+                             pa account {:email email})]
              (do (log/debug "found account, email=%s" email) acct)
              (log/debug "failed to find account with email=%s" email)))))))
 
@@ -160,15 +164,16 @@
     #(do->nil
        (let
          [^HttpMsg evt (.origin ^Job %2)
-          res (httpResult<> )
+          gs (.msgGist evt)
+          res (httpResult<> (.socket evt) gs)
           json {:status {:code 200}}]
          (doto res
-           (.setContent (XData. (writeJsonStr json))))
-         (replyResult evt)))))
+           (.setContent (xdata<> (writeJsonStr json))))
+         (replyResult res)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn forgotHandler "" []
+(defn forgotHandler "" ^WorkStream []
 
   (log/debug "forgot-login pipe-line - called")
   (workStream<>
@@ -182,25 +187,28 @@
     #(do->nil
        (let
          [ck (HttpCookie. (name *user-flag*) "")
-          json {:status {:code 200 } }
+          json {:status {:code 200}}
           ^HttpMsg evt (.origin ^Job %2)
           mvs (.session evt)
-          res (httpResult<> )]
+          gs (.msgGist evt)
+          {:keys [domainPath domain]}
+          (.. evt source config)
+          res (httpResult<> (.socket evt) gs)]
          (doto ck
            (.setMaxAge 0)
            (.setHttpOnly false)
-           (.setSecure (if mvs (.isSSL mvs) false))
-           (.setPath (:domainPath cfg))
-           (.setDomain (:domain cfg)))
-        (doto res
-          (.setContent (XData. (writeJsonStr json)))
-          (.addCookie ck))
-        (some-> mvs .invalidate)
-        (replyResult evt)))))
+           (.setPath domainPath )
+           (.setDomain domain )
+           (.setSecure (if mvs (:ssl? gs) false)))
+         (some-> mvs .invalidate)
+         (doto res
+          (.setContent (xdata<> (writeJsonStr json)))
+          (.addCookie ck)
+          (replyResult ))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn logoutHandler "" []
+(defn logoutHandler "" ^WorkStream []
 
   (log/debug "logout pipe-line - called")
   (workStream<> (doLogout)))

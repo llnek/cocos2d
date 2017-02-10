@@ -12,16 +12,24 @@
   czlab.cocos2d.site.core
 
   (:require [czlab.basal.dates :refer [parseDate]]
-            [czlab.basal.io :refer [listFiles]]
+            [czlab.wabbit.plugs.io.mvc :as mvc]
             [czlab.basal.logging :as log]
             [clojure.string :as cs]
             [clojure.java.io :as io])
 
   (:use [czlab.cocos2d.games.meta]
-        [czlab.wabbit.base.core])
+        [czlab.flux.wflow.core]
+        [czlab.convoy.net.core]
+        [czlab.basal.core]
+        [czlab.basal.str]
+        [czlab.basal.io]
+        [czlab.wabbit.base.core]
+        [czlab.convoy.nettio.resp])
 
-  (:import [czlab.wabbit.plugs.io HttpMsg]
-           [czlab.convoy.net HttpResult]
+  (:import [czlab.flux.wflow Job TaskDef WorkStream]
+           [czlab.convoy.net RouteInfo HttpResult]
+           [czlab.wabbit.plugs.io HttpMsg]
+           [czlab.wabbit.sys Execvisor]
            [czlab.jasal XData]
            [java.io File]))
 
@@ -35,32 +43,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- maybeCheckDoors  "" [^File appDir]
+(defn- maybeCheckDoors  "" [appDir]
 
-  (with-local-vars [rc (transient [])]
-    (let [fds (-> (io/file appDir "public/ig/res/main/doors")
-                  (listFiles  "png"))]
-      (doseq [^File fd fds]
-        (var-set rc (conj! @rc (.getName fd)))))
-    (reset! doors (persistent! @rc))
-    (log/debug "how many doors ? %s" (count @doors))))
+  (->> (file-seq (io/file appDir "public/res/doors"))
+       (filter #(.endsWith (.getName ^File %) ".png"))
+       (mapv #(.getName ^File %))
+       (reset! doors))
+  (log/debug "how many doors ? %s" (count @doors)))
 
+(defn- odinInit "" [_])
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn myAppMain "" [^Container co]
+(defn myAppMain "" [^Execvisor co]
 
-  (doto (.getAppDir co)
+  (doto (.homeDir co)
     (scanGameManifests )
-    (maybeCheckDoors ))
-  ;;(OdinInit ctr)
-  (log/info "app-main contextualized by container %s" co))
+    (maybeCheckDoors )
+    (odinInit co))
+  (log/info "app-main called by container %s" co))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn getDftModel
-
-  "Return a default object for Freemarker processing."
-  [^HttpMsg evt]
+(defn getDftModel "Default object for Freemarker processing" [^HttpMsg evt]
 
   (let [ck (. evt cookie (name *user-flag*))
         uid (if (nil? ck)
@@ -74,14 +78,14 @@
      :metatags
      {:keywords "content=\"web browser games mobile ios android windows phone\""
       :description "content=\"Hello World!\""
-      :viewport "content=\"width=device-width, initial-scale=1.0\"" }
-     :appkey (getAppKeyFromEvent evt)
-     :profile {:user uid }
+      :viewport "content=\"width=device-width, initial-scale=1.0\""}
+     :appkey (.. evt source server pkey)
+     :profile {:user uid}
      :body {} }))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- interpolateIndexPage "" [^HttpMsg evt]
+(defn- injectIndexPage "" [^HttpMsg evt]
 
   (-> (getDftModel evt)
       (update-in [:body]
@@ -102,12 +106,12 @@
           tpl (some-> ^RouteInfo
                       ri .template)
           {:keys [data ctype]}
-          (loadTemplate nil
-                        tpl
-                        (interpolateIndexPage evt))
-          res (httpResult<> nil)]
+          (mvc/loadTemplate (.source evt)
+                            tpl (injectIndexPage evt))
+          res (httpResult<> (.socket evt)
+                            (.msgGist evt))]
          (doto res
-           (.setHeader "content-type" ctype)
+           (.setContentType ctype)
            (.setContent data))
          (replyResult res)))))
 

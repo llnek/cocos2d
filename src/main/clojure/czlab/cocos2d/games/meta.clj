@@ -11,14 +11,14 @@
 
   czlab.cocos2d.games.meta
 
-  (:require [czlab.basal.io :refer [readOneFile ListDirs]]
-            [czlab.basal.format :refer :all]
+  (:require [czlab.basal.io :refer [readAsStr listDirs]]
             [czlab.basal.logging :as log]
             [clojure.java.io :as io]
             [clojure.string :as cs]
             [czlab.basal.dates :refer [dtime parseDate]])
 
   (:use [czlab.wabbit.base.core]
+        [czlab.basal.format]
         [czlab.basal.core]
         [czlab.basal.str])
 
@@ -48,36 +48,40 @@
   (with-local-vars
     [uc (transient {})
      mc (transient {})
-     tmp nil
      gc (transient [])
      rc (transient [])]
-    (doseq [^File fd (listDirs (io/file appDir "public/ig/info"))
-            :let [info (merge (-> (io/file fd "game.mf")
-                                  readEdn
-                                  (assoc :gamedir (.getName fd)))
-                              (-> (io/file fd "game.json")
-                                  readAsStr
-                                  readJsonStrKW))
-                  {:keys [network uuid uri]}
-                  info
-                  online (true? (:enabled network))]]
+    (doseq
+      [^File fd (listDirs (io/file appDir
+                                   "public/info"))
+       :let [info (merge (-> (io/file fd "game.mf")
+                             readEdn
+                             (assoc :gamedir (.getName fd)))
+                         (-> (io/file fd "game.json")
+                             readAsStr
+                             readJsonStrKW))
+             {:keys [network uuid uri]}
+             info
+             online (true? (:enabled network))]]
       ;; create a UI friendly version for freemarker
-      (var-set tmp (transient{}))
-      (doseq [[k v] info]
-        (var-set tmp (assoc! @tmp (name k) v)))
-      (var-set tmp (assoc! @tmp "network" online))
-      (var-set gc (conj! @gc (persistent! @tmp)))
+      (->> (-> (preduce<map>
+                 #(let [[k v] %2]
+                    (assoc! %1 (name k) v)) info)
+               (assoc "network" online))
+           (conj! @gc)
+           (var-set gc))
       (var-set uc (assoc! @uc uuid info))
       (var-set mc (assoc! @mc uri info))
       (var-set rc (conj! @rc info)))
-    (reset! games-mnfs (vec (sort #(compare (dtime (%1 :pubdate))
-                                            (dtime (%2 :pubdate)))
-                                  (persistent! @rc))))
+    (reset! games-mnfs
+            (vec (sort #(compare (dtime (%1 :pubdate))
+                                 (dtime (%2 :pubdate)))
+                       (persistent! @rc))))
     (reset! games-hash (persistent! @mc))
     (reset! games-uuid (persistent! @uc))
-    (reset! games-list (vec (sort #(compare (dtime (%1 "pubdate"))
-                                            (dtime (%2 "pubdate")))
-                                  (persistent! @gc))))
+    (reset! games-list
+            (vec (sort #(compare (dtime (%1 "pubdate"))
+                                 (dtime (%2 "pubdate")))
+                       (persistent! @gc))))
     ;;set true for debugging
     (when true
       (log/debug "############ game manifests ##########################")

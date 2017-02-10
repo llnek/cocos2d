@@ -20,7 +20,7 @@
     <p></p>
     -->
 
-    <p>© 2015 Zotohlab designed and coded by Ken Leung.</p>
+    <p>© 2015-2017 Zotohlab designed and coded by Kenneth Leung.</p>
 
   </div>
 </footer>

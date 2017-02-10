@@ -13,18 +13,20 @@
 
   (:require [czlab.basal.dates :refer [parseDate]]
             [czlab.basal.logging :as log]
+            [czlab.wabbit.plugs.io.mvc :as mvc]
             [czlab.convoy.net.util :refer [generateCsrf]])
 
-  (:use [czlab.wabbit.plugs.io.http]
-        [czlab.basal.consts]
+  (:use [czlab.flux.wflow.core]
+        [czlab.convoy.net.core]
         [czlab.basal.core]
         [czlab.basal.str]
-        [czlab.cocos2d.site.core])
+        [czlab.basal.io]
+        [czlab.cocos2d.site.core]
+        [czlab.convoy.nettio.resp])
 
-  (:import [czlab.flux.wflow WorkStream Job]
+  (:import [czlab.convoy.net RouteInfo HttpResult]
+           [czlab.flux.wflow WorkStream Job]
            [czlab.wabbit.plugs.io HttpMsg]
-           [czlab.convoy.net HttpResult]
-           [czlab.jasal XData]
            [java.io File]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -32,36 +34,33 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- interpolateRegisterPage
-  ""
-  [^HttpMsg evt ^String csrf]
+(defn- injectRegisterPage
+  "" [^HttpMsg evt ^String csrf]
 
-  (-> (getDftModel evt)
-      (update-in [:body]
-                 #(merge % {:content "/main/users/register.ftl"
-                            :csrf csrf}))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- interpolateLoginPage
-  ""
-  [^HttpMsg evt ^String csrf]
-
-  (-> (getDftModel evt)
-      (update-in [:body]
-                 #(merge % {:content "/main/users/login.ftl"
-                            :csrf csrf}))))
+  (update-in (getDftModel evt)
+             [:body]
+             #(merge % {:content "/main/users/register.ftl"
+                        :csrf csrf})))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- interpolateForgotPage
-  ""
-  [^HttpMsg evt ^String csrf]
+(defn- injectLoginPage
+  "" [^HttpMsg evt ^String csrf]
 
-  (-> (getDftModel evt)
-      (update-in [:body]
-                 #(merge % {:content "/main/users/forgot.ftl"
-                            :csrf csrf}))))
+  (update-in (getDftModel evt)
+             [:body]
+             #(merge % {:content "/main/users/login.ftl"
+                        :csrf csrf})))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn- injectForgotPage
+  "" [^HttpMsg evt ^String csrf]
+
+  (update-in (getDftModel evt)
+             [:body]
+             #(merge % {:content "/main/users/forgot.ftl"
+                        :csrf csrf})))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -71,8 +70,8 @@
     #(do->nil
        (let
          [^HttpMsg evt (.origin ^Job %2)
-          ri (get-in (.msgGist evt)
-                     [:route :info])
+          gs (.msgGist evt)
+          ri (get-in gs [:route :info])
           tpl (some-> ^RouteInfo
                       ri .template)
           csrf (generateCsrf)
@@ -80,35 +79,31 @@
           {:keys [sessionAgeSecs]}
           (.. evt source config)
           {:keys [data ctype]}
-          (loadTemplate nil
-                        tpl (func evt csrf))
-          res (httpResult<> )]
+          (mvc/loadTemplate (.source evt)
+                            tpl (func evt csrf))
+          res (httpResult<> (.socket evt) gs)]
+         (when mvs
+           (.setNew mvs true sessionAgeSecs)
+           (.setXref mvs csrf))
          (doto res
-           (.setHeader "content-type" ctype)
-           (.setContent data))
-         (doto mvs
-           (.setNew true sessionAgeSecs)
-           (.setXref csrf))
-         (replyResult res)))))
+           (.setContentType ctype)
+           (.setContent data)
+           (replyResult ))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn registerPage "" ^WorkStream []
-  (workStream<>
-    (doShowPage interpolateRegisterPage)))
+  (workStream<> (doShowPage injectRegisterPage)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn loginPage "" ^WorkStream []
-  (workStream<>
-    (doShowPage interpolateLoginPage)))
+  (workStream<> (doShowPage injectLoginPage)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn forgotPage "" ^WorkStream []
-
-  (workStream<>
-    (doShowPage interpolateForgotPage)))
+  (workStream<> (doShowPage injectForgotPage)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF
