@@ -1,0 +1,11 @@
+{
+  "uuid": "fa0860f9-76dc-4135-8bc7-bd5af3147d55",
+  "layout": "portrait",
+  "name" : "Pong",
+  "description": "Like Pong, only better!",
+  "keywords" :"",
+  "height" : 480,
+  "width" : 320
+
+}
+

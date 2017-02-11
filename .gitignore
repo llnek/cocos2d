@@ -13,14 +13,6 @@ logs/
 docs/
 cocos/
 
-public/scripts/
-public/ig/
-public/c/
-public/styles/
-public/media/
-public/pages/
-public/extlibs/
-
 pom.xml.asc
 pom.xml
 

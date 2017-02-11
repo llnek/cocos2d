@@ -1,0 +1,10 @@
+{
+  "uuid": "fb0fdd0b-1821-42d9-b6f7-26b11218b40d",
+  "layout": "landscape",
+  "name" : "Falling Bricks",
+  "description" :  "Like Tetris, only better!",
+  "keywords" : "",
+  "height" : 320,
+  "width" : 480
+}
+

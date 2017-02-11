@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <link rel="shortcut icon" type="image/png" href="/public/ig/res/main/favicon.png" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta charset="utf-8">
+
+  <title>Tic Tac Toe</title>
+  <meta name="description" content=" A game of tic tac toe"/>
+  <meta name="keywords" content="Tic Tac Toe"/>
+
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="full-screen" content="yes"/>
+  <meta name="screen-orientation" content="portrait"/>
+  <meta name="x5-fullscreen" content="true"/>
+  <meta name="360-fullscreen" content="true"/>
+
+  <style>
+    body, canvas, div {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        -khtml-user-select: none;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+    body {
+      padding:0; margin: 0; background: #000;
+    }
+  </style>
+
+<script>
+if ( ! document.createElement('canvas').getContext) {
+  var s = document.createElement('div');
+  s.innerHTML = '<h2>Your browser does not support HTML5 canvas!</h2>' +
+        '<p>Google Chrome is a browser that combines a minimal design with sophisticated technology to make the web faster, safer, and easier.Click the logo to download.</p>' +
+        '<a href="http://www.google.com/chrome" target="_blank"><img src="http://www.google.com/intl/en-US/chrome/assets/common/images/chrome_logo_2x.png" border="0"/></a>';
+  document.getElementById('gameArea').parentNode.insertBefore(s);
+}
+</script>
+
+</head>
+<body data-gameid="bd5f79bb-eb41-4ed5-bb44-2529dc27ed3c">
+
+<!--
+  -->
+    <canvas id="gameArea" width="320" height="480"></canvas>
+    <!-- We want to create a custom loading scene, so use a dummy cocos2d_loadJsImg to inhibit jsloader.js. -->
+
+  <div id="gameDiv">
+    <img id="cocos2d_loadJsImg" />
+  </div>
+
+  <script type="text/javascript">
+    document.ccConfig = {
+
+  // 0(default), 1(Canvas only), 2(WebGL only)
+  renderMode: 0,
+  debugMode: 1,
+
+  showFPS: false,
+  frameRate: 60,
+
+  id: 'gameArea'
+
+};
+
+
+  </script>
+
+  <script src="frameworks/cocos2d-html5/CCBoot.js"></script>
+  
+  <script src="/main.js"></script>
+
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', '']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = '//www.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+</body>
+</html>
+

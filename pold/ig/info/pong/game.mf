@@ -1,0 +1,15 @@
+{
+  :pubdate #inst "2014-06-03"
+  :author "llnek"
+
+  :network {
+    :enabled true
+    :minp 2
+    :maxp 2
+    :engine  "czlab.frigga.pong.core/Pong" }
+
+  :status true
+  :uri "/arena/pong"
+  :image "ui/catalog.png"
+}
+
