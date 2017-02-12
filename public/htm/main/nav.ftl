@@ -3,7 +3,8 @@
   <div class="container">
 
     <div class="navbar-header">
-      <a class="navbar-brand" href="/"><img class="logo" src="/public/ig/res/main/ZotohLab_black_x100.png" alt="logo"></a>
+      <a class="navbar-brand" href="/">
+        <img class="logo" src="/public/res/main/ZotohLab_black_x100.png" alt="logo"></a>
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -25,6 +26,4 @@
   </div>
 </div>
 <!-- End of Navigation Bar -->
-
-
 

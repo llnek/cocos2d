@@ -21,7 +21,7 @@
         [czlab.basal.core]
         [czlab.basal.str]
         [czlab.basal.io]
-        [czlab.cocos2d.site.core]
+        [czlab.cocos2d.util.core]
         [czlab.convoy.nettio.resp])
 
   (:import [czlab.convoy.net RouteInfo HttpResult]

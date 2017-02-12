@@ -9,7 +9,9 @@
         <a href="/games/toppicks">
 
           <#list body.doors as door>
-          <img class= "main-door" id="door-${door}" src="/public/ig/res/main/doors/${door}" alt="entry"/>
+          <img class= "main-door" 
+               id="door-${door}" 
+               src="/public/res/doors/${door}" alt="entry"/>
           </#list>
 
         </a>

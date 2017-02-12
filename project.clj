@@ -11,6 +11,7 @@
   :dependencies
   [[org.clojure/clojurescript "1.9.293"]
    [org.clojure/clojure "1.8.0"]
+   [commons-logging "1.2"]
    [net.mikera/cljunit "0.6.0" :scope "test"]
    [junit/junit "4.12" :scope "test"]
    [io.czlab/wabbit-cons "1.0.0"]

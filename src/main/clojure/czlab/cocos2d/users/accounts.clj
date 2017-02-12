@@ -22,7 +22,7 @@
         [czlab.basal.core]
         [czlab.basal.io]
         [czlab.basal.str]
-        [czlab.cocos2d.site.core])
+        [czlab.cocos2d.util.core])
 
   (:import [czlab.wabbit.plugs.auth AuthPluglet DuplicateUser]
            [czlab.jasal XData BadDataError Identifiable I18N]

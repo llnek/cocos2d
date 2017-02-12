@@ -15,17 +15,17 @@
     <p></p>
     <p>
       <a href="/">
-        <img class="logo" src="/public/ig/res/main/ZotohLab_x100.png" alt="logo"></a>
+        <img class="logo" src="/public/res/main/ZotohLab_black_x100.png" alt="logo"></a>
     </p>
     <p></p>
     -->
 
-    <p>© 2015 Zotohlab designed and coded by Ken Leung.</p>
+    <p>© 2015-2017 Zotohlab designed and coded by Kenneth Leung.</p>
 
   </div>
 </footer>
 
-<!-- End of Footer 
+<!-- End of Footer
 
 <div class="scrolltotop">
   <i class="fa fa-chevron-up"></i>

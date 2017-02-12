@@ -18,6 +18,7 @@
             [clojure.java.io :as io])
 
   (:use [czlab.cocos2d.games.meta]
+        [czlab.cocos2d.util.core]
         [czlab.flux.wflow.core]
         [czlab.convoy.net.core]
         [czlab.basal.core]
@@ -38,55 +39,37 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(def ^:dynamic *user-flag* :__u982i) ;; user id
-(def ^:private doors (atom []))
+(def ^:private doors (atom nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- maybeCheckDoors  "" [appDir]
+(defn- maybeCheckDoors  "" [resDir]
 
-  (->> (file-seq (io/file appDir "public/res/doors"))
+  (->> (file-seq (io/file resDir "doors"))
        (filter #(.endsWith (.getName ^File %) ".png"))
        (mapv #(.getName ^File %))
        (reset! doors))
-  (log/debug "how many doors ? %s" (count @doors)))
+  (log/debug "how many color doors ? %d" (count @doors)))
 
-(defn- odinInit "" [_])
+(defn- odinInit "" [_ _])
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn myAppMain "" [^Execvisor co]
 
   (doto (.homeDir co)
     (scanGameManifests )
-    (maybeCheckDoors )
     (odinInit co))
   (log/info "app-main called by container %s" co))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn getDftModel "Default object for Freemarker processing" [^HttpMsg evt]
-
-  (let [ck (. evt cookie (name *user-flag*))
-        uid (if (nil? ck)
-              "Guest"
-              (strim (.getValue ck)))]
-    {:title "ZotohLab | Fun &amp; Games."
-     :encoding "utf-8"
-     :description "Bonjour!"
-     :stylesheets []
-     :scripts []
-     :metatags
-     {:keywords "content=\"web browser games mobile ios android windows phone\""
-      :description "content=\"Hello World!\""
-      :viewport "content=\"width=device-width, initial-scale=1.0\""}
-     :appkey (.. evt source server pkey)
-     :profile {:user uid}
-     :body {} }))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- injectIndexPage "" [^HttpMsg evt]
 
+  (if (nil? @doors)
+    (let [{:keys [publicRootDir mediaDir]}
+          (.. evt source config)]
+      (-> (io/file publicRootDir mediaDir)
+          (maybeCheckDoors ))))
   (-> (getDftModel evt)
       (update-in [:body]
                  #(merge %

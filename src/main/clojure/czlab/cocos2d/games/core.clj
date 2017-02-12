@@ -19,7 +19,7 @@
         [czlab.basal.core]
         [czlab.basal.str]
         [czlab.flux.wflow.core]
-        [czlab.cocos2d.site.core]
+        [czlab.cocos2d.util.core]
         [czlab.convoy.nettio.resp]
         [czlab.cocos2d.games.meta])
 

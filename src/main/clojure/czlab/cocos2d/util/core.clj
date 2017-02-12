@@ -11,7 +11,7 @@
 
   czlab.cocos2d.util.core
 
-  (:gen-class)
+  ;;(:gen-class)
 
   (:require [czlab.basal.logging :as log]
             [clojure.java.io :as io]
@@ -22,15 +22,39 @@
         [czlab.basal.core]
         [czlab.basal.str])
 
-  (:import [java.io File]
+  (:import [czlab.wabbit.plugs.io HttpMsg]
+           [java.net HttpCookie]
+           [java.io File]
            [java.util List Locale]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* false)
+(def ^:dynamic *user-flag* :__u982i) ;; user id
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+(defn getDftModel "Default object for Freemarker processing" [^HttpMsg evt]
+
+  (let [ck (. evt cookie (name *user-flag*))
+        uid (if (nil? ck)
+              "Guest"
+              (strim (.getValue ck)))]
+    {:title "ZotohLab | Fun &amp; Games."
+     :encoding "utf-8"
+     :description "Bonjour!"
+     :stylesheets []
+     :scripts []
+     :metatags
+     {:keywords "content=\"web browser games mobile ios android windows phone\""
+      :description "content=\"Hello World!\""
+      :viewport "content=\"width=device-width, initial-scale=1.0\""}
+     :appkey (.. evt source server pkey)
+     :profile {:user uid}
+     :body {} }))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn -main "" [& args]
+(defn- main "" [& args]
 
   ;; for security, don't just eval stuff
   ;;(alter-var-root #'*read-eval* (constantly false))
