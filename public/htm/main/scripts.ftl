@@ -31,6 +31,6 @@
 <script src="/public/ext/cherimoia/caesar.js"></script>
 <script src="/public/jsc/main/site.js"></script>
 <script>
-supplicate('cocos2d/site');
+supplicate('main/site');
 </script>
 

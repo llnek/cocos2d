@@ -7,7 +7,7 @@
         <div class="acctxxxx-result"></div>
 
 
-        <form id="login_form" class="acctxxxx-form" action="/wsapi/4447e5ad-ec05-4e69-a8c7-d696f2450f70" method="POST" role="form">
+        <form id="login_form" class="acctxxxx-form" action="/wsapi/4447e5adec054e69a8c7d696f2450f70" method="POST" role="form">
           <input data-name="nonce_token" type="hidden" name="nonce_token" value="1"></input>
           <input data-name="csrf_token" type="hidden" name="csrf_token" value="${body.csrf}"></input>
           <input data-name="xref" type="hidden" name="xref" value=""></input>

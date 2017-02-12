@@ -6,7 +6,7 @@
 
         <div class="acctxxxx-result"></div>
 
-        <form id="forgotpwd_form" class="acctxxxx-form" action="/wsapi/2284fc6c-40d1-4e52-8fb8-20ee0f7a992f" method="POST" role="form">
+        <form id="forgotpwd_form" class="acctxxxx-form" action="/wsapi/2284fc6c40d14e528fb820ee0f7a992f" method="POST" role="form">
 
           <input data-name="csrf_token" type="hidden" name="csrf_token" value="${body.csrf}"></input>
 

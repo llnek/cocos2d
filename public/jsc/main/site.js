@@ -13,7 +13,7 @@
               * @requires global/window
               * @requires cherimoia/skaro
               * @requires cherimoia/caesar
-              * @module cocos2d/site
+              * @module main/site
               */
 
 var _window = require('global/window');

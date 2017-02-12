@@ -1054,17 +1054,17 @@ a {
       position: relative;
       outline: none; }
       .navbar-nav li a:hover, .navbar-nav li a:focus {
-        background: transparent url("/public/ig/res/main/menu-bullet.png") no-repeat center 85%;
+        background: transparent url("/public/res/main/menu-bullet.png") no-repeat center 85%;
         text-decoration: none;
         color: #d9a13f;
         outline: none; }
     .navbar-nav .active a {
       color: #d9a13f;
-      background: transparent url("/public/ig/res/main/menu-bullet.png") no-repeat center 85%;
+      background: transparent url("/public/res/main/menu-bullet.png") no-repeat center 85%;
       outline: none; }
       .navbar-nav .active a:hover, .navbar-nav .active a:focus {
         color: #bf8726;
-        background: transparent url("/public/ig/res/main/menu-bullet.png") no-repeat center 100%;
+        background: transparent url("/public/res/main/menu-bullet.png") no-repeat center 100%;
         outline: none; }
 
   .intro-section {
