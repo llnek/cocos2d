@@ -16,22 +16,22 @@
               * @module main/site
               */
 
-var _window = require('global/window');
+var _window = supplicate('global/window');
 
 var _window2 = _interopRequireDefault(_window);
 
-var _skaro = require('cherimoia/skaro');
+var _skaro = supplicate('cherimoia/skaro');
 
 var _skaro2 = _interopRequireDefault(_skaro);
 
-var _caesar = require('cherimoia/caesar');
+var _caesar = supplicate('cherimoia/caesar');
 
 var _caesar2 = _interopRequireDefault(_caesar);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var ModalWindow = _window2.default.ModalWindow,
-    document = _window2.default.document,
+    //document = _window2.default.document,
     undef = void 0,
     $ = _window2.default.jQuery;
 

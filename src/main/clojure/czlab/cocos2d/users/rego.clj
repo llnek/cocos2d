@@ -76,19 +76,19 @@
                       ri .template)
           csrf (generateCsrf)
           mvs (.session evt)
-          {:keys [sessionAgeSecs]}
+          {:keys [sessionAgeSecs] :as cfg}
           (.. evt source config)
           {:keys [data ctype]}
           (mvc/loadTemplate (.source evt)
                             tpl (func evt csrf))
-          res (httpResult<> (.socket evt) gs)]
+          res (httpResult<> evt)]
          (when mvs
            (.setNew mvs true sessionAgeSecs)
            (.setXref mvs csrf))
          (doto res
            (.setContentType ctype)
            (.setContent data)
-           (replyResult ))))))
+           (replyResult  cfg))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
