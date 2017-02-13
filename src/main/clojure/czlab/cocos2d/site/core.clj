@@ -91,12 +91,11 @@
           {:keys [data ctype]}
           (mvc/loadTemplate (.source evt)
                             tpl (injectIndexPage evt))
-          res (httpResult<> (.socket evt)
-                            (.msgGist evt))]
+          res (httpResult<> evt)]
          (doto res
            (.setContentType ctype)
-           (.setContent data))
-         (replyResult res)))))
+           (.setContent data)
+           (replyResult (.. evt source config)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

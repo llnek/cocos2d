@@ -105,11 +105,11 @@
           {:keys [data ctype]}
           (mvc/loadTemplate (.source evt)
                             tpl (func evt))
-          res (httpResult<> (.socket evt) gist)]
+          res (httpResult<> evt)]
          (doto res
            (.setContentType ctype)
            (.setContent data)
-           (replyResult ))))))
+           (replyResult (.. evt source config)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

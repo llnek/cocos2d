@@ -45,7 +45,7 @@
          [err (:error (.lastResult ^Job %2))
           ^HttpMsg evt (.origin ^Job %2)
           gs (.msgGist evt)
-          res (httpResult<> (.socket evt) gs)]
+          res (httpResult<> evt)]
          (if (inst? DuplicateUser err)
            (let [rcb (-> (.. evt source server id)
                          I18N/bundle)
@@ -56,7 +56,8 @@
                (.setStatus 409)
                (.setContent (xdata<> (writeJsonStr json)))))
            (.setStatus res 400))
-         (replyResult res)))))
+         (replyResult res
+                      (.. evt source config))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -68,12 +69,12 @@
          [acct (:account (.lastResult ^Job %2))
           ^HttpMsg evt (.origin ^Job %2)
           gs (.msgGist evt)
-          res (httpResult<> (.socket evt) gs)
+          res (httpResult<> evt)
           json {:status {:code 200}}]
          (log/debug "success: signed up new acct %s" acct)
          (doto res
            (.setContent (xdata<> (writeJsonStr json)))
-           (replyResult ))))))
+           (replyResult (.. evt source config)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -93,8 +94,8 @@
        (let
          [^HttpMsg evt (.origin ^Job %2)
           gs (.msgGist evt)
-          res (httpResult<> (.socket evt) gs 403)]
-         (replyResult res)))))
+          res (httpResult<> evt 403)]
+         (replyResult res (.. evt source config))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -112,7 +113,7 @@
           (.. evt source config)
           ck (HttpCookie. (name *user-flag*)
                           (str (:acctid acct)))
-          res (httpResult<> (.socket evt) gs)]
+          res (httpResult<> evt)]
          (doto ck
            (.setMaxAge sessionAgeSecs)
            (.setHttpOnly false)
@@ -123,7 +124,7 @@
            (.setContent (xdata<> (writeJsonStr json)))
            (.addCookie ck))
          (some-> mvs (.setNew true sessionAgeSecs))
-         (replyResult res)))))
+         (replyResult res (.. evt source config))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -165,11 +166,11 @@
        (let
          [^HttpMsg evt (.origin ^Job %2)
           gs (.msgGist evt)
-          res (httpResult<> (.socket evt) gs)
+          res (httpResult<> evt)
           json {:status {:code 200}}]
          (doto res
-           (.setContent (xdata<> (writeJsonStr json))))
-         (replyResult res)))))
+           (.setContent (xdata<> (writeJsonStr json)))
+           (replyResult (.. evt source config)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -191,9 +192,9 @@
           ^HttpMsg evt (.origin ^Job %2)
           mvs (.session evt)
           gs (.msgGist evt)
-          {:keys [domainPath domain]}
+          {:keys [domainPath domain] :as cfg}
           (.. evt source config)
-          res (httpResult<> (.socket evt) gs)]
+          res (httpResult<> evt)]
          (doto ck
            (.setMaxAge 0)
            (.setHttpOnly false)
@@ -204,7 +205,7 @@
          (doto res
           (.setContent (xdata<> (writeJsonStr json)))
           (.addCookie ck)
-          (replyResult ))))))
+          (replyResult cfg))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
