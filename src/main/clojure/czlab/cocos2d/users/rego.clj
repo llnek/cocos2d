@@ -21,6 +21,7 @@
         [czlab.basal.core]
         [czlab.basal.str]
         [czlab.basal.io]
+        [czlab.convoy.wess.core]
         [czlab.cocos2d.util.core]
         [czlab.convoy.nettio.resp])
 
@@ -74,18 +75,20 @@
           ri (get-in gs [:route :info])
           tpl (some-> ^RouteInfo
                       ri .template)
-          csrf (generateCsrf)
           mvs (.session evt)
-          {:keys [sessionAgeSecs] :as cfg}
+          {:keys [sessionAgeSecs maxAgeSecs] :as cfg}
           (.. evt source config)
+          csrf (doto (HttpCookie. csrf-cookie)
+                 (.setValue (generateCsrf))
+                 (.setMaxAge maxAgeSecs)
+                 (.setHttpOnly true))
           {:keys [data ctype]}
           (mvc/loadTemplate (.source evt)
                             tpl (func evt csrf))
           res (httpResult<> evt)]
-         (when mvs
-           (.setNew mvs true sessionAgeSecs)
-           (.setXref mvs csrf))
+         (some-> mvs (.setNew true sessionAgeSecs))
          (doto res
+           (.addCookie csrf)
            (.setContentType ctype)
            (.setContent data)
            (replyResult  cfg))))))
