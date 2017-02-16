@@ -38,14 +38,14 @@
              [:body]
              merge
              {:games (getGamesAsListForUI)
-              :content "/main/games/games.ftl"}))
+              :content "/games/games.ftl"}))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- injectArenaPage "" [^HttpMsg evt]
 
   (let [mf ((getGamesAsHash)
-            (:uri (.msgGist evt)))]
+            (:uri (.gist evt)))]
     (-> (getDftModel evt)
         (update-in
           [:metatags]
@@ -70,7 +70,7 @@
           #(merge
              %
              {:games (getGamesAsListForUI)
-              :content "/main/games/arena.ftl"}
+              :content "/games/arena.ftl"}
              (if mf {:gameid (:uuid mf)} {}))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -80,15 +80,15 @@
   (-> (getDftModel evt)
       (update-in
         [:stylesheets]
-        #(-> (conj % "/public/vendors/owl-carousel/owl.carousel.css")
-             (conj "/public/vendors/owl-carousel/owl.theme.css")))
+        #(-> (conj % "/public/ext/owl-carousel/owl.carousel.css")
+             (conj "/public/ext/owl-carousel/owl.theme.css")))
       (update-in
         [:scripts]
-        #(conj % "/public/vendors/owl-carousel/owl.carousel.min.js"))
+        #(conj % "/public/ext/owl-carousel/owl.carousel.min.js"))
       (update-in
         [:body]
         #(-> (assoc % :picks (getGamesAsListForUI))
-             (assoc :content "/main/games/picks.ftl")))))
+             (assoc :content "/games/picks.ftl")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -98,7 +98,7 @@
     #(do->nil
        (let
          [^HttpMsg evt (.origin ^Job %2)
-          gist (.msgGist evt)
+          gist (.gist evt)
           ri (get-in gist [:route :info])
           tpl (some-> ^RouteInfo
                       ri .template)
@@ -109,7 +109,7 @@
          (doto res
            (.setContentType ctype)
            (.setContent data)
-           (replyResult (.. evt source config)))))))
+           (replyResult ))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

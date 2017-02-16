@@ -13,6 +13,7 @@
 
   (:require [czlab.basal.format :refer [writeJsonStr]]
             [czlab.basal.logging :as log]
+            [czlab.convoy.net.wess :as wss]
             [czlab.basal.resources :refer [rstr]])
 
   (:use [czlab.wabbit.plugs.auth.core]
@@ -44,7 +45,7 @@
        (let
          [err (:error (.lastResult ^Job %2))
           ^HttpMsg evt (.origin ^Job %2)
-          gs (.msgGist evt)
+          gs (.gist evt)
           res (httpResult<> evt)]
          (if (inst? DuplicateUser err)
            (let [rcb (-> (.. evt source server id)
@@ -56,8 +57,7 @@
                (.setStatus 409)
                (.setContent (xdata<> (writeJsonStr json)))))
            (.setStatus res 400))
-         (replyResult res
-                      (.. evt source config))))))
+         (replyResult res)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -68,13 +68,13 @@
        (let
          [acct (:account (.lastResult ^Job %2))
           ^HttpMsg evt (.origin ^Job %2)
-          gs (.msgGist evt)
+          gs (.gist evt)
           res (httpResult<> evt)
           json {:status {:code 200}}]
          (log/debug "success: signed up new acct %s" acct)
          (doto res
            (.setContent (xdata<> (writeJsonStr json)))
-           (replyResult (.. evt source config)))))))
+           (replyResult ))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -83,7 +83,7 @@
   (log/debug "signup pipe-line - called")
   (workStream<>
     (ternary<>
-      (signupTestExpr<> "32") (doSignupOK) (doSignupFail))))
+      (partial signupTestExpr<> "32") (doSignupOK) (doSignupFail))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -92,10 +92,9 @@
   (script<>
     #(do->nil
        (let
-         [^HttpMsg evt (.origin ^Job %2)
-          gs (.msgGist evt)
-          res (httpResult<> evt 403)]
-         (replyResult res (.. evt source config))))))
+         [^HttpMsg evt (.origin ^Job %2)]
+         (-> (httpResult<> evt 403)
+             (replyResult ))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -107,24 +106,14 @@
          [acct (:account (.lastResult ^Job %2))
           json {:status {:code 200}}
           ^HttpMsg evt (.origin ^Job %2)
-          mvs (.session evt)
-          gs (.msgGist evt)
-          {:keys [domainPath domain sessionAgeSecs]}
-          (.. evt source config)
-          ck (HttpCookie. (name *user-flag*)
-                          (str (:acctid acct)))
+          cfg (:session (.. evt source config))
+          ss {*user-flag* (str (:acctid acct))}
+          mvs (newSession<> evt ss)
           res (httpResult<> evt)]
-         (doto ck
-           (.setMaxAge sessionAgeSecs)
-           (.setHttpOnly false)
-           (.setPath domainPath)
-           (.setDomain domain)
-           (.setSecure (if mvs (:ssl? gs) false)))
          (doto res
            (.setContent (xdata<> (writeJsonStr json)))
-           (.addCookie ck))
-         (some-> mvs (.setNew true sessionAgeSecs))
-         (replyResult res (.. evt source config))))))
+           (.addCookie (csrfToken<> cfg nil))
+         (replyResult res {:session mvs}))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -133,7 +122,7 @@
   (log/debug "login pipe-line - called")
   (workStream<>
     (ternary<>
-      (loginTestExpr<>) (doLoginOK) (doLoginFail))))
+      (partial loginTestExpr<>) (doLoginOK) (doLoginFail))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -144,7 +133,7 @@
        (let
          [^HttpMsg evt (.origin ^Job %2)
           co (.. evt source server)
-          pa (. co child :auth)
+          pa (. co child :$auth)
           si (try (maybeGetAuthInfo evt)
                   (catch BadDataError _  {:e _ }))
           info (or si {})
@@ -165,7 +154,7 @@
     #(do->nil
        (let
          [^HttpMsg evt (.origin ^Job %2)
-          gs (.msgGist evt)
+          gs (.gist evt)
           res (httpResult<> evt)
           json {:status {:code 200}}]
          (doto res
@@ -191,7 +180,7 @@
           json {:status {:code 200}}
           ^HttpMsg evt (.origin ^Job %2)
           mvs (.session evt)
-          gs (.msgGist evt)
+          gs (.gist evt)
           {:keys [domainPath domain] :as cfg}
           (.. evt source config)
           res (httpResult<> evt)]

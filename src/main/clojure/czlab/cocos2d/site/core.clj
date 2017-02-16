@@ -66,7 +66,7 @@
 (defn- injectIndexPage "" [^HttpMsg evt]
 
   (if (nil? @doors)
-    (let [{:keys [publicRootDir mediaDir]}
+    (let [{{:keys [publicRootDir mediaDir]} :wsite}
           (.. evt source config)]
       (-> (io/file publicRootDir mediaDir)
           (maybeCheckDoors ))))
@@ -84,7 +84,7 @@
     #(do->nil
        (let
          [^HttpMsg evt (.origin ^Job %2)
-          ri (get-in (.msgGist evt)
+          ri (get-in (.gist evt)
                      [:route :info])
           tpl (some-> ^RouteInfo
                       ri .template)
@@ -95,7 +95,7 @@
          (doto res
            (.setContentType ctype)
            (.setContent data)
-           (replyResult (.. evt source config)))))))
+           (replyResult ))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

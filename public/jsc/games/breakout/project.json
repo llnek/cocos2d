@@ -1,0 +1,28 @@
+ {
+
+    "jsList"        : [
+
+
+  "src/breakout/p/config.js",
+  "src/breakout/i18n/l10n.js",
+
+"src/breakout/n/cobjs.js",
+"src/breakout/n/gnodes.js",
+
+"src/breakout/s/factory.js",
+"src/breakout/s/motion.js",
+"src/breakout/s/move.js",
+"src/breakout/s/collide.js",
+"src/breakout/s/stager.js",
+"src/breakout/s/sysobjs.js",
+
+  "src/breakout/p/hud.js",
+  "src/breakout/p/game.js",
+  "src/breakout/p/mmenu.js",
+  "src/breakout/p/splash.js",
+"src/breakout/p/protos.js",
+
+
+"src/zotohlab/p/boot.js"
+    ]
+}

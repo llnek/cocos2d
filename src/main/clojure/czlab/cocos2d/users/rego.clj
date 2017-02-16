@@ -13,15 +13,16 @@
 
   (:require [czlab.basal.dates :refer [parseDate]]
             [czlab.basal.logging :as log]
-            [czlab.wabbit.plugs.io.mvc :as mvc]
-            [czlab.convoy.net.util :refer [generateCsrf]])
+            [czlab.wabbit.plugs.io.mvc :as mvc])
 
-  (:use [czlab.flux.wflow.core]
+  (:use [czlab.wabbit.plugs.auth.core]
+        [czlab.flux.wflow.core]
         [czlab.convoy.net.core]
+        [czlab.convoy.net.util]
         [czlab.basal.core]
         [czlab.basal.str]
         [czlab.basal.io]
-        [czlab.convoy.wess.core]
+        [czlab.convoy.net.wess :as wss]
         [czlab.cocos2d.util.core]
         [czlab.convoy.nettio.resp])
 
@@ -35,32 +36,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- injectRegisterPage
-  "" [^HttpMsg evt ^String csrf]
+(defn- injectPage
+  "" [^HttpMsg evt ^String action ^String csrf]
 
   (update-in (getDftModel evt)
              [:body]
-             #(merge % {:content "/users/register.ftl"
-                        :csrf csrf})))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- injectLoginPage
-  "" [^HttpMsg evt ^String csrf]
-
-  (update-in (getDftModel evt)
-             [:body]
-             #(merge % {:content "/users/login.ftl"
-                        :csrf csrf})))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn- injectForgotPage
-  "" [^HttpMsg evt ^String csrf]
-
-  (update-in (getDftModel evt)
-             [:body]
-             #(merge % {:content "/users/forgot.ftl"
+             #(merge % {:content (str "/users/" action ".ftl")
                         :csrf csrf})))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -71,42 +52,36 @@
     #(do->nil
        (let
          [^HttpMsg evt (.origin ^Job %2)
-          gs (.msgGist evt)
+          gs (.gist evt)
+          token (generateCsrf)
           ri (get-in gs [:route :info])
-          tpl (some-> ^RouteInfo
-                      ri .template)
-          mvs (.session evt)
-          {:keys [sessionAgeSecs maxAgeSecs] :as cfg}
-          (.. evt source config)
-          csrf (doto (HttpCookie. csrf-cookie)
-                 (.setValue (generateCsrf))
-                 (.setMaxAge maxAgeSecs)
-                 (.setHttpOnly true))
+          tpl (some-> ^RouteInfo ri .template)
+          cfg (:session (.. evt source config))
           {:keys [data ctype]}
           (mvc/loadTemplate (.source evt)
-                            tpl (func evt csrf))
+                            tpl
+                            (injectPage evt func token))
           res (httpResult<> evt)]
-         (some-> mvs (.setNew true sessionAgeSecs))
          (doto res
-           (.addCookie csrf)
+           (.addCookie (csrfToken<> cfg token))
            (.setContentType ctype)
            (.setContent data)
-           (replyResult  cfg))))))
+           (replyResult  ))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn registerPage "" ^WorkStream []
-  (workStream<> (doShowPage injectRegisterPage)))
+  (workStream<> (doShowPage "register")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn loginPage "" ^WorkStream []
-  (workStream<> (doShowPage injectLoginPage)))
+  (workStream<> (doShowPage "login")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn forgotPage "" ^WorkStream []
-  (workStream<> (doShowPage injectForgotPage)))
+  (workStream<> (doShowPage "forgot")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF

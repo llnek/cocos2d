@@ -19,7 +19,7 @@
         <li class="games-item visible-item" data-id="">
         <a href="${gg.uri}" data-largesrc="${gg.uri}"
           data-category="" data-date="" data-title="" data-description="">
-            <img src="/public/ig/res/${gg.gamedir}/${gg.image}" 
+            <img src="/public/res/games/${gg.gamedir}/${gg.image}" 
                  <#if gg.image_alt?? >
                       alt= "${gg.image_alt}"
                  <#else>

@@ -52,7 +52,7 @@
      rc (transient [])]
     (doseq
       [^File fd (listDirs (io/file appDir
-                                   "public/info"))
+                                   "public/inf"))
        :let [info (merge (-> (io/file fd "game.mf")
                              readEdn
                              (assoc :gamedir (.getName fd)))

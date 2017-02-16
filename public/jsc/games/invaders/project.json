@@ -1,0 +1,29 @@
+ {
+
+    "jsList"        : [
+
+    "src/invaders/p/config.js",
+    "src/invaders/i18n/l10n.js",
+
+    "src/invaders/n/cobjs.js",
+    "src/invaders/n/gnodes.js",
+
+    "src/invaders/s/factory.js",
+    "src/invaders/s/motion.js",
+    "src/invaders/s/aliens.js",
+    "src/invaders/s/move.js",
+    "src/invaders/s/collide.js",
+    "src/invaders/s/stager.js",
+    "src/invaders/s/resolve.js",
+    "src/invaders/s/sysobjs.js",
+
+      "src/invaders/p/hud.js",
+      "src/invaders/p/game.js",
+      "src/invaders/p/mmenu.js",
+      "src/invaders/p/splash.js",
+      "src/invaders/p/protos.js",
+
+
+      "src/zotohlab/p/boot.js"
+    ]
+}
