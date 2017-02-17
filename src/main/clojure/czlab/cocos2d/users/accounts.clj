@@ -107,13 +107,13 @@
           json {:status {:code 200}}
           ^HttpMsg evt (.origin ^Job %2)
           cfg (:session (.. evt source config))
-          ss {*user-flag* (str (:acctid acct))}
-          mvs (newSession<> evt ss)
+          mvs (newSession<> evt nil)
           res (httpResult<> evt)]
+         (.setPrincipal mvs (str (:acctid acct)))
          (doto res
            (.setContent (xdata<> (writeJsonStr json)))
            (.addCookie (csrfToken<> cfg nil))
-         (replyResult res {:session mvs}))))))
+           (replyResult {:session mvs}))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -176,25 +176,17 @@
   (script<>
     #(do->nil
        (let
-         [ck (HttpCookie. (name *user-flag*) "")
-          json {:status {:code 200}}
+         [json {:status {:code 200}}
           ^HttpMsg evt (.origin ^Job %2)
           mvs (.session evt)
           gs (.gist evt)
           {:keys [domainPath domain] :as cfg}
           (.. evt source config)
           res (httpResult<> evt)]
-         (doto ck
-           (.setMaxAge 0)
-           (.setHttpOnly false)
-           (.setPath domainPath )
-           (.setDomain domain )
-           (.setSecure (if mvs (:ssl? gs) false)))
          (some-> mvs .invalidate)
          (doto res
           (.setContent (xdata<> (writeJsonStr json)))
-          (.addCookie ck)
-          (replyResult cfg))))))
+          (replyResult ))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

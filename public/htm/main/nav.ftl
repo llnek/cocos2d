@@ -12,7 +12,15 @@
       </button>
     </div>
 
-    <nav id="main-nav" class="navbar-collapse collapse" role="navigation">
+
+    <nav id="main-nav"
+      <#if profile.session = true>
+      class="navbar-collapse collapse user-in-session"
+      <#else>
+      class="navbar-collapse collapse"
+      </#if>
+      role="navigation">
+
       <ul class="nav navbar-nav">
         <li class="active"><a href="/">Home</a></li>
         <li><a href="/games">Browse</a></li>

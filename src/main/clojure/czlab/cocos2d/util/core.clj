@@ -29,19 +29,18 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* false)
-(def ^:dynamic *user-flag* :__u982i) ;; user id
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn getDftModel "Default object for Freemarker processing" [^HttpMsg evt]
 
-  (let [ck (. evt cookie (name *user-flag*))
-        uid (if (nil? ck)
-              "Guest"
-              (strim (.getValue ck)))]
+  (let [ss (.session evt)
+        ok? (if ss (try! (do->true (.validate ss))))
+        uid (some-> ss .principal)
+        uid (if (and ok? (hgl? uid)) uid "Guest")]
     {:title "ZotohLab | Fun &amp; Games."
-     :encoding "utf-8"
      :description "Bonjour!"
+     :encoding "utf-8"
      :stylesheets []
      :scripts []
      :metatags
@@ -49,7 +48,7 @@
       :description "content=\"Hello World!\""
       :viewport "content=\"width=device-width, initial-scale=1.0\""}
      :appkey (.. evt source server pkey)
-     :profile {:user uid}
+     :profile {:user uid :session (bool! ok?) }
      :body {} }))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

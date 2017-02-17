@@ -98,13 +98,13 @@
     #(do->nil
        (let
          [^HttpMsg evt (.origin ^Job %2)
+          _ (println "adfdsfdsfs = " (.session evt))
           gist (.gist evt)
           ri (get-in gist [:route :info])
           tpl (some-> ^RouteInfo
                       ri .template)
           {:keys [data ctype]}
-          (mvc/loadTemplate (.source evt)
-                            tpl (func evt))
+          (mvc/loadTemplate (.source evt) tpl (func evt))
           res (httpResult<> evt)]
          (doto res
            (.setContentType ctype)

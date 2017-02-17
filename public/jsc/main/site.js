@@ -38,8 +38,8 @@ var ModalWindow = _window2.default.ModalWindow,
 /////////////////////////////////////////////
 //
 var toggleNavMenuItems = function toggleNavMenuItems() {
-  var uid = $.cookie('__u982i');
-  if (_skaro2.default.isstr(uid) && uid.length > 0) {
+  var nav = $('#main-nav').hasClass('user-in-session');
+  if (nav) {
     $('#rego-mitem').parent().hide();
     $('#login-mitem').parent().hide();
     $('#logout-mitem').parent().show();
