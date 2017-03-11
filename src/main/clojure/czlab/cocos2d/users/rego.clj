@@ -27,7 +27,7 @@
         [czlab.convoy.nettio.resp])
 
   (:import [czlab.convoy.net RouteInfo HttpResult]
-           [czlab.flux.wflow WorkStream Job]
+           [czlab.flux.wflow Workstream Job]
            [czlab.wabbit.plugs.io HttpMsg]
            [java.io File]))
 
@@ -48,40 +48,39 @@
 ;;
 (defn- doShowPage "" [func]
 
-  (script<>
-    #(do->nil
-       (let
-         [^HttpMsg evt (.origin ^Job %2)
-          gs (.gist evt)
-          token (generateCsrf)
-          ri (get-in gs [:route :info])
-          tpl (some-> ^RouteInfo ri .template)
-          cfg (:session (.. evt source config))
-          {:keys [data ctype]}
-          (mvc/loadTemplate (.source evt)
-                            tpl
-                            (injectPage evt func token))
-          res (httpResult<> evt)]
-         (doto res
-           (.addCookie (csrfToken<> cfg token))
-           (.setContentType ctype)
-           (.setContent data)
-           (replyResult  ))))))
+  #(do->nil
+     (let
+       [^HttpMsg evt (.origin ^Job %)
+        gs (.gist evt)
+        token (generateCsrf)
+        ri (get-in gs [:route :info])
+        tpl (some-> ^RouteInfo ri .template)
+        cfg (:session (.. evt source config))
+        {:keys [data ctype]}
+        (mvc/loadTemplate (.source evt)
+                          tpl
+                          (injectPage evt func token))
+        res (httpResult<> evt)]
+       (doto res
+         (.addCookie (csrfToken<> cfg token))
+         (.setContentType ctype)
+         (.setContent data)
+         (replyResult  )))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn registerPage "" ^WorkStream []
-  (workStream<> (doShowPage "register")))
+(defn registerPage "" ^Workstream []
+  (workstream<> (doShowPage "register")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn loginPage "" ^WorkStream []
-  (workStream<> (doShowPage "login")))
+(defn loginPage "" ^Workstream []
+  (workstream<> (doShowPage "login")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn forgotPage "" ^WorkStream []
-  (workStream<> (doShowPage "forgot")))
+(defn forgotPage "" ^Workstream []
+  (workstream<> (doShowPage "forgot")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF

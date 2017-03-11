@@ -27,7 +27,7 @@
         [czlab.wabbit.base.core]
         [czlab.convoy.nettio.resp])
 
-  (:import [czlab.flux.wflow Job TaskDef WorkStream]
+  (:import [czlab.flux.wflow Job Workstream]
            [czlab.convoy.net RouteInfo HttpResult]
            [czlab.wabbit.plugs.io HttpMsg]
            [czlab.wabbit.sys Execvisor]
@@ -83,7 +83,7 @@
   (script<>
     #(do->nil
        (let
-         [^HttpMsg evt (.origin ^Job %2)
+         [^HttpMsg evt (.origin ^Job %)
           ri (get-in (.gist evt)
                      [:route :info])
           tpl (some-> ^RouteInfo
@@ -99,7 +99,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn indexPage "" ^WorkStream [] (workStream<> (doShowPage)))
+(defn indexPage "" ^Workstream [] (workstream<> (doShowPage)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF

@@ -23,7 +23,7 @@
         [czlab.convoy.nettio.resp]
         [czlab.cocos2d.games.meta])
 
-  (:import [czlab.flux.wflow Job TaskDef WorkStream]
+  (:import [czlab.flux.wflow Job Workstream]
            [czlab.convoy.net RouteInfo HttpResult]
            [czlab.wabbit.plugs.io HttpMsg]))
 
@@ -94,37 +94,35 @@
 ;;
 (defn- doShowPage "" [func]
 
-  (script<>
-    #(do->nil
-       (let
-         [^HttpMsg evt (.origin ^Job %2)
-          _ (println "adfdsfdsfs = " (.session evt))
-          gist (.gist evt)
-          ri (get-in gist [:route :info])
-          tpl (some-> ^RouteInfo
-                      ri .template)
-          {:keys [data ctype]}
-          (mvc/loadTemplate (.source evt) tpl (func evt))
-          res (httpResult<> evt)]
-         (doto res
-           (.setContentType ctype)
-           (.setContent data)
-           (replyResult ))))))
+  #(do->nil
+     (let
+       [^HttpMsg evt (.origin ^Job %)
+        gist (.gist evt)
+        ri (get-in gist [:route :info])
+        tpl (some-> ^RouteInfo
+                    ri .template)
+        {:keys [data ctype]}
+        (mvc/loadTemplate (.source evt) tpl (func evt))
+        res (httpResult<> evt)]
+       (doto res
+         (.setContentType ctype)
+         (.setContent data)
+         (replyResult )))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn allGamesPage "" ^WorkStream []
-  (workStream<> (doShowPage injectBrowsePage)))
+(defn allGamesPage "" ^Workstream []
+  (workstream<> (doShowPage injectBrowsePage)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn topPicksPage "" ^WorkStream []
-  (workStream<> (doShowPage injectPicksPage)))
+(defn topPicksPage "" ^Workstream []
+  (workstream<> (doShowPage injectPicksPage)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn gameArenaPage "" ^WorkStream []
-  (workStream<> (doShowPage injectArenaPage)))
+(defn gameArenaPage "" ^Workstream []
+  (workstream<> (doShowPage injectArenaPage)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF

@@ -47,7 +47,7 @@
      {:keywords "content=\"web browser games mobile ios android windows phone\""
       :description "content=\"Hello World!\""
       :viewport "content=\"width=device-width, initial-scale=1.0\""}
-     :appkey (.. evt source server pkey)
+     :appkey (String. (.. evt source server pkey))
      :profile {:user uid :session (bool! ok?) }
      :body {} }))
 
