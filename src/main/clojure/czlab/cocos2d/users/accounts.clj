@@ -26,7 +26,7 @@
         [czlab.cocos2d.util.core])
 
   (:import [czlab.wabbit.plugs.auth AuthPluglet DuplicateUser]
-           [czlab.jasal XData BadDataError Identifiable I18N]
+           [czlab.jasal XData BadDataError Idable I18N]
            [org.apache.commons.codec.net URLCodec]
            [czlab.flux.wflow Job Workstream]
            [czlab.wabbit.plugs.io HttpMsg]
