@@ -11,19 +11,19 @@
 
   czlab.cocos2d.util.core
 
-  ;;(:gen-class)
-
   (:require [czlab.basal.logging :as log]
             [clojure.java.io :as io]
             [clojure.string :as cs]
             [czlab.basal.io :refer [dirRead?]])
 
   (:use [czlab.cocos2d.games.meta]
+        [czlab.convoy.core]
+        [czlab.convoy.wess]
         [czlab.basal.core]
-        [czlab.basal.str])
+        [czlab.basal.str]
+        [czlab.wabbit.xpis])
 
-  (:import [czlab.wabbit.plugs.io HttpMsg]
-           [java.net HttpCookie]
+  (:import [java.net HttpCookie]
            [java.io File]
            [java.util List Locale]))
 
@@ -32,11 +32,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn getDftModel "Default object for Freemarker processing" [^HttpMsg evt]
+(defn getDftModel
+  "For Freemarker" [evt]
 
-  (let [ss (.session evt)
-        ok? (if ss (try! (do->true (.validate ss))))
-        uid (some-> ss .principal)
+  (let [ss (:session evt)
+        ok? (if ss (try! (do->true (validate?? ss))))
+        uid (some-> ss principal)
         uid (if (and ok? (hgl? uid)) uid "Guest")]
     {:title "ZotohLab | Fun &amp; Games."
      :description "Bonjour!"
@@ -47,7 +48,7 @@
      {:keywords "content=\"web browser games mobile ios android windows phone\""
       :description "content=\"Hello World!\""
       :viewport "content=\"width=device-width, initial-scale=1.0\""}
-     :appkey (String. (.. evt source server pkey))
+     :appkey (-> evt get-pluglet get-server pkey-chars strit)
      :profile {:user uid :session (bool! ok?) }
      :body {} }))
 

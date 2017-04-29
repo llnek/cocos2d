@@ -12,8 +12,6 @@
   [;;[org.clojure/clojurescript "1.9.495"]
    [org.clojure/clojure "1.8.0"]
    [commons-logging "1.2"]
-   [net.mikera/cljunit "0.6.0" :scope "test"]
-   [junit/junit "4.12" :scope "test"]
    [io.czlab/wabbit-cons "1.0.0"]
    [io.czlab/wabbit "1.0.0"]]
 
@@ -36,7 +34,7 @@
    :uberjar {:aot :all}}
 
   :global-vars {*warn-on-reflection* true}
-  :target-path "target/%s"
+  :target-path "out/%s"
   :aot :all
 
   :aliases {"deploy" ["with-profile"
