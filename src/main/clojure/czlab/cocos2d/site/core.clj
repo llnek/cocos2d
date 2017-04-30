@@ -12,26 +12,20 @@
   czlab.cocos2d.site.core
 
   (:require [czlab.basal.dates :refer [parseDate]]
-            [czlab.wabbit.plugs.io.mvc :as mvc]
+            [czlab.wabbit.plugs.mvc :as mvc]
             [czlab.basal.logging :as log]
             [clojure.string :as cs]
             [clojure.java.io :as io])
 
   (:use [czlab.cocos2d.games.meta]
         [czlab.cocos2d.util.core]
-        [czlab.flux.wflow.core]
-        [czlab.convoy.net.core]
+        [czlab.convoy.core]
         [czlab.basal.core]
         [czlab.basal.str]
         [czlab.basal.io]
-        [czlab.wabbit.base.core]
-        [czlab.convoy.nettio.resp])
+        [czlab.wabbit.base])
 
-  (:import [czlab.flux.wflow Job Workstream]
-           [czlab.convoy.net RouteInfo HttpResult]
-           [czlab.wabbit.plugs.io HttpMsg]
-           [czlab.wabbit.sys Execvisor]
-           [czlab.jasal XData]
+  (:import [czlab.jasal XData]
            [java.io File]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -51,23 +45,25 @@
        (reset! doors))
   (log/debug "how many color doors ? %d" (count @doors)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
 (defn- odinInit "" [_ _])
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn myAppMain "" [^Execvisor co]
-
-  (doto (.homeDir co)
+(defn myAppMain "" [co]
+  (doto (get-home-dir co)
     (scanGameManifests )
     (odinInit co))
   (log/info "app-main called by container %s" co))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- injectIndexPage "" [^HttpMsg evt]
-
+(defn- injectIndexPage "" [evt]
   (if (nil? @doors)
-    (let [{{:keys [publicRootDir mediaDir]} :wsite}
-          (.. evt source config)]
+    (let [plug (get-pluglet evt)
+          {{:keys [publicRootDir mediaDir]} :wsite}
+          (:conf @plug)]
       (-> (io/file publicRootDir mediaDir)
           (maybeCheckDoors ))))
   (-> (getDftModel evt)
@@ -78,28 +74,17 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- doShowPage "" []
-
-  (script<>
-    #(do->nil
-       (let
-         [^HttpMsg evt (.origin ^Job %)
-          ri (get-in (.gist evt)
-                     [:route :info])
-          tpl (some-> ^RouteInfo
-                      ri .template)
-          {:keys [data ctype]}
-          (mvc/loadTemplate (.source evt)
-                            tpl (injectIndexPage evt))
-          res (httpResult<> evt)]
-         (doto res
-           (.setContentType ctype)
-           (.setContent data)
-           (replyResult ))))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-(defn indexPage "" ^Workstream [] (workstream<> (doShowPage)))
+(defn indexPage "" [evt res]
+  (let [ri (get-in evt
+                   [:route :info])
+        plug (get-pluglet evt)
+        tpl (:template ri)
+        {:keys [data ctype]}
+        (mvc/loadTemplate plug
+                          tpl (injectIndexPage evt))]
+    (-> (set-res-header res "content-type" ctype)
+        (assoc :body data)
+        reply-result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF

@@ -13,23 +13,19 @@
 
   (:require [czlab.basal.dates :refer [parseDate]]
             [czlab.basal.logging :as log]
-            [czlab.wabbit.plugs.io.mvc :as mvc])
+            [czlab.wabbit.plugs.mvc :as mvc])
 
-  (:use [czlab.wabbit.plugs.auth.core]
-        [czlab.flux.wflow.core]
-        [czlab.convoy.net.core]
-        [czlab.convoy.net.util]
+  (:use [czlab.wabbit.shiro.core]
+        [czlab.wabbit.xpis]
+        [czlab.convoy.core]
+        [czlab.convoy.util]
         [czlab.basal.core]
         [czlab.basal.str]
         [czlab.basal.io]
-        [czlab.convoy.net.wess :as wss]
-        [czlab.cocos2d.util.core]
-        [czlab.convoy.nettio.resp])
+        [czlab.convoy.wess :as wss]
+        [czlab.cocos2d.util.core])
 
-  (:import [czlab.convoy.net RouteInfo HttpResult]
-           [czlab.flux.wflow Workstream Job]
-           [czlab.wabbit.plugs.io HttpMsg]
-           [java.io File]))
+  (:import [java.io File]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
@@ -37,7 +33,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- injectPage
-  "" [^HttpMsg evt ^String action ^String csrf]
+  "" [evt action csrf]
 
   (update-in (getDftModel evt)
              [:body]
@@ -46,41 +42,36 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- doShowPage "" [func]
-
-  #(do->nil
-     (let
-       [^HttpMsg evt (.origin ^Job %)
-        gs (.gist evt)
-        token (generateCsrf)
-        ri (get-in gs [:route :info])
-        tpl (some-> ^RouteInfo ri .template)
-        cfg (:session (.. evt source config))
-        {:keys [data ctype]}
-        (mvc/loadTemplate (.source evt)
-                          tpl
-                          (injectPage evt func token))
-        res (httpResult<> evt)]
-       (doto res
-         (.addCookie (csrfToken<> cfg token))
-         (.setContentType ctype)
-         (.setContent data)
-         (replyResult  )))))
+(defn- doShowPage "" [func evt res]
+   (let [plug (get-pluglet evt)
+         svr (get-server plug)
+         token (generateCsrf)
+         ri (get-in evt
+                    [:route :info])
+         tpl (:template ri)
+         cfg (:session (:conf @plug))
+         {:keys [data ctype]}
+         (mvc/loadTemplate plug
+                           tpl
+                           (injectPage evt func token))
+         ck (csrfToken<> cfg token)]
+     (-> (set-res-header res "content-type" ctype)
+         (update-in [:cookies]
+                    assoc (.getName ck) ck)
+         (assoc :body data)
+         reply-result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn registerPage "" ^Workstream []
-  (workstream<> (doShowPage "register")))
+(defn registerPage "" [evt res] (doShowPage "register" evt res))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn loginPage "" ^Workstream []
-  (workstream<> (doShowPage "login")))
+(defn loginPage "" [evt res] (doShowPage "login" evt res))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn forgotPage "" ^Workstream []
-  (workstream<> (doShowPage "forgot")))
+(defn forgotPage "" [evt res] (doShowPage "forgot" evt res))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF

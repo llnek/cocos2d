@@ -13,24 +13,19 @@
 
   (:require [czlab.basal.format :refer [writeJsonStr]]
             [czlab.basal.logging :as log]
-            [czlab.convoy.net.wess :as wss]
+            [czlab.convoy.wess :as wss]
             [czlab.basal.resources :refer [rstr]])
 
-  (:use [czlab.wabbit.plugs.auth.core]
-        [czlab.convoy.nettio.resp]
-        [czlab.convoy.net.core]
-        [czlab.flux.wflow.core]
+  (:use [czlab.wabbit.shiro.core]
+        [czlab.wabbit.xpis]
+        [czlab.convoy.core]
         [czlab.basal.core]
         [czlab.basal.io]
         [czlab.basal.str]
         [czlab.cocos2d.util.core])
 
-  (:import [czlab.wabbit.plugs.auth AuthPluglet DuplicateUser]
-           [czlab.jasal XData BadDataError Idable I18N]
+  (:import [czlab.jasal XData DataError Idable I18N]
            [org.apache.commons.codec.net URLCodec]
-           [czlab.flux.wflow Job Workstream]
-           [czlab.wabbit.plugs.io HttpMsg]
-           [czlab.convoy.net HttpResult]
            [java.net HttpCookie]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -38,152 +33,114 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- doSignupFail "" []
-
-  #(do->nil
-     (let
-       [err (:error (.lastResult ^Job %))
-        ^HttpMsg evt (.origin ^Job %)
-        gs (.gist evt)
-        res (httpResult<> evt)]
-       (if (ist? DuplicateUser err)
-         (let [rcb (-> (.. evt source server id)
-                       I18N/bundle)
-               json {:error {:msg
-                             (rstr rcb
-                                   "acct.dup.user")}}]
-           (doto res
-             (.setStatus 409)
-             (.setContent (xdata<> (writeJsonStr json)))))
-         (.setStatus res 400))
-       (replyResult res ))))
+(defn- doSignupFail "" [evt res ^Throwable err]
+  (reply-result
+    (if (= "DuplicateUser" (.getMessage err))
+      (let [rcb (-> (get-pluglet evt)
+                    get-server id?? I18N/bundle)
+            json {:error {:msg
+                          (rstr rcb
+                                "acct.dup.user")}}]
+        (-> (->> (writeJsonStr json)
+                 xdata<>
+                 (assoc res :body))
+            (assoc :status 409)))
+      (assoc res :status 400))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- doSignupOK "" []
-
-  #(do->nil
-     (let
-       [acct (:account (.lastResult ^Job %))
-        ^HttpMsg evt (.origin ^Job %)
-        gs (.gist evt)
-        res (httpResult<> evt)
-        json {:status {:code 200}}]
-       (log/debug "success: signed up new acct %s" acct)
-       (doto res
-         (.setContent (xdata<> (writeJsonStr json)))
-         (replyResult  )))))
+(defn- doSignupOK "" [evt res acct]
+  (log/debug "success: signed up new acct %s" acct)
+  (let [json {:status {:code 200}}]
+    (reply-result
+      (->> (writeJsonStr json)
+           xdata<>
+           (assoc res :body)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn signupHandler "" []
-
+(defn signupHandler "" [evt res]
   (log/debug "signup pipe-line - called")
-  (workstream<>
-    (decision<>
-      (partial signupTestExpr<> "32") (doSignupOK) (doSignupFail))))
+  (let [rc (signupTestExpr<> "32" evt)]
+    (if (ist? Throwable rc)
+      (doSignupFail evt res rc)
+      (doSignupOK evt res rc))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- doLoginFail "" []
-
-  #(do->nil
-     (let
-       [^HttpMsg evt (.origin ^Job %)]
-       (-> (httpResult<> evt 403)
-           (replyResult )))))
+(defn- doLoginFail "" [evt res err]
+  (-> (assoc res :status 403) reply-result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- doLoginOK "" []
-
-  #(do->nil
-     (let
-       [acct (:account (.lastResult ^Job %))
-        json {:status {:code 200}}
-        ^HttpMsg evt (.origin ^Job %)
-        cfg (:session (.. evt source config))
-        mvs (newSession<> evt nil)
-        res (httpResult<> evt)]
-       (.setPrincipal mvs (str (:acctid acct)))
-       (doto res
-         (.setContent (xdata<> (writeJsonStr json)))
-         (.addCookie (csrfToken<> cfg nil))
-         (replyResult mvs)))))
+(defn- doLoginOK "" [evt res acct]
+  (let [json {:status {:code 200}}
+        plug (get-pluglet evt)
+        svr (get-server plug)
+        pk (pkey-bytes svr)
+        cfg (:session (:conf @plug))
+        ck (csrfToken<> cfg nil)
+        mvs (wsession<> pk cfg)]
+    (set-principal mvs (str (:acctid acct)))
+    (-> (->> (writeJsonStr json)
+             xdata<>
+             (assoc res :body))
+        (update-in [:cookies]
+                   (.getName ck) ck)
+        (reply-result mvs))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn loginHandler "" ^Workstream []
-
+(defn loginHandler "" [evt res]
   (log/debug "login pipe-line - called")
-  (workstream<>
-    (decision<>
-      (partial loginTestExpr<>) (doLoginOK) (doLoginFail))))
+  (let [rc (loginTestExpr<> evt)]
+    (if (ist? Throwable rc)
+      (doLoginFail evt res rc)
+      (doLoginOK evt res rc))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- doLookupEmail "" []
-
-  #(do->nil
-     (let
-       [^HttpMsg evt (.origin ^Job %)
-        co (.. evt source server)
-        pa (. co child :$auth)
+(defn- doLookupEmail "" [evt res]
+  (let [plug (get-pluglet evt)
+        svr (get-server plug)
+        pa (get-child svr :$auth)
         si (try (maybeGetAuthInfo evt)
-                (catch BadDataError _  {:e _ }))
+                (catch DataError _  {:e _ }))
         info (or si {})
         email (str (:email info))]
-       (test-some "AuthPlugin" pa)
-       (if (and (= "18" (:captcha info))
-                (hgl? email))
-         (if-some [acct (. ^AuthPluglet
-                           pa account {:email email})]
-           (do (log/debug "found account, email=%s" email) acct)
-           (log/debug "failed to find account with email=%s" email))))))
+    (test-some "AuthPlugin" pa)
+    (if (and (= "18" (:captcha info))
+             (hgl? email))
+      (if-some [acct (get-account pa {:email email})]
+        (do-with [acct acct]
+                 (log/debug "found account, email=%s" email))
+        (log/debug "failed to find account with email=%s" email)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- doAckReply "" []
-
-  #(do->nil
-     (let
-       [^HttpMsg evt (.origin ^Job %)
-        gs (.gist evt)
-        res (httpResult<> evt)
-        json {:status {:code 200}}]
-       (doto res
-         (.setContent (xdata<> (writeJsonStr json)))
-         (replyResult )))))
+(defn- doAckReply "" [evt res]
+  (let [json {:status {:code 200}}]
+    (->> (writeJsonStr json) xdata<> (assoc res :body) reply-result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn forgotHandler "" ^Workstream []
-
+(defn forgotHandler "" [evt res]
   (log/debug "forgot-login pipe-line - called")
-  (workstream<> (group<> (doAckReply) (doLookupEmail))))
+  (doAckReply evt res)
+  (doLookupEmail evt res))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- doLogout "" []
-
-  #(do->nil
-     (let
-       [json {:status {:code 200}}
-        ^HttpMsg evt (.origin ^Job %)
-        mvs (.session evt)
-        gs (.gist evt)
-        res (httpResult<> evt)]
-       (some-> mvs .invalidate)
-       (doto res
-        (.setContent (xdata<> (writeJsonStr json)))
-        (replyResult )))))
+(defn- doLogout "" [evt res]
+  (let [json {:status {:code 200}}]
+    (some-> (:session evt) invalidate!)
+    (->> (writeJsonStr json) xdata<> (assoc res :body) replyResult )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn logoutHandler "" ^Workstream []
-
+(defn logoutHandler "" [evt res]
   (log/debug "logout pipe-line - called")
-  (workstream<> (doLogout)))
+  (doLogout evt res))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF

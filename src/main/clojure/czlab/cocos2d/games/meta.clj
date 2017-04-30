@@ -17,7 +17,7 @@
             [clojure.string :as cs]
             [czlab.basal.dates :refer [dtime parseDate]])
 
-  (:use [czlab.wabbit.base.core]
+  (:use [czlab.wabbit.base]
         [czlab.basal.format]
         [czlab.basal.core]
         [czlab.basal.str])

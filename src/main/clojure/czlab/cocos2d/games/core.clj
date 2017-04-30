@@ -12,28 +12,24 @@
   czlab.cocos2d.games.core
 
   (:require [czlab.basal.logging :as log]
-            [czlab.wabbit.plugs.io.mvc :as mvc])
+            [czlab.wabbit.plugs.mvc :as mvc])
 
-  (:use [czlab.wabbit.base.core]
-        [czlab.convoy.net.core]
+  (:use [czlab.wabbit.base]
+        [czlab.wabbit.xpis]
+        [czlab.convoy.core]
         [czlab.basal.core]
         [czlab.basal.str]
-        [czlab.flux.wflow.core]
         [czlab.cocos2d.util.core]
-        [czlab.convoy.nettio.resp]
         [czlab.cocos2d.games.meta])
 
-  (:import [czlab.flux.wflow Job Workstream]
-           [czlab.convoy.net RouteInfo HttpResult]
-           [czlab.wabbit.plugs.io HttpMsg]))
+  (:import [java.io File]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;(set! *warn-on-reflection* true)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- injectBrowsePage "" [^HttpMsg evt]
-
+(defn- injectBrowsePage "" [evt]
   (update-in (getDftModel evt)
              [:body]
              merge
@@ -42,10 +38,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- injectArenaPage "" [^HttpMsg evt]
-
+(defn- injectArenaPage "" [evt]
   (let [mf ((getGamesAsHash)
-            (:uri (.gist evt)))]
+            (:uri evt))]
     (-> (getDftModel evt)
         (update-in
           [:metatags]
@@ -75,8 +70,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- injectPicksPage "" [^HttpMsg evt]
-
+(defn- injectPicksPage "" [evt]
   (-> (getDftModel evt)
       (update-in
         [:stylesheets]
@@ -92,37 +86,30 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn- doShowPage "" [func]
-
-  #(do->nil
-     (let
-       [^HttpMsg evt (.origin ^Job %)
-        gist (.gist evt)
-        ri (get-in gist [:route :info])
-        tpl (some-> ^RouteInfo
-                    ri .template)
+(defn- doShowPage "" [evt res func]
+  (let [ri (get-in evt [:route :info])
+        tpl (:template ri)
+        plug (get-pluglet evt)
         {:keys [data ctype]}
-        (mvc/loadTemplate (.source evt) tpl (func evt))
-        res (httpResult<> evt)]
-       (doto res
-         (.setContentType ctype)
-         (.setContent data)
-         (replyResult )))))
+        (mvc/loadTemplate plug tpl (func evt))]
+    (reply-result
+      (-> (set-res-header res "content-type" ctype)
+          (assoc :body data)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn allGamesPage "" ^Workstream []
-  (workstream<> (doShowPage injectBrowsePage)))
+(defn allGamesPage "" [evt res]
+  (doShowPage evt res injectBrowsePage))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn topPicksPage "" ^Workstream []
-  (workstream<> (doShowPage injectPicksPage)))
+(defn topPicksPage "" [evt res]
+  (doShowPage evt res injectPicksPage))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-(defn gameArenaPage "" ^Workstream []
-  (workstream<> (doShowPage injectArenaPage)))
+(defn gameArenaPage "" [evt res]
+  (doShowPage evt res injectArenaPage))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF
