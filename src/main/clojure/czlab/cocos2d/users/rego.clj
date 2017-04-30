@@ -15,14 +15,14 @@
             [czlab.basal.logging :as log]
             [czlab.wabbit.plugs.mvc :as mvc])
 
-  (:use [czlab.wabbit.shiro.core]
+  (:use [czlab.convoy.wess :as wss]
+        [czlab.wabbit.shiro.core]
         [czlab.wabbit.xpis]
         [czlab.convoy.core]
         [czlab.convoy.util]
         [czlab.basal.core]
         [czlab.basal.str]
         [czlab.basal.io]
-        [czlab.convoy.wess :as wss]
         [czlab.cocos2d.util.core])
 
   (:import [java.io File]))
@@ -55,11 +55,11 @@
                            tpl
                            (injectPage evt func token))
          ck (csrfToken<> cfg token)]
-     (-> (set-res-header res "content-type" ctype)
-         (update-in [:cookies]
-                    assoc (.getName ck) ck)
-         (assoc :body data)
-         reply-result)))
+     (reply-result
+       (-> (set-res-header res "content-type" ctype)
+           (update-in [:cookies]
+                      assoc (.getName ck) ck)
+           (assoc :body data)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

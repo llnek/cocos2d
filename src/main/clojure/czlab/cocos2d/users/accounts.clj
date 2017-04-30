@@ -17,6 +17,7 @@
             [czlab.basal.resources :refer [rstr]])
 
   (:use [czlab.wabbit.shiro.core]
+        [czlab.convoy.wess]
         [czlab.wabbit.xpis]
         [czlab.convoy.core]
         [czlab.basal.core]
@@ -86,6 +87,7 @@
              xdata<>
              (assoc res :body))
         (update-in [:cookies]
+                   assoc
                    (.getName ck) ck)
         (reply-result mvs))))
 
@@ -134,7 +136,7 @@
 (defn- doLogout "" [evt res]
   (let [json {:status {:code 200}}]
     (some-> (:session evt) invalidate!)
-    (->> (writeJsonStr json) xdata<> (assoc res :body) replyResult )))
+    (->> (writeJsonStr json) xdata<> (assoc res :body) reply-result )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

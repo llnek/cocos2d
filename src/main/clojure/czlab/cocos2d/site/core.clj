@@ -23,6 +23,7 @@
         [czlab.basal.core]
         [czlab.basal.str]
         [czlab.basal.io]
+        [czlab.wabbit.xpis]
         [czlab.wabbit.base])
 
   (:import [czlab.jasal XData]

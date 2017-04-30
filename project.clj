@@ -40,7 +40,7 @@
   :aliases {"deploy" ["with-profile"
                       "podify" "wabbit"]
             "run" ["trampoline"
-                   "run" "-m" "czlab.wabbit.sys.core"]}
+                   "run" "-m" "czlab.wabbit.core"]}
 
   :java-source-paths ["src/main/java" "src/test/java"]
   :source-paths ["src/main/clojure"]
