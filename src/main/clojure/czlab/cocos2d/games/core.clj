@@ -11,16 +11,15 @@
 
   czlab.cocos2d.games.core
 
-  (:require [czlab.basal.logging :as log]
-            [czlab.wabbit.plugs.mvc :as mvc])
-
-  (:use [czlab.wabbit.base]
-        [czlab.wabbit.xpis]
-        [czlab.convoy.core]
-        [czlab.basal.core]
-        [czlab.basal.str]
-        [czlab.cocos2d.util.core]
-        [czlab.cocos2d.games.meta])
+  (:require [czlab.wabbit.plugs.mvc :as mvc]
+            [czlab.wabbit.base :as b]
+            [czlab.wabbit.xpis :as xp]
+            [czlab.convoy.core :as cc]
+            [czlab.basal.log :as log]
+            [czlab.basal.core :as c]
+            [czlab.basal.str :as s]
+            [czlab.cocos2d.util.core :as u]
+            [czlab.cocos2d.games.meta :as m])
 
   (:import [java.io File]))
 
@@ -30,18 +29,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- injectBrowsePage "" [evt]
-  (update-in (getDftModel evt)
+  (update-in (u/getDftModel evt)
              [:body]
              merge
-             {:games (getGamesAsListForUI)
+             {:games (m/getGamesAsListForUI)
               :content "/games/games.ftl"}))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- injectArenaPage "" [evt]
-  (let [mf ((getGamesAsHash)
-            (:uri evt))]
-    (-> (getDftModel evt)
+  (let [mf ((m/getGamesAsHash) (:uri evt))]
+    (-> (u/getDftModel evt)
         (update-in
           [:metatags]
           #(merge
@@ -64,14 +62,14 @@
           [:body]
           #(merge
              %
-             {:games (getGamesAsListForUI)
+             {:games (m/getGamesAsListForUI)
               :content "/games/arena.ftl"}
              (if mf {:gameid (:uuid mf)} {}))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- injectPicksPage "" [evt]
-  (-> (getDftModel evt)
+  (-> (u/getDftModel evt)
       (update-in
         [:stylesheets]
         #(-> (conj % "/public/ext/owl-carousel/owl.carousel.css")
@@ -81,7 +79,7 @@
         #(conj % "/public/ext/owl-carousel/owl.carousel.min.js"))
       (update-in
         [:body]
-        #(-> (assoc % :picks (getGamesAsListForUI))
+        #(-> (assoc % :picks (m/getGamesAsListForUI))
              (assoc :content "/games/picks.ftl")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -89,12 +87,13 @@
 (defn- doShowPage "" [evt res func]
   (let [ri (get-in evt [:route :info])
         tpl (:template ri)
-        plug (get-pluglet evt)
+        plug (xp/get-pluglet evt)
         {:keys [data ctype]}
         (mvc/loadTemplate plug tpl (func evt))]
-    (reply-result
-      (-> (set-res-header res "content-type" ctype)
-          (assoc :body data)))))
+      (-> (set-res-header res
+                          "content-type" ctype)
+          (assoc :body data)
+          cc/reply-result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

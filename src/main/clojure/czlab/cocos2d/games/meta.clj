@@ -11,16 +11,15 @@
 
   czlab.cocos2d.games.meta
 
-  (:require [czlab.basal.io :refer [readAsStr listDirs]]
-            [czlab.basal.logging :as log]
+  (:require [czlab.basal.io :as i :refer [readAsStr listDirs]]
+            [czlab.basal.dates :as d :refer [dtime]]
+            [czlab.basal.log :as log]
             [clojure.java.io :as io]
             [clojure.string :as cs]
-            [czlab.basal.dates :refer [dtime parseDate]])
-
-  (:use [czlab.wabbit.base]
-        [czlab.basal.format]
-        [czlab.basal.core]
-        [czlab.basal.str])
+            [czlab.wabbit.base :as b]
+            [czlab.basal.core :as c]
+            [czlab.basal.str :as s]
+            [czlab.basal.format :as f])
 
   (:import [java.io File]
            [java.util Date]))
@@ -51,19 +50,19 @@
      gc (transient [])
      rc (transient [])]
     (doseq
-      [^File fd (listDirs (io/file appDir
-                                   "public/inf"))
+      [^File fd (i/listDirs (io/file appDir
+                                     "public/inf"))
        :let [info (merge (-> (io/file fd "game.mf")
-                             readEdn
+                             f/readEdn
                              (assoc :gamedir (.getName fd)))
                          (-> (io/file fd "game.json")
-                             readAsStr
-                             readJsonStrKW))
+                             i/readAsStr
+                             f/readJsonStrKW))
              {:keys [network uuid uri]}
              info
              online (true? (:enabled network))]]
       ;; create a UI friendly version for freemarker
-      (->> (-> (preduce<map>
+      (->> (-> (c/preduce<map>
                  #(let [[k v] %2]
                     (assoc! %1 (name k) v)) info)
                (assoc "network" online))
@@ -73,14 +72,14 @@
       (var-set mc (assoc! @mc uri info))
       (var-set rc (conj! @rc info)))
     (reset! games-mnfs
-            (vec (sort #(compare (dtime (%1 :pubdate))
-                                 (dtime (%2 :pubdate)))
+            (vec (sort #(compare (d/dtime (%1 :pubdate))
+                                 (d/dtime (%2 :pubdate)))
                        (persistent! @rc))))
     (reset! games-hash (persistent! @mc))
     (reset! games-uuid (persistent! @uc))
     (reset! games-list
-            (vec (sort #(compare (dtime (%1 "pubdate"))
-                                 (dtime (%2 "pubdate")))
+            (vec (sort #(compare (d/dtime (%1 "pubdate"))
+                                 (d/dtime (%2 "pubdate")))
                        (persistent! @gc))))
     ;;set true for debugging
     (when true
