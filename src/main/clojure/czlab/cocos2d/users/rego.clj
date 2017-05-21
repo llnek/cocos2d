@@ -11,19 +11,18 @@
 
   czlab.cocos2d.users.rego
 
-  (:require [czlab.basal.dates :refer [parseDate]]
-            [czlab.basal.logging :as log]
-            [czlab.wabbit.plugs.mvc :as mvc])
-
-  (:use [czlab.convoy.wess :as wss]
-        [czlab.wabbit.shiro.core]
-        [czlab.wabbit.xpis]
-        [czlab.convoy.core]
-        [czlab.convoy.util]
-        [czlab.basal.core]
-        [czlab.basal.str]
-        [czlab.basal.io]
-        [czlab.cocos2d.util.core])
+  (:require [czlab.basal.dates :as d :refer [parseDate]]
+            [czlab.wabbit.plugs.mvc :as mvc]
+            [czlab.basal.log :as log]
+            [czlab.convoy.wess :as ss]
+            [czlab.wabbit.xpis :as xp]
+            [czlab.convoy.core :as cc]
+            [czlab.convoy.util :as cu]
+            [czlab.basal.core :as c]
+            [czlab.basal.str :as s]
+            [czlab.basal.io :as i]
+            [czlab.cocos2d.util.core :as u]
+            [czlab.wabbit.shiro.core :as sh])
 
   (:import [java.io File]))
 
@@ -35,7 +34,7 @@
 (defn- injectPage
   "" [evt action csrf]
 
-  (update-in (getDftModel evt)
+  (update-in (u/getDftModel evt)
              [:body]
              #(merge % {:content (str "/users/" action ".ftl")
                         :csrf csrf})))
@@ -43,9 +42,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- doShowPage "" [func evt res]
-   (let [plug (get-pluglet evt)
-         svr (get-server plug)
-         token (generateCsrf)
+   (let [plug (xp/get-pluglet evt)
+         svr (xp/get-server plug)
+         token (cu/generateCsrf)
          ri (get-in evt
                     [:route :info])
          tpl (:template ri)
@@ -54,9 +53,9 @@
          (mvc/loadTemplate plug
                            tpl
                            (injectPage evt func token))
-         ck (csrfToken<> cfg token)]
-     (reply-result
-       (-> (set-res-header res "content-type" ctype)
+         ck (sh/csrfToken<> cfg token)]
+     (cc/reply-result
+       (-> (cc/set-res-header res "content-type" ctype)
            (update-in [:cookies]
                       assoc (.getName ck) ck)
            (assoc :body data)))))

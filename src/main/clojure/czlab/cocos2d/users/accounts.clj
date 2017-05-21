@@ -11,19 +11,18 @@
 
   czlab.cocos2d.users.accounts
 
-  (:require [czlab.basal.format :refer [writeJsonStr]]
-            [czlab.basal.logging :as log]
-            [czlab.convoy.wess :as wss]
-            [czlab.basal.resources :refer [rstr]])
-
-  (:use [czlab.wabbit.shiro.core]
-        [czlab.convoy.wess]
-        [czlab.wabbit.xpis]
-        [czlab.convoy.core]
-        [czlab.basal.core]
-        [czlab.basal.io]
-        [czlab.basal.str]
-        [czlab.cocos2d.util.core])
+  (:require [czlab.basal.format :as f :refer [writeJsonStr]]
+            [czlab.basal.resources :as r :refer [rstr]]
+            [czlab.basal.log :as log]
+            [czlab.convoy.wess :as ss]
+            [czlab.convoy.wess :as ss]
+            [czlab.wabbit.xpis :as xp]
+            [czlab.convoy.core :as cc]
+            [czlab.basal.core :as c]
+            [czlab.basal.io :as i]
+            [czlab.basal.str :as s]
+            [czlab.cocos2d.util.core :as u]
+            [czlab.wabbit.shiro.core :as sh])
 
   (:import [czlab.jasal XData DataError Idable I18N]
            [org.apache.commons.codec.net URLCodec]
@@ -35,15 +34,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- doSignupFail "" [evt res ^Throwable err]
-  (reply-result
+  (cc/reply-result
     (if (= "DuplicateUser" (.getMessage err))
-      (let [rcb (-> (get-pluglet evt)
-                    get-server id?? I18N/bundle)
+      (let [rcb (-> (xp/get-pluglet evt)
+                    xp/get-server c/id?? I18N/bundle)
             json {:error {:msg
-                          (rstr rcb
-                                "acct.dup.user")}}]
-        (-> (->> (writeJsonStr json)
-                 xdata<>
+                          (r/rstr rcb
+                                  "acct.dup.user")}}]
+        (-> (->> (f/writeJsonStr json)
+                 i/xdata<>
                  (assoc res :body))
             (assoc :status 409)))
       (assoc res :status 400))))
@@ -53,76 +52,76 @@
 (defn- doSignupOK "" [evt res acct]
   (log/debug "success: signed up new acct %s" acct)
   (let [json {:status {:code 200}}]
-    (reply-result
-      (->> (writeJsonStr json)
-           xdata<>
+    (cc/reply-result
+      (->> (f/writeJsonStr json)
+           i/xdata<>
            (assoc res :body)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn signupHandler "" [evt res]
   (log/debug "signup pipe-line - called")
-  (let [rc (signupTestExpr<> "32" evt)]
-    (if (ist? Throwable rc)
+  (let [rc (sh/signupTestExpr<> "32" evt)]
+    (if (c/ist? Throwable rc)
       (doSignupFail evt res rc)
       (doSignupOK evt res rc))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- doLoginFail "" [evt res err]
-  (-> (assoc res :status 403) reply-result))
+  (-> (assoc res :status 403) cc/reply-result))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- doLoginOK "" [evt res acct]
   (let [json {:status {:code 200}}
-        plug (get-pluglet evt)
-        svr (get-server plug)
-        pk (pkey-bytes svr)
+        plug (xp/get-pluglet evt)
+        svr (xp/get-server plug)
+        pk (xp/pkey-bytes svr)
         cfg (:session (:conf @plug))
-        ck (csrfToken<> cfg nil)
-        mvs (wsession<> pk cfg)]
-    (set-principal mvs (str (:acctid acct)))
-    (-> (->> (writeJsonStr json)
-             xdata<>
+        ck (sh/csrfToken<> cfg nil)
+        mvs (ss/wsession<> pk cfg)]
+    (ss/set-principal mvs (str (:acctid acct)))
+    (-> (->> (f/writeJsonStr json)
+             i/xdata<>
              (assoc res :body))
         (update-in [:cookies]
                    assoc
                    (.getName ck) ck)
-        (reply-result mvs))))
+        (cc/reply-result mvs))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn loginHandler "" [evt res]
   (log/debug "login pipe-line - called")
-  (let [rc (loginTestExpr<> evt)]
-    (if (ist? Throwable rc)
+  (let [rc (sh/loginTestExpr<> evt)]
+    (if (c/ist? Throwable rc)
       (doLoginFail evt res rc)
       (doLoginOK evt res rc))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- doLookupEmail "" [evt res]
-  (let [plug (get-pluglet evt)
-        svr (get-server plug)
-        pa (get-child svr :$auth)
-        si (try (maybeGetAuthInfo evt)
+  (let [plug (xp/get-pluglet evt)
+        svr (xp/get-server plug)
+        pa (xp/get-child svr :$auth)
+        si (try (sh/maybeGetAuthInfo evt)
                 (catch DataError _  {:e _ }))
         info (or si {})
         email (str (:email info))]
-    (test-some "AuthPlugin" pa)
+    (c/test-some "AuthPlugin" pa)
     (if (and (= "18" (:captcha info))
-             (hgl? email))
-      (if-some [acct (get-account pa {:email email})]
-        (do-with [acct acct]
-                 (log/debug "found account, email=%s" email))
+             (s/hgl? email))
+      (if-some [acct (sh/get-account pa {:email email})]
+        (c/do-with [acct acct]
+                   (log/debug "found account, email=%s" email))
         (log/debug "failed to find account with email=%s" email)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn- doAckReply "" [evt res]
   (let [json {:status {:code 200}}]
-    (->> (writeJsonStr json) xdata<> (assoc res :body) reply-result)))
+    (->> (f/writeJsonStr json) i/xdata<> (assoc res :body) cc/reply-result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -135,8 +134,8 @@
 ;;
 (defn- doLogout "" [evt res]
   (let [json {:status {:code 200}}]
-    (some-> (:session evt) invalidate!)
-    (->> (writeJsonStr json) xdata<> (assoc res :body) reply-result )))
+    (some-> (:session evt) ss/invalidate!)
+    (->> (f/writeJsonStr json) i/xdata<> (assoc res :body) cc/reply-result )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

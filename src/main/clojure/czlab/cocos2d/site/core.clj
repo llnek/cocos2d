@@ -11,20 +11,19 @@
 
   czlab.cocos2d.site.core
 
-  (:require [czlab.basal.dates :refer [parseDate]]
+  (:require [czlab.basal.dates :as d :refer [parseDate]]
             [czlab.wabbit.plugs.mvc :as mvc]
-            [czlab.basal.logging :as log]
+            [czlab.basal.log :as log]
             [clojure.string :as cs]
-            [clojure.java.io :as io])
-
-  (:use [czlab.cocos2d.games.meta]
-        [czlab.cocos2d.util.core]
-        [czlab.convoy.core]
-        [czlab.basal.core]
-        [czlab.basal.str]
-        [czlab.basal.io]
-        [czlab.wabbit.xpis]
-        [czlab.wabbit.base])
+            [clojure.java.io :as io]
+            [czlab.convoy.core :as cc]
+            [czlab.basal.core :as c]
+            [czlab.basal.str :as s]
+            [czlab.basal.io :as i]
+            [czlab.wabbit.xpis :as xp]
+            [czlab.wabbit.base :as b]
+            [czlab.cocos2d.util.core :as u]
+            [czlab.cocos2d.games.meta :as gm])
 
   (:import [czlab.jasal XData]
            [java.io File]))
@@ -53,8 +52,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 (defn myAppMain "" [co]
-  (doto (get-home-dir co)
-    (scanGameManifests )
+  (doto (xp/get-home-dir co)
+    (gm/scanGameManifests )
     (odinInit co))
   (log/info "app-main called by container %s" co))
 
@@ -62,12 +61,12 @@
 ;;
 (defn- injectIndexPage "" [evt]
   (if (nil? @doors)
-    (let [plug (get-pluglet evt)
+    (let [plug (xp/get-pluglet evt)
           {{:keys [publicRootDir mediaDir]} :wsite}
           (:conf @plug)]
       (-> (io/file publicRootDir mediaDir)
           (maybeCheckDoors ))))
-  (-> (getDftModel evt)
+  (-> (u/getDftModel evt)
       (update-in [:body]
                  #(merge %
                          {:doors @doors
@@ -78,14 +77,14 @@
 (defn indexPage "" [evt res]
   (let [ri (get-in evt
                    [:route :info])
-        plug (get-pluglet evt)
+        plug (xp/get-pluglet evt)
         tpl (:template ri)
         {:keys [data ctype]}
         (mvc/loadTemplate plug
                           tpl (injectIndexPage evt))]
-    (-> (set-res-header res "content-type" ctype)
+    (-> (cc/set-res-header res "content-type" ctype)
         (assoc :body data)
-        reply-result)))
+        cc/reply-result)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;EOF

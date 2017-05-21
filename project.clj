@@ -11,7 +11,6 @@
   :dependencies
   [;;[org.clojure/clojurescript "1.9.495"]
    [org.clojure/clojure "1.8.0"]
-   [commons-logging "1.2"]
    [io.czlab/wabbit-cons "1.0.0"]
    [io.czlab/wabbit "1.0.0"]]
 

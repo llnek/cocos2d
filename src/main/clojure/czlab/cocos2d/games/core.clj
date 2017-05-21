@@ -90,8 +90,8 @@
         plug (xp/get-pluglet evt)
         {:keys [data ctype]}
         (mvc/loadTemplate plug tpl (func evt))]
-      (-> (set-res-header res
-                          "content-type" ctype)
+      (-> (cc/set-res-header res
+                             "content-type" ctype)
           (assoc :body data)
           cc/reply-result)))
 

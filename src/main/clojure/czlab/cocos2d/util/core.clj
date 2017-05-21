@@ -11,17 +11,16 @@
 
   czlab.cocos2d.util.core
 
-  (:require [czlab.basal.logging :as log]
+  (:require [czlab.basal.io :as i :refer [dirRead?]]
+            [czlab.basal.log :as log]
             [clojure.java.io :as io]
             [clojure.string :as cs]
-            [czlab.basal.io :refer [dirRead?]])
-
-  (:use [czlab.cocos2d.games.meta]
-        [czlab.convoy.core]
-        [czlab.convoy.wess]
-        [czlab.basal.core]
-        [czlab.basal.str]
-        [czlab.wabbit.xpis])
+            [czlab.convoy.core :as cc]
+            [czlab.convoy.wess :as ss]
+            [czlab.basal.core :as c]
+            [czlab.basal.str :as s]
+            [czlab.wabbit.xpis :as xp]
+            [czlab.cocos2d.games.meta :as gm])
 
   (:import [java.net HttpCookie]
            [java.io File]
@@ -36,9 +35,9 @@
   "For Freemarker" [evt]
 
   (let [ss (:session evt)
-        ok? (if ss (try! (do->true (validate?? ss))))
-        uid (some-> ss principal)
-        uid (if (and ok? (hgl? uid)) uid "Guest")]
+        ok? (if ss (c/try! (c/do->true (ss/validate?? ss))))
+        uid (some-> ss ss/principal)
+        uid (if (and ok? (s/hgl? uid)) uid "Guest")]
     {:title "ZotohLab | Fun &amp; Games."
      :description "Bonjour!"
      :encoding "utf-8"
@@ -48,8 +47,8 @@
      {:keywords "content=\"web browser games mobile ios android windows phone\""
       :description "content=\"Hello World!\""
       :viewport "content=\"width=device-width, initial-scale=1.0\""}
-     :appkey (-> evt get-pluglet get-server pkey-chars strit)
-     :profile {:user uid :session (bool! ok?) }
+     :appkey (-> evt xp/get-pluglet xp/get-server xp/pkey-chars c/strit)
+     :profile {:user uid :session (c/bool! ok?) }
      :body {} }))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -60,8 +59,8 @@
   ;;(alter-var-root #'*read-eval* (constantly false))
 
   (let [appDir (io/file (first args))
-        apps ((comp (fn [_] (getGamesAsList))
-                    scanGameManifests) appDir)]
+        apps ((comp (fn [_] (gm/getGamesAsList))
+                    gm/scanGameManifests) appDir)]
     (doseq [a apps]
       (log/debug "app = %s" (:gamedir a)))))
 
